@@ -17,8 +17,7 @@ import (
 
 func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -41,8 +40,7 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 
 func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -65,8 +63,7 @@ func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 
 func TestAccDatadogSyntheticsTCPTest_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -89,8 +86,7 @@ func TestAccDatadogSyntheticsTCPTest_importBasic(t *testing.T) {
 
 func TestAccDatadogSyntheticsDNSTest_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -113,8 +109,7 @@ func TestAccDatadogSyntheticsDNSTest_importBasic(t *testing.T) {
 
 func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -138,8 +133,7 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 
 func TestAccDatadogSyntheticsAPITest_BasicDeprecated(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -154,8 +148,7 @@ func TestAccDatadogSyntheticsAPITest_BasicDeprecated(t *testing.T) {
 
 func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -170,8 +163,7 @@ func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsAPITest_UpdatedDeprecated(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -187,8 +179,7 @@ func TestAccDatadogSyntheticsAPITest_UpdatedDeprecated(t *testing.T) {
 
 func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -204,8 +195,7 @@ func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 
 func TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -220,8 +210,7 @@ func TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions(t *testing.T) {
 
 func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -237,8 +226,7 @@ func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
 
 func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -253,8 +241,7 @@ func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -270,8 +257,7 @@ func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
 
 func TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -286,8 +272,7 @@ func TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsTCPTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -302,8 +287,7 @@ func TestAccDatadogSyntheticsTCPTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsTCPTest_Updated(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -319,8 +303,7 @@ func TestAccDatadogSyntheticsTCPTest_Updated(t *testing.T) {
 
 func TestAccDatadogSyntheticsDNSTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -335,8 +318,7 @@ func TestAccDatadogSyntheticsDNSTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsDNSTest_Updated(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -352,8 +334,7 @@ func TestAccDatadogSyntheticsDNSTest_Updated(t *testing.T) {
 
 func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -368,8 +349,7 @@ func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -385,8 +365,7 @@ func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
 
 func TestAccDatadogSyntheticsBrowserTestBrowserVariables_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -401,8 +380,7 @@ func TestAccDatadogSyntheticsBrowserTestBrowserVariables_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 	testName := uniqueEntityName(ctx, t)
 
@@ -418,8 +396,7 @@ func TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic(t *testing.T
 
 func TestAccDatadogSyntheticsTestBrowserMML_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 	testName := uniqueEntityName(ctx, t)
 

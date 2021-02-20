@@ -13,8 +13,7 @@ const tfSecurityDefaultRuleName = "datadog_security_monitoring_default_rule.acce
 
 func TestAccDatadogSecurityMonitoringDefaultRule_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	_, accProviders := testAccProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },

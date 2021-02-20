@@ -226,8 +226,7 @@ resource "datadog_timeboard" "acceptance_test" {
 
 func TestAccDatadogTimeboard_update(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	tbName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 

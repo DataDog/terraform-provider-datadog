@@ -132,8 +132,7 @@ resource "datadog_logs_custom_pipeline" "test_import" {
 
 func TestAccLogsCustomPipeline_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	pipelineName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 

@@ -29,8 +29,7 @@ resource "datadog_logs_archive_order" "archives" {
 }
 
 func TestAccDatadogLogsArchiveOrder_basic(t *testing.T) {
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -53,8 +52,7 @@ func TestAccDatadogLogsArchiveOrder_basic(t *testing.T) {
 }
 
 func TestAccDatadogLogsArchiveOrder_empty(t *testing.T) {
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{

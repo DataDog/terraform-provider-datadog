@@ -11,8 +11,7 @@ import (
 
 func TestDatadogIntegrationPagerduty_import(t *testing.T) {
 	resourceName := "datadog_integration_pagerduty.pd"
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	serviceName := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 

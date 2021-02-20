@@ -11,8 +11,7 @@ import (
 func TestDatadogMonitor_import(t *testing.T) {
 	t.Parallel()
 	resourceName := "datadog_monitor.foo"
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -36,8 +35,7 @@ func TestDatadogMonitor_import(t *testing.T) {
 func TestDatadogMonitor_import_no_recovery(t *testing.T) {
 	t.Parallel()
 	resourceName := "datadog_monitor.foo"
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -61,8 +59,7 @@ func TestDatadogMonitor_import_no_recovery(t *testing.T) {
 func TestDatadogMonitor_importNoDataTimeFrame(t *testing.T) {
 	t.Parallel()
 	resourceName := "datadog_monitor.foo"
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 

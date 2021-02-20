@@ -455,8 +455,7 @@ resource "datadog_screenboard" "acceptance_test" {
 
 func TestAccDatadogScreenboard_update(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	sbName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 

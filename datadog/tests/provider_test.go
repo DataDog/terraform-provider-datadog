@@ -486,7 +486,9 @@ func testAccProvidersWithHTTPClient(ctx context.Context, t *testing.T, httpClien
 	}
 }
 
-func testAccProviders(ctx context.Context, t *testing.T, rec *recorder.Recorder) (context.Context, map[string]terraform.ResourceProvider) {
+func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[string]terraform.ResourceProvider) {
+	ctx = testSpan(ctx, t)
+	rec := initRecorder(t)
 	ctx = context.WithValue(ctx, clockContextKey("clock"), testClock(t))
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", rec)

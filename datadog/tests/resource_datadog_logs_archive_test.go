@@ -44,8 +44,7 @@ resource "datadog_logs_archive" "my_azure_archive" {
 }
 
 func TestAccDatadogLogsArchiveAzure_basicDeprecated(t *testing.T) {
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	tenantName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -81,8 +80,7 @@ func TestAccDatadogLogsArchiveAzure_basicDeprecated(t *testing.T) {
 }
 
 func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	tenantName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -147,8 +145,7 @@ resource "datadog_logs_archive" "my_gcs_archive" {
 }
 
 func TestAccDatadogLogsArchiveGCS_basicDeprecated(t *testing.T) {
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	client := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -182,8 +179,7 @@ func TestAccDatadogLogsArchiveGCS_basicDeprecated(t *testing.T) {
 }
 
 func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	client := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -244,8 +240,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
 }
 
 func TestAccDatadogLogsArchiveS3_basicDeprecated(t *testing.T) {
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -283,8 +278,7 @@ func TestAccDatadogLogsArchiveS3_basicDeprecated(t *testing.T) {
 }
 
 func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -344,8 +338,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
 }
 
 func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 	resource.Test(t, resource.TestCase{

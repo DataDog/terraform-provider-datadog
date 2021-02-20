@@ -236,8 +236,7 @@ resource "datadog_logs_custom_pipeline" "empty_filter_query_pipeline" {
 
 func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	pipelineName := uniqueEntityName(ctx, t)
 	pipelineName2 := pipelineName + "-updated"
 	accProvider := testAccProvider(t, accProviders)
@@ -313,8 +312,7 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 }
 
 func TestAccDatadogLogsPipelineEmptyFilterQuery(t *testing.T) {
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	pipelineName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 

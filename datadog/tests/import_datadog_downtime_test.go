@@ -9,8 +9,7 @@ import (
 
 func TestDatadogDowntime_import(t *testing.T) {
 	resourceName := "datadog_downtime.foo"
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{

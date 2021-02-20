@@ -69,8 +69,7 @@ func TestAccDatadogDashboardNote_import(t *testing.T) {
 }
 
 func TestAccDatadogDashboardNoteContentError(t *testing.T) {
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{

@@ -18,8 +18,7 @@ const tfSecurityRulesSource = "data.datadog_security_monitoring_rules.acceptance
 
 func TestAccDatadogSecurityMonitoringRuleDatasource(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 

@@ -131,8 +131,7 @@ resource "datadog_dashboard" "time" {
 
 func TestDatadogDashListImport(t *testing.T) {
 	resourceName := "datadog_dashboard_list.new_list"
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -158,8 +157,7 @@ func TestDatadogDashListImport(t *testing.T) {
 }
 
 func TestDatadogDashListInDashboard(t *testing.T) {
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 

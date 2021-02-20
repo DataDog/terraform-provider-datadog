@@ -12,8 +12,7 @@ import (
 func TestDatadogUser_import(t *testing.T) {
 	t.Parallel()
 	resourceName := "datadog_user.foo"
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 	accProvider := testAccProvider(t, accProviders)
 

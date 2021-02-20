@@ -17,8 +17,7 @@ import (
 func TestAccDatadogLogsMetric_import(t *testing.T) {
 	t.Parallel()
 	resourceName := "datadog_logs_metric.testing_logs_metric"
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueLogsMetric := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
@@ -41,8 +40,7 @@ func TestAccDatadogLogsMetric_import(t *testing.T) {
 
 func TestAccDatadogLogsMetric_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueLogsMetric := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 

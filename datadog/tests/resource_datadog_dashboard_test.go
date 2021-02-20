@@ -1147,8 +1147,7 @@ var datadogFreeDashboardAsserts = []string{
 
 func TestAccDatadogDashboard_update(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	dbName := uniqueEntityName(ctx, t)
 	asserts := datadogOrderedDashboardAsserts
 	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
@@ -1174,8 +1173,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 
 func TestAccDatadogFreeDashboard(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	dbName := uniqueEntityName(ctx, t)
 	asserts := datadogFreeDashboardAsserts
 	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
@@ -1201,8 +1199,7 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 
 func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	dbName := uniqueEntityName(ctx, t)
 	freeAsserts := datadogSimpleFreeDashboardAsserts
 	freeAsserts = append(freeAsserts, fmt.Sprintf("title = %s", dbName))
@@ -1233,8 +1230,7 @@ func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
 
 func TestAccDatadogDashboard_import(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	dbName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -1302,8 +1298,7 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 
 func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string, assertions []string) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
@@ -1329,8 +1324,7 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 
 func testAccDatadogDashboardWidgetUtil_import(t *testing.T, config string, name string) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)

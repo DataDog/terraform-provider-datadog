@@ -14,8 +14,7 @@ import (
 
 func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	privateLocationName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -39,8 +38,7 @@ func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 
 func TestAccDatadogSyntheticsPrivateLocation_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -55,8 +53,7 @@ func TestAccDatadogSyntheticsPrivateLocation_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{

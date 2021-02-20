@@ -19,8 +19,7 @@ import (
 
 func TestAccDatadogDowntime_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -59,8 +58,7 @@ func TestAccDatadogDowntime_Basic(t *testing.T) {
 
 func TestAccDatadogDowntime_BasicWithMonitor(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -86,8 +84,7 @@ func TestAccDatadogDowntime_BasicWithMonitor(t *testing.T) {
 
 func TestAccDatadogDowntime_BasicWithMonitorTags(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -113,8 +110,7 @@ func TestAccDatadogDowntime_BasicWithMonitorTags(t *testing.T) {
 
 func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -151,8 +147,7 @@ func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
 
 func TestAccDatadogDowntime_BasicNoRecurrence(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -183,8 +178,7 @@ func TestAccDatadogDowntime_BasicNoRecurrence(t *testing.T) {
 
 func TestAccDatadogDowntime_BasicUntilDateRecurrence(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -221,8 +215,7 @@ func TestAccDatadogDowntime_BasicUntilDateRecurrence(t *testing.T) {
 
 func TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -259,8 +252,7 @@ func TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence(t *testing.T) {
 
 func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -299,8 +291,7 @@ func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
 
 func TestAccDatadogDowntime_RRule(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -333,8 +324,7 @@ func TestAccDatadogDowntime_RRule(t *testing.T) {
 
 func TestAccDatadogDowntime_Updated(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -391,8 +381,7 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 
 func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -427,8 +416,7 @@ func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
 
 func TestAccDatadogDowntime_DiffStart(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -475,8 +463,7 @@ func testAccCheckDatadogDowntimeExists(accProvider *schema.Provider, n string) r
 
 func TestAccDatadogDowntimeDates(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -511,8 +498,7 @@ func TestAccDatadogDowntimeDates(t *testing.T) {
 
 func TestAccDatadogDowntimeDatesConflict(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 

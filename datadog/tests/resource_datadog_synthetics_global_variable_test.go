@@ -19,8 +19,7 @@ func getUniqueVariableName(ctx context.Context, t *testing.T) string {
 
 func TestAccDatadogSyntheticsGlobalVariable_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	variableName := getUniqueVariableName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -43,8 +42,7 @@ func TestAccDatadogSyntheticsGlobalVariable_importBasic(t *testing.T) {
 
 func TestAccDatadogSyntheticsGlobalVariable_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -59,8 +57,7 @@ func TestAccDatadogSyntheticsGlobalVariable_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsGlobalVariableSecure_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -75,8 +72,7 @@ func TestAccDatadogSyntheticsGlobalVariableSecure_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsGlobalVariable_Updated(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -92,8 +88,7 @@ func TestAccDatadogSyntheticsGlobalVariable_Updated(t *testing.T) {
 
 func TestAccDatadogSyntheticsGlobalVariableSecure_Updated(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -109,8 +104,7 @@ func TestAccDatadogSyntheticsGlobalVariableSecure_Updated(t *testing.T) {
 
 func TestAccDatadogSyntheticsGlobalVariableFromTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx := testSpan(context.Background(), t)
-	ctx, accProviders := testAccProviders(ctx, t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
