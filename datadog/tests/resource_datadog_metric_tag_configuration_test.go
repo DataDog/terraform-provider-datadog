@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testing"
@@ -16,9 +17,8 @@ import (
 
 func TestAccMetricTagConfiguration_import(t *testing.T) {
 	resourceName := "datadog_metric_tag_configuration.testing_metric_tag_config"
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
@@ -39,9 +39,8 @@ func TestAccMetricTagConfiguration_import(t *testing.T) {
 }
 
 func testAccDatadogMetricTagConfiguration_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.ParallelTest(t, resource.TestCase{
