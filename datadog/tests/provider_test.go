@@ -5,7 +5,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,6 +16,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
@@ -93,6 +94,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_logs_custom_pipeline_test":                 "logs-pipelines",
 	"tests/resource_datadog_logs_metric_test":                          "logs-metric",
 	"tests/resource_datadog_metric_metadata_test":                      "metrics",
+	"tests/resource_datadog_metric_tag_configuration_test":             "metrics",
 	"tests/resource_datadog_monitor_test":                              "monitors",
 	"tests/resource_datadog_role_test":                                 "roles",
 	"tests/resource_datadog_screenboard_test":                          "dashboards",
