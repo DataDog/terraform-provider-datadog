@@ -1,16 +1,17 @@
 package test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
 func TestAccDatatogSyntheticsLocation_existing(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	_, accProviders := testAccProviders(context.Background(), t)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		Providers: accProviders,
 		Steps: []resource.TestStep{
 			{

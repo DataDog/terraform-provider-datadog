@@ -1,12 +1,11 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-
-	"github.com/jonboulle/clockwork"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -14,12 +13,12 @@ import (
 )
 
 func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	privateLocationName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	privateLocationName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsPrivateLocationIsDestroyed(accProvider),
@@ -38,38 +37,38 @@ func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsPrivateLocation_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsPrivateLocationIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsPrivateLocationStep(accProvider, clock, t),
+			createSyntheticsPrivateLocationStep(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsPrivateLocationIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsPrivateLocationStep(accProvider, clock, t),
-			updateSyntheticsPrivateLocationStep(accProvider, clock, t),
+			createSyntheticsPrivateLocationStep(ctx, accProvider, t),
+			updateSyntheticsPrivateLocationStep(ctx, accProvider, t),
 		},
 	})
 }
 
-func createSyntheticsPrivateLocationStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	privateLocationName := uniqueEntityName(clock, t)
+func createSyntheticsPrivateLocationStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	privateLocationName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsPrivateLocationConfig(privateLocationName),
 		Check: resource.ComposeTestCheckFunc(
@@ -101,8 +100,8 @@ resource "datadog_synthetics_private_location" "foo" {
 }`, uniq)
 }
 
-func updateSyntheticsPrivateLocationStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	privateLocationName := uniqueEntityName(clock, t) + "_updated"
+func updateSyntheticsPrivateLocationStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	privateLocationName := uniqueEntityName(ctx, t) + "_updated"
 	return resource.TestStep{
 		Config: updateSyntheticsPrivateLocationConfig(privateLocationName),
 		Check: resource.ComposeTestCheckFunc(
