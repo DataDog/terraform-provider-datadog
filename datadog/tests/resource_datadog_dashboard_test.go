@@ -425,6 +425,9 @@ resource "datadog_dashboard" "ordered_dashboard" {
 			value = "var_1_value"
 		}
 	}
+	template_variable_preset {
+		name = "preset_3"
+}
 }`, uniq)
 }
 
@@ -472,6 +475,9 @@ resource "datadog_dashboard" "simple_dashboard" {
 			name = "var_1"
 			value = "var_1_value"
 		}
+	}
+	template_variable_preset {
+		name = "preset_3" 
 	}
 }`, uniq)
 }
@@ -649,6 +655,9 @@ resource "datadog_dashboard" "free_dashboard" {
 			value = "var_1_value"
 		}
 	}
+	template_variable_preset {
+		name = "preset_3"
+	}
 }`, uniq)
 }
 
@@ -703,6 +712,9 @@ resource "datadog_dashboard" "simple_dashboard" {
 			value = "var_1_value"
 		}
 	}
+	template_variable_preset {
+		name = "preset_3"
+	}
 }`, uniq)
 }
 
@@ -727,7 +739,7 @@ var datadogSimpleOrderedDashboardAsserts = []string{
 	"template_variable.1.default = autoscaling",
 	"description = Created using the Datadog provider in Terraform",
 	// Template Variable Presets
-	"template_variable_preset.# = 2",
+	"template_variable_preset.# = 3",
 	"template_variable_preset.0.name = preset_1",
 	"template_variable_preset.0.template_variable.0.name = var_1",
 	"template_variable_preset.0.template_variable.0.value = var_1_value",
@@ -736,6 +748,7 @@ var datadogSimpleOrderedDashboardAsserts = []string{
 	"template_variable_preset.1.name = preset_2",
 	"template_variable_preset.1.template_variable.0.name = var_1",
 	"template_variable_preset.1.template_variable.0.value = var_1_value",
+	"template_variable_preset.2.name = preset_3",
 }
 
 var datadogSimpleFreeDashboardAsserts = []string{
@@ -763,7 +776,7 @@ var datadogSimpleFreeDashboardAsserts = []string{
 	"template_variable.1.default = autoscaling",
 	"description = Created using the Datadog provider in Terraform",
 	// Template Variable Presets
-	"template_variable_preset.# = 2",
+	"template_variable_preset.# = 3",
 	"template_variable_preset.0.name = preset_1",
 	"template_variable_preset.0.template_variable.0.name = var_1",
 	"template_variable_preset.0.template_variable.0.value = var_1_value",
@@ -772,6 +785,7 @@ var datadogSimpleFreeDashboardAsserts = []string{
 	"template_variable_preset.1.name = preset_2",
 	"template_variable_preset.1.template_variable.0.name = var_1",
 	"template_variable_preset.1.template_variable.0.value = var_1_value",
+	"template_variable_preset.2.name = preset_3",
 }
 
 var datadogOrderedDashboardAsserts = []string{
@@ -1017,7 +1031,7 @@ var datadogOrderedDashboardAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 
 	// Template Variable Presets
-	"template_variable_preset.# = 2",
+	"template_variable_preset.# = 3",
 	"template_variable_preset.0.name = preset_1",
 	"template_variable_preset.0.template_variable.0.name = var_1",
 	"template_variable_preset.0.template_variable.0.value = var_1_value",
@@ -1026,6 +1040,7 @@ var datadogOrderedDashboardAsserts = []string{
 	"template_variable_preset.1.name = preset_2",
 	"template_variable_preset.1.template_variable.0.name = var_1",
 	"template_variable_preset.1.template_variable.0.value = var_1_value",
+	"template_variable_preset.2.name = preset_3",
 }
 
 var datadogFreeDashboardAsserts = []string{
@@ -1134,7 +1149,7 @@ var datadogFreeDashboardAsserts = []string{
 	"template_variable.1.prefix = service_name",
 
 	// Template Variable Presets
-	"template_variable_preset.# = 2",
+	"template_variable_preset.# = 3",
 	"template_variable_preset.0.name = preset_1",
 	"template_variable_preset.0.template_variable.0.name = var_1",
 	"template_variable_preset.0.template_variable.0.value = var_1_value",
@@ -1143,6 +1158,7 @@ var datadogFreeDashboardAsserts = []string{
 	"template_variable_preset.1.name = preset_2",
 	"template_variable_preset.1.template_variable.0.name = var_1",
 	"template_variable_preset.1.template_variable.0.value = var_1_value",
+	"template_variable_preset.2.name = preset_3",
 }
 
 func TestAccDatadogDashboard_update(t *testing.T) {
