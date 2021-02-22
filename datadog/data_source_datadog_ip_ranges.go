@@ -51,7 +51,7 @@ func dataSourceDatadogIpRanges() *schema.Resource {
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"synthetics_ipv4_by_location": {
-				Description: "List of IPv4 prefixes by location.",
+				Description: "A map of IPv4 prefixes (string of concatenated IPs, delimited by ',') by location.",
 				Type:        schema.TypeMap,
 				Computed:    true,
 			},
@@ -99,7 +99,7 @@ func dataSourceDatadogIpRanges() *schema.Resource {
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"synthetics_ipv6_by_location": {
-				Description: "List of IPv6 prefixes by location.",
+				Description: "A map of IPv6 prefixes (string of concatenated IPs, delimited by ',') by location.",
 				Type:        schema.TypeMap,
 				Computed:    true,
 			},
