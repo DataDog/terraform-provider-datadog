@@ -28,7 +28,7 @@ var retryTimeout = time.Minute
 
 func resourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog monitor resource. This can be used to create and manage Datadog monitors.\n\n**Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/)",
+		Description:   "Provides a Datadog monitor resource. This can be used to create and manage Datadog monitors.\n\n**Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).",
 		Create:        resourceDatadogMonitorCreate,
 		Read:          resourceDatadogMonitorRead,
 		Update:        resourceDatadogMonitorUpdate,
