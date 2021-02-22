@@ -179,11 +179,13 @@ func dataSourceDatadogIPRangesRead(d *schema.ResourceData, meta interface{}) err
 
 	err = d.Set("synthetics_ipv4_by_location", ipv4PrefixesByLocationMap)
 	if err != nil {
-		log.Printf("Error setting value: %s", err)
+		log.Printf("[DEBUG] Error setting IPv4 prefixes by location: %s", err)
+		return err
 	}
 	err = d.Set("synthetics_ipv6_by_location", ipv6PrefixesByLocationMap)
 	if err != nil {
-		log.Printf("Error setting value: %s", err)
+		log.Printf("[DEBUG] Error setting IPv6 prefixes by location: %s", err)
+		return err
 	}
 
 	return nil
