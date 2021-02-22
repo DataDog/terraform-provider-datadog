@@ -1280,13 +1280,13 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		err := utils.Retry(2, 5, func() error {
+		err := utils.Retry(2, 10, func() error {
 			for _, r := range s.RootModule().Resources {
 				if _, httpResp, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID).Execute(); err != nil {
 					if httpResp != nil && httpResp.StatusCode == 404 {
 						return nil
 					}
-					return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving Dashboard %s", err)}
+					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Dashboard %s", err)}
 				}
 				return &utils.RetryableError{Prob: fmt.Sprintf("Dashboard still exists")}
 			}
