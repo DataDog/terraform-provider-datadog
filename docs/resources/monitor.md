@@ -4,14 +4,14 @@ page_title: "datadog_monitor Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
   Provides a Datadog monitor resource. This can be used to create and manage Datadog monitors.
-  Note: APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the detailed doc (https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/)
+  Note: APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the detailed doc https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/
 ---
 
 # datadog_monitor (Resource)
 
 Provides a Datadog monitor resource. This can be used to create and manage Datadog monitors.
 
-**Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc]((https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/))
+**Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/)
 
 ## Example Usage
 
