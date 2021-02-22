@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -14,12 +15,12 @@ import (
 )
 
 func TestAccDatadogIntegrationAwsTagFilter_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniqueID := uniqueAWSAccountID(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	t.Parallel()
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),

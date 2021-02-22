@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"strings"
@@ -10,10 +11,10 @@ import (
 )
 
 func TestAccDatadogRoleDatasource(t *testing.T) {
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	_, accProviders := testAccProviders(context.Background(), t)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: accProviders,
 		Steps: []resource.TestStep{
@@ -26,12 +27,12 @@ func TestAccDatadogRoleDatasource(t *testing.T) {
 }
 
 func TestAccDatadogRoleDatasourceExactMatch(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	rolename := strings.ToLower(uniqueEntityName(clock, t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	rolename := strings.ToLower(uniqueEntityName(ctx, t))
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		CheckDestroy: testAccCheckDatadogRoleDestroy(accProvider),
 		Providers:    accProviders,
@@ -53,12 +54,12 @@ func TestAccDatadogRoleDatasourceExactMatch(t *testing.T) {
 }
 
 func TestAccDatadogRoleDatasourceError(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	rolename := strings.ToLower(uniqueEntityName(clock, t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	rolename := strings.ToLower(uniqueEntityName(ctx, t))
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		CheckDestroy: testAccCheckDatadogRoleDestroy(accProvider),
 		Providers:    accProviders,

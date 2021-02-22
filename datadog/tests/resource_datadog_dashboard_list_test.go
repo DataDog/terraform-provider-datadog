@@ -131,14 +131,15 @@ resource "datadog_dashboard" "time" {
 
 func TestDatadogDashListImport(t *testing.T) {
 	resourceName := "datadog_dashboard_list.new_list"
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniqueName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	// Getting the hash for a TypeSet element that has dynamic elements isn't possible
 	// So instead we use an import test to make sure the resource can be imported properly.
-	resource.ParallelTest(t, resource.TestCase{
+
+	t.Parallel()
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDashListDestroy(accProvider),
@@ -156,12 +157,12 @@ func TestDatadogDashListImport(t *testing.T) {
 }
 
 func TestDatadogDashListInDashboard(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniqueName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	t.Parallel()
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDashListDestroy(accProvider),

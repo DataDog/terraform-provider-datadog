@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testing"
@@ -10,12 +11,12 @@ import (
 )
 
 func TestAccDatadogMonitorDatasource(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniq := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
