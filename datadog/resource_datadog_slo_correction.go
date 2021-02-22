@@ -58,7 +58,7 @@ func buildDatadogSloCorrection(d *schema.ResourceData) (*datadogV1.SLOCorrection
 	result := datadogV1.NewSLOCorrectionCreateRequestWithDefaults()
 	// `type` is hardcoded to 'correction' in Data
 	// only need to set `attributes` here
-	createData := datadogV1.NewSLOCorrectionCreateRequestDataWithDefaults()
+	createData := datadogV1.NewSLOCorrectionCreateDataWithDefaults()
 	attributes := datadogV1.NewSLOCorrectionCreateRequestAttributesWithDefaults()
 	correctionCategory := datadogV1.SLOCorrectionCategory(d.Get("category").(string))
 	attributes.SetCategory(correctionCategory)
@@ -80,7 +80,7 @@ func buildDatadogSloCorrection(d *schema.ResourceData) (*datadogV1.SLOCorrection
 
 func buildDatadogSloCorrectionUpdate(d *schema.ResourceData) (*datadogV1.SLOCorrectionUpdateRequest, error) {
 	result := datadogV1.NewSLOCorrectionUpdateRequestWithDefaults()
-	updateData := datadogV1.NewSLOCorrectionUpdateRequestDataWithDefaults()
+	updateData := datadogV1.NewSLOCorrectionUpdateDataWithDefaults()
 	attributes := datadogV1.NewSLOCorrectionUpdateRequestAttributesWithDefaults()
 	if description, ok := d.GetOk("description"); ok {
 		attributes.SetDescription(description.(string))
@@ -119,7 +119,7 @@ func resourceDatadogSloCorrectionCreate(d *schema.ResourceData, meta interface{}
 	return updateSLOCorrectionState(d, response.Data)
 }
 
-func updateSLOCorrectionState(d *schema.ResourceData, sloCorrectionData *datadogV1.SLOCorrectionResponseData) error {
+func updateSLOCorrectionState(d *schema.ResourceData, sloCorrectionData *datadogV1.SLOCorrection) error {
 	if sloCorrectionAttributes, ok := sloCorrectionData.GetAttributesOk(); ok {
 		if category, ok := sloCorrectionAttributes.GetCategoryOk(); ok {
 			if err := d.Set("category", string(*category)); err != nil {

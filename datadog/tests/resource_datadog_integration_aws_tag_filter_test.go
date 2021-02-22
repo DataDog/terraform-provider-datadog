@@ -3,10 +3,11 @@ package test
 import (
 	"context"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"regexp"
 	"testing"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
@@ -108,13 +109,13 @@ func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider *schema.Provi
 	}
 }
 
-func listFiltersHelper(accProvider *schema.Provider, resourceId string) (*[]datadogV1.AWSTagFilterListResponseFilters, error) {
+func listFiltersHelper(accProvider *schema.Provider, resourceId string) (*[]datadogV1.AWSTagFilter, error) {
 	meta := accProvider.Meta()
 	providerConf := meta.(*datadog.ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
 
-	filters := []datadogV1.AWSTagFilterListResponseFilters{}
+	filters := []datadogV1.AWSTagFilter{}
 	accountID, _, err := utils.AccountAndNamespaceFromID(resourceId)
 	if err != nil {
 		return nil, err

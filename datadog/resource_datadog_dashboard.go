@@ -348,11 +348,11 @@ func getTemplateVariableSchema() map[string]*schema.Schema {
 	}
 }
 
-func buildDatadogTemplateVariables(terraformTemplateVariables *[]interface{}) *[]datadogV1.DashboardTemplateVariables {
-	datadogTemplateVariables := make([]datadogV1.DashboardTemplateVariables, len(*terraformTemplateVariables))
+func buildDatadogTemplateVariables(terraformTemplateVariables *[]interface{}) *[]datadogV1.DashboardTemplateVariable {
+	datadogTemplateVariables := make([]datadogV1.DashboardTemplateVariable, len(*terraformTemplateVariables))
 	for i, ttv := range *terraformTemplateVariables {
 		terraformTemplateVariable := ttv.(map[string]interface{})
-		var datadogTemplateVariable datadogV1.DashboardTemplateVariables
+		var datadogTemplateVariable datadogV1.DashboardTemplateVariable
 		if v, ok := terraformTemplateVariable["name"].(string); ok && len(v) != 0 {
 			datadogTemplateVariable.SetName(v)
 		}
@@ -367,7 +367,7 @@ func buildDatadogTemplateVariables(terraformTemplateVariables *[]interface{}) *[
 	return &datadogTemplateVariables
 }
 
-func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadogV1.DashboardTemplateVariables) *[]map[string]string {
+func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadogV1.DashboardTemplateVariable) *[]map[string]string {
 	terraformTemplateVariables := make([]map[string]string, len(*datadogTemplateVariables))
 	for i, templateVariable := range *datadogTemplateVariables {
 		terraformTemplateVariable := map[string]string{}
@@ -4635,14 +4635,14 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		}
 		// Metadata
 		if terraformMetadataList, ok := terraformRequest["metadata"].([]interface{}); ok && len(terraformMetadataList) > 0 {
-			datadogMetadataList := make([]datadogV1.TimeseriesWidgetRequestMetadata, len(terraformMetadataList))
+			datadogMetadataList := make([]datadogV1.TimeseriesWidgetExpressionAlias, len(terraformMetadataList))
 			for i, m := range terraformMetadataList {
 				metadata, ok := m.(map[string]interface{})
 				if !ok {
 					continue
 				}
 				// Expression
-				datadogMetadata := datadogV1.NewTimeseriesWidgetRequestMetadata(metadata["expression"].(string))
+				datadogMetadata := datadogV1.NewTimeseriesWidgetExpressionAlias(metadata["expression"].(string))
 				// AliasName
 				if v, ok := metadata["alias_name"].(string); ok && len(v) != 0 {
 					datadogMetadata.SetAliasName(v)
@@ -5643,8 +5643,8 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 	return datadogQuery
 }
 
-func buildDatadogGroupBySort(sort map[string]interface{}) *datadogV1.LogQueryDefinitionSort {
-	ddSort := &datadogV1.LogQueryDefinitionSort{}
+func buildDatadogGroupBySort(sort map[string]interface{}) *datadogV1.LogQueryDefinitionGroupBySort {
+	ddSort := &datadogV1.LogQueryDefinitionGroupBySort{}
 	if aggr, ok := sort["aggregation"].(string); ok && len(aggr) > 0 {
 		ddSort.SetAggregation(aggr)
 	}
