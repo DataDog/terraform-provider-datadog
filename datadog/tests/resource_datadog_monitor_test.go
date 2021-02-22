@@ -1260,22 +1260,22 @@ resource "datadog_monitor" "foo" {
 }
 
 func destroyHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, authV1 context.Context) error {
-		err := utils.Retry(2, 10, func() error {
-			for _, r := range s.RootModule().Resources {
-				i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
-				_, httpresp, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
-				if err != nil {
-					if httpresp != nil && httpresp.StatusCode == 404 {
-						return nil
-					} else {
-						return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
-					}
+	err := utils.Retry(2, 10, func() error {
+		for _, r := range s.RootModule().Resources {
+			i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
+			_, httpresp, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
+			if err != nil {
+				if httpresp != nil && httpresp.StatusCode == 404 {
+					return nil
+				} else {
+					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
 				}
-				return &utils.RetryableError{Prob: fmt.Sprintf("Monitor still exists")}
 			}
-			return nil
-		})
-		return err
+			return &utils.RetryableError{Prob: fmt.Sprintf("Monitor still exists")}
+		}
+		return nil
+	})
+	return err
 }
 
 func existsHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, authV1 context.Context) error {
