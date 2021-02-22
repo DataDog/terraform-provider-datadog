@@ -44,6 +44,8 @@ resource "datadog_monitor" "foo" {
 }
 ```
 
+**Note:** APM Trace Metrics are now available as distributions and your existing monitors have been migrated.  To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [migration guide](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/)
+
 ## Schema
 
 ### Required
