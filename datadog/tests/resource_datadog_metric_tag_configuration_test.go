@@ -38,7 +38,7 @@ func TestAccMetricTagConfiguration_import(t *testing.T) {
 	})
 }
 
-func testAccDatadogMetricTagConfiguration_Basic(t *testing.T) {
+func TestAccDatadogMetricTagConfiguration_Basic(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
