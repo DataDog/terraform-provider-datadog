@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"strings"
@@ -1145,11 +1146,11 @@ var datadogFreeDashboardAsserts = []string{
 }
 
 func TestAccDatadogDashboard_update(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	dbName := uniqueEntityName(clock, t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	dbName := uniqueEntityName(ctx, t)
 	asserts := datadogOrderedDashboardAsserts
 	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
-	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 	checks := testCheckResourceAttrs("datadog_dashboard.ordered_dashboard", checkDashboardExists(accProvider), asserts)
 	for i := 0; i < 16; i++ {
@@ -1157,7 +1158,7 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 			"datadog_dashboard.ordered_dashboard", fmt.Sprintf("widget.%d.id", i)))
 	}
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
@@ -1171,11 +1172,11 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 }
 
 func TestAccDatadogFreeDashboard(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	dbName := uniqueEntityName(clock, t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	dbName := uniqueEntityName(ctx, t)
 	asserts := datadogFreeDashboardAsserts
 	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
-	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 	checks := testCheckResourceAttrs("datadog_dashboard.free_dashboard", checkDashboardExists(accProvider), asserts)
 	for i := 0; i < 8; i++ {
@@ -1183,7 +1184,7 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 			"datadog_dashboard.free_dashboard", fmt.Sprintf("widget.%d.id", i)))
 	}
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
@@ -1197,16 +1198,16 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 }
 
 func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	dbName := uniqueEntityName(clock, t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	dbName := uniqueEntityName(ctx, t)
 	freeAsserts := datadogSimpleFreeDashboardAsserts
 	freeAsserts = append(freeAsserts, fmt.Sprintf("title = %s", dbName))
 	orderedAsserts := datadogSimpleOrderedDashboardAsserts
 	orderedAsserts = append(orderedAsserts, fmt.Sprintf("title = %s", dbName))
-	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
@@ -1228,12 +1229,12 @@ func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
 }
 
 func TestAccDatadogDashboard_import(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	dbName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	dbName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
@@ -1279,13 +1280,13 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		err := utils.Retry(2, 5, func() error {
+		err := utils.Retry(2, 10, func() error {
 			for _, r := range s.RootModule().Resources {
 				if _, httpResp, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID).Execute(); err != nil {
 					if httpResp != nil && httpResp.StatusCode == 404 {
 						return nil
 					}
-					return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving Dashboard %s", err)}
+					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Dashboard %s", err)}
 				}
 				return &utils.RetryableError{Prob: fmt.Sprintf("Dashboard still exists")}
 			}
@@ -1296,17 +1297,17 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 }
 
 func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string, assertions []string) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniq := uniqueEntityName(clock, t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
 	for i := range assertions {
 		assertions[i] = replacer.Replace(assertions[i])
 	}
-	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),
@@ -1322,14 +1323,14 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 }
 
 func testAccDatadogDashboardWidgetUtil_import(t *testing.T, config string, name string) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniq := uniqueEntityName(clock, t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
-	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkDashboardDestroy(accProvider),

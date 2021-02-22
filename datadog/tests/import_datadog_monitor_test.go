@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -8,13 +9,13 @@ import (
 )
 
 func TestDatadogMonitor_import(t *testing.T) {
+	t.Parallel()
 	resourceName := "datadog_monitor.foo"
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -32,13 +33,13 @@ func TestDatadogMonitor_import(t *testing.T) {
 }
 
 func TestDatadogMonitor_import_no_recovery(t *testing.T) {
+	t.Parallel()
 	resourceName := "datadog_monitor.foo"
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
@@ -56,13 +57,13 @@ func TestDatadogMonitor_import_no_recovery(t *testing.T) {
 }
 
 func TestDatadogMonitor_importNoDataTimeFrame(t *testing.T) {
+	t.Parallel()
 	resourceName := "datadog_monitor.foo"
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	monitorName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
