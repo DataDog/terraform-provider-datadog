@@ -1,14 +1,13 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"strings"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-
-	"github.com/jonboulle/clockwork"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
@@ -17,12 +16,12 @@ import (
 )
 
 func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	testName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
@@ -40,12 +39,12 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	testName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
@@ -63,12 +62,12 @@ func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsTCPTest_importBasic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	testName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
@@ -86,12 +85,12 @@ func TestAccDatadogSyntheticsTCPTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsDNSTest_importBasic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	testName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
@@ -109,12 +108,12 @@ func TestAccDatadogSyntheticsDNSTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	testName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
@@ -133,289 +132,289 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_BasicDeprecated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsAPITestStepDeprecated(accProvider, clock, t),
+			createSyntheticsAPITestStepDeprecated(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsAPITestStep(accProvider, clock, t),
+			createSyntheticsAPITestStep(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsAPITest_UpdatedDeprecated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsAPITestStepDeprecated(accProvider, clock, t),
-			updateSyntheticsAPITestStep(accProvider, clock, t),
+			createSyntheticsAPITestStepDeprecated(ctx, accProvider, t),
+			updateSyntheticsAPITestStep(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsAPITestStepDeprecated(accProvider, clock, t),
-			updateSyntheticsAPITestStep(accProvider, clock, t),
+			createSyntheticsAPITestStepDeprecated(ctx, accProvider, t),
+			updateSyntheticsAPITestStep(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsAPITestStepNewAssertionsOptions(accProvider, clock, t),
+			createSyntheticsAPITestStepNewAssertionsOptions(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsAPITestStepNewAssertionsOptions(accProvider, clock, t),
-			updateSyntheticsAPITestStepNewAssertionsOptions(accProvider, clock, t),
+			createSyntheticsAPITestStepNewAssertionsOptions(ctx, accProvider, t),
+			updateSyntheticsAPITestStepNewAssertionsOptions(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsSSLTestStep(accProvider, clock, t),
+			createSyntheticsSSLTestStep(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsSSLTestStep(accProvider, clock, t),
-			updateSyntheticsSSLTestStep(accProvider, clock, t),
+			createSyntheticsSSLTestStep(ctx, accProvider, t),
+			updateSyntheticsSSLTestStep(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsSSLMissingTagsAttributeTestStep(accProvider, clock, t),
+			createSyntheticsSSLMissingTagsAttributeTestStep(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsTCPTest_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsTCPTestStep(accProvider, clock, t),
+			createSyntheticsTCPTestStep(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsTCPTest_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsTCPTestStep(accProvider, clock, t),
-			updateSyntheticsTCPTestStep(accProvider, clock, t),
+			createSyntheticsTCPTestStep(ctx, accProvider, t),
+			updateSyntheticsTCPTestStep(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsDNSTest_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsDNSTestStep(accProvider, clock, t),
+			createSyntheticsDNSTestStep(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsDNSTest_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsDNSTestStep(accProvider, clock, t),
-			updateSyntheticsDNSTestStep(accProvider, clock, t),
+			createSyntheticsDNSTestStep(ctx, accProvider, t),
+			updateSyntheticsDNSTestStep(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsBrowserTestStep(accProvider, clock, t),
+			createSyntheticsBrowserTestStep(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsBrowserTestStep(accProvider, clock, t),
-			updateSyntheticsBrowserTestStep(accProvider, clock, t),
+			createSyntheticsBrowserTestStep(ctx, accProvider, t),
+			updateSyntheticsBrowserTestStep(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsBrowserTestBrowserVariables_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsBrowserTestBrowserVariablesStep(accProvider, clock, t),
+			createSyntheticsBrowserTestBrowserVariablesStep(ctx, accProvider, t),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
-	testName := uniqueEntityName(clock, t)
+	testName := uniqueEntityName(ctx, t)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsBrowserTestStepNewBrowserStep(accProvider, clock, t, testName),
+			createSyntheticsBrowserTestStepNewBrowserStep(ctx, accProvider, t, testName),
 		},
 	})
 }
 
 func TestAccDatadogSyntheticsTestBrowserMML_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
-	testName := uniqueEntityName(clock, t)
+	testName := uniqueEntityName(ctx, t)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsBrowserTestStepMML(accProvider, clock, t, testName),
-			updateBrowserTestMML(accProvider, clock, t, testName),
-			updateSyntheticsBrowserTestMmlStep(accProvider, clock, t),
-			updateSyntheticsBrowserTestForceMmlStep(accProvider, clock, t),
+			createSyntheticsBrowserTestStepMML(ctx, accProvider, t, testName),
+			updateBrowserTestMML(ctx, accProvider, t, testName),
+			updateSyntheticsBrowserTestMmlStep(ctx, accProvider, t),
+			updateSyntheticsBrowserTestForceMmlStep(ctx, accProvider, t),
 		},
 	})
 }
 
-func createSyntheticsAPITestStepDeprecated(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t)
+func createSyntheticsAPITestStepDeprecated(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsAPITestConfigDeprecated(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -500,8 +499,8 @@ func createSyntheticsAPITestStepDeprecated(accProvider *schema.Provider, clock c
 	}
 }
 
-func createSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t)
+func createSyntheticsAPITestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsAPITestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -724,8 +723,8 @@ resource "datadog_synthetics_test" "foo" {
 }`, uniq)
 }
 
-func createSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t)
+func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsAPITestConfigNewAssertionsOptions(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -944,8 +943,8 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func updateSyntheticsAPITestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t) + "-updated"
+func updateSyntheticsAPITestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "-updated"
 	return resource.TestStep{
 		Config: updateSyntheticsAPITestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -1052,8 +1051,8 @@ resource "datadog_synthetics_test" "foo" {
 }`, uniq)
 }
 
-func updateSyntheticsAPITestStepNewAssertionsOptions(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t) + "updated"
+func updateSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "updated"
 	return resource.TestStep{
 		Config: updateSyntheticsAPITestConfigNewAssertionsOptions(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -1177,8 +1176,8 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func createSyntheticsSSLTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t)
+func createSyntheticsSSLTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsSSLTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -1252,8 +1251,8 @@ resource "datadog_synthetics_test" "ssl" {
 }`, uniq)
 }
 
-func createSyntheticsSSLMissingTagsAttributeTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t)
+func createSyntheticsSSLMissingTagsAttributeTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsSSLMissingTagsAttributeTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -1328,8 +1327,8 @@ resource "datadog_synthetics_test" "ssl" {
 }`, uniq)
 }
 
-func updateSyntheticsSSLTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t) + "-updated"
+func updateSyntheticsSSLTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "-updated"
 	return resource.TestStep{
 		Config: updateSyntheticsSSLTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -1410,8 +1409,8 @@ resource "datadog_synthetics_test" "ssl" {
 }`, uniq)
 }
 
-func createSyntheticsTCPTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t)
+func createSyntheticsTCPTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsTCPTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -1488,8 +1487,8 @@ resource "datadog_synthetics_test" "tcp" {
 }`, uniq)
 }
 
-func updateSyntheticsTCPTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t) + "-updated"
+func updateSyntheticsTCPTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "-updated"
 	return resource.TestStep{
 		Config: updateSyntheticsTCPTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -1566,8 +1565,8 @@ resource "datadog_synthetics_test" "tcp" {
 }`, uniq)
 }
 
-func createSyntheticsDNSTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t)
+func createSyntheticsDNSTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsDNSTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -1645,8 +1644,8 @@ resource "datadog_synthetics_test" "dns" {
 }`, uniq)
 }
 
-func updateSyntheticsDNSTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t) + "-updated"
+func updateSyntheticsDNSTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "-updated"
 	return resource.TestStep{
 		Config: updateSyntheticsDNSTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -1726,8 +1725,8 @@ resource "datadog_synthetics_test" "dns" {
 }`, uniq)
 }
 
-func createSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t)
+func createSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -1861,8 +1860,8 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func updateSyntheticsBrowserTestStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t) + "-updated"
+func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "-updated"
 	return resource.TestStep{
 		Config: updateSyntheticsBrowserTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -2008,8 +2007,8 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func createSyntheticsBrowserTestBrowserVariablesStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t)
+func createSyntheticsBrowserTestBrowserVariablesStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestBrowserVariablesConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -2117,7 +2116,7 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func createSyntheticsBrowserTestStepNewBrowserStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T, testName string) resource.TestStep {
+func createSyntheticsBrowserTestStepNewBrowserStep(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestNewBrowserStepConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -2404,7 +2403,7 @@ const MML_MANUAL_UPDATE = `{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*
 
 const MML_CONFIG_UPDATE = `{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/config-updated"}`
 
-func createSyntheticsBrowserTestStepMML(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T, testName string) resource.TestStep {
+func createSyntheticsBrowserTestStepMML(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestMMLConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -2533,7 +2532,7 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func updateBrowserTestMML(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T, testName string) resource.TestStep {
+func updateBrowserTestMML(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestMMLConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -2543,8 +2542,8 @@ func updateBrowserTestMML(accProvider *schema.Provider, clock clockwork.FakeCloc
 	}
 }
 
-func updateSyntheticsBrowserTestMmlStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t) + "-updated"
+func updateSyntheticsBrowserTestMmlStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "-updated"
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestMMLConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -2587,8 +2586,8 @@ func updateSyntheticsBrowserTestMmlStep(accProvider *schema.Provider, clock cloc
 	}
 }
 
-func updateSyntheticsBrowserTestForceMmlStep(accProvider *schema.Provider, clock clockwork.FakeClock, t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(clock, t) + "-updated"
+func updateSyntheticsBrowserTestForceMmlStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "-updated"
 	return resource.TestStep{
 		Config: createSyntheticsBrowserForceMmlTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(

@@ -17,8 +17,7 @@ import (
 )
 
 func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -28,7 +27,7 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkPostEvent(accProvider, clock),
+					checkPostEvent(accProvider, clockFromContext(ctx)),
 					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),
@@ -49,8 +48,7 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -60,7 +58,7 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 			{
 				Config: testAccCheckDatadogMetricMetadataConfig,
 				Check: resource.ComposeTestCheckFunc(
-					checkPostEvent(accProvider, clock),
+					checkPostEvent(accProvider, clockFromContext(ctx)),
 					checkMetricMetadataExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_metadata.foo", "short_name", "short name for metric_metadata foo"),

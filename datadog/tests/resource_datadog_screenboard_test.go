@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -453,9 +454,9 @@ resource "datadog_screenboard" "acceptance_test" {
 }
 
 func TestAccDatadogScreenboard_update(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	sbName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	sbName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	step1 := resource.TestStep{
@@ -1871,7 +1872,7 @@ func TestAccDatadogScreenboard_update(t *testing.T) {
 		),
 	}
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: checkScreenboardDestroy(accProvider),

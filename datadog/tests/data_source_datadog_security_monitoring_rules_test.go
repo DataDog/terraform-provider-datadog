@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -16,9 +17,9 @@ import (
 const tfSecurityRulesSource = "data.datadog_security_monitoring_rules.acceptance_test"
 
 func TestAccDatadogSecurityMonitoringRuleDatasource(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	ruleName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{

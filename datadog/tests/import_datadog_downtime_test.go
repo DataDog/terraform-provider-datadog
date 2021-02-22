@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
@@ -8,8 +9,7 @@ import (
 
 func TestDatadogDowntime_import(t *testing.T) {
 	resourceName := "datadog_downtime.foo"
-	accProviders, _, cleanup := testAccProviders(t, initRecorder(t))
-	defer cleanup(t)
+	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{

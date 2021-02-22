@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"testing"
@@ -15,9 +16,8 @@ import (
 // We're not testing for schedules because Datadog actively verifies it with Pagerduty
 
 func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	serviceName := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	serviceName := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -46,9 +46,8 @@ func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
 }
 
 func TestAccDatadogIntegrationPagerduty_TwoServices(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	serviceName := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	serviceName := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -81,9 +80,8 @@ func TestAccDatadogIntegrationPagerduty_TwoServices(t *testing.T) {
 }
 
 func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	serviceName := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	serviceName := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
