@@ -42,7 +42,7 @@ vet:
 		exit 1; \
 	fi
 
-lint:
+lint: get-test-deps
 	golint ./...
 
 fmt:
@@ -70,7 +70,8 @@ update-go-client:
 	go mod tidy
 
 get-test-deps:
-	gotestsum --version || (cd `mktemp -d`;	GO111MODULE=off GOFLAGS='' go get -u gotest.tools/gotestsum; cd -)
+	gotestsum --version || (cd `mktemp -d`; GO111MODULE=off GOFLAGS='' go get -u gotest.tools/gotestsum; cd -)
+	golint --help || (cd `mktemp -d`; GO111MODULE=off GOFLAGS='' go get -u golang.org/x/lint/golint; cd -)
 
 license-check:
 	@sh -c "'$(CURDIR)/scripts/license-check.sh'"
