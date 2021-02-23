@@ -350,11 +350,11 @@ func testAccCheckPipelineExists(accProvider *schema.Provider) resource.TestCheck
 	}
 }
 
-func pipelineExistsChecker(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+func pipelineExistsChecker(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_custom_pipeline" {
 			id := r.Primary.ID
-			if _, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, id).Execute(); err != nil {
+			if _, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(ctx, id).Execute(); err != nil {
 				return fmt.Errorf("received an error when retrieving pipeline, (%s)", err)
 			}
 		}
@@ -375,12 +375,12 @@ func testAccCheckPipelineDestroy(accProvider *schema.Provider) func(*terraform.S
 	}
 }
 
-func pipelineDestroyHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+func pipelineDestroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_custom_pipeline" {
 			err := utils.Retry(2, 5, func() error {
 				id := r.Primary.ID
-				p, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, id).Execute()
+				p, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(ctx, id).Execute()
 				if err != nil {
 					if strings.Contains(err.Error(), "400 Bad Request") {
 						return nil

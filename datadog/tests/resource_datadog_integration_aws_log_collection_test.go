@@ -71,8 +71,8 @@ func checkIntegrationAWSLogCollectionExists(accProvider *schema.Provider) func(*
 	}
 }
 
-func checkIntegrationAWSLogCollectionExistsHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
-	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
+func checkIntegrationAWSLogCollectionExistsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(ctx).Execute()
 	if err != nil {
 		return err
 	}
@@ -100,8 +100,8 @@ func checkIntegrationAWSLogCollectionDestroy(accProvider *schema.Provider) func(
 	}
 }
 
-func checkIntegrationAWSLogCollectionDestroyHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
-	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
+func checkIntegrationAWSLogCollectionDestroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(ctx).Execute()
 	if err != nil {
 		return err
 	}

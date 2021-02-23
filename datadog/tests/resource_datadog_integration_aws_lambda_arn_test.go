@@ -65,8 +65,8 @@ func checkIntegrationAWSLambdaArnExists(accProvider *schema.Provider) func(*terr
 	}
 }
 
-func checkIntegrationAwsLambdaArnExistsHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
-	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
+func checkIntegrationAwsLambdaArnExistsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(ctx).Execute()
 	if err != nil {
 		return err
 	}
@@ -98,8 +98,8 @@ func checkIntegrationAWSLambdaArnDestroy(accProvider *schema.Provider) func(*ter
 	}
 }
 
-func checkIntegrationAWSLambdaArnDestroyHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
-	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
+func checkIntegrationAWSLambdaArnDestroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(ctx).Execute()
 	if err != nil {
 		return err
 	}

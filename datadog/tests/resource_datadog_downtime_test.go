@@ -783,7 +783,7 @@ resource "datadog_downtime" "foo" {
 }`, uniq)
 }
 
-func datadogDowntimeDestroyHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+func datadogDowntimeDestroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type != "datadog_downtime" {
 			continue
@@ -794,7 +794,7 @@ func datadogDowntimeDestroyHelper(authV1 context.Context, s *terraform.State, da
 		err := utils.Retry(2, 5, func() error {
 			for _, r := range s.RootModule().Resources {
 				if r.Primary.ID != "" {
-					dt, httpResp, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, int64(id)).Execute()
+					dt, httpResp, err := datadogClientV1.DowntimesApi.GetDowntime(ctx, int64(id)).Execute()
 					if err != nil {
 						if httpResp != nil && httpResp.StatusCode == 404 {
 							return nil
@@ -814,14 +814,14 @@ func datadogDowntimeDestroyHelper(authV1 context.Context, s *terraform.State, da
 	return nil
 }
 
-func datadogDowntimeExistsHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+func datadogDowntimeExistsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type != "datadog_downtime" {
 			continue
 		}
 
 		id, _ := strconv.Atoi(r.Primary.ID)
-		if _, _, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, int64(id)).Execute(); err != nil {
+		if _, _, err := datadogClientV1.DowntimesApi.GetDowntime(ctx, int64(id)).Execute(); err != nil {
 			return fmt.Errorf("received an error retrieving downtime %s", err)
 		}
 	}

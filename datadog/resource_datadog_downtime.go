@@ -220,7 +220,7 @@ func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, co
 	return apply
 }
 
-func buildDowntimeStruct(authV1 context.Context, d *schema.ResourceData, client *datadogV1.APIClient, updating bool) (*datadogV1.Downtime, error) {
+func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, client *datadogV1.APIClient, updating bool) (*datadogV1.Downtime, error) {
 	// NOTE: for each of start/start_date/end/end_date, we only send the value when
 	// it has changed or if the configured value is different than current value
 	// (IOW there's a resource drift). This allows users to change other attributes
@@ -237,7 +237,7 @@ func buildDowntimeStruct(authV1 context.Context, d *schema.ResourceData, client 
 		}
 
 		var currdt datadogV1.Downtime
-		currdt, _, err = client.DowntimesApi.GetDowntime(authV1, id).Execute()
+		currdt, _, err = client.DowntimesApi.GetDowntime(ctx, id).Execute()
 		if err != nil {
 			return nil, utils.TranslateClientError(err, "error getting downtime")
 		}

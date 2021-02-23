@@ -242,11 +242,11 @@ func testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider *schema.Provide
 	}
 }
 
-func destroyServiceLevelObjectiveHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+func destroyServiceLevelObjectiveHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	err := utils.Retry(2, 5, func() error {
 		for _, r := range s.RootModule().Resources {
 			if r.Primary.ID != "" {
-				if _, httpResp, err := datadogClientV1.ServiceLevelObjectivesApi.GetSLO(authV1, r.Primary.ID).Execute(); err != nil {
+				if _, httpResp, err := datadogClientV1.ServiceLevelObjectivesApi.GetSLO(ctx, r.Primary.ID).Execute(); err != nil {
 					if httpResp != nil && httpResp.StatusCode == 404 {
 						return nil
 					}
@@ -260,9 +260,9 @@ func destroyServiceLevelObjectiveHelper(authV1 context.Context, s *terraform.Sta
 	return err
 }
 
-func existsServiceLevelObjectiveHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+func existsServiceLevelObjectiveHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
-		if _, _, err := datadogClientV1.ServiceLevelObjectivesApi.GetSLO(authV1, r.Primary.ID).Execute(); err != nil {
+		if _, _, err := datadogClientV1.ServiceLevelObjectivesApi.GetSLO(ctx, r.Primary.ID).Execute(); err != nil {
 			return fmt.Errorf("received an error retrieving service level objective %s", err)
 		}
 	}

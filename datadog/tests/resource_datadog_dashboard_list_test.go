@@ -201,13 +201,13 @@ func testAccCheckDatadogDashListDestroy(accProvider *schema.Provider) resource.T
 	}
 }
 
-func datadogDashListDestroyHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+func datadogDashListDestroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if !strings.Contains(r.Primary.Attributes["name"], "List") {
 			continue
 		}
 		id, _ := strconv.Atoi(r.Primary.ID)
-		_, _, errList := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, int64(id)).Execute()
+		_, _, errList := datadogClientV1.DashboardListsApi.GetDashboardList(ctx, int64(id)).Execute()
 		if errList != nil {
 			if strings.Contains(strings.ToLower(errList.Error()), "not found") {
 				continue

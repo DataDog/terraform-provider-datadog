@@ -66,10 +66,10 @@ func GetRolePermissionSchema() *schema.Resource {
 	}
 }
 
-func getValidPermissions(auth context.Context, client *datadog.APIClient) (map[string]string, error) {
+func getValidPermissions(ctx context.Context, client *datadog.APIClient) (map[string]string, error) {
 	// Get a list of all permissions, to ignore restricted perms
 	if validPermissions == nil {
-		res, _, err := client.RolesApi.ListPermissions(auth).Execute()
+		res, _, err := client.RolesApi.ListPermissions(ctx).Execute()
 		if err != nil {
 			return nil, utils.TranslateClientError(err, "error listing permissions")
 		}
@@ -125,7 +125,7 @@ func resourceDatadogRoleCreate(d *schema.ResourceData, meta interface{}) error {
 	return updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, client)
 }
 
-func updateRoleState(auth context.Context, d *schema.ResourceData, roleAttrsI interface{}, roleRelations *datadog.RoleResponseRelationships, client *datadog.APIClient) error {
+func updateRoleState(ctx context.Context, d *schema.ResourceData, roleAttrsI interface{}, roleRelations *datadog.RoleResponseRelationships, client *datadog.APIClient) error {
 	type namer interface {
 		GetName() string
 	}
@@ -148,13 +148,13 @@ func updateRoleState(auth context.Context, d *schema.ResourceData, roleAttrsI in
 	}
 
 	rolePerms := roleRelations.GetPermissions()
-	return updateRolePermissionsState(auth, d, rolePerms.GetData(), client)
+	return updateRolePermissionsState(ctx, d, rolePerms.GetData(), client)
 }
 
-func updateRolePermissionsState(auth context.Context, d *schema.ResourceData, rolePermsI interface{}, client *datadog.APIClient) error {
+func updateRolePermissionsState(ctx context.Context, d *schema.ResourceData, rolePermsI interface{}, client *datadog.APIClient) error {
 
 	// Get a list of all valid permissions, to ignore restricted perms
-	permsIDToName, err := getValidPermissions(auth, client)
+	permsIDToName, err := getValidPermissions(ctx, client)
 	if err != nil {
 		return err
 	}

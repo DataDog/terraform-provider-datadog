@@ -96,14 +96,14 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 	})
 }
 
-func metadataExistsHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+func metadataExistsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		metric, ok := r.Primary.Attributes["metric"]
 		if !ok {
 			continue
 		}
 
-		_, _, err := datadogClientV1.MetricsApi.GetMetricMetadata(authV1, metric).Execute()
+		_, _, err := datadogClientV1.MetricsApi.GetMetricMetadata(ctx, metric).Execute()
 		if err != nil {
 			return utils.TranslateClientError(err, "error retrieving metric_metadata")
 		}

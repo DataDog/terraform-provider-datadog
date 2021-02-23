@@ -399,11 +399,11 @@ func testAccCheckArchiveExists(accProvider *schema.Provider) resource.TestCheckF
 	}
 }
 
-func archiveExistsChecker(authV2 context.Context, s *terraform.State, datadogClientV2 *datadogV2.APIClient) error {
+func archiveExistsChecker(ctx context.Context, s *terraform.State, datadogClientV2 *datadogV2.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_archive" {
 			id := r.Primary.ID
-			if _, _, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, id).Execute(); err != nil {
+			if _, _, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(ctx, id).Execute(); err != nil {
 				return fmt.Errorf("received an error when retrieving archive, (%s)", err)
 			}
 		}
@@ -456,13 +456,13 @@ func testAccCheckArchiveDestroy(accProvider *schema.Provider) func(*terraform.St
 	}
 }
 
-func archiveDestroyHelper(authV2 context.Context, s *terraform.State, datadogClientV2 *datadogV2.APIClient) error {
+func archiveDestroyHelper(ctx context.Context, s *terraform.State, datadogClientV2 *datadogV2.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_archive" {
 			id := r.Primary.ID
 			err := utils.Retry(2, 5, func() error {
 				if r.Primary.ID != "" {
-					archive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, id).Execute()
+					archive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(ctx, id).Execute()
 					if err != nil {
 						if httpresp != nil && httpresp.StatusCode == 404 {
 							return nil
