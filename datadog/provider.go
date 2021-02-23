@@ -257,6 +257,12 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		},
 	)
 	configV2 := datadogV2.NewConfiguration()
+	// Enable unstable operations
+	configV2.SetUnstableOperationEnabled("CreateTagConfiguration", true)
+	configV2.SetUnstableOperationEnabled("DeleteTagConfiguration", true)
+	configV2.SetUnstableOperationEnabled("ListTagConfigurationByName", true)
+	configV2.SetUnstableOperationEnabled("UpdateTagConfiguration", true)
+
 	configV2.UserAgent = utils.GetUserAgent(configV2.UserAgent)
 	configV2.Debug = logging.IsDebugOrHigher()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
