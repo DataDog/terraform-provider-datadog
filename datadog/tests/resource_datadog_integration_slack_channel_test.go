@@ -16,7 +16,7 @@ import (
 func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
 	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
 	reg, _ := regexp.Compile("[^a-zA-Z0-9]+")
-	uniqueChannelTeamName := reg.ReplaceAllString(uniqueEntityName(clock, t), "")
+	uniqueChannelAccountName := reg.ReplaceAllString(uniqueEntityName(clock, t), "")
 	defer cleanup(t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -33,11 +33,11 @@ func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogIntegrationSlackChannelConfig_Create(uniqueChannelTeamName),
+				Config: testAccCheckDatadogIntegrationSlackChannelConfig_Create(uniqueChannelAccountName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationSlackChannelExists(accProvider, "datadog_integration_slack_channel.slack_channel"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_slack_channel.slack_channel", "channel_name", "#"+uniqueChannelTeamName),
+						"datadog_integration_slack_channel.slack_channel", "channel_name", "#"+uniqueChannelAccountName),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_slack_channel.slack_channel", "display.0.message", "true"),
 					resource.TestCheckResourceAttr(
@@ -49,11 +49,11 @@ func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogIntegrationSlackChannelConfig_Update(uniqueChannelTeamName),
+				Config: testAccCheckDatadogIntegrationSlackChannelConfig_Update(uniqueChannelAccountName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationSlackChannelExists(accProvider, "datadog_integration_slack_channel.slack_channel"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_slack_channel.slack_channel", "channel_name", "#"+uniqueChannelTeamName),
+						"datadog_integration_slack_channel.slack_channel", "channel_name", "#"+uniqueChannelAccountName),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_slack_channel.slack_channel", "display.0.message", "false"),
 					resource.TestCheckResourceAttr(
@@ -78,7 +78,7 @@ func testAccCheckDatadogIntegrationSlackChannelConfig_Create(uniq string) string
 				tags = true
 			}
 			channel_name = "#%s"
-			team_name    = "test_team"
+			account_name    = "test_account"
        }
    `, uniq)
 }
@@ -93,7 +93,7 @@ func testAccCheckDatadogIntegrationSlackChannelConfig_Update(uniq string) string
 				tags = false
 			}
 			channel_name = "#%s"
-			team_name    = "test_team"
+			account_name    = "test_account"
        }
    `, uniq)
 }
@@ -112,10 +112,10 @@ func testAccCheckDatadogIntegrationSlackChannelExists(accProvider *schema.Provid
 		datadogClient := providerConf.DatadogClientV1
 		auth := providerConf.AuthV1
 
-		teamName := s.RootModule().Resources[resourceName].Primary.Attributes["team_name"]
+		accountName := s.RootModule().Resources[resourceName].Primary.Attributes["account_name"]
 		channelName := s.RootModule().Resources[resourceName].Primary.Attributes["channel_name"]
 
-		_, _, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, teamName, channelName).Execute()
+		_, _, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, accountName, channelName).Execute()
 		if err != nil {
 			return utils.TranslateClientError(err, "error checking slack_channel existence")
 		}
@@ -130,15 +130,16 @@ func testAccCheckDatadogIntegrationSlackChannelDestroy(accProvider *schema.Provi
 		providerConf := meta.(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV1
 		auth := providerConf.AuthV1
+
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_slack_channel" {
 				continue
 			}
 
-			teamName := r.Primary.Attributes["team_name"]
+			accountName := r.Primary.Attributes["account_name"]
 			channelName := r.Primary.Attributes["channel_name"]
 
-			_, resp, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, teamName, channelName).Execute()
+			_, resp, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, accountName, channelName).Execute()
 
 			if err != nil {
 				if resp.StatusCode == 404 {
@@ -162,7 +163,7 @@ func createSlackIntegration(accProvider *schema.Provider) resource.TestCheckFunc
 		slackIntegration := communityClient.IntegrationSlackRequest{
 			ServiceHooks: []communityClient.ServiceHookSlackRequest{
 				{
-					Account: communityClient.String("test_team"),
+					Account: communityClient.String("test_account"),
 					Url:     communityClient.String("https://ddog-client-test.slack.com/fake-account-hook"),
 				},
 			},
