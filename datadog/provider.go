@@ -75,6 +75,7 @@ func Provider() terraform.ResourceProvider {
 
 		ResourcesMap: map[string]*schema.Resource{
 			"datadog_dashboard":                            resourceDatadogDashboard(),
+			"datadog_dashboard_json":                       resourceDatadogDashboardJson(),
 			"datadog_dashboard_list":                       resourceDatadogDashboardList(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
 			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
@@ -130,6 +131,7 @@ type ProviderConfiguration struct {
 	CommunityClient *datadogCommunity.Client
 	DatadogClientV1 *datadogV1.APIClient
 	DatadogClientV2 *datadogV2.APIClient
+	HttpClient      *utils.HttpClient
 	AuthV1          context.Context
 	AuthV2          context.Context
 
@@ -154,13 +156,15 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", c.Transport)
-	communityClient.ExtraHeader["User-Agent"] = utils.GetUserAgent(fmt.Sprintf(
+
+	userAgent := utils.GetUserAgent(fmt.Sprintf(
 		"datadog-api-client-go/%s (go %s; os %s; arch %s)",
 		"go-datadog-api",
 		runtime.Version(),
 		runtime.GOOS,
 		runtime.GOARCH,
 	))
+	communityClient.ExtraHeader["User-Agent"] = userAgent
 	communityClient.HttpClient = c
 
 	if validate {
@@ -178,6 +182,16 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		log.Println("[INFO] Skipping key validation (validate = false)")
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
+
+	// Initialize the HttpClient
+	httpClient := utils.NewHttpClient(apiKey, appKey)
+	if apiURL := d.Get("api_url").(string); apiURL != "" {
+		httpClient.SetUrl(apiURL)
+	}
+	extraHeader := map[string]string{
+		"User-Agent": userAgent,
+	}
+	httpClient.SetExtraHeaders(extraHeader)
 
 	// Initialize the official Datadog V1 API client
 	authV1 := context.WithValue(
@@ -280,6 +294,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		CommunityClient: communityClient,
 		DatadogClientV1: datadogClientV1,
 		DatadogClientV2: datadogClientV2,
+		HttpClient:      httpClient,
 		AuthV1:          authV1,
 		AuthV2:          authV2,
 
