@@ -197,11 +197,11 @@ func testAccCheckDatadogDashListDestroy(accProvider *schema.Provider) resource.T
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		return datadogDashListDestroyHelper(s, authV1, datadogClientV1)
+		return datadogDashListDestroyHelper(authV1, s, datadogClientV1)
 	}
 }
 
-func datadogDashListDestroyHelper(s *terraform.State, authV1 context.Context, datadogClientV1 *datadogV1.APIClient) error {
+func datadogDashListDestroyHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if !strings.Contains(r.Primary.Attributes["name"], "List") {
 			continue

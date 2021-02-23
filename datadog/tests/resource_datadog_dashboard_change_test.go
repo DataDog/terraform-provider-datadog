@@ -154,5 +154,5 @@ func TestAccDatadogDashboardChange(t *testing.T) {
 }
 
 func TestAccDatadogDashboardChange_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardChangeConfigImport, "datadog_dashboard.change_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardChangeConfigImport, "datadog_dashboard.change_dashboard")
 }

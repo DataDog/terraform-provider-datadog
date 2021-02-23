@@ -43,6 +43,8 @@ jobs:
               uses: actions/checkout@v2
             - name: Vet
               run: make vet
+            - name: Lint
+              run: make lint
             - name: License Check
               run: make license-check
             - name: Test

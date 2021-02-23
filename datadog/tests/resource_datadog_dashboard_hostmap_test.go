@@ -73,5 +73,5 @@ func TestAccDatadogDashboardHostMap(t *testing.T) {
 }
 
 func TestAccDatadogDashboardHostMap_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardHostMapConfig, "datadog_dashboard.hostmap_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardHostMapConfig, "datadog_dashboard.hostmap_dashboard")
 }

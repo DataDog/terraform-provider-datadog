@@ -1338,7 +1338,7 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 	})
 }
 
-func testAccDatadogDashboardWidgetUtil_import(t *testing.T, config string, name string) {
+func testAccDatadogDashboardWidgetUtilImport(t *testing.T, config string, name string) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)

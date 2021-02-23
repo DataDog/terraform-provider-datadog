@@ -96,7 +96,7 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 	})
 }
 
-func metadataExistsHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, authV1 context.Context) error {
+func metadataExistsHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		metric, ok := r.Primary.Attributes["metric"]
 		if !ok {
@@ -117,7 +117,7 @@ func checkMetricMetadataExists(accProvider *schema.Provider) resource.TestCheckF
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		if err := metadataExistsHelper(s, datadogClientV1, authV1); err != nil {
+		if err := metadataExistsHelper(authV1, s, datadogClientV1); err != nil {
 			return err
 		}
 		return nil

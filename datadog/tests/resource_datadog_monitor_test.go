@@ -688,7 +688,7 @@ func testAccCheckDatadogMonitorDestroy(accProvider *schema.Provider) func(*terra
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		if err := destroyHelper(s, datadogClientV1, authV1); err != nil {
+		if err := destroyHelper(authV1, s, datadogClientV1); err != nil {
 			return err
 		}
 		return nil
@@ -701,7 +701,7 @@ func testAccCheckDatadogMonitorExists(accProvider *schema.Provider) resource.Tes
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		if err := existsHelper(s, datadogClientV1, authV1); err != nil {
+		if err := existsHelper(authV1, s, datadogClientV1); err != nil {
 			return err
 		}
 		return nil
@@ -1259,7 +1259,7 @@ resource "datadog_monitor" "foo" {
 }`, uniq, uniq)
 }
 
-func destroyHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, authV1 context.Context) error {
+func destroyHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
 			i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
@@ -1267,9 +1267,8 @@ func destroyHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, aut
 			if err != nil {
 				if httpresp != nil && httpresp.StatusCode == 404 {
 					return nil
-				} else {
-					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
 				}
+				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
 			}
 			return &utils.RetryableError{Prob: fmt.Sprintf("Monitor still exists")}
 		}
@@ -1278,7 +1277,7 @@ func destroyHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, aut
 	return err
 }
 
-func existsHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, authV1 context.Context) error {
+func existsHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
 		_, _, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()

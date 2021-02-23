@@ -110,13 +110,13 @@ func checkIntegrationAWSExistsHelper(authV1 context.Context, s *terraform.State,
 		return err
 	}
 	for _, r := range s.RootModule().Resources {
-		accountId := r.Primary.Attributes["account_id"]
+		accountID := r.Primary.Attributes["account_id"]
 		for _, account := range integrations.GetAccounts() {
-			if account.GetAccountId() == accountId {
+			if account.GetAccountId() == accountID {
 				return nil
 			}
 		}
-		return fmt.Errorf("The AWS integration does not exists for account: accountId=%s", accountId)
+		return fmt.Errorf("The AWS integration does not exists for account: accountID=%s", accountID)
 	}
 	return nil
 }
@@ -137,10 +137,10 @@ func checkIntegrationAWSDestroyHelper(authV1 context.Context, s *terraform.State
 		return err
 	}
 	for _, r := range s.RootModule().Resources {
-		accountId := r.Primary.Attributes["account_id"]
+		accountID := r.Primary.Attributes["account_id"]
 		for _, account := range integrations.GetAccounts() {
-			if account.GetAccountId() == accountId {
-				return fmt.Errorf("The AWS integration still exists for account: accountId=%s", accountId)
+			if account.GetAccountId() == accountID {
+				return fmt.Errorf("The AWS integration still exists for account: accountID=%s", accountID)
 			}
 		}
 	}

@@ -42,6 +42,9 @@ vet:
 		exit 1; \
 	fi
 
+lint:
+	golint ./...
+
 fmt:
 	gofmt -w $(GOFMT_FILES)
 	terraform fmt -recursive examples

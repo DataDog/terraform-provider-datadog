@@ -79,14 +79,14 @@ func testAccCheckArchiveOrderExists(accProvider *schema.Provider) resource.TestC
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV1 := providerConf.AuthV1
 
-		if err := ArchiveOrderExistsChecker(s, authV1, datadogClientV2); err != nil {
+		if err := archiveOrderExistsChecker(authV1, s, datadogClientV2); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func ArchiveOrderExistsChecker(s *terraform.State, authV1 context.Context, datadogClientV2 *datadogV2.APIClient) error {
+func archiveOrderExistsChecker(authV1 context.Context, s *terraform.State, datadogClientV2 *datadogV2.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_archive_order" {
 			if _, _, err := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV1).Execute(); err != nil {

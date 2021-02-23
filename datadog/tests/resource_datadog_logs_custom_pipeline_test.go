@@ -343,14 +343,14 @@ func testAccCheckPipelineExists(accProvider *schema.Provider) resource.TestCheck
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		if err := pipelineExistsChecker(s, authV1, datadogClientV1); err != nil {
+		if err := pipelineExistsChecker(authV1, s, datadogClientV1); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func pipelineExistsChecker(s *terraform.State, authV1 context.Context, datadogClientV1 *datadogV1.APIClient) error {
+func pipelineExistsChecker(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_custom_pipeline" {
 			id := r.Primary.ID
@@ -368,14 +368,14 @@ func testAccCheckPipelineDestroy(accProvider *schema.Provider) func(*terraform.S
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		if err := pipelineDestroyHelper(s, authV1, datadogClientV1); err != nil {
+		if err := pipelineDestroyHelper(authV1, s, datadogClientV1); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func pipelineDestroyHelper(s *terraform.State, authV1 context.Context, datadogClientV1 *datadogV1.APIClient) error {
+func pipelineDestroyHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_custom_pipeline" {
 			err := utils.Retry(2, 5, func() error {

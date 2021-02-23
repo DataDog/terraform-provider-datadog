@@ -19,7 +19,7 @@ import (
 )
 
 // Minimal interface between ResourceData and ResourceDiff so that we can use them interchangeably in buildMonitorStruct
-type BuiltResource interface {
+type builtResource interface {
 	Get(string) interface{}
 	GetOk(string) (interface{}, bool)
 }
@@ -346,7 +346,7 @@ func resourceDatadogMonitor() *schema.Resource {
 	}
 }
 
-func buildMonitorStruct(d BuiltResource) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
+func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
 
 	var thresholds datadogV1.MonitorThresholds
 
@@ -556,8 +556,8 @@ func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) erro
 	if err != nil {
 		return utils.TranslateClientError(err, "error creating monitor")
 	}
-	mCreatedId := strconv.FormatInt(mCreated.GetId(), 10)
-	d.SetId(mCreatedId)
+	mCreatedID := strconv.FormatInt(mCreated.GetId(), 10)
+	d.SetId(mCreatedID)
 
 	return resourceDatadogMonitorRead(d, meta)
 }
