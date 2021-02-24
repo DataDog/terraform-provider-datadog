@@ -156,9 +156,11 @@ func resourceDatadogIntegrationSlackChannelDelete(d *schema.ResourceData, meta i
 	auth := providerConf.AuthV1
 
 	accountName, channelName, err := utils.AccountNameAndChannelNameFromID(d.Id())
+	if err != nil {
+		return err
+	}
 
 	_, err = datadogClient.SlackIntegrationApi.RemoveSlackIntegrationChannel(auth, accountName, channelName).Execute()
-
 	if err != nil {
 		return utils.TranslateClientError(err, "error deleting slack channel")
 	}
