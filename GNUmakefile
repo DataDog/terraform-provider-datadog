@@ -3,8 +3,8 @@ RECORD?=false
 GOFMT_FILES?=$$(find . -name '*.go')
 PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
-ZORKIAN_VERSION=master
-API_CLIENT_VERSION=master
+ZORKIAN_VERSION?=master
+API_CLIENT_VERSION?=master
 
 default: build
 
