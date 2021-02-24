@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -14,10 +15,9 @@ import (
 )
 
 func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
+	ctx, accProviders := testAccProviders(context.Background(), t)
 	reg, _ := regexp.Compile("[^a-zA-Z0-9]+")
-	uniqueChannelAccountName := reg.ReplaceAllString(uniqueEntityName(clock, t), "")
-	defer cleanup(t)
+	uniqueChannelAccountName := reg.ReplaceAllString(uniqueEntityName(ctx, t), "")
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{

@@ -10,8 +10,7 @@ interactions:
       Dd-Operation-Id:
       - GetIPRanges
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
     url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
@@ -413,7 +412,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Feb 2021 21:39:53 GMT
+      - Wed, 24 Feb 2021 15:36:57 GMT
       Etag:
       - W/"d75427ea4e3a6bee6850dde0e74e4454"
       Last-Modified:
@@ -423,9 +422,9 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 7b1421c245bd26be7c3ac87e17b78ff0.cloudfront.net (CloudFront)
+      - 1.1 b9e793c57a48521c3ff94fb625d228a1.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - BMoz8EG93eP0tVj4A9fShE8DivuzMPa2BPd5pMDk954WhGvC65OZYg==
+      - 1AMAsGt2LWGiih7-38teV0xZ-Ei6wmQQXQATUWZ7Rj4WZVeRK6BvEg==
       X-Amz-Cf-Pop:
       - EWR52-C3
       X-Cache:
@@ -440,8 +439,7 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/slack
     method: POST
   response:
@@ -454,18 +452,17 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Tue, 23 Feb 2021 21:39:53 GMT
+      - Wed, 24 Feb 2021 15:36:57 GMT
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 02-Mar-2021 21:39:53 GMT;
-        secure; HttpOnly
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 03-Mar-2021 15:36:57 GMT; secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - B1nwy/pPNqX+q4pQT22cdp1QCexE35IF8qwSHy0Nf7IW0Y881qtn4tXN1lpmzaKc
+      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
       X-Dd-Version:
-      - "35.3968121"
+      - "35.3973554"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -480,8 +477,7 @@ interactions:
       Dd-Operation-Id:
       - GetIPRanges
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
     url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
@@ -883,7 +879,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Feb 2021 21:39:54 GMT
+      - Wed, 24 Feb 2021 15:36:58 GMT
       Etag:
       - W/"d75427ea4e3a6bee6850dde0e74e4454"
       Last-Modified:
@@ -893,9 +889,9 @@ interactions:
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 7b1421c245bd26be7c3ac87e17b78ff0.cloudfront.net (CloudFront)
+      - 1.1 b9e793c57a48521c3ff94fb625d228a1.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - UiGBOzz1AgpMa43Tvu5Gsghhsib2G8btU9xV92RkHWHe6ssT1DP7ag==
+      - axc9qcaAQRlU5GjN9Ad4ISFHlLiO4RhQEl1L1HtoVhmwoB9S6erCfg==
       X-Amz-Cf-Pop:
       - EWR52-C3
       X-Cache:
@@ -905,7 +901,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"display":{"message":true,"notified":true,"snapshot":true,"tags":true},"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392"}
+      {"display":{"message":true,"notified":true,"snapshot":true,"tags":true},"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016"}
     form: {}
     headers:
       Accept:
@@ -915,12 +911,11 @@ interactions:
       Dd-Operation-Id:
       - CreateSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels
     method: POST
   response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
     headers:
       Cache-Control:
       - no-cache
@@ -933,20 +928,19 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Feb 2021 21:39:53 GMT
+      - Wed, 24 Feb 2021 15:36:57 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 02-Mar-2021 21:39:53 GMT;
-        secure; HttpOnly
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 03-Mar-2021 15:36:57 GMT; secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
+      - 25u1gDlL724DHllbjFT4BhOLorBTilh+aah2uWAUEjFC/+rjczJdiyWrV/HwLwe/
       X-Dd-Version:
-      - "35.3968121"
+      - "35.3973554"
       X-Frame-Options:
       - SAMEORIGIN
     status: 201 Created
@@ -961,12 +955,11 @@ interactions:
       Dd-Operation-Id:
       - GetSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016
     method: GET
   response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
     headers:
       Cache-Control:
       - no-cache
@@ -977,12 +970,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Feb 2021 21:39:53 GMT
+      - Wed, 24 Feb 2021 15:36:57 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 02-Mar-2021 21:39:53 GMT;
-        secure; HttpOnly
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 03-Mar-2021 15:36:57 GMT; secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -990,9 +982,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
+      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
       X-Dd-Version:
-      - "35.3968121"
+      - "35.3973554"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1007,12 +999,11 @@ interactions:
       Dd-Operation-Id:
       - GetSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016
     method: GET
   response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
     headers:
       Cache-Control:
       - no-cache
@@ -1023,58 +1014,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Feb 2021 21:39:53 GMT
+      - Wed, 24 Feb 2021 15:36:57 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 02-Mar-2021 21:39:53 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
-      X-Dd-Version:
-      - "35.3968121"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetSlackIntegrationChannel
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392
-    method: GET
-  response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 23 Feb 2021 21:39:54 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 02-Mar-2021 21:39:54 GMT;
-        secure; HttpOnly
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 03-Mar-2021 15:36:57 GMT; secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -1084,7 +1028,51 @@ interactions:
       X-Dd-Debug:
       - gYZcaADwbKcv7Hm19HJx6WsLoKuOijDWAt2viPeCfWqUgyKY+9e1xZdmMJeXV3YV
       X-Dd-Version:
-      - "35.3968121"
+      - "35.3973554"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetSlackIntegrationChannel
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016
+    method: GET
+  response:
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 24 Feb 2021 15:36:58 GMT
+      Pragma:
+      - no-cache
+      Set-Cookie:
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 03-Mar-2021 15:36:58 GMT; secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
+      X-Dd-Version:
+      - "35.3973554"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1092,7 +1080,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"display":{"message":false,"notified":false,"snapshot":false,"tags":false},"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392"}
+      {"display":{"message":false,"notified":false,"snapshot":false,"tags":false},"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016"}
     form: {}
     headers:
       Accept:
@@ -1102,12 +1090,11 @@ interactions:
       Dd-Operation-Id:
       - UpdateSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016
     method: PATCH
   response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
     headers:
       Cache-Control:
       - no-cache
@@ -1118,12 +1105,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Feb 2021 21:39:54 GMT
+      - Wed, 24 Feb 2021 15:36:58 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 02-Mar-2021 21:39:54 GMT;
-        secure; HttpOnly
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 03-Mar-2021 15:36:58 GMT; secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -1131,9 +1117,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
+      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
       X-Dd-Version:
-      - "35.3968121"
+      - "35.3973554"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1148,12 +1134,11 @@ interactions:
       Dd-Operation-Id:
       - GetSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016
     method: GET
   response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
     headers:
       Cache-Control:
       - no-cache
@@ -1164,12 +1149,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Feb 2021 21:39:54 GMT
+      - Wed, 24 Feb 2021 15:36:58 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 02-Mar-2021 21:39:54 GMT;
-        secure; HttpOnly
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 03-Mar-2021 15:36:58 GMT; secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -1177,9 +1161,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - B1nwy/pPNqX+q4pQT22cdp1QCexE35IF8qwSHy0Nf7IW0Y881qtn4tXN1lpmzaKc
+      - 25u1gDlL724DHllbjFT4BhOLorBTilh+aah2uWAUEjFC/+rjczJdiyWrV/HwLwe/
       X-Dd-Version:
-      - "35.3968121"
+      - "35.3973554"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1194,12 +1178,11 @@ interactions:
       Dd-Operation-Id:
       - GetSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016
     method: GET
   response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
     headers:
       Cache-Control:
       - no-cache
@@ -1210,12 +1193,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Feb 2021 21:39:54 GMT
+      - Wed, 24 Feb 2021 15:36:58 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 02-Mar-2021 21:39:54 GMT;
-        secure; HttpOnly
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 03-Mar-2021 15:36:58 GMT; secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -1223,9 +1205,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - SY1h8ScsWq+kYmtbh63ltMLFAZsQjqfrgvdfAoRX+9TzT1sgMBRYaFRwfWWRRe9a
+      - mNzaoDhdDKO7t4QSrAe5X7pHd0bJND187D+vRbwoluXouE2m1UaQQX0RGCvRpLVE
       X-Dd-Version:
-      - "35.3968121"
+      - "35.3973554"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1240,12 +1222,11 @@ interactions:
       Dd-Operation-Id:
       - GetSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016
     method: GET
   response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
     headers:
       Cache-Control:
       - no-cache
@@ -1256,12 +1237,11 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 23 Feb 2021 21:39:54 GMT
+      - Wed, 24 Feb 2021 15:36:58 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 02-Mar-2021 21:39:54 GMT;
-        secure; HttpOnly
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 03-Mar-2021 15:36:58 GMT; secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -1269,9 +1249,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
+      - twvpGlmuom5y6A0pjGtXzTf554cmwJgTcCZ71fK4H/RDi+v5ehBK0zQiRcTJQG5C
       X-Dd-Version:
-      - "35.3968121"
+      - "35.3973554"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1286,9 +1266,8 @@ interactions:
       Dd-Operation-Id:
       - RemoveSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614116392
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1614181016
     method: DELETE
   response:
     body: ""
@@ -1302,20 +1281,19 @@ interactions:
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Date:
-      - Tue, 23 Feb 2021 21:39:54 GMT
+      - Wed, 24 Feb 2021 15:36:58 GMT
       Pragma:
       - no-cache
       Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Tue, 02-Mar-2021 21:39:54 GMT;
-        secure; HttpOnly
+      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 03-Mar-2021 15:36:58 GMT; secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - nLnnBNvlCFDECRnZvzDb0z4sAO35G+IMidcAs8vrCKyjvsKWE8Yd9S3n6OjZ1qRN
+      - HbtaOKlJ6OCrx9tMXO6ivMTrEM+g0c93HDp08trmOmgdHozC5J+vn10F0H4WPjCU
       X-Dd-Version:
-      - "35.3968121"
+      - "35.3973554"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
