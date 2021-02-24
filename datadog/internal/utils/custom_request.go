@@ -2,11 +2,12 @@ package utils
 
 import (
 	"context"
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 )
 
 func SendRequest(client *datadogV1.APIClient, ctx context.Context, method, path string, body interface{}) ([]byte, *http.Response, error) {

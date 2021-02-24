@@ -1,7 +1,6 @@
 package datadog
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/structure"
@@ -67,7 +66,7 @@ func resourceDatadogDashboardJsonRead(d *schema.ResourceData, meta interface{}) 
 		return err
 	}
 
-	respMap, err := convertResponseByteToMap(respByte)
+	respMap, err := utils.ConvertResponseByteToMap(respByte)
 	if err != nil {
 		return err
 	}
@@ -91,7 +90,7 @@ func resourceDatadogDashboardJsonCreate(d *schema.ResourceData, meta interface{}
 		return utils.TranslateClientError(err, "error creating resource")
 	}
 
-	respMap, err := convertResponseByteToMap(respByte)
+	respMap, err := utils.ConvertResponseByteToMap(respByte)
 	if err != nil {
 		return err
 	}
@@ -129,7 +128,8 @@ func resourceDatadogDashboardJsonUpdate(d *schema.ResourceData, meta interface{}
 	if err != nil {
 		return utils.TranslateClientError(err, "error updating dashboard")
 	}
-	respMap, err := convertResponseByteToMap(respByte)
+
+	respMap, err := utils.ConvertResponseByteToMap(respByte)
 	if err != nil {
 		return err
 	}
@@ -149,14 +149,4 @@ func resourceDatadogDashboardJsonDelete(d *schema.ResourceData, meta interface{}
 	}
 
 	return nil
-}
-
-func convertResponseByteToMap(b []byte) (map[string]interface{}, error) {
-	convertedMap := make(map[string]interface{})
-	err := json.Unmarshal(b, &convertedMap)
-	if err != nil {
-		return nil, err
-	}
-
-	return convertedMap, nil
 }
