@@ -393,12 +393,12 @@ func getTemplateVariablePresetSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 			Description: "The name of the preset.",
 		},
 		"template_variable": {
 			Type:        schema.TypeList,
-			Required:    true,
+			Optional:    true,
 			Description: "The template variable names and assumed values under the given preset",
 			Elem: &schema.Resource{
 				Schema: getTemplateVariablePresetValueSchema(),
@@ -412,12 +412,12 @@ func getTemplateVariablePresetValueSchema() map[string]*schema.Schema {
 		"name": {
 			Type:        schema.TypeString,
 			Description: "The name of the template variable",
-			Required:    true,
+			Optional:    true,
 		},
 		"value": {
 			Type:        schema.TypeString,
 			Description: "The value that should be assumed by the template variable in this preset",
-			Required:    true,
+			Optional:    true,
 		},
 	}
 }
@@ -433,7 +433,7 @@ func buildDatadogTemplateVariablePresets(terraformTemplateVariablePresets *[]int
 			datadogTemplateVariablePreset.SetName(v)
 		}
 
-		if templateVariablePresetValues, ok := templateVariablePreset["template_variable"].([]interface{}); ok && len(templateVariablePresetValues) != 0 {
+		if templateVariablePresetValues, ok := templateVariablePreset["template_variable"].([]interface{}); ok {
 			datadogTemplateVariablePresetValues := make([]datadogV1.DashboardTemplateVariablePresetValue, len(templateVariablePresetValues))
 
 			for j, tvp := range templateVariablePresetValues {
