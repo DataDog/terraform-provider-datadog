@@ -4884,14 +4884,14 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 	computeList := data["compute"].([]interface{})
 	computeMap := computeList[0].(map[string]interface{})
 	aggregation := datadogV1.FormulaAndFunctionEventAggregation(computeMap["aggregation"].(string))
-	compute := datadogV1.NewTimeSeriesFormulaAndFunctionEventQueryDefinitionCompute(aggregation)
+	compute := datadogV1.NewFormulaAndFunctionEventQueryDefinitionCompute(aggregation)
 	if interval, ok := computeMap["interval"].(int); ok && interval != 0 {
 		compute.SetInterval(int64(interval))
 	}
 	if metric, ok := computeMap["metric"].(string); ok && len(metric) > 0 {
 		compute.SetMetric(metric)
 	}
-	eventQuery := datadogV1.NewTimeSeriesFormulaAndFunctionEventQueryDefinition(*compute, dataSource)
+	eventQuery := datadogV1.NewFormulaAndFunctionEventQueryDefinition(*compute, dataSource)
 	if v, ok := data["name"].(string); ok && len(v) != 0 {
 		eventQuery.SetName(v)
 	}
@@ -4904,17 +4904,17 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 
 	if terraformSearches, ok := data["search"].([]interface{}); ok && len(terraformSearches) > 0 {
 		terraformSearch := terraformSearches[0].(map[string]interface{})
-		eventQuery.Search = datadogV1.NewTimeSeriesFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
+		eventQuery.Search = datadogV1.NewFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
 	}
 
 	// GroupBy
 	if terraformGroupBys, ok := data["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
-		datadogGroupBys := make([]datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionGroupBy, len(terraformGroupBys))
+		datadogGroupBys := make([]datadogV1.FormulaAndFunctionEventQueryGroupBy, len(terraformGroupBys))
 		for i, g := range terraformGroupBys {
 			groupBy := g.(map[string]interface{})
 
 			// Facet
-			datadogGroupBy := datadogV1.NewTimeSeriesFormulaAndFunctionEventQueryDefinitionGroupBy(groupBy["facet"].(string))
+			datadogGroupBy := datadogV1.NewFormulaAndFunctionEventQueryGroupBy(groupBy["facet"].(string))
 
 			// Limit
 			if v, ok := groupBy["limit"].(int); ok && v != 0 {
@@ -4924,7 +4924,7 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 			// Sort
 			if v, ok := groupBy["sort"].([]interface{}); ok && len(v) > 0 {
 				if v, ok := v[0].(map[string]interface{}); ok && len(v) > 0 {
-					sortMap := &datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionSort{}
+					sortMap := &datadogV1.FormulaAndFunctionEventQueryGroupBySort{}
 					if aggr, ok := v["aggregation"].(string); ok && len(aggr) > 0 {
 						aggregation := datadogV1.FormulaAndFunctionEventAggregation(v["aggregation"].(string))
 						sortMap.SetAggregation(aggregation)
@@ -4945,12 +4945,12 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 		eventQuery.SetGroupBy(datadogGroupBys)
 	}
 
-	return datadogV1.TimeSeriesFormulaAndFunctionEventQueryDefinitionAsFormulaAndFunctionQueryDefinition(eventQuery)
+	return datadogV1.FormulaAndFunctionEventQueryDefinitionAsFormulaAndFunctionQueryDefinition(eventQuery)
 }
 
 func buildDatadogMetricQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.FormulaAndFunctionMetricDataSource("metrics")
-	metricQuery := datadogV1.NewTimeSeriesFormulaAndFunctionMetricQueryDefinition(dataSource, data["query"].(string))
+	metricQuery := datadogV1.NewFormulaAndFunctionMetricQueryDefinition(dataSource, data["query"].(string))
 	if v, ok := data["name"].(string); ok && len(v) != 0 {
 		metricQuery.SetName(v)
 	}
@@ -4959,12 +4959,12 @@ func buildDatadogMetricQuery(data map[string]interface{}) datadogV1.FormulaAndFu
 		metricQuery.SetAggregator(aggregator)
 	}
 
-	return datadogV1.TimeSeriesFormulaAndFunctionMetricQueryDefinitionAsFormulaAndFunctionQueryDefinition(metricQuery)
+	return datadogV1.FormulaAndFunctionMetricQueryDefinitionAsFormulaAndFunctionQueryDefinition(metricQuery)
 }
 
 func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.FormulaAndFunctionProcessQueryDataSource(data["data_source"].(string))
-	processQuery := datadogV1.NewTimeSeriesFormulaAndFunctionProcessQueryDefinition(dataSource, data["metric"].(string))
+	processQuery := datadogV1.NewFormulaAndFunctionProcessQueryDefinition(dataSource, data["metric"].(string))
 
 	// Text Filter
 	if v, ok := data["text_filter"].(string); ok && len(v) != 0 {
@@ -5005,7 +5005,7 @@ func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) dat
 		processQuery.SetSort(sort)
 	}
 
-	return datadogV1.TimeSeriesFormulaAndFunctionProcessQueryDefinitionAsFormulaAndFunctionQueryDefinition(processQuery)
+	return datadogV1.FormulaAndFunctionProcessQueryDefinitionAsFormulaAndFunctionQueryDefinition(processQuery)
 }
 
 func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadogV1.TimeseriesWidgetRequest {
@@ -6096,7 +6096,7 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 	queries := make([]map[string]interface{}, len(datadogQueries))
 	for i, query := range datadogQueries {
 		terraformQuery := map[string]interface{}{}
-		terraformEventQueryDefinition := query.TimeSeriesFormulaAndFunctionEventQueryDefinition
+		terraformEventQueryDefinition := query.FormulaAndFunctionEventQueryDefinition
 		if terraformEventQueryDefinition != nil {
 			if dataSource, ok := terraformEventQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
@@ -6163,7 +6163,7 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 			terraformEventQuery["event_query"] = terraformQueries
 			queries[i] = terraformEventQuery
 		}
-		terraformMetricQueryDefinition := query.TimeSeriesFormulaAndFunctionMetricQueryDefinition
+		terraformMetricQueryDefinition := query.FormulaAndFunctionMetricQueryDefinition
 		if terraformMetricQueryDefinition != nil {
 			if dataSource, ok := terraformMetricQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
@@ -6182,7 +6182,7 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 			terraformMetricQuery["metric_query"] = terraformQueries
 			queries[i] = terraformMetricQuery
 		}
-		terraformProcessqueryDefinition := query.TimeSeriesFormulaAndFunctionProcessQueryDefinition
+		terraformProcessqueryDefinition := query.FormulaAndFunctionProcessQueryDefinition
 		if terraformProcessqueryDefinition != nil {
 			if dataSource, ok := terraformProcessqueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
