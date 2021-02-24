@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"strings"
@@ -14,13 +15,13 @@ import (
 )
 
 func TestAccDatadogLogsMetric_import(t *testing.T) {
+	t.Parallel()
 	resourceName := "datadog_logs_metric.testing_logs_metric"
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniqueLogsMetric := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueLogsMetric := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogLogsMetricDestroy(accProvider),
@@ -38,12 +39,12 @@ func TestAccDatadogLogsMetric_import(t *testing.T) {
 }
 
 func TestAccDatadogLogsMetric_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniqueLogsMetric := strings.ReplaceAll(uniqueEntityName(clock, t), "-", "_")
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueLogsMetric := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogLogsMetricDestroy(accProvider),
