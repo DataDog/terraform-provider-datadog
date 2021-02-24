@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -14,12 +15,12 @@ import (
 )
 
 func TestAccDatadogIntegrationAwsTagFilter_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	uniqueID := uniqueAWSAccountID(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	t.Parallel()
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
@@ -107,13 +108,13 @@ func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider *schema.Provi
 	}
 }
 
-func listFiltersHelper(accProvider *schema.Provider, resourceId string) (*[]datadogV1.AWSTagFilterListResponseFilters, error) {
+func listFiltersHelper(accProvider *schema.Provider, resourceId string) (*[]datadogV1.AWSTagFilter, error) {
 	meta := accProvider.Meta()
 	providerConf := meta.(*datadog.ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
 
-	filters := []datadogV1.AWSTagFilterListResponseFilters{}
+	filters := []datadogV1.AWSTagFilter{}
 	accountID, _, err := utils.AccountAndNamespaceFromID(resourceId)
 	if err != nil {
 		return nil, err

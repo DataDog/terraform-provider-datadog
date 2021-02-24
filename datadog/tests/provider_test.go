@@ -37,6 +37,8 @@ import (
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
+type clockContextKey string
+
 var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_dashboard_test":                         "dashboard",
 	"tests/data_source_datadog_dashboard_list_test":                    "dashboard-lists",
@@ -116,13 +118,13 @@ func getEndpointTagValue(t *testing.T) (string, error) {
 	n := runtime.Callers(1, pcs[:])
 	frames := runtime.CallersFrames(pcs[:n])
 	functionFile := ""
+	testName := t.Name()
 	for more {
 		frame, more = frames.Next()
 		// nested test functions like `TestAuthenticationValidate/200_Valid` will have frame.Function ending with
 		// ".funcX", `e.g. datadog.TestAuthenticationValidate.func1`, so trim everything after last "/" in test name
 		// and everything after last "." in frame function name
 		frameFunction := frame.Function
-		testName := t.Name()
 		if strings.Contains(testName, "/") {
 			testName = testName[:strings.LastIndex(testName, "/")]
 			frameFunction = frameFunction[:strings.LastIndex(frameFunction, ".")]
@@ -131,7 +133,7 @@ func getEndpointTagValue(t *testing.T) (string, error) {
 			functionFile = frame.File
 			// when we find the frame with the current test function, match it against testFiles2EndpointTags
 			for file, tag := range testFiles2EndpointTags {
-				if strings.HasSuffix(frame.File, fmt.Sprintf("datadog/%s.go", file)) {
+				if strings.HasSuffix(functionFile, fmt.Sprintf("datadog/%s.go", file)) {
 					return tag, nil
 				}
 			}
@@ -214,11 +216,15 @@ func testClock(t *testing.T) clockwork.FakeClock {
 	return clockwork.NewFakeClockAt(clockwork.NewRealClock().Now())
 }
 
+func clockFromContext(ctx context.Context) clockwork.FakeClock {
+	return ctx.Value(clockContextKey("clock")).(clockwork.FakeClock)
+}
+
 // uniqueEntityName will return a unique string that can be used as a title/description/summary/...
 // of an API entity. When used in Azure Pipelines and RECORD=true or RECORD=none, it will include
 // BuildId to enable mapping resources that weren't deleted to builds.
-func uniqueEntityName(clock clockwork.FakeClock, t *testing.T) string {
-	name := withUniqueSurrounding(clock, t.Name())
+func uniqueEntityName(ctx context.Context, t *testing.T) string {
+	name := withUniqueSurrounding(clockFromContext(ctx), t.Name())
 	return name
 }
 
@@ -251,8 +257,8 @@ func withUniqueSurrounding(clock clockwork.FakeClock, name string) string {
 // uniqueAWSAccountID takes uniqueEntityName result, hashes it to get a unique string
 // and then returns first 12 characters (numerical only), so that the value can be used
 // as AWS account ID and is still as unique as possible, it changes in CI, but is stable locally
-func uniqueAWSAccountID(clock clockwork.FakeClock, t *testing.T) string {
-	uniq := uniqueEntityName(clock, t)
+func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
+	uniq := uniqueEntityName(ctx, t)
 	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniq)))
 	result := ""
 	for _, r := range hash {
@@ -344,13 +350,13 @@ func matchInteraction(r *http.Request, i cassette.Request) bool {
 	return matched
 }
 
-func testSpan(ctx context.Context, t *testing.T) (context.Context, func()) {
+func testSpan(ctx context.Context, t *testing.T) context.Context {
 	t.Helper()
 	tag, err := getEndpointTagValue(t)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	return ddtesting.StartSpanWithFinish(ctx, t, ddtesting.WithSkipFrames(4), ddtesting.WithSpanOptions(
+	ctx, finish := ddtesting.StartSpanWithFinish(ctx, t, ddtesting.WithSkipFrames(3), ddtesting.WithSpanOptions(
 		// We need to make the tag be something that is then searchable in monitors
 		// https://docs.datadoghq.com/tracing/guide/metrics_namespace/#errors
 		// "version" is really the only one we can use here
@@ -358,12 +364,11 @@ func testSpan(ctx context.Context, t *testing.T) (context.Context, func()) {
 		// if we set it in StartSpanFromContext, it would get overwritten
 		tracer.Tag(ext.Version, tag),
 	))
+	t.Cleanup(finish)
+	return ctx
 }
 
 func initAccProvider(ctx context.Context, t *testing.T, httpClient *http.Client) *schema.Provider {
-	ctx, finish := testSpan(ctx, t)
-	defer finish()
-
 	p := datadog.Provider().(*schema.Provider)
 	p.ConfigureFunc = testProviderConfigure(ctx, httpClient, testClock(t))
 
@@ -475,23 +480,25 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 	}
 }
 
-func testAccProvidersWithHTTPClient(t *testing.T, httpClient *http.Client) (map[string]terraform.ResourceProvider, func()) {
-	ctx, finish := testSpan(context.Background(), t)
-
+func testAccProvidersWithHTTPClient(ctx context.Context, t *testing.T, httpClient *http.Client) map[string]terraform.ResourceProvider {
 	provider := initAccProvider(ctx, t, httpClient)
 	return map[string]terraform.ResourceProvider{
 		"datadog": provider,
-	}, finish
+	}
 }
 
-func testAccProviders(t *testing.T, rec *recorder.Recorder) (map[string]terraform.ResourceProvider, clockwork.FakeClock, func(t *testing.T)) {
+func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[string]terraform.ResourceProvider) {
+	ctx = testSpan(ctx, t)
+	rec := initRecorder(t)
+	ctx = context.WithValue(ctx, clockContextKey("clock"), testClock(t))
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", rec)
-	p, finish := testAccProvidersWithHTTPClient(t, c)
-	return p, testClock(t), func(t *testing.T) {
+	p := testAccProvidersWithHTTPClient(ctx, t, c)
+	t.Cleanup(func() {
 		rec.Stop()
-		finish()
-	}
+	})
+
+	return ctx, p
 }
 
 func testAccProvider(t *testing.T, accProviders map[string]terraform.ResourceProvider) *schema.Provider {
@@ -503,15 +510,12 @@ func testAccProvider(t *testing.T, accProviders map[string]terraform.ResourcePro
 }
 
 func TestProvider(t *testing.T) {
-	ctx, finish := testSpan(context.Background(), t)
-	defer finish()
-
 	rec := initRecorder(t)
 	defer rec.Stop()
 
 	c := cleanhttp.DefaultClient()
 	c.Transport = logging.NewTransport("Datadog", rec)
-	accProvider := initAccProvider(ctx, t, c)
+	accProvider := initAccProvider(context.Background(), t, c)
 
 	if err := accProvider.InternalValidate(); err != nil {
 		t.Fatalf("err: %s", err)
@@ -526,6 +530,7 @@ func testAccPreCheck(t *testing.T) {
 	if isReplaying() {
 		return
 	}
+
 	if !isAPIKeySet() {
 		t.Fatal("DD_API_KEY must be set for acceptance tests")
 	}

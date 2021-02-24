@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"strings"
 	"testing"
 
@@ -35,9 +36,8 @@ resource "datadog_integration_aws_log_collection" "main" {
 }
 
 func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	accountID := uniqueAWSAccountID(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -107,11 +107,21 @@ func checkIntegrationAWSLogCollectionDestroyHelper(s *terraform.State, authV1 co
 	}
 	for _, r := range s.RootModule().Resources {
 		accountId := r.Primary.Attributes["account_id"]
-		for _, logCollection := range logCollections {
-			if *logCollection.AccountId == accountId && len(logCollection.GetServices()) > 0 {
-				return fmt.Errorf("The AWS Log Collection is still enabled for the account: accountId=%s", accountId)
+		err = utils.Retry(2, 5, func() error {
+			for _, r := range s.RootModule().Resources {
+				if r.Primary.ID != "" {
+					for _, logCollection := range logCollections {
+						if *logCollection.AccountId == accountId && len(logCollection.GetServices()) > 0 {
+							return &utils.RetryableError{Prob: fmt.Sprintf("The AWS Log Collection is still enabled for the account: accountId=%s", accountId)}
+						} else {
+							return nil
+						}
+					}
+				}
 			}
-		}
+			return nil
+		})
+		return err
 	}
 	return nil
 }

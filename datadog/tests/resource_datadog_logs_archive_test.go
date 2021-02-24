@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
@@ -43,9 +44,8 @@ resource "datadog_logs_archive" "my_azure_archive" {
 }
 
 func TestAccDatadogLogsArchiveAzure_basicDeprecated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	tenantName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	tenantName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -80,9 +80,8 @@ func TestAccDatadogLogsArchiveAzure_basicDeprecated(t *testing.T) {
 }
 
 func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	tenantName := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	tenantName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -146,9 +145,8 @@ resource "datadog_logs_archive" "my_gcs_archive" {
 }
 
 func TestAccDatadogLogsArchiveGCS_basicDeprecated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	client := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	client := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -181,9 +179,8 @@ func TestAccDatadogLogsArchiveGCS_basicDeprecated(t *testing.T) {
 }
 
 func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	client := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	client := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -243,9 +240,8 @@ resource "datadog_logs_archive" "my_s3_archive" {
 }
 
 func TestAccDatadogLogsArchiveS3_basicDeprecated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	accountID := uniqueAWSAccountID(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -282,9 +278,8 @@ func TestAccDatadogLogsArchiveS3_basicDeprecated(t *testing.T) {
 }
 
 func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	accountID := uniqueAWSAccountID(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -343,9 +338,8 @@ resource "datadog_logs_archive" "my_s3_archive" {
 }
 
 func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	accountID := uniqueAWSAccountID(clock, t)
-	defer cleanup(t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -466,18 +460,23 @@ func archiveDestroyHelper(authV2 context.Context, s *terraform.State, datadogCli
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_archive" {
 			id := r.Primary.ID
-			archive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, id).Execute()
-			if err != nil {
-				if httpresp != nil && httpresp.StatusCode == 404 {
-					continue
+			err := utils.Retry(2, 5, func() error {
+				if r.Primary.ID != "" {
+					archive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, id).Execute()
+					if err != nil {
+						if httpresp != nil && httpresp.StatusCode == 404 {
+							return nil
+						}
+						return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving logs archives %s", err)}
+					}
+					if &archive != nil {
+						return &utils.RetryableError{Prob: fmt.Sprintf("logs archive still exists")}
+					}
 				}
-				return fmt.Errorf("received an error when retrieving pipeline, (%s)", err)
-			}
-			if &archive != nil {
-				return fmt.Errorf("archive still exists")
-			}
+				return nil
+			})
+			return err
 		}
-
 	}
 	return nil
 }

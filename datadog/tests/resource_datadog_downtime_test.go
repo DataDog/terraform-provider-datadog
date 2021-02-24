@@ -3,9 +3,9 @@ package test
 import (
 	"context"
 	"fmt"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"regexp"
 	"strconv"
-	"strings"
 	"testing"
 	"time"
 
@@ -18,12 +18,12 @@ import (
 )
 
 func TestAccDatadogDowntime_Basic(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	downtimeMessage := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
@@ -57,17 +57,17 @@ func TestAccDatadogDowntime_Basic(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicWithMonitor(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	downtimeMessage := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	start := clock.Now().Local().Add(time.Hour * time.Duration(3))
+	start := clockFromContext(ctx).Now().Local().Add(time.Hour * time.Duration(3))
 	end := start.Add(time.Hour * time.Duration(1))
 
 	config := testAccCheckDatadogDowntimeConfigWithMonitor(downtimeMessage, start.Unix(), end.Unix())
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
@@ -83,17 +83,17 @@ func TestAccDatadogDowntime_BasicWithMonitor(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicWithMonitorTags(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	downtimeMessage := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	start := clock.Now().Local().Add(time.Hour * time.Duration(3))
+	start := clockFromContext(ctx).Now().Local().Add(time.Hour * time.Duration(3))
 	end := start.Add(time.Hour * time.Duration(1))
 
 	config := testAccCheckDatadogDowntimeConfigWithMonitorTags(downtimeMessage, start.Unix(), end.Unix())
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
@@ -109,12 +109,12 @@ func TestAccDatadogDowntime_BasicWithMonitorTags(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	downtimeMessage := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
@@ -146,12 +146,12 @@ func TestAccDatadogDowntime_BasicMultiScope(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicNoRecurrence(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	downtimeMessage := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
@@ -177,12 +177,12 @@ func TestAccDatadogDowntime_BasicNoRecurrence(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicUntilDateRecurrence(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	downtimeMessage := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
@@ -214,12 +214,12 @@ func TestAccDatadogDowntime_BasicUntilDateRecurrence(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	downtimeMessage := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
@@ -251,12 +251,12 @@ func TestAccDatadogDowntime_BasicUntilOccurrencesRecurrence(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	downtimeMessage := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
@@ -290,12 +290,12 @@ func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_RRule(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	downtimeMessage := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
@@ -323,12 +323,12 @@ func TestAccDatadogDowntime_RRule(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_Updated(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	downtimeMessage := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
@@ -380,12 +380,12 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	downtimeMessage := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
@@ -415,12 +415,12 @@ func TestAccDatadogDowntime_TrimWhitespace(t *testing.T) {
 }
 
 func TestAccDatadogDowntime_DiffStart(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	downtimeMessage := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
@@ -462,12 +462,12 @@ func testAccCheckDatadogDowntimeExists(accProvider *schema.Provider, n string) r
 }
 
 func TestAccDatadogDowntimeDates(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	downtimeMessage := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
@@ -497,12 +497,12 @@ func TestAccDatadogDowntimeDates(t *testing.T) {
 }
 
 func TestAccDatadogDowntimeDatesConflict(t *testing.T) {
-	accProviders, clock, cleanup := testAccProviders(t, initRecorder(t))
-	downtimeMessage := uniqueEntityName(clock, t)
-	defer cleanup(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
@@ -790,20 +790,27 @@ func datadogDowntimeDestroyHelper(authV1 context.Context, s *terraform.State, da
 		}
 
 		id, _ := strconv.Atoi(r.Primary.ID)
-		dt, _, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, int64(id)).Execute()
 
-		if err != nil {
-			if strings.Contains(err.Error(), "404 Not Found") {
-				continue
+		err := utils.Retry(2, 5, func() error {
+			for _, r := range s.RootModule().Resources {
+				if r.Primary.ID != "" {
+					if dt, httpResp, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, int64(id)).Execute(); err != nil {
+						if httpResp != nil && httpResp.StatusCode == 404 {
+							return nil
+						}
+						return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving Downtime %s", err)}
+					} else {
+						// Datadog only cancels downtime on DELETE so if its not Active, its deleted
+						if !dt.GetActive() {
+							return nil
+						}
+					}
+					return &utils.RetryableError{Prob: fmt.Sprintf("Downtime still exists or is active")}
+				}
 			}
-			return fmt.Errorf("received an error retrieving downtime %s", err)
-		}
-
-		// Datadog only cancels downtime on DELETE
-		if !dt.GetActive() {
-			continue
-		}
-		return fmt.Errorf("downtime still exists")
+			return nil
+		})
+		return err
 	}
 	return nil
 }
