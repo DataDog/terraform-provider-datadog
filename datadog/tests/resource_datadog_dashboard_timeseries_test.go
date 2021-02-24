@@ -550,7 +550,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 }
 `
 
-const datadogDashboardTimeseriesFormulaConfig = `
+const datadogDashboardFormulaConfig = `
 resource "datadog_dashboard" "timeseries_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
@@ -933,7 +933,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.1.timeseries_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
 }
 
-var datadogDashboardTimeseriesFormulaAsserts = []string{
+var datadogDashboardFormulaAsserts = []string{
 	"title = {{uniq}}",
 	"is_read_only = true",
 	"layout_type = ordered",
@@ -983,12 +983,12 @@ func TestAccDatadogDashboardTimeseries_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesConfigImport, "datadog_dashboard.timeseries_dashboard")
 }
 
-func TestAccDatadogDashboardTimeseriesFormula(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil(t, datadogDashboardTimeseriesFormulaConfig, "datadog_dashboard.timeseries_dashboard", datadogDashboardTimeseriesFormulaAsserts)
+func TestAccDatadogDashboardFormula(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardFormulaConfig, "datadog_dashboard.timeseries_dashboard", datadogDashboardFormulaAsserts)
 }
 
-func TestAccDatadogDashboardTimeseriesFormula_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesFormulaConfig, "datadog_dashboard.timeseries_dashboard")
+func TestAccDatadogDashboardFormula_import(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardFormulaConfig, "datadog_dashboard.timeseries_dashboard")
 }
 
 const datadogDashboardTimeseriesMultiComputeConfig = `
