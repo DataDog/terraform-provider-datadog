@@ -644,7 +644,7 @@ func buildTerraformCategoryProcessor(ddCategory *datadogV1.LogsCategoryProcessor
 	}
 }
 
-func buildTerraformCategories(ddCategories []datadogV1.LogsCategoryProcessorCategories) []map[string]interface{} {
+func buildTerraformCategories(ddCategories []datadogV1.LogsCategoryProcessorCategory) []map[string]interface{} {
 	tfCategories := make([]map[string]interface{}, len(ddCategories))
 	for i, ddCategory := range ddCategories {
 		tfCategories[i] = map[string]interface{}{
@@ -992,10 +992,10 @@ func buildDatadogCategoryProcessor(tfProcessor map[string]interface{}) *datadogV
 		ddCategory.SetTarget(tfTarget)
 	}
 	if tfCategories, exists := tfProcessor["category"].([]interface{}); exists {
-		ddCategories := make([]datadogV1.LogsCategoryProcessorCategories, len(tfCategories))
+		ddCategories := make([]datadogV1.LogsCategoryProcessorCategory, len(tfCategories))
 		for i, tfC := range tfCategories {
 			tfCategory := tfC.(map[string]interface{})
-			ddCategory := datadogV1.LogsCategoryProcessorCategories{}
+			ddCategory := datadogV1.LogsCategoryProcessorCategory{}
 			if tfName, exist := tfCategory["name"].(string); exist {
 				ddCategory.SetName(tfName)
 			}
