@@ -320,6 +320,12 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
+			"groupby_simple_monitor": {
+				Description: "Whether or not to trigger one alert if any source breaches a threshold.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+			},
 			// since this is only useful for "log alert" type, we don't set a default value
 			// if we did set it, it would be used for all types; we have to handle this manually
 			// throughout the code
@@ -498,6 +504,10 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	m.SetTags(tags)
 	u.SetTags(tags)
 
+	if attr, ok := d.GetOk("groupby_simple_monitor"); ok {
+		o.SetGroupbySimpleMonitor(attr.(bool))
+	}
+
 	return m, u
 }
 
@@ -671,6 +681,9 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return err
 	}
 	if err := d.Set("tags", tags); err != nil {
+		return err
+	}
+	if err := d.Set("groupby_simple_monitor", m.Options.GetGroupbySimpleMonitor()); err != nil {
 		return err
 	}
 	// TODO Is this one of those options that we neeed to check?
