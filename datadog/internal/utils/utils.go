@@ -82,7 +82,7 @@ func AccountAndRoleFromID(id string) (string, string, error) {
 	return result[0], result[1], nil
 }
 
-// AccountAndLambdaArnFromID returns account and AR? from an ID
+// AccountAndLambdaArnFromID returns account and Lambda ARN from an ID
 func AccountAndLambdaArnFromID(id string) (string, string, error) {
 	result := strings.Split(id, " ")
 	if len(result) != 2 {
