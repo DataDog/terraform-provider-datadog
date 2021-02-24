@@ -105,7 +105,7 @@ func buildRequest(client *datadogV1.APIClient, ctx context.Context, method, path
 	return req, nil
 }
 
-// GenericOpenAPIError Provides access to the body, error and model on returned errors.
+// GenericOpenAPIError Provides access to the body, and error on returned errors.
 type CustomRequestAPIError struct {
 	body  []byte
 	error string
