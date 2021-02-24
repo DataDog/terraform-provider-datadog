@@ -22,6 +22,9 @@ func TranslateClientError(err error, msg string) error {
 		msg = "an error occurred"
 	}
 
+	if apiErr, ok := err.(CustomRequestAPIError); ok {
+		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
+	}
 	if apiErr, ok := err.(datadogV1.GenericOpenAPIError); ok {
 		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
 	}

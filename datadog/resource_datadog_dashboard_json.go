@@ -1,9 +1,12 @@
 package datadog
 
 import (
+	"encoding/json"
+	"errors"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/structure"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"reflect"
 )
 
@@ -51,36 +54,55 @@ func dashboardJsonDiffSuppress(k, old, new string, d *schema.ResourceData) bool 
 
 func resourceDatadogDashboardJsonRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	httpClient := providerConf.HttpClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 	path := "/api/v1/dashboard/" + d.Id()
 
-	result, err := httpClient.SendRequest("GET", path, nil)
+	respByte, httpresp, err := utils.SendRequest(datadogClientV1, authV1, "GET", path, nil)
+	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
+		return err
+	}
+
+	respMap, err := convertResponseByteToMap(respByte)
 	if err != nil {
 		return err
 	}
 
-	return updateDashboardJsonState(d, meta, result)
+	return updateDashboardJsonState(d, meta, respMap)
 }
 
 func resourceDatadogDashboardJsonCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	httpClient := providerConf.HttpClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 	path := "/api/v1/dashboard"
 
-	obj, err := structure.ExpandJsonFromString(d.Get("dashboard_json").(string))
+	obj, err := structure.NormalizeJsonString(d.Get("dashboard_json").(string))
 	if err != nil {
 		return err
 	}
 
-	result, err := httpClient.SendRequest("POST", path, obj)
+	respByte, _, err := utils.SendRequest(datadogClientV1, authV1, "POST", path, obj)
+	if err != nil {
+		return utils.TranslateClientError(err, "error creating resource")
+	}
+
+	respMap, err := convertResponseByteToMap(respByte)
 	if err != nil {
 		return err
 	}
 
-	id := result["id"]
+	id, ok := respMap["id"]
+	if !ok {
+		return errors.New("error retrieving id from response")
+	}
 	d.SetId(id.(string))
 
-	return updateDashboardJsonState(d, meta, result)
+	return updateDashboardJsonState(d, meta, respMap)
 }
 
 func updateDashboardJsonState(d *schema.ResourceData, meta interface{}, dashboard map[string]interface{}) error {
@@ -88,6 +110,7 @@ func updateDashboardJsonState(d *schema.ResourceData, meta interface{}, dashboar
 	if err != nil {
 		return err
 	}
+
 	if err = d.Set("dashboard_json", dashboardString); err != nil {
 		return err
 	}
@@ -96,28 +119,44 @@ func updateDashboardJsonState(d *schema.ResourceData, meta interface{}, dashboar
 
 func resourceDatadogDashboardJsonUpdate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	httpClient := providerConf.HttpClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 	path := "/api/v1/dashboard/" + d.Id()
 
 	obj, _ := structure.ExpandJsonFromString(d.Get("dashboard_json").(string))
 
-	result, err := httpClient.SendRequest("PUT", path, obj)
+	respByte, _, err := utils.SendRequest(datadogClientV1, authV1, "PUT", path, obj)
+	if err != nil {
+		return utils.TranslateClientError(err, "error updating dashboard")
+	}
+	respMap, err := convertResponseByteToMap(respByte)
 	if err != nil {
 		return err
 	}
 
-	return updateDashboardJsonState(d, meta, result)
+	return updateDashboardJsonState(d, meta, respMap)
 }
 
 func resourceDatadogDashboardJsonDelete(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
-	httpClient := providerConf.HttpClient
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
 	path := "/api/v1/dashboard/" + d.Id()
 
-	_, err := httpClient.SendRequest("DELETE", path, nil)
+	_, _, err := utils.SendRequest(datadogClientV1, authV1, "DELETE", path, nil)
 	if err != nil {
-		return err
+		return utils.TranslateClientError(err, "error deleting dashboard")
 	}
 
 	return nil
+}
+
+func convertResponseByteToMap(b []byte) (map[string]interface{}, error) {
+	convertedMap := make(map[string]interface{})
+	err := json.Unmarshal(b, &convertedMap)
+	if err != nil {
+		return nil, err
+	}
+
+	return convertedMap, nil
 }
