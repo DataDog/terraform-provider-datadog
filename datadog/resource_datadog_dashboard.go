@@ -4903,8 +4903,10 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 	eventQuery.SetIndexes(indexes)
 
 	if terraformSearches, ok := data["search"].([]interface{}); ok && len(terraformSearches) > 0 {
-		terraformSearch := terraformSearches[0].(map[string]interface{})
-		eventQuery.Search = datadogV1.NewFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
+		terraformSearch, ok := terraformSearches[0].(map[string]interface{})
+		if ok {
+			eventQuery.Search = datadogV1.NewFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
+		}
 	}
 
 	// GroupBy
