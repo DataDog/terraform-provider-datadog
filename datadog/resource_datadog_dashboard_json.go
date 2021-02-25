@@ -16,6 +16,9 @@ func resourceDatadogDashboardJson() *schema.Resource {
 		Read:   resourceDatadogDashboardJsonRead,
 		Update: resourceDatadogDashboardJsonUpdate,
 		Delete: resourceDatadogDashboardJsonDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 		Schema: map[string]*schema.Schema{
 			"dashboard_json": {
 				Type:         schema.TypeString,
@@ -64,7 +67,7 @@ func resourceDatadogDashboardJsonRead(d *schema.ResourceData, meta interface{}) 
 		return err
 	}
 
-	return updateDashboardJsonState(d, meta, respMap)
+	return updateDashboardJsonState(d, respMap)
 }
 
 func resourceDatadogDashboardJsonCreate(d *schema.ResourceData, meta interface{}) error {
@@ -72,7 +75,6 @@ func resourceDatadogDashboardJsonCreate(d *schema.ResourceData, meta interface{}
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	path := "/api/v1/dashboard"
-
 
 	jsonString, err := structure.NormalizeJsonString(d.Get("dashboard_json").(string))
 	if err != nil {
@@ -95,28 +97,7 @@ func resourceDatadogDashboardJsonCreate(d *schema.ResourceData, meta interface{}
 	}
 	d.SetId(id.(string))
 
-	return updateDashboardJsonState(d, meta, respMap)
-}
-
-func updateDashboardJsonState(d *schema.ResourceData, meta interface{}, dashboard map[string]interface{}) error {
-	if v, ok := dashboard["url"]; ok {
-		d.Set("url", v.(string))
-	}
-
-	// Remove computed fields from the object
-	for _, f := range computedFields {
-		delete(dashboard, f)
-	}
-
-	dashboardString, err := structure.FlattenJsonToString(dashboard)
-	if err != nil {
-		return err
-	}
-
-	if err = d.Set("dashboard_json", dashboardString); err != nil {
-		return err
-	}
-	return nil
+	return updateDashboardJsonState(d, respMap)
 }
 
 func resourceDatadogDashboardJsonUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -140,7 +121,7 @@ func resourceDatadogDashboardJsonUpdate(d *schema.ResourceData, meta interface{}
 		return err
 	}
 
-	return updateDashboardJsonState(d, meta, respMap)
+	return updateDashboardJsonState(d, respMap)
 }
 
 func resourceDatadogDashboardJsonDelete(d *schema.ResourceData, meta interface{}) error {
@@ -154,5 +135,26 @@ func resourceDatadogDashboardJsonDelete(d *schema.ResourceData, meta interface{}
 		return utils.TranslateClientError(err, "error deleting dashboard")
 	}
 
+	return nil
+}
+
+func updateDashboardJsonState(d *schema.ResourceData, dashboard map[string]interface{}) error {
+	if v, ok := dashboard["url"]; ok {
+		d.Set("url", v.(string))
+	}
+
+	// Remove computed fields from the object
+	for _, f := range computedFields {
+		delete(dashboard, f)
+	}
+
+	dashboardString, err := structure.FlattenJsonToString(dashboard)
+	if err != nil {
+		return err
+	}
+
+	if err = d.Set("dashboard_json", dashboardString); err != nil {
+		return err
+	}
 	return nil
 }
