@@ -103,7 +103,7 @@ func TenantAndClientFromID(id string) (string, string, error) {
 	return result[0], result[1], nil
 }
 
-// convert []byte to map[string]interface{}
+// ConvertResponseByteToMap converts []byte to map[string]interface{}
 func ConvertResponseByteToMap(b []byte) (map[string]interface{}, error) {
 	convertedMap := make(map[string]interface{})
 	err := json.Unmarshal(b, &convertedMap)

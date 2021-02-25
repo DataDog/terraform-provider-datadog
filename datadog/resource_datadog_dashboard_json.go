@@ -10,12 +10,12 @@ import (
 
 var computedFields = []string{"id", "author_handle", "author_name", "created_at", "modified_at", "url"}
 
-func resourceDatadogDashboardJson() *schema.Resource {
+func resourceDatadogDashboardJSON() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogDashboardJsonCreate,
-		Read:   resourceDatadogDashboardJsonRead,
-		Update: resourceDatadogDashboardJsonUpdate,
-		Delete: resourceDatadogDashboardJsonDelete,
+		Create: resourceDatadogDashboardJSONCreate,
+		Read:   resourceDatadogDashboardJSONRead,
+		Update: resourceDatadogDashboardJSONUpdate,
+		Delete: resourceDatadogDashboardJSONDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -47,13 +47,13 @@ func resourceDatadogDashboardJson() *schema.Resource {
 	}
 }
 
-func resourceDatadogDashboardJsonRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardJSONRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	path := "/api/v1/dashboard/" + d.Id()
 
-	respByte, httpresp, err := utils.SendRequest(datadogClientV1, authV1, "GET", path, nil)
+	respByte, httpresp, err := utils.SendRequest(authV1, datadogClientV1, "GET", path, nil)
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -67,10 +67,10 @@ func resourceDatadogDashboardJsonRead(d *schema.ResourceData, meta interface{}) 
 		return err
 	}
 
-	return updateDashboardJsonState(d, respMap)
+	return updateDashboardJSONState(d, respMap)
 }
 
-func resourceDatadogDashboardJsonCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardJSONCreate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -81,7 +81,7 @@ func resourceDatadogDashboardJsonCreate(d *schema.ResourceData, meta interface{}
 		return err
 	}
 
-	respByte, _, err := utils.SendRequest(datadogClientV1, authV1, "POST", path, jsonString)
+	respByte, _, err := utils.SendRequest(authV1, datadogClientV1, "POST", path, jsonString)
 	if err != nil {
 		return utils.TranslateClientError(err, "error creating resource")
 	}
@@ -97,10 +97,10 @@ func resourceDatadogDashboardJsonCreate(d *schema.ResourceData, meta interface{}
 	}
 	d.SetId(id.(string))
 
-	return updateDashboardJsonState(d, respMap)
+	return updateDashboardJSONState(d, respMap)
 }
 
-func resourceDatadogDashboardJsonUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardJSONUpdate(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -111,7 +111,7 @@ func resourceDatadogDashboardJsonUpdate(d *schema.ResourceData, meta interface{}
 		return err
 	}
 
-	respByte, _, err := utils.SendRequest(datadogClientV1, authV1, "PUT", path, jsonString)
+	respByte, _, err := utils.SendRequest(authV1, datadogClientV1, "PUT", path, jsonString)
 	if err != nil {
 		return utils.TranslateClientError(err, "error updating dashboard")
 	}
@@ -121,16 +121,16 @@ func resourceDatadogDashboardJsonUpdate(d *schema.ResourceData, meta interface{}
 		return err
 	}
 
-	return updateDashboardJsonState(d, respMap)
+	return updateDashboardJSONState(d, respMap)
 }
 
-func resourceDatadogDashboardJsonDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardJSONDelete(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	path := "/api/v1/dashboard/" + d.Id()
 
-	_, _, err := utils.SendRequest(datadogClientV1, authV1, "DELETE", path, nil)
+	_, _, err := utils.SendRequest(authV1, datadogClientV1, "DELETE", path, nil)
 	if err != nil {
 		return utils.TranslateClientError(err, "error deleting dashboard")
 	}
@@ -138,7 +138,7 @@ func resourceDatadogDashboardJsonDelete(d *schema.ResourceData, meta interface{}
 	return nil
 }
 
-func updateDashboardJsonState(d *schema.ResourceData, dashboard map[string]interface{}) error {
+func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]interface{}) error {
 	if v, ok := dashboard["url"]; ok {
 		d.Set("url", v.(string))
 	}

@@ -76,7 +76,7 @@ func Provider() terraform.ResourceProvider {
 
 		ResourcesMap: map[string]*schema.Resource{
 			"datadog_dashboard":                            resourceDatadogDashboard(),
-			"datadog_dashboard_json":                       resourceDatadogDashboardJson(),
+			"datadog_dashboard_json":                       resourceDatadogDashboardJSON(),
 			"datadog_dashboard_list":                       resourceDatadogDashboardList(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
 			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),

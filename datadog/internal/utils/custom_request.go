@@ -10,8 +10,9 @@ import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 )
 
-func SendRequest(client *datadogV1.APIClient, ctx context.Context, method, path string, body interface{}) ([]byte, *http.Response, error) {
-	req, err := buildRequest(client, ctx, method, path, body)
+// SendRequest send custom request
+func SendRequest(ctx context.Context, client *datadogV1.APIClient, method, path string, body interface{}) ([]byte, *http.Response, error) {
+	req, err := buildRequest(ctx, client, method, path, body)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -43,7 +44,7 @@ func SendRequest(client *datadogV1.APIClient, ctx context.Context, method, path 
 	return bodyResByte, httpRes, nil
 }
 
-func buildRequest(client *datadogV1.APIClient, ctx context.Context, method, path string, body interface{}) (*http.Request, error) {
+func buildRequest(ctx context.Context, client *datadogV1.APIClient, method, path string, body interface{}) (*http.Request, error) {
 	var (
 		localVarPostBody        interface{}
 		localVarFormFileName    string

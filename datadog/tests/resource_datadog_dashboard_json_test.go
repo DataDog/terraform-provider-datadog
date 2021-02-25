@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
-func TestAccDatadogDashboardJson_Basic(t *testing.T) {
+func TestAccDatadogDashboardJSON(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
@@ -20,7 +20,7 @@ func TestAccDatadogDashboardJson_Basic(t *testing.T) {
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDashboardJsonTimeboard_Basic(uniqueID),
+				Config: testAccCheckDatadogDashboardJSONTimeboard(uniqueID),
 			},
 			{
 				ResourceName:      "datadog_dashboard_json.timeboard_json",
@@ -28,7 +28,7 @@ func TestAccDatadogDashboardJson_Basic(t *testing.T) {
 				ImportStateVerify: true,
 			},
 			{
-				Config: testAccCheckDatadogDashboardJsonScreenboard_Basic(uniqueID),
+				Config: testAccCheckDatadogDashboardJSONScreenboard(uniqueID),
 			},
 			{
 				ResourceName:      "datadog_dashboard_json.screenboard_json",
@@ -39,7 +39,7 @@ func TestAccDatadogDashboardJson_Basic(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogDashboardJsonTimeboard_Basic(uniq string) string {
+func testAccCheckDatadogDashboardJSONTimeboard(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_dashboard_json" "timeboard_json" {
    dashboard_json = <<EOF
@@ -533,7 +533,7 @@ EOF
 }`, uniq)
 }
 
-func testAccCheckDatadogDashboardJsonScreenboard_Basic(uniq string) string {
+func testAccCheckDatadogDashboardJSONScreenboard(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_dashboard_json" "screenboard_json" {
    dashboard_json = <<EOF
