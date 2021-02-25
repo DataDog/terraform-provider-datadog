@@ -3485,6 +3485,9 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 		"process_query":  getProcessQuerySchema(),
 		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getFormulaSchema(),
 		// Settings specific to QueryValue requests
 		"conditional_formats": {
 			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below.",
@@ -3525,6 +3528,28 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
 			securityQuery := v[0].(map[string]interface{})
 			datadogQueryValueRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
+		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+			for i, q := range v {
+				query := q.(map[string]interface{})
+				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogEventQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				}
+			}
+			datadogQueryValueRequest.SetQueries(queries)
+			// Query Value requests for formulas and functions always has a response format of "scalar"
+			datadogQueryValueRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
+		}
+		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+			formulas := make([]datadogV1.WidgetFormula, len(v))
+			for i, formula := range v {
+				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
+			}
+			datadogQueryValueRequest.SetFormulas(formulas)
 		}
 
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
@@ -3563,6 +3588,12 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.security_query.0", i))
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
+			terraformRequest["query"] = buildTerraformQuery(*v)
+		}
+
+		if v, ok := datadogRequest.GetFormulasOk(); ok {
+			terraformRequest["formula"] = buildTerraformFormula(*v)
 		}
 
 		if datadogRequest.ConditionalFormats != nil {
@@ -4901,8 +4932,10 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 	eventQuery.SetIndexes(indexes)
 
 	if terraformSearches, ok := data["search"].([]interface{}); ok && len(terraformSearches) > 0 {
-		terraformSearch := terraformSearches[0].(map[string]interface{})
-		eventQuery.Search = datadogV1.NewFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
+		terraformSearch, ok := terraformSearches[0].(map[string]interface{})
+		if ok {
+			eventQuery.Search = datadogV1.NewFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
+		}
 	}
 
 	// GroupBy
