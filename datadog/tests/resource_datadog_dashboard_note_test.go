@@ -65,7 +65,7 @@ func TestAccDatadogDashboardNote(t *testing.T) {
 }
 
 func TestAccDatadogDashboardNote_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardNoteConfig, "datadog_dashboard.note_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardNoteConfig, "datadog_dashboard.note_dashboard")
 }
 
 func TestAccDatadogDashboardNoteContentError(t *testing.T) {

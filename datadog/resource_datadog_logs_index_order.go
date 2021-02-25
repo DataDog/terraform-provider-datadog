@@ -44,9 +44,9 @@ func resourceDatadogLogsIndexOrderUpdate(d *schema.ResourceData, meta interface{
 		ddList[i] = tfName.(string)
 	}
 	ddIndexList.IndexNames = ddList
-	var tfId string
+	var tfID string
 	if name, exists := d.GetOk("name"); exists {
-		tfId = name.(string)
+		tfID = name.(string)
 	}
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -56,7 +56,7 @@ func resourceDatadogLogsIndexOrderUpdate(d *schema.ResourceData, meta interface{
 	if err != nil {
 		return utils.TranslateClientError(err, "error updating logs index list")
 	}
-	d.SetId(tfId)
+	d.SetId(tfID)
 	return updateLogsIndexOrderState(d, &updatedOrder)
 }
 

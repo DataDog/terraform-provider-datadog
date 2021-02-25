@@ -112,5 +112,5 @@ func TestAccDatadogDashboardEventStream(t *testing.T) {
 }
 
 func TestAccDatadogDashboardEventStream_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardEventStreamConfigImport, "datadog_dashboard.event_stream_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardEventStreamConfigImport, "datadog_dashboard.event_stream_dashboard")
 }

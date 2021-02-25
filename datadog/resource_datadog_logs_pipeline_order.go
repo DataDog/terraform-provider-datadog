@@ -67,9 +67,9 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 		ddList[i] = id.(string)
 	}
 	ddPipelineList.PipelineIds = ddList
-	var tfId string
+	var tfID string
 	if name, exists := d.GetOk("name"); exists {
-		tfId = name.(string)
+		tfID = name.(string)
 	}
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -88,7 +88,7 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 		}
 		return utils.TranslateClientError(err, "error updating logs pipeline order")
 	}
-	d.SetId(tfId)
+	d.SetId(tfID)
 	return updateLogsPipelineOrderState(d, &updatedOrder)
 }
 

@@ -8,7 +8,7 @@ import (
 func TestAccountAndLambdaArnFromID(t *testing.T) {
 	cases := map[string]struct {
 		id        string
-		accountId string
+		accountID string
 		lambdaArn string
 		err       error
 	}{
@@ -17,7 +17,7 @@ func TestAccountAndLambdaArnFromID(t *testing.T) {
 		"multiple delimiters": {"123456789 extra bits", "", "", fmt.Errorf("error extracting account ID and Lambda ARN from an AWS integration id: 123456789 extra bits")},
 	}
 	for name, tc := range cases {
-		accountId, lambdaArn, err := AccountAndLambdaArnFromID(tc.id)
+		accountID, lambdaArn, err := AccountAndLambdaArnFromID(tc.id)
 
 		if err != nil && tc.err != nil && err.Error() != tc.err.Error() {
 			t.Errorf("%s: errors should be '%s', not `%s`", name, tc.err.Error(), err.Error())
@@ -27,8 +27,8 @@ func TestAccountAndLambdaArnFromID(t *testing.T) {
 			t.Errorf("%s: errors should be '%s', not nil", name, tc.err.Error())
 		}
 
-		if accountId != tc.accountId {
-			t.Errorf("%s: account ID '%s' didn't match `%s`", name, accountId, tc.accountId)
+		if accountID != tc.accountID {
+			t.Errorf("%s: account ID '%s' didn't match `%s`", name, accountID, tc.accountID)
 		}
 		if lambdaArn != tc.lambdaArn {
 			t.Errorf("%s: lambda arn '%s' didn't match `%s`", name, lambdaArn, tc.lambdaArn)
