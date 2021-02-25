@@ -133,5 +133,5 @@ func TestAccDatadogDashboardTopList(t *testing.T) {
 }
 
 func TestAccDatadogDashboardTopList_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTopListConfigImport, "datadog_dashboard.top_list_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardTopListConfigImport, "datadog_dashboard.top_list_dashboard")
 }

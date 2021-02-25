@@ -93,7 +93,7 @@ func securityMonitoringCheckRuleCountNameFilter(accProvider *schema.Provider, na
 		ruleCount := 0
 		for _, rule := range *rulesResponse.Data {
 			if strings.Contains(rule.GetName(), name) {
-				ruleCount += 1
+				ruleCount++
 			}
 		}
 
@@ -115,7 +115,7 @@ func securityMonitoringCheckRuleCountTagsFilter(accProvider *schema.Provider, fi
 		for _, rule := range *rulesResponse.Data {
 			for _, tag := range rule.GetTags() {
 				if strings.Contains(tag, filterTag) {
-					ruleCount += 1
+					ruleCount++
 				}
 			}
 		}
@@ -136,7 +136,7 @@ func securityMonitoringCheckRuleCountDefaultFilter(accProvider *schema.Provider,
 		ruleCount := 0
 		for _, rule := range *rulesResponse.Data {
 			if rule.GetIsDefault() == isDefault {
-				ruleCount += 1
+				ruleCount++
 			}
 		}
 		return securityMonitoringCheckRuleCount(state, ruleCount)
@@ -146,12 +146,12 @@ func securityMonitoringCheckRuleCountDefaultFilter(accProvider *schema.Provider,
 
 func securityMonitoringCheckRuleCount(state *terraform.State, responseRuleCount int) error {
 	resourceAttributes := state.RootModule().Resources[tfSecurityRulesSource].Primary.Attributes
-	ruleIdCount, _ := strconv.Atoi(resourceAttributes["rule_ids.#"])
+	ruleIDCount, _ := strconv.Atoi(resourceAttributes["rule_ids.#"])
 	rulesCount, _ := strconv.Atoi(resourceAttributes["rules.#"])
 
-	if rulesCount != responseRuleCount || ruleIdCount != responseRuleCount {
+	if rulesCount != responseRuleCount || ruleIDCount != responseRuleCount {
 		return fmt.Errorf("expected %d rules got %d rules and %d rule ids",
-			responseRuleCount, rulesCount, ruleIdCount)
+			responseRuleCount, rulesCount, ruleIDCount)
 	}
 	return nil
 }

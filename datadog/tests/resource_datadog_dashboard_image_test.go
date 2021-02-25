@@ -46,5 +46,5 @@ func TestAccDatadogDashboardImage(t *testing.T) {
 }
 
 func TestAccDatadogDashboardImage_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardImageConfig, "datadog_dashboard.image_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardImageConfig, "datadog_dashboard.image_dashboard")
 }

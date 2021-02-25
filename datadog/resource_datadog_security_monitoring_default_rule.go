@@ -105,9 +105,9 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(d *schema.ResourceData, 
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	ruleId := d.Id()
+	ruleID := d.Id()
 
-	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, ruleId).Execute()
+	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, ruleID).Execute()
 
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
@@ -128,7 +128,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(d *schema.ResourceData, 
 	}
 
 	if shouldUpdate {
-		if _, _, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, ruleId).Body(*ruleUpdate).Execute(); err != nil {
+		if _, _, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, ruleID).Body(*ruleUpdate).Execute(); err != nil {
 			return utils.TranslateClientError(err, "error updating security monitoring rule on resource creation")
 		}
 	}
@@ -151,7 +151,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 		for i, ruleCase := range currentState.GetCases() {
 			var updatedNotifications []string
 			if tfCase, ok := findRuleCaseForStatus(tfCases, ruleCase.GetStatus()); ok {
-				matchedCases += 1
+				matchedCases++
 
 				tfNotificationsRaw := tfCase["notifications"].([]interface{})
 				tfNotifications := make([]string, len(tfNotificationsRaw))
@@ -160,7 +160,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 				}
 
 				if !stringSliceEquals(tfNotifications, ruleCase.GetNotifications()) {
-					modifiedCases += 1
+					modifiedCases++
 					updatedNotifications = tfNotifications
 				}
 			}

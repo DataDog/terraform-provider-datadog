@@ -22,7 +22,7 @@ import (
 )
 
 var (
-	baseIpRangesSubdomain = "ip-ranges"
+	baseIPRangesSubdomain = "ip-ranges"
 )
 
 func init() {
@@ -44,6 +44,7 @@ func init() {
 	}
 }
 
+// Provider returns the built datadog provider object
 func Provider() terraform.ResourceProvider {
 	utils.DatadogProvider = &schema.Provider{
 		Schema: map[string]*schema.Schema{
@@ -63,7 +64,7 @@ func Provider() terraform.ResourceProvider {
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_HOST", "DD_HOST"}, nil),
-				Description: "The API Url. This can also be set via the DD_HOST environment variable. Note that this URL must not end with the /api/ path. For example, https://api.datadoghq.com/ is a correct value, while https://api.datadoghq.com/api/ is not. And if you're working with \"EU\" version of Datadog, use https://api.datadoghq.eu/.",
+				Description: "The API URL. This can also be set via the DD_HOST environment variable. Note that this URL must not end with the /api/ path. For example, https://api.datadoghq.com/ is a correct value, while https://api.datadoghq.com/api/ is not. And if you're working with \"EU\" version of Datadog, use https://api.datadoghq.eu/.",
 			},
 			"validate": {
 				Type:        schema.TypeBool,
@@ -112,7 +113,7 @@ func Provider() terraform.ResourceProvider {
 		DataSourcesMap: map[string]*schema.Resource{
 			"datadog_dashboard":                 dataSourceDatadogDashboard(),
 			"datadog_dashboard_list":            dataSourceDatadogDashboardList(),
-			"datadog_ip_ranges":                 dataSourceDatadogIpRanges(),
+			"datadog_ip_ranges":                 dataSourceDatadogIPRanges(),
 			"datadog_monitor":                   dataSourceDatadogMonitor(),
 			"datadog_permissions":               dataSourceDatadogPermissions(),
 			"datadog_role":                      dataSourceDatadogRole(),
@@ -126,7 +127,7 @@ func Provider() terraform.ResourceProvider {
 	return utils.DatadogProvider
 }
 
-//ProviderConfiguration contains the initialized API clients to communicate with the Datadog API
+// ProviderConfiguration contains the initialized API clients to communicate with the Datadog API
 type ProviderConfiguration struct {
 	CommunityClient *datadogCommunity.Client
 	DatadogClientV1 *datadogV1.APIClient
@@ -208,28 +209,28 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	configV1.UserAgent = utils.GetUserAgent(configV1.UserAgent)
 	configV1.Debug = logging.IsDebugOrHigher()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
-		parsedApiUrl, parseErr := url.Parse(apiURL)
+		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
-			return nil, fmt.Errorf(`invalid API Url : %v`, parseErr)
+			return nil, fmt.Errorf(`invalid API URL : %v`, parseErr)
 		}
-		if parsedApiUrl.Host == "" || parsedApiUrl.Scheme == "" {
+		if parsedAPIURL.Host == "" || parsedAPIURL.Scheme == "" {
 			return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
 		}
 		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
 		authV1 = context.WithValue(authV1, datadogV1.ContextServerIndex, 1)
 		authV1 = context.WithValue(authV1, datadogV1.ContextServerVariables, map[string]string{
-			"name":     parsedApiUrl.Host,
-			"protocol": parsedApiUrl.Scheme,
+			"name":     parsedAPIURL.Host,
+			"protocol": parsedAPIURL.Scheme,
 		})
 
 		// Configure URL's per operation
 		// IPRangesApiService.GetIPRanges
-		ipRangesDNSNameArr := strings.Split(parsedApiUrl.Hostname(), ".")
+		ipRangesDNSNameArr := strings.Split(parsedAPIURL.Hostname(), ".")
 		// Parse out subdomain if it exists
 		if len(ipRangesDNSNameArr) > 2 {
 			ipRangesDNSNameArr = ipRangesDNSNameArr[1:]
 		}
-		ipRangesDNSNameArr = append([]string{baseIpRangesSubdomain}, ipRangesDNSNameArr...)
+		ipRangesDNSNameArr = append([]string{baseIPRangesSubdomain}, ipRangesDNSNameArr...)
 
 		authV1 = context.WithValue(authV1, datadogV1.ContextOperationServerIndices, map[string]int{
 			"IPRangesApiService.GetIPRanges": 1,
@@ -260,18 +261,18 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	configV2.UserAgent = utils.GetUserAgent(configV2.UserAgent)
 	configV2.Debug = logging.IsDebugOrHigher()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
-		parsedApiUrl, parseErr := url.Parse(apiURL)
+		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
-			return nil, fmt.Errorf(`invalid API Url : %v`, parseErr)
+			return nil, fmt.Errorf(`invalid API URL : %v`, parseErr)
 		}
-		if parsedApiUrl.Host == "" || parsedApiUrl.Scheme == "" {
+		if parsedAPIURL.Host == "" || parsedAPIURL.Scheme == "" {
 			return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
 		}
 		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
 		authV2 = context.WithValue(authV2, datadogV2.ContextServerIndex, 1)
 		authV2 = context.WithValue(authV2, datadogV2.ContextServerVariables, map[string]string{
-			"name":     parsedApiUrl.Host,
-			"protocol": parsedApiUrl.Scheme,
+			"name":     parsedAPIURL.Host,
+			"protocol": parsedAPIURL.Scheme,
 		})
 	}
 

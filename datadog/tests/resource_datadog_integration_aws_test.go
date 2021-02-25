@@ -104,19 +104,19 @@ func checkIntegrationAWSExists(accProvider *schema.Provider) func(*terraform.Sta
 	}
 }
 
-func checkIntegrationAWSExistsHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
-	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1).Execute()
+func checkIntegrationAWSExistsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(ctx).Execute()
 	if err != nil {
 		return err
 	}
 	for _, r := range s.RootModule().Resources {
-		accountId := r.Primary.Attributes["account_id"]
+		accountID := r.Primary.Attributes["account_id"]
 		for _, account := range integrations.GetAccounts() {
-			if account.GetAccountId() == accountId {
+			if account.GetAccountId() == accountID {
 				return nil
 			}
 		}
-		return fmt.Errorf("The AWS integration does not exists for account: accountId=%s", accountId)
+		return fmt.Errorf("The AWS integration does not exists for account: accountID=%s", accountID)
 	}
 	return nil
 }
@@ -131,16 +131,16 @@ func checkIntegrationAWSDestroy(accProvider *schema.Provider) func(*terraform.St
 	}
 }
 
-func checkIntegrationAWSDestroyHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
-	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1).Execute()
+func checkIntegrationAWSDestroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(ctx).Execute()
 	if err != nil {
 		return err
 	}
 	for _, r := range s.RootModule().Resources {
-		accountId := r.Primary.Attributes["account_id"]
+		accountID := r.Primary.Attributes["account_id"]
 		for _, account := range integrations.GetAccounts() {
-			if account.GetAccountId() == accountId {
-				return fmt.Errorf("The AWS integration still exists for account: accountId=%s", accountId)
+			if account.GetAccountId() == accountID {
+				return fmt.Errorf("The AWS integration still exists for account: accountID=%s", accountID)
 			}
 		}
 	}

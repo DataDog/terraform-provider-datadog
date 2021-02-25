@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"fmt"
-	"strings"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -44,15 +43,14 @@ func resourceDatadogLogsArchiveOrderCreate(d *schema.ResourceData, meta interfac
 	if len(ddArchiveList.Data.Attributes.GetArchiveIds()) > 0 {
 		return resourceDatadogLogsArchiveOrderUpdate(d, meta)
 	}
-	order, _, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2).Body(*ddArchiveList).Execute()
+	order, httpResponse, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2).Body(*ddArchiveList).Execute()
 	if err != nil {
-		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
+		if httpResponse != nil && httpResponse.StatusCode == 422 {
 			fmt.Printf("cannot map archives to existing ones, will try to import it with Id `archiveOrderID`\n")
 			d.SetId("archiveOrderID")
 			return resourceDatadogLogsArchiveOrderRead(d, meta)
-		} else {
-			return utils.TranslateClientError(err, "error creating logs archive order")
 		}
+		return utils.TranslateClientError(err, "error creating logs archive order")
 	}
 	d.SetId("archiveOrderID")
 	return updateLogsArchiveOrderState(d, &order)
@@ -86,10 +84,10 @@ func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interfac
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
-	updatedOrder, _, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2).Body(*ddArchiveList).Execute()
+	updatedOrder, httpResponse, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2).Body(*ddArchiveList).Execute()
 	if err != nil {
 		// Cannot map archives to existing ones
-		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
+		if httpResponse != nil && httpResponse.StatusCode == 422 {
 			ddArchiveOrder, _, getErr := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2).Execute()
 			if getErr != nil {
 				return utils.TranslateClientError(err, "error getting logs archive order")
