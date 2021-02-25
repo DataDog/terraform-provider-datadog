@@ -1,7 +1,7 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
-	github.com/DataDog/datadog-api-client-go v1.0.0-beta.15.0.20210223212241-85384a53160c
+	github.com/DataDog/datadog-api-client-go v1.0.0-beta.15.0.20210225193932-0bb32ae1515c
 	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
 	github.com/dnaeon/go-vcr v1.0.1
 	github.com/fatih/color v1.9.0 // indirect
