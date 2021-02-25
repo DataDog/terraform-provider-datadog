@@ -321,7 +321,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 			"groupby_simple_monitor": {
-				Description: "Whether or not to trigger one alert if any source breaches a threshold.",
+				Description: "Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Default:     false,
@@ -465,6 +465,10 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 		} else {
 			o.SetEnableLogsSample(false)
 		}
+
+		if attr, ok := d.GetOk("groupby_simple_monitor"); ok {
+			o.SetGroupbySimpleMonitor(attr.(bool))
+		}
 	}
 
 	m := datadogV1.NewMonitor()
@@ -503,10 +507,6 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	}
 	m.SetTags(tags)
 	u.SetTags(tags)
-
-	if attr, ok := d.GetOk("groupby_simple_monitor"); ok {
-		o.SetGroupbySimpleMonitor(attr.(bool))
-	}
 
 	return m, u
 }
@@ -683,9 +683,6 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("tags", tags); err != nil {
 		return err
 	}
-	if err := d.Set("groupby_simple_monitor", m.Options.GetGroupbySimpleMonitor()); err != nil {
-		return err
-	}
 	// TODO Is this one of those options that we neeed to check?
 	if err := d.Set("require_full_window", m.Options.GetRequireFullWindow()); err != nil {
 		return err
@@ -696,6 +693,9 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 
 	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {
 		if err := d.Set("enable_logs_sample", m.Options.GetEnableLogsSample()); err != nil {
+			return err
+		}
+		if err := d.Set("groupby_simple_monitor", m.Options.GetGroupbySimpleMonitor()); err != nil {
 			return err
 		}
 	}
