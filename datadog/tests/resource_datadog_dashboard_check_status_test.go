@@ -45,5 +45,5 @@ func TestAccDatadogDashboardCheckStatus(t *testing.T) {
 }
 
 func TestAccDatadogDashboardCheckStatus_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardCheckStatusConfig, "datadog_dashboard.check_status_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardCheckStatusConfig, "datadog_dashboard.check_status_dashboard")
 }

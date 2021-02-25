@@ -42,5 +42,5 @@ func TestAccDatadogDashboardIFrame(t *testing.T) {
 }
 
 func TestAccDatadogDashboardIFrame_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardIFrameConfig, "datadog_dashboard.iframe_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardIFrameConfig, "datadog_dashboard.iframe_dashboard")
 }

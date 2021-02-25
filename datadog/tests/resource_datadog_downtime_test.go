@@ -783,7 +783,7 @@ resource "datadog_downtime" "foo" {
 }`, uniq)
 }
 
-func datadogDowntimeDestroyHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+func datadogDowntimeDestroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type != "datadog_downtime" {
 			continue
@@ -794,16 +794,15 @@ func datadogDowntimeDestroyHelper(authV1 context.Context, s *terraform.State, da
 		err := utils.Retry(2, 5, func() error {
 			for _, r := range s.RootModule().Resources {
 				if r.Primary.ID != "" {
-					if dt, httpResp, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, int64(id)).Execute(); err != nil {
+					dt, httpResp, err := datadogClientV1.DowntimesApi.GetDowntime(ctx, int64(id)).Execute()
+					if err != nil {
 						if httpResp != nil && httpResp.StatusCode == 404 {
 							return nil
 						}
 						return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving Downtime %s", err)}
-					} else {
+					} else if !dt.GetActive() {
 						// Datadog only cancels downtime on DELETE so if its not Active, its deleted
-						if !dt.GetActive() {
-							return nil
-						}
+						return nil
 					}
 					return &utils.RetryableError{Prob: fmt.Sprintf("Downtime still exists or is active")}
 				}
@@ -815,14 +814,14 @@ func datadogDowntimeDestroyHelper(authV1 context.Context, s *terraform.State, da
 	return nil
 }
 
-func datadogDowntimeExistsHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+func datadogDowntimeExistsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type != "datadog_downtime" {
 			continue
 		}
 
 		id, _ := strconv.Atoi(r.Primary.ID)
-		if _, _, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, int64(id)).Execute(); err != nil {
+		if _, _, err := datadogClientV1.DowntimesApi.GetDowntime(ctx, int64(id)).Execute(); err != nil {
 			return fmt.Errorf("received an error retrieving downtime %s", err)
 		}
 	}

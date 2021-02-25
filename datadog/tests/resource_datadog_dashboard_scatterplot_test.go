@@ -191,5 +191,5 @@ func TestAccDatadogDashboardScatterplot(t *testing.T) {
 }
 
 func TestAccDatadogDashboardScatterplot_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardScatterplotConfigImport, "datadog_dashboard.scatterplot_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardScatterplotConfigImport, "datadog_dashboard.scatterplot_dashboard")
 }

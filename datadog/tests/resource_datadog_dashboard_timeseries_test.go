@@ -980,7 +980,7 @@ func TestAccDatadogDashboardTimeseries(t *testing.T) {
 }
 
 func TestAccDatadogDashboardTimeseries_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesConfigImport, "datadog_dashboard.timeseries_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardTimeseriesConfigImport, "datadog_dashboard.timeseries_dashboard")
 }
 
 func TestAccDatadogDashboardFormula(t *testing.T) {
@@ -1311,5 +1311,5 @@ func TestAccDatadogDashboardTimeseriesMultiCompute(t *testing.T) {
 }
 
 func TestAccDatadogDashboardTimeseriesMultiCompute_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTimeseriesMultiComputeConfigImport, "datadog_dashboard.timeseries_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardTimeseriesMultiComputeConfigImport, "datadog_dashboard.timeseries_dashboard")
 }

@@ -166,13 +166,13 @@ func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) er
 	return updateDashboardState(d, &updatedDashboard)
 }
 
-func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardId string) {
+func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardID string) {
 	dashTypeString := "custom_screenboard"
 	if d.Get("layout_type").(string) == "ordered" {
 		dashTypeString = "custom_timeboard"
 	}
 	dashType := datadogV2.DashboardType(dashTypeString)
-	itemsRequest := []datadogV2.DashboardListItemRequest{*datadogV2.NewDashboardListItemRequest(dashboardId, dashType)}
+	itemsRequest := []datadogV2.DashboardListItemRequest{*datadogV2.NewDashboardListItemRequest(dashboardID, dashType)}
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 

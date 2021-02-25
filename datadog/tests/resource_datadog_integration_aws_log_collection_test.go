@@ -67,24 +67,24 @@ func checkIntegrationAWSLogCollectionExists(accProvider *schema.Provider) func(*
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		return checkIntegrationAWSLogCollectionExistsHelper(s, authV1, datadogClientV1)
+		return checkIntegrationAWSLogCollectionExistsHelper(authV1, s, datadogClientV1)
 	}
 }
 
-func checkIntegrationAWSLogCollectionExistsHelper(s *terraform.State, authV1 context.Context, datadogClientV1 *datadogV1.APIClient) error {
-	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
+func checkIntegrationAWSLogCollectionExistsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(ctx).Execute()
 	if err != nil {
 		return err
 	}
 	for resourceType, r := range s.RootModule().Resources {
 		if strings.Contains(resourceType, "datadog_integration_aws_log_collection") {
-			accountId := r.Primary.Attributes["account_id"]
+			accountID := r.Primary.Attributes["account_id"]
 			for _, logCollection := range logCollections {
-				if *logCollection.AccountId == accountId && len(logCollection.GetServices()) > 0 {
+				if *logCollection.AccountId == accountID && len(logCollection.GetServices()) > 0 {
 					return nil
 				}
 			}
-			return fmt.Errorf("The AWS Log Collection is not configured for the account: accountId=%s", accountId)
+			return fmt.Errorf("The AWS Log Collection is not configured for the account: accountID=%s", accountID)
 		}
 	}
 	return fmt.Errorf("Unable to find AWS Log Collection in any account")
@@ -96,25 +96,23 @@ func checkIntegrationAWSLogCollectionDestroy(accProvider *schema.Provider) func(
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		return checkIntegrationAWSLogCollectionDestroyHelper(s, authV1, datadogClientV1)
+		return checkIntegrationAWSLogCollectionDestroyHelper(authV1, s, datadogClientV1)
 	}
 }
 
-func checkIntegrationAWSLogCollectionDestroyHelper(s *terraform.State, authV1 context.Context, datadogClientV1 *datadogV1.APIClient) error {
-	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
+func checkIntegrationAWSLogCollectionDestroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(ctx).Execute()
 	if err != nil {
 		return err
 	}
 	for _, r := range s.RootModule().Resources {
-		accountId := r.Primary.Attributes["account_id"]
+		accountID := r.Primary.Attributes["account_id"]
 		err = utils.Retry(2, 5, func() error {
 			for _, r := range s.RootModule().Resources {
 				if r.Primary.ID != "" {
 					for _, logCollection := range logCollections {
-						if *logCollection.AccountId == accountId && len(logCollection.GetServices()) > 0 {
-							return &utils.RetryableError{Prob: fmt.Sprintf("The AWS Log Collection is still enabled for the account: accountId=%s", accountId)}
-						} else {
-							return nil
+						if *logCollection.AccountId == accountID && len(logCollection.GetServices()) > 0 {
+							return &utils.RetryableError{Prob: fmt.Sprintf("The AWS Log Collection is still enabled for the account: accountID=%s", accountID)}
 						}
 					}
 				}

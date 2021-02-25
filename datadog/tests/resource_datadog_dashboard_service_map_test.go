@@ -56,5 +56,5 @@ func TestAccDatadogDashboardServiceMap(t *testing.T) {
 }
 
 func TestAccDatadogDashboardServiceMap_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardServiceMapConfig, "datadog_dashboard.service_map_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardServiceMapConfig, "datadog_dashboard.service_map_dashboard")
 }
