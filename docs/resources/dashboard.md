@@ -5094,12 +5094,12 @@ Optional:
 
 Required:
 
-- **compute** (Block List, Min: 1, Max: 1) Compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--compute))
+- **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--compute))
 - **data_source** (String) Data source for event platform-based queries.
 
 Optional:
 
-- **group_by** (Block List, Max: 1) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--group_by))
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--group_by))
 - **indexes** (List of String) An array of index names to query in the stream.
 - **name** (String) Name of query for use in formulas.
 - **search** (Block List, Max: 1) Search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--search))
@@ -8571,12 +8571,12 @@ Optional:
 
 Required:
 
-- **compute** (Block List, Min: 1, Max: 1) Compute options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--compute))
+- **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--compute))
 - **data_source** (String) Data source for event platform-based queries.
 
 Optional:
 
-- **group_by** (Block List, Max: 1) Group by options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--group_by))
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--group_by))
 - **indexes** (List of String) An array of index names to query in the stream.
 - **name** (String) Name of query for use in formulas.
 - **search** (Block List, Max: 1) Search options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--search))

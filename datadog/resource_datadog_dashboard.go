@@ -4646,7 +4646,6 @@ func getFormulaQuerySchema() *schema.Schema {
 							"compute": {
 								Type:        schema.TypeList,
 								Required:    true,
-								MaxItems:    1,
 								Description: "Compute options.",
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
@@ -4671,7 +4670,6 @@ func getFormulaQuerySchema() *schema.Schema {
 							"group_by": {
 								Type:        schema.TypeList,
 								Optional:    true,
-								MaxItems:    1,
 								Description: "Group by options.",
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
