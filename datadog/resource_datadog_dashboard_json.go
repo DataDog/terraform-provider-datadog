@@ -73,12 +73,13 @@ func resourceDatadogDashboardJsonCreate(d *schema.ResourceData, meta interface{}
 	authV1 := providerConf.AuthV1
 	path := "/api/v1/dashboard"
 
-	json, ok := d.Get("dashboard_json").(string)
-	if !ok {
-		return errors.New("error retrieving dashboard_json")
+
+	jsonString, err := structure.NormalizeJsonString(d.Get("dashboard_json").(string))
+	if err != nil {
+		return err
 	}
 
-	respByte, _, err := utils.SendRequest(datadogClientV1, authV1, "POST", path, json)
+	respByte, _, err := utils.SendRequest(datadogClientV1, authV1, "POST", path, jsonString)
 	if err != nil {
 		return utils.TranslateClientError(err, "error creating resource")
 	}
@@ -124,9 +125,9 @@ func resourceDatadogDashboardJsonUpdate(d *schema.ResourceData, meta interface{}
 	authV1 := providerConf.AuthV1
 	path := "/api/v1/dashboard/" + d.Id()
 
-	jsonString, ok := d.Get("dashboard_json").(string)
-	if !ok {
-		return errors.New("error retrieving dashboard_json")
+	jsonString, err := structure.NormalizeJsonString(d.Get("dashboard_json").(string))
+	if err != nil {
+		return err
 	}
 
 	respByte, _, err := utils.SendRequest(datadogClientV1, authV1, "PUT", path, jsonString)
