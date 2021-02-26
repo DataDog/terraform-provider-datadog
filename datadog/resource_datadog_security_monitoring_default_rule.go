@@ -142,7 +142,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 	isEnabled := d.Get("enabled").(bool)
 	payload.IsEnabled = &isEnabled
 
-	if v, ok := d.GetOk("cases"); ok {
+	if v, ok := d.GetOk("case"); ok {
 		matchedCases := 0
 		modifiedCases := 0
 		tfCases := v.([]map[string]interface{})
