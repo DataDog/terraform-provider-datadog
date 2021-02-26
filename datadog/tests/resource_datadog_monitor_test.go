@@ -572,6 +572,8 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 						"datadog_monitor.foo", "thresholds.critical", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "enable_logs_sample", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "groupby_simple_monitor", "true"),
 				),
 			},
 		},
@@ -1108,6 +1110,7 @@ resource "datadog_monitor" "foo" {
   locked = false
   tags = ["foo:bar", "baz"]
 	enable_logs_sample = true
+	groupby_simple_monitor = true
 }`, uniq)
 }
 
