@@ -4622,20 +4622,10 @@ func getFormulaQuerySchema() *schema.Schema {
 								Required:    true,
 								Description: "Data source for event platform-based queries.",
 							},
-							"search": {
-								Type:        schema.TypeList,
+							"search_query": {
+								Type:        schema.TypeString,
 								Optional:    true,
-								MaxItems:    1,
 								Description: "Search options.",
-								Elem: &schema.Resource{
-									Schema: map[string]*schema.Schema{
-										"query": {
-											Type:        schema.TypeString,
-											Required:    true,
-											Description: "Events search string.",
-										},
-									},
-								},
 							},
 							"indexes": {
 								Type:        schema.TypeList,
@@ -4902,11 +4892,8 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 	}
 	eventQuery.SetIndexes(indexes)
 
-	if terraformSearches, ok := data["search"].([]interface{}); ok && len(terraformSearches) > 0 {
-		terraformSearch, ok := terraformSearches[0].(map[string]interface{})
-		if ok {
-			eventQuery.Search = datadogV1.NewFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
-		}
+	if terraformSearch, ok := data["search_query"].(string); ok && len(terraformSearch) > 0 {
+		eventQuery.Search = datadogV1.NewFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch)
 	}
 
 	// GroupBy
@@ -6141,12 +6128,7 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 				terraformQuery["indexes"] = indexes
 			}
 			if search, ok := terraformEventQueryDefinition.GetSearchOk(); ok {
-				if len(search.GetQuery()) > 0 {
-					terraformSearch := map[string]interface{}{}
-					terraformSearch["query"] = search.GetQuery()
-					terraformSearchList := []map[string]interface{}{terraformSearch}
-					terraformQuery["search"] = terraformSearchList
-				}
+				terraformQuery["search_query"] = search.GetQuery()
 			}
 			if compute, ok := terraformEventQueryDefinition.GetComputeOk(); ok {
 				terraformCompute := map[string]interface{}{}
