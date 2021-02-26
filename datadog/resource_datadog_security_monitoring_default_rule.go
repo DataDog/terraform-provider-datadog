@@ -177,6 +177,8 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 		}
 
 		if matchedCases < len(tfCases) {
+			// Enable partial state so we don't persist the changes
+			d.Partial(true)
 			return nil, false, errors.New("attempted to update notifications for non-existing case for rule " + currentState.GetId())
 		}
 
