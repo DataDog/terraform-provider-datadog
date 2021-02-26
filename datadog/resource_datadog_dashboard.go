@@ -4367,7 +4367,7 @@ func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition datadogV1.S
 func getGeomapDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block).",
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4381,7 +4381,7 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"palette": {
-						Description: "Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.",
+						Description: "The color palette to apply to the widget.",
 						Type:        schema.TypeString,
 						Required:    true,
 					},
@@ -4455,6 +4455,7 @@ func buildDatadogGeomapDefinition(terraformDefinition map[string]interface{}) *d
 		}
 	}
 
+	// Optional params
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
 	}

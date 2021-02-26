@@ -1407,7 +1407,7 @@ Required:
 Optional:
 
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--geomap_definition--request))
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--geomap_definition--request))
 - **style** (Block List) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--style))
 - **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
@@ -1571,7 +1571,7 @@ Optional:
 
 Required:
 
-- **palette** (String) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+- **palette** (String) The color palette to apply to the widget.
 - **palette_flip** (Boolean) Boolean indicating whether to flip the palette tones.
 
 
@@ -2380,7 +2380,7 @@ Required:
 Optional:
 
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request))
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request))
 - **style** (Block List) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--style))
 - **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
@@ -2544,7 +2544,7 @@ Optional:
 
 Required:
 
-- **palette** (String) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+- **palette** (String) The color palette to apply to the widget.
 - **palette_flip** (Boolean) Boolean indicating whether to flip the palette tones.
 
 
