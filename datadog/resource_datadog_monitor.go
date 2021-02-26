@@ -324,7 +324,6 @@ func resourceDatadogMonitor() *schema.Resource {
 				Description: "Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.",
 				Type:        schema.TypeBool,
 				Optional:    true,
-				Default:     false,
 			},
 			// since this is only useful for "log alert" type, we don't set a default value
 			// if we did set it, it would be used for all types; we have to handle this manually
