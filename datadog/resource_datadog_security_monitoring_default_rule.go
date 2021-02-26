@@ -142,49 +142,59 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 	isEnabled := d.Get("enabled").(bool)
 	payload.IsEnabled = &isEnabled
 
-	if v, ok := d.GetOk("case"); ok {
-		matchedCases := 0
-		modifiedCases := 0
-		tfCases := v.([]map[string]interface{})
+	matchedCases := 0
+	modifiedCases := 0
+	tfCasesRaw := d.Get("case").([]interface{})
 
-		updatedRuleCase := make([]datadogV2.SecurityMonitoringRuleCase, len(currentState.GetCases()))
-		for i, ruleCase := range currentState.GetCases() {
-			var updatedNotifications []string
-			if tfCase, ok := findRuleCaseForStatus(tfCases, ruleCase.GetStatus()); ok {
-				matchedCases++
+	updatedRuleCase := make([]datadogV2.SecurityMonitoringRuleCase, len(currentState.GetCases()))
+	for i, ruleCase := range currentState.GetCases() {
 
-				tfNotificationsRaw := tfCase["notifications"].([]interface{})
-				tfNotifications := make([]string, len(tfNotificationsRaw))
-				for notificationIdx, v := range tfNotificationsRaw {
-					tfNotifications[notificationIdx] = v.(string)
-				}
+		updatedRuleCase[i] = datadogV2.SecurityMonitoringRuleCase{
+			Condition:     currentState.GetCases()[i].Condition,
+			Name:          currentState.GetCases()[i].Name,
+			Notifications: currentState.GetCases()[i].Notifications,
+			Status:        currentState.GetCases()[i].Status,
+		}
 
-				if !stringSliceEquals(tfNotifications, ruleCase.GetNotifications()) {
-					modifiedCases++
-					updatedNotifications = tfNotifications
-				}
+		if tfCase, ok := findRuleCaseForStatus(tfCasesRaw, ruleCase.GetStatus()); ok {
+
+			// Update rule case notifications when rule added to terraform configuration
+
+			matchedCases += 1
+
+			tfNotificationsRaw := tfCase["notifications"].([]interface{})
+			tfNotifications := make([]string, len(tfNotificationsRaw))
+			for notificationIdx, v := range tfNotificationsRaw {
+				tfNotifications[notificationIdx] = v.(string)
 			}
 
-			updatedRuleCase[i] = datadogV2.SecurityMonitoringRuleCase{
-				Condition:     currentState.GetCases()[i].Condition,
-				Name:          currentState.GetCases()[i].Name,
-				Notifications: currentState.GetCases()[i].Notifications,
-				Status:        currentState.GetCases()[i].Status,
+			if !stringSliceEquals(tfNotifications, ruleCase.GetNotifications()) {
+				modifiedCases += 1
+				updatedRuleCase[i].Notifications = &tfNotifications
 			}
-			if updatedNotifications != nil {
-				updatedRuleCase[i].Notifications = &updatedNotifications
+
+		} else {
+
+			// Clear rule case notifications when rule case removed from terraform configuration
+
+			tfNotifications := make([]string, 0)
+
+			if !stringSliceEquals(tfNotifications, ruleCase.GetNotifications()) {
+				modifiedCases += 1
+				updatedRuleCase[i].Notifications = &tfNotifications
 			}
 		}
 
-		if matchedCases < len(tfCases) {
-			// Enable partial state so we don't persist the changes
-			d.Partial(true)
-			return nil, false, errors.New("attempted to update notifications for non-existing case for rule " + currentState.GetId())
-		}
+	}
 
-		if modifiedCases > 0 {
-			payload.Cases = &updatedRuleCase
-		}
+	if matchedCases < len(tfCasesRaw) {
+		// Enable partial state so that we don't persist the changes
+		d.Partial(true)
+		return nil, false, errors.New("attempted to update notifications for non-existing case for rule " + currentState.GetId())
+	}
+
+	if modifiedCases > 0 {
+		payload.Cases = &updatedRuleCase
 	}
 
 	return &payload, true, nil
@@ -202,8 +212,9 @@ func stringSliceEquals(left []string, right []string) bool {
 	return true
 }
 
-func findRuleCaseForStatus(cases []map[string]interface{}, status datadogV2.SecurityMonitoringRuleSeverity) (map[string]interface{}, bool) {
-	for _, tfCase := range cases {
+func findRuleCaseForStatus(tfCasesRaw []interface{}, status datadogV2.SecurityMonitoringRuleSeverity) (map[string]interface{}, bool) {
+	for _, tfCaseRaw := range tfCasesRaw {
+		tfCase := tfCaseRaw.(map[string]interface{})
 		tfStatus := datadogV2.SecurityMonitoringRuleSeverity(tfCase["status"].(string))
 		if tfStatus == status {
 			return tfCase, true
