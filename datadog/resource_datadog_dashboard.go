@@ -4661,9 +4661,10 @@ func getFormulaQuerySchema() *schema.Schema {
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"query": {
-											Type:        schema.TypeString,
-											Required:    true,
-											Description: "Events search string.",
+											Type:         schema.TypeString,
+											Required:     true,
+											ValidateFunc: validators.ValidateStringValue,
+											Description:  "Events search string.",
 										},
 									},
 								},
@@ -4932,10 +4933,8 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 	eventQuery.SetIndexes(indexes)
 
 	if terraformSearches, ok := data["search"].([]interface{}); ok && len(terraformSearches) > 0 {
-		terraformSearch, ok := terraformSearches[0].(map[string]interface{})
-		if ok {
-			eventQuery.Search = datadogV1.NewFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
-		}
+		terraformSearch := terraformSearches[0].(map[string]interface{})
+		eventQuery.Search = datadogV1.NewFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
 	}
 
 	// GroupBy
