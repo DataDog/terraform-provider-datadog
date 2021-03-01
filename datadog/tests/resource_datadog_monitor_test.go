@@ -561,7 +561,7 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "type", "log alert"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "query", "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 2"),
+						"datadog_monitor.foo", "query", "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") > 2"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
@@ -1092,7 +1092,7 @@ resource "datadog_monitor" "foo" {
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
 
-  query = "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 2"
+  query = "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") > 2"
 
   thresholds = {
 	warning = "1.0"
