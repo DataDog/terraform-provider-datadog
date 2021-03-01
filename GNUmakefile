@@ -3,8 +3,8 @@ RECORD?=false
 GOFMT_FILES?=$$(find . -name '*.go')
 PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
-ZORKIAN_VERSION=master
-API_CLIENT_VERSION=master
+ZORKIAN_VERSION?=master
+API_CLIENT_VERSION?=master
 
 default: build
 
@@ -19,12 +19,11 @@ uninstall:
 	@rm -vf $(DIR)/terraform-provider-datadog
 
 # Run unit tests; these tests don't interact with the API and don't support/need RECORD
-test: get-test-deps fmtcheck
-	echo $(TEST) | \
-		xargs -t -n4 gotestsum --hide-summary skipped --format testname --debug --packages ./... -- $(TESTARGS) -timeout=30s
+test: get-test-deps fmtcheck lint
+	gotestsum --hide-summary skipped --format testname --debug --packages $(TEST) -- $(TESTARGS) -timeout=30s
 
 # Run acceptance tests (this runs integration CRUD tests through the terraform test framework)
-testacc: get-test-deps fmtcheck
+testacc: get-test-deps fmtcheck lint
 	RECORD=$(RECORD) TF_ACC=1 gotestsum --format testname --debug --rerun-fails --packages ./... -- -v $(TESTARGS) -timeout 120m
 
 # Run both unit and acceptance tests
@@ -41,6 +40,9 @@ vet:
 		echo "and fix them if necessary before submitting the code for review."; \
 		exit 1; \
 	fi
+
+lint: get-test-deps
+	golint ./...
 
 fmt:
 	gofmt -w $(GOFMT_FILES)
@@ -67,7 +69,8 @@ update-go-client:
 	go mod tidy
 
 get-test-deps:
-	gotestsum --version || (cd `mktemp -d`;	GO111MODULE=off GOFLAGS='' go get -u gotest.tools/gotestsum; cd -)
+	gotestsum --version || (cd `mktemp -d`; GO111MODULE=off GOFLAGS='' go get -u gotest.tools/gotestsum; cd -)
+	which golint || (cd `mktemp -d`; GO111MODULE=off GOFLAGS='' go get -u golang.org/x/lint/golint; cd -)
 
 license-check:
 	@sh -c "'$(CURDIR)/scripts/license-check.sh'"

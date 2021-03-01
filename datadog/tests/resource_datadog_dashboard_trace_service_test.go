@@ -152,5 +152,5 @@ func TestAccDatadogDashboardTraceService(t *testing.T) {
 }
 
 func TestAccDatadogDashboardTraceService_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTraceServiceConfigImport, "datadog_dashboard.trace_service_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardTraceServiceConfigImport, "datadog_dashboard.trace_service_dashboard")
 }

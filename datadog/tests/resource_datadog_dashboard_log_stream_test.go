@@ -147,7 +147,7 @@ func TestAccDatadogDashboardLogStream(t *testing.T) {
 }
 
 func TestAccDatadogDashboardLogStream_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardLogStreamConfigImport, "datadog_dashboard.log_stream_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardLogStreamConfigImport, "datadog_dashboard.log_stream_dashboard")
 }
 
 const datadogDashboardLogStreamLogSetConfig = `
@@ -213,5 +213,5 @@ func TestAccDatadogDashboardLogStreamLogSet(t *testing.T) {
 }
 
 func TestAccDatadogDashboardLogStreamLogSet_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardLogStreamLogSetConfig, "datadog_dashboard.log_stream_dashboard_logset")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardLogStreamLogSetConfig, "datadog_dashboard.log_stream_dashboard_logset")
 }

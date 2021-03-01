@@ -688,7 +688,7 @@ func testAccCheckDatadogMonitorDestroy(accProvider *schema.Provider) func(*terra
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		if err := destroyHelper(s, datadogClientV1, authV1); err != nil {
+		if err := destroyHelper(authV1, s, datadogClientV1); err != nil {
 			return err
 		}
 		return nil
@@ -701,7 +701,7 @@ func testAccCheckDatadogMonitorExists(accProvider *schema.Provider) resource.Tes
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		if err := existsHelper(s, datadogClientV1, authV1); err != nil {
+		if err := existsHelper(authV1, s, datadogClientV1); err != nil {
 			return err
 		}
 		return nil
@@ -1259,26 +1259,28 @@ resource "datadog_monitor" "foo" {
 }`, uniq, uniq)
 }
 
-func destroyHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, authV1 context.Context) error {
-	for _, r := range s.RootModule().Resources {
-		i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
-		_, httpresp, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
-		if err != nil {
-			if httpresp != nil && httpresp.StatusCode == 404 {
-				continue
+func destroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	err := utils.Retry(2, 10, func() error {
+		for _, r := range s.RootModule().Resources {
+			i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
+			_, httpresp, err := datadogClientV1.MonitorsApi.GetMonitor(ctx, i).Execute()
+			if err != nil {
+				if httpresp != nil && httpresp.StatusCode == 404 {
+					return nil
+				}
+				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
 			}
-			return utils.TranslateClientError(err, "error retrieving monitor")
+			return &utils.RetryableError{Prob: fmt.Sprintf("Monitor still exists")}
 		}
-		return fmt.Errorf("monitor still exists")
-	}
-
-	return nil
+		return nil
+	})
+	return err
 }
 
-func existsHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, authV1 context.Context) error {
+func existsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
-		_, _, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
+		_, _, err := datadogClientV1.MonitorsApi.GetMonitor(ctx, i).Execute()
 		if err != nil {
 			return utils.TranslateClientError(err, "error retrieving monitor")
 		}

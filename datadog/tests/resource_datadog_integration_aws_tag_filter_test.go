@@ -27,7 +27,7 @@ func TestAccDatadogIntegrationAwsTagFilter_Basic(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogIntegrationAwsTagFilter_Basic(uniqueID),
+				Config: testAccCheckDatadogIntegrationAwsTagFilterBasic(uniqueID),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
 					resource.TestCheckResourceAttr(
@@ -42,7 +42,7 @@ func TestAccDatadogIntegrationAwsTagFilter_Basic(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogIntegrationAwsTagFilter_Basic(uniq string) string {
+func testAccCheckDatadogIntegrationAwsTagFilterBasic(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_aws" "account" {
   account_id                       = "%s"
@@ -59,11 +59,11 @@ resource "datadog_integration_aws_tag_filter" "testing_aws_tag_filter" {
 
 func testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider *schema.Provider, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		resourceId := s.RootModule().Resources[resourceName].Primary.ID
-		_, tfNamespace, err := utils.AccountAndNamespaceFromID(resourceId)
+		resourceID := s.RootModule().Resources[resourceName].Primary.ID
+		_, tfNamespace, err := utils.AccountAndNamespaceFromID(resourceID)
 		namespace := datadogV1.AWSNamespace(tfNamespace)
 
-		filters, err := listFiltersHelper(accProvider, resourceId)
+		filters, err := listFiltersHelper(accProvider, resourceID)
 		if err != nil {
 			return err
 		}
@@ -83,11 +83,11 @@ func testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider *schema.Provid
 
 func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider *schema.Provider, resourceName string) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		resourceId := s.RootModule().Resources[resourceName].Primary.ID
-		_, tfNamespace, err := utils.AccountAndNamespaceFromID(resourceId)
+		resourceID := s.RootModule().Resources[resourceName].Primary.ID
+		_, tfNamespace, err := utils.AccountAndNamespaceFromID(resourceID)
 		namespace := datadogV1.AWSNamespace(tfNamespace)
 
-		filters, err := listFiltersHelper(accProvider, resourceId)
+		filters, err := listFiltersHelper(accProvider, resourceID)
 		if err != nil {
 			errObj := err.(datadogV1.GenericOpenAPIError)
 			if matched, _ := regexp.MatchString("AWS account [0-9]+ does not exist in integration", string(errObj.Body())); matched {
@@ -109,14 +109,14 @@ func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider *schema.Provi
 	}
 }
 
-func listFiltersHelper(accProvider *schema.Provider, resourceId string) (*[]datadogV1.AWSTagFilter, error) {
+func listFiltersHelper(accProvider *schema.Provider, resourceID string) (*[]datadogV1.AWSTagFilter, error) {
 	meta := accProvider.Meta()
 	providerConf := meta.(*datadog.ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
 
 	filters := []datadogV1.AWSTagFilter{}
-	accountID, _, err := utils.AccountAndNamespaceFromID(resourceId)
+	accountID, _, err := utils.AccountAndNamespaceFromID(resourceID)
 	if err != nil {
 		return nil, err
 	}
