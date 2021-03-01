@@ -4378,6 +4378,7 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 			Description: "Style of the widget graph. One nested block is allowed with the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"palette": {
@@ -4397,6 +4398,7 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 			Description: "The view of the world that the map should render.",
 			Type:        schema.TypeList,
 			Required:    true,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"focus": {
@@ -4425,6 +4427,14 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 		},
 		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
+		"custom_link": {
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getWidgetCustomLinkSchema(),
+			},
+		},
 	}
 }
 
@@ -4478,6 +4488,10 @@ func buildDatadogGeomapDefinition(terraformDefinition map[string]interface{}) *d
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
+	}
+
+	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
+		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
 	}
 
 	return datadogDefinition

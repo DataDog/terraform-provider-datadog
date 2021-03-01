@@ -1402,13 +1402,14 @@ Optional:
 
 Required:
 
-- **view** (Block List, Min: 1) The view of the world that the map should render. (see [below for nested schema](#nestedblock--widget--geomap_definition--view))
+- **view** (Block List, Min: 1, Max: 1) The view of the world that the map should render. (see [below for nested schema](#nestedblock--widget--geomap_definition--view))
 
 Optional:
 
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--custom_link))
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--geomap_definition--request))
-- **style** (Block List) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--style))
+- **style** (Block List, Max: 1) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--style))
 - **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
@@ -1420,6 +1421,15 @@ Optional:
 Required:
 
 - **focus** (String) The 2-letter ISO code of a country to focus the map on. Or `WORLD`.
+
+
+<a id="nestedblock--widget--geomap_definition--custom_link"></a>
+### Nested Schema for `widget.geomap_definition.custom_link`
+
+Required:
+
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--geomap_definition--request"></a>
@@ -2375,13 +2385,14 @@ Optional:
 
 Required:
 
-- **view** (Block List, Min: 1) The view of the world that the map should render. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--view))
+- **view** (Block List, Min: 1, Max: 1) The view of the world that the map should render. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--view))
 
 Optional:
 
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--custom_link))
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request))
-- **style** (Block List) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--style))
+- **style** (Block List, Max: 1) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--style))
 - **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
@@ -2393,6 +2404,15 @@ Optional:
 Required:
 
 - **focus** (String) The 2-letter ISO code of a country to focus the map on. Or `WORLD`.
+
+
+<a id="nestedblock--widget--group_definition--widget--id--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.id.custom_link`
+
+Required:
+
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
 
 
 <a id="nestedblock--widget--group_definition--widget--id--request"></a>
