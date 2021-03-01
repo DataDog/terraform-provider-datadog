@@ -201,8 +201,8 @@ func buildDatadogDashboardListDeleteItemsV2(dashboardListItems datadogV2.Dashboa
 	dashboardListV2ItemsArr := make([]datadogV2.DashboardListItemRequest, 0)
 	for _, dashItem := range dashboardListItems.GetDashboards() {
 		dashType := dashItem.GetType()
-		dashId := dashItem.GetId()
-		dashItem := datadogV2.NewDashboardListItemRequest(dashId, dashType)
+		dashID := dashItem.GetId()
+		dashItem := datadogV2.NewDashboardListItemRequest(dashID, dashType)
 		dashboardListV2ItemsArr = append(dashboardListV2ItemsArr, *dashItem)
 	}
 	dashboardListV2Items := datadogV2.NewDashboardListDeleteItemsRequest()

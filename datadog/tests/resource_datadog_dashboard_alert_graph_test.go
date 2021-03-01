@@ -98,5 +98,5 @@ func TestAccDatadogDashboardAlertGraph(t *testing.T) {
 }
 
 func TestAccDatadogDashboardAlertGraph_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardAlertGraphConfigImport, "datadog_dashboard.alert_graph_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardAlertGraphConfigImport, "datadog_dashboard.alert_graph_dashboard")
 }

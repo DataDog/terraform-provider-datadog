@@ -289,5 +289,5 @@ func TestAccDatadogDashboardQueryTable(t *testing.T) {
 }
 
 func TestAccDatadogDashboardQueryTable_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardQueryTableConfigImport, "datadog_dashboard.query_table_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardQueryTableConfigImport, "datadog_dashboard.query_table_dashboard")
 }

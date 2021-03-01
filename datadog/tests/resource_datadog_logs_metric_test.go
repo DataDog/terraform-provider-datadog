@@ -27,7 +27,7 @@ func TestAccDatadogLogsMetric_import(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogLogsMetricDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogLogsMetricConfig_Basic(uniqueLogsMetric),
+				Config: testAccCheckDatadogLogsMetricConfigBasic(uniqueLogsMetric),
 			},
 			{
 				ResourceName:      resourceName,
@@ -50,7 +50,7 @@ func TestAccDatadogLogsMetric_Basic(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogLogsMetricDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogLogsMetricConfig_Basic(uniqueLogsMetric),
+				Config: testAccCheckDatadogLogsMetricConfigBasic(uniqueLogsMetric),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogLogsMetricExists(accProvider, "datadog_logs_metric.testing_logs_metric"),
 					resource.TestCheckResourceAttr(
@@ -77,7 +77,7 @@ func TestAccDatadogLogsMetric_Basic(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogLogsMetricConfig_Basic(uniq string) string {
+func testAccCheckDatadogLogsMetricConfigBasic(uniq string) string {
 	return fmt.Sprintf(`
         resource "datadog_logs_metric" "testing_logs_metric" {
 			name = "%s"
@@ -103,13 +103,13 @@ func testAccCheckDatadogLogsMetricConfig_Basic(uniq string) string {
 func testAccCheckDatadogLogsMetricExists(accProvider *schema.Provider, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		meta := accProvider.Meta()
-		resourceId := s.RootModule().Resources[resourceName].Primary.ID
+		resourceID := s.RootModule().Resources[resourceName].Primary.ID
 		providerConf := meta.(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV2
 		auth := providerConf.AuthV2
 		var err error
 
-		id := resourceId
+		id := resourceID
 
 		_, _, err = datadogClient.LogsMetricsApi.GetLogsMetric(auth, id).Execute()
 

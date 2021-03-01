@@ -103,5 +103,5 @@ func TestAccDatadogDashboardDistribution(t *testing.T) {
 }
 
 func TestAccDatadogDashboardDistribution_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardDistributionConfigImport, "datadog_dashboard.distribution_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardDistributionConfigImport, "datadog_dashboard.distribution_dashboard")
 }

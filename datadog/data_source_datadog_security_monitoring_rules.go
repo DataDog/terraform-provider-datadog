@@ -127,23 +127,23 @@ func dataSourceDatadogSecurityMonitoringRulesRead(d *schema.ResourceData, meta i
 		if totalCount-1 <= page*100 {
 			break
 		}
-		page += 1
+		page++
 	}
 
-	d.SetId(computeSecMonDataSourceRulesId(nameFilter, defaultFilter, tagFilter))
+	d.SetId(computeSecMonDataSourceRulesID(nameFilter, defaultFilter, tagFilter))
 	d.Set("rules", rules)
 	d.Set("rule_ids", ruleIds)
 
 	return nil
 }
 
-func computeSecMonDataSourceRulesId(nameFilter *string, defaultFilter *bool, tagFilter map[string]bool) string {
+func computeSecMonDataSourceRulesID(nameFilter *string, defaultFilter *bool, tagFilter map[string]bool) string {
 	// Sort tags to make key unique
 	tags := make([]string, len(tagFilter))
 	idx := 0
 	for tag := range tagFilter {
 		tags[idx] = tag
-		idx += 1
+		idx++
 	}
 	sort.Strings(tags)
 
@@ -252,7 +252,7 @@ func matchesSecMonRuleFilters(
 		matchedTagCount := 0
 		for _, tag := range *rule.Tags {
 			if _, ok := tagFilter[tag]; ok {
-				matchedTagCount += 1
+				matchedTagCount++
 			}
 		}
 		if matchedTagCount < len(tagFilter) {

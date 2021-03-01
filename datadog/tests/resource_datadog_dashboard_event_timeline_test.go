@@ -106,5 +106,5 @@ func TestAccDatadogDashboardEventTimeline(t *testing.T) {
 }
 
 func TestAccDatadogDashboardEventTimeline_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardEventTimelineConfigImport, "datadog_dashboard.event_timeline_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardEventTimelineConfigImport, "datadog_dashboard.event_timeline_dashboard")
 }

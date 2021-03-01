@@ -49,5 +49,5 @@ func TestAccDatadogDashboardFreeText(t *testing.T) {
 }
 
 func TestAccDatadogDashboardFreeText_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardFreeTextConfig, "datadog_dashboard.free_text_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardFreeTextConfig, "datadog_dashboard.free_text_dashboard")
 }

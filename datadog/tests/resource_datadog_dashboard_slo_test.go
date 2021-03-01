@@ -48,5 +48,5 @@ func TestAccDatadogDashboardSLO(t *testing.T) {
 }
 
 func TestAccDatadogDashboardSLO_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardSLOConfig, "datadog_dashboard.slo_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardSLOConfig, "datadog_dashboard.slo_dashboard")
 }

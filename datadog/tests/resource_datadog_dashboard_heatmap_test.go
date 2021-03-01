@@ -158,5 +158,5 @@ func TestAccDatadogDashboardHeatMap(t *testing.T) {
 }
 
 func TestAccDatadogDashboardHeatMap_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardHeatMapConfigImport, "datadog_dashboard.heatmap_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardHeatMapConfigImport, "datadog_dashboard.heatmap_dashboard")
 }
