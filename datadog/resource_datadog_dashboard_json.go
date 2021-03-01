@@ -2,9 +2,10 @@ package datadog
 
 import (
 	"errors"
+	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/structure"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -20,22 +21,27 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
-			"dashboard_json": {
-				Type:         schema.TypeString,
-				Required:     true,
-				ValidateFunc: validation.StringIsJSON,
+			"dashboard": {
+				Type:     schema.TypeString,
+				Required: true,
+				ValidateFunc: func(v interface{}, k string) (warns []string, errs []error) {
+					_, err := utils.NormalizeJSONorYamlString(v.(string))
+					if err != nil {
+						errs = append(errs, fmt.Errorf("invalid JSON or YAML: \n %s", v))
+					}
+					return
+				},
 				StateFunc: func(v interface{}) string {
-					jsonString, _ := structure.NormalizeJsonString(v)
-					// Remove computed fields from the object
-					attrMap, _ := structure.ExpandJsonFromString(jsonString)
+					k, _ := utils.NormalizeJSONorYamlString(v.(string))
+					// Remove computed fields when comparing diffs
+					attrMap, _ := structure.ExpandJsonFromString(k)
 					for _, f := range computedFields {
 						delete(attrMap, f)
 					}
-					jsonString, _ = structure.FlattenJsonToString(attrMap)
-
-					return jsonString
+					res, _ := structure.FlattenJsonToString(attrMap)
+					return res
 				},
-				Description: "",
+				Description: "The JSON or YAML formatted definition of the Dashboard.",
 			},
 			"url": {
 				Type:        schema.TypeString,
@@ -76,12 +82,12 @@ func resourceDatadogDashboardJSONCreate(d *schema.ResourceData, meta interface{}
 	authV1 := providerConf.AuthV1
 	path := "/api/v1/dashboard"
 
-	jsonString, err := structure.NormalizeJsonString(d.Get("dashboard_json").(string))
+	test, err := utils.NormalizeJSONorYamlString(d.Get("dashboard").(string))
 	if err != nil {
 		return err
 	}
 
-	respByte, _, err := utils.SendRequest(authV1, datadogClientV1, "POST", path, jsonString)
+	respByte, _, err := utils.SendRequest(authV1, datadogClientV1, "POST", path, test)
 	if err != nil {
 		return utils.TranslateClientError(err, "error creating resource")
 	}
@@ -106,7 +112,7 @@ func resourceDatadogDashboardJSONUpdate(d *schema.ResourceData, meta interface{}
 	authV1 := providerConf.AuthV1
 	path := "/api/v1/dashboard/" + d.Id()
 
-	jsonString, err := structure.NormalizeJsonString(d.Get("dashboard_json").(string))
+	jsonString, err := utils.NormalizeJSONorYamlString(d.Get("dashboard").(string))
 	if err != nil {
 		return err
 	}
@@ -140,7 +146,9 @@ func resourceDatadogDashboardJSONDelete(d *schema.ResourceData, meta interface{}
 
 func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]interface{}) error {
 	if v, ok := dashboard["url"]; ok {
-		d.Set("url", v.(string))
+		if err := d.Set("url", v.(string)); err != nil {
+			return err
+		}
 	}
 
 	// Remove computed fields from the object
@@ -153,7 +161,7 @@ func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]inter
 		return err
 	}
 
-	if err = d.Set("dashboard_json", dashboardString); err != nil {
+	if err = d.Set("dashboard", dashboardString); err != nil {
 		return err
 	}
 	return nil

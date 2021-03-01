@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -51,11 +52,11 @@ func TestAccountAndRoleFromID(t *testing.T) {
 		accountID, roleName, err := AccountAndRoleFromID(tc.id)
 
 		if err != nil && tc.err != nil && err.Error() != tc.err.Error() {
-			t.Errorf("%s: erros should be '%s', not `%s`", name, tc.err.Error(), err.Error())
+			t.Errorf("%s: errors should be '%s', not `%s`", name, tc.err.Error(), err.Error())
 		} else if err != nil && tc.err == nil {
-			t.Errorf("%s: erros should be nil, not `%s`", name, err.Error())
+			t.Errorf("%s: errors should be nil, not `%s`", name, err.Error())
 		} else if err == nil && tc.err != nil {
-			t.Errorf("%s: erros should be '%s', not nil", name, tc.err.Error())
+			t.Errorf("%s: errors should be '%s', not nil", name, tc.err.Error())
 		}
 
 		if accountID != tc.accountID {
@@ -63,6 +64,81 @@ func TestAccountAndRoleFromID(t *testing.T) {
 		}
 		if roleName != tc.roleName {
 			t.Errorf("%s: role name '%s' didn't match `%s`", name, roleName, tc.roleName)
+		}
+	}
+}
+
+func TestNormalizeJSONorYamlString(t *testing.T) {
+	cases := map[string]struct {
+		sample string
+		errMsg string
+	}{
+		"validJSON":   {validJSON(), ""},
+		"validYaml":   {validYaml(), ""},
+		"invalidJSON": {invalidJSON(), "invalid JSON or YAML"},
+		"invalidYaml": {invalidYaml(), "invalid JSON or YAML"},
+	}
+	for _, tc := range cases {
+		name, err := NormalizeJSONorYamlString(tc.sample)
+		if err != nil && tc.errMsg != "" && !strings.Contains(err.Error(), tc.errMsg) {
+			t.Errorf("%s: error should contain %s, error: %s", name, tc.errMsg, err.Error())
+		}
+
+		if err != nil && tc.errMsg == "" {
+			t.Errorf("%s, error should be nil, not %s", name, err.Error())
+		}
+	}
+}
+func validJSON() string {
+	return fmt.Sprint(`
+{
+   "test":"value",
+   "test_two":{
+      "nested_attr":"value"
+   }
+}
+`)
+}
+func validYaml() string {
+	return fmt.Sprint(`
+test: value
+test_two:
+  nested_attr: value
+`)
+}
+func invalidJSON() string {
+	return fmt.Sprint(`
+{
+   "test":"value":"value",
+   "test_two":{
+      "nested_attr":"value"
+   }
+}
+`)
+}
+func invalidYaml() string {
+	return fmt.Sprint(`
+test: value
+ test_two:
+nested_attr: value
+`)
+}
+
+func TestConvertResponseByteToMap(t *testing.T) {
+	cases := map[string]struct {
+		js     string
+		errMsg string
+	}{
+		"validJSON":   {validJSON(), ""},
+		"invalidJSON": {invalidJSON(), "invalid character ':' after object key:value pair"},
+	}
+	for name, tc := range cases {
+		_, err := ConvertResponseByteToMap([]byte(tc.js))
+		if err != nil && tc.errMsg != "" && err.Error() != tc.errMsg {
+			t.Fatalf("%s: error should be %s, not %s", name, tc.errMsg, err.Error())
+		}
+		if err != nil && tc.errMsg == "" {
+			t.Fatalf("%s: error should be nil, not %s", name, err.Error())
 		}
 	}
 }
