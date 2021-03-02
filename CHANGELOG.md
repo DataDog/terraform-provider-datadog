@@ -1,3 +1,38 @@
+## 2.22.0 (Unreleased)
+
+IMPROVEMENTS:
+
+-   `datadog_dashboard`: Improve consistency by using response from POST/PUT requests directly to save state [GH-909]
+-   `datadog_downtime`: Improve consistency by using response from POST/PUT requests directly to save state [GH-905]
+-   `datadog_ip_ranges`: Add support for reading ipv4/6 prefixes by location for synthetics [GH-934]
+-   `datadog_logs_archive_order`: Improve consistency by using response from POST/PUT requests directly to save state [GH-912]
+-   `datadog_logs_archive`: Improve consistency by using response from POST/PUT requests directly to save state [GH-912]
+-   `datadog_logs_custom_pipeline`: Improve consistency by using response from POST/PUT requests directly to save state [GH-913]
+-   `datadog_logs_index_order`: Improve consistency by using response from POST/PUT requests directly to save state [GH-915]
+-   `datadog_logs_index`: Improve consistency by using response from POST/PUT requests directly to save state [GH-915]
+-   `datadog_logs_integration_pipeline`: Improve consistency by using response from POST/PUT requests directly to save state [GH-913]
+-   `datadog_logs_metric`: Improve consistency by using response from POST/PUT requests directly to save state [GH-917]
+-   `datadog_logs_pipeline_order`: Improve consistency by using response from POST/PUT requests directly to save state [GH-913]
+-   `datadog_metric_metadata`: Improve consistency by using response from POST/PUT requests directly to save state [GH-922]
+-   `datadog_monitor`: Add support for groupby_simple_monitor option to monitor resource [GH-952]
+-   `datadog_monitor`: Improve consistency by using response from POST/PUT requests directly to save state [GH-901]
+-   `datadog_role`: Improve consistency by using response from POST/PUT requests directly to save state [GH-925]
+-   `datadog_service_level_objective`: Improve consistency by using response from POST/PUT requests directly to save state [GH-910]
+-   `datadog_slo_correction`: Improve consistency by using response from POST/PUT requests directly to save state [GH-921]
+-   `datadog_user`: Improve consistency by using response from POST/PUT requests directly to save state [GH-927]
+
+FEATURE:
+
+-   `datadog_integration_slack_channel`: Add support for slack channel resource [GH-932]
+
+BUGFIXES:
+
+-   `datadog_dashboard`: Fix template_variable_presets to support optional template_variables [GH-944]
+
+NOTES:
+
+-   `datadog_integration_pagerduty`: Remove deprecation on PagerDuty resource [GH-930]
+
 ## 2.21.0 (February 9, 2021)
 
 IMPROVEMENTS:

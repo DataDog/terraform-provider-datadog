@@ -16,7 +16,6 @@ require (
 	github.com/jonboulle/clockwork v0.1.0
 	github.com/kr/pretty v0.2.0
 	github.com/philhofer/fwd v1.0.0 // indirect
-	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/zorkian/go-datadog-api v2.30.0+incompatible
 	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect
 	gopkg.in/DataDog/dd-trace-go.v1 v1.29.0-rc.1.0.20210226170446-a8dc39ec3484
