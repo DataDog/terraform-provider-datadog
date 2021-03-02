@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -16,8 +17,6 @@ import (
 	"strings"
 	"testing"
 	"time"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
