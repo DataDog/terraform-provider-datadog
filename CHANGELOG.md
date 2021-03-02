@@ -32,6 +32,7 @@ BUGFIXES:
 NOTES:
 
 -   `datadog_integration_pagerduty`: Remove deprecation on PagerDuty resource [GH-930]
+-   Update the underlying Datadog go client to v1.0.0-beta.16. See [here](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.0.0-beta.16) for changes.
 
 ## 2.21.0 (February 9, 2021)
 
