@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Log-local-1614376103","options":{"enable_logs_sample":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"groupby_simple_monitor":true,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"thresholds":{"critical":2,"warning":1},"timeout_h":60},"priority":0,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") \u003e 2","tags":["baz","foo:bar"],"type":"log alert"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Log-local-1614693446","options":{"enable_logs_sample":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"groupby_simple_monitor":true,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"thresholds":{"critical":2,"warning":1},"timeout_h":60},"priority":0,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") \u003e 2","tags":["baz","foo:bar"],"type":"log alert"}
     form: {}
     headers:
       Accept:
@@ -13,13 +13,7 @@ interactions:
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.5; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "5587170676121846603"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7876394996867678431"
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.7; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -36,7 +30,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 26 Feb 2021 21:48:24 GMT
+      - Tue, 02 Mar 2021 13:57:27 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -44,9 +38,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
+      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
       X-Dd-Version:
-      - "35.3993079"
+      - "35.4010160"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -54,7 +48,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Log-local-1614376103","options":{"enable_logs_sample":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"groupby_simple_monitor":true,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"thresholds":{"critical":2,"warning":1},"timeout_h":60},"priority":0,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") \u003e 2","tags":["baz","foo:bar"],"type":"log alert"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Log-local-1614693446","options":{"enable_logs_sample":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"groupby_simple_monitor":true,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"thresholds":{"critical":2,"warning":1},"timeout_h":60},"priority":0,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") \u003e 2","tags":["baz","foo:bar"],"type":"log alert"}
     form: {}
     headers:
       Accept:
@@ -64,13 +58,7 @@ interactions:
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.5; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "6883940251183463373"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7876394996867678431"
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.7; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -87,7 +75,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 26 Feb 2021 21:48:24 GMT
+      - Tue, 02 Mar 2021 13:57:27 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -95,9 +83,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - mNzaoDhdDKO7t4QSrAe5X7pHd0bJND187D+vRbwoluXouE2m1UaQQX0RGCvRpLVE
+      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
       X-Dd-Version:
-      - "35.3993079"
+      - "35.4010160"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -105,7 +93,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Log-local-1614376103","options":{"enable_logs_sample":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"groupby_simple_monitor":true,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"thresholds":{"critical":2,"warning":1},"timeout_h":60},"priority":0,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") \u003e 2","tags":["baz","foo:bar"],"type":"log alert"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Log-local-1614693446","options":{"enable_logs_sample":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"groupby_simple_monitor":true,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"thresholds":{"critical":2,"warning":1},"timeout_h":60},"priority":0,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") \u003e 2","tags":["baz","foo:bar"],"type":"log alert"}
     form: {}
     headers:
       Accept:
@@ -115,17 +103,11 @@ interactions:
       Dd-Operation-Id:
       - CreateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.5; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "6549284227930540350"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7876394996867678431"
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.7; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor
     method: POST
   response:
-    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 2","message":"some message Notify: @hipchat-channel","id":31000201,"multi":false,"name":"tf-TestAccDatadogMonitor_Log-local-1614376103","created":"2021-02-26T21:48:24.356300+00:00","created_at":1614376104000,"creator":{"id":734230,"handle":"fanny.jiang@datadoghq.com","name":"Fanny Jiang","email":"fanny.jiang@datadoghq.com"},"org_id":148099,"modified":"2021-02-26T21:48:24.356300+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"log alert","options":{"include_tags":true,"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"enable_logs_sample":true,"thresholds":{"critical":2.0,"warning":1.0},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"groupby_simple_monitor":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700}}'
+    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") > 2","message":"some message Notify: @hipchat-channel","id":31247461,"multi":true,"name":"tf-TestAccDatadogMonitor_Log-local-1614693446","created":"2021-03-02T13:57:27.464979+00:00","created_at":1614693447000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-03-02T13:57:27.464979+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"log alert","options":{"include_tags":true,"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"enable_logs_sample":true,"thresholds":{"critical":2.0,"warning":1.0},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"groupby_simple_monitor":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700}}'
     headers:
       Cache-Control:
       - no-cache
@@ -136,7 +118,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 26 Feb 2021 21:48:24 GMT
+      - Tue, 02 Mar 2021 13:57:27 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -146,9 +128,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - tpRCH6w417YjBovRJ8VmtuXmNONVYiRp2c8d2AxjPdGBn8PCtgG4vAztrx3qUZAN
+      - HbtaOKlJ6OCrx9tMXO6ivMTrEM+g0c93HDp08trmOmgdHozC5J+vn10F0H4WPjCU
       X-Dd-Version:
-      - "35.3993079"
+      - "35.4010160"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -158,7 +140,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "499"
       X-Ratelimit-Reset:
-      - "6"
+      - "3"
     status: 200 OK
     code: 200
     duration: ""
@@ -171,17 +153,11 @@ interactions:
       Dd-Operation-Id:
       - GetMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.5; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "62411951567678773"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7876394996867678431"
-    url: https://api.datadoghq.com/api/v1/monitor/31000201
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/monitor/31247461
     method: GET
   response:
-    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 2","message":"some message Notify: @hipchat-channel","id":31000201,"multi":false,"name":"tf-TestAccDatadogMonitor_Log-local-1614376103","created":"2021-02-26T21:48:24.356300+00:00","created_at":1614376104000,"creator":{"id":734230,"handle":"fanny.jiang@datadoghq.com","name":"Fanny Jiang","email":"fanny.jiang@datadoghq.com"},"org_id":148099,"modified":"2021-02-26T21:48:24.356300+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"log alert","options":{"include_tags":true,"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"enable_logs_sample":true,"thresholds":{"critical":2.0,"warning":1.0},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"groupby_simple_monitor":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700}}'
+    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") > 2","message":"some message Notify: @hipchat-channel","id":31247461,"multi":true,"name":"tf-TestAccDatadogMonitor_Log-local-1614693446","created":"2021-03-02T13:57:27.464979+00:00","created_at":1614693447000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-03-02T13:57:27.464979+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"log alert","options":{"include_tags":true,"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"enable_logs_sample":true,"thresholds":{"critical":2.0,"warning":1.0},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"groupby_simple_monitor":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700}}'
     headers:
       Cache-Control:
       - no-cache
@@ -192,63 +168,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 26 Feb 2021 21:48:24 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - L3ULR3HwCWYmEqCWGz2Yob3chcH4pjowBacBXkncP7o+/uPqKt9yGEYf/g1AJPzQ
-      X-Dd-Version:
-      - "35.3993079"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "3000"
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "2999"
-      X-Ratelimit-Reset:
-      - "6"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetMonitor
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.5; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "2699230609454114933"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7876394996867678431"
-    url: https://api.datadoghq.com/api/v1/monitor/31000201
-    method: GET
-  response:
-    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 2","message":"some message Notify: @hipchat-channel","id":31000201,"multi":false,"name":"tf-TestAccDatadogMonitor_Log-local-1614376103","created":"2021-02-26T21:48:24.356300+00:00","created_at":1614376104000,"creator":{"id":734230,"handle":"fanny.jiang@datadoghq.com","name":"Fanny Jiang","email":"fanny.jiang@datadoghq.com"},"org_id":148099,"modified":"2021-02-26T21:48:24.356300+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"log alert","options":{"include_tags":true,"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"enable_logs_sample":true,"thresholds":{"critical":2.0,"warning":1.0},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"groupby_simple_monitor":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Fri, 26 Feb 2021 21:48:24 GMT
+      - Tue, 02 Mar 2021 13:57:27 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -260,7 +180,57 @@ interactions:
       X-Dd-Debug:
       - gYZcaADwbKcv7Hm19HJx6WsLoKuOijDWAt2viPeCfWqUgyKY+9e1xZdmMJeXV3YV
       X-Dd-Version:
-      - "35.3993079"
+      - "35.4010160"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "3000"
+      X-Ratelimit-Period:
+      - "10"
+      X-Ratelimit-Remaining:
+      - "2999"
+      X-Ratelimit-Reset:
+      - "3"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetMonitor
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/monitor/31247461
+    method: GET
+  response:
+    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") > 2","message":"some message Notify: @hipchat-channel","id":31247461,"multi":true,"name":"tf-TestAccDatadogMonitor_Log-local-1614693446","created":"2021-03-02T13:57:27.464979+00:00","created_at":1614693447000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-03-02T13:57:27.464979+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"log alert","options":{"include_tags":true,"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"enable_logs_sample":true,"thresholds":{"critical":2.0,"warning":1.0},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"groupby_simple_monitor":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 02 Mar 2021 13:57:27 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
+      X-Dd-Version:
+      - "35.4010160"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -270,13 +240,13 @@ interactions:
       X-Ratelimit-Remaining:
       - "2998"
       X-Ratelimit-Reset:
-      - "6"
+      - "3"
     status: 200 OK
     code: 200
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Log-local-1614376103","options":{"enable_logs_sample":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"groupby_simple_monitor":true,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"thresholds":{"critical":2,"warning":1},"timeout_h":60},"priority":0,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") \u003e 2","tags":["baz","foo:bar"],"type":"log alert"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Log-local-1614693446","options":{"enable_logs_sample":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"groupby_simple_monitor":true,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"thresholds":{"critical":2,"warning":1},"timeout_h":60},"priority":0,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") \u003e 2","tags":["baz","foo:bar"],"type":"log alert"}
     form: {}
     headers:
       Accept:
@@ -286,13 +256,7 @@ interactions:
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.5; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "2438226145413798909"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7876394996867678431"
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.7; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -309,7 +273,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 26 Feb 2021 21:48:24 GMT
+      - Tue, 02 Mar 2021 13:57:27 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -317,9 +281,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - HbtaOKlJ6OCrx9tMXO6ivMTrEM+g0c93HDp08trmOmgdHozC5J+vn10F0H4WPjCU
+      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
       X-Dd-Version:
-      - "35.3993079"
+      - "35.4010160"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -334,17 +298,11 @@ interactions:
       Dd-Operation-Id:
       - GetMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.5; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4010880023618993838"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7876394996867678431"
-    url: https://api.datadoghq.com/api/v1/monitor/31000201
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/monitor/31247461
     method: GET
   response:
-    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 2","message":"some message Notify: @hipchat-channel","id":31000201,"multi":false,"name":"tf-TestAccDatadogMonitor_Log-local-1614376103","created":"2021-02-26T21:48:24.356300+00:00","created_at":1614376104000,"creator":{"id":734230,"handle":"fanny.jiang@datadoghq.com","name":"Fanny Jiang","email":"fanny.jiang@datadoghq.com"},"org_id":148099,"modified":"2021-02-26T21:48:24.356300+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"log alert","options":{"include_tags":true,"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"enable_logs_sample":true,"thresholds":{"critical":2.0,"warning":1.0},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"groupby_simple_monitor":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700}}'
+    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") > 2","message":"some message Notify: @hipchat-channel","id":31247461,"multi":true,"name":"tf-TestAccDatadogMonitor_Log-local-1614693446","created":"2021-03-02T13:57:27.464979+00:00","created_at":1614693447000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-03-02T13:57:27.464979+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"log alert","options":{"include_tags":true,"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"enable_logs_sample":true,"thresholds":{"critical":2.0,"warning":1.0},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"groupby_simple_monitor":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700}}'
     headers:
       Cache-Control:
       - no-cache
@@ -355,7 +313,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 26 Feb 2021 21:48:24 GMT
+      - Tue, 02 Mar 2021 13:57:28 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -365,9 +323,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - vdJ3/nHEY1ioXQ6pQrBVvsQK1s4yyc+wufBMPSoXql71qZVuP/xMdtNo6DafhOAk
+      - twvpGlmuom5y6A0pjGtXzTf554cmwJgTcCZ71fK4H/RDi+v5ehBK0zQiRcTJQG5C
       X-Dd-Version:
-      - "35.3993079"
+      - "35.4010160"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -377,13 +335,13 @@ interactions:
       X-Ratelimit-Remaining:
       - "2997"
       X-Ratelimit-Reset:
-      - "6"
+      - "2"
     status: 200 OK
     code: 200
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Log-local-1614376103","options":{"enable_logs_sample":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"groupby_simple_monitor":true,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"thresholds":{"critical":2,"warning":1},"timeout_h":60},"priority":0,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") \u003e 2","tags":["baz","foo:bar"],"type":"log alert"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitor_Log-local-1614693446","options":{"enable_logs_sample":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"groupby_simple_monitor":true,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"thresholds":{"critical":2,"warning":1},"timeout_h":60},"priority":0,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") \u003e 2","tags":["baz","foo:bar"],"type":"log alert"}
     form: {}
     headers:
       Accept:
@@ -393,13 +351,7 @@ interactions:
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.5; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "2193008474744244234"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7876394996867678431"
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.7; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -416,7 +368,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 26 Feb 2021 21:48:24 GMT
+      - Tue, 02 Mar 2021 13:57:28 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -424,9 +376,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
+      - mNzaoDhdDKO7t4QSrAe5X7pHd0bJND187D+vRbwoluXouE2m1UaQQX0RGCvRpLVE
       X-Dd-Version:
-      - "35.3993079"
+      - "35.4010160"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -441,17 +393,11 @@ interactions:
       Dd-Operation-Id:
       - GetMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.5; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "7603218148141165881"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7876394996867678431"
-    url: https://api.datadoghq.com/api/v1/monitor/31000201
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/monitor/31247461
     method: GET
   response:
-    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 2","message":"some message Notify: @hipchat-channel","id":31000201,"multi":false,"name":"tf-TestAccDatadogMonitor_Log-local-1614376103","created":"2021-02-26T21:48:24.356300+00:00","created_at":1614376104000,"creator":{"id":734230,"handle":"fanny.jiang@datadoghq.com","name":"Fanny Jiang","email":"fanny.jiang@datadoghq.com"},"org_id":148099,"modified":"2021-02-26T21:48:24.356300+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"log alert","options":{"include_tags":true,"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"enable_logs_sample":true,"thresholds":{"critical":2.0,"warning":1.0},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"groupby_simple_monitor":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700}}'
+    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") > 2","message":"some message Notify: @hipchat-channel","id":31247461,"multi":true,"name":"tf-TestAccDatadogMonitor_Log-local-1614693446","created":"2021-03-02T13:57:27.464979+00:00","created_at":1614693447000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-03-02T13:57:27.464979+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"log alert","options":{"include_tags":true,"notify_audit":false,"locked":false,"timeout_h":60,"silenced":{},"enable_logs_sample":true,"thresholds":{"critical":2.0,"warning":1.0},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"groupby_simple_monitor":true,"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700}}'
     headers:
       Cache-Control:
       - no-cache
@@ -462,7 +408,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 26 Feb 2021 21:48:25 GMT
+      - Tue, 02 Mar 2021 13:57:28 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -472,9 +418,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 25u1gDlL724DHllbjFT4BhOLorBTilh+aah2uWAUEjFC/+rjczJdiyWrV/HwLwe/
+      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
       X-Dd-Version:
-      - "35.3993079"
+      - "35.4010160"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -484,7 +430,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "2996"
       X-Ratelimit-Reset:
-      - "5"
+      - "2"
     status: 200 OK
     code: 200
     duration: ""
@@ -497,17 +443,11 @@ interactions:
       Dd-Operation-Id:
       - DeleteMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.5; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "1874706312894726593"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7876394996867678431"
-    url: https://api.datadoghq.com/api/v1/monitor/31000201
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/monitor/31247461
     method: DELETE
   response:
-    body: '{"deleted_monitor_id":31000201}'
+    body: '{"deleted_monitor_id":31247461}'
     headers:
       Cache-Control:
       - no-cache
@@ -518,7 +458,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 26 Feb 2021 21:48:25 GMT
+      - Tue, 02 Mar 2021 13:57:28 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -528,9 +468,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - l4HFlaRP3QwYSqoGKhzbYfv7zgkK63HIRR7YkyVYZspq0lGjjTBwoK8V/alf+XYt
+      - gYZcaADwbKcv7Hm19HJx6WsLoKuOijDWAt2viPeCfWqUgyKY+9e1xZdmMJeXV3YV
       X-Dd-Version:
-      - "35.3993079"
+      - "35.4010160"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -545,14 +485,8 @@ interactions:
       Dd-Operation-Id:
       - GetMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16+dev (go go1.15.5; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "3696710829453661486"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7876394996867678431"
-    url: https://api.datadoghq.com/api/v1/monitor/31000201
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/monitor/31247461
     method: GET
   response:
     body: '{"errors":["Monitor not found"]}'
@@ -566,7 +500,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 26 Feb 2021 21:48:25 GMT
+      - Tue, 02 Mar 2021 13:57:29 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -576,7 +510,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3993079"
+      - "35.4010160"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -586,7 +520,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "2995"
       X-Ratelimit-Reset:
-      - "5"
+      - "1"
     status: 404 Not Found
     code: 404
     duration: ""
