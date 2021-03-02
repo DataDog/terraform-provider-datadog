@@ -27,7 +27,7 @@ func TestAccMetricTagConfiguration_import(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMetricTagConfiguration_Basic(uniqueMetricTagConfig),
+				Config: testAccCheckDatadogMetricTagConfigurationBasic(uniqueMetricTagConfig),
 			},
 			{
 				ResourceName:      resourceName,
@@ -49,7 +49,7 @@ func TestAccDatadogMetricTagConfiguration_Basic(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMetricTagConfiguration_Basic(uniqueMetricTagConfig),
+				Config: testAccCheckDatadogMetricTagConfigurationBasic(uniqueMetricTagConfig),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMetricTagConfigurationExists(accProvider, "datadog_metric_tag_configuration.testing_metric_tag_config"),
 					resource.TestCheckResourceAttr(
@@ -66,7 +66,7 @@ func TestAccDatadogMetricTagConfiguration_Basic(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogMetricTagConfiguration_Basic(uniq string) string {
+func testAccCheckDatadogMetricTagConfigurationBasic(uniq string) string {
 	return fmt.Sprintf(`
         resource "datadog_metric_tag_configuration" "testing_metric_tag_config" {
 			id = "%s"
@@ -80,13 +80,13 @@ func testAccCheckDatadogMetricTagConfiguration_Basic(uniq string) string {
 func testAccCheckDatadogMetricTagConfigurationExists(accProvider *schema.Provider, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		meta := accProvider.Meta()
-		resourceId := s.RootModule().Resources[resourceName].Primary.ID
+		resourceID := s.RootModule().Resources[resourceName].Primary.ID
 		providerConf := meta.(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV2
 		auth := providerConf.AuthV2
 		var err error
 
-		id := resourceId
+		id := resourceID
 
 		_, _, err = datadogClient.MetricsApi.ListTagConfigurationByName(auth, id).Execute()
 

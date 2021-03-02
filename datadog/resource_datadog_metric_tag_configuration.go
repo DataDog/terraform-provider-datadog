@@ -35,7 +35,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 						errs = append(errs, fmt.Errorf("expected metric name length of %s to be in the range (%d - %d), got %s", k, 1, 200, v))
 					}
 					if !re.MatchString(v) {
-						errs = append(errs, fmt.Errorf("metric name not allowed."))
+						errs = append(errs, fmt.Errorf("metric name not allowed"))
 					}
 					// todo[efraese] ensure metric name is not a standard metric or should this be done in backend only?
 					return
@@ -60,10 +60,10 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 							errs = append(errs, fmt.Errorf("expected tag length of %s to be in the range (%d - %d), got %s", k, 1, 200, v))
 						}
 						if strings.HasSuffix(v, ":") {
-							errs = append(errs, fmt.Errorf("tag ends in : which is not allowed."))
+							errs = append(errs, fmt.Errorf("tag ends in : which is not allowed"))
 						}
 						if !re.MatchString(v) {
-							errs = append(errs, fmt.Errorf("tag not allowed."))
+							errs = append(errs, fmt.Errorf("tag not allowed"))
 						}
 						return
 					},
@@ -92,22 +92,22 @@ func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.Metr
 	}
 	attributes.SetTags(stringTags)
 
-	metric_type, err := datadogV2.NewMetricTagConfigurationMetricTypesFromValue(d.Get("metric_type").(string))
+	metricType, err := datadogV2.NewMetricTagConfigurationMetricTypesFromValue(d.Get("metric_type").(string))
 	if err != nil {
 		return nil, utils.TranslateClientError(err, "error building MetricTagConfiguration")
 	}
-	attributes.SetMetricType(*metric_type)
+	attributes.SetMetricType(*metricType)
 
-	include_percentiles, ic_field_set := d.GetOk("include_percentiles")
+	includePercentiles, icFieldSet := d.GetOk("include_percentiles")
 
-	if ic_field_set {
-		if *metric_type != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-			return nil, fmt.Errorf("include_percentiles field not allowed with metric_type: %s, only with metric_type distribution", *metric_type)
+	if icFieldSet {
+		if *metricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+			return nil, fmt.Errorf("include_percentiles field not allowed with metric_type: %s, only with metric_type distribution", *metricType)
 		}
-		attributes.SetIncludePercentiles(include_percentiles.(bool))
+		attributes.SetIncludePercentiles(includePercentiles.(bool))
 	} else {
 		// if the include_percentiles field is not set and the metric is not a distribution, we need to remove the include_percentiles field from the payload
-		if *metric_type != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+		if *metricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 			attributes.IncludePercentiles = nil
 		}
 	}
@@ -116,7 +116,7 @@ func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.Metr
 	return result, nil
 }
 
-func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existing_metric_type *datadogV2.MetricTagConfigurationMetricTypes) (*datadogV2.MetricTagConfigurationUpdateData, error) {
+func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existingMetricType *datadogV2.MetricTagConfigurationMetricTypes) (*datadogV2.MetricTagConfigurationUpdateData, error) {
 	result := datadogV2.NewMetricTagConfigurationUpdateDataWithDefaults()
 	id := d.Get("metric_name").(string)
 	result.SetId(id)
@@ -129,15 +129,15 @@ func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existing_m
 	}
 	attributes.SetTags(stringTags)
 
-	include_percentiles, ic_field_set := d.GetOk("include_percentiles")
-	if ic_field_set {
-		if *existing_metric_type != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-			return nil, fmt.Errorf("include_percentiles field not allowed with metric_type: %s, only with metric_type distribution", *existing_metric_type)
+	includePercentiles, icFieldSet := d.GetOk("include_percentiles")
+	if icFieldSet {
+		if *existingMetricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+			return nil, fmt.Errorf("include_percentiles field not allowed with metric_type: %s, only with metric_type distribution", *existingMetricType)
 		}
-		attributes.SetIncludePercentiles(include_percentiles.(bool))
+		attributes.SetIncludePercentiles(includePercentiles.(bool))
 	} else {
 		// if the include_percentiles field is not set and the metric is not a distribution, we need to remove the include_percentiles field from the payload
-		if *existing_metric_type != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+		if *existingMetricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 			attributes.IncludePercentiles = nil
 		}
 	}
@@ -157,30 +157,30 @@ func resourceDatadogMetricTagConfigurationCreate(d *schema.ResourceData, meta in
 	}
 	ddObject := datadogV2.NewMetricTagConfigurationCreateRequestWithDefaults()
 	ddObject.SetData(*resultMetricTagConfigurationData)
-	metric_name := d.Get("metric_name").(string)
+	metricName := d.Get("metric_name").(string)
 
 	// check if the tag configuration already exists, if so return an error
-	_, httpresp, _ := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metric_name).Execute()
+	_, httpresp, _ := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName).Execute()
 	if httpresp.StatusCode == 200 {
-		return fmt.Errorf("error creating MetricTagConfiguration: a tag configuration already exists for metric, import it first.")
+		return fmt.Errorf("error creating MetricTagConfiguration: a tag configuration already exists for metric, import it first")
 	}
 
-	response, _, err := datadogClient.MetricsApi.CreateTagConfiguration(auth, metric_name).Body(*ddObject).Execute()
+	response, _, err := datadogClient.MetricsApi.CreateTagConfiguration(auth, metricName).Body(*ddObject).Execute()
 	if err != nil {
 		return utils.TranslateClientError(err, "error creating MetricTagConfiguration")
 	}
-	d.SetId(metric_name)
+	d.SetId(metricName)
 
 	return updateMetricTagConfigurationState(d, response.Data)
 }
 
 func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfiguration *datadogV2.MetricTagConfiguration) error {
 	if attributes, ok := metricTagConfiguration.GetAttributesOk(); ok {
-		if metric_type, ok := attributes.GetMetricTypeOk(); ok {
-			if err := d.Set("metric_type", metric_type); err != nil {
+		if metricType, ok := attributes.GetMetricTypeOk(); ok {
+			if err := d.Set("metric_type", metricType); err != nil {
 				return err
 			}
-			if *metric_type == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+			if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 				if err := d.Set("include_percentiles", attributes.GetIncludePercentiles()); err != nil {
 					return err
 				}
@@ -191,12 +191,12 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 		}
 	}
 
-	metric_name := metricTagConfiguration.GetId()
-	if err := d.Set("metric_name", metric_name); err != nil {
+	metricName := metricTagConfiguration.GetId()
+	if err := d.Set("metric_name", metricName); err != nil {
 		return err
 	}
 
-	d.SetId(metric_name)
+	d.SetId(metricName)
 	// we do not care about the created_at nor modified_at fields
 
 	return nil
@@ -207,8 +207,8 @@ func resourceDatadogMetricTagConfigurationRead(d *schema.ResourceData, meta inte
 	datadogClient := providerConf.DatadogClientV2
 	auth := providerConf.AuthV2
 
-	metric_name := d.Id()
-	metricTagConfigurationResponse, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metric_name).Execute()
+	metricName := d.Id()
+	metricTagConfigurationResponse, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName).Execute()
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -226,15 +226,15 @@ func resourceDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, meta in
 	datadogClient := providerConf.DatadogClientV2
 	auth := providerConf.AuthV2
 
-	metric_name := d.Id()
-	metricTagConfigurationResponse, _, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metric_name).Execute()
+	metricName := d.Id()
+	metricTagConfigurationResponse, _, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName).Execute()
 	if err != nil {
 		return utils.TranslateClientError(err, "metric not found")
 	}
 
-	existing_metric_type := metricTagConfigurationResponse.GetData().Attributes.GetMetricType()
+	existingMetricType := metricTagConfigurationResponse.GetData().Attributes.GetMetricType()
 
-	resultMetricTagConfigurationUpdateData, err := buildDatadogMetricTagConfigurationUpdate(d, &existing_metric_type)
+	resultMetricTagConfigurationUpdateData, err := buildDatadogMetricTagConfigurationUpdate(d, &existingMetricType)
 	if err != nil {
 		return utils.TranslateClientError(err, "error building MetricTagConfiguration object")
 	}
@@ -242,7 +242,7 @@ func resourceDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, meta in
 	ddObject := datadogV2.NewMetricTagConfigurationUpdateRequestWithDefaults()
 	ddObject.SetData(*resultMetricTagConfigurationUpdateData)
 
-	response, _, err := datadogClient.MetricsApi.UpdateTagConfiguration(auth, metric_name).Body(*ddObject).Execute()
+	response, _, err := datadogClient.MetricsApi.UpdateTagConfiguration(auth, metricName).Body(*ddObject).Execute()
 	if err != nil {
 		return utils.TranslateClientError(err, "error updating MetricTagConfiguration")
 	}
@@ -256,8 +256,8 @@ func resourceDatadogMetricTagConfigurationDelete(d *schema.ResourceData, meta in
 	auth := providerConf.AuthV2
 	var err error
 
-	metric_name := d.Id()
-	_, err = datadogClient.MetricsApi.DeleteTagConfiguration(auth, metric_name).Execute()
+	metricName := d.Id()
+	_, err = datadogClient.MetricsApi.DeleteTagConfiguration(auth, metricName).Execute()
 
 	if err != nil {
 		return utils.TranslateClientError(err, "error deleting MetricTagConfiguration")
