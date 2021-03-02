@@ -55,11 +55,13 @@ func TestAccDatadogMetricTagConfiguration_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_metric_tag_configuration.testing_metric_tag_config", "id", uniqueMetricTagConfig),
 					resource.TestCheckResourceAttr(
+						"datadog_metric_tag_configuration.testing_metric_tag_config", "metric_name", uniqueMetricTagConfig),
+					resource.TestCheckResourceAttr(
 						"datadog_metric_tag_configuration.testing_metric_tag_config", "metric_type", "distribution"),
 					resource.TestCheckResourceAttr(
 						"datadog_metric_tag_configuration.testing_metric_tag_config", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_metric_tag_configuration.testing_metric_tag_config", "include_percentiles", "true"),
+						"datadog_metric_tag_configuration.testing_metric_tag_config", "include_percentiles", "false"),
 				),
 			},
 		},
@@ -69,10 +71,10 @@ func TestAccDatadogMetricTagConfiguration_Basic(t *testing.T) {
 func testAccCheckDatadogMetricTagConfigurationBasic(uniq string) string {
 	return fmt.Sprintf(`
         resource "datadog_metric_tag_configuration" "testing_metric_tag_config" {
-			id = "%s"
+			metric_name = "%s"
 			metric_type = "distribution"
 			tags = ["sport","datacenter"]
-			include_percentiles = true
+			include_percentiles = false
         }
     `, uniq)
 }
