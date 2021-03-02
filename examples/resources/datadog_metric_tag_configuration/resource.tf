@@ -4,5 +4,5 @@ resource "datadog_metric_tag_configuration" "testing_metric_tag_config" {
   metric_name         = "tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241"
   metric_type         = "distribution"
   tags                = ["sport", "datacenter"]
-  include_percentiles = true
+  include_percentiles = false
 }
