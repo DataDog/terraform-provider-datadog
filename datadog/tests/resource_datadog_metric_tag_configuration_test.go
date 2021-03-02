@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
 )
 
-func TestAccMetricTagConfiguration_import(t *testing.T) {
+func TestAccDatadogMetricTagConfiguration_import(t *testing.T) {
 	resourceName := "datadog_metric_tag_configuration.testing_metric_tag_config"
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
