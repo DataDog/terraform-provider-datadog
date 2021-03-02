@@ -5,7 +5,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,6 +16,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
@@ -440,6 +441,10 @@ func buildDatadogClientV1(httpClient *http.Client) *datadogV1.APIClient {
 func buildDatadogClientV2(httpClient *http.Client) *datadogV2.APIClient {
 	//Datadog V2 API config.HTTPClient
 	configV2 := datadogV2.NewConfiguration()
+	configV2.SetUnstableOperationEnabled("CreateTagConfiguration", true)
+	configV2.SetUnstableOperationEnabled("DeleteTagConfiguration", true)
+	configV2.SetUnstableOperationEnabled("ListTagConfigurationByName", true)
+	configV2.SetUnstableOperationEnabled("UpdateTagConfiguration", true)
 	configV2.Debug = isDebug()
 	configV2.HTTPClient = httpClient
 	configV2.UserAgent = utils.GetUserAgent(configV2.UserAgent)

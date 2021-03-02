@@ -160,8 +160,17 @@ func resourceDatadogMetricTagConfigurationCreate(d *schema.ResourceData, meta in
 	metricName := d.Get("metric_name").(string)
 
 	// check if the tag configuration already exists, if so return an error
-	_, httpresp, _ := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName).Execute()
-	if httpresp.StatusCode == 200 {
+	_, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName).Execute()
+	if err != nil || httpresp == nil {
+		if httpresp != nil && httpresp.StatusCode != 404 {
+			return utils.TranslateClientError(err, "could not determine if metric already exists")
+		}
+		if httpresp == nil {
+			return fmt.Errorf("error creating MetricTagConfiguration: could not determine if metric already exists")
+		}
+		// if neither of these cases hit is it ok because the api will return 404 when we can create a tag-configuration
+	}
+	if httpresp != nil && httpresp.StatusCode == 200 {
 		return fmt.Errorf("error creating MetricTagConfiguration: a tag configuration already exists for metric, import it first")
 	}
 
