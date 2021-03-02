@@ -30,7 +30,6 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				Required:    true,
 				ValidateFunc: func(val interface{}, k string) (warns []string, errs []error) {
 					v := val.(string)
-					// pulled from dogweb/dogweb/lib/validation/schemas/metric.py
 					re := regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\\.\\_]*$`)
 					if len(v) < 1 || len(v) > 200 {
 						errs = append(errs, fmt.Errorf("expected metric name length of %s to be in the range (%d - %d), got %s", k, 1, 200, v))
@@ -56,7 +55,6 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 					Type: schema.TypeString,
 					ValidateFunc: func(val interface{}, k string) (warns []string, errs []error) {
 						v := val.(string)
-						// pulled from dogweb/dogweb/lib/validation/schemas/metric.py
 						re := regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\\.\\-\\_:\\/]*$`)
 						if len(v) < 1 || len(v) > 200 {
 							errs = append(errs, fmt.Errorf("expected tag length of %s to be in the range (%d - %d), got %s", k, 1, 200, v))
