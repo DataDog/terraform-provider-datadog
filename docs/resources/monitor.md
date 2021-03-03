@@ -4,14 +4,11 @@ page_title: "datadog_monitor Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
   Provides a Datadog monitor resource. This can be used to create and manage Datadog monitors.
-  Note: APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the detailed doc https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/
 ---
 
 # datadog_monitor (Resource)
 
 Provides a Datadog monitor resource. This can be used to create and manage Datadog monitors.
-
-**Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/)
 
 ## Example Usage
 
@@ -58,6 +55,8 @@ resource "datadog_monitor" "foo" {
 Email notifications can be sent to specific users by using the same `@username` notation as events.
 - **name** (String) Name of Datadog monitor.
 - **query** (String) The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.
+
+**Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).
 - **type** (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created.
 
 ### Optional
@@ -68,6 +67,7 @@ Email notifications can be sent to specific users by using the same `@username` 
 
 For example, if the value is set to `300` (5min), the `timeframe` is set to `last_5m` and the time is 7:00, the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor will always have data during evaluation.
 - **force_delete** (Boolean) A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).
+- **groupby_simple_monitor** (Boolean) Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.
 - **id** (String) The ID of this resource.
 - **include_tags** (Boolean) A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`.
 - **locked** (Boolean) A boolean indicating whether changes to to this monitor should be restricted to the creator or admins. Defaults to `false`.
