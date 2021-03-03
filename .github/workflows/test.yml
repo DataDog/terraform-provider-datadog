@@ -49,3 +49,5 @@ jobs:
               run: make testall
               env:
                   RECORD: false
+            - name: Check Docs Are Up To Date
+              run: make check-docs
