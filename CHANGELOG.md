@@ -14,7 +14,7 @@ IMPROVEMENTS:
 -   `datadog_logs_metric`: Improve consistency by using response from POST/PUT requests directly to save state ([#917](https://github.com/Datadog/terraform-provider-datadog/pull/917))
 -   `datadog_logs_pipeline_order`: Improve consistency by using response from POST/PUT requests directly to save state ([#913](https://github.com/Datadog/terraform-provider-datadog/pull/913))
 -   `datadog_metric_metadata`: Improve consistency by using response from POST/PUT requests directly to save state ([#922](https://github.com/Datadog/terraform-provider-datadog/pull/922))
--   `datadog_monitor`: Add support for groupby_simple_monitor option to monitor resource ([#952](https://github.com/Datadog/terraform-provider-datadog/pull/952))
+-   `datadog_monitor`: Add support for `groupby_simple_monitor` option to monitor resource ([#952](https://github.com/Datadog/terraform-provider-datadog/pull/952))
 -   `datadog_monitor`: Improve consistency by using response from POST/PUT requests directly to save state ([#901](https://github.com/Datadog/terraform-provider-datadog/pull/901))
 -   `datadog_role`: Improve consistency by using response from POST/PUT requests directly to save state ([#925](https://github.com/Datadog/terraform-provider-datadog/pull/925))
 -   `datadog_service_level_objective`: Improve consistency by using response from POST/PUT requests directly to save state ([#910](https://github.com/Datadog/terraform-provider-datadog/pull/910))
