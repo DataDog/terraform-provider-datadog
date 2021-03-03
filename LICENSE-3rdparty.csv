@@ -187,3 +187,6 @@ go.sum,github.com/vmihailenco/msgpack/v4,BSD-2-Clause,2013 The github.com/vmihai
 go.sum,github.com/vmihailenco/tagparser,BSD-2-Clause,2019 The github.com/vmihailenco/tagparser Authors.
 go.sum,github.com/zclconf/go-cty-debug,MIT,2019 Martin Atkins
 go.sum,gopkg.in/yaml.v3,MIT/Apache-2.0,2006-2010 Kirill Simonov 2011-2019 Canonical Ltd
+go.sum,github.com/Microsoft/go-winio,MIT,2015 Microsoft
+go.sum,github.com/konsorten/go-windows-terminal-sequences,MIT,2017 marvin + konsorten GmbH
+go.sum,github.com/sirupsen/logrus,MIT,2014 Simon Eskildsen

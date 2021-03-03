@@ -103,6 +103,15 @@ func TenantAndClientFromID(id string) (string, string, error) {
 	return result[0], result[1], nil
 }
 
+// slack utils
+func AccountNameAndChannelNameFromID(id string) (string, string, error) {
+	result := strings.SplitN(id, ":", 2)
+	if len(result) != 2 {
+		return "", "", fmt.Errorf("error extracting account name and channel name: %s", id)
+	}
+	return result[0], result[1], nil
+}
+
 // ConvertResponseByteToMap converts JSON []byte to map[string]interface{}
 func ConvertResponseByteToMap(b []byte) (map[string]interface{}, error) {
 	convertedMap := make(map[string]interface{})

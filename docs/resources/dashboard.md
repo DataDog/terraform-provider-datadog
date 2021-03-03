@@ -232,12 +232,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
       title_size  = "16"
       title_align = "left"
     }
-    widget_layout {
-      height = 43
-      width  = 32
-      x      = 5
-      y      = 5
-    }
   }
 
   widget {
@@ -8898,15 +8892,15 @@ Optional:
 <a id="nestedblock--template_variable_preset"></a>
 ### Nested Schema for `template_variable_preset`
 
-Required:
+Optional:
 
 - **name** (String) The name of the preset.
-- **template_variable** (Block List, Min: 1) The template variable names and assumed values under the given preset (see [below for nested schema](#nestedblock--template_variable_preset--template_variable))
+- **template_variable** (Block List) The template variable names and assumed values under the given preset (see [below for nested schema](#nestedblock--template_variable_preset--template_variable))
 
 <a id="nestedblock--template_variable_preset--template_variable"></a>
 ### Nested Schema for `template_variable_preset.template_variable`
 
-Required:
+Optional:
 
 - **name** (String) The name of the template variable
 - **value** (String) The value that should be assumed by the template variable in this preset
