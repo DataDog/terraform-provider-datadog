@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"strings"
 	"testing"
 )
 
@@ -68,62 +67,6 @@ func TestAccountAndRoleFromID(t *testing.T) {
 	}
 }
 
-func TestNormalizeJSONorYamlString(t *testing.T) {
-	cases := map[string]struct {
-		sample string
-		errMsg string
-	}{
-		"validJSON":   {validJSON(), ""},
-		"validYaml":   {validYaml(), ""},
-		"invalidJSON": {invalidJSON(), "invalid JSON or YAML"},
-		"invalidYaml": {invalidYaml(), "invalid JSON or YAML"},
-	}
-	for _, tc := range cases {
-		name, err := NormalizeJSONorYamlString(tc.sample)
-		if err != nil && tc.errMsg != "" && !strings.Contains(err.Error(), tc.errMsg) {
-			t.Errorf("%s: error should contain %s, error: %s", name, tc.errMsg, err.Error())
-		}
-
-		if err != nil && tc.errMsg == "" {
-			t.Errorf("%s, error should be nil, not %s", name, err.Error())
-		}
-	}
-}
-func validJSON() string {
-	return fmt.Sprint(`
-{
-   "test":"value",
-   "test_two":{
-      "nested_attr":"value"
-   }
-}
-`)
-}
-func validYaml() string {
-	return fmt.Sprint(`
-test: value
-test_two:
-  nested_attr: value
-`)
-}
-func invalidJSON() string {
-	return fmt.Sprint(`
-{
-   "test":"value":"value",
-   "test_two":{
-      "nested_attr":"value"
-   }
-}
-`)
-}
-func invalidYaml() string {
-	return fmt.Sprint(`
-test: value
- test_two:
-nested_attr: value
-`)
-}
-
 func TestConvertResponseByteToMap(t *testing.T) {
 	cases := map[string]struct {
 		js     string
@@ -141,4 +84,25 @@ func TestConvertResponseByteToMap(t *testing.T) {
 			t.Fatalf("%s: error should be nil, not %s", name, err.Error())
 		}
 	}
+}
+
+func validJSON() string {
+	return fmt.Sprint(`
+{
+   "test":"value",
+   "test_two":{
+      "nested_attr":"value"
+   }
+}
+`)
+}
+func invalidJSON() string {
+	return fmt.Sprint(`
+{
+   "test":"value":"value",
+   "test_two":{
+      "nested_attr":"value"
+   }
+}
+`)
 }

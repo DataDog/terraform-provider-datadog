@@ -11,10 +11,8 @@ import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/structure"
 	"github.com/hashicorp/terraform-plugin-sdk/meta"
 	"github.com/terraform-providers/terraform-provider-datadog/version"
-	"gopkg.in/yaml.v3"
 )
 
 // DatadogProvider holds a reference to the provider
@@ -103,31 +101,6 @@ func TenantAndClientFromID(id string) (string, string, error) {
 		return "", "", fmt.Errorf("error extracting tenant name and client ID from an Azure integration id: %s", id)
 	}
 	return result[0], result[1], nil
-}
-
-// NormalizeJSONorYamlString
-func NormalizeJSONorYamlString(v string) (string, error) {
-	var jsonString string
-	jsonString, err := structure.NormalizeJsonString(v)
-	if err != nil {
-		// Check if YAML is passed
-		jsonString, err = normalizeYamlString(v)
-		if err != nil {
-			return "", fmt.Errorf("invalid JSON or YAML: %s", err)
-		}
-		return jsonString, nil
-	}
-	return jsonString, nil
-}
-
-func normalizeYamlString(v string) (string, error) {
-	var y interface{}
-	err := yaml.Unmarshal([]byte(v), &y)
-	if err != nil {
-		return "", err
-	}
-	jsonByte, _ := json.Marshal(y)
-	return string(jsonByte), nil
 }
 
 // ConvertResponseByteToMap converts JSON []byte to map[string]interface{}

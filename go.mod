@@ -16,7 +16,6 @@ require (
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/zorkian/go-datadog-api v2.30.0+incompatible
 	gopkg.in/DataDog/dd-trace-go.v1 v1.29.0-alpha.1.0.20210212162759-6903fc5e42cd
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
 )
 
 go 1.15

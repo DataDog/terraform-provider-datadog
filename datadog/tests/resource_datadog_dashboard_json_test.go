@@ -9,11 +9,11 @@ import (
 )
 
 func TestAccDatadogDashboardJSON_BasicTimeboard(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	t.Parallel()
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: accProviders,
@@ -41,11 +41,11 @@ func TestAccDatadogDashboardJSON_BasicTimeboard(t *testing.T) {
 }
 
 func TestAccDatadogDashboardJSON_BasicScreenboard(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	t.Parallel()
 	resource.Test(t, resource.TestCase{
 		PreCheck:  func() { testAccPreCheck(t) },
 		Providers: accProviders,
@@ -617,7 +617,8 @@ EOF
 func testAccCheckDatadogDashboardJSONTimeboardYAML(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_dashboard_json" "timeboard_yaml" {
-   dashboard = <<EOF
+   dashboard = jsonencode(yamldecode(
+<<EOF
 title: '%s'
 description: Created using the Datadog provider in Terraform
 widgets:
@@ -937,6 +938,7 @@ template_variable_presets:
        value: my_service
 id: 5uw-bbj-xec
 EOF
+))
 }`, uniq)
 }
 
@@ -1155,7 +1157,8 @@ EOF
 func testAccCheckDatadogDashboardJSONScreenboardYAML(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_dashboard_json" "screenboard_yaml" {
-   dashboard = <<EOF
+   dashboard = jsonencode(yamldecode(
+<<EOF
 title: '%s'
 description: Created using the Datadog provider in Terraform
 widgets:
@@ -1306,5 +1309,6 @@ template_variable_presets:
        value: my_service
 id: hjf-2xf-xc8
 EOF
+))
 }`, uniq)
 }
