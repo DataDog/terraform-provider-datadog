@@ -58,7 +58,6 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 					if !re.MatchString(v) {
 						errs = append(errs, fmt.Errorf("metric name not allowed"))
 					}
-					// todo[efraese] ensure metric name is not a standard metric or should this be done in backend only?
 					return
 				},
 			},
@@ -92,7 +91,6 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				Required: true,
 			},
 			"include_percentiles": {
-				// TODO[efraese] fix schema to only allow this field when the metric type is a distribution (done via build funcs but still can show in a plan)
 				Description: "Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a metric_type of distribution.",
 				Type:        schema.TypeBool,
 				Optional:    true,
