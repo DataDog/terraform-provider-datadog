@@ -34,6 +34,7 @@ data "datadog_monitor" "test" {
 - **enable_logs_sample** (Boolean) Whether or not a list of log values which triggered the alert is included. This is only used by log monitors.
 - **escalation_message** (String) Message included with a re-notification for this monitor.
 - **evaluation_delay** (Number) Time (in seconds) for which evaluation is delayed. This is only used by metric monitors.
+- **groupby_simple_monitor** (Boolean) Whether or not to trigger one alert if any source breaches a threshold.
 - **include_tags** (Boolean) Whether or not notifications from the monitor automatically inserts its triggering tags into the title.
 - **locked** (Boolean) Whether or not changes to the monitor are restricted to the creator or admins.
 - **message** (String) Message included with notifications for this monitor

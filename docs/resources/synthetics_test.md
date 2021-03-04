@@ -228,13 +228,13 @@ resource "datadog_synthetics_test" "test_browser" {
 
 Required:
 
-- **operator** (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation)).
-- **type** (String) Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation)).
+- **operator** (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
+- **type** (String) Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
 
 Optional:
 
 - **property** (String) If assertion type is `header`, this is the header name.
-- **target** (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) for details.
+- **target** (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
 - **targetjsonpath** (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonpath))
 
 <a id="nestedblock--assertion--targetjsonpath"></a>
