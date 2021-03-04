@@ -11,10 +11,10 @@ interactions:
       - ListTagConfigurationByName
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
+    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854/tags
     method: GET
   response:
-    body: '{"errors": ["example.terraform.metric.name not found"]}'
+    body: '{"errors": ["tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854 not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -25,7 +25,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 02 Mar 2021 21:07:24 GMT
+      - Thu, 04 Mar 2021 19:57:35 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -35,7 +35,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.4014265"
+      - "35.4032241"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -45,13 +45,13 @@ interactions:
       X-Ratelimit-Remaining:
       - "49"
       X-Ratelimit-Reset:
-      - "36"
+      - "26"
     status: 404 Not Found
     code: 404
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"include_percentiles":false,"metric_type":"distribution","tags":["sport","datacenter"]},"id":"example.terraform.metric.name","type":"manage_tags"}}
+      {"data":{"attributes":{"include_percentiles":false,"metric_type":"distribution","tags":["sport","datacenter"]},"id":"tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854","type":"manage_tags"}}
     form: {}
     headers:
       Accept:
@@ -62,10 +62,10 @@ interactions:
       - CreateTagConfiguration
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
+    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854/tags
     method: POST
   response:
-    body: '{"data":{"type":"manage_tags","id":"example.terraform.metric.name","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
+    body: '{"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-04T19:57:35.124636+00:00","updated_at":"2021-03-04T19:57:35.124636+00:00","metric_type":"distribution"}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -78,7 +78,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 02 Mar 2021 21:07:25 GMT
+      - Thu, 04 Mar 2021 19:57:35 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -86,9 +86,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
+      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
       X-Dd-Version:
-      - "35.4014265"
+      - "35.4032241"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -98,7 +98,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "48"
       X-Ratelimit-Reset:
-      - "36"
+      - "25"
     status: 201 Created
     code: 201
     duration: ""
@@ -112,10 +112,10 @@ interactions:
       - ListTagConfigurationByName
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
+    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854/tags
     method: GET
   response:
-    body: '{"data":{"type":"manage_tags","id":"example.terraform.metric.name","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
+    body: '{"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-04T19:57:35.124636+00:00","updated_at":"2021-03-04T19:57:35.124636+00:00","metric_type":"distribution"}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -126,107 +126,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 02 Mar 2021 21:07:25 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - mNzaoDhdDKO7t4QSrAe5X7pHd0bJND187D+vRbwoluXouE2m1UaQQX0RGCvRpLVE
-      X-Dd-Version:
-      - "35.4014265"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "50"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "47"
-      X-Ratelimit-Reset:
-      - "35"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListTagConfigurationByName
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
-    method: GET
-  response:
-    body: '{"data":{"type":"manage_tags","id":"example.terraform.metric.name","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 02 Mar 2021 21:07:25 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
-      X-Dd-Version:
-      - "35.4014265"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "50"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "46"
-      X-Ratelimit-Reset:
-      - "35"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListTagConfigurationByName
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
-    method: GET
-  response:
-    body: '{"data":{"type":"manage_tags","id":"example.terraform.metric.name","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 02 Mar 2021 21:07:25 GMT
+      - Thu, 04 Mar 2021 19:57:35 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -238,7 +138,7 @@ interactions:
       X-Dd-Debug:
       - HbtaOKlJ6OCrx9tMXO6ivMTrEM+g0c93HDp08trmOmgdHozC5J+vn10F0H4WPjCU
       X-Dd-Version:
-      - "35.4014265"
+      - "35.4032241"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -246,9 +146,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "45"
+      - "47"
       X-Ratelimit-Reset:
-      - "35"
+      - "25"
     status: 200 OK
     code: 200
     duration: ""
@@ -262,10 +162,10 @@ interactions:
       - ListTagConfigurationByName
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
+    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854/tags
     method: GET
   response:
-    body: '{"data":{"type":"manage_tags","id":"example.terraform.metric.name","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
+    body: '{"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-04T19:57:35.124636+00:00","updated_at":"2021-03-04T19:57:35.124636+00:00","metric_type":"distribution"}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -276,7 +176,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 02 Mar 2021 21:07:25 GMT
+      - Thu, 04 Mar 2021 19:57:35 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -286,9 +186,109 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - dCmL/3rURV6BPeaqeP3Rxigq41m5CAb17XjrRE42uZ01zpr07HVhbL5/3TWMkvgu
+      - mNzaoDhdDKO7t4QSrAe5X7pHd0bJND187D+vRbwoluXouE2m1UaQQX0RGCvRpLVE
       X-Dd-Version:
-      - "35.4014265"
+      - "35.4032241"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "50"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "46"
+      X-Ratelimit-Reset:
+      - "25"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListTagConfigurationByName
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854/tags
+    method: GET
+  response:
+    body: '{"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-04T19:57:35.124636+00:00","updated_at":"2021-03-04T19:57:35.124636+00:00","metric_type":"distribution"}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 04 Mar 2021 19:57:35 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - F5gm0Rce1/Abr9/0Fw8HAqWfiz0FdiH8er/AXnN6lOn3L6KyGgbsLCwgPlob1No8
+      X-Dd-Version:
+      - "35.4032241"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "50"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "45"
+      X-Ratelimit-Reset:
+      - "25"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListTagConfigurationByName
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854/tags
+    method: GET
+  response:
+    body: '{"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-04T19:57:35.124636+00:00","updated_at":"2021-03-04T19:57:35.124636+00:00","metric_type":"distribution"}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 04 Mar 2021 19:57:35 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - tpRCH6w417YjBovRJ8VmtuXmNONVYiRp2c8d2AxjPdGBn8PCtgG4vAztrx3qUZAN
+      X-Dd-Version:
+      - "35.4032241"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -298,7 +298,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "44"
       X-Ratelimit-Reset:
-      - "35"
+      - "25"
     status: 200 OK
     code: 200
     duration: ""
@@ -312,7 +312,7 @@ interactions:
       - DeleteTagConfiguration
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
+    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854/tags
     method: DELETE
   response:
     body: ""
@@ -328,7 +328,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 02 Mar 2021 21:07:25 GMT
+      - Thu, 04 Mar 2021 19:57:35 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -336,9 +336,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
+      - nLnnBNvlCFDECRnZvzDb0z4sAO35G+IMidcAs8vrCKyjvsKWE8Yd9S3n6OjZ1qRN
       X-Dd-Version:
-      - "35.4014265"
+      - "35.4032241"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -348,7 +348,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "43"
       X-Ratelimit-Reset:
-      - "35"
+      - "25"
     status: 204 No Content
     code: 204
     duration: ""
@@ -362,10 +362,10 @@ interactions:
       - ListTagConfigurationByName
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
+    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854/tags
     method: GET
   response:
-    body: '{"errors": ["example.terraform.metric.name not found"]}'
+    body: '{"errors": ["tf_TestAccDatadogMetricTagConfiguration_import_local_1614887854 not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -376,7 +376,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 02 Mar 2021 21:07:25 GMT
+      - Thu, 04 Mar 2021 19:57:36 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -386,7 +386,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.4014265"
+      - "35.4032241"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -396,7 +396,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "42"
       X-Ratelimit-Reset:
-      - "35"
+      - "24"
     status: 404 Not Found
     code: 404
     duration: ""
