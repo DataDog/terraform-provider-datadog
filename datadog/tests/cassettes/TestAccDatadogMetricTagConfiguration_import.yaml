@@ -11,10 +11,10 @@ interactions:
       - ListTagConfigurationByName
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241/tags
+    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
     method: GET
   response:
-    body: '{"errors": ["tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241 not found"]}'
+    body: '{"errors": ["example.terraform.metric.name not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -51,7 +51,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"include_percentiles":false,"metric_type":"distribution","tags":["sport","datacenter"]},"id":"tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241","type":"manage_tags"}}
+      {"data":{"attributes":{"include_percentiles":false,"metric_type":"distribution","tags":["sport","datacenter"]},"id":"example.terraform.metric.name","type":"manage_tags"}}
     form: {}
     headers:
       Accept:
@@ -62,10 +62,10 @@ interactions:
       - CreateTagConfiguration
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241/tags
+    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
     method: POST
   response:
-    body: '{"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
+    body: '{"data":{"type":"manage_tags","id":"example.terraform.metric.name","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -112,10 +112,10 @@ interactions:
       - ListTagConfigurationByName
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241/tags
+    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
     method: GET
   response:
-    body: '{"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
+    body: '{"data":{"type":"manage_tags","id":"example.terraform.metric.name","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -162,10 +162,10 @@ interactions:
       - ListTagConfigurationByName
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241/tags
+    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
     method: GET
   response:
-    body: '{"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
+    body: '{"data":{"type":"manage_tags","id":"example.terraform.metric.name","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -212,10 +212,10 @@ interactions:
       - ListTagConfigurationByName
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241/tags
+    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
     method: GET
   response:
-    body: '{"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
+    body: '{"data":{"type":"manage_tags","id":"example.terraform.metric.name","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -262,10 +262,10 @@ interactions:
       - ListTagConfigurationByName
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241/tags
+    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
     method: GET
   response:
-    body: '{"data":{"type":"manage_tags","id":"tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
+    body: '{"data":{"type":"manage_tags","id":"example.terraform.metric.name","attributes":{"tags":["datacenter","sport"],"include_percentiles":false,"created_at":"2021-03-02T21:07:24.988739+00:00","updated_at":"2021-03-02T21:07:24.988739+00:00","metric_type":"distribution"}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -312,7 +312,7 @@ interactions:
       - DeleteTagConfiguration
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241/tags
+    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
     method: DELETE
   response:
     body: ""
@@ -362,10 +362,10 @@ interactions:
       - ListTagConfigurationByName
       User-Agent:
       - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.16 (go go1.15.8; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/metrics/tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241/tags
+    url: https://api.datadoghq.com/api/v2/metrics/example.terraform.metric.name/tags
     method: GET
   response:
-    body: '{"errors": ["tf_TestAccDatadogMetricTagConfiguration_import_local_1614719241 not found"]}'
+    body: '{"errors": ["example.terraform.metric.name not found"]}'
     headers:
       Cache-Control:
       - no-cache

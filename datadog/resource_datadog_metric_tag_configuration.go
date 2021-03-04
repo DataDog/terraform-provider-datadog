@@ -37,6 +37,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			if includePercentilesOk && *metricTypeValidated != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 				return fmt.Errorf("cannot use include_percentiles with a metric_type of %s, must use metric_type of 'distribution'", metricType)
 			}
+
 			return nil
 		},
 		Importer: &schema.ResourceImporter{
