@@ -19,11 +19,11 @@ uninstall:
 	@rm -vf $(DIR)/terraform-provider-datadog
 
 # Run unit tests; these tests don't interact with the API and don't support/need RECORD
-test: get-test-deps fmtcheck lint
+test: get-test-deps fmtcheck
 	gotestsum --hide-summary skipped --format testname --debug --packages $(TEST) -- $(TESTARGS) -timeout=30s
 
 # Run acceptance tests (this runs integration CRUD tests through the terraform test framework)
-testacc: get-test-deps fmtcheck lint
+testacc: get-test-deps fmtcheck
 	RECORD=$(RECORD) TF_ACC=1 gotestsum --format testname --debug --rerun-fails --packages ./... -- -v $(TESTARGS) -timeout 120m
 
 # Run both unit and acceptance tests
