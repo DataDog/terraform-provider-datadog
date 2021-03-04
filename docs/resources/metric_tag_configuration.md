@@ -35,7 +35,7 @@ resource "datadog_metric_tag_configuration" "example_count_metric" {
 ### Required
 
 - **metric_name** (String) The metric name for this resource.
-- **metric_type** (String) The metric's type. This field can't be updated after creation. Allowed enum values: gauge,count,distribution
+- **metric_type** (String) The metric's type. This field can't be updated after creation. Allowed enum values: gauge,count,distribution.
 - **tags** (Set of String) A list of tag keys that will be queryable for your metric.
 
 ### Optional
