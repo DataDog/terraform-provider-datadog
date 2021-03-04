@@ -4425,7 +4425,6 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -4482,9 +4481,7 @@ func buildDatadogGeomapDefinition(terraformDefinition map[string]interface{}) *d
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
 
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -5244,9 +5241,8 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
