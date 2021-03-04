@@ -90,6 +90,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_gcp_test":                      "integration-gcp",
 	"tests/resource_datadog_integration_pagerduty_service_object_test": "integration-pagerduty",
 	"tests/resource_datadog_integration_pagerduty_test":                "integration-pagerduty",
+	"tests/resource_datadog_integration_slack_channel_test":            "integration-slack-channel",
 	"tests/resource_datadog_logs_archive_test":                         "logs-archive",
 	"tests/resource_datadog_logs_archive_order_test":                   "logs-archive-order",
 	"tests/resource_datadog_logs_custom_pipeline_test":                 "logs-pipelines",
