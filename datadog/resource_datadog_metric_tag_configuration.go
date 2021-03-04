@@ -18,6 +18,27 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 		Read:        resourceDatadogMetricTagConfigurationRead,
 		Update:      resourceDatadogMetricTagConfigurationUpdate,
 		Delete:      resourceDatadogMetricTagConfigurationDelete,
+		CustomizeDiff: func(diff *schema.ResourceDiff, meta interface{}) error {
+			_, includePercentilesOk := diff.GetOkExists("include_percentiles")
+			if !includePercentilesOk {
+				// if there was no change to include_percentiles we don't need special handling
+				return nil
+			}
+
+			metricType, ok := diff.GetOkExists("metric_type")
+			if !ok {
+				// no change to metric_type so no special handling
+				return nil
+			}
+			metricTypeValidated, err := datadogV2.NewMetricTagConfigurationMetricTypesFromValue(metricType.(string))
+			if err != nil {
+				return utils.TranslateClientError(err, "error validating diff")
+			}
+			if includePercentilesOk && *metricTypeValidated != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+				return fmt.Errorf("Cannot use include_percentiles with a metric_type of %s, must use metric_type of 'distribution'.", metricType)
+			}
+			return nil
+		},
 		Importer: &schema.ResourceImporter{
 			State: resourceDatadogMetricTagConfigurationImport,
 		},
