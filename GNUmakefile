@@ -42,7 +42,7 @@ vet:
 	fi
 
 lint: get-test-deps
-	golint ./...
+	golint -set_exit_status ./...
 
 fmt:
 	gofmt -w $(GOFMT_FILES)
