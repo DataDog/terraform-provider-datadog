@@ -13,7 +13,7 @@ import (
 
 func resourceDatadogMetricTagConfiguration() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog metric_tag_configuration resource. This can be used to manage a custom metric's tags.",
+		Description: "Provides a Datadog metric tag configuration resource. This can be used to modify tag configurations for metrics.",
 		Create:      resourceDatadogMetricTagConfigurationCreate,
 		Read:        resourceDatadogMetricTagConfigurationRead,
 		Update:      resourceDatadogMetricTagConfigurationUpdate,
