@@ -79,12 +79,7 @@ tools:
 	go generate -tags tools tools/tools.go
 
 docs: tools
-	tfplugindocs
-	@#This resource's documentation isn't currently generated
-	@rm docs/resources/slo_correction.md
-	@# Timeboard + Screenbaord is deprecated
-	@# There is an issue with the security_monitoring schema that requires the docs to be updated by hand if needed
-	@git checkout HEAD -- docs/resources/timeboard.md docs/resources/screenboard.md docs/data-sources/security_monitoring_rules.md docs/resources/security_monitoring_default_rule.md docs/resources/security_monitoring_rule.md
+	@sh -c "'$(CURDIR)/scripts/generate-docs.sh'"
 
 check-docs: docs
 	@if [ "`git status --porcelain docs/`" ]; then \
