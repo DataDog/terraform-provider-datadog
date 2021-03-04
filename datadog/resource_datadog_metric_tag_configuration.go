@@ -63,7 +63,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				},
 			},
 			"metric_type": {
-				Description:  "The metric's type. This field can't be updated after creation. Allowed enum values: gauge,count,distribution",
+				Description:  "The metric's type. This field can't be updated after creation. Allowed enum values: gauge,count,distribution.",
 				Type:         schema.TypeString,
 				ForceNew:     true,
 				Required:     true,
@@ -256,9 +256,15 @@ func resourceDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, meta in
 	auth := providerConf.AuthV2
 
 	metricName := d.Id()
-	metricTagConfigurationResponse, _, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName).Execute()
+	metricTagConfigurationResponse, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName).Execute()
 	if err != nil {
 		return utils.TranslateClientError(err, "metric not found")
+	}
+	if httpresp == nil {
+		return fmt.Errorf("error determining if tag configuration for metric exists")
+	}
+	if httpresp != nil && httpresp.StatusCode == 404 {
+		return fmt.Errorf("error updating tag configuration for metric, tag configuration does not exist")
 	}
 
 	existingMetricType := metricTagConfigurationResponse.GetData().Attributes.GetMetricType()
