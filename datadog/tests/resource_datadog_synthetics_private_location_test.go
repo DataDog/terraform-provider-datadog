@@ -138,7 +138,7 @@ resource "datadog_synthetics_private_location" "foo" {
 func testSyntheticsPrivateLocationExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -154,7 +154,7 @@ func testSyntheticsPrivateLocationExists(accProvider func() (*schema.Provider, e
 func testSyntheticsPrivateLocationIsDestroyed(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 

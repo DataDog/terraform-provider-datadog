@@ -100,7 +100,7 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 func checkIntegrationGCPExists(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -124,7 +124,7 @@ func checkIntegrationGCPExists(accProvider func() (*schema.Provider, error)) fun
 func checkIntegrationGCPDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 

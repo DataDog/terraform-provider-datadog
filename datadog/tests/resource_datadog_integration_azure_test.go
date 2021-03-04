@@ -81,7 +81,7 @@ func checkIntegrationAzureExistsHelper(ctx context.Context, s *terraform.State, 
 func checkIntegrationAzureExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -116,7 +116,7 @@ func checkIntegrationAzureDestroyHelper(ctx context.Context, s *terraform.State,
 func checkIntegrationAzureDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 

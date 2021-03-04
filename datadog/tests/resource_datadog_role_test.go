@@ -105,7 +105,7 @@ func testCheckRolePermission(rolename string, permissionsSource string, permissi
 func testAccCheckDatadogRoleDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		client := providerConf.DatadogClientV2
 		auth := providerConf.AuthV2
 
@@ -131,7 +131,7 @@ func testAccCheckDatadogRoleDestroy(accProvider func() (*schema.Provider, error)
 func testAccCheckDatadogRoleExists(accProvider func() (*schema.Provider, error), rolename string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		client := providerConf.DatadogClientV2
 		auth := providerConf.AuthV2
 

@@ -370,7 +370,7 @@ func testSpan(ctx context.Context, t *testing.T) context.Context {
 }
 
 func initAccProvider(ctx context.Context, t *testing.T, httpClient *http.Client) *schema.Provider {
-	p, _ := datadog.Provider()()
+	p := datadog.Provider()()
 	p.ConfigureContextFunc = testProviderConfigure(ctx, httpClient, testClock(t))
 
 	return p
@@ -528,7 +528,7 @@ func TestProvider(t *testing.T) {
 }
 
 func TestProvider_impl(t *testing.T) {
-	var _, _ = datadog.Provider()()
+	var _ = datadog.Provider()()
 }
 
 func testAccPreCheck(t *testing.T) {

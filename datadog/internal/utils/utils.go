@@ -16,7 +16,7 @@ import (
 )
 
 // DatadogProvider holds a reference to the provider
-var DatadogProvider func() (*schema.Provider, error)
+var DatadogProvider *schema.Provider
 
 // TranslateClientError turns an error into a message
 func TranslateClientError(err error, msg string) error {
@@ -39,11 +39,10 @@ func TranslateClientError(err error, msg string) error {
 
 // GetUserAgent augments the default user agent with provider details
 func GetUserAgent(clientUserAgent string) string {
-	provider, _ := DatadogProvider()
 	return fmt.Sprintf("terraform-provider-datadog/%s (terraform %s; terraform-cli %s) %s",
 		version.ProviderVersion,
 		meta.SDKVersionString(),
-		provider.TerraformVersion,
+		DatadogProvider.TerraformVersion,
 		clientUserAgent)
 }
 

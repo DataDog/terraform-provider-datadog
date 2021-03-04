@@ -103,7 +103,7 @@ func testAccCheckDatadogLogsMetricConfigBasic(uniq string) string {
 func testAccCheckDatadogLogsMetricExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		resourceID := s.RootModule().Resources[resourceName].Primary.ID
 		datadogClient := providerConf.DatadogClientV2
 		auth := providerConf.AuthV2
@@ -124,7 +124,7 @@ func testAccCheckDatadogLogsMetricExists(accProvider func() (*schema.Provider, e
 func testAccCheckDatadogLogsMetricDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV2
 		auth := providerConf.AuthV2
 		for _, r := range s.RootModule().Resources {

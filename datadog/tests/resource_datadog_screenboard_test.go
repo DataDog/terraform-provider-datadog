@@ -1883,7 +1883,7 @@ func TestAccDatadogScreenboard_update(t *testing.T) {
 func checkScreenboardExists(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		client := providerConf.CommunityClient
 		for _, r := range s.RootModule().Resources {
 			i, _ := strconv.Atoi(r.Primary.ID)
@@ -1898,7 +1898,7 @@ func checkScreenboardExists(accProvider func() (*schema.Provider, error)) func(*
 func checkScreenboardDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		client := providerConf.CommunityClient
 		for _, r := range s.RootModule().Resources {
 			i, _ := strconv.Atoi(r.Primary.ID)

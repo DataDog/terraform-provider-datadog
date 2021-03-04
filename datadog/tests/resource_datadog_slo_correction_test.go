@@ -176,7 +176,7 @@ func testAccCheckDatadogSloCorrectionConfigUpdated(uniq string) string {
 func testAccCheckDatadogSloCorrectionExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV1
 		auth := providerConf.AuthV1
 		var err error
@@ -197,7 +197,7 @@ func testAccCheckDatadogSloCorrectionExists(accProvider func() (*schema.Provider
 func testAccCheckDatadogSloCorrectionDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV1
 		auth := providerConf.AuthV1
 		for _, r := range s.RootModule().Resources {

@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"fmt"
-
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"

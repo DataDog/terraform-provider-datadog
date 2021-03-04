@@ -422,7 +422,7 @@ func testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider func() (
 func testAccCheckDatadogSecurityMonitoringRuleExists(accProvider func() (*schema.Provider, error), rule string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
 
@@ -439,7 +439,7 @@ func testAccCheckDatadogSecurityMonitoringRuleExists(accProvider func() (*schema
 func testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
 

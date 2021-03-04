@@ -438,7 +438,7 @@ func TestAccDatadogDowntime_DiffStart(t *testing.T) {
 func testAccCheckDatadogDowntimeDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -452,7 +452,7 @@ func testAccCheckDatadogDowntimeDestroy(accProvider func() (*schema.Provider, er
 func testAccCheckDatadogDowntimeExists(accProvider func() (*schema.Provider, error), n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 

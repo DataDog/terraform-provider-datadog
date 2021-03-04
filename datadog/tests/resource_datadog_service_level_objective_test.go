@@ -233,7 +233,7 @@ func TestAccDatadogServiceLevelObjective_InvalidMonitor(t *testing.T) {
 func testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 		if err := destroyServiceLevelObjectiveHelper(authV1, s, datadogClientV1); err != nil {
@@ -273,7 +273,7 @@ func existsServiceLevelObjectiveHelper(ctx context.Context, s *terraform.State, 
 func testAccCheckDatadogServiceLevelObjectiveExists(accProvider func() (*schema.Provider, error), n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 

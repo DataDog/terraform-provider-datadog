@@ -46,9 +46,7 @@ resource "datadog_dashboard" "time" {
 			alert_id = "1234"
 			viz_type = "timeseries"
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
 	}
 }
@@ -65,9 +63,7 @@ resource "datadog_dashboard" "screen" {
 			title = "Widget Title"
 			title_size = 16
 			title_align = "left"
-			time = {
-				live_span = "1h"
-			}
+            live_span = "1h"
 		}
 		layout = {
 			height = 43
@@ -95,9 +91,7 @@ resource "datadog_dashboard" "time" {
 			alert_id = "1234"
 			viz_type = "timeseries"
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+            live_span = "1h"
 		}
 	}
 	dashboard_lists = ["${datadog_dashboard_list.new_list.id}"]
@@ -120,9 +114,7 @@ resource "datadog_dashboard" "time" {
 			alert_id = "1234"
 			viz_type = "timeseries"
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+            live_span = "1h"
 		}
 	}
 }`, uniq, uniq)
@@ -193,7 +185,7 @@ func TestDatadogDashListInDashboard(t *testing.T) {
 func testAccCheckDatadogDashListDestroy(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 

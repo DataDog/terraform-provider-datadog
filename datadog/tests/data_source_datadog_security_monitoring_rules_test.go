@@ -68,7 +68,7 @@ func TestAccDatadogSecurityMonitoringRuleDatasource(t *testing.T) {
 func securityMonitoringCheckRuleCountNoFilter(accProvider func() (*schema.Provider, error)) func(state *terraform.State) error {
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
 
@@ -83,7 +83,7 @@ func securityMonitoringCheckRuleCountNoFilter(accProvider func() (*schema.Provid
 func securityMonitoringCheckRuleCountNameFilter(accProvider func() (*schema.Provider, error), name string) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
 
@@ -106,7 +106,7 @@ func securityMonitoringCheckRuleCountNameFilter(accProvider func() (*schema.Prov
 func securityMonitoringCheckRuleCountTagsFilter(accProvider func() (*schema.Provider, error), filterTag string) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
 		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2).PageSize(1000).Execute()
@@ -129,7 +129,7 @@ func securityMonitoringCheckRuleCountTagsFilter(accProvider func() (*schema.Prov
 func securityMonitoringCheckRuleCountDefaultFilter(accProvider func() (*schema.Provider, error), isDefault bool) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
 		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2).PageSize(1000).Execute()

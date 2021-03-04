@@ -114,7 +114,7 @@ func metadataExistsHelper(ctx context.Context, s *terraform.State, datadogClient
 func checkMetricMetadataExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -128,7 +128,7 @@ func checkMetricMetadataExists(accProvider func() (*schema.Provider, error)) res
 func checkPostEvent(accProvider func() (*schema.Provider, error), clock clockwork.FakeClock) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		client := providerConf.CommunityClient
 		datapointUnixTime := float64(clock.Now().Unix())
 		datapointValue := float64(1)

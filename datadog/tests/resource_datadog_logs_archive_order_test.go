@@ -76,7 +76,7 @@ func TestAccDatadogLogsArchiveOrder_empty(t *testing.T) {
 func testAccCheckArchiveOrderExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV1 := providerConf.AuthV1
 
@@ -101,7 +101,7 @@ func archiveOrderExistsChecker(ctx context.Context, s *terraform.State, datadogC
 func testAccCheckArchiveOrderResourceMatch(accProvider func() (*schema.Provider, error), name string, key string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV1 := providerConf.AuthV1
 

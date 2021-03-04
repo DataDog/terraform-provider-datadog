@@ -232,7 +232,7 @@ func testCheckUserHasRole(username string, roleSource string) resource.TestCheck
 func testAccCheckDatadogUserDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		client := providerConf.CommunityClient
 
 		if err := datadogUserDestroyHelper(s, client); err != nil {
@@ -245,7 +245,7 @@ func testAccCheckDatadogUserDestroy(accProvider func() (*schema.Provider, error)
 func testAccCheckDatadogUserExists(accProvider func() (*schema.Provider, error), n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		client := providerConf.CommunityClient
 
 		if err := datadogUserExistsHelper(s, client); err != nil {
@@ -258,7 +258,7 @@ func testAccCheckDatadogUserExists(accProvider func() (*schema.Provider, error),
 func testAccCheckDatadogUserV2Destroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
 
@@ -272,7 +272,7 @@ func testAccCheckDatadogUserV2Destroy(accProvider func() (*schema.Provider, erro
 func testAccCheckDatadogUserV2Exists(accProvider func() (*schema.Provider, error), n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
 

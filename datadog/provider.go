@@ -44,9 +44,9 @@ func init() {
 }
 
 // Provider returns the built datadog provider object
-func Provider() func() (*schema.Provider, error) {
-	utils.DatadogProvider = func() (*schema.Provider, error) {
-		return &schema.Provider{
+func Provider() func() *schema.Provider {
+	return func() *schema.Provider {
+		utils.DatadogProvider = &schema.Provider{
 			Schema: map[string]*schema.Schema{
 				"api_key": {
 					Type:        schema.TypeString,
@@ -122,10 +122,10 @@ func Provider() func() (*schema.Provider, error) {
 			},
 
 			ConfigureContextFunc: providerConfigure,
-		}, nil
-	}
+		}
 
-	return utils.DatadogProvider
+		return utils.DatadogProvider
+	}
 }
 
 // ProviderConfiguration contains the initialized API clients to communicate with the Datadog API

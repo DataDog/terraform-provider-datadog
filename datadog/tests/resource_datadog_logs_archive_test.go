@@ -389,7 +389,7 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 func testAccCheckArchiveExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
 
@@ -448,7 +448,7 @@ func testAccCheckArchiveAndIntegrationAWSDestroy(accProvider func() (*schema.Pro
 func testAccCheckArchiveDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
 		if err := archiveDestroyHelper(authV2, s, datadogClientV2); err != nil {

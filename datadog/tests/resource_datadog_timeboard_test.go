@@ -366,7 +366,7 @@ func TestAccDatadogTimeboard_update(t *testing.T) {
 func checkExists(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		client := providerConf.CommunityClient
 		for _, r := range s.RootModule().Resources {
 			i, _ := strconv.Atoi(r.Primary.ID)
@@ -381,7 +381,7 @@ func checkExists(accProvider func() (*schema.Provider, error)) func(*terraform.S
 func checkDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		client := providerConf.CommunityClient
 		for _, r := range s.RootModule().Resources {
 			i, _ := strconv.Atoi(r.Primary.ID)

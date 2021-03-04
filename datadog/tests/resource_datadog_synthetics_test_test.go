@@ -2679,7 +2679,7 @@ resource "datadog_synthetics_test" "bar" {
 func testSyntheticsTestExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -2695,7 +2695,7 @@ func testSyntheticsTestExists(accProvider func() (*schema.Provider, error)) reso
 func testSyntheticsTestIsDestroyed(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -2716,7 +2716,7 @@ func editSyntheticsTestMML(accProvider func() (*schema.Provider, error)) resourc
 	return func(s *terraform.State) error {
 		for _, r := range s.RootModule().Resources {
 			provider, _ := accProvider()
-			providerConf := provider.Meta().(datadog.ProviderConfiguration)
+			providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 			datadogClientV1 := providerConf.DatadogClientV1
 			authV1 := providerConf.AuthV1
 

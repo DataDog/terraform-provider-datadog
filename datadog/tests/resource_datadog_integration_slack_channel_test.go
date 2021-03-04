@@ -108,7 +108,7 @@ func emptyLogsArchiveConfig() string {
 func testAccCheckDatadogIntegrationSlackChannelExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV1
 		auth := providerConf.AuthV1
 
@@ -127,7 +127,7 @@ func testAccCheckDatadogIntegrationSlackChannelExists(accProvider func() (*schem
 func testAccCheckDatadogIntegrationSlackChannelDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV1
 		auth := providerConf.AuthV1
 
@@ -159,7 +159,7 @@ func testAccCheckDatadogIntegrationSlackChannelDestroy(accProvider func() (*sche
 func createSlackIntegration(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(datadog.ProviderConfiguration)
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		client := providerConf.CommunityClient
 		slackIntegration := communityClient.IntegrationSlackRequest{
 			ServiceHooks: []communityClient.ServiceHookSlackRequest{
