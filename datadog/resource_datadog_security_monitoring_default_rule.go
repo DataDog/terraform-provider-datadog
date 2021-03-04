@@ -160,7 +160,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 
 			// Update rule case notifications when rule added to terraform configuration
 
-			matchedCases += 1
+			matchedCases++
 
 			tfNotificationsRaw := tfCase["notifications"].([]interface{})
 			tfNotifications := make([]string, len(tfNotificationsRaw))
@@ -169,7 +169,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 			}
 
 			if !stringSliceEquals(tfNotifications, ruleCase.GetNotifications()) {
-				modifiedCases += 1
+				modifiedCases++
 				updatedRuleCase[i].Notifications = &tfNotifications
 			}
 
@@ -180,7 +180,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 			tfNotifications := make([]string, 0)
 
 			if !stringSliceEquals(tfNotifications, ruleCase.GetNotifications()) {
-				modifiedCases += 1
+				modifiedCases++
 				updatedRuleCase[i].Notifications = &tfNotifications
 			}
 		}
