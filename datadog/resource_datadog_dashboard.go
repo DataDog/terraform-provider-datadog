@@ -5242,11 +5242,14 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
 
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
+		datadogDefinition.Time = buildDatadogWidgetTime(v)
+	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
 	}
+
 	return datadogDefinition
 }
 
@@ -5283,13 +5286,9 @@ func buildTerraformGeomapDefinition(datadogDefinition datadogV1.GeomapWidgetDefi
 	}
 
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
+
 	return terraformDefinition
 }
 
