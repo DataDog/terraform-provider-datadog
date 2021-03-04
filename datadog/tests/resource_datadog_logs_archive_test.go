@@ -9,9 +9,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 //Test
@@ -49,9 +49,9 @@ func TestAccDatadogLogsArchiveAzure_basicDeprecated(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckArchiveAndIntegrationAzureDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckArchiveAndIntegrationAzureDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: archiveAzureConfigForCreation(tenantName, true),
@@ -85,9 +85,9 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckArchiveAndIntegrationAzureDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckArchiveAndIntegrationAzureDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: archiveAzureConfigForCreation(tenantName, false),
@@ -150,9 +150,9 @@ func TestAccDatadogLogsArchiveGCS_basicDeprecated(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckArchiveAndIntegrationGCSDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckArchiveAndIntegrationGCSDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: archiveGCSConfigForCreation(client, true),
@@ -184,9 +184,9 @@ func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckArchiveAndIntegrationGCSDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckArchiveAndIntegrationGCSDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: archiveGCSConfigForCreation(client, false),
@@ -245,9 +245,9 @@ func TestAccDatadogLogsArchiveS3_basicDeprecated(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: archiveS3ConfigForCreation(accountID, true),
@@ -283,9 +283,9 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: archiveS3ConfigForCreation(accountID, false),
@@ -342,9 +342,9 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: archiveS3ConfigForCreation(accountID, true),
@@ -386,9 +386,10 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 	})
 }
 
-func testAccCheckArchiveExists(accProvider *schema.Provider) resource.TestCheckFunc {
+func testAccCheckArchiveExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(datadog.ProviderConfiguration)
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
 
@@ -411,7 +412,7 @@ func archiveExistsChecker(ctx context.Context, s *terraform.State, datadogClient
 	return nil
 }
 
-func testAccCheckArchiveAndIntegrationAzureDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func testAccCheckArchiveAndIntegrationAzureDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		err := testAccCheckArchiveDestroy(accProvider)(s)
 		if err != nil {
@@ -422,7 +423,7 @@ func testAccCheckArchiveAndIntegrationAzureDestroy(accProvider *schema.Provider)
 	}
 }
 
-func testAccCheckArchiveAndIntegrationGCSDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func testAccCheckArchiveAndIntegrationGCSDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		err := testAccCheckArchiveDestroy(accProvider)(s)
 		if err != nil {
@@ -433,7 +434,7 @@ func testAccCheckArchiveAndIntegrationGCSDestroy(accProvider *schema.Provider) f
 	}
 }
 
-func testAccCheckArchiveAndIntegrationAWSDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func testAccCheckArchiveAndIntegrationAWSDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		err := testAccCheckArchiveDestroy(accProvider)(s)
 		if err != nil {
@@ -444,9 +445,10 @@ func testAccCheckArchiveAndIntegrationAWSDestroy(accProvider *schema.Provider) f
 	}
 }
 
-func testAccCheckArchiveDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func testAccCheckArchiveDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(datadog.ProviderConfiguration)
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
 		if err := archiveDestroyHelper(authV2, s, datadogClientV2); err != nil {

@@ -10,14 +10,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 )
 
@@ -45,83 +44,85 @@ func init() {
 }
 
 // Provider returns the built datadog provider object
-func Provider() terraform.ResourceProvider {
-	utils.DatadogProvider = &schema.Provider{
-		Schema: map[string]*schema.Schema{
-			"api_key": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_API_KEY", "DD_API_KEY"}, nil),
-				Description: "(Required unless validate is false) Datadog API key. This can also be set via the DD_API_KEY environment variable.",
+func Provider() func() (*schema.Provider, error) {
+	utils.DatadogProvider = func() (*schema.Provider, error) {
+		return &schema.Provider{
+			Schema: map[string]*schema.Schema{
+				"api_key": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_API_KEY", "DD_API_KEY"}, nil),
+					Description: "(Required unless validate is false) Datadog API key. This can also be set via the DD_API_KEY environment variable.",
+				},
+				"app_key": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_APP_KEY", "DD_APP_KEY"}, nil),
+					Description: "(Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.",
+				},
+				"api_url": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_HOST", "DD_HOST"}, nil),
+					Description: "The API URL. This can also be set via the DD_HOST environment variable. Note that this URL must not end with the /api/ path. For example, https://api.datadoghq.com/ is a correct value, while https://api.datadoghq.com/api/ is not. And if you're working with \"EU\" version of Datadog, use https://api.datadoghq.eu/.",
+				},
+				"validate": {
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     true,
+					Description: "Enables validation of the provided API and APP keys during provider initialization. Default is true. When false, api_key and app_key won't be checked.",
+				},
 			},
-			"app_key": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_APP_KEY", "DD_APP_KEY"}, nil),
-				Description: "(Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.",
-			},
-			"api_url": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_HOST", "DD_HOST"}, nil),
-				Description: "The API URL. This can also be set via the DD_HOST environment variable. Note that this URL must not end with the /api/ path. For example, https://api.datadoghq.com/ is a correct value, while https://api.datadoghq.com/api/ is not. And if you're working with \"EU\" version of Datadog, use https://api.datadoghq.eu/.",
-			},
-			"validate": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     true,
-				Description: "Enables validation of the provided API and APP keys during provider initialization. Default is true. When false, api_key and app_key won't be checked.",
-			},
-		},
 
-		ResourcesMap: map[string]*schema.Resource{
-			"datadog_dashboard":                            resourceDatadogDashboard(),
-			"datadog_dashboard_list":                       resourceDatadogDashboardList(),
-			"datadog_downtime":                             resourceDatadogDowntime(),
-			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
-			"datadog_integration_aws_tag_filter":           resourceDatadogIntegrationAwsTagFilter(),
-			"datadog_integration_aws_lambda_arn":           resourceDatadogIntegrationAwsLambdaArn(),
-			"datadog_integration_aws_log_collection":       resourceDatadogIntegrationAwsLogCollection(),
-			"datadog_integration_azure":                    resourceDatadogIntegrationAzure(),
-			"datadog_integration_gcp":                      resourceDatadogIntegrationGcp(),
-			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
-			"datadog_integration_pagerduty_service_object": resourceDatadogIntegrationPagerdutySO(),
-			"datadog_integration_slack_channel":            resourceDatadogIntegrationSlackChannel(),
-			"datadog_logs_archive":                         resourceDatadogLogsArchive(),
-			"datadog_logs_archive_order":                   resourceDatadogLogsArchiveOrder(),
-			"datadog_logs_custom_pipeline":                 resourceDatadogLogsCustomPipeline(),
-			"datadog_logs_index":                           resourceDatadogLogsIndex(),
-			"datadog_logs_index_order":                     resourceDatadogLogsIndexOrder(),
-			"datadog_logs_integration_pipeline":            resourceDatadogLogsIntegrationPipeline(),
-			"datadog_logs_metric":                          resourceDatadogLogsMetric(),
-			"datadog_logs_pipeline_order":                  resourceDatadogLogsPipelineOrder(),
-			"datadog_metric_metadata":                      resourceDatadogMetricMetadata(),
-			"datadog_monitor":                              resourceDatadogMonitor(),
-			"datadog_role":                                 resourceDatadogRole(),
-			"datadog_screenboard":                          resourceDatadogScreenboard(),
-			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
-			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
-			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
-			"datadog_slo_correction":                       resourceDatadogSloCorrection(),
-			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
-			"datadog_synthetics_global_variable":           resourceDatadogSyntheticsGlobalVariable(),
-			"datadog_synthetics_private_location":          resourceDatadogSyntheticsPrivateLocation(),
-			"datadog_timeboard":                            resourceDatadogTimeboard(),
-			"datadog_user":                                 resourceDatadogUser(),
-		},
+			ResourcesMap: map[string]*schema.Resource{
+				"datadog_dashboard":                            resourceDatadogDashboard(),
+				"datadog_dashboard_list":                       resourceDatadogDashboardList(),
+				"datadog_downtime":                             resourceDatadogDowntime(),
+				"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
+				"datadog_integration_aws_tag_filter":           resourceDatadogIntegrationAwsTagFilter(),
+				"datadog_integration_aws_lambda_arn":           resourceDatadogIntegrationAwsLambdaArn(),
+				"datadog_integration_aws_log_collection":       resourceDatadogIntegrationAwsLogCollection(),
+				"datadog_integration_azure":                    resourceDatadogIntegrationAzure(),
+				"datadog_integration_gcp":                      resourceDatadogIntegrationGcp(),
+				"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
+				"datadog_integration_pagerduty_service_object": resourceDatadogIntegrationPagerdutySO(),
+				"datadog_integration_slack_channel":            resourceDatadogIntegrationSlackChannel(),
+				"datadog_logs_archive":                         resourceDatadogLogsArchive(),
+				"datadog_logs_archive_order":                   resourceDatadogLogsArchiveOrder(),
+				"datadog_logs_custom_pipeline":                 resourceDatadogLogsCustomPipeline(),
+				"datadog_logs_index":                           resourceDatadogLogsIndex(),
+				"datadog_logs_index_order":                     resourceDatadogLogsIndexOrder(),
+				"datadog_logs_integration_pipeline":            resourceDatadogLogsIntegrationPipeline(),
+				"datadog_logs_metric":                          resourceDatadogLogsMetric(),
+				"datadog_logs_pipeline_order":                  resourceDatadogLogsPipelineOrder(),
+				"datadog_metric_metadata":                      resourceDatadogMetricMetadata(),
+				"datadog_monitor":                              resourceDatadogMonitor(),
+				"datadog_role":                                 resourceDatadogRole(),
+				"datadog_screenboard":                          resourceDatadogScreenboard(),
+				"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
+				"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
+				"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
+				"datadog_slo_correction":                       resourceDatadogSloCorrection(),
+				"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
+				"datadog_synthetics_global_variable":           resourceDatadogSyntheticsGlobalVariable(),
+				"datadog_synthetics_private_location":          resourceDatadogSyntheticsPrivateLocation(),
+				"datadog_timeboard":                            resourceDatadogTimeboard(),
+				"datadog_user":                                 resourceDatadogUser(),
+			},
 
-		DataSourcesMap: map[string]*schema.Resource{
-			"datadog_dashboard":                 dataSourceDatadogDashboard(),
-			"datadog_dashboard_list":            dataSourceDatadogDashboardList(),
-			"datadog_ip_ranges":                 dataSourceDatadogIPRanges(),
-			"datadog_monitor":                   dataSourceDatadogMonitor(),
-			"datadog_permissions":               dataSourceDatadogPermissions(),
-			"datadog_role":                      dataSourceDatadogRole(),
-			"datadog_security_monitoring_rules": dataSourceDatadogSecurityMonitoringRules(),
-			"datadog_synthetics_locations":      dataSourceDatadogSyntheticsLocations(),
-		},
+			DataSourcesMap: map[string]*schema.Resource{
+				"datadog_dashboard":                 dataSourceDatadogDashboard(),
+				"datadog_dashboard_list":            dataSourceDatadogDashboardList(),
+				"datadog_ip_ranges":                 dataSourceDatadogIPRanges(),
+				"datadog_monitor":                   dataSourceDatadogMonitor(),
+				"datadog_permissions":               dataSourceDatadogPermissions(),
+				"datadog_role":                      dataSourceDatadogRole(),
+				"datadog_security_monitoring_rules": dataSourceDatadogSecurityMonitoringRules(),
+				"datadog_synthetics_locations":      dataSourceDatadogSyntheticsLocations(),
+			},
 
-		ConfigureFunc: providerConfigure,
+			ConfigureContextFunc: providerConfigure,
+		}, nil
 	}
 
 	return utils.DatadogProvider
@@ -138,13 +139,15 @@ type ProviderConfiguration struct {
 	Now func() time.Time
 }
 
-func providerConfigure(d *schema.ResourceData) (interface{}, error) {
+func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	apiKey := d.Get("api_key").(string)
 	appKey := d.Get("app_key").(string)
 	validate := d.Get("validate").(bool)
 
 	if validate && (apiKey == "" || appKey == "") {
-		return nil, errors.New("api_key and app_key must be set unless validate = false")
+		diags = append(diags, diag.Errorf("api_key and app_key must be set unless validate = false")...)
+		return nil, diags
 	}
 
 	// Initialize the community client
@@ -170,11 +173,13 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		ok, err := communityClient.Validate()
 		if err != nil {
 			log.Printf("[ERROR] Datadog Client validation error: %v", err)
-			return nil, err
+			diags = append(diags, diag.Errorf("[ERROR] Datadog Client validation error: %v", err)...)
+			return nil, diags
 		} else if !ok {
 			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
 			log.Printf("[ERROR] Datadog Client validation error: %v", err)
-			return nil, err
+			diags = append(diags, diag.Errorf("%v", err)...)
+			return nil, diags
 		}
 	} else {
 		log.Println("[INFO] Skipping key validation (validate = false)")
@@ -211,10 +216,12 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
-			return nil, fmt.Errorf(`invalid API URL : %v`, parseErr)
+			diags = append(diags, diag.Errorf(`invalid API URL : %v`, parseErr)...)
+			return nil, diags
 		}
 		if parsedAPIURL.Host == "" || parsedAPIURL.Scheme == "" {
-			return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
+			diags = append(diags, diag.Errorf(`missing protocol or host : %v`, apiURL)...)
+			return nil, diags
 		}
 		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
 		authV1 = context.WithValue(authV1, datadogV1.ContextServerIndex, 1)
@@ -263,10 +270,12 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
-			return nil, fmt.Errorf(`invalid API URL : %v`, parseErr)
+			diags = append(diags, diag.Errorf(`invalid API URL : %v`, parseErr)...)
+			return nil, diags
 		}
 		if parsedAPIURL.Host == "" || parsedAPIURL.Scheme == "" {
-			return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
+			diags = append(diags, diag.Errorf(`missing protocol or host : %v`, apiURL)...)
+			return nil, diags
 		}
 		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
 		authV2 = context.WithValue(authV2, datadogV2.ContextServerIndex, 1)

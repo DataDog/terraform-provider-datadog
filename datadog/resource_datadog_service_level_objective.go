@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strconv"
@@ -10,7 +11,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogServiceLevelObjective() *schema.Resource {
@@ -136,15 +137,6 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Description:   "A static set of monitor IDs to use as part of the SLO",
 				Elem:          &schema.Schema{Type: schema.TypeInt, MinItems: 1},
 			},
-			// NOTE: This feature was introduced but it never worked and then it was removed.
-			// We didn't trigger a major release since it never worked. However, this may be introduced later again.
-			// Keeping this here for now and we removed the related code.
-			"monitor_search": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Removed:  "Feature is not yet supported",
-				Computed: true,
-			},
 			"groups": {
 				Type:          schema.TypeSet,
 				Optional:      true,
@@ -170,7 +162,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 // ValidateServiceLevelObjectiveTypeString is a ValidateFunc that ensures the SLO is of one of the supported types
 
 // Use CustomizeDiff to do monitor validation
-func resourceDatadogServiceLevelObjectiveCustomizeDiff(diff *schema.ResourceDiff, meta interface{}) error {
+func resourceDatadogServiceLevelObjectiveCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
 		// Explicitly skip validation
 		log.Printf("[DEBUG] Validate is %v, skipping validation", validate.(bool))

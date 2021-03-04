@@ -9,9 +9,9 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func TestAccDatadogLogsMetric_import(t *testing.T) {
@@ -22,9 +22,9 @@ func TestAccDatadogLogsMetric_import(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogLogsMetricDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogLogsMetricDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogLogsMetricConfigBasic(uniqueLogsMetric),
@@ -45,9 +45,9 @@ func TestAccDatadogLogsMetric_Basic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogLogsMetricDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogLogsMetricDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogLogsMetricConfigBasic(uniqueLogsMetric),
@@ -100,11 +100,11 @@ func testAccCheckDatadogLogsMetricConfigBasic(uniq string) string {
     `, uniq)
 }
 
-func testAccCheckDatadogLogsMetricExists(accProvider *schema.Provider, resourceName string) resource.TestCheckFunc {
+func testAccCheckDatadogLogsMetricExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		meta := accProvider.Meta()
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(datadog.ProviderConfiguration)
 		resourceID := s.RootModule().Resources[resourceName].Primary.ID
-		providerConf := meta.(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV2
 		auth := providerConf.AuthV2
 		var err error
@@ -121,10 +121,10 @@ func testAccCheckDatadogLogsMetricExists(accProvider *schema.Provider, resourceN
 	}
 }
 
-func testAccCheckDatadogLogsMetricDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func testAccCheckDatadogLogsMetricDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		meta := accProvider.Meta()
-		providerConf := meta.(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV2
 		auth := providerConf.AuthV2
 		for _, r := range s.RootModule().Resources {

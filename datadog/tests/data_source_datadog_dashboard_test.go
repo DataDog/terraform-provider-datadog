@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func TestAccDatadogDashboardDatasource(t *testing.T) {
@@ -16,9 +16,9 @@ func TestAccDatadogDashboardDatasource(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config:             testAccDatasourceDashboardNameFilterConfig(uniq),
@@ -29,7 +29,7 @@ func TestAccDatadogDashboardDatasource(t *testing.T) {
 	})
 }
 
-func checkDatasourceDashboardAttrs(accProvider *schema.Provider, uniq string) resource.TestCheckFunc {
+func checkDatasourceDashboardAttrs(accProvider func() (*schema.Provider, error), uniq string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		resource.TestCheckResourceAttr(
 			"data.datadog_dashboard.dash_one", "name", uniq+" one"),

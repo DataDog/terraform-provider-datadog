@@ -5,7 +5,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -25,11 +24,13 @@ import (
 	"github.com/dnaeon/go-vcr/cassette"
 	"github.com/dnaeon/go-vcr/recorder"
 	"github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	"github.com/jonboulle/clockwork"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
 	ddtesting "gopkg.in/DataDog/dd-trace-go.v1/contrib/testing"
@@ -369,8 +370,8 @@ func testSpan(ctx context.Context, t *testing.T) context.Context {
 }
 
 func initAccProvider(ctx context.Context, t *testing.T, httpClient *http.Client) *schema.Provider {
-	p := datadog.Provider().(*schema.Provider)
-	p.ConfigureFunc = testProviderConfigure(ctx, httpClient, testClock(t))
+	p, _ := datadog.Provider()()
+	p.ConfigureContextFunc = testProviderConfigure(ctx, httpClient, testClock(t))
 
 	return p
 }
@@ -445,8 +446,9 @@ func buildDatadogClientV2(httpClient *http.Client) *datadogV2.APIClient {
 	return datadogV2.NewAPIClient(configV2)
 }
 
-func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock clockwork.FakeClock) schema.ConfigureFunc {
-	return func(d *schema.ResourceData) (interface{}, error) {
+func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock clockwork.FakeClock) schema.ConfigureContextFunc {
+	return func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+		var diags diag.Diagnostics
 		communityClient := datadogCommunity.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
 		if apiURL := d.Get("api_url").(string); apiURL != "" {
 			communityClient.SetBaseUrl(apiURL)
@@ -465,7 +467,8 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 
 		ctx, err := buildContext(ctx, d.Get("api_key").(string), d.Get("app_key").(string), d.Get("api_url").(string))
 		if err != nil {
-			return nil, err
+			diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+			return nil, diags
 		}
 
 		return &datadog.ProviderConfiguration{
@@ -480,14 +483,16 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 	}
 }
 
-func testAccProvidersWithHTTPClient(ctx context.Context, t *testing.T, httpClient *http.Client) map[string]terraform.ResourceProvider {
+func testAccProvidersWithHTTPClient(ctx context.Context, t *testing.T, httpClient *http.Client) map[string]func() (*schema.Provider, error) {
 	provider := initAccProvider(ctx, t, httpClient)
-	return map[string]terraform.ResourceProvider{
-		"datadog": provider,
+	return map[string]func() (*schema.Provider, error){
+		"datadog": func() (*schema.Provider, error) {
+			return provider, nil
+		},
 	}
 }
 
-func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[string]terraform.ResourceProvider) {
+func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[string]func() (*schema.Provider, error)) {
 	ctx = testSpan(ctx, t)
 	rec := initRecorder(t)
 	ctx = context.WithValue(ctx, clockContextKey("clock"), testClock(t))
@@ -501,12 +506,12 @@ func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[s
 	return ctx, p
 }
 
-func testAccProvider(t *testing.T, accProviders map[string]terraform.ResourceProvider) *schema.Provider {
+func testAccProvider(t *testing.T, accProviders map[string]func() (*schema.Provider, error)) func() (*schema.Provider, error) {
 	accProvider, ok := accProviders["datadog"]
 	if !ok {
 		t.Fatal("could not find datadog provider")
 	}
-	return accProvider.(*schema.Provider)
+	return accProvider
 }
 
 func TestProvider(t *testing.T) {
@@ -523,7 +528,7 @@ func TestProvider(t *testing.T) {
 }
 
 func TestProvider_impl(t *testing.T) {
-	var _ terraform.ResourceProvider = datadog.Provider()
+	var _, _ = datadog.Provider()()
 }
 
 func testAccPreCheck(t *testing.T) {

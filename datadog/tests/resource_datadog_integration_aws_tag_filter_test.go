@@ -9,9 +9,9 @@ import (
 	"testing"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func TestAccDatadogIntegrationAwsTagFilter_Basic(t *testing.T) {
@@ -21,9 +21,9 @@ func TestAccDatadogIntegrationAwsTagFilter_Basic(t *testing.T) {
 
 	t.Parallel()
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationAwsTagFilterBasic(uniqueID),
@@ -56,7 +56,7 @@ resource "datadog_integration_aws_tag_filter" "testing_aws_tag_filter" {
 }`, uniq)
 }
 
-func testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider *schema.Provider, resourceName string) resource.TestCheckFunc {
+func testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		resourceID := s.RootModule().Resources[resourceName].Primary.ID
 		_, tfNamespace, err := utils.AccountAndNamespaceFromID(resourceID)
@@ -80,7 +80,7 @@ func testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider *schema.Provid
 	}
 }
 
-func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider *schema.Provider, resourceName string) func(*terraform.State) error {
+func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider func() (*schema.Provider, error), resourceName string) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		resourceID := s.RootModule().Resources[resourceName].Primary.ID
 		_, tfNamespace, err := utils.AccountAndNamespaceFromID(resourceID)
@@ -108,9 +108,9 @@ func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider *schema.Provi
 	}
 }
 
-func listFiltersHelper(accProvider *schema.Provider, resourceID string) (*[]datadogV1.AWSTagFilter, error) {
-	meta := accProvider.Meta()
-	providerConf := meta.(*datadog.ProviderConfiguration)
+func listFiltersHelper(accProvider func() (*schema.Provider, error), resourceID string) (*[]datadogV1.AWSTagFilter, error) {
+	provider, _ := accProvider()
+	providerConf := provider.Meta().(datadog.ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
 

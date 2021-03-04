@@ -5,18 +5,18 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"net/url"
 	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/meta"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/meta"
 	"github.com/terraform-providers/terraform-provider-datadog/version"
 )
 
 // DatadogProvider holds a reference to the provider
-var DatadogProvider *schema.Provider
+var DatadogProvider func() (*schema.Provider, error)
 
 // TranslateClientError turns an error into a message
 func TranslateClientError(err error, msg string) error {
@@ -39,10 +39,11 @@ func TranslateClientError(err error, msg string) error {
 
 // GetUserAgent augments the default user agent with provider details
 func GetUserAgent(clientUserAgent string) string {
+	provider, _ := DatadogProvider()
 	return fmt.Sprintf("terraform-provider-datadog/%s (terraform %s; terraform-cli %s) %s",
 		version.ProviderVersion,
 		meta.SDKVersionString(),
-		DatadogProvider.TerraformVersion,
+		provider.TerraformVersion,
 		clientUserAgent)
 }
 

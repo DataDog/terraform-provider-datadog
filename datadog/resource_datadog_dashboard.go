@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strconv"
@@ -10,9 +11,9 @@ import (
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceDatadogDashboard() *schema.Resource {
@@ -22,7 +23,7 @@ func resourceDatadogDashboard() *schema.Resource {
 		Update:      resourceDatadogDashboardUpdate,
 		Read:        resourceDatadogDashboardRead,
 		Delete:      resourceDatadogDashboardDelete,
-		CustomizeDiff: func(diff *schema.ResourceDiff, meta interface{}) error {
+		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 			oldValue, newValue := diff.GetChange("dashboard_lists")
 			if !oldValue.(*schema.Set).Equal(newValue.(*schema.Set)) {
 				// Only calculate removed when the list change, to no create useless diffs
@@ -540,15 +541,6 @@ func getWidgetSchema() map[string]*schema.Schema {
 
 func getNonGroupWidgetSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"layout": {
-			Type:        schema.TypeMap,
-			Deprecated:  "Define `widget_layout` list with one element instead.",
-			Optional:    true,
-			Description: "The layout of the widget on a 'free' dashboard.",
-			Elem: &schema.Resource{
-				Schema: getWidgetLayoutSchema(),
-			},
-		},
 		"widget_layout": {
 			Type:        schema.TypeList,
 			MaxItems:    1,
@@ -897,9 +889,7 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 	datadogWidget := datadogV1.NewWidget(definition)
 
 	// Build widget layout
-	if v, ok := terraformWidget["layout"].(map[string]interface{}); ok && len(v) != 0 {
-		datadogWidget.SetLayout(*buildDatadogWidgetLayoutDeprecated(v))
-	} else if wl, ok := terraformWidget["widget_layout"].([]interface{}); ok && len(wl) != 0 {
+	if wl, ok := terraformWidget["widget_layout"].([]interface{}); ok && len(wl) != 0 {
 		if v, ok := wl[0].(map[string]interface{}); ok && len(v) != 0 {
 			datadogWidget.SetLayout(*buildDatadogWidgetLayout(v))
 		}
@@ -928,17 +918,12 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataK
 
 	// Build layout
 	if v, ok := datadogWidget.GetLayoutOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("layout"); ok {
-			terraformWidget["layout"] = buildTerraformWidgetLayout(*v)
-		} else {
-			terraformWidget["widget_layout"] = []map[string]int64{{
-				"x":      (*v).GetX(),
-				"y":      (*v).GetY(),
-				"height": (*v).GetHeight(),
-				"width":  (*v).GetWidth(),
-			}}
-		}
+		terraformWidget["widget_layout"] = []map[string]int64{{
+			"x":      (*v).GetX(),
+			"y":      (*v).GetY(),
+			"height": (*v).GetHeight(),
+			"width":  (*v).GetWidth(),
+		}}
 	}
 	terraformWidget["id"] = datadogWidget.GetId()
 
@@ -1222,22 +1207,7 @@ func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
-	}
-}
-
-func getDeprecatedTimeSchema() *schema.Schema {
-	return &schema.Schema{
-		Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
-		Deprecated:  "Define `live_span` directly in the widget definition instead.",
-		Type:        schema.TypeMap,
-		Optional:    true,
-		Elem: &schema.Resource{
-			Schema: map[string]*schema.Schema{
-				"live_span": getWidgetLiveSpanSchema(),
-			},
-		},
 	}
 }
 
@@ -1420,7 +1390,6 @@ func getChangeDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -1673,7 +1642,6 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 	}
 }
@@ -1862,7 +1830,6 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"tags_execution": {
 			Description: "The execution method for multi-value filters. Can be either `and` or `or`.",
@@ -1960,7 +1927,6 @@ func getEventTimelineDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"tags_execution": {
 			Description: "The execution method for multi-value filters. Can be either `and` or `or`.",
@@ -2075,7 +2041,6 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 	}
 }
@@ -2287,7 +2252,6 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			Optional:     true,
 			ValidateFunc: validateTimeseriesWidgetLegendSize,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -2921,7 +2885,6 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 	}
 }
@@ -3384,7 +3347,6 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -3607,7 +3569,6 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -3926,7 +3887,6 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -4419,7 +4379,6 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			Optional:     true,
 			ValidateFunc: validateTimeseriesWidgetLegendSize,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -4753,7 +4712,6 @@ func getToplistDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -5005,7 +4963,6 @@ func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 	}
 }
@@ -5313,7 +5270,6 @@ func buildTerraformWidgetEvents(datadogWidgetEvents *[]datadogV1.WidgetEvent) *[
 }
 
 // Widget Time helpers
-
 func getWidgetLiveSpanSchema() *schema.Schema {
 	return &schema.Schema{
 		Description:  "The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.",
@@ -5420,13 +5376,6 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 					Type:        schema.TypeString,
 					Required:    true,
 				},
-				"compute": {
-					Description: "One of `compute` or `multi_compute` is required. The map has the keys as below.",
-					Deprecated:  "Define `compute_query` list with one element instead.",
-					Type:        schema.TypeMap,
-					Optional:    true,
-					Elem:        getComputeSchema(),
-				},
 				"compute_query": {
 					Description: "One of `compute_query` or `multi_compute` is required. The map has the keys as below.",
 					Type:        schema.TypeList,
@@ -5439,21 +5388,6 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 					Type:        schema.TypeList,
 					Optional:    true,
 					Elem:        getComputeSchema(),
-				},
-				"search": {
-					Description: "Map defining the search query to use.",
-					Deprecated:  "Define `search_query` directly instead.",
-					Type:        schema.TypeMap,
-					Optional:    true,
-					Elem: &schema.Resource{
-						Schema: map[string]*schema.Schema{
-							"query": {
-								Description: "Query to use.",
-								Type:        schema.TypeString,
-								Required:    true,
-							},
-						},
-					},
 				},
 				"search_query": {
 					Description: "The search query to use.",
@@ -5475,13 +5409,6 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 								Description: "Maximum number of items in the group.",
 								Type:        schema.TypeInt,
 								Optional:    true,
-							},
-							"sort": {
-								Description: "One map is allowed with the keys as below.",
-								Deprecated:  "Define `sort_query` list with one element instead.",
-								Type:        schema.TypeMap,
-								Optional:    true,
-								Elem:        getQueryGroupBySortSchema(),
 							},
 							"sort_query": {
 								Description: "List of exactly one element describing the sort query to use.",
@@ -5579,9 +5506,7 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 	datadogQuery.SetIndex(terraformQuery["index"].(string))
 
 	// Compute
-	if terraformCompute, ok := terraformQuery["compute"].(map[string]interface{}); ok && len(terraformCompute) > 0 {
-		datadogQuery.SetCompute(*buildDatadogQueryComputeDeprecated(terraformCompute))
-	} else if terraformComputeList, ok := terraformQuery["compute_query"].([]interface{}); ok && len(terraformComputeList) != 0 {
+	if terraformComputeList, ok := terraformQuery["compute_query"].([]interface{}); ok && len(terraformComputeList) != 0 {
 		if terraformCompute, ok := terraformComputeList[0].(map[string]interface{}); ok {
 			datadogQuery.SetCompute(*buildDatadogQueryCompute(terraformCompute))
 		}
@@ -5608,11 +5533,7 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 		datadogQuery.SetMultiCompute(datadogComputeList)
 	}
 	// Search
-	if terraformSearch, ok := terraformQuery["search"].(map[string]interface{}); ok && len(terraformSearch) > 0 {
-		datadogQuery.Search = &datadogV1.LogQueryDefinitionSearch{
-			Query: terraformSearch["query"].(string),
-		}
-	} else if terraformSearchQuery, ok := terraformQuery["search_query"].(string); ok {
+	if terraformSearchQuery, ok := terraformQuery["search_query"].(string); ok {
 		datadogQuery.Search = &datadogV1.LogQueryDefinitionSearch{
 			Query: terraformSearchQuery,
 		}
@@ -5629,9 +5550,7 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 				datadogGroupBy.SetLimit(int64(v))
 			}
 			// Sort
-			if sort, ok := groupBy["sort"].(map[string]interface{}); ok && len(sort) > 0 {
-				datadogGroupBy.Sort = buildDatadogGroupBySort(sort)
-			} else if sortList, ok := groupBy["sort_query"].([]interface{}); ok && len(sortList) > 0 {
+			if sortList, ok := groupBy["sort_query"].([]interface{}); ok && len(sortList) > 0 {
 				if sort, ok := sortList[0].(map[string]interface{}); ok && len(sort) > 0 {
 					datadogGroupBy.Sort = buildDatadogGroupBySort(sort)
 				}
@@ -5692,11 +5611,8 @@ func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *u
 	// Compute
 	if compute, ok := datadogQuery.GetComputeOk(); ok {
 		// Set in deprecated field if that's what's in the config, set in new field otherwise
-		if _, ok := k.GetOkWith("compute"); ok {
-			terraformQuery["compute"] = buildTerraformApmOrLogQueryComputeDeprecated(compute)
-		} else {
-			terraformQuery["compute_query"] = []map[string]interface{}{buildTerraformApmOrLogQueryCompute(compute)}
-		}
+
+		terraformQuery["compute_query"] = []map[string]interface{}{buildTerraformApmOrLogQueryCompute(compute)}
 	}
 	// Multi-compute
 	if multiCompute, ok := datadogQuery.GetMultiComputeOk(); ok {
@@ -5717,12 +5633,7 @@ func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *u
 	}
 	// Search
 	if datadogQuery.Search != nil {
-		// Set in deprecated field if that's what's in the config, set in new field otherwise
-		if _, ok := k.GetOkWith("search"); ok {
-			terraformQuery["search"] = map[string]interface{}{"query": datadogQuery.Search.Query}
-		} else {
-			terraformQuery["search_query"] = datadogQuery.Search.Query
-		}
+		terraformQuery["search_query"] = datadogQuery.Search.Query
 	}
 	// GroupBy
 	if v, ok := datadogQuery.GetGroupByOk(); ok {
@@ -5745,12 +5656,7 @@ func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *u
 				if groupBy.Sort.Facet != nil {
 					sort["facet"] = *groupBy.Sort.Facet
 				}
-				// Set in deprecated field if that's what's in the config, set in new field otherwise
-				if _, ok := k.GetOkWith(fmt.Sprintf("group_by.%d.sort", i)); ok {
-					terraformGroupBy["sort"] = sort
-				} else {
-					terraformGroupBy["sort_query"] = []map[string]string{sort}
-				}
+				terraformGroupBy["sort_query"] = []map[string]string{sort}
 			}
 
 			terraformGroupBys[i] = terraformGroupBy

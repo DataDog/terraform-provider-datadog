@@ -11,9 +11,9 @@ import (
 	"github.com/jonboulle/clockwork"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
@@ -21,8 +21,8 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: accProviders,
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMetricMetadataConfig,
@@ -52,8 +52,8 @@ func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: accProviders,
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogMetricMetadataConfig,
@@ -111,9 +111,10 @@ func metadataExistsHelper(ctx context.Context, s *terraform.State, datadogClient
 	return nil
 }
 
-func checkMetricMetadataExists(accProvider *schema.Provider) resource.TestCheckFunc {
+func checkMetricMetadataExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -124,9 +125,10 @@ func checkMetricMetadataExists(accProvider *schema.Provider) resource.TestCheckF
 	}
 }
 
-func checkPostEvent(accProvider *schema.Provider, clock clockwork.FakeClock) resource.TestCheckFunc {
+func checkPostEvent(accProvider func() (*schema.Provider, error), clock clockwork.FakeClock) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(datadog.ProviderConfiguration)
 		client := providerConf.CommunityClient
 		datapointUnixTime := float64(clock.Now().Unix())
 		datapointValue := float64(1)

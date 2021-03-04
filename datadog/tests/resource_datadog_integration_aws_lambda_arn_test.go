@@ -10,9 +10,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func testAccDatadogIntegrationAWSLambdaArnConfig(uniq string) string {
@@ -35,9 +35,9 @@ func TestAccDatadogIntegrationAWSLambdaArn(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkIntegrationAWSLambdaArnDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkIntegrationAWSLambdaArnDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatadogIntegrationAWSLambdaArnConfig(accountID),
@@ -55,9 +55,10 @@ func TestAccDatadogIntegrationAWSLambdaArn(t *testing.T) {
 	})
 }
 
-func checkIntegrationAWSLambdaArnExists(accProvider *schema.Provider) func(*terraform.State) error {
+func checkIntegrationAWSLambdaArnExists(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -88,9 +89,10 @@ func checkIntegrationAwsLambdaArnExistsHelper(ctx context.Context, s *terraform.
 	return fmt.Errorf("Unable to find AWS Lambda ARN in any account")
 }
 
-func checkIntegrationAWSLambdaArnDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func checkIntegrationAWSLambdaArnDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 

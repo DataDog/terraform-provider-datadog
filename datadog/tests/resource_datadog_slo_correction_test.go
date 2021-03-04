@@ -8,9 +8,9 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func TestAccDatadogSloCorrection_Basic(t *testing.T) {
@@ -20,9 +20,9 @@ func TestAccDatadogSloCorrection_Basic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogSloCorrectionDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSloCorrectionDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSloCorrectionConfig(sloName),
@@ -51,9 +51,9 @@ func TestAccDatadogSloCorrection_Updated(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogSloCorrectionDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSloCorrectionDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSloCorrectionConfig(sloName),
@@ -173,10 +173,10 @@ func testAccCheckDatadogSloCorrectionConfigUpdated(uniq string) string {
     `, uniq, uniq)
 }
 
-func testAccCheckDatadogSloCorrectionExists(accProvider *schema.Provider, resourceName string) resource.TestCheckFunc {
+func testAccCheckDatadogSloCorrectionExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		meta := accProvider.Meta()
-		providerConf := meta.(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV1
 		auth := providerConf.AuthV1
 		var err error
@@ -194,10 +194,10 @@ func testAccCheckDatadogSloCorrectionExists(accProvider *schema.Provider, resour
 	}
 }
 
-func testAccCheckDatadogSloCorrectionDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func testAccCheckDatadogSloCorrectionDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		meta := accProvider.Meta()
-		providerConf := meta.(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV1
 		auth := providerConf.AuthV1
 		for _, r := range s.RootModule().Resources {

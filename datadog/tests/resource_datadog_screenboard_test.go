@@ -9,9 +9,9 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func config(uniq string) string {
@@ -1873,16 +1873,17 @@ func TestAccDatadogScreenboard_update(t *testing.T) {
 	}
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkScreenboardDestroy(accProvider),
-		Steps:        []resource.TestStep{step1},
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkScreenboardDestroy(accProvider),
+		Steps:             []resource.TestStep{step1},
 	})
 }
 
-func checkScreenboardExists(accProvider *schema.Provider) func(*terraform.State) error {
+func checkScreenboardExists(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(datadog.ProviderConfiguration)
 		client := providerConf.CommunityClient
 		for _, r := range s.RootModule().Resources {
 			i, _ := strconv.Atoi(r.Primary.ID)
@@ -1894,9 +1895,10 @@ func checkScreenboardExists(accProvider *schema.Provider) func(*terraform.State)
 	}
 }
 
-func checkScreenboardDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func checkScreenboardDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(datadog.ProviderConfiguration)
 		client := providerConf.CommunityClient
 		for _, r := range s.RootModule().Resources {
 			i, _ := strconv.Atoi(r.Primary.ID)
