@@ -86,14 +86,19 @@ func testAccCheckDatadogMetricTagConfigurationExists(accProvider *schema.Provide
 		providerConf := meta.(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV2
 		auth := providerConf.AuthV2
-		var err error
 
 		id := resourceID
 
-		_, _, err = datadogClient.MetricsApi.ListTagConfigurationByName(auth, id).Execute()
+		_, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, id).Execute()
 
 		if err != nil {
-			return utils.TranslateClientError(err, "error checking logs_metric existence")
+			return utils.TranslateClientError(err, "error checking if tag configuration exists")
+		}
+		if httpresp == nil {
+			return fmt.Errorf("unexpeted response when checking if tag configuration exists")
+		}
+		if httpresp.StatusCode != 200 {
+			return fmt.Errorf("got unexpected status code when checking if tag config exists %d", httpresp.StatusCode)
 		}
 
 		return nil
