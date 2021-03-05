@@ -238,12 +238,14 @@ func resourceDatadogMetricTagConfigurationRead(d *schema.ResourceData, meta inte
 
 	metricName := d.Id()
 	metricTagConfigurationResponse, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName).Execute()
-	if err != nil {
-		if httpresp != nil && httpresp.StatusCode == 404 {
-			d.SetId("")
-			return nil
+	if err != nil || httpresp == nil {
+		if err != nil {
+			return utils.TranslateClientError(err, "metric tag configuration not found")
 		}
-		return utils.TranslateClientError(err, "metric not found")
+		return fmt.Errorf("error fetching metric tag configuration by name")
+	}
+	if httpresp.StatusCode != 200 {
+		return fmt.Errorf("error fetching metric tag configuration by name, unexpected status code %d", httpresp.StatusCode)
 	}
 
 	resource := metricTagConfigurationResponse.GetData()
