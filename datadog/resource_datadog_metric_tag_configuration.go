@@ -118,9 +118,9 @@ func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.Metr
 	}
 	attributes.SetMetricType(*metricType)
 
-	includePercentiles, icFieldSet := d.GetOk("include_percentiles")
+	includePercentiles, iclFieldSet := d.GetOk("include_percentiles")
 
-	if icFieldSet {
+	if iclFieldSet {
 		if *metricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 			return nil, fmt.Errorf("include_percentiles field not allowed with metric_type: %s, only with metric_type distribution", *metricType)
 		}
@@ -149,8 +149,8 @@ func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existingMe
 	}
 	attributes.SetTags(stringTags)
 
-	includePercentiles, icFieldSet := d.GetOk("include_percentiles")
-	if icFieldSet {
+	includePercentiles, iclFieldSet := d.GetOk("include_percentiles")
+	if iclFieldSet {
 		if *existingMetricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 			return nil, fmt.Errorf("include_percentiles field not allowed with metric_type: %s, only with metric_type distribution", *existingMetricType)
 		}

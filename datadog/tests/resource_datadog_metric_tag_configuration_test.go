@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -27,7 +28,7 @@ func TestAccDatadogMetricTagConfiguration_import(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMetricTagConfigurationBasic(uniqueMetricTagConfig),
+				Config: testAccCheckDatadogMetricTagConfigurationDistCreate(uniqueMetricTagConfig),
 			},
 			{
 				ResourceName:      resourceName,
@@ -49,7 +50,7 @@ func TestAccDatadogMetricTagConfiguration_Basic(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMetricTagConfigurationBasic(uniqueMetricTagConfig),
+				Config: testAccCheckDatadogMetricTagConfigurationDistCreate(uniqueMetricTagConfig),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMetricTagConfigurationExists(accProvider, "datadog_metric_tag_configuration.testing_metric_tag_config"),
 					resource.TestCheckResourceAttr(
@@ -64,11 +65,49 @@ func TestAccDatadogMetricTagConfiguration_Basic(t *testing.T) {
 						"datadog_metric_tag_configuration.testing_metric_tag_config", "include_percentiles", "false"),
 				),
 			},
+			{
+				Config: testAccCheckDatadogMetricTagConfigurationDistUpdate(uniqueMetricTagConfig),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMetricTagConfigurationExists(accProvider, "datadog_metric_tag_configuration.testing_metric_tag_config"),
+					resource.TestCheckResourceAttr(
+						"datadog_metric_tag_configuration.testing_metric_tag_config", "id", uniqueMetricTagConfig),
+					resource.TestCheckResourceAttr(
+						"datadog_metric_tag_configuration.testing_metric_tag_config", "metric_name", uniqueMetricTagConfig),
+					resource.TestCheckResourceAttr(
+						"datadog_metric_tag_configuration.testing_metric_tag_config", "metric_type", "distribution"),
+					resource.TestCheckResourceAttr(
+						"datadog_metric_tag_configuration.testing_metric_tag_config", "tags.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_metric_tag_configuration.testing_metric_tag_config", "include_percentiles", "true"),
+				),
+			},
 		},
 	})
 }
 
-func testAccCheckDatadogMetricTagConfigurationBasic(uniq string) string {
+func TestAccDatadogMetricTagConfiguration_Error(t *testing.T) {
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogMetricTagConfigurationIncludePercentilesError(uniqueMetricTagConfig, "count"),
+				ExpectError: regexp.MustCompile("cannot use include_percentiles with a metric_type of count*"),
+			},
+			{
+				Config:      testAccCheckDatadogMetricTagConfigurationIncludePercentilesError(uniqueMetricTagConfig, "gauge"),
+				ExpectError: regexp.MustCompile("cannot use include_percentiles with a metric_type of gauge*"),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMetricTagConfigurationDistCreate(uniq string) string {
 	return fmt.Sprintf(`
         resource "datadog_metric_tag_configuration" "testing_metric_tag_config" {
 			metric_name = "%s"
@@ -77,6 +116,28 @@ func testAccCheckDatadogMetricTagConfigurationBasic(uniq string) string {
 			include_percentiles = false
         }
     `, uniq)
+}
+
+func testAccCheckDatadogMetricTagConfigurationDistUpdate(uniq string) string {
+	return fmt.Sprintf(`
+        resource "datadog_metric_tag_configuration" "testing_metric_tag_config" {
+			metric_name = "%s"
+			metric_type = "distribution"
+			tags = ["something_new"]
+			include_percentiles = true
+        }
+    `, uniq)
+}
+
+func testAccCheckDatadogMetricTagConfigurationIncludePercentilesError(uniq string, metricType string) string {
+	return fmt.Sprintf(`
+        resource "datadog_metric_tag_configuration" "testing_metric_tag_config_icl_count" {
+			metric_name = "%s"
+			metric_type = "%s"
+			tags = ["sport"]
+			include_percentiles = false
+        }
+    `, uniq, metricType)
 }
 
 func testAccCheckDatadogMetricTagConfigurationExists(accProvider *schema.Provider, resourceName string) resource.TestCheckFunc {
