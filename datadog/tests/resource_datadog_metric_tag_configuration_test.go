@@ -35,6 +35,13 @@ func TestAccDatadogMetricTagConfiguration_import(t *testing.T) {
 				ImportState:       true,
 				ImportStateVerify: true,
 			},
+			{
+				ResourceName:      resourceName,
+				ImportStateId:     resourceName + "123",
+				ImportState:       true,
+				ImportStateVerify: true,
+				ExpectError:       regexp.MustCompile("metric tag configuration not found*"),
+			},
 		},
 	})
 }
