@@ -447,7 +447,7 @@ func buildDatadogClientV2(httpClient *http.Client) *datadogV2.APIClient {
 }
 
 func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock clockwork.FakeClock) schema.ConfigureContextFunc {
-	return func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+	return func(_ context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 		var diags diag.Diagnostics
 		communityClient := datadogCommunity.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
 		if apiURL := d.Get("api_url").(string); apiURL != "" {
