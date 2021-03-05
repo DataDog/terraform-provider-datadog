@@ -771,6 +771,15 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getTraceServiceDefinitionSchema(),
 			},
 		},
+		"geomap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Geomap widget.",
+			Elem: &schema.Resource{
+				Schema: getGeomapDefinitionSchema(),
+			},
+		},
 	}
 }
 
@@ -889,6 +898,10 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 	} else if def, ok := terraformWidget["trace_service_definition"].([]interface{}); ok && len(def) > 0 {
 		if traceServiceDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.ServiceSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogTraceServiceDefinition(traceServiceDefinition))
+		}
+	} else if def, ok := terraformWidget["geomap_definition"].([]interface{}); ok && len(def) > 0 {
+		if geomapDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.GeomapWidgetDefinitionAsWidgetDefinition(buildDatadogGeomapDefinition(geomapDefinition))
 		}
 	} else {
 		return nil, fmt.Errorf("failed to find valid definition in widget configuration")
@@ -1032,6 +1045,10 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataK
 		terraformDefinition := buildTerraformTraceServiceDefinition(*widgetDefinition.ServiceSummaryWidgetDefinition, k.Add("trace_service_definition.0"))
 		k.Remove("trace_service_definition.0")
 		terraformWidget["trace_service_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if widgetDefinition.GeomapWidgetDefinition != nil {
+		terraformDefinition := buildTerraformGeomapDefinition(*widgetDefinition.GeomapWidgetDefinition, k.Add("geomap_definition.0"))
+		k.Remove("geomap_definition.0")
+		terraformWidget["geomap_definition"] = []map[string]interface{}{terraformDefinition}
 	} else {
 		return nil, fmt.Errorf("unsupported widget type: %s", widgetDefinition.GetActualInstance())
 	}
@@ -4345,6 +4362,180 @@ func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition datadogV1.S
 }
 
 //
+// Geomap Widget Definition helpers
+//
+func getGeomapDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"request": {
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block).",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getGeomapRequestSchema(),
+			},
+		},
+		"style": {
+			Description: "Style of the widget graph. One nested block is allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"palette": {
+						Description: "The color palette to apply to the widget.",
+						Type:        schema.TypeString,
+						Required:    true,
+					},
+					"palette_flip": {
+						Description: "Boolean indicating whether to flip the palette tones.",
+						Type:        schema.TypeBool,
+						Required:    true,
+					},
+				},
+			},
+		},
+		"view": {
+			Description: "The view of the world that the map should render.",
+			Type:        schema.TypeList,
+			Required:    true,
+			MaxItems:    1,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"focus": {
+						Description: "The 2-letter ISO code of a country to focus the map on. Or `WORLD`.",
+						Type:        schema.TypeString,
+						Required:    true,
+					},
+				},
+			},
+		},
+		"title": {
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"title_size": {
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"title_align": {
+			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:         schema.TypeString,
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
+		},
+		"live_span": getWidgetLiveSpanSchema(),
+		"custom_link": {
+			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getWidgetCustomLinkSchema(),
+			},
+		},
+	}
+}
+
+func getGeomapRequestSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		// A request should implement exactly one of the following type of query
+		"q":         getMetricQuerySchema(),
+		"log_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"rum_query": getApmLogNetworkRumSecurityQuerySchema(),
+	}
+}
+
+func buildDatadogGeomapDefinition(terraformDefinition map[string]interface{}) *datadogV1.GeomapWidgetDefinition {
+	datadogDefinition := datadogV1.NewGeomapWidgetDefinitionWithDefaults()
+	// Required params
+	terraformRequests := terraformDefinition["request"].([]interface{})
+	datadogDefinition.Requests = *buildDatadogGeomapRequests(&terraformRequests)
+
+	if style, ok := terraformDefinition["style"].([]interface{}); ok && len(style) > 0 {
+		if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
+			datadogDefinition.Style = buildDatadogGeomapRequestStyle(v)
+		}
+	}
+
+	if view, ok := terraformDefinition["view"].([]interface{}); ok && len(view) > 0 {
+		if v, ok := view[0].(map[string]interface{}); ok && len(v) > 0 {
+			datadogDefinition.View = buildDatadogGeomapRequestView(v)
+		}
+	}
+
+	// Optional params
+	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
+		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
+	}
+
+	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitle(v)
+	}
+
+	if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleSize(v)
+	}
+
+	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
+	}
+
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+		datadogDefinition.Time = &datadogV1.WidgetTime{
+			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+		}
+	}
+
+	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
+		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
+	}
+
+	return datadogDefinition
+}
+
+func buildDatadogGeomapRequests(terraformRequests *[]interface{}) *[]datadogV1.GeomapWidgetRequest {
+	datadogRequests := make([]datadogV1.GeomapWidgetRequest, len(*terraformRequests))
+	for i, r := range *terraformRequests {
+		terraformRequest := r.(map[string]interface{})
+		// Build Geomap Request
+		datadogGeomapRequest := datadogV1.NewGeomapWidgetRequest()
+		if v, ok := terraformRequest["q"].(string); ok && len(v) != 0 {
+			datadogGeomapRequest.SetQ(v)
+		} else if v, ok := terraformRequest["log_query"].([]interface{}); ok && len(v) > 0 {
+			logQuery := v[0].(map[string]interface{})
+			datadogGeomapRequest.LogQuery = buildDatadogApmOrLogQuery(logQuery)
+		} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
+			rumQuery := v[0].(map[string]interface{})
+			datadogGeomapRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
+		}
+
+		datadogRequests[i] = *datadogGeomapRequest
+	}
+	return &datadogRequests
+}
+
+func buildTerraformGeomapRequests(datadogGeomapRequests *[]datadogV1.GeomapWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+	terraformRequests := make([]map[string]interface{}, len(*datadogGeomapRequests))
+	for i, datadogRequest := range *datadogGeomapRequests {
+		terraformRequest := map[string]interface{}{}
+		if v, ok := datadogRequest.GetQOk(); ok {
+			terraformRequest["q"] = v
+		} else if v, ok := datadogRequest.GetLogQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.log_query.0", i)))
+			k.Remove(fmt.Sprintf("%d.log_query.0", i))
+			terraformRequest["log_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.rum_query.0", i)))
+			k.Remove(fmt.Sprintf("%d.rum_query.0", i))
+			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
+		}
+		terraformRequests[i] = terraformRequest
+	}
+	return &terraformRequests
+}
+
+//
 // Timeseries Widget Definition helpers
 //
 
@@ -5050,6 +5241,7 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
+
 	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
 		datadogDefinition.Time = buildDatadogWidgetTime(v)
 	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
@@ -5057,7 +5249,47 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
 	}
+
 	return datadogDefinition
+}
+
+func buildTerraformGeomapDefinition(datadogDefinition datadogV1.GeomapWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+	terraformDefinition := map[string]interface{}{}
+	// Required params
+	terraformDefinition["request"] = buildTerraformGeomapRequests(&datadogDefinition.Requests, k.Add("request"))
+	k.Remove("request")
+
+	if v, ok := datadogDefinition.GetStyleOk(); ok {
+		style := buildTerraformGeomapRequestStyle(*v)
+		terraformDefinition["style"] = []map[string]interface{}{style}
+	}
+
+	if v, ok := datadogDefinition.GetViewOk(); ok {
+		view := buildTerraformGeomapRequestView(*v)
+		terraformDefinition["view"] = []map[string]interface{}{view}
+	}
+
+	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
+		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
+	}
+
+	if v, ok := datadogDefinition.GetTitleOk(); ok {
+		terraformDefinition["title"] = *v
+	}
+
+	if v, ok := datadogDefinition.GetTitleSizeOk(); ok {
+		terraformDefinition["title_size"] = *v
+	}
+
+	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
+		terraformDefinition["title_align"] = *v
+	}
+
+	if v, ok := datadogDefinition.GetTimeOk(); ok {
+		terraformDefinition["live_span"] = v.GetLiveSpan()
+	}
+
+	return terraformDefinition
 }
 
 func buildTerraformTraceServiceDefinition(datadogDefinition datadogV1.ServiceSummaryWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
@@ -6140,6 +6372,47 @@ func buildTerraformWidgetRequestStyle(datadogStyle datadogV1.WidgetRequestStyle)
 		terraformStyle["line_width"] = v
 	}
 	return terraformStyle
+}
+
+func buildDatadogGeomapRequestStyle(terraformStyle map[string]interface{}) datadogV1.GeomapWidgetDefinitionStyle {
+	datadogStyle := &datadogV1.GeomapWidgetDefinitionStyle{}
+	if v, ok := terraformStyle["palette"].(string); ok && len(v) != 0 {
+		datadogStyle.SetPalette(v)
+	}
+	if v, ok := terraformStyle["palette_flip"].(bool); ok {
+		datadogStyle.SetPaletteFlip(v)
+	}
+
+	return *datadogStyle
+}
+
+func buildTerraformGeomapRequestStyle(datadogStyle datadogV1.GeomapWidgetDefinitionStyle) map[string]interface{} {
+	terraformStyle := map[string]interface{}{}
+	if v, ok := datadogStyle.GetPaletteOk(); ok {
+		terraformStyle["palette"] = v
+	}
+	if v, ok := datadogStyle.GetPaletteFlipOk(); ok {
+		terraformStyle["palette_flip"] = v
+	}
+	return terraformStyle
+}
+
+func buildDatadogGeomapRequestView(terraformStyle map[string]interface{}) datadogV1.GeomapWidgetDefinitionView {
+	datadogView := &datadogV1.GeomapWidgetDefinitionView{}
+	if v, ok := terraformStyle["focus"].(string); ok && len(v) != 0 {
+		datadogView.SetFocus(v)
+	}
+
+	return *datadogView
+}
+
+func buildTerraformGeomapRequestView(datadogView datadogV1.GeomapWidgetDefinitionView) map[string]interface{} {
+	terraformView := map[string]interface{}{}
+	if v, ok := datadogView.GetFocusOk(); ok {
+		terraformView["focus"] = v
+	}
+
+	return terraformView
 }
 
 // Hostmap Style helpers
