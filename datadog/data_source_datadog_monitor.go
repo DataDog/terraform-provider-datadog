@@ -258,7 +258,6 @@ func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) err
 	d.Set("query", m.GetQuery())
 	d.Set("type", m.GetType())
 
-	d.Set("thresholds", thresholds)
 	if err := d.Set("monitor_thresholds", []interface{}{thresholds}); err != nil {
 		return err
 	}
@@ -269,7 +268,7 @@ func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) err
 	d.Set("new_host_delay", m.Options.GetNewHostDelay())
 	d.Set("evaluation_delay", m.Options.GetEvaluationDelay())
 	d.Set("notify_no_data", m.Options.GetNotifyNoData())
-	d.Set("no_data_timeframe", m.Options.NoDataTimeframe)
+	d.Set("no_data_timeframe", m.Options.GetNoDataTimeframe())
 	d.Set("renotify_interval", m.Options.GetRenotifyInterval())
 	d.Set("notify_audit", m.Options.GetNotifyAudit())
 	d.Set("timeout_h", m.Options.GetTimeoutH())

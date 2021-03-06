@@ -131,21 +131,6 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 	})
 }
 
-func TestAccDatadogSyntheticsAPITest_BasicDeprecated(t *testing.T) {
-	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
-		Steps: []resource.TestStep{
-			createSyntheticsAPITestStepDeprecated(ctx, accProvider, t),
-		},
-	})
-}
-
 func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -161,22 +146,6 @@ func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
 	})
 }
 
-func TestAccDatadogSyntheticsAPITest_UpdatedDeprecated(t *testing.T) {
-	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
-		Steps: []resource.TestStep{
-			createSyntheticsAPITestStepDeprecated(ctx, accProvider, t),
-			updateSyntheticsAPITestStep(ctx, accProvider, t),
-		},
-	})
-}
-
 func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -187,7 +156,7 @@ func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 		ProviderFactories: accProviders,
 		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsAPITestStepDeprecated(ctx, accProvider, t),
+			createSyntheticsAPITestStep(ctx, accProvider, t),
 			updateSyntheticsAPITestStep(ctx, accProvider, t),
 		},
 	})
@@ -413,92 +382,6 @@ func TestAccDatadogSyntheticsTestBrowserMML_Basic(t *testing.T) {
 	})
 }
 
-func createSyntheticsAPITestStepDeprecated(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(ctx, t)
-	return resource.TestStep{
-		Config: createSyntheticsAPITestConfigDeprecated(testName),
-		Check: resource.ComposeTestCheckFunc(
-			testSyntheticsTestExists(accProvider),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "type", "api"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "subtype", "http"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "request.method", "GET"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "request.url", "https://www.datadoghq.com"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertions.#", "4"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertions.0.type", "header"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertions.0.property", "content-type"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertions.0.operator", "contains"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertions.0.target", "application/json"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertions.1.type", "statusCode"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertions.1.operator", "is"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertions.1.target", "200"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertions.2.type", "responseTime"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertions.2.operator", "lessThan"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertions.2.target", "2000"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertions.3.type", "body"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertions.3.operator", "doesNotContain"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertions.3.target", "terraform"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "locations.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "locations.3056069023", "aws:eu-central-1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.allow_insecure", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.tick_every", "60"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.follow_redirects", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.min_failure_duration", "0"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.min_location_failed", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options.retry_count", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options_list.#", "0"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "name", testName),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "message", "Notify @datadog.user"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "tags.#", "2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "tags.0", "foo:bar"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "tags.1", "baz"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "status", "paused"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "config_variable.0.type", "text"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "config_variable.0.name", "VARIABLE_NAME"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "config_variable.0.pattern", "{{numeric(3)}}"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "config_variable.0.example", "123"),
-			resource.TestCheckResourceAttrSet(
-				"datadog_synthetics_test.foo", "monitor_id"),
-		),
-	}
-}
-
 func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
@@ -548,7 +431,7 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.allow_insecure", "true"),
 			resource.TestCheckResourceAttr(
@@ -639,73 +522,6 @@ resource "datadog_synthetics_test" "foo" {
 		retry {
 			count = 1
 		}
-	}
-
-	name = "%s"
-	message = "Notify @datadog.user"
-	tags = ["foo:bar", "baz"]
-
-	status = "paused"
-
-	config_variable {
-		type = "text"
-		name = "VARIABLE_NAME"
-		pattern = "{{numeric(3)}}"
-		example = "123"
-	}
-}`, uniq)
-}
-
-func createSyntheticsAPITestConfigDeprecated(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_synthetics_test" "foo" {
-	type = "api"
-	subtype = "http"
-
-	request = {
-		method = "GET"
-		url = "https://www.datadoghq.com"
-		body = "this is a body"
-		timeout = 30
-	}
-	request_headers = {
-		Accept = "application/json"
-		X-Datadog-Trace-ID = "1234566789"
-	}
-
-	assertions = [
-		{
-			type = "header"
-			property = "content-type"
-			operator = "contains"
-			target = "application/json"
-		},
-		{
-			type = "statusCode"
-			operator = "is"
-			target = "200"
-		},
-		{
-			type = "responseTime"
-			operator = "lessThan"
-			target = "2000"
-		},
-		{
-			type = "body"
-			operator = "doesNotContain"
-			target = "terraform"
-		}
-	]
-
-	locations = [ "aws:eu-central-1" ]
-
-	options = {
-		allow_insecure = true
-		tick_every = 60
-		follow_redirects = true
-		min_failure_duration = 0
-		min_location_failed = 1
-		retry_count = 1
 	}
 
 	name = "%s"
@@ -816,7 +632,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "60"),
 			resource.TestCheckResourceAttr(
@@ -970,7 +786,7 @@ func updateSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.foo", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -985,8 +801,6 @@ func updateSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 				"datadog_synthetics_test.foo", "options_list.0.retry.0.interval", "500"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.monitor_options.0.renotify_interval", "100"),
-			// Make sure the legacy attribute isn't set anymore
-			resource.TestCheckNoResourceAttr("datadog_synthetics_test.foo", "options.tick_every"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -1092,7 +906,7 @@ func updateSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -1201,7 +1015,7 @@ func createSyntheticsSSLTestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options_list.0.tick_every", "60"),
 			resource.TestCheckResourceAttr(
@@ -1276,11 +1090,11 @@ func createSyntheticsSSLMissingTagsAttributeTestStep(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "options.tick_every", "60"),
+				"datadog_synthetics_test.ssl", "options_list.0.tick_every", "60"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "options.accept_self_signed", "true"),
+				"datadog_synthetics_test.ssl", "options_list.0.accept_self_signed", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -1315,7 +1129,7 @@ resource "datadog_synthetics_test" "ssl" {
 	]
 
 	locations = [ "aws:eu-central-1" ]
-	options = {
+	options_list {
 		tick_every = 60
 		accept_self_signed = true
 	}
@@ -1352,7 +1166,7 @@ func updateSyntheticsSSLTestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.ssl", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options_list.0.tick_every", "60"),
 			resource.TestCheckResourceAttr(
@@ -1434,11 +1248,9 @@ func createSyntheticsTCPTestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.tcp", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "options_list.0.tick_every", "60"),
-			// Make sure the legacy attribute isn't set anymore
-			resource.TestCheckNoResourceAttr("datadog_synthetics_test.tcp", "options.tick_every"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -1512,7 +1324,7 @@ func updateSyntheticsTCPTestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.tcp", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "options_list.0.tick_every", "300"),
 			resource.TestCheckResourceAttr(
@@ -1592,7 +1404,7 @@ func createSyntheticsDNSTestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.dns", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.dns", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "options_list.0.tick_every", "60"),
 			resource.TestCheckResourceAttr(
@@ -1671,7 +1483,7 @@ func updateSyntheticsDNSTestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.dns", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.dns", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "options_list.0.tick_every", "300"),
 			resource.TestCheckResourceAttr(
@@ -1758,7 +1570,7 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -1893,7 +1705,7 @@ func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "1800"),
 			resource.TestCheckResourceAttr(
@@ -2028,7 +1840,7 @@ func createSyntheticsBrowserTestBrowserVariablesStep(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -2148,7 +1960,7 @@ func createSyntheticsBrowserTestStepNewBrowserStep(ctx context.Context, accProvi
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -2411,13 +2223,13 @@ func createSyntheticsBrowserTestStepMML(ctx context.Context, accProvider func() 
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "type", "browser"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request.method", "GET"),
+				"datadog_synthetics_test.bar", "request_definition.0.method", "GET"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request.url", "https://www.datadoghq.com"),
+				"datadog_synthetics_test.bar", "request_definition.0.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request.body", "this is a body"),
+				"datadog_synthetics_test.bar", "request_definition.0.body", "this is a body"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request.timeout", "30"),
+				"datadog_synthetics_test.bar", "request_definition.0.timeout", "30"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_headers.%", "2"),
 			resource.TestCheckResourceAttr(
@@ -2433,7 +2245,7 @@ func createSyntheticsBrowserTestStepMML(ctx context.Context, accProvider func() 
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -2477,7 +2289,7 @@ func createSyntheticsBrowserTestMMLConfig(uniq string) string {
 resource "datadog_synthetics_test" "bar" {
 	type = "browser"
 
-	request = {
+	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
 		body = "this is a body"
@@ -2551,7 +2363,7 @@ func updateSyntheticsBrowserTestMmlStep(ctx context.Context, accProvider func() 
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "type", "browser"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request.url", "https://www.datadoghq.com"),
+				"datadog_synthetics_test.bar", "request_definition.0.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "device_ids.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -2559,7 +2371,7 @@ func updateSyntheticsBrowserTestMmlStep(ctx context.Context, accProvider func() 
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -2595,7 +2407,7 @@ func updateSyntheticsBrowserTestForceMmlStep(ctx context.Context, accProvider fu
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "type", "browser"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request.url", "https://www.datadoghq.com"),
+				"datadog_synthetics_test.bar", "request_definition.0.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "device_ids.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -2603,7 +2415,7 @@ func updateSyntheticsBrowserTestForceMmlStep(ctx context.Context, accProvider fu
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.3056069023", "aws:eu-central-1"),
+				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
 			resource.TestCheckResourceAttr(
@@ -2635,7 +2447,7 @@ func createSyntheticsBrowserForceMmlTestConfig(uniq string) string {
 resource "datadog_synthetics_test" "bar" {
 	type = "browser"
 
-	request = {
+	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
 	}

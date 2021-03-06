@@ -300,42 +300,24 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	if r, ok := d.GetOk("monitor_thresholds.0.ok"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetOk(v)
-	} else if r, ok := d.GetOk("thresholds.ok"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetOk(v)
 	}
 	if r, ok := d.GetOk("monitor_thresholds.0.warning"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetWarning(v)
-	} else if r, ok := d.GetOk("thresholds.warning"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetWarning(v)
 	}
 	if r, ok := d.GetOk("monitor_thresholds.0.unknown"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetUnknown(v)
-	} else if r, ok := d.GetOk("thresholds.unknown"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetUnknown(v)
 	}
 	if r, ok := d.GetOk("monitor_thresholds.0.critical"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetCritical(v)
-	} else if r, ok := d.GetOk("thresholds.critical"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetCritical(v)
 	}
 	if r, ok := d.GetOk("monitor_thresholds.0.warning_recovery"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetWarningRecovery(v)
-	} else if r, ok := d.GetOk("thresholds.warning_recovery"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetWarningRecovery(v)
 	}
 	if r, ok := d.GetOk("monitor_thresholds.0.critical_recovery"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetCriticalRecovery(v)
-	} else if r, ok := d.GetOk("thresholds.critical_recovery"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetCriticalRecovery(v)
 	}
@@ -344,13 +326,9 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 
 	if r, ok := d.GetOk("monitor_threshold_windows.0.recovery_window"); ok {
 		thresholdWindows.SetRecoveryWindow(r.(string))
-	} else if r, ok := d.GetOk("threshold_windows.recovery_window"); ok {
-		thresholdWindows.SetRecoveryWindow(r.(string))
 	}
 
 	if r, ok := d.GetOk("monitor_threshold_windows.0.trigger_window"); ok {
-		thresholdWindows.SetTriggerWindow(r.(string))
-	} else if r, ok := d.GetOk("threshold_windows.trigger_window"); ok {
 		thresholdWindows.SetTriggerWindow(r.(string))
 	}
 
@@ -503,6 +481,7 @@ func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) erro
 	authV1 := providerConf.AuthV1
 
 	m, _ := buildMonitorStruct(d)
+	time.Sleep(3 * time.Second)
 	mCreated, _, err := datadogClientV1.MonitorsApi.CreateMonitor(authV1).Body(*m).Execute()
 	if err != nil {
 		return utils.TranslateClientError(err, "error creating monitor")
@@ -572,11 +551,15 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("restricted_roles", m.GetRestrictedRoles()); err != nil {
 		return err
 	}
-	if err := d.Set("monitor_thresholds", []interface{}{thresholds}); err != nil {
-		return err
+	if len(thresholds) > 0 {
+		if err := d.Set("monitor_thresholds", []interface{}{thresholds}); err != nil {
+			return err
+		}
 	}
-	if err := d.Set("monitor_threshold_windows", []interface{}{thresholdWindows}); err != nil {
-		return err
+	if len(thresholdWindows) > 0 {
+		if err := d.Set("monitor_threshold_windows", []interface{}{thresholdWindows}); err != nil {
+			return err
+		}
 	}
 
 	if err := d.Set("new_host_delay", m.Options.GetNewHostDelay()); err != nil {

@@ -148,16 +148,12 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 						"datadog_service_level_objective.foo", "thresholds.2.timeframe", "90d"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.2.target", "99"),
-					// Tags are a TypeSet => use a weird way to access members by their hash
-					// TF TypeSet is internally represented as a map that maps computed hashes
-					// to actual values. Since the hashes are always the same for one value,
-					// this is the way to get them.
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "tags.2644851163", "baz"),
+						"datadog_service_level_objective.foo", "tags.0", "baz"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "tags.1750285118", "foo:bar"),
+						"datadog_service_level_objective.foo", "tags.1", "foo:bar"),
 				),
 			},
 			{
@@ -193,16 +189,12 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 						"datadog_service_level_objective.foo", "thresholds.2.timeframe", "90d"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.2.target", "99.9"),
-					// Tags are a TypeSet => use a weird way to access members by their hash
-					// TF TypeSet is internally represented as a map that maps computed hashes
-					// to actual values. Since the hashes are always the same for one value,
-					// this is the way to get them.
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "tags.#", "2"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "tags.2644851163", "baz"),
+						"datadog_service_level_objective.foo", "tags.0", "baz"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "tags.1750285118", "foo:bar"),
+						"datadog_service_level_objective.foo", "tags.1", "foo:bar"),
 				),
 			},
 		},

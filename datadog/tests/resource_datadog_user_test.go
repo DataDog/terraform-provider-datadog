@@ -173,7 +173,7 @@ func TestAccDatadogUser_RoleDatasource(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "1"),
-					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.ro_role"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.ro_role", 0),
 				),
 			},
 		},
@@ -199,8 +199,8 @@ func TestAccDatadogUser_UpdateRole(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "2"),
-					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.ro_role"),
-					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.st_role"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.st_role", 0),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.ro_role", 1),
 				),
 			},
 			{
@@ -211,21 +211,20 @@ func TestAccDatadogUser_UpdateRole(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "2"),
-					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.adm_role"),
-					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.st_role"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.st_role", 0),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.adm_role", 1),
 				),
 			},
 		},
 	})
 }
 
-func testCheckUserHasRole(username string, roleSource string) resource.TestCheckFunc {
+func testCheckUserHasRole(username string, roleSource string, index int) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rootModule := s.RootModule()
 		roleID := rootModule.Resources[roleSource].Primary.Attributes["id"]
-		roleIDHash := schema.HashSchema(&schema.Schema{Type: schema.TypeString})(roleID)
 
-		return resource.TestCheckResourceAttr(username, fmt.Sprintf("roles.%d", roleIDHash), roleID)(s)
+		return resource.TestCheckResourceAttr(username, fmt.Sprintf("roles.%d", index), roleID)(s)
 	}
 }
 

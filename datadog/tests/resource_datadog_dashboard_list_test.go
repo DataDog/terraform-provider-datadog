@@ -65,7 +65,7 @@ resource "datadog_dashboard" "screen" {
 			title_align = "left"
             live_span = "1h"
 		}
-		layout = {
+		widget_layout {
 			height = 43
 			width = 32
 			x = 5
@@ -166,8 +166,6 @@ func TestDatadogDashListInDashboard(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_dashboard.time", "dashboard_lists_removed.#", "0"),
 				),
-				// The plan is non empty, because in this case the list is the same file
-				ExpectNonEmptyPlan: true,
 			},
 			{
 				Config: testAccCheckDatadogDashListConfigRemoveFromDashboard(uniqueName),

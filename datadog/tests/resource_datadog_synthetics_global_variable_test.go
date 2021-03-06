@@ -291,7 +291,7 @@ resource "datadog_synthetics_test" "bar" {
 	type = "api"
 	subtype = "http"
 
-	request = {
+	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
 		timeout = 30

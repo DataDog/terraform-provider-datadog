@@ -21,9 +21,8 @@ func TestAccDatadogDashboardListDatasource(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogDashListDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config:             testAccDatasourceDashboardListNameFilterConfig(uniq),
-				ExpectNonEmptyPlan: true,
-				Check:              checkDatasourceDashboardListAttrs(accProvider, uniq),
+				Config: testAccDatasourceDashboardListNameFilterConfig(uniq),
+				Check:  checkDatasourceDashboardListAttrs(accProvider, uniq),
 			},
 		},
 	})

@@ -11,7 +11,6 @@ import (
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -23,7 +22,7 @@ func resourceDatadogDashboard() *schema.Resource {
 		Update:      resourceDatadogDashboardUpdate,
 		Read:        resourceDatadogDashboardRead,
 		Delete:      resourceDatadogDashboardDelete,
-		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+		CustomizeDiff: func(_ context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 			oldValue, newValue := diff.GetChange("dashboard_lists")
 			if !oldValue.(*schema.Set).Equal(newValue.(*schema.Set)) {
 				// Only calculate removed when the list change, to no create useless diffs
@@ -132,20 +131,7 @@ func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) er
 	}
 	d.SetId(*dashboard.Id)
 
-	return resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
-		getDashboard, httpResponse, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, *dashboard.Id).Execute()
-		if err != nil {
-			if httpResponse != nil && httpResponse.StatusCode == 404 {
-				return resource.RetryableError(fmt.Errorf("dashboard not created yet"))
-			}
-			return resource.NonRetryableError(err)
-		}
-
-		// We only log the error, as failing to update the list shouldn't fail dashboard creation
-		updateDashboardLists(d, providerConf, *dashboard.Id)
-
-		return resource.NonRetryableError(updateDashboardState(d, &getDashboard))
-	})
+	return updateDashboardState(d, &dashboard)
 }
 
 func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -1226,9 +1212,7 @@ func buildDatadogAlertGraphDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -1252,12 +1236,7 @@ func buildTerraformAlertGraphDefinition(datadogDefinition datadogV1.AlertGraphWi
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	return terraformDefinition
 }
@@ -1416,9 +1395,7 @@ func buildDatadogChangeDefinition(terraformDefinition map[string]interface{}) *d
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -1444,12 +1421,7 @@ func buildTerraformChangeDefinition(datadogDefinition datadogV1.ChangeWidgetDefi
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -1666,9 +1638,7 @@ func buildDatadogDistributionDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -1697,12 +1667,8 @@ func buildTerraformDistributionDefinition(datadogDefinition datadogV1.Distributi
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	return terraformDefinition
 }
@@ -1856,9 +1822,7 @@ func buildDatadogEventStreamDefinition(terraformDefinition map[string]interface{
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -1887,12 +1851,7 @@ func buildTerraformEventStreamDefinition(datadogDefinition datadogV1.EventStream
 		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if datadogDefinition.TagsExecution != nil {
 		terraformDefinition["tags_execution"] = *datadogDefinition.TagsExecution
@@ -1950,9 +1909,7 @@ func buildDatadogEventTimelineDefinition(terraformDefinition map[string]interfac
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -1978,12 +1935,8 @@ func buildTerraformEventTimelineDefinition(datadogDefinition datadogV1.EventTime
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetTagsExecutionOk(); ok {
 		terraformDefinition["tags_execution"] = *v
@@ -2077,9 +2030,7 @@ func buildDatadogCheckStatusDefinition(terraformDefinition map[string]interface{
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -2120,12 +2071,7 @@ func buildTerraformCheckStatusDefinition(datadogDefinition datadogV1.CheckStatus
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	return terraformDefinition
 }
@@ -2292,9 +2238,7 @@ func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -2333,12 +2277,8 @@ func buildTerraformHeatmapDefinition(datadogDefinition datadogV1.HeatMapWidgetDe
 		terraformDefinition["legend_size"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
+
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -2949,9 +2889,7 @@ func buildDatadogLogStreamDefinition(terraformDefinition map[string]interface{})
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -3015,12 +2953,7 @@ func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidg
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	return terraformDefinition
 }
@@ -3385,9 +3318,7 @@ func buildDatadogQueryValueDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -3425,12 +3356,7 @@ func buildTerraformQueryValueDefinition(datadogDefinition datadogV1.QueryValueWi
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -3601,9 +3527,7 @@ func buildDatadogQueryTableDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -3632,12 +3556,7 @@ func buildTerraformQueryTableDefinition(datadogDefinition datadogV1.TableWidgetD
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -3942,9 +3861,7 @@ func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -3997,12 +3914,7 @@ func buildTerraformScatterplotDefinition(datadogDefinition datadogV1.ScatterPlot
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -4422,9 +4334,7 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -4471,12 +4381,7 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetShowLegendOk(); ok {
 		terraformDefinition["show_legend"] = *v
@@ -4738,9 +4643,7 @@ func buildDatadogToplistDefinition(terraformDefinition map[string]interface{}) *
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -4766,12 +4669,7 @@ func buildTerraformToplistDefinition(datadogDefinition datadogV1.ToplistWidgetDe
 		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -5007,9 +4905,7 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -5058,12 +4954,7 @@ func buildTerraformTraceServiceDefinition(datadogDefinition datadogV1.ServiceSum
 		terraformDefinition["title_align"] = v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	return terraformDefinition
 }
@@ -5277,21 +5168,6 @@ func getWidgetLiveSpanSchema() *schema.Schema {
 		ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
 		Optional:     true,
 	}
-}
-
-func buildDatadogWidgetTime(terraformWidgetTime map[string]interface{}) *datadogV1.WidgetTime {
-	datadogWidgetTime := &datadogV1.WidgetTime{}
-	if v, ok := terraformWidgetTime["live_span"].(string); ok && len(v) != 0 {
-		datadogWidgetTime.SetLiveSpan(datadogV1.WidgetLiveSpan(v))
-	}
-	return datadogWidgetTime
-}
-func buildTerraformWidgetTimeDeprecated(datadogWidgetTime datadogV1.WidgetTime) map[string]string {
-	terraformWidgetTime := map[string]string{}
-	if v, ok := datadogWidgetTime.GetLiveSpanOk(); ok {
-		terraformWidgetTime["live_span"] = string(*v)
-	}
-	return terraformWidgetTime
 }
 
 // Widget Marker helpers

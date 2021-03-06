@@ -45,9 +45,8 @@ func TestAccDatadogRoleDatasourceExactMatch(t *testing.T) {
 				),
 			},
 			{
-				Config:             testAccDatasourceRoleExactMatchConfig(rolename),
-				Check:              resource.TestCheckResourceAttr("data.datadog_role.exact_match", "name", rolename+" main"),
-				ExpectNonEmptyPlan: true,
+				Config: testAccDatasourceRoleExactMatchConfig(rolename),
+				Check:  resource.TestCheckResourceAttr("data.datadog_role.exact_match", "name", rolename+" main"),
 			},
 		},
 	})

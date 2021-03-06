@@ -21,9 +21,8 @@ func TestAccDatadogDashboardDatasource(t *testing.T) {
 		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config:             testAccDatasourceDashboardNameFilterConfig(uniq),
-				ExpectNonEmptyPlan: true,
-				Check:              checkDatasourceDashboardAttrs(accProvider, uniq),
+				Config: testAccDatasourceDashboardNameFilterConfig(uniq),
+				Check:  checkDatasourceDashboardAttrs(accProvider, uniq),
 			},
 		},
 	})
@@ -52,9 +51,7 @@ resource "datadog_dashboard" "dash_one" {
 		alert_id = "895605"
 		viz_type = "timeseries"
 		title = "Widget Title"
-		time = {
-			live_span = "1h"
-		}
+		live_span = "1h"
 	}
   }
 }
@@ -66,9 +63,7 @@ resource "datadog_dashboard" "dash_one" {
 		  alert_id = "895605"
 		  viz_type = "timeseries"
 		  title = "Widget Title"
-		  time = {
-			  live_span = "1h"
-		  }
+		  live_span = "1h"
 	  }
 	}
 }`, uniq, uniq)
