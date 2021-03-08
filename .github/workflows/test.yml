@@ -27,6 +27,7 @@ jobs:
         strategy:
             matrix:
                 platform: [ubuntu-latest, macos-latest, windows-latest]
+                terraform: ['0.14.7', '0.13.6', '0.12.30']
         runs-on: ${{ matrix.platform }}
         steps:
             # if we don't do this, `gofmt` will want to rewrite all Go files due to bad line endings,
@@ -45,6 +46,8 @@ jobs:
               run: make vet
             - name: License Check
               run: make license-check
+            - name: Get terraform binary
+              run: ./scripts/get-terraform-binary.sh
             - name: Test
               run: make testall
               env:
