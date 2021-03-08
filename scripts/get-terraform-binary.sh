@@ -6,7 +6,7 @@ FILE_NAME=''
 
 case "$(uname -s)" in
    MINGW64*)
-    wget -O tf.zip https://releases.hashicorp.com/terraform/0.14.7/terraform_0.14.7_windows_amd64.zip
+    wget -O tf.zip https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_windows_amd64.zip
     FILE_NAME=$(unzip -Z -1 tf.zip)
      ;;
 
@@ -17,7 +17,7 @@ case "$(uname -s)" in
 esac
 
 unzip 'tf.zip'
-TF_BINARY_PATH=$(PWD)/${FILE_NAME}
+TF_BINARY_PATH=$(pwd)/${FILE_NAME}
 
 export TF_ACC_TERRAFORM_PATH=${TF_BINARY_PATH}
-echo "TF path is: ${TF_ACC_TERRAFORM_PATH}"
+echo "TF binary path is: ${TF_ACC_TERRAFORM_PATH}"
