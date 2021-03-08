@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"crypto/sha256"
 	"errors"
 	"fmt"
@@ -10,16 +11,16 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
-
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 )
 
 func dataSourceDatadogSecurityMonitoringRules() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about existing security monitoring rules for use in other resources.",
-		Read:        dataSourceDatadogSecurityMonitoringRulesRead,
+		ReadContext: dataSourceDatadogSecurityMonitoringRulesRead,
 
 		Schema: map[string]*schema.Schema{
 			// Filters
@@ -65,7 +66,7 @@ func dataSourceDatadogSecurityMonitoringRules() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogSecurityMonitoringRulesRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
@@ -82,7 +83,7 @@ func dataSourceDatadogSecurityMonitoringRulesRead(d *schema.ResourceData, meta i
 	_, filterDefault := d.GetOk("default_only_filter")
 	_, filterUser := d.GetOk("user_only_filter")
 	if filterDefault && filterUser {
-		return errors.New("error: cannot filter both default and user rules")
+		return diag.FromErr(errors.New("error: cannot filter both default and user rules"))
 	}
 	if filterDefault {
 		filter := true
@@ -112,7 +113,7 @@ func dataSourceDatadogSecurityMonitoringRulesRead(d *schema.ResourceData, meta i
 			Execute()
 
 		if err != nil {
-			return utils.TranslateClientError(err, "error listing rules")
+			return utils.TranslateClientErrorDiag(err, "error listing rules")
 		}
 
 		for _, rule := range response.GetData() {

@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"sync"
@@ -8,6 +9,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -15,13 +17,13 @@ var integrationAwsMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationAws() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.\n\n",
-		Create:      resourceDatadogIntegrationAwsCreate,
-		Read:        resourceDatadogIntegrationAwsRead,
-		Update:      resourceDatadogIntegrationAwsUpdate,
-		Delete:      resourceDatadogIntegrationAwsDelete,
+		Description:   "Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.\n\n",
+		CreateContext: resourceDatadogIntegrationAwsCreate,
+		ReadContext:   resourceDatadogIntegrationAwsRead,
+		UpdateContext: resourceDatadogIntegrationAwsUpdate,
+		DeleteContext: resourceDatadogIntegrationAwsDelete,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogIntegrationAwsImport,
+			StateContext: resourceDatadogIntegrationAwsImport,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -109,7 +111,7 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData, accountID string, 
 	return iaws
 }
 
-func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationAwsCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -124,28 +126,28 @@ func resourceDatadogIntegrationAwsCreate(d *schema.ResourceData, meta interface{
 	response, _, err := datadogClientV1.AWSIntegrationApi.CreateAWSAccount(authV1).Body(*iaws).Execute()
 
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating AWS integration")
+		return utils.TranslateClientErrorDiag(err, "error creating AWS integration")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", accountID, roleName))
 	d.Set("external_id", response.ExternalId)
 
-	return resourceDatadogIntegrationAwsRead(d, meta)
+	return resourceDatadogIntegrationAwsRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
 	accountID, roleName, err := utils.AccountAndRoleFromID(d.Id())
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error getting AWS integration")
+		return utils.TranslateClientErrorDiag(err, "error getting AWS integration")
 	}
 
 	for _, integration := range integrations.GetAccounts() {
@@ -164,7 +166,7 @@ func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{})
 	return nil
 }
 
-func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -173,7 +175,7 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 
 	existingAccountID, existingRoleName, err := utils.AccountAndRoleFromID(d.Id())
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	newAccountID := d.Get("account_id").(string)
 	newRoleName := d.Get("role_name").(string)
@@ -182,13 +184,13 @@ func resourceDatadogIntegrationAwsUpdate(d *schema.ResourceData, meta interface{
 	_, _, err = datadogClientV1.AWSIntegrationApi.UpdateAWSAccount(authV1).
 		Body(*iaws).AccountId(existingAccountID).RoleName(existingRoleName).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating AWS integration")
+		return utils.TranslateClientErrorDiag(err, "error updating AWS integration")
 	}
 	d.SetId(fmt.Sprintf("%s:%s", iaws.GetAccountId(), iaws.GetRoleName()))
-	return resourceDatadogIntegrationAwsRead(d, meta)
+	return resourceDatadogIntegrationAwsRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationAwsDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -197,21 +199,21 @@ func resourceDatadogIntegrationAwsDelete(d *schema.ResourceData, meta interface{
 
 	accountID, roleName, err := utils.AccountAndRoleFromID(d.Id())
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	iaws := buildDatadogIntegrationAwsStruct(d, accountID, roleName)
 
 	_, _, err = datadogClientV1.AWSIntegrationApi.DeleteAWSAccount(authV1).Body(*iaws).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error deleting AWS integration")
+		return utils.TranslateClientErrorDiag(err, "error deleting AWS integration")
 	}
 
 	return nil
 }
 
-func resourceDatadogIntegrationAwsImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogIntegrationAwsRead(d, meta); err != nil {
-		return nil, err
+func resourceDatadogIntegrationAwsImport(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	if diagErr := resourceDatadogIntegrationAwsRead(ctx, d, meta); diagErr != nil {
+		return nil, fmt.Errorf(diagErr[0].Summary)
 	}
 	d.Set("external_id", os.Getenv("EXTERNAL_ID"))
 	return []*schema.ResourceData{d}, nil

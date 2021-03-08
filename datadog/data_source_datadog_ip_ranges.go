@@ -1,16 +1,18 @@
 package datadog
 
 import (
+	"context"
 	"log"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func dataSourceDatadogIPRanges() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about Datadog's IP addresses.",
-		Read:        dataSourceDatadogIPRangesRead,
+		ReadContext: dataSourceDatadogIPRangesRead,
 
 		// IP ranges are divided between ipv4 and ipv6
 		Schema: map[string]*schema.Schema{
@@ -114,14 +116,14 @@ func dataSourceDatadogIPRanges() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogIPRangesRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogIPRangesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
 	ipAddresses, _, err := datadogClientV1.IPRangesApi.GetIPRanges(authV1).Execute()
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	// v4 and v6
@@ -181,12 +183,12 @@ func dataSourceDatadogIPRangesRead(d *schema.ResourceData, meta interface{}) err
 	err = d.Set("synthetics_ipv4_by_location", ipv4PrefixesByLocationMap)
 	if err != nil {
 		log.Printf("[DEBUG] Error setting IPv4 prefixes by location: %s", err)
-		return err
+		return diag.FromErr(err)
 	}
 	err = d.Set("synthetics_ipv6_by_location", ipv6PrefixesByLocationMap)
 	if err != nil {
 		log.Printf("[DEBUG] Error setting IPv6 prefixes by location: %s", err)
-		return err
+		return diag.FromErr(err)
 	}
 
 	return nil

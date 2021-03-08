@@ -1,23 +1,26 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogLogsArchive() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog Logs Archive API resource, which is used to create and manage Datadog logs archives.",
-		Create:      resourceDatadogLogsArchiveCreate,
-		Update:      resourceDatadogLogsArchiveUpdate,
-		Read:        resourceDatadogLogsArchiveRead,
-		Delete:      resourceDatadogLogsArchiveDelete,
+		Description:   "Provides a Datadog Logs Archive API resource, which is used to create and manage Datadog logs archives.",
+		CreateContext: resourceDatadogLogsArchiveCreate,
+		UpdateContext: resourceDatadogLogsArchiveUpdate,
+		ReadContext:   resourceDatadogLogsArchiveRead,
+		DeleteContext: resourceDatadogLogsArchiveDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"name":  {Description: "Your archive name.", Type: schema.TypeString, Required: true},
@@ -83,52 +86,52 @@ func resourceDatadogLogsArchive() *schema.Resource {
 	}
 }
 
-func resourceDatadogLogsArchiveCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsArchiveCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
 	ddArchive, err := buildDatadogArchiveCreateReq(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	createdArchive, _, err := datadogClientV2.LogsArchivesApi.CreateLogsArchive(authV2).Body(*ddArchive).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "failed to create logs archive using Datadog API")
+		return utils.TranslateClientErrorDiag(err, "failed to create logs archive using Datadog API")
 	}
 	d.SetId(*createdArchive.GetData().Id)
 	return updateLogsArchiveState(d, &createdArchive)
 }
 
-func updateLogsArchiveState(d *schema.ResourceData, ddArchive *datadogV2.LogsArchive) error {
+func updateLogsArchiveState(d *schema.ResourceData, ddArchive *datadogV2.LogsArchive) diag.Diagnostics {
 	if !ddArchive.HasData() {
 		d.SetId("")
 		return nil
 	}
 	if err := d.Set("name", ddArchive.Data.Attributes.Name); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("query", ddArchive.Data.Attributes.Query); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	archiveType, destination, err := buildDestination(ddArchive.Data.Attributes.Destination)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set(fmt.Sprintf("%s_archive", archiveType), []interface{}{destination}); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if err = d.Set("rehydration_tags", ddArchive.Data.Attributes.RehydrationTags); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err = d.Set("include_tags", ddArchive.Data.Attributes.IncludeTags); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	return nil
 }
 
-func resourceDatadogLogsArchiveRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsArchiveRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
@@ -139,28 +142,28 @@ func resourceDatadogLogsArchiveRead(d *schema.ResourceData, meta interface{}) er
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "failed to get logs archive using Datadog API")
+		return utils.TranslateClientErrorDiag(err, "failed to get logs archive using Datadog API")
 	}
 	return updateLogsArchiveState(d, &ddArchive)
 }
 
-func resourceDatadogLogsArchiveUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsArchiveUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
 	ddArchive, err := buildDatadogArchiveCreateReq(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	updatedArchive, _, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchive(authV2, d.Id()).Body(*ddArchive).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating logs archive")
+		return utils.TranslateClientErrorDiag(err, "error updating logs archive")
 	}
 	return updateLogsArchiveState(d, &updatedArchive)
 }
 
-func resourceDatadogLogsArchiveDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsArchiveDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
@@ -170,7 +173,7 @@ func resourceDatadogLogsArchiveDelete(d *schema.ResourceData, meta interface{}) 
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			return nil
 		}
-		return utils.TranslateClientError(err, "error deleting logs archive")
+		return utils.TranslateClientErrorDiag(err, "error deleting logs archive")
 	}
 	return nil
 }

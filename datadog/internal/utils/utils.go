@@ -5,12 +5,13 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"net/url"
 	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/meta"
 	"github.com/terraform-providers/terraform-provider-datadog/version"
 )
@@ -35,6 +36,11 @@ func TranslateClientError(err error, msg string) error {
 	}
 
 	return fmt.Errorf(msg+": %s", err.Error())
+}
+
+// TranslateClientErrorDiag returns client error as type diag.Diagnostics
+func TranslateClientErrorDiag(err error, msg string) diag.Diagnostics {
+	return diag.FromErr(TranslateClientError(err, msg))
 }
 
 // GetUserAgent augments the default user agent with provider details
@@ -100,7 +106,7 @@ func TenantAndClientFromID(id string) (string, string, error) {
 	return result[0], result[1], nil
 }
 
-// slack utils
+// AccountNameAndChannelNameFromID returns slack account and channel name from an ID
 func AccountNameAndChannelNameFromID(id string) (string, string, error) {
 	result := strings.SplitN(id, ":", 2)
 	if len(result) != 2 {

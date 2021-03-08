@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"sort"
 	"strconv"
@@ -9,13 +10,14 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func dataSourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about an existing monitor for use in other resources.",
-		Read:        dataSourceDatadogMonitorsRead,
+		ReadContext: dataSourceDatadogMonitorsRead,
 		Schema: map[string]*schema.Schema{
 			"name_filter": {
 				Description: "A monitor name to limit the search.",
@@ -186,7 +188,7 @@ func dataSourceDatadogMonitor() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogMonitorsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -204,13 +206,13 @@ func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) err
 
 	monitors, _, err := req.Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error querying monitors")
+		return utils.TranslateClientErrorDiag(err, "error querying monitors")
 	}
 	if len(monitors) > 1 {
-		return fmt.Errorf("your query returned more than one result, please try a more specific search criteria")
+		return diag.Errorf("your query returned more than one result, please try a more specific search criteria")
 	}
 	if len(monitors) == 0 {
-		return fmt.Errorf("your query returned no result, please try a less specific search criteria")
+		return diag.Errorf("your query returned no result, please try a less specific search criteria")
 	}
 
 	m := monitors[0]
@@ -259,10 +261,10 @@ func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) err
 	d.Set("type", m.GetType())
 
 	if err := d.Set("monitor_thresholds", []interface{}{thresholds}); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("monitor_threshold_windows", []interface{}{thresholdWindows}); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	d.Set("new_host_delay", m.Options.GetNewHostDelay())

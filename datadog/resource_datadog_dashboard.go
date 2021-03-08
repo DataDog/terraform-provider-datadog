@@ -11,17 +11,18 @@ import (
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceDatadogDashboard() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.",
-		Create:      resourceDatadogDashboardCreate,
-		Update:      resourceDatadogDashboardUpdate,
-		Read:        resourceDatadogDashboardRead,
-		Delete:      resourceDatadogDashboardDelete,
+		Description:   "Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.",
+		CreateContext: resourceDatadogDashboardCreate,
+		UpdateContext: resourceDatadogDashboardUpdate,
+		ReadContext:   resourceDatadogDashboardRead,
+		DeleteContext: resourceDatadogDashboardDelete,
 		CustomizeDiff: func(_ context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 			oldValue, newValue := diff.GetChange("dashboard_lists")
 			if !oldValue.(*schema.Set).Equal(newValue.(*schema.Set)) {
@@ -39,7 +40,7 @@ func resourceDatadogDashboard() *schema.Resource {
 			return nil
 		},
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogDashboardImport,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"title": {
@@ -117,35 +118,35 @@ func resourceDatadogDashboard() *schema.Resource {
 	}
 }
 
-func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	dashboardPayload, err := buildDatadogDashboard(d)
 	if err != nil {
-		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	dashboard, _, err := datadogClientV1.DashboardsApi.CreateDashboard(authV1).Body(*dashboardPayload).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating dashboard")
+		return utils.TranslateClientErrorDiag(err, "error creating dashboard")
 	}
 	d.SetId(*dashboard.Id)
 
 	return updateDashboardState(d, &dashboard)
 }
 
-func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	id := d.Id()
 	dashboard, err := buildDatadogDashboard(d)
 	if err != nil {
-		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	updatedDashboard, _, err := datadogClientV1.DashboardsApi.UpdateDashboard(authV1, id).Body(*dashboard).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating dashboard")
+		return utils.TranslateClientErrorDiag(err, "error updating dashboard")
 	}
 
 	updateDashboardLists(d, providerConf, *dashboard.Id)
@@ -188,54 +189,54 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 	}
 }
 
-func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard) error {
+func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard) diag.Diagnostics {
 	if err := d.Set("title", dashboard.GetTitle()); err != nil {
-		return err
+		diag.FromErr(err)
 	}
 	if err := d.Set("layout_type", dashboard.GetLayoutType()); err != nil {
-		return err
+		diag.FromErr(err)
 	}
 	if err := d.Set("description", dashboard.GetDescription()); err != nil {
-		return err
+		diag.FromErr(err)
 	}
 	if err := d.Set("is_read_only", dashboard.GetIsReadOnly()); err != nil {
-		return err
+		diag.FromErr(err)
 	}
 	if err := d.Set("url", dashboard.GetUrl()); err != nil {
-		return err
+		diag.FromErr(err)
 	}
 
 	// Set widgets
 	terraformWidgets, err := buildTerraformWidgets(&dashboard.Widgets, d)
 	if err != nil {
-		return err
+		diag.FromErr(err)
 	}
 	if err := d.Set("widget", terraformWidgets); err != nil {
-		return err
+		diag.FromErr(err)
 	}
 
 	// Set template variables
 	templateVariables := buildTerraformTemplateVariables(&dashboard.TemplateVariables)
 	if err := d.Set("template_variable", templateVariables); err != nil {
-		return err
+		diag.FromErr(err)
 	}
 
 	// Set template variable presets
 	templateVariablePresets := buildTerraformTemplateVariablePresets(&dashboard.TemplateVariablePresets)
 	if err := d.Set("template_variable_preset", templateVariablePresets); err != nil {
-		return err
+		diag.FromErr(err)
 	}
 
 	// Set notify list
 	notifyList := buildTerraformNotifyList(&dashboard.NotifyList)
 	if err := d.Set("notify_list", notifyList); err != nil {
-		return err
+		diag.FromErr(err)
 	}
 
 	return nil
 }
 
-func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -246,28 +247,21 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error getting dashboard")
+		return utils.TranslateClientErrorDiag(err, "error getting dashboard")
 	}
 
 	return updateDashboardState(d, &dashboard)
 }
 
-func resourceDatadogDashboardDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	id := d.Id()
 	if _, _, err := datadogClientV1.DashboardsApi.DeleteDashboard(authV1, id).Execute(); err != nil {
-		return utils.TranslateClientError(err, "error deleting dashboard")
+		return utils.TranslateClientErrorDiag(err, "error deleting dashboard")
 	}
 	return nil
-}
-
-func resourceDatadogDashboardImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogDashboardRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }
 
 func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error) {

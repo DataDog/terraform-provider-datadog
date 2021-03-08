@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -10,6 +11,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/kr/pretty"
 	"github.com/zorkian/go-datadog-api"
@@ -780,12 +782,12 @@ func resourceDatadogScreenboard() *schema.Resource {
 	return &schema.Resource{
 		Description:        "Provides a Datadog screenboard resource. This can be used to create and manage Datadog screenboards.",
 		DeprecationMessage: "This resource is deprecated. Instead use the Dashboard resource",
-		Create:             resourceDatadogScreenboardCreate,
-		Read:               resourceDatadogScreenboardRead,
-		Update:             resourceDatadogScreenboardUpdate,
-		Delete:             resourceDatadogScreenboardDelete,
+		CreateContext:      resourceDatadogScreenboardCreate,
+		ReadContext:        resourceDatadogScreenboardRead,
+		UpdateContext:      resourceDatadogScreenboardUpdate,
+		DeleteContext:      resourceDatadogScreenboardDelete,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogScreenboardImport,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -1379,20 +1381,20 @@ func buildScreenboard(d *schema.ResourceData) (*datadog.Screenboard, error) {
 	return screenboard, nil
 }
 
-func resourceDatadogScreenboardCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogScreenboardCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	screenboard, err := buildScreenboard(d)
 	if err != nil {
-		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	screenboard, err = client.CreateScreenboard(screenboard)
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating screenboard")
+		return utils.TranslateClientErrorDiag(err, "error creating screenboard")
 	}
 	d.SetId(strconv.Itoa(screenboard.GetId()))
 
-	return resourceDatadogScreenboardRead(d, meta)
+	return resourceDatadogScreenboardRead(ctx, d, meta)
 }
 
 // #######################################################################################
@@ -1851,7 +1853,7 @@ func buildTFWidget(dw datadog.Widget) map[string]interface{} {
 	return widget
 }
 
-func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogScreenboardRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	id := d.Id()
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
@@ -1861,30 +1863,30 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error getting screenboard")
+		return utils.TranslateClientErrorDiag(err, "error getting screenboard")
 	}
 	log.Printf("[DataDog] screenboard: %v", pretty.Sprint(screenboard))
 	if err := d.Set("title", screenboard.GetTitle()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if v, ok := screenboard.GetHeightOk(); ok {
 		if err := d.Set("height", strconv.Itoa(v)); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 	if v, ok := screenboard.GetWidthOk(); ok {
 		if err := d.Set("width", strconv.Itoa(v)); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 	if v, ok := screenboard.GetSharedOk(); ok {
 		if err := d.Set("shared", v); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 	if v, ok := screenboard.GetReadOnlyOk(); ok {
 		if err := d.Set("read_only", v); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 
@@ -1894,7 +1896,7 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 	}
 	log.Printf("[DataDog] widgets: %v", pretty.Sprint(widgets))
 	if err := d.Set("widget", widgets); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	var templateVariables []map[string]string
@@ -1912,7 +1914,7 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 		templateVariables = append(templateVariables, tv)
 	}
 	if err := d.Set("template_variable", templateVariables); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	// Ensure the ID saved in the state is always the legacy ID returned from the API
 	// and not the ID passed to the import statement which could be in the new ID format
@@ -1921,35 +1923,28 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 	return nil
 }
 
-func resourceDatadogScreenboardUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogScreenboardUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	screenboard, err := buildScreenboard(d)
 	if err != nil {
-		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	if err = client.UpdateScreenboard(screenboard); err != nil {
-		return utils.TranslateClientError(err, "error updating screenboard")
+		return utils.TranslateClientErrorDiag(err, "error updating screenboard")
 	}
-	return resourceDatadogScreenboardRead(d, meta)
+	return resourceDatadogScreenboardRead(ctx, d, meta)
 }
 
-func resourceDatadogScreenboardDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogScreenboardDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	if err = client.DeleteScreenboard(id); err != nil {
-		return utils.TranslateClientError(err, "error deleting screenboard")
+		return utils.TranslateClientErrorDiag(err, "error deleting screenboard")
 	}
 	return nil
-}
-
-func resourceDatadogScreenboardImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogScreenboardRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }

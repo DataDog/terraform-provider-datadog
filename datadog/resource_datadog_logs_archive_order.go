@@ -1,22 +1,25 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogLogsArchiveOrder() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog [Logs Archive API](https://docs.datadoghq.com/api/v2/logs-archives/) resource, which is used to manage Datadog log archives order.",
-		Create:      resourceDatadogLogsArchiveOrderCreate,
-		Update:      resourceDatadogLogsArchiveOrderUpdate,
-		Read:        resourceDatadogLogsArchiveOrderRead,
-		Delete:      resourceDatadogLogsArchiveOrderDelete,
+		Description:   "Provides a Datadog [Logs Archive API](https://docs.datadoghq.com/api/v2/logs-archives/) resource, which is used to manage Datadog log archives order.",
+		CreateContext: resourceDatadogLogsArchiveOrderCreate,
+		UpdateContext: resourceDatadogLogsArchiveOrderUpdate,
+		ReadContext:   resourceDatadogLogsArchiveOrderRead,
+		DeleteContext: resourceDatadogLogsArchiveOrderDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"archive_ids": {
@@ -30,10 +33,10 @@ func resourceDatadogLogsArchiveOrder() *schema.Resource {
 	}
 }
 
-func resourceDatadogLogsArchiveOrderCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsArchiveOrderCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	ddArchiveList, err := buildDatadogArchiveOrderCreateReq(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	providerConf := meta.(*ProviderConfiguration)
@@ -41,44 +44,44 @@ func resourceDatadogLogsArchiveOrderCreate(d *schema.ResourceData, meta interfac
 	authV2 := providerConf.AuthV2
 
 	if len(ddArchiveList.Data.Attributes.GetArchiveIds()) > 0 {
-		return resourceDatadogLogsArchiveOrderUpdate(d, meta)
+		return resourceDatadogLogsArchiveOrderUpdate(ctx, d, meta)
 	}
 	order, httpResponse, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2).Body(*ddArchiveList).Execute()
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 422 {
 			fmt.Printf("cannot map archives to existing ones, will try to import it with Id `archiveOrderID`\n")
 			d.SetId("archiveOrderID")
-			return resourceDatadogLogsArchiveOrderRead(d, meta)
+			return resourceDatadogLogsArchiveOrderRead(ctx, d, meta)
 		}
-		return utils.TranslateClientError(err, "error creating logs archive order")
+		return utils.TranslateClientErrorDiag(err, "error creating logs archive order")
 	}
 	d.SetId("archiveOrderID")
 	return updateLogsArchiveOrderState(d, &order)
 }
 
-func resourceDatadogLogsArchiveOrderRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsArchiveOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 	order, _, err := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error getting logs archive order")
+		return utils.TranslateClientErrorDiag(err, "error getting logs archive order")
 	}
 
 	return updateLogsArchiveOrderState(d, &order)
 }
 
-func updateLogsArchiveOrderState(d *schema.ResourceData, order *datadogV2.LogsArchiveOrder) error {
+func updateLogsArchiveOrderState(d *schema.ResourceData, order *datadogV2.LogsArchiveOrder) diag.Diagnostics {
 	if err := d.Set("archive_ids", order.Data.Attributes.ArchiveIds); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	return nil
 }
 
-func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsArchiveOrderUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	ddArchiveList, err := buildDatadogArchiveOrderCreateReq(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	providerConf := meta.(*ProviderConfiguration)
@@ -90,13 +93,13 @@ func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interfac
 		if httpResponse != nil && httpResponse.StatusCode == 422 {
 			ddArchiveOrder, _, getErr := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2).Execute()
 			if getErr != nil {
-				return utils.TranslateClientError(err, "error getting logs archive order")
+				return utils.TranslateClientErrorDiag(err, "error getting logs archive order")
 			}
-			return fmt.Errorf("cannot map archives to existing ones\n existing archives: %s\n archive to be updated: %s",
+			return diag.Errorf("cannot map archives to existing ones\n existing archives: %s\n archive to be updated: %s",
 				ddArchiveOrder.Data.Attributes.ArchiveIds,
 				ddArchiveList.Data.Attributes.GetArchiveIds())
 		}
-		return utils.TranslateClientError(err, "error updating logs archive order")
+		return utils.TranslateClientErrorDiag(err, "error updating logs archive order")
 	}
 	d.SetId("archiveOrderID")
 	return updateLogsArchiveOrderState(d, &updatedOrder)
@@ -104,7 +107,7 @@ func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interfac
 
 // The deletion of archive order is not supported from config API.
 // This function simply delete the archive order resource from terraform state.
-func resourceDatadogLogsArchiveOrderDelete(_ *schema.ResourceData, _ interface{}) error {
+func resourceDatadogLogsArchiveOrderDelete(_ context.Context, _ *schema.ResourceData, _ interface{}) diag.Diagnostics {
 	return nil
 }
 

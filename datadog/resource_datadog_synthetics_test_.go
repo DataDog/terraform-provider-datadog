@@ -3,6 +3,7 @@
 package datadog
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -15,19 +16,20 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceDatadogSyntheticsTest() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics test.",
-		Create:      resourceDatadogSyntheticsTestCreate,
-		Read:        resourceDatadogSyntheticsTestRead,
-		Update:      resourceDatadogSyntheticsTestUpdate,
-		Delete:      resourceDatadogSyntheticsTestDelete,
+		Description:   "Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics test.",
+		CreateContext: resourceDatadogSyntheticsTestCreate,
+		ReadContext:   resourceDatadogSyntheticsTestRead,
+		UpdateContext: resourceDatadogSyntheticsTestUpdate,
+		DeleteContext: resourceDatadogSyntheticsTestDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"type": {
@@ -660,7 +662,7 @@ func syntheticsConfigVariable() *schema.Schema {
 	}
 }
 
-func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -669,7 +671,7 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 	createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateTest(authV1).Body(*syntheticsTest).Execute()
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
-		return utils.TranslateClientError(err, "error creating synthetics test")
+		return utils.TranslateClientErrorDiag(err, "error creating synthetics test")
 	}
 
 	// If the Create callback returns with or without an error without an ID set using SetId,
@@ -677,10 +679,10 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 	d.SetId(createdSyntheticsTest.GetPublicId())
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
-	return resourceDatadogSyntheticsTestRead(d, meta)
+	return resourceDatadogSyntheticsTestRead(ctx, d, meta)
 }
 
-func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -706,13 +708,13 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error getting synthetics test")
+		return utils.TranslateClientErrorDiag(err, "error getting synthetics test")
 	}
 
 	return updateSyntheticsTestLocalState(d, &syntheticsTest)
 }
 
-func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -720,14 +722,14 @@ func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{
 	syntheticsTest := buildSyntheticsTestStruct(d)
 	if _, _, err := datadogClientV1.SyntheticsApi.UpdateTest(authV1, d.Id()).Body(*syntheticsTest).Execute(); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
-		return utils.TranslateClientError(err, "error updating synthetics test")
+		return utils.TranslateClientErrorDiag(err, "error updating synthetics test")
 	}
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
-	return resourceDatadogSyntheticsTestRead(d, meta)
+	return resourceDatadogSyntheticsTestRead(ctx, d, meta)
 }
 
-func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsTestDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -735,7 +737,7 @@ func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{
 	syntheticsDeleteTestsPayload := datadogV1.SyntheticsDeleteTestsPayload{PublicIds: &[]string{d.Id()}}
 	if _, _, err := datadogClientV1.SyntheticsApi.DeleteTests(authV1).Body(syntheticsDeleteTestsPayload).Execute(); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
-		return utils.TranslateClientError(err, "error deleting synthetics test")
+		return utils.TranslateClientErrorDiag(err, "error deleting synthetics test")
 	}
 
 	// The resource is assumed to be destroyed, and all state is removed.
@@ -1172,7 +1174,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	return syntheticsTest
 }
 
-func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsTestDetails) error {
+func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsTestDetails) diag.Diagnostics {
 	d.Set("type", syntheticsTest.GetType())
 	if syntheticsTest.HasSubtype() {
 		d.Set("subtype", syntheticsTest.GetSubtype())
@@ -1203,7 +1205,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		localRequest["dns_server"] = convertToString(actualRequest.GetDnsServer())
 	}
 	if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	d.Set("request_headers", actualRequest.Headers)
 	d.Set("request_query", actualRequest.GetQuery())
@@ -1280,7 +1282,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 					} else if vAsFloat, ok := (*v).(float64); ok {
 						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
 					} else {
-						return fmt.Errorf("Unrecognized targetvalue type %v", v)
+						return diag.Errorf("Unrecognized targetvalue type %v", v)
 					}
 				}
 				localAssertion["targetjsonpath"] = []map[string]string{localTarget}
@@ -1294,11 +1296,11 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	// If the existing state still uses assertions, keep using that in the state to not generate useless diffs
 	if attr, ok := d.GetOk("assertions"); ok && attr != nil && len(attr.([]interface{})) > 0 {
 		if err := d.Set("assertions", localAssertions); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	} else {
 		if err := d.Set("assertion", localAssertions); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 
@@ -1327,11 +1329,11 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	// If the existing state still uses variables, keep using that in the state to not generate useless diffs
 	if attr, ok := d.GetOk("variable"); ok && attr != nil && len(attr.([]interface{})) > 0 {
 		if err := d.Set("variable", localBrowserVariables); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	} else {
 		if err := d.Set("browser_variable", localBrowserVariables); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 
@@ -1355,7 +1357,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 
 	if err := d.Set("config_variable", localConfigVariables); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds)
@@ -1414,7 +1416,7 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	localOptionsLists := make([]map[string]interface{}, 1)
 	localOptionsLists[0] = localOptionsList
 	if err := d.Set("options_list", localOptionsLists); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if syntheticsTest.GetType() == "browser" {
@@ -1461,11 +1463,11 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		// If the existing state still uses step, keep using that in the state to not generate useless diffs
 		if useLegacyStep {
 			if err := d.Set("step", localSteps); err != nil {
-				return err
+				return diag.FromErr(err)
 			}
 		} else {
 			if err := d.Set("browser_step", localSteps); err != nil {
-				return err
+				return diag.FromErr(err)
 			}
 		}
 

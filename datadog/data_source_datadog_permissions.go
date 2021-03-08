@@ -1,14 +1,18 @@
 package datadog
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"context"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func dataSourceDatadogPermissions() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve the list of Datadog permissions by name and their corresponding ID, for use in the role resource.",
-		Read:        dataSourceDatadogPermissionsRead,
+		ReadContext: dataSourceDatadogPermissionsRead,
 
 		Schema: map[string]*schema.Schema{
 			// Computed values
@@ -24,14 +28,14 @@ func dataSourceDatadogPermissions() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogPermissionsRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogPermissionsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
 	res, _, err := datadogClientV2.RolesApi.ListPermissions(authV2).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error listing permissions")
+		return utils.TranslateClientErrorDiag(err, "error listing permissions")
 	}
 	perms := res.GetData()
 	permsNameToID := make(map[string]string, len(perms))
@@ -43,7 +47,7 @@ func dataSourceDatadogPermissionsRead(d *schema.ResourceData, meta interface{}) 
 		permsNameToID[perm.Attributes.GetName()] = perm.GetId()
 	}
 	if err := d.Set("permissions", permsNameToID); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	d.SetId("datadog-permissions")
 

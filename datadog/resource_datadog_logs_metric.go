@@ -1,22 +1,25 @@
 package datadog
 
 import (
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"context"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogLogsMetric() *schema.Resource {
 	return &schema.Resource{
-		Description: "Resource for interacting with the logs_metric API",
-		Create:      resourceDatadogLogsMetricCreate,
-		Read:        resourceDatadogLogsMetricRead,
-		Update:      resourceDatadogLogsMetricUpdate,
-		Delete:      resourceDatadogLogsMetricDelete,
+		Description:   "Resource for interacting with the logs_metric API",
+		CreateContext: resourceDatadogLogsMetricCreate,
+		ReadContext:   resourceDatadogLogsMetricRead,
+		UpdateContext: resourceDatadogLogsMetricUpdate,
+		DeleteContext: resourceDatadogLogsMetricDelete,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogLogsMetricImport,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 
@@ -170,14 +173,14 @@ func getGroupBys(d *schema.ResourceData) ([]datadogV2.LogsMetricGroupBy, error) 
 	return groupBys, nil
 }
 
-func resourceDatadogLogsMetricCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsMetricCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV2
 	auth := providerConf.AuthV2
 
 	resultLogsMetricCreateData, err := buildDatadogLogsMetric(d)
 	if err != nil {
-		return utils.TranslateClientError(err, "error building LogsMetric object")
+		return utils.TranslateClientErrorDiag(err, "error building LogsMetric object")
 	}
 
 	ddObject := datadogV2.NewLogsMetricCreateRequestWithDefaults()
@@ -185,7 +188,7 @@ func resourceDatadogLogsMetricCreate(d *schema.ResourceData, meta interface{}) e
 
 	response, _, err := datadogClient.LogsMetricsApi.CreateLogsMetric(auth).Body(*ddObject).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating LogsMetric")
+		return utils.TranslateClientErrorDiag(err, "error creating LogsMetric")
 	}
 	id := *response.GetData().Id
 	d.SetId(id)
@@ -193,7 +196,7 @@ func resourceDatadogLogsMetricCreate(d *schema.ResourceData, meta interface{}) e
 	return updateLogsMetricState(d, response.Data)
 }
 
-func updateLogsMetricState(d *schema.ResourceData, resource *datadogV2.LogsMetricResponseData) error {
+func updateLogsMetricState(d *schema.ResourceData, resource *datadogV2.LogsMetricResponseData) diag.Diagnostics {
 	if ddAttributes, ok := resource.GetAttributesOk(); ok {
 		if computeDDModel, ok := ddAttributes.GetComputeOk(); ok {
 			computeMap := map[string]interface{}{}
@@ -204,7 +207,7 @@ func updateLogsMetricState(d *schema.ResourceData, resource *datadogV2.LogsMetri
 				computeMap["path"] = *v
 			}
 			if err := d.Set("compute", []map[string]interface{}{computeMap}); err != nil {
-				return err
+				return diag.FromErr(err)
 			}
 		}
 		if filterDDModel, ok := ddAttributes.GetFilterOk(); ok {
@@ -213,7 +216,7 @@ func updateLogsMetricState(d *schema.ResourceData, resource *datadogV2.LogsMetri
 				filterMap["query"] = *v
 			}
 			if err := d.Set("filter", []map[string]interface{}{filterMap}); err != nil {
-				return err
+				return diag.FromErr(err)
 			}
 		}
 		if groupByArray, ok := ddAttributes.GetGroupByOk(); ok {
@@ -231,21 +234,21 @@ func updateLogsMetricState(d *schema.ResourceData, resource *datadogV2.LogsMetri
 				mapAttributesArray = append(mapAttributesArray, mapAttributesArrayIntf)
 			}
 			if err := d.Set("group_by", mapAttributesArray); err != nil {
-				return err
+				return diag.FromErr(err)
 			}
 		}
 	}
 
 	if v, ok := resource.GetIdOk(); ok {
 		if err := d.Set("name", *v); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 
 	return nil
 }
 
-func resourceDatadogLogsMetricRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsMetricRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV2
 	auth := providerConf.AuthV2
@@ -261,7 +264,7 @@ func resourceDatadogLogsMetricRead(d *schema.ResourceData, meta interface{}) err
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error reading LogsMetric")
+		return utils.TranslateClientErrorDiag(err, "error reading LogsMetric")
 	}
 
 	resource := resourceLogsMetricResponse.GetData()
@@ -289,14 +292,14 @@ func buildDatadogLogsMetricUpdate(d *schema.ResourceData) (*datadogV2.LogsMetric
 	return result, nil
 }
 
-func resourceDatadogLogsMetricUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsMetricUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV2
 	auth := providerConf.AuthV2
 
 	resultLogsMetricUpdateData, err := buildDatadogLogsMetricUpdate(d)
 	if err != nil {
-		return utils.TranslateClientError(err, "error building LogsMetric object")
+		return utils.TranslateClientErrorDiag(err, "error building LogsMetric object")
 	}
 
 	ddObject := datadogV2.NewLogsMetricUpdateRequestWithDefaults()
@@ -305,13 +308,13 @@ func resourceDatadogLogsMetricUpdate(d *schema.ResourceData, meta interface{}) e
 
 	response, _, err := datadogClient.LogsMetricsApi.UpdateLogsMetric(auth, id).Body(*ddObject).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating LogsMetric")
+		return utils.TranslateClientErrorDiag(err, "error updating LogsMetric")
 	}
 
 	return updateLogsMetricState(d, response.Data)
 }
 
-func resourceDatadogLogsMetricDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsMetricDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV2
 	auth := providerConf.AuthV2
@@ -322,15 +325,8 @@ func resourceDatadogLogsMetricDelete(d *schema.ResourceData, meta interface{}) e
 	_, err = datadogClient.LogsMetricsApi.DeleteLogsMetric(auth, id).Execute()
 
 	if err != nil {
-		return utils.TranslateClientError(err, "error deleting LogsMetric")
+		return utils.TranslateClientErrorDiag(err, "error deleting LogsMetric")
 	}
 
 	return nil
-}
-
-func resourceDatadogLogsMetricImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogLogsMetricRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }

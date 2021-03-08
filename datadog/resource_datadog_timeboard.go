@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -10,6 +11,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/kr/pretty"
 	"github.com/zorkian/go-datadog-api"
@@ -451,12 +453,12 @@ func resourceDatadogTimeboard() *schema.Resource {
 	return &schema.Resource{
 		Description:        "Provides a Datadog timeboard resource. This can be used to create and manage Datadog timeboards.",
 		DeprecationMessage: "This resource is deprecated. Instead use the Dashboard resource",
-		Create:             resourceDatadogTimeboardCreate,
-		Update:             resourceDatadogTimeboardUpdate,
-		Read:               resourceDatadogTimeboardRead,
-		Delete:             resourceDatadogTimeboardDelete,
+		CreateContext:      resourceDatadogTimeboardCreate,
+		UpdateContext:      resourceDatadogTimeboardUpdate,
+		ReadContext:        resourceDatadogTimeboardRead,
+		DeleteContext:      resourceDatadogTimeboardDelete,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogTimeboardImport,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -855,32 +857,32 @@ func buildTimeboard(d *schema.ResourceData) (*datadog.Dashboard, error) {
 	}, nil
 }
 
-func resourceDatadogTimeboardCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogTimeboardCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	timeboard, err := buildTimeboard(d)
 	if err != nil {
-		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	timeboard, err = client.CreateDashboard(timeboard)
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating timeboard")
+		return utils.TranslateClientErrorDiag(err, "error creating timeboard")
 	}
 	d.SetId(strconv.Itoa(timeboard.GetId()))
-	return resourceDatadogTimeboardRead(d, meta)
+	return resourceDatadogTimeboardRead(ctx, d, meta)
 }
 
-func resourceDatadogTimeboardUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogTimeboardUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	timeboard, err := buildTimeboard(d)
 	if err != nil {
-		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	if err = client.UpdateDashboard(timeboard); err != nil {
-		return utils.TranslateClientError(err, "error updating timeboard")
+		return utils.TranslateClientErrorDiag(err, "error updating timeboard")
 	}
-	return resourceDatadogTimeboardRead(d, meta)
+	return resourceDatadogTimeboardRead(ctx, d, meta)
 }
 func buildTFGraphProcessQuery(datadogQuery datadog.GraphProcessQuery) map[string]interface{} {
 	terraformQuery := map[string]interface{}{}
@@ -1153,7 +1155,7 @@ func buildTerraformGraph(datadogGraph datadog.Graph) map[string]interface{} {
 	return graph
 }
 
-func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogTimeboardRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	id := d.Id()
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
@@ -1163,14 +1165,14 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error getting timeboard")
+		return utils.TranslateClientErrorDiag(err, "error getting timeboard")
 	}
 	log.Printf("[DataDog] timeboard: %v", pretty.Sprint(timeboard))
 	if err := d.Set("title", timeboard.GetTitle()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("description", timeboard.GetDescription()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	var graphs []map[string]interface{}
@@ -1179,7 +1181,7 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 	}
 	log.Printf("[DataDog] graphs: %v", pretty.Sprint(graphs))
 	if err := d.Set("graph", graphs); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	var templateVariables []map[string]string
@@ -1197,7 +1199,7 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 		templateVariables = append(templateVariables, tv)
 	}
 	if err := d.Set("template_variable", templateVariables); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	// Ensure the ID saved in the state is always the legacy ID returned from the API
 	// and not the ID passed to the import statement which could be in the new ID format
@@ -1205,22 +1207,15 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 	return nil
 }
 
-func resourceDatadogTimeboardDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogTimeboardDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	id, err := strconv.Atoi(d.Id())
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	if err = client.DeleteDashboard(id); err != nil {
-		return utils.TranslateClientError(err, "error deleting timeboard")
+		return utils.TranslateClientErrorDiag(err, "error deleting timeboard")
 	}
 	return nil
-}
-
-func resourceDatadogTimeboardImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogTimeboardRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }
