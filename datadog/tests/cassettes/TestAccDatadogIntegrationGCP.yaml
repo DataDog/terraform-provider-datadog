@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","client_email":"tf-TestAccDatadogIntegrationGCP-local-1609425768@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-TestAccDatadogIntegrationGCP-local-1609425768@awesome-project-id.iam.gserviceaccount.com","host_filters":"foo:bar,buzz:lightyear","private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-TestAccDatadogIntegrationGCP-local-1609425768","token_uri":"https://accounts.google.com/o/oauth2/token","type":"service_account"}
+      {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","client_email":"tf-TestAccDatadogIntegrationGCP-local-1615213443@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-TestAccDatadogIntegrationGCP-local-1615213443@awesome-project-id.iam.gserviceaccount.com","host_filters":"foo:bar,buzz:lightyear","private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-TestAccDatadogIntegrationGCP-local-1615213443","token_uri":"https://accounts.google.com/o/oauth2/token","type":"service_account"}
     form: {}
     headers:
       Accept:
@@ -13,14 +13,7 @@ interactions:
       Dd-Operation-Id:
       - CreateGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "7580219769874621141"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5787989901893314156"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: POST
   response:
@@ -37,20 +30,17 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:42:51 GMT
+      - Mon, 08 Mar 2021 14:24:04 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:42:49 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - IEUzjgpnyUrp74lH2dqPweGXNQU7es3CY44HHPIdy7aSNeimMebMvcKCoCgyWWVx
+      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051170"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -65,18 +55,11 @@ interactions:
       Dd-Operation-Id:
       - ListGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4846474724929156003"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5787989901893314156"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1609425768","client_email":"tf-TestAccDatadogIntegrationGCP-local-1609425768@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-42757-1611662666","client_email":"go-TestGCPCreate-42757-1611662666@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-47748-1613983350","client_email":"go-TestGCPCreate-47748-1613983350@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-48543-1614276187","client_email":"go-TestGCPCreate-48543-1614276187@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-47748-1613983352","client_email":"go-TestGCPListandDelete-47748-1613983352@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-48543-1614276190","client_email":"go-TestGCPListandDelete-48543-1614276190@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39829-1610312816","client_email":"go-TestUpdateGCPAccount-39829-1610312816@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39939-1610374022","client_email":"go-TestUpdateGCPAccount-39939-1610374022@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-42119-1611302336","client_email":"go-TestUpdateGCPAccount-42119-1611302336@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-46813-1613497733","client_email":"go-TestUpdateGCPAccount-46813-1613497733@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-47748-1613983354","client_email":"go-TestUpdateGCPAccount-47748-1613983354@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-createGCPIntegrationTest-39170-1609803430","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-39170-1609803445","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42579-1611592767","client_email":"tf-TestAccDatadogIntegrationGCP-42579-1611592767@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42676-1611655233","client_email":"tf-TestAccDatadogIntegrationGCP-42676-1611655233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46087-1613065233","client_email":"tf-TestAccDatadogIntegrationGCP-46087-1613065233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46089-1613066335","client_email":"tf-TestAccDatadogIntegrationGCP-46089-1613066335@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-48292-1614185010","client_email":"tf-TestAccDatadogIntegrationGCP-48292-1614185010@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1615213443","client_email":"tf-TestAccDatadogIntegrationGCP-local-1615213443@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -87,12 +70,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:42:52 GMT
+      - Mon, 08 Mar 2021 14:24:05 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:42:51 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -100,9 +80,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - LkSOFVoHBcsyBoPbYbYfcEWZoNcVif5SL5dX3LvvR/J4mRuKXGmrGqdm859yDQ2v
+      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051170"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -117,18 +97,11 @@ interactions:
       Dd-Operation-Id:
       - ListGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "1462595351394895797"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5787989901893314156"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1609425768","client_email":"tf-TestAccDatadogIntegrationGCP-local-1609425768@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-42757-1611662666","client_email":"go-TestGCPCreate-42757-1611662666@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-47748-1613983350","client_email":"go-TestGCPCreate-47748-1613983350@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-48543-1614276187","client_email":"go-TestGCPCreate-48543-1614276187@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-47748-1613983352","client_email":"go-TestGCPListandDelete-47748-1613983352@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-48543-1614276190","client_email":"go-TestGCPListandDelete-48543-1614276190@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39829-1610312816","client_email":"go-TestUpdateGCPAccount-39829-1610312816@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39939-1610374022","client_email":"go-TestUpdateGCPAccount-39939-1610374022@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-42119-1611302336","client_email":"go-TestUpdateGCPAccount-42119-1611302336@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-46813-1613497733","client_email":"go-TestUpdateGCPAccount-46813-1613497733@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-47748-1613983354","client_email":"go-TestUpdateGCPAccount-47748-1613983354@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-createGCPIntegrationTest-39170-1609803430","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-39170-1609803445","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42579-1611592767","client_email":"tf-TestAccDatadogIntegrationGCP-42579-1611592767@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42676-1611655233","client_email":"tf-TestAccDatadogIntegrationGCP-42676-1611655233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46087-1613065233","client_email":"tf-TestAccDatadogIntegrationGCP-46087-1613065233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46089-1613066335","client_email":"tf-TestAccDatadogIntegrationGCP-46089-1613066335@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-48292-1614185010","client_email":"tf-TestAccDatadogIntegrationGCP-48292-1614185010@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1615213443","client_email":"tf-TestAccDatadogIntegrationGCP-local-1615213443@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -139,12 +112,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:42:52 GMT
+      - Mon, 08 Mar 2021 14:24:05 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:42:52 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -152,9 +122,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - NAgpeopdgW9X30OuB191/muuvQIfRBmU7ohOgihh9xKnn0bCG7Kguc4bGAIB6OKr
+      - /L+SFFO+m1pPY+hRCpk5325fvfrNl0KmiquUNJolBN/5hu3HIwflqjZSbJ6NxDFG
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051170"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -169,18 +139,11 @@ interactions:
       Dd-Operation-Id:
       - ListGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "7718788102898467958"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5787989901893314156"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1609425768","client_email":"tf-TestAccDatadogIntegrationGCP-local-1609425768@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-42757-1611662666","client_email":"go-TestGCPCreate-42757-1611662666@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-47748-1613983350","client_email":"go-TestGCPCreate-47748-1613983350@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-48543-1614276187","client_email":"go-TestGCPCreate-48543-1614276187@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-47748-1613983352","client_email":"go-TestGCPListandDelete-47748-1613983352@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-48543-1614276190","client_email":"go-TestGCPListandDelete-48543-1614276190@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39829-1610312816","client_email":"go-TestUpdateGCPAccount-39829-1610312816@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39939-1610374022","client_email":"go-TestUpdateGCPAccount-39939-1610374022@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-42119-1611302336","client_email":"go-TestUpdateGCPAccount-42119-1611302336@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-46813-1613497733","client_email":"go-TestUpdateGCPAccount-46813-1613497733@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-47748-1613983354","client_email":"go-TestUpdateGCPAccount-47748-1613983354@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-createGCPIntegrationTest-39170-1609803430","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-39170-1609803445","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42579-1611592767","client_email":"tf-TestAccDatadogIntegrationGCP-42579-1611592767@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42676-1611655233","client_email":"tf-TestAccDatadogIntegrationGCP-42676-1611655233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46087-1613065233","client_email":"tf-TestAccDatadogIntegrationGCP-46087-1613065233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46089-1613066335","client_email":"tf-TestAccDatadogIntegrationGCP-46089-1613066335@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-48292-1614185010","client_email":"tf-TestAccDatadogIntegrationGCP-48292-1614185010@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1615213443","client_email":"tf-TestAccDatadogIntegrationGCP-local-1615213443@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -191,12 +154,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:42:53 GMT
+      - Mon, 08 Mar 2021 14:24:05 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:42:52 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -204,9 +164,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - hw3ZauSSamfHLo55DFwif1/mO6RiYSc0/libBchlIMnyWX9rK7JgS3Pek5rkz683
+      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051170"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -221,18 +181,11 @@ interactions:
       Dd-Operation-Id:
       - ListGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "3932069661551817895"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5787989901893314156"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1609425768","client_email":"tf-TestAccDatadogIntegrationGCP-local-1609425768@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-42757-1611662666","client_email":"go-TestGCPCreate-42757-1611662666@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-47748-1613983350","client_email":"go-TestGCPCreate-47748-1613983350@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-48543-1614276187","client_email":"go-TestGCPCreate-48543-1614276187@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-47748-1613983352","client_email":"go-TestGCPListandDelete-47748-1613983352@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-48543-1614276190","client_email":"go-TestGCPListandDelete-48543-1614276190@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39829-1610312816","client_email":"go-TestUpdateGCPAccount-39829-1610312816@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39939-1610374022","client_email":"go-TestUpdateGCPAccount-39939-1610374022@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-42119-1611302336","client_email":"go-TestUpdateGCPAccount-42119-1611302336@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-46813-1613497733","client_email":"go-TestUpdateGCPAccount-46813-1613497733@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-47748-1613983354","client_email":"go-TestUpdateGCPAccount-47748-1613983354@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-createGCPIntegrationTest-39170-1609803430","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-39170-1609803445","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42579-1611592767","client_email":"tf-TestAccDatadogIntegrationGCP-42579-1611592767@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42676-1611655233","client_email":"tf-TestAccDatadogIntegrationGCP-42676-1611655233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46087-1613065233","client_email":"tf-TestAccDatadogIntegrationGCP-46087-1613065233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46089-1613066335","client_email":"tf-TestAccDatadogIntegrationGCP-46089-1613066335@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-48292-1614185010","client_email":"tf-TestAccDatadogIntegrationGCP-48292-1614185010@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1615213443","client_email":"tf-TestAccDatadogIntegrationGCP-local-1615213443@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -243,12 +196,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:42:54 GMT
+      - Mon, 08 Mar 2021 14:24:06 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:42:54 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -256,9 +206,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - s8aX5NtChXwcC0ZqCGPgUtbvI/yT4gadlVvE6/Mqbm4BIdrCBC60TudMJNU/SbvE
+      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051170"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -266,7 +216,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1609425768@awesome-project-id.iam.gserviceaccount.com","host_filters":"","project_id":"tf-TestAccDatadogIntegrationGCP-local-1609425768"}
+      {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1615213443@awesome-project-id.iam.gserviceaccount.com","host_filters":"","project_id":"tf-TestAccDatadogIntegrationGCP-local-1615213443"}
     form: {}
     headers:
       Accept:
@@ -276,14 +226,7 @@ interactions:
       Dd-Operation-Id:
       - UpdateGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "8760757891920668468"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5787989901893314156"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: PUT
   response:
@@ -300,20 +243,17 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:42:55 GMT
+      - Mon, 08 Mar 2021 14:24:06 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:42:55 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - H6YNJZe2hxg7AD4MytxnK6WTGV3v238t6qy6wX4rqFlv+Cb0Gp+GU8J41gMZvmVb
+      - dCmL/3rURV6BPeaqeP3Rxigq41m5CAb17XjrRE42uZ01zpr07HVhbL5/3TWMkvgu
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051170"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -328,18 +268,11 @@ interactions:
       Dd-Operation-Id:
       - ListGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "7618007047577059088"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5787989901893314156"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1609425768","client_email":"tf-TestAccDatadogIntegrationGCP-local-1609425768@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-42757-1611662666","client_email":"go-TestGCPCreate-42757-1611662666@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-47748-1613983350","client_email":"go-TestGCPCreate-47748-1613983350@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-48543-1614276187","client_email":"go-TestGCPCreate-48543-1614276187@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-47748-1613983352","client_email":"go-TestGCPListandDelete-47748-1613983352@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-48543-1614276190","client_email":"go-TestGCPListandDelete-48543-1614276190@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39829-1610312816","client_email":"go-TestUpdateGCPAccount-39829-1610312816@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39939-1610374022","client_email":"go-TestUpdateGCPAccount-39939-1610374022@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-42119-1611302336","client_email":"go-TestUpdateGCPAccount-42119-1611302336@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-46813-1613497733","client_email":"go-TestUpdateGCPAccount-46813-1613497733@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-47748-1613983354","client_email":"go-TestUpdateGCPAccount-47748-1613983354@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-createGCPIntegrationTest-39170-1609803430","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-39170-1609803445","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42579-1611592767","client_email":"tf-TestAccDatadogIntegrationGCP-42579-1611592767@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42676-1611655233","client_email":"tf-TestAccDatadogIntegrationGCP-42676-1611655233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46087-1613065233","client_email":"tf-TestAccDatadogIntegrationGCP-46087-1613065233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46089-1613066335","client_email":"tf-TestAccDatadogIntegrationGCP-46089-1613066335@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-48292-1614185010","client_email":"tf-TestAccDatadogIntegrationGCP-48292-1614185010@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1615213443","client_email":"tf-TestAccDatadogIntegrationGCP-local-1615213443@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -350,12 +283,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:42:56 GMT
+      - Mon, 08 Mar 2021 14:24:06 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:42:55 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -363,9 +293,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - /0aUVUH/0B08LSgkH1j961ejfqRhimJkYAixzpnRf5lscmOFHWjl/leOQ3Mnfn7R
+      - vdJ3/nHEY1ioXQ6pQrBVvsQK1s4yyc+wufBMPSoXql71qZVuP/xMdtNo6DafhOAk
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051170"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -380,18 +310,11 @@ interactions:
       Dd-Operation-Id:
       - ListGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "3624345255100010357"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5787989901893314156"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1609425768","client_email":"tf-TestAccDatadogIntegrationGCP-local-1609425768@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-42757-1611662666","client_email":"go-TestGCPCreate-42757-1611662666@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-47748-1613983350","client_email":"go-TestGCPCreate-47748-1613983350@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-48543-1614276187","client_email":"go-TestGCPCreate-48543-1614276187@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-47748-1613983352","client_email":"go-TestGCPListandDelete-47748-1613983352@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-48543-1614276190","client_email":"go-TestGCPListandDelete-48543-1614276190@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39829-1610312816","client_email":"go-TestUpdateGCPAccount-39829-1610312816@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39939-1610374022","client_email":"go-TestUpdateGCPAccount-39939-1610374022@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-42119-1611302336","client_email":"go-TestUpdateGCPAccount-42119-1611302336@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-46813-1613497733","client_email":"go-TestUpdateGCPAccount-46813-1613497733@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-47748-1613983354","client_email":"go-TestUpdateGCPAccount-47748-1613983354@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-createGCPIntegrationTest-39170-1609803430","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-39170-1609803445","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42579-1611592767","client_email":"tf-TestAccDatadogIntegrationGCP-42579-1611592767@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42676-1611655233","client_email":"tf-TestAccDatadogIntegrationGCP-42676-1611655233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46087-1613065233","client_email":"tf-TestAccDatadogIntegrationGCP-46087-1613065233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46089-1613066335","client_email":"tf-TestAccDatadogIntegrationGCP-46089-1613066335@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-48292-1614185010","client_email":"tf-TestAccDatadogIntegrationGCP-48292-1614185010@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1615213443","client_email":"tf-TestAccDatadogIntegrationGCP-local-1615213443@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -402,12 +325,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:42:56 GMT
+      - Mon, 08 Mar 2021 14:24:06 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:42:56 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -415,9 +335,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - WyPl7Uohyy2nhJ7RWrq85UM5TEMaIEIfRwQveR0xpNBygzZEP8S/qWubDM7SoNjW
+      - F5gm0Rce1/Abr9/0Fw8HAqWfiz0FdiH8er/AXnN6lOn3L6KyGgbsLCwgPlob1No8
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051170"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -432,18 +352,11 @@ interactions:
       Dd-Operation-Id:
       - ListGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "7058472798031094113"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5787989901893314156"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1609425768","client_email":"tf-TestAccDatadogIntegrationGCP-local-1609425768@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-42757-1611662666","client_email":"go-TestGCPCreate-42757-1611662666@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-47748-1613983350","client_email":"go-TestGCPCreate-47748-1613983350@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-48543-1614276187","client_email":"go-TestGCPCreate-48543-1614276187@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-47748-1613983352","client_email":"go-TestGCPListandDelete-47748-1613983352@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-48543-1614276190","client_email":"go-TestGCPListandDelete-48543-1614276190@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39829-1610312816","client_email":"go-TestUpdateGCPAccount-39829-1610312816@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39939-1610374022","client_email":"go-TestUpdateGCPAccount-39939-1610374022@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-42119-1611302336","client_email":"go-TestUpdateGCPAccount-42119-1611302336@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-46813-1613497733","client_email":"go-TestUpdateGCPAccount-46813-1613497733@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-47748-1613983354","client_email":"go-TestUpdateGCPAccount-47748-1613983354@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-createGCPIntegrationTest-39170-1609803430","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-39170-1609803445","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42579-1611592767","client_email":"tf-TestAccDatadogIntegrationGCP-42579-1611592767@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42676-1611655233","client_email":"tf-TestAccDatadogIntegrationGCP-42676-1611655233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46087-1613065233","client_email":"tf-TestAccDatadogIntegrationGCP-46087-1613065233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46089-1613066335","client_email":"tf-TestAccDatadogIntegrationGCP-46089-1613066335@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-48292-1614185010","client_email":"tf-TestAccDatadogIntegrationGCP-48292-1614185010@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1615213443","client_email":"tf-TestAccDatadogIntegrationGCP-local-1615213443@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -454,12 +367,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:42:57 GMT
+      - Mon, 08 Mar 2021 14:24:07 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:42:57 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -467,61 +377,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - n9uz1T+WujhmfsGndIdy1tCYb5bh9AzSyYOT5TTjJX23RGEavHxGqcz400IC+bY1
+      - bgHykj7A9bfZx0Y5ZO3swhhp5tGUSNJHqFWR868+qg087CYrDOd5hQslC+noiEtH
       X-Dd-Version:
-      - "35.3622023"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListGCPIntegration
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "5886971480828274173"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5787989901893314156"
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-  response:
-    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1609425768","client_email":"tf-TestAccDatadogIntegrationGCP-local-1609425768@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 31 Dec 2020 14:42:58 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:42:58 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - s8aX5NtChXwcC0ZqCGPgUtbvI/yT4gadlVvE6/Mqbm4BIdrCBC60TudMJNU/SbvE
-      X-Dd-Version:
-      - "35.3622023"
+      - "35.4051170"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -529,7 +387,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1609425768@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-TestAccDatadogIntegrationGCP-local-1609425768"}
+      {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1615213443@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-TestAccDatadogIntegrationGCP-local-1615213443"}
     form: {}
     headers:
       Accept:
@@ -539,14 +397,7 @@ interactions:
       Dd-Operation-Id:
       - DeleteGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4881534741366367614"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5787989901893314156"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: DELETE
   response:
@@ -563,20 +414,17 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:42:58 GMT
+      - Mon, 08 Mar 2021 14:24:07 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:42:58 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - ks6TYG2WFSBr2qT+ZTFJB8BB7VWuwPmODDq52A4JjLzCAAitR8HQc9JBq+LHjJu4
+      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051170"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -591,18 +439,11 @@ interactions:
       Dd-Operation-Id:
       - ListGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "7314957122680688084"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "5787989901893314156"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"go-TestGCPCreate-25132-1600970650","client_email":"go-TestGCPCreate-25132-1600970650@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-42757-1611662666","client_email":"go-TestGCPCreate-42757-1611662666@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-47748-1613983350","client_email":"go-TestGCPCreate-47748-1613983350@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPCreate-48543-1614276187","client_email":"go-TestGCPCreate-48543-1614276187@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-47748-1613983352","client_email":"go-TestGCPListandDelete-47748-1613983352@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"go-TestGCPListandDelete-48543-1614276190","client_email":"go-TestGCPListandDelete-48543-1614276190@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39829-1610312816","client_email":"go-TestUpdateGCPAccount-39829-1610312816@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-39939-1610374022","client_email":"go-TestUpdateGCPAccount-39939-1610374022@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-42119-1611302336","client_email":"go-TestUpdateGCPAccount-42119-1611302336@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"go-TestUpdateGCPAccount-46813-1613497733","client_email":"go-TestUpdateGCPAccount-46813-1613497733@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:update,example:update"},{"automute":false,"project_id":"go-TestUpdateGCPAccount-47748-1613983354","client_email":"go-TestUpdateGCPAccount-47748-1613983354@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-createGCPIntegrationTest-39170-1609803430","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-39170-1609803445","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"super-awesome-project-id","client_email":"awesome-service-account@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42579-1611592767","client_email":"tf-TestAccDatadogIntegrationGCP-42579-1611592767@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-42676-1611655233","client_email":"tf-TestAccDatadogIntegrationGCP-42676-1611655233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46087-1613065233","client_email":"tf-TestAccDatadogIntegrationGCP-46087-1613065233@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-46089-1613066335","client_email":"tf-TestAccDatadogIntegrationGCP-46089-1613066335@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-48292-1614185010","client_email":"tf-TestAccDatadogIntegrationGCP-48292-1614185010@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-41426-1611053108@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-44299-1612287519@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-46403-1613170357@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415","client_email":"tf-TestAccDatadogLogsArchiveGCS_basicDeprecated-47716-1613952415@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -613,12 +454,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:42:59 GMT
+      - Mon, 08 Mar 2021 14:24:08 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:42:58 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -626,9 +464,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 4UaTmvSfVgrAnk9WjtnugRwYwQHzmV7Xe8CPpF1D3zUjc+biqLvKLM8GlhPhoOpi
+      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051170"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
