@@ -48,6 +48,8 @@ jobs:
               run: make license-check
             - name: Get terraform binary
               run: ./scripts/get-terraform-binary.sh
+              env:
+                  TF_VERSION: ${{ matrix.terraform }}
             - name: Test
               run: make testall
               env:
