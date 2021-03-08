@@ -8,12 +8,11 @@ echo "OS is $(uname -s)"
 
 case "$(uname -s)" in
    MINGW64*)
-    echo "is wget command being executed"
-    wget -O tf.zip "https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_windows_amd64.zip"
+    curl -Uri "https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_windows_amd64.zip" -OutFile "./tf.zip"
     FILE_NAME=$(unzip -Z -1 tf.zip)
      ;;
    *)
-    wget -O tf.zip "https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_amd64.zip"
+    wget -O ./tf.zip "https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_linux_amd64.zip"
     FILE_NAME=$(unzip -Z -1 tf.zip)
      ;;
 esac
