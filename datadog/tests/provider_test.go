@@ -17,6 +17,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
@@ -81,6 +83,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_top_list_test":                   "dashboards",
 	"tests/resource_datadog_dashboard_trace_service_test":              "dashboards",
 	"tests/resource_datadog_downtime_test":                             "downtimes",
+	"tests/resource_datadog_dashboard_geomap_test":                     "dashboards",
 	"tests/resource_datadog_integration_aws_lambda_arn_test":           "integration-aws",
 	"tests/resource_datadog_integration_aws_log_collection_test":       "integration-aws",
 	"tests/resource_datadog_integration_aws_tag_filter_test":           "integration-aws",
