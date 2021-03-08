@@ -32,7 +32,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	"github.com/jonboulle/clockwork"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
 	ddtesting "gopkg.in/DataDog/dd-trace-go.v1/contrib/testing"
@@ -451,7 +450,6 @@ func buildDatadogClientV2(httpClient *http.Client) *datadogV2.APIClient {
 
 func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock clockwork.FakeClock) schema.ConfigureContextFunc {
 	return func(_ context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-		var diags diag.Diagnostics
 		communityClient := datadogCommunity.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
 		if apiURL := d.Get("api_url").(string); apiURL != "" {
 			communityClient.SetBaseUrl(apiURL)
@@ -470,8 +468,7 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 
 		ctx, err := buildContext(ctx, d.Get("api_key").(string), d.Get("app_key").(string), d.Get("api_url").(string))
 		if err != nil {
-			diags = append(diags, diag.Errorf("unexpected: %s", err)...)
-			return nil, diags
+			return nil, diag.FromErr(err)
 		}
 
 		return &datadog.ProviderConfiguration{

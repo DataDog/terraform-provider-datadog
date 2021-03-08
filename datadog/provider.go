@@ -140,14 +140,12 @@ type ProviderConfiguration struct {
 }
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	var diags diag.Diagnostics
 	apiKey := d.Get("api_key").(string)
 	appKey := d.Get("app_key").(string)
 	validate := d.Get("validate").(bool)
 
 	if validate && (apiKey == "" || appKey == "") {
-		diags = append(diags, diag.Errorf("api_key and app_key must be set unless validate = false")...)
-		return nil, diags
+		return nil, diag.FromErr(errors.New("api_key and app_key must be set unless validate = false"))
 	}
 
 	// Initialize the community client
@@ -173,13 +171,11 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		ok, err := communityClient.Validate()
 		if err != nil {
 			log.Printf("[ERROR] Datadog Client validation error: %v", err)
-			diags = append(diags, diag.Errorf("[ERROR] Datadog Client validation error: %v", err)...)
-			return nil, diags
+			return nil, diag.FromErr(err)
 		} else if !ok {
 			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
 			log.Printf("[ERROR] Datadog Client validation error: %v", err)
-			diags = append(diags, diag.Errorf("%v", err)...)
-			return nil, diags
+			return nil, diag.FromErr(err)
 		}
 	} else {
 		log.Println("[INFO] Skipping key validation (validate = false)")
@@ -216,12 +212,10 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
-			diags = append(diags, diag.Errorf(`invalid API URL : %v`, parseErr)...)
-			return nil, diags
+			return nil, diag.Errorf(`invalid API URL : %v`, parseErr)
 		}
 		if parsedAPIURL.Host == "" || parsedAPIURL.Scheme == "" {
-			diags = append(diags, diag.Errorf(`missing protocol or host : %v`, apiURL)...)
-			return nil, diags
+			return nil, diag.Errorf(`missing protocol or host : %v`, apiURL)
 		}
 		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
 		authV1 = context.WithValue(authV1, datadogV1.ContextServerIndex, 1)
@@ -270,12 +264,10 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
-			diags = append(diags, diag.Errorf(`invalid API URL : %v`, parseErr)...)
-			return nil, diags
+			return nil, diag.Errorf(`invalid API URL : %v`, parseErr)
 		}
 		if parsedAPIURL.Host == "" || parsedAPIURL.Scheme == "" {
-			diags = append(diags, diag.Errorf(`missing protocol or host : %v`, apiURL)...)
-			return nil, diags
+			return nil, diag.Errorf(`missing protocol or host : %v`, apiURL)
 		}
 		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
 		authV2 = context.WithValue(authV2, datadogV2.ContextServerIndex, 1)
