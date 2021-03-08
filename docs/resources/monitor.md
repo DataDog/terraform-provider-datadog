@@ -87,8 +87,6 @@ We highly recommend you set this to `false` for sparse metrics, otherwise some e
 - **restricted_roles** (Set of String)
 - **silenced** (Map of Number, Deprecated) Each scope will be muted until the given POSIX timestamp or forever if the value is `0`. Use `-1` if you want to unmute the scope. Deprecated: the silenced parameter is being deprecated in favor of the downtime resource. This will be removed in the next major version of the Terraform Provider. **Deprecated.** Use the Downtime resource instead.
 - **tags** (Set of String) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
-- **threshold_windows** (Map of String, Deprecated) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. Can only be used for, and are required for, anomaly monitors. **Deprecated.** Define `monitor_threshold_windows` list with one element instead.
-- **thresholds** (Map of String, Deprecated) Alert thresholds of the monitor. **Deprecated.** Define `monitor_thresholds` list with one element instead.
 - **timeout_h** (Number) The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state.
 - **validate** (Boolean) If set to `false`, skip the validation call done during plan.
 
