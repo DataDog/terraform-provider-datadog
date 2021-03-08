@@ -44,7 +44,7 @@ func dataSourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) er
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	return resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+	return resource.Retry(d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
 		dashResponse, httpresp, err := datadogClientV1.DashboardsApi.ListDashboards(authV1).Execute()
 		if err != nil {
 			if httpresp != nil && httpresp.StatusCode == 504 {
