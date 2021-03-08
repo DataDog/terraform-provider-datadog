@@ -4,6 +4,8 @@
 VERSION=${TF_VERSION:?TF_VERSION must be provided.}
 FILE_NAME=''
 
+echo "OS is $(uname -s)"
+
 case "$(uname -s)" in
    MINGW64*)
     wget -O tf.zip https://releases.hashicorp.com/terraform/${VERSION}/terraform_${VERSION}_windows_amd64.zip

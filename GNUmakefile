@@ -78,6 +78,9 @@ license-check:
 tools:
 	go generate -tags tools tools/tools.go
 
+get-terraform-binary:
+	@sh -c "'$(CURDIR)/scripts/get-terraform-binary.sh'"
+
 docs: tools
 	@sh -c "'$(CURDIR)/scripts/generate-docs.sh'"
 
