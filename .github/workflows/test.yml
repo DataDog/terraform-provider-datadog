@@ -36,25 +36,25 @@ jobs:
               run: |
                   git config --global core.autocrlf false
                   git config --global core.eol lf
-            - name: Install Go
-              uses: actions/setup-go@v2
-              with:
-                  go-version: 1.15
-            - name: Checkout code
-              uses: actions/checkout@v2
-            - name: Vet
-              run: make vet
-            - name: License Check
-              run: make license-check
+#            - name: Install Go
+#              uses: actions/setup-go@v2
+#              with:
+#                  go-version: 1.15
+#            - name: Checkout code
+#              uses: actions/checkout@v2
+#            - name: Vet
+#              run: make vet
+#            - name: License Check
+#              run: make license-check
             - name: Get terraform binary
               run: make get-terraform-binary
               env:
                   TF_VERSION: ${{ matrix.terraform }}
             - name: Check env
               run: echo "This is the env var ${TF_ACC_TERRAFORM_PATH}"
-            - name: Test
-              run: make testall
-              env:
-                  RECORD: false
-            - name: Check Docs Are Up To Date
-              run: make check-docs
+#            - name: Test
+#              run: make testall
+#              env:
+#                  RECORD: false
+#            - name: Check Docs Are Up To Date
+#              run: make check-docs
