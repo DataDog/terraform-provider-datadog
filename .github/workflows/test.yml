@@ -56,7 +56,7 @@ jobs:
               run: echo "TF_ACC_TERRAFORM_PATH=$(which terraform)" >> $GITHUB_ENV
             - name: Set TF_ACC_TERRAFORM_PATH env var on non-windows platform
               if: ${{ matrix.platform == 'windows-latest' }}
-              run: echo "TF_ACC_TERRAFORM_PATH=$((Get-Command terraform)).Path" >> $GITHUB_ENV
+              run: echo ("TF_ACC_TERRAFORM_PATH=" + (Get-Command terraform).Path) >> $env:GITHUB_ENV
             - name: Check if env var is set and tf version
               run: "echo env set: $(env:TF_ACC_TERRAFORM_PATH) tf version is: $(terraform -v)"
 #            - name: Test
