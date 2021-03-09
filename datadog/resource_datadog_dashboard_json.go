@@ -35,7 +35,7 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 					res, _ := structure.FlattenJsonToString(attrMap)
 					return res
 				},
-				Description: "The JSON or YAML formatted definition of the Dashboard.",
+				Description: "The JSON formatted definition of the Dashboard.",
 			},
 			"url": {
 				Type:        schema.TypeString,

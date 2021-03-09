@@ -2,7 +2,6 @@ package utils
 
 import (
 	"context"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -24,13 +23,10 @@ func SendRequest(ctx context.Context, client *datadogV1.APIClient, method, path 
 
 	var bodyResByte []byte
 	bodyResByte, err = ioutil.ReadAll(httpRes.Body)
+	defer httpRes.Body.Close()
 	if err != nil {
-		if err == io.EOF {
-			// Handle empty body
-		}
 		return nil, httpRes, err
 	}
-	_ = httpRes.Body.Close()
 
 	if httpRes.StatusCode >= 300 {
 		newErr := CustomRequestAPIError{

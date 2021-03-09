@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 )
 
-func TestAccDatadogDashboardJSON_BasicTimeboard(t *testing.T) {
+func TestAccDatadogDashboardJSONBasicTimeboard(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -40,7 +40,7 @@ func TestAccDatadogDashboardJSON_BasicTimeboard(t *testing.T) {
 	})
 }
 
-func TestAccDatadogDashboardJSON_BasicScreenboard(t *testing.T) {
+func TestAccDatadogDashboardJSONBasicScreenboard(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -72,7 +72,7 @@ func TestAccDatadogDashboardJSON_BasicScreenboard(t *testing.T) {
 	})
 }
 
-func TestAccDatadogDashboardJSON_import(t *testing.T) {
+func TestAccDatadogDashboardJSONImport(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueID := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
