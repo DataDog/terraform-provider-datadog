@@ -51,8 +51,12 @@ jobs:
               with:
                   terraform_version: ${{ matrix.terraform_version }}
                   terraform_wrapper: false
-            - name: Set TF_ACC_TERRAFORM_PATH env var
-              run: echo "TF_ACC_TERRAFORM_PATH=$(which terraform)" >> $GITHUB_ENV
+            - name: Set TF_ACC_TERRAFORM_PATH env var on windows platform
+              if: ${{ matrix.platform == 'ubuntu-latest' }}
+              run: echo "TF_ACC_TERRAFORM_PATH=$(where terraform)" >> $GITHUB_ENV
+            - name: Set TF_ACC_TERRAFORM_PATH env var on non-windows platform
+              if: ${{ matrix.platform != 'ubuntu-latest' }}
+              run: echo "TF_ACC_TERRAFORM_PATH=$(where.exe terraform)" >> $GITHUB_ENV
             - name: Check if env var is set and tf version
               run: "echo env set: $TF_ACC_TERRAFORM_PATH tf version is: $(terraform -v)"
 #            - name: Test
