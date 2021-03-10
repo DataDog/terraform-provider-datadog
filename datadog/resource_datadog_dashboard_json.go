@@ -14,6 +14,7 @@ const path = "/api/v1/dashboard"
 
 func resourceDatadogDashboardJSON() *schema.Resource {
 	return &schema.Resource{
+		Description: "Provides a Datadog dashboard JSON resource. This can be used to create and manage Datadog dashboards using the JSON definition.",
 		Create: resourceDatadogDashboardJSONCreate,
 		Read:   resourceDatadogDashboardJSONRead,
 		Update: resourceDatadogDashboardJSONUpdate,
