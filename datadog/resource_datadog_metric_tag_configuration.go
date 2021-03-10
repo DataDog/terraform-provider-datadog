@@ -7,6 +7,7 @@ import (
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
@@ -41,7 +42,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			return nil
 		},
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogMetricTagConfigurationImport,
+			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -52,13 +53,13 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				Required:    true,
 				ValidateFunc: func(val interface{}, k string) (warns []string, errs []error) {
 					v := val.(string)
-					re := regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\\.\\_]*$`)
-					if len(v) < 1 || len(v) > 200 {
-						errs = append(errs, fmt.Errorf("expected metric name length of %s to be in the range (%d - %d), got %s", k, 1, 200, v))
-					}
-					if !re.MatchString(v) {
-						errs = append(errs, fmt.Errorf("metric name not allowed"))
-					}
+					regExpWarns, regExpErrs := validation.StringMatch(regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\\.\\_]*$`), "metric name must be valid")(v, k)
+					lenWarns, lenErrs := validation.StringLenBetween(1, 200)(v, k)
+					warns = append(warns, regExpWarns...)
+					warns = append(warns, lenWarns...)
+					errs = append(errs, regExpErrs...)
+					errs = append(errs, lenErrs...)
+
 					return
 				},
 			},
@@ -76,16 +77,17 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 					Type: schema.TypeString,
 					ValidateFunc: func(val interface{}, k string) (warns []string, errs []error) {
 						v := val.(string)
-						re := regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\\.\\-\\_:\\/]*$`)
-						if len(v) < 1 || len(v) > 200 {
-							errs = append(errs, fmt.Errorf("expected tag length of %s to be in the range (%d - %d), got %s", k, 1, 200, v))
-						}
+						regExpWarns, regExpErrs := validation.StringMatch(regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\.\-\_:\/]*$`), "tags must be valid")(v, k)
+						lenWarns, lenErrs := validation.StringLenBetween(1, 200)(v, k)
+						warns = append(warns, regExpWarns...)
+						warns = append(warns, lenWarns...)
+						errs = append(errs, regExpErrs...)
+						errs = append(errs, lenErrs...)
+
 						if strings.HasSuffix(v, ":") {
 							errs = append(errs, fmt.Errorf("tag ends in : which is not allowed"))
 						}
-						if !re.MatchString(v) {
-							errs = append(errs, fmt.Errorf("tag not allowed"))
-						}
+
 						return
 					},
 				},
@@ -106,7 +108,7 @@ func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.Metr
 
 	attributes := datadogV2.NewMetricTagConfigurationCreateAttributesWithDefaults()
 	tags := d.Get("tags").(*schema.Set).List()
-	var stringTags []string
+	stringTags := []string{}
 	for _, tag := range tags {
 		stringTags = append(stringTags, tag.(string))
 	}
@@ -143,7 +145,7 @@ func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existingMe
 
 	attributes := datadogV2.NewMetricTagConfigurationUpdateAttributesWithDefaults()
 	tags := d.Get("tags").(*schema.Set).List()
-	var stringTags []string
+	stringTags := []string{}
 	for _, tag := range tags {
 		stringTags = append(stringTags, tag.(string))
 	}
@@ -179,21 +181,6 @@ func resourceDatadogMetricTagConfigurationCreate(d *schema.ResourceData, meta in
 	ddObject.SetData(*resultMetricTagConfigurationData)
 	metricName := d.Get("metric_name").(string)
 
-	// check if the tag configuration already exists, if so return an error
-	_, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName).Execute()
-	if err != nil || httpresp == nil {
-		if httpresp != nil && httpresp.StatusCode != 404 {
-			return utils.TranslateClientError(err, "could not determine if metric already exists")
-		}
-		if httpresp == nil {
-			return fmt.Errorf("error creating MetricTagConfiguration: could not determine if metric already exists")
-		}
-		// if neither of these cases hit is it ok because the api will return 404 when we can create a tag-configuration
-	}
-	if httpresp != nil && httpresp.StatusCode == 200 {
-		return fmt.Errorf("error creating MetricTagConfiguration: a tag configuration already exists for metric, import it first")
-	}
-
 	response, _, err := datadogClient.MetricsApi.CreateTagConfiguration(auth, metricName).Body(*ddObject).Execute()
 	if err != nil {
 		return utils.TranslateClientError(err, "error creating MetricTagConfiguration")
@@ -215,7 +202,11 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 				}
 			}
 		}
-		if err := d.Set("tags", attributes.GetTags()); err != nil {
+		tags := attributes.GetTags()
+		if tags == nil {
+			tags = []string{}
+		}
+		if err := d.Set("tags", tags); err != nil {
 			return err
 		}
 	}
@@ -238,7 +229,11 @@ func resourceDatadogMetricTagConfigurationRead(d *schema.ResourceData, meta inte
 
 	metricName := d.Id()
 	metricTagConfigurationResponse, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName).Execute()
-	if err != nil || httpresp == nil {
+	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		if err != nil {
 			return utils.TranslateClientError(err, "metric tag configuration not found")
 		}
@@ -301,11 +296,4 @@ func resourceDatadogMetricTagConfigurationDelete(d *schema.ResourceData, meta in
 	}
 
 	return nil
-}
-
-func resourceDatadogMetricTagConfigurationImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogMetricTagConfigurationRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }

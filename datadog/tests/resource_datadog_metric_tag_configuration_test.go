@@ -22,7 +22,7 @@ func TestAccDatadogMetricTagConfiguration_import(t *testing.T) {
 	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
@@ -40,7 +40,7 @@ func TestAccDatadogMetricTagConfiguration_import(t *testing.T) {
 				ImportStateId:     resourceName + "123",
 				ImportState:       true,
 				ImportStateVerify: true,
-				ExpectError:       regexp.MustCompile("metric tag configuration not found*"),
+				ExpectError:       regexp.MustCompile("Cannot import non-existent remote object*"),
 			},
 		},
 	})
@@ -51,7 +51,7 @@ func TestAccDatadogMetricTagConfiguration_Basic(t *testing.T) {
 	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
@@ -97,7 +97,7 @@ func TestAccDatadogMetricTagConfiguration_Error(t *testing.T) {
 	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
 		CheckDestroy: testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
