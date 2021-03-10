@@ -5,7 +5,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,6 +16,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
@@ -81,6 +82,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_trace_service_test":              "dashboards",
 	"tests/resource_datadog_dashboard_json_test":                       "dashboards-json",
 	"tests/resource_datadog_downtime_test":                             "downtimes",
+	"tests/resource_datadog_dashboard_geomap_test":                     "dashboards",
 	"tests/resource_datadog_integration_aws_lambda_arn_test":           "integration-aws",
 	"tests/resource_datadog_integration_aws_log_collection_test":       "integration-aws",
 	"tests/resource_datadog_integration_aws_tag_filter_test":           "integration-aws",

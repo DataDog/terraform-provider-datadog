@@ -374,10 +374,11 @@ func updateDowntimeState(d *schema.ResourceData, dt *datadogV1.Downtime) error {
 	if err := d.Set("message", dt.GetMessage()); err != nil {
 		return err
 	}
-	if err := d.Set("monitor_id", dt.GetMonitorId()); err != nil {
-		return err
+	if v, ok := dt.GetMonitorIdOk(); ok && v != nil {
+		if err := d.Set("monitor_id", v); err != nil {
+			return err
+		}
 	}
-
 	if err := d.Set("timezone", dt.GetTimezone()); err != nil {
 		return err
 	}

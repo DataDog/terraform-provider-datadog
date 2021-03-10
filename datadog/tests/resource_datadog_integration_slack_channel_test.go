@@ -33,7 +33,7 @@ func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogIntegrationSlackChannelConfig_Create(uniqueChannelAccountName),
+				Config: testAccCheckDatadogIntegrationSlackChannelConfigCreate(uniqueChannelAccountName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationSlackChannelExists(accProvider, "datadog_integration_slack_channel.slack_channel"),
 					resource.TestCheckResourceAttr(
@@ -49,7 +49,7 @@ func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogIntegrationSlackChannelConfig_Update(uniqueChannelAccountName),
+				Config: testAccCheckDatadogIntegrationSlackChannelConfigUpdate(uniqueChannelAccountName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationSlackChannelExists(accProvider, "datadog_integration_slack_channel.slack_channel"),
 					resource.TestCheckResourceAttr(
@@ -68,7 +68,7 @@ func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogIntegrationSlackChannelConfig_Create(uniq string) string {
+func testAccCheckDatadogIntegrationSlackChannelConfigCreate(uniq string) string {
 	return fmt.Sprintf(`
        resource "datadog_integration_slack_channel" "slack_channel" {
 			display {
@@ -83,7 +83,7 @@ func testAccCheckDatadogIntegrationSlackChannelConfig_Create(uniq string) string
    `, uniq)
 }
 
-func testAccCheckDatadogIntegrationSlackChannelConfig_Update(uniq string) string {
+func testAccCheckDatadogIntegrationSlackChannelConfigUpdate(uniq string) string {
 	return fmt.Sprintf(`
        resource "datadog_integration_slack_channel" "slack_channel" {
 			display {

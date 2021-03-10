@@ -103,7 +103,7 @@ func TenantAndClientFromID(id string) (string, string, error) {
 	return result[0], result[1], nil
 }
 
-// slack utils
+// AccountNameAndChannelNameFromID returns slack account and channel from an ID
 func AccountNameAndChannelNameFromID(id string) (string, string, error) {
 	result := strings.SplitN(id, ":", 2)
 	if len(result) != 2 {

@@ -126,13 +126,13 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"type": {
-							Description:  "Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation)).",
+							Description:  "Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
 							Type:         schema.TypeString,
 							ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
 							Required:     true,
 						},
 						"operator": {
-							Description:  "Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation)).",
+							Description:  "Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
 							Type:         schema.TypeString,
 							Required:     true,
 							ValidateFunc: validateSyntheticsAssertionOperator,
@@ -143,7 +143,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 							Optional:    true,
 						},
 						"target": {
-							Description: "Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#validation) for details.",
+							Description: "Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.",
 							Type:        schema.TypeString,
 							Optional:    true,
 						},
