@@ -3,7 +3,9 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -132,7 +134,28 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 	}
 	d.SetId(*dashboard.Id)
 
-	return updateDashboardState(d, &dashboard)
+	var getDashboard datadogV1.Dashboard
+	var httpResponse *http.Response
+	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		getDashboard, httpResponse, err = datadogClientV1.DashboardsApi.GetDashboard(authV1, *dashboard.Id).Execute()
+		if err != nil {
+			if httpResponse != nil && httpResponse.StatusCode == 404 {
+				return resource.RetryableError(fmt.Errorf("dashboard not created yet"))
+			}
+
+			return resource.NonRetryableError(err)
+		}
+
+		// We only log the error, as failing to update the list shouldn't fail dashboard creation
+		updateDashboardLists(d, providerConf, *dashboard.Id)
+
+		return nil
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	return updateDashboardState(d, &getDashboard)
 }
 
 func resourceDatadogDashboardUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -191,46 +214,46 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 
 func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard) diag.Diagnostics {
 	if err := d.Set("title", dashboard.GetTitle()); err != nil {
-		diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 	if err := d.Set("layout_type", dashboard.GetLayoutType()); err != nil {
-		diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 	if err := d.Set("description", dashboard.GetDescription()); err != nil {
-		diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 	if err := d.Set("is_read_only", dashboard.GetIsReadOnly()); err != nil {
-		diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 	if err := d.Set("url", dashboard.GetUrl()); err != nil {
-		diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 
 	// Set widgets
 	terraformWidgets, err := buildTerraformWidgets(&dashboard.Widgets, d)
 	if err != nil {
-		diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 	if err := d.Set("widget", terraformWidgets); err != nil {
-		diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 
 	// Set template variables
 	templateVariables := buildTerraformTemplateVariables(&dashboard.TemplateVariables)
 	if err := d.Set("template_variable", templateVariables); err != nil {
-		diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 
 	// Set template variable presets
 	templateVariablePresets := buildTerraformTemplateVariablePresets(&dashboard.TemplateVariablePresets)
 	if err := d.Set("template_variable_preset", templateVariablePresets); err != nil {
-		diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 
 	// Set notify list
 	notifyList := buildTerraformNotifyList(&dashboard.NotifyList)
 	if err := d.Set("notify_list", notifyList); err != nil {
-		diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 
 	return nil

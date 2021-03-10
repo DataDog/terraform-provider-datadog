@@ -464,7 +464,7 @@ func resourceDatadogDowntimeDelete(ctx context.Context, d *schema.ResourceData, 
 
 	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
-		diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 
 	if _, err = datadogClientV1.DowntimesApi.CancelDowntime(authV1, id).Execute(); err != nil {

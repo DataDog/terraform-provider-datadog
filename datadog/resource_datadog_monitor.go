@@ -482,7 +482,6 @@ func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, m
 	authV1 := providerConf.AuthV1
 
 	m, _ := buildMonitorStruct(d)
-	time.Sleep(3 * time.Second)
 	mCreated, _, err := datadogClientV1.MonitorsApi.CreateMonitor(authV1).Body(*m).Execute()
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error creating monitor")
@@ -703,7 +702,7 @@ func resourceDatadogMonitorUpdate(ctx context.Context, d *schema.ResourceData, m
 		return utils.TranslateClientErrorDiag(err, "error updating monitor")
 	}
 
-	if diagErr := updateMonitorState(d, meta, &monitorResp); err != nil {
+	if diagErr := updateMonitorState(d, meta, &monitorResp); diagErr != nil {
 		return diagErr
 	}
 

@@ -183,7 +183,7 @@ func resourceDatadogServiceLevelObjectiveCustomizeDiff(ctx context.Context, diff
 		for _, v := range attr.(*schema.Set).List() {
 			// Check that each monitor being added to the SLO exists
 			if _, _, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, int64(v.(int))).Execute(); err != nil {
-				return fmt.Errorf("error finding monitor to add to SLO: %s", err.Error())
+				return utils.TranslateClientError(err, "error finding monitor to add to SLO")
 			}
 		}
 	}
