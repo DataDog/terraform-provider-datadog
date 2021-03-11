@@ -9,9 +9,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	communityClient "github.com/zorkian/go-datadog-api"
 )
 
@@ -22,9 +22,9 @@ func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogIntegrationSlackChannelDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogIntegrationSlackChannelDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				// Workaround to ensure we create the slack integration before running the tests.
@@ -76,9 +76,9 @@ func TestAccDatadogIntegrationSlackChannel_Import(t *testing.T) {
 	uniqueChannelAccountName := reg.ReplaceAllString(uniqueEntityName(ctx, t), "")
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogIntegrationSlackChannelDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogIntegrationSlackChannelDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				// Workaround to ensure we create the slack integration before running the tests.
@@ -136,10 +136,10 @@ func emptyLogsArchiveConfig() string {
    `)
 }
 
-func testAccCheckDatadogIntegrationSlackChannelExists(accProvider *schema.Provider, resourceName string) resource.TestCheckFunc {
+func testAccCheckDatadogIntegrationSlackChannelExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		meta := accProvider.Meta()
-		providerConf := meta.(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV1
 		auth := providerConf.AuthV1
 
@@ -155,10 +155,10 @@ func testAccCheckDatadogIntegrationSlackChannelExists(accProvider *schema.Provid
 	}
 }
 
-func testAccCheckDatadogIntegrationSlackChannelDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func testAccCheckDatadogIntegrationSlackChannelDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		meta := accProvider.Meta()
-		providerConf := meta.(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV1
 		auth := providerConf.AuthV1
 
@@ -187,9 +187,10 @@ func testAccCheckDatadogIntegrationSlackChannelDestroy(accProvider *schema.Provi
 	}
 }
 
-func createSlackIntegration(accProvider *schema.Provider) resource.TestCheckFunc {
+func createSlackIntegration(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		client := providerConf.CommunityClient
 		slackIntegration := communityClient.IntegrationSlackRequest{
 			ServiceHooks: []communityClient.ServiceHookSlackRequest{

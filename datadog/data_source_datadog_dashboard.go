@@ -1,20 +1,22 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func dataSourceDatadogDashboard() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about an existing dashboard, for use in other resources. In particular, it can be used in a monitor message to link to a specific dashboard.",
-		Read:        dataSourceDatadogDashboardRead,
+		ReadContext: dataSourceDatadogDashboardRead,
 
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -38,13 +40,12 @@ func dataSourceDatadogDashboard() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) error {
-
+func dataSourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	return resource.Retry(d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
+	err := resource.RetryContext(ctx, d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
 		dashResponse, httpresp, err := datadogClientV1.DashboardsApi.ListDashboards(authV1)
 		if err != nil {
 			if httpresp != nil && (httpresp.StatusCode == 504 || httpresp.StatusCode == 502) {
@@ -74,4 +75,9 @@ func dataSourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) er
 
 		return nil
 	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	return nil
 }

@@ -10,21 +10,20 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func TestAccDatadogRole_CreateUpdate(t *testing.T) {
-	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	rolename := strings.ToLower(uniqueEntityName(ctx, t))
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogRoleDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogRoleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogRoleConfig(rolename),
@@ -53,12 +52,12 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 					testCheckRolePermission(
 						"datadog_role.foo",
 						"data.datadog_permissions.foo",
-						"permissions.standard",
+						"permissions.logs_read_index_data",
 					),
 					testCheckRolePermission(
 						"datadog_role.foo",
 						"data.datadog_permissions.foo",
-						"permissions.logs_read_index_data",
+						"permissions.standard",
 					),
 				),
 			},
@@ -73,13 +72,12 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 	})
 }
 func TestAccDatadogRole_InvalidPerm(t *testing.T) {
-	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	rolename := strings.ToLower(uniqueEntityName(ctx, t))
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: accProviders,
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogRoleConfigRestrictedPerm(rolename),
@@ -93,18 +91,17 @@ func testCheckRolePermission(rolename string, permissionsSource string, permissi
 	return func(s *terraform.State) error {
 		rootModule := s.RootModule()
 		permissionID := rootModule.Resources[permissionsSource].Primary.Attributes[permissionName]
-		perm := map[string]interface{}{
-			"id": permissionID,
-		}
-		permissionIDHash := schema.HashResource(datadog.GetRolePermissionSchema())(perm)
 
-		return resource.TestCheckResourceAttr(rolename, fmt.Sprintf("permission.%d.id", permissionIDHash), permissionID)(s)
+		return resource.TestCheckTypeSetElemNestedAttrs(rolename, "permission.*", map[string]string{
+			"id": permissionID,
+		})(s)
 	}
 }
 
-func testAccCheckDatadogRoleDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func testAccCheckDatadogRoleDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		client := providerConf.DatadogClientV2
 		auth := providerConf.AuthV2
 
@@ -127,9 +124,10 @@ func testAccCheckDatadogRoleDestroy(accProvider *schema.Provider) func(*terrafor
 	}
 }
 
-func testAccCheckDatadogRoleExists(accProvider *schema.Provider, rolename string) resource.TestCheckFunc {
+func testAccCheckDatadogRoleExists(accProvider func() (*schema.Provider, error), rolename string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		client := providerConf.DatadogClientV2
 		auth := providerConf.AuthV2
 

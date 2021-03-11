@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strconv"
@@ -10,19 +11,20 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogServiceLevelObjective() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog service level objective resource. This can be used to create and manage Datadog service level objectives.",
-		Create:        resourceDatadogServiceLevelObjectiveCreate,
-		Read:          resourceDatadogServiceLevelObjectiveRead,
-		Update:        resourceDatadogServiceLevelObjectiveUpdate,
-		Delete:        resourceDatadogServiceLevelObjectiveDelete,
+		CreateContext: resourceDatadogServiceLevelObjectiveCreate,
+		ReadContext:   resourceDatadogServiceLevelObjectiveRead,
+		UpdateContext: resourceDatadogServiceLevelObjectiveUpdate,
+		DeleteContext: resourceDatadogServiceLevelObjectiveDelete,
 		CustomizeDiff: resourceDatadogServiceLevelObjectiveCustomizeDiff,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogServiceLevelObjectiveImport,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -136,15 +138,6 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Description:   "A static set of monitor IDs to use as part of the SLO",
 				Elem:          &schema.Schema{Type: schema.TypeInt, MinItems: 1},
 			},
-			// NOTE: This feature was introduced but it never worked and then it was removed.
-			// We didn't trigger a major release since it never worked. However, this may be introduced later again.
-			// Keeping this here for now and we removed the related code.
-			"monitor_search": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Removed:  "Feature is not yet supported",
-				Computed: true,
-			},
 			"groups": {
 				Type:          schema.TypeSet,
 				Optional:      true,
@@ -170,7 +163,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 // ValidateServiceLevelObjectiveTypeString is a ValidateFunc that ensures the SLO is of one of the supported types
 
 // Use CustomizeDiff to do monitor validation
-func resourceDatadogServiceLevelObjectiveCustomizeDiff(diff *schema.ResourceDiff, meta interface{}) error {
+func resourceDatadogServiceLevelObjectiveCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
 		// Explicitly skip validation
 		log.Printf("[DEBUG] Validate is %v, skipping validation", validate.(bool))
@@ -331,7 +324,7 @@ func floatOk(val interface{}) (float64, bool) {
 	return 0, false
 }
 
-func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogServiceLevelObjectiveCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -339,7 +332,7 @@ func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta int
 	_, slor := buildServiceLevelObjectiveStructs(d)
 	sloResp, _, err := datadogClientV1.ServiceLevelObjectivesApi.CreateSLO(authV1, *slor)
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating service level objective")
+		return utils.TranslateClientErrorDiag(err, "error creating service level objective")
 	}
 
 	slo := &sloResp.GetData()[0]
@@ -348,7 +341,7 @@ func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta int
 	return updateSLOState(d, slo)
 }
 
-func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -359,13 +352,13 @@ func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta inter
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error getting service level objective")
+		return utils.TranslateClientErrorDiag(err, "error getting service level objective")
 	}
 
 	return updateSLOStateFromRead(d, sloResp.Data)
 }
 
-func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective) error {
+func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective) diag.Diagnostics {
 	thresholds := make([]map[string]interface{}, 0)
 	for _, threshold := range slo.GetThresholds() {
 		t := map[string]interface{}{
@@ -390,30 +383,30 @@ func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective
 	}
 
 	if err := d.Set("name", slo.GetName()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("description", slo.GetDescription()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("type", slo.GetType()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("tags", tags); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("thresholds", thresholds); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	switch slo.GetType() {
 	case datadogV1.SLOTYPE_MONITOR:
 		// monitor type
 		if len(slo.GetMonitorIds()) > 0 {
 			if err := d.Set("monitor_ids", slo.GetMonitorIds()); err != nil {
-				return err
+				return diag.FromErr(err)
 			}
 		}
 		if err := d.Set("groups", slo.GetGroups()); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	default:
 		// metric type
@@ -422,14 +415,14 @@ func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective
 		query["numerator"] = q.GetNumerator()
 		query["denominator"] = q.GetDenominator()
 		if err := d.Set("query", []map[string]interface{}{query}); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 	return nil
 }
 
 // This duplicates updateSLOState for the SLOResponseData structure, which has mostly the same interface
-func updateSLOStateFromRead(d *schema.ResourceData, slo *datadogV1.SLOResponseData) error {
+func updateSLOStateFromRead(d *schema.ResourceData, slo *datadogV1.SLOResponseData) diag.Diagnostics {
 	thresholds := make([]map[string]interface{}, 0)
 	for _, threshold := range slo.GetThresholds() {
 		t := map[string]interface{}{
@@ -454,30 +447,30 @@ func updateSLOStateFromRead(d *schema.ResourceData, slo *datadogV1.SLOResponseDa
 	}
 
 	if err := d.Set("name", slo.GetName()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("description", slo.GetDescription()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("type", slo.GetType()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("tags", tags); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("thresholds", thresholds); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	switch slo.GetType() {
 	case datadogV1.SLOTYPE_MONITOR:
 		// monitor type
 		if len(slo.GetMonitorIds()) > 0 {
 			if err := d.Set("monitor_ids", slo.GetMonitorIds()); err != nil {
-				return err
+				return diag.FromErr(err)
 			}
 		}
 		if err := d.Set("groups", slo.GetGroups()); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	default:
 		// metric type
@@ -486,13 +479,13 @@ func updateSLOStateFromRead(d *schema.ResourceData, slo *datadogV1.SLOResponseDa
 		query["numerator"] = q.GetNumerator()
 		query["denominator"] = q.GetDenominator()
 		if err := d.Set("query", []map[string]interface{}{query}); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 	return nil
 }
 
-func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogServiceLevelObjectiveUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -500,13 +493,13 @@ func resourceDatadogServiceLevelObjectiveUpdate(d *schema.ResourceData, meta int
 
 	updatedSLO, _, err := datadogClientV1.ServiceLevelObjectivesApi.UpdateSLO(authV1, d.Id(), *slo)
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating service level objective")
+		return utils.TranslateClientErrorDiag(err, "error updating service level objective")
 	}
 
 	return updateSLOState(d, &updatedSLO.GetData()[0])
 }
 
-func resourceDatadogServiceLevelObjectiveDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogServiceLevelObjectiveDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -520,17 +513,10 @@ func resourceDatadogServiceLevelObjectiveDelete(d *schema.ResourceData, meta int
 		_, _, err = datadogClientV1.ServiceLevelObjectivesApi.DeleteSLO(authV1, d.Id())
 	}
 	if err != nil {
-		return utils.TranslateClientError(err, "error deleting service level objective")
+		return utils.TranslateClientErrorDiag(err, "error deleting service level objective")
 	}
 	return nil
 
-}
-
-func resourceDatadogServiceLevelObjectiveImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogServiceLevelObjectiveRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }
 
 // Ignore any diff that results from the mix of *_display string values from the

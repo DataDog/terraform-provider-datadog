@@ -1,25 +1,27 @@
 package datadog
 
 import (
+	"context"
 	"regexp"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog synthetics global variable resource. This can be used to create and manage Datadog synthetics global variables.",
-		Create:      resourceDatadogSyntheticsGlobalVariableCreate,
-		Read:        resourceDatadogSyntheticsGlobalVariableRead,
-		Update:      resourceDatadogSyntheticsGlobalVariableUpdate,
-		Delete:      resourceDatadogSyntheticsGlobalVariableDelete,
+		Description:   "Provides a Datadog synthetics global variable resource. This can be used to create and manage Datadog synthetics global variables.",
+		CreateContext: resourceDatadogSyntheticsGlobalVariableCreate,
+		ReadContext:   resourceDatadogSyntheticsGlobalVariableRead,
+		UpdateContext: resourceDatadogSyntheticsGlobalVariableUpdate,
+		DeleteContext: resourceDatadogSyntheticsGlobalVariableDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -101,7 +103,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 	}
 }
 
-func resourceDatadogSyntheticsGlobalVariableCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -110,7 +112,7 @@ func resourceDatadogSyntheticsGlobalVariableCreate(d *schema.ResourceData, meta 
 	createdSyntheticsGlobalVariable, _, err := datadogClientV1.SyntheticsApi.CreateGlobalVariable(authV1, *syntheticsGlobalVariable)
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
-		return utils.TranslateClientError(err, "error creating synthetics global variable")
+		return utils.TranslateClientErrorDiag(err, "error creating synthetics global variable")
 	}
 
 	// If the Create callback returns with or without an error without an ID set using SetId,
@@ -118,10 +120,10 @@ func resourceDatadogSyntheticsGlobalVariableCreate(d *schema.ResourceData, meta 
 	d.SetId(createdSyntheticsGlobalVariable.GetId())
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
-	return resourceDatadogSyntheticsGlobalVariableRead(d, meta)
+	return resourceDatadogSyntheticsGlobalVariableRead(ctx, d, meta)
 }
 
-func resourceDatadogSyntheticsGlobalVariableRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -134,13 +136,13 @@ func resourceDatadogSyntheticsGlobalVariableRead(d *schema.ResourceData, meta in
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error getting synthetics global variable")
+		return utils.TranslateClientErrorDiag(err, "error getting synthetics global variable")
 	}
 
 	return updateSyntheticsGlobalVariableLocalState(d, &syntheticsGlobalVariable)
 }
 
-func resourceDatadogSyntheticsGlobalVariableUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsGlobalVariableUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -148,21 +150,21 @@ func resourceDatadogSyntheticsGlobalVariableUpdate(d *schema.ResourceData, meta 
 	syntheticsGlobalVariable := buildSyntheticsGlobalVariableStruct(d)
 	if _, _, err := datadogClientV1.SyntheticsApi.EditGlobalVariable(authV1, d.Id(), *syntheticsGlobalVariable); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
-		utils.TranslateClientError(err, "error updating synthetics global variable")
+		utils.TranslateClientErrorDiag(err, "error updating synthetics global variable")
 	}
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
-	return resourceDatadogSyntheticsGlobalVariableRead(d, meta)
+	return resourceDatadogSyntheticsGlobalVariableRead(ctx, d, meta)
 }
 
-func resourceDatadogSyntheticsGlobalVariableDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsGlobalVariableDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
 	if _, err := datadogClientV1.SyntheticsApi.DeleteGlobalVariable(authV1, d.Id()); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
-		return utils.TranslateClientError(err, "error deleting synthetics global variable")
+		return utils.TranslateClientErrorDiag(err, "error deleting synthetics global variable")
 	}
 
 	// The resource is assumed to be destroyed, and all state is removed.
@@ -220,7 +222,7 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 	return syntheticsGlobalVariable
 }
 
-func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, syntheticsGlobalVariable *datadogV1.SyntheticsGlobalVariable) error {
+func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, syntheticsGlobalVariable *datadogV1.SyntheticsGlobalVariable) diag.Diagnostics {
 	d.Set("name", syntheticsGlobalVariable.GetName())
 	d.Set("description", syntheticsGlobalVariable.GetDescription())
 

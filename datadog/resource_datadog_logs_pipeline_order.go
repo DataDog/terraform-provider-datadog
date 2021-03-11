@@ -1,24 +1,25 @@
 package datadog
 
 import (
-	"fmt"
+	"context"
 	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogLogsPipelineOrder() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog Logs Pipeline API resource, which is used to manage Datadog log pipelines order.",
-		Create:      resourceDatadogLogsPipelineOrderCreate,
-		Update:      resourceDatadogLogsPipelineOrderUpdate,
-		Read:        resourceDatadogLogsPipelineOrderRead,
-		Delete:      resourceDatadogLogsPipelineOrderDelete,
+		Description:   "Provides a Datadog Logs Pipeline API resource, which is used to manage Datadog log pipelines order.",
+		CreateContext: resourceDatadogLogsPipelineOrderCreate,
+		UpdateContext: resourceDatadogLogsPipelineOrderUpdate,
+		ReadContext:   resourceDatadogLogsPipelineOrderRead,
+		DeleteContext: resourceDatadogLogsPipelineOrderDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -36,30 +37,30 @@ func resourceDatadogLogsPipelineOrder() *schema.Resource {
 	}
 }
 
-func resourceDatadogLogsPipelineOrderCreate(d *schema.ResourceData, meta interface{}) error {
-	return resourceDatadogLogsPipelineOrderUpdate(d, meta)
+func resourceDatadogLogsPipelineOrderCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return resourceDatadogLogsPipelineOrderUpdate(ctx, d, meta)
 }
 
-func updateLogsPipelineOrderState(d *schema.ResourceData, order *datadogV1.LogsPipelinesOrder) error {
+func updateLogsPipelineOrderState(d *schema.ResourceData, order *datadogV1.LogsPipelinesOrder) diag.Diagnostics {
 	if err := d.Set("pipelines", order.PipelineIds); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	return nil
 }
 
-func resourceDatadogLogsPipelineOrderRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsPipelineOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	order, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipelineOrder(authV1)
 	if err != nil {
-		return utils.TranslateClientError(err, "error getting logs pipeline order")
+		return utils.TranslateClientErrorDiag(err, "error getting logs pipeline order")
 	}
 
 	return updateLogsPipelineOrderState(d, &order)
 }
 
-func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsPipelineOrderUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var ddPipelineList datadogV1.LogsPipelinesOrder
 	tfList := d.Get("pipelines").([]interface{})
 	ddList := make([]string, len(tfList))
@@ -80,13 +81,13 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
 			ddPipelineOrder, _, getErr := datadogClientV1.LogsPipelinesApi.GetLogsPipelineOrder(authV1)
 			if getErr != nil {
-				return utils.TranslateClientError(err, "error getting logs pipeline order")
+				return utils.TranslateClientErrorDiag(err, "error getting logs pipeline order")
 			}
-			return fmt.Errorf("cannot map pipelines to existing ones\n existing pipelines: %s\n pipeline to be updated: %s",
+			return diag.Errorf("cannot map pipelines to existing ones\n existing pipelines: %s\n pipeline to be updated: %s",
 				ddPipelineOrder.PipelineIds,
 				ddList)
 		}
-		return utils.TranslateClientError(err, "error updating logs pipeline order")
+		return utils.TranslateClientErrorDiag(err, "error updating logs pipeline order")
 	}
 	d.SetId(tfID)
 	return updateLogsPipelineOrderState(d, &updatedOrder)
@@ -94,7 +95,7 @@ func resourceDatadogLogsPipelineOrderUpdate(d *schema.ResourceData, meta interfa
 
 // The deletion of pipeline order is not supported from config API.
 // This function simply delete the pipeline order resource from terraform state.
-func resourceDatadogLogsPipelineOrderDelete(_ *schema.ResourceData, _ interface{}) error {
+func resourceDatadogLogsPipelineOrderDelete(_ context.Context, _ *schema.ResourceData, _ interface{}) diag.Diagnostics {
 
 	return nil
 }

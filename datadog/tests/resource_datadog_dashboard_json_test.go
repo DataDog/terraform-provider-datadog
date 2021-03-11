@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestAccDatadogDashboardJSONBasicTimeboard(t *testing.T) {
@@ -16,8 +16,8 @@ func TestAccDatadogDashboardJSONBasicTimeboard(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: accProviders,
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
 		// Import checkDashboardDestroy() from Dashboard resource
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -56,8 +56,8 @@ func TestAccDatadogDashboardJSONBasicScreenboard(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: accProviders,
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
 		// Import checkDashboardDestroy() from Dashboard resource
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
@@ -88,8 +88,8 @@ func TestAccDatadogDashboardJSONImport(t *testing.T) {
 
 	t.Parallel()
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: accProviders,
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
 		// Use checkDashboardDestroy() from Dashboard resource
 		CheckDestroy: checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
