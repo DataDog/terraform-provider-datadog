@@ -6,6 +6,7 @@ on:
             - master
             - sdk-v2
 
+
 jobs:
     pre-commit:
         runs-on: ubuntu-latest
