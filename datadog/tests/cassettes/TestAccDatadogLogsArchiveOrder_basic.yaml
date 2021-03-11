@@ -13,18 +13,11 @@ interactions:
       Dd-Operation-Id:
       - UpdateLogsArchiveOrder
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "2607343722455863136"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2523099274281269858"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archive-order
     method: PUT
   response:
-    body: '{"errors":["Missing order for archive vXHibqofT8uOyfpF56WdBA"]}'
+    body: '{"errors":["Missing order for archive FDhaAaBtQ9yXG41RPzHFzQ"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -37,28 +30,25 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:43:55 GMT
+      - Mon, 08 Mar 2021 14:24:53 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:43:55 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "100"
+      - "300"
       X-Ratelimit-Period:
-      - "3600"
+      - "300"
       X-Ratelimit-Remaining:
-      - "91"
+      - "299"
       X-Ratelimit-Reset:
-      - "965"
+      - "7"
     status: 422 Unprocessable Entity
     code: 422
     duration: ""
@@ -71,18 +61,11 @@ interactions:
       Dd-Operation-Id:
       - GetLogsArchiveOrder
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "5401030352998534670"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2523099274281269858"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archive-order
     method: GET
   response:
-    body: '{"data":{"type":"archive_order","attributes":{"archive_ids":["vXHibqofT8uOyfpF56WdBA"]}}}'
+    body: '{"data":{"type":"archive_order","attributes":{"archive_ids":["FDhaAaBtQ9yXG41RPzHFzQ"]}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -93,12 +76,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:43:55 GMT
+      - Mon, 08 Mar 2021 14:24:53 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:43:55 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -106,9 +86,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - EZL7bEfcgNGbknKpx0YgUay5sRnB08o7ifIkIU7pH4DOkkWS5DRjfEr3ib9KggTa
+      - fIO2C4qGDheGHy4YbS+r3a3CXbh4cbRo7roILOimQyiHGjQdOat0cIpWCkupM1uX
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -116,9 +96,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4968"
+      - "4994"
       X-Ratelimit-Reset:
-      - "965"
+      - "2107"
     status: 200 OK
     code: 200
     duration: ""
@@ -131,18 +111,11 @@ interactions:
       Dd-Operation-Id:
       - GetLogsArchiveOrder
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "2798493625733960027"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2523099274281269858"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archive-order
     method: GET
   response:
-    body: '{"data":{"type":"archive_order","attributes":{"archive_ids":["vXHibqofT8uOyfpF56WdBA"]}}}'
+    body: '{"data":{"type":"archive_order","attributes":{"archive_ids":["FDhaAaBtQ9yXG41RPzHFzQ"]}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -153,12 +126,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:43:55 GMT
+      - Mon, 08 Mar 2021 14:24:53 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:43:55 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -166,9 +136,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - ilZ2Tz4sOtnH2tGRqlD9p6NDcucj4gVBdvczlxiOPhY/AWnWhycAWjVucOU5/NQA
+      - 25u1gDlL724DHllbjFT4BhOLorBTilh+aah2uWAUEjFC/+rjczJdiyWrV/HwLwe/
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -176,9 +146,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4967"
+      - "4993"
       X-Ratelimit-Reset:
-      - "965"
+      - "2107"
     status: 200 OK
     code: 200
     duration: ""
@@ -191,18 +161,11 @@ interactions:
       Dd-Operation-Id:
       - GetLogsArchiveOrder
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "2607138634144149913"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2523099274281269858"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archive-order
     method: GET
   response:
-    body: '{"data":{"type":"archive_order","attributes":{"archive_ids":["vXHibqofT8uOyfpF56WdBA"]}}}'
+    body: '{"data":{"type":"archive_order","attributes":{"archive_ids":["FDhaAaBtQ9yXG41RPzHFzQ"]}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -213,12 +176,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:43:55 GMT
+      - Mon, 08 Mar 2021 14:24:53 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:43:55 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -226,9 +186,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - WrTDvawKJxc/3XHcVO+oe9kLOi9bBLB0fyesfpZ4AlLEoPVyUvH7rJdlyTxrqyNg
+      - twvpGlmuom5y6A0pjGtXzTf554cmwJgTcCZ71fK4H/RDi+v5ehBK0zQiRcTJQG5C
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -236,9 +196,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4966"
+      - "4992"
       X-Ratelimit-Reset:
-      - "965"
+      - "2107"
     status: 200 OK
     code: 200
     duration: ""
@@ -251,18 +211,11 @@ interactions:
       Dd-Operation-Id:
       - GetLogsArchiveOrder
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "5589780136697398741"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2523099274281269858"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archive-order
     method: GET
   response:
-    body: '{"data":{"type":"archive_order","attributes":{"archive_ids":["vXHibqofT8uOyfpF56WdBA"]}}}'
+    body: '{"data":{"type":"archive_order","attributes":{"archive_ids":["FDhaAaBtQ9yXG41RPzHFzQ"]}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -273,12 +226,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:43:55 GMT
+      - Mon, 08 Mar 2021 14:24:54 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:43:55 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -286,9 +236,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - AqBVHmyy+L9zrCUEAQ2Jd2pwskksgC+7nOsWqbNjcjcM+9M/ChipUo2OR6Q8oPwE
+      - l4HFlaRP3QwYSqoGKhzbYfv7zgkK63HIRR7YkyVYZspq0lGjjTBwoK8V/alf+XYt
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -296,69 +246,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4965"
+      - "4991"
       X-Ratelimit-Reset:
-      - "965"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetLogsArchiveOrder
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "3812773701852957622"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2523099274281269858"
-    url: https://api.datadoghq.com/api/v2/logs/config/archive-order
-    method: GET
-  response:
-    body: '{"data":{"type":"archive_order","attributes":{"archive_ids":["vXHibqofT8uOyfpF56WdBA"]}}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 31 Dec 2020 14:43:56 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:43:55 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 60y8fjrf9Lhu8NRmYggZaUH1GQDnKp7ho4emCLNdZoXJeU4a0zvnmPIF2dQ+VP/K
-      X-Dd-Version:
-      - "35.3622023"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "5000"
-      X-Ratelimit-Period:
-      - "3600"
-      X-Ratelimit-Remaining:
-      - "4964"
-      X-Ratelimit-Reset:
-      - "964"
+      - "2106"
     status: 200 OK
     code: 200
     duration: ""

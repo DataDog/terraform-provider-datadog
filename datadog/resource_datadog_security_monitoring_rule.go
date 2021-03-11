@@ -1,22 +1,25 @@
 package datadog
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"context"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog Security Monitoring Rule API resource. This can be used to create and manage Datadog security monitoring rules. To change settings for a default rule use `datadog_security_default_rule` instead.",
-		Create:      resourceDatadogSecurityMonitoringRuleCreate,
-		Read:        resourceDatadogSecurityMonitoringRuleRead,
-		Update:      resourceDatadogSecurityMonitoringRuleUpdate,
-		Delete:      resourceDatadogSecurityMonitoringRuleDelete,
+		Description:   "Provides a Datadog Security Monitoring Rule API resource. This can be used to create and manage Datadog security monitoring rules. To change settings for a default rule use `datadog_security_default_rule` instead.",
+		CreateContext: resourceDatadogSecurityMonitoringRuleCreate,
+		ReadContext:   resourceDatadogSecurityMonitoringRuleRead,
+		UpdateContext: resourceDatadogSecurityMonitoringRuleUpdate,
+		DeleteContext: resourceDatadogSecurityMonitoringRuleDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: datadogSecurityMonitoringRuleSchema(),
@@ -161,18 +164,18 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 	}
 }
 
-func resourceDatadogSecurityMonitoringRuleCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSecurityMonitoringRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
 	ruleCreate, err := buildCreatePayload(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	response, _, err := datadogClientV2.SecurityMonitoringApi.CreateSecurityMonitoringRule(authV2).Body(ruleCreate).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating security monitoring rule")
+		return utils.TranslateClientErrorDiag(err, "error creating security monitoring rule")
 	}
 
 	d.SetId(response.GetId())
@@ -307,7 +310,7 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 	return payloadQueries
 }
 
-func resourceDatadogSecurityMonitoringRuleRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSecurityMonitoringRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
@@ -319,7 +322,7 @@ func resourceDatadogSecurityMonitoringRuleRead(d *schema.ResourceData, meta inte
 			d.SetId("")
 			return nil
 		}
-		return err
+		return diag.FromErr(err)
 	}
 
 	updateResourceDataFromResponse(d, ruleResponse)
@@ -392,7 +395,7 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 	d.Set("query", ruleQueries)
 }
 
-func resourceDatadogSecurityMonitoringRuleUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
@@ -400,7 +403,7 @@ func resourceDatadogSecurityMonitoringRuleUpdate(d *schema.ResourceData, meta in
 	ruleUpdate := buildUpdatePayload(d)
 	response, _, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, d.Id()).Body(ruleUpdate).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating security monitoring rule")
+		return utils.TranslateClientErrorDiag(err, "error updating security monitoring rule")
 	}
 
 	updateResourceDataFromResponse(d, response)
@@ -530,13 +533,13 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 	return payload
 }
 
-func resourceDatadogSecurityMonitoringRuleDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSecurityMonitoringRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
 	if _, err := datadogClientV2.SecurityMonitoringApi.DeleteSecurityMonitoringRule(authV2, d.Id()).Execute(); err != nil {
-		return utils.TranslateClientError(err, "error deleting security monitoring rule")
+		return utils.TranslateClientErrorDiag(err, "error deleting security monitoring rule")
 	}
 
 	return nil

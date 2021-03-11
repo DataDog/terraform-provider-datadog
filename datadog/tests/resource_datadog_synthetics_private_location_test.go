@@ -7,9 +7,9 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
@@ -19,9 +19,9 @@ func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testSyntheticsPrivateLocationIsDestroyed(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsPrivateLocationIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: createSyntheticsPrivateLocationConfig(privateLocationName),
@@ -42,9 +42,9 @@ func TestAccDatadogSyntheticsPrivateLocation_Basic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testSyntheticsPrivateLocationIsDestroyed(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsPrivateLocationIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsPrivateLocationStep(ctx, accProvider, t),
 		},
@@ -57,9 +57,9 @@ func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testSyntheticsPrivateLocationIsDestroyed(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsPrivateLocationIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsPrivateLocationStep(ctx, accProvider, t),
 			updateSyntheticsPrivateLocationStep(ctx, accProvider, t),
@@ -67,7 +67,7 @@ func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
 	})
 }
 
-func createSyntheticsPrivateLocationStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+func createSyntheticsPrivateLocationStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	privateLocationName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsPrivateLocationConfig(privateLocationName),
@@ -100,7 +100,7 @@ resource "datadog_synthetics_private_location" "foo" {
 }`, uniq)
 }
 
-func updateSyntheticsPrivateLocationStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+func updateSyntheticsPrivateLocationStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	privateLocationName := uniqueEntityName(ctx, t) + "_updated"
 	return resource.TestStep{
 		Config: updateSyntheticsPrivateLocationConfig(privateLocationName),
@@ -135,9 +135,10 @@ resource "datadog_synthetics_private_location" "foo" {
 }`, uniq)
 }
 
-func testSyntheticsPrivateLocationExists(accProvider *schema.Provider) resource.TestCheckFunc {
+func testSyntheticsPrivateLocationExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -150,9 +151,10 @@ func testSyntheticsPrivateLocationExists(accProvider *schema.Provider) resource.
 	}
 }
 
-func testSyntheticsPrivateLocationIsDestroyed(accProvider *schema.Provider) resource.TestCheckFunc {
+func testSyntheticsPrivateLocationIsDestroyed(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 

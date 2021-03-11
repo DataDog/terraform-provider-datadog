@@ -1,22 +1,25 @@
 package datadog
 
 import (
+	"context"
 	"encoding/json"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogSyntheticsPrivateLocation() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations.",
-		Create:      resourceDatadogSyntheticsPrivateLocationCreate,
-		Read:        resourceDatadogSyntheticsPrivateLocationRead,
-		Update:      resourceDatadogSyntheticsPrivateLocationUpdate,
-		Delete:      resourceDatadogSyntheticsPrivateLocationDelete,
+		Description:   "Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations.",
+		CreateContext: resourceDatadogSyntheticsPrivateLocationCreate,
+		ReadContext:   resourceDatadogSyntheticsPrivateLocationRead,
+		UpdateContext: resourceDatadogSyntheticsPrivateLocationUpdate,
+		DeleteContext: resourceDatadogSyntheticsPrivateLocationDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -45,7 +48,7 @@ func resourceDatadogSyntheticsPrivateLocation() *schema.Resource {
 	}
 }
 
-func resourceDatadogSyntheticsPrivateLocationCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsPrivateLocationCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -54,7 +57,7 @@ func resourceDatadogSyntheticsPrivateLocationCreate(d *schema.ResourceData, meta
 	createdSyntheticsPrivateLocationResponse, _, err := datadogClientV1.SyntheticsApi.CreatePrivateLocation(authV1).Body(*syntheticsPrivateLocation).Execute()
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
-		return utils.TranslateClientError(err, "error creating synthetics private location")
+		return utils.TranslateClientErrorDiag(err, "error creating synthetics private location")
 	}
 
 	createdSyntheticsPrivateLocation := createdSyntheticsPrivateLocationResponse.GetPrivateLocation()
@@ -67,10 +70,10 @@ func resourceDatadogSyntheticsPrivateLocationCreate(d *schema.ResourceData, meta
 	d.Set("config", string(conf))
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
-	return resourceDatadogSyntheticsPrivateLocationRead(d, meta)
+	return resourceDatadogSyntheticsPrivateLocationRead(ctx, d, meta)
 }
 
-func resourceDatadogSyntheticsPrivateLocationRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsPrivateLocationRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -83,13 +86,13 @@ func resourceDatadogSyntheticsPrivateLocationRead(d *schema.ResourceData, meta i
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error getting synthetics private location")
+		return utils.TranslateClientErrorDiag(err, "error getting synthetics private location")
 	}
 
 	return updateSyntheticsPrivateLocationLocalState(d, &syntheticsPrivateLocation)
 }
 
-func resourceDatadogSyntheticsPrivateLocationUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsPrivateLocationUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -97,21 +100,21 @@ func resourceDatadogSyntheticsPrivateLocationUpdate(d *schema.ResourceData, meta
 	syntheticsPrivateLocation := buildSyntheticsPrivateLocationStruct(d)
 	if _, _, err := datadogClientV1.SyntheticsApi.UpdatePrivateLocation(authV1, d.Id()).Body(*syntheticsPrivateLocation).Execute(); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
-		return utils.TranslateClientError(err, "error updating synthetics private location")
+		return utils.TranslateClientErrorDiag(err, "error updating synthetics private location")
 	}
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
-	return resourceDatadogSyntheticsPrivateLocationRead(d, meta)
+	return resourceDatadogSyntheticsPrivateLocationRead(ctx, d, meta)
 }
 
-func resourceDatadogSyntheticsPrivateLocationDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsPrivateLocationDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
 	if _, err := datadogClientV1.SyntheticsApi.DeletePrivateLocation(authV1, d.Id()).Execute(); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
-		return utils.TranslateClientError(err, "error deleting synthetics private location")
+		return utils.TranslateClientErrorDiag(err, "error deleting synthetics private location")
 	}
 
 	// The resource is assumed to be destroyed, and all state is removed.
@@ -138,7 +141,7 @@ func buildSyntheticsPrivateLocationStruct(d *schema.ResourceData) *datadogV1.Syn
 	return syntheticsPrivateLocation
 }
 
-func updateSyntheticsPrivateLocationLocalState(d *schema.ResourceData, syntheticsPrivateLocation *datadogV1.SyntheticsPrivateLocation) error {
+func updateSyntheticsPrivateLocationLocalState(d *schema.ResourceData, syntheticsPrivateLocation *datadogV1.SyntheticsPrivateLocation) diag.Diagnostics {
 	d.Set("name", syntheticsPrivateLocation.GetName())
 	d.Set("description", syntheticsPrivateLocation.GetDescription())
 	d.Set("tags", syntheticsPrivateLocation.Tags)

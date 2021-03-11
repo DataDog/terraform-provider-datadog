@@ -1,19 +1,21 @@
 package datadog
 
 import (
-	"fmt"
+	"context"
 	"strconv"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func dataSourceDatadogDashboardList() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about an existing dashboard list, for use in other resources. In particular, it can be used in a dashboard to register it in the list.",
-		Read:        dataSourceDatadogDashboardListRead,
+		ReadContext: dataSourceDatadogDashboardListRead,
 
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -26,7 +28,7 @@ func dataSourceDatadogDashboardList() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogDashboardListRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogDashboardListRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -35,7 +37,7 @@ func dataSourceDatadogDashboardListRead(d *schema.ResourceData, meta interface{}
 	listResponse, _, err := datadogClientV1.DashboardListsApi.ListDashboardLists(authV1).Execute()
 
 	if err != nil {
-		return utils.TranslateClientError(err, "error querying dashboard lists")
+		return utils.TranslateClientErrorDiag(err, "error querying dashboard lists")
 	}
 
 	searchedName := d.Get("name")
@@ -49,7 +51,7 @@ func dataSourceDatadogDashboardListRead(d *schema.ResourceData, meta interface{}
 	}
 
 	if foundList == nil {
-		return fmt.Errorf("Couldn't find a dashboard list named %s", searchedName)
+		return diag.Errorf("Couldn't find a dashboard list named %s", searchedName)
 	}
 
 	id := foundList.GetId()

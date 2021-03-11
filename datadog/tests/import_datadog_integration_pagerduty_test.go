@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestDatadogIntegrationPagerduty_import(t *testing.T) {
@@ -16,9 +16,9 @@ func TestDatadogIntegrationPagerduty_import(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationPagerdutyConfigImported(serviceName),

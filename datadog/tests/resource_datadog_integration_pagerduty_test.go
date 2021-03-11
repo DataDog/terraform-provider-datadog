@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	communityClient "github.com/zorkian/go-datadog-api"
 )
@@ -21,9 +21,9 @@ func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationPagerdutyConfig(serviceName),
@@ -51,9 +51,9 @@ func TestAccDatadogIntegrationPagerduty_TwoServices(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationPagerdutyConfigTwoServices(serviceName),
@@ -85,9 +85,9 @@ func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationPagerdutyConfigBeforeMigration(serviceName),
@@ -134,9 +134,10 @@ func TestAccDatadogIntegrationPagerduty_Migrate2ServiceObjects(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogIntegrationPagerdutyExists(accProvider *schema.Provider) resource.TestCheckFunc {
+func testAccCheckDatadogIntegrationPagerdutyExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		client := providerConf.CommunityClient
 
 		if err := datadogIntegrationPagerdutyExistsHelper(client); err != nil {
@@ -153,7 +154,7 @@ func datadogIntegrationPagerdutyExistsHelper(client *communityClient.Client) err
 	return nil
 }
 
-func testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		// We don't destroy the integration anymore, so let's not check anything
 		return nil

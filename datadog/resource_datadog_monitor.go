@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -14,8 +15,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 // Minimal interface between ResourceData and ResourceDiff so that we can use them interchangeably in buildMonitorStruct
@@ -29,13 +31,13 @@ var retryTimeout = time.Minute
 func resourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog monitor resource. This can be used to create and manage Datadog monitors.",
-		Create:        resourceDatadogMonitorCreate,
-		Read:          resourceDatadogMonitorRead,
-		Update:        resourceDatadogMonitorUpdate,
-		Delete:        resourceDatadogMonitorDelete,
+		CreateContext: resourceDatadogMonitorCreate,
+		ReadContext:   resourceDatadogMonitorRead,
+		UpdateContext: resourceDatadogMonitorUpdate,
+		DeleteContext: resourceDatadogMonitorDelete,
 		CustomizeDiff: resourceDatadogMonitorCustomizeDiff,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogMonitorImport,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -90,48 +92,11 @@ func resourceDatadogMonitor() *schema.Resource {
 			},
 
 			// Options
-			"thresholds": {
-				Description:   "Alert thresholds of the monitor.",
-				Deprecated:    "Define `monitor_thresholds` list with one element instead.",
-				ConflictsWith: []string{"monitor_thresholds"},
-				Type:          schema.TypeMap,
-				Optional:      true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"ok": {
-							Type:     schema.TypeFloat,
-							Optional: true,
-						},
-						"warning": {
-							Type:     schema.TypeFloat,
-							Optional: true,
-						},
-						"critical": {
-							Type:     schema.TypeFloat,
-							Optional: true,
-						},
-						"unknown": {
-							Type:     schema.TypeFloat,
-							Optional: true,
-						},
-						"warning_recovery": {
-							Type:     schema.TypeFloat,
-							Optional: true,
-						},
-						"critical_recovery": {
-							Type:     schema.TypeFloat,
-							Optional: true,
-						},
-					},
-				},
-				DiffSuppressFunc: suppressDataDogFloatIntDiff,
-			},
 			"monitor_thresholds": {
-				Description:   "Alert thresholds of the monitor.",
-				Type:          schema.TypeList,
-				ConflictsWith: []string{"thresholds"},
-				MaxItems:      1,
-				Optional:      true,
+				Description: "Alert thresholds of the monitor.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"ok": {
@@ -174,33 +139,11 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 				DiffSuppressFunc: suppressDataDogFloatIntDiff,
 			},
-			"threshold_windows": {
-				Description:   "A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. Can only be used for, and are required for, anomaly monitors.",
-				Deprecated:    "Define `monitor_threshold_windows` list with one element instead.",
-				ConflictsWith: []string{"monitor_threshold_windows"},
-				Type:          schema.TypeMap,
-				Optional:      true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"recovery_window": {
-							Description: "Describes how long an anomalous metric must be normal before the alert recovers.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
-						"trigger_window": {
-							Description: "Describes how long a metric must be anomalous before an alert triggers.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
-					},
-				},
-			},
 			"monitor_threshold_windows": {
-				Description:   "A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors.",
-				Type:          schema.TypeList,
-				ConflictsWith: []string{"threshold_windows"},
-				MaxItems:      1,
-				Optional:      true,
+				Description: "A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"recovery_window": {
@@ -358,42 +301,24 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	if r, ok := d.GetOk("monitor_thresholds.0.ok"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetOk(v)
-	} else if r, ok := d.GetOk("thresholds.ok"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetOk(v)
 	}
 	if r, ok := d.GetOk("monitor_thresholds.0.warning"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetWarning(v)
-	} else if r, ok := d.GetOk("thresholds.warning"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetWarning(v)
 	}
 	if r, ok := d.GetOk("monitor_thresholds.0.unknown"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetUnknown(v)
-	} else if r, ok := d.GetOk("thresholds.unknown"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetUnknown(v)
 	}
 	if r, ok := d.GetOk("monitor_thresholds.0.critical"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetCritical(v)
-	} else if r, ok := d.GetOk("thresholds.critical"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetCritical(v)
 	}
 	if r, ok := d.GetOk("monitor_thresholds.0.warning_recovery"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetWarningRecovery(v)
-	} else if r, ok := d.GetOk("thresholds.warning_recovery"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetWarningRecovery(v)
 	}
 	if r, ok := d.GetOk("monitor_thresholds.0.critical_recovery"); ok {
-		v, _ := json.Number(r.(string)).Float64()
-		thresholds.SetCriticalRecovery(v)
-	} else if r, ok := d.GetOk("thresholds.critical_recovery"); ok {
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetCriticalRecovery(v)
 	}
@@ -402,13 +327,9 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 
 	if r, ok := d.GetOk("monitor_threshold_windows.0.recovery_window"); ok {
 		thresholdWindows.SetRecoveryWindow(r.(string))
-	} else if r, ok := d.GetOk("threshold_windows.recovery_window"); ok {
-		thresholdWindows.SetRecoveryWindow(r.(string))
 	}
 
 	if r, ok := d.GetOk("monitor_threshold_windows.0.trigger_window"); ok {
-		thresholdWindows.SetTriggerWindow(r.(string))
-	} else if r, ok := d.GetOk("threshold_windows.trigger_window"); ok {
 		thresholdWindows.SetTriggerWindow(r.(string))
 	}
 
@@ -511,7 +432,7 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 }
 
 // Use CustomizeDiff to do monitor validation
-func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interface{}) error {
+func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 	if _, ok := diff.GetOk("query"); !ok {
 		// If "query" depends on other resources, we can't validate as the variables may not be interpolated yet.
 		return nil
@@ -529,7 +450,7 @@ func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interfa
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
-	return resource.Retry(retryTimeout, func() *resource.RetryError {
+	return resource.RetryContext(ctx, retryTimeout, func() *resource.RetryError {
 		_, httpresp, err := datadogClientV1.MonitorsApi.ValidateMonitor(authV1).Body(*m).Execute()
 		if err != nil {
 			if httpresp != nil && httpresp.StatusCode == 502 {
@@ -555,7 +476,7 @@ func getUnmutedScopes(d *schema.ResourceData) []string {
 	return unmuteScopes
 }
 
-func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -563,15 +484,15 @@ func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) erro
 	m, _ := buildMonitorStruct(d)
 	mCreated, _, err := datadogClientV1.MonitorsApi.CreateMonitor(authV1).Body(*m).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating monitor")
+		return utils.TranslateClientErrorDiag(err, "error creating monitor")
 	}
 	mCreatedID := strconv.FormatInt(mCreated.GetId(), 10)
 	d.SetId(mCreatedID)
 
-	return resourceDatadogMonitorRead(d, meta)
+	return resourceDatadogMonitorRead(ctx, d, meta)
 }
 
-func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.Monitor) error {
+func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.Monitor) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 
 	thresholds := make(map[string]string)
@@ -613,89 +534,78 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 
 	log.Printf("[DEBUG] monitor: %+v", m)
 	if err := d.Set("name", m.GetName()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("message", m.GetMessage()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("query", m.GetQuery()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("type", m.GetType()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("priority", m.GetPriority()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("restricted_roles", m.GetRestrictedRoles()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
-
-	// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-	if _, ok := d.GetOk("thresholds"); ok {
-		if err := d.Set("thresholds", thresholds); err != nil {
-			return err
-		}
-	} else if len(thresholds) > 0 { // Only set if there are values in the map to avoid diff
+	if len(thresholds) > 0 {
 		if err := d.Set("monitor_thresholds", []interface{}{thresholds}); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
-	// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-	if _, ok := d.GetOk("threshold_windows"); ok {
-		if err := d.Set("threshold_windows", thresholdWindows); err != nil {
-			return err
-		}
-	} else if len(thresholdWindows) > 0 { // Only set if there are values in the map to avoid diff
+	if len(thresholdWindows) > 0 {
 		if err := d.Set("monitor_threshold_windows", []interface{}{thresholdWindows}); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 
 	if err := d.Set("new_host_delay", m.Options.GetNewHostDelay()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("evaluation_delay", m.Options.GetEvaluationDelay()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("notify_no_data", m.Options.GetNotifyNoData()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("no_data_timeframe", m.Options.NoDataTimeframe.Get()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("renotify_interval", m.Options.GetRenotifyInterval()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("notify_audit", m.Options.GetNotifyAudit()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("timeout_h", m.Options.GetTimeoutH()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("escalation_message", m.Options.GetEscalationMessage()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("include_tags", m.Options.GetIncludeTags()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("tags", tags); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	// TODO Is this one of those options that we neeed to check?
 	if err := d.Set("require_full_window", m.Options.GetRequireFullWindow()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("locked", m.Options.GetLocked()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {
 		if err := d.Set("enable_logs_sample", m.Options.GetEnableLogsSample()); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 		if err := d.Set("groupby_simple_monitor", m.Options.GetGroupbySimpleMonitor()); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 
@@ -718,20 +628,20 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		}
 	}
 	if err := d.Set("silenced", apiSilenced); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	return nil
 }
 
-func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
 	i, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	var (
 		m        datadogV1.Monitor
@@ -752,7 +662,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 		}
 		return nil
 	}); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if d.Id() == "" {
@@ -762,7 +672,7 @@ func resourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error 
 	return updateMonitorState(d, meta, &m)
 }
 
-func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogMonitorUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -770,7 +680,7 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 	_, m := buildMonitorStruct(d)
 	i, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	m.Id = &i
@@ -789,11 +699,11 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 
 	monitorResp, _, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating monitor")
+		return utils.TranslateClientErrorDiag(err, "error updating monitor")
 	}
 
-	if err := updateMonitorState(d, meta, &monitorResp); err != nil {
-		return err
+	if diagErr := updateMonitorState(d, meta, &monitorResp); diagErr != nil {
+		return diagErr
 	}
 
 	// if the silenced section was removed from the config, we unmute it via the API
@@ -814,10 +724,10 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		}
 		monitorResp, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
 		if err != nil {
-			return utils.TranslateClientError(err, "error updating monitor")
+			return utils.TranslateClientErrorDiag(err, "error updating monitor")
 		}
 		if err := d.Set("silenced", map[string]int{}); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	} else {
 		for scope := range newSilenced.(map[string]interface{}) {
@@ -840,21 +750,21 @@ func resourceDatadogMonitorUpdate(d *schema.ResourceData, meta interface{}) erro
 		}
 		monitorResp, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i).Body(*m).Execute()
 		if err != nil {
-			return utils.TranslateClientError(err, "error updating monitor")
+			return utils.TranslateClientErrorDiag(err, "error updating monitor")
 		}
 	}
 
 	return updateMonitorState(d, meta, &monitorResp)
 }
 
-func resourceDatadogMonitorDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogMonitorDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
 	i, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if d.Get("force_delete").(bool) {
@@ -864,17 +774,10 @@ func resourceDatadogMonitorDelete(d *schema.ResourceData, meta interface{}) erro
 	}
 
 	if err != nil {
-		return utils.TranslateClientError(err, "error deleting monitor")
+		return utils.TranslateClientErrorDiag(err, "error deleting monitor")
 	}
 
 	return nil
-}
-
-func resourceDatadogMonitorImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogMonitorRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }
 
 // Ignore any diff that results from the mix of ints or floats returned from the

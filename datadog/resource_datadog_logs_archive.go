@@ -1,79 +1,49 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogLogsArchive() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog Logs Archive API resource, which is used to create and manage Datadog logs archives.",
-		Create:      resourceDatadogLogsArchiveCreate,
-		Update:      resourceDatadogLogsArchiveUpdate,
-		Read:        resourceDatadogLogsArchiveRead,
-		Delete:      resourceDatadogLogsArchiveDelete,
+		Description:   "Provides a Datadog Logs Archive API resource, which is used to create and manage Datadog logs archives.",
+		CreateContext: resourceDatadogLogsArchiveCreate,
+		UpdateContext: resourceDatadogLogsArchiveUpdate,
+		ReadContext:   resourceDatadogLogsArchiveRead,
+		DeleteContext: resourceDatadogLogsArchiveDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"name":  {Description: "Your archive name.", Type: schema.TypeString, Required: true},
 			"query": {Description: "The archive query/filter. Logs matching this query are included in the archive.", Type: schema.TypeString, Required: true},
-			"s3": {
-				Description:   "Definition of an s3 archive.",
-				Type:          schema.TypeMap,
-				Deprecated:    "Define `s3_archive` list with one element instead.",
-				ConflictsWith: []string{"s3_archive"},
-				Optional:      true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"bucket":     {Description: "Name of your s3 bucket.", Type: schema.TypeString, Required: true},
-						"path":       {Description: "Path where the archive will be stored.", Type: schema.TypeString, Required: true},
-						"account_id": {Description: "Your AWS account id.", Type: schema.TypeString, Required: true},
-						"role_name":  {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
-					},
-				},
-			},
 			"s3_archive": {
-				Description:   "Definition of an s3 archive.",
-				Type:          schema.TypeList,
-				MaxItems:      1,
-				ConflictsWith: []string{"s3"},
-				Optional:      true,
+				Description: "Definition of an s3 archive.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"bucket":     {Description: "Name of your s3 bucket.", Type: schema.TypeString, Required: true},
 						"path":       {Description: "Path where the archive will be stored.", Type: schema.TypeString, Required: true},
 						"account_id": {Description: "Your AWS account id.", Type: schema.TypeString, Required: true},
 						"role_name":  {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
-					},
-				},
-			},
-			"azure": {
-				Description:   "Definition of an azure archive.",
-				Deprecated:    "Define `azure_archive` list with one element instead.",
-				ConflictsWith: []string{"azure_archive"},
-				Type:          schema.TypeMap,
-				Optional:      true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"container":       {Description: "The container where the archive will be stored.", Type: schema.TypeString, Required: true},
-						"client_id":       {Description: "Your client id.", Type: schema.TypeString, Required: true},
-						"tenant_id":       {Description: "Your tenant id.", Type: schema.TypeString, Required: true},
-						"storage_account": {Description: "The associated storage account.", Type: schema.TypeString, Required: true},
-						"path":            {Description: "The path where the archive will be stored.", Type: schema.TypeString, Optional: true},
 					},
 				},
 			},
 			"azure_archive": {
-				Description:   "Definition of an azure archive.",
-				ConflictsWith: []string{"azure"},
-				Type:          schema.TypeList,
-				MaxItems:      1,
-				Optional:      true,
+				Description: "Definition of an azure archive.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"container":       {Description: "The container where the archive will be stored.", Type: schema.TypeString, Required: true},
@@ -84,27 +54,11 @@ func resourceDatadogLogsArchive() *schema.Resource {
 					},
 				},
 			},
-			"gcs": {
-				Description:   "Definition of a GCS archive.",
-				Deprecated:    "Define `gcs_archive` list with one element instead.",
-				ConflictsWith: []string{"gcs_archive"},
-				Type:          schema.TypeMap,
-				Optional:      true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"bucket":       {Description: "Name of your GCS bucket.", Type: schema.TypeString, Required: true},
-						"path":         {Description: "Path where the archive will be stored.", Type: schema.TypeString, Required: true},
-						"client_email": {Description: "Your client email.", Type: schema.TypeString, Required: true},
-						"project_id":   {Description: "Your project id.", Type: schema.TypeString, Required: true},
-					},
-				},
-			},
 			"gcs_archive": {
-				Description:   "Definition of a GCS archive.",
-				ConflictsWith: []string{"gcs"},
-				Type:          schema.TypeList,
-				MaxItems:      1,
-				Optional:      true,
+				Description: "Definition of a GCS archive.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"bucket":       {Description: "Name of your GCS bucket.", Type: schema.TypeString, Required: true},
@@ -132,60 +86,52 @@ func resourceDatadogLogsArchive() *schema.Resource {
 	}
 }
 
-func resourceDatadogLogsArchiveCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsArchiveCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
 	ddArchive, err := buildDatadogArchiveCreateReq(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	createdArchive, _, err := datadogClientV2.LogsArchivesApi.CreateLogsArchive(authV2).Body(*ddArchive).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "failed to create logs archive using Datadog API")
+		return utils.TranslateClientErrorDiag(err, "failed to create logs archive using Datadog API")
 	}
 	d.SetId(*createdArchive.GetData().Id)
 	return updateLogsArchiveState(d, &createdArchive)
 }
 
-func updateLogsArchiveState(d *schema.ResourceData, ddArchive *datadogV2.LogsArchive) error {
+func updateLogsArchiveState(d *schema.ResourceData, ddArchive *datadogV2.LogsArchive) diag.Diagnostics {
 	if !ddArchive.HasData() {
 		d.SetId("")
 		return nil
 	}
 	if err := d.Set("name", ddArchive.Data.Attributes.Name); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("query", ddArchive.Data.Attributes.Query); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	archiveType, destination, err := buildDestination(ddArchive.Data.Attributes.Destination)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
-	// If the deprecated field is set in the user's config, set it in the state
-	// otherwise set the new field
-	if _, ok := d.GetOk(archiveType); ok {
-		if err := d.Set(archiveType, destination); err != nil {
-			return err
-		}
-	} else {
-		if err := d.Set(fmt.Sprintf("%s_archive", archiveType), []interface{}{destination}); err != nil {
-			return err
-		}
+	if err := d.Set(fmt.Sprintf("%s_archive", archiveType), []interface{}{destination}); err != nil {
+		return diag.FromErr(err)
 	}
 
 	if err = d.Set("rehydration_tags", ddArchive.Data.Attributes.RehydrationTags); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err = d.Set("include_tags", ddArchive.Data.Attributes.IncludeTags); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	return nil
 }
 
-func resourceDatadogLogsArchiveRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsArchiveRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
@@ -196,28 +142,28 @@ func resourceDatadogLogsArchiveRead(d *schema.ResourceData, meta interface{}) er
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "failed to get logs archive using Datadog API")
+		return utils.TranslateClientErrorDiag(err, "failed to get logs archive using Datadog API")
 	}
 	return updateLogsArchiveState(d, &ddArchive)
 }
 
-func resourceDatadogLogsArchiveUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsArchiveUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
 	ddArchive, err := buildDatadogArchiveCreateReq(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	updatedArchive, _, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchive(authV2, d.Id()).Body(*ddArchive).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating logs archive")
+		return utils.TranslateClientErrorDiag(err, "error updating logs archive")
 	}
 	return updateLogsArchiveState(d, &updatedArchive)
 }
 
-func resourceDatadogLogsArchiveDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsArchiveDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
@@ -227,7 +173,7 @@ func resourceDatadogLogsArchiveDelete(d *schema.ResourceData, meta interface{}) 
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			return nil
 		}
-		return utils.TranslateClientError(err, "error deleting logs archive")
+		return utils.TranslateClientErrorDiag(err, "error deleting logs archive")
 	}
 	return nil
 }
@@ -336,7 +282,7 @@ func buildCreateReqDestination(d *schema.ResourceData) (*datadogV2.LogsArchiveCr
 
 func definedDestinations(d *schema.ResourceData) []string {
 	var defined []string
-	for _, destination := range []string{"azure", "gcs", "s3", "azure_archive", "gcs_archive", "s3_archive"} {
+	for _, destination := range []string{"azure_archive", "gcs_archive", "s3_archive"} {
 		if _, ok := d.GetOk(destination); ok {
 			defined = append(defined, destination)
 		}
@@ -344,21 +290,8 @@ func definedDestinations(d *schema.ResourceData) []string {
 	return defined
 }
 
-// getFromDeprecatedMapOrList returns the nested object from the given resource data field,
-// whether it's from a deprecated TypeMap field, or a TypeList field
-func getFromDeprecatedMapOrList(f interface{}) (r map[string]interface{}) {
-	// Switch based on if we use deprecated TypeMap field, or new TypeList field
-	switch t := f.(type) {
-	case []interface{}: // TypeList field: take the first and only element
-		r = t[0].(map[string]interface{})
-	case map[string]interface{}: // Deprecated TypeMap field, take it as is
-		r = t
-	}
-	return
-}
-
 func buildAzureDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationAzure, error) {
-	d := getFromDeprecatedMapOrList(dest)
+	d := dest.([]interface{})[0].(map[string]interface{})
 	clientID, ok := d["client_id"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationAzure{}, fmt.Errorf("client_id is not defined")
@@ -394,7 +327,7 @@ func buildAzureDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationA
 }
 
 func buildGCSDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationGCS, error) {
-	d := getFromDeprecatedMapOrList(dest)
+	d := dest.([]interface{})[0].(map[string]interface{})
 	clientEmail, ok := d["client_email"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("client_email is not defined")
@@ -425,7 +358,7 @@ func buildGCSDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationGCS
 }
 
 func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, error) {
-	d := getFromDeprecatedMapOrList(dest)
+	d := dest.([]interface{})[0].(map[string]interface{})
 	accountID, ok := d["account_id"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("account_id is not defined")

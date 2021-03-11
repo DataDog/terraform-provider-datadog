@@ -9,9 +9,9 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func datadogOrderedDashboardConfig(uniq string) string {
@@ -1175,9 +1175,9 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 	}
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: datadogOrderedDashboardConfig(dbName),
@@ -1201,9 +1201,9 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 	}
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: datadogFreeDashboardConfig(dbName),
@@ -1224,9 +1224,9 @@ func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: datadogSimpleFreeDashboardConfig(dbName),
@@ -1251,9 +1251,9 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: datadogOrderedDashboardConfig(dbName),
@@ -1275,9 +1275,10 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 	})
 }
 
-func checkDashboardExists(accProvider *schema.Provider) resource.TestCheckFunc {
+func checkDashboardExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -1290,9 +1291,10 @@ func checkDashboardExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	}
 }
 
-func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc {
+func checkDashboardDestroy(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -1324,9 +1326,9 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: config,
@@ -1347,9 +1349,9 @@ func testAccDatadogDashboardWidgetUtilImport(t *testing.T, config string, name s
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: config,

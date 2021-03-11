@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1613038962"}
+      {"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1615213496"}
     form: {}
     headers:
       Accept:
@@ -13,8 +13,7 @@ interactions:
       Dd-Operation-Id:
       - CreateAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: POST
   response:
@@ -31,20 +30,17 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 11 Feb 2021 10:22:43 GMT
+      - Mon, 08 Mar 2021 14:24:58 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 10:22:42 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - SY1h8ScsWq+kYmtbh63ltMLFAZsQjqfrgvdfAoRX+9TzT1sgMBRYaFRwfWWRRe9a
+      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
       X-Dd-Version:
-      - "35.3888616"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -59,14 +55,11 @@ interactions:
       Dd-Operation-Id:
       - ListAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: '[{"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-42512-1611580206","errors":["Datadog
-      could not query tenant tf-TestAccDatadogLogsArchiveAzure_basic-42512-1611580206
-      and client ID testc7f6-1234-5678-9101-3fcbf464test: invalid credentials"],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"},{"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1613038962","errors":[],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}]'
+    body: '[{"tenant_name":"go-TestAzureListandDelete-46324-1613144994","errors":["Datadog could not query tenant go-TestAzureListandDelete-46324-1613144994 and client ID testc7f6-1234-5678-9101-tt1613144994: invalid credentials"],"host_filters":"","client_id":"testc7f6-1234-5678-9101-tt1613144994"},{"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-42512-1611580206","errors":["Datadog could not query tenant tf-TestAccDatadogLogsArchiveAzure_basic-42512-1611580206 and client ID testc7f6-1234-5678-9101-3fcbf464test: invalid credentials"],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"},{"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1615213496","errors":[],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -77,12 +70,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 11 Feb 2021 10:22:43 GMT
+      - Mon, 08 Mar 2021 14:24:58 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 10:22:43 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -90,9 +80,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - nLnnBNvlCFDECRnZvzDb0z4sAO35G+IMidcAs8vrCKyjvsKWE8Yd9S3n6OjZ1qRN
+      - HbtaOKlJ6OCrx9tMXO6ivMTrEM+g0c93HDp08trmOmgdHozC5J+vn10F0H4WPjCU
       X-Dd-Version:
-      - "35.3888616"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -100,7 +90,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"destination":{"container":"my-container","integration":{"client_id":"testc7f6-1234-5678-9101-3fcbf464test","tenant_id":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1613038962"},"path":"/path/blou","storage_account":"storageAccount","type":"azure"},"include_tags":false,"name":"my first azure archive","query":"service:toto","rehydration_tags":[]},"type":"archives"}}
+      {"data":{"attributes":{"destination":{"container":"my-container","integration":{"client_id":"testc7f6-1234-5678-9101-3fcbf464test","tenant_id":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1615213496"},"path":"/path/blou","storage_account":"storageAccount","type":"azure"},"include_tags":false,"name":"my first azure archive","query":"service:toto","rehydration_tags":[]},"type":"archives"}}
     form: {}
     headers:
       Accept:
@@ -110,13 +100,11 @@ interactions:
       Dd-Operation-Id:
       - CreateLogsArchive
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archives
     method: POST
   response:
-    body: '{"data":{"type":"archives","id":"IbA9wW_TTUCuAbjADhO5hA","attributes":{"name":"my
-      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1613038962","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}},"rehydration_tags":[],"include_tags":false}}}'
+    body: '{"data":{"type":"archives","id":"t2RiC1PMSdeCGCSYN391Hg","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1615213496","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}},"rehydration_tags":[],"include_tags":false}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -127,12 +115,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 11 Feb 2021 10:22:44 GMT
+      - Mon, 08 Mar 2021 14:24:58 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 10:22:43 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -140,9 +125,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
+      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
       X-Dd-Version:
-      - "35.3888616"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -150,9 +135,59 @@ interactions:
       X-Ratelimit-Period:
       - "300"
       X-Ratelimit-Remaining:
-      - "292"
+      - "297"
       X-Ratelimit-Reset:
-      - "137"
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetLogsArchive
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/t2RiC1PMSdeCGCSYN391Hg
+    method: GET
+  response:
+    body: '{"data":{"type":"archives","id":"t2RiC1PMSdeCGCSYN391Hg","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1615213496","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}},"rehydration_tags":[],"include_tags":false}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 08 Mar 2021 14:24:59 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - l4HFlaRP3QwYSqoGKhzbYfv7zgkK63HIRR7YkyVYZspq0lGjjTBwoK8V/alf+XYt
+      X-Dd-Version:
+      - "35.4051246"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "5000"
+      X-Ratelimit-Period:
+      - "3600"
+      X-Ratelimit-Remaining:
+      - "4986"
+      X-Ratelimit-Reset:
+      - "2102"
     status: 200 OK
     code: 200
     duration: ""
@@ -165,14 +200,11 @@ interactions:
       Dd-Operation-Id:
       - ListAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: '[{"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-42512-1611580206","errors":["Datadog
-      could not query tenant tf-TestAccDatadogLogsArchiveAzure_basic-42512-1611580206
-      and client ID testc7f6-1234-5678-9101-3fcbf464test: invalid credentials"],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"},{"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1613038962","errors":[],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}]'
+    body: '[{"tenant_name":"go-TestAzureListandDelete-46324-1613144994","errors":["Datadog could not query tenant go-TestAzureListandDelete-46324-1613144994 and client ID testc7f6-1234-5678-9101-tt1613144994: invalid credentials"],"host_filters":"","client_id":"testc7f6-1234-5678-9101-tt1613144994"},{"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-42512-1611580206","errors":["Datadog could not query tenant tf-TestAccDatadogLogsArchiveAzure_basic-42512-1611580206 and client ID testc7f6-1234-5678-9101-3fcbf464test: invalid credentials"],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"},{"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1615213496","errors":[],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -183,12 +215,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 11 Feb 2021 10:22:45 GMT
+      - Mon, 08 Mar 2021 14:24:59 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 10:22:44 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -196,9 +225,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 25u1gDlL724DHllbjFT4BhOLorBTilh+aah2uWAUEjFC/+rjczJdiyWrV/HwLwe/
+      - B1nwy/pPNqX+q4pQT22cdp1QCexE35IF8qwSHy0Nf7IW0Y881qtn4tXN1lpmzaKc
       X-Dd-Version:
-      - "35.3888616"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -213,13 +242,11 @@ interactions:
       Dd-Operation-Id:
       - GetLogsArchive
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/IbA9wW_TTUCuAbjADhO5hA
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/t2RiC1PMSdeCGCSYN391Hg
     method: GET
   response:
-    body: '{"data":{"type":"archives","id":"IbA9wW_TTUCuAbjADhO5hA","attributes":{"name":"my
-      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1613038962","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}},"rehydration_tags":[],"include_tags":false}}}'
+    body: '{"data":{"type":"archives","id":"t2RiC1PMSdeCGCSYN391Hg","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1615213496","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}},"rehydration_tags":[],"include_tags":false}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -230,68 +257,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 11 Feb 2021 10:22:45 GMT
+      - Mon, 08 Mar 2021 14:24:59 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 10:22:45 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
-      X-Dd-Version:
-      - "35.3888616"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "5000"
-      X-Ratelimit-Period:
-      - "3600"
-      X-Ratelimit-Remaining:
-      - "4973"
-      X-Ratelimit-Reset:
-      - "2235"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListAzureIntegration
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: GET
-  response:
-    body: '[{"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-42512-1611580206","errors":["Datadog
-      could not query tenant tf-TestAccDatadogLogsArchiveAzure_basic-42512-1611580206
-      and client ID testc7f6-1234-5678-9101-3fcbf464test: invalid credentials"],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"},{"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1613038962","errors":[],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}]'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 11 Feb 2021 10:22:46 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 10:22:45 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -301,54 +269,7 @@ interactions:
       X-Dd-Debug:
       - F5gm0Rce1/Abr9/0Fw8HAqWfiz0FdiH8er/AXnN6lOn3L6KyGgbsLCwgPlob1No8
       X-Dd-Version:
-      - "35.3888616"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetLogsArchive
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/IbA9wW_TTUCuAbjADhO5hA
-    method: GET
-  response:
-    body: '{"data":{"type":"archives","id":"IbA9wW_TTUCuAbjADhO5hA","attributes":{"name":"my
-      first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageAccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1613038962","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}},"rehydration_tags":[],"include_tags":false}}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 11 Feb 2021 10:22:46 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 10:22:46 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
-      X-Dd-Version:
-      - "35.3888616"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -356,9 +277,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4972"
+      - "4985"
       X-Ratelimit-Reset:
-      - "2234"
+      - "2101"
     status: 200 OK
     code: 200
     duration: ""
@@ -371,9 +292,8 @@ interactions:
       Dd-Operation-Id:
       - DeleteLogsArchive
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/IbA9wW_TTUCuAbjADhO5hA
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/t2RiC1PMSdeCGCSYN391Hg
     method: DELETE
   response:
     body: ""
@@ -389,20 +309,17 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 11 Feb 2021 10:22:46 GMT
+      - Mon, 08 Mar 2021 14:25:00 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 10:22:46 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 25u1gDlL724DHllbjFT4BhOLorBTilh+aah2uWAUEjFC/+rjczJdiyWrV/HwLwe/
+      - dCmL/3rURV6BPeaqeP3Rxigq41m5CAb17XjrRE42uZ01zpr07HVhbL5/3TWMkvgu
       X-Dd-Version:
-      - "35.3888616"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -410,15 +327,15 @@ interactions:
       X-Ratelimit-Period:
       - "300"
       X-Ratelimit-Remaining:
-      - "291"
+      - "299"
       X-Ratelimit-Reset:
-      - "134"
+      - "300"
     status: 204 No Content
     code: 204
     duration: ""
 - request:
     body: |
-      {"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1613038962"}
+      {"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1615213496"}
     form: {}
     headers:
       Accept:
@@ -428,8 +345,7 @@ interactions:
       Dd-Operation-Id:
       - DeleteAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: DELETE
   response:
@@ -446,20 +362,17 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 11 Feb 2021 10:22:46 GMT
+      - Mon, 08 Mar 2021 14:25:00 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 10:22:46 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
+      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
       X-Dd-Version:
-      - "35.3888616"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -474,12 +387,11 @@ interactions:
       Dd-Operation-Id:
       - GetLogsArchive
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/IbA9wW_TTUCuAbjADhO5hA
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/t2RiC1PMSdeCGCSYN391Hg
     method: GET
   response:
-    body: '{"errors": ["Archive IbA9wW_TTUCuAbjADhO5hA not found"]}'
+    body: '{"errors": ["Archive t2RiC1PMSdeCGCSYN391Hg not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -490,7 +402,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 11 Feb 2021 10:22:46 GMT
+      - Mon, 08 Mar 2021 14:25:00 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -500,7 +412,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3888616"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -508,9 +420,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4971"
+      - "4984"
       X-Ratelimit-Reset:
-      - "2234"
+      - "2100"
     status: 404 Not Found
     code: 404
     duration: ""
@@ -523,14 +435,11 @@ interactions:
       Dd-Operation-Id:
       - ListAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: '[{"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-42512-1611580206","errors":["Datadog
-      could not query tenant tf-TestAccDatadogLogsArchiveAzure_basic-42512-1611580206
-      and client ID testc7f6-1234-5678-9101-3fcbf464test: invalid credentials"],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}]'
+    body: '[{"tenant_name":"go-TestAzureListandDelete-46324-1613144994","errors":["Datadog could not query tenant go-TestAzureListandDelete-46324-1613144994 and client ID testc7f6-1234-5678-9101-tt1613144994: invalid credentials"],"host_filters":"","client_id":"testc7f6-1234-5678-9101-tt1613144994"},{"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-42512-1611580206","errors":["Datadog could not query tenant tf-TestAccDatadogLogsArchiveAzure_basic-42512-1611580206 and client ID testc7f6-1234-5678-9101-3fcbf464test: invalid credentials"],"host_filters":"","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -541,12 +450,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 11 Feb 2021 10:22:47 GMT
+      - Mon, 08 Mar 2021 14:25:00 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 18-Feb-2021 10:22:46 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -554,9 +460,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
+      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
       X-Dd-Version:
-      - "35.3888616"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

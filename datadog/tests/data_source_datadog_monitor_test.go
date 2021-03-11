@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func TestAccDatadogMonitorDatasource(t *testing.T) {
@@ -17,36 +17,27 @@ func TestAccDatadogMonitorDatasource(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceMonitorNameFilterConfig(uniq),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkDatasourceAttrs(accProvider, uniq),
+				Check:  checkDatasourceAttrs(accProvider, uniq),
 			},
 			{
 				Config: testAccDatasourceMonitorTagsFilterConfig(uniq),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkDatasourceAttrs(accProvider, uniq),
+				Check:  checkDatasourceAttrs(accProvider, uniq),
 			},
 			{
 				Config: testAccDatasourceMonitorMonitorTagsFilterConfig(uniq),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkDatasourceAttrs(accProvider, uniq),
+				Check:  checkDatasourceAttrs(accProvider, uniq),
 			},
 		},
 	})
 }
 
-func checkDatasourceAttrs(accProvider *schema.Provider, uniq string) resource.TestCheckFunc {
+func checkDatasourceAttrs(accProvider func() (*schema.Provider, error), uniq string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogMonitorExists(accProvider),
 		resource.TestCheckResourceAttr(
@@ -66,33 +57,31 @@ func checkDatasourceAttrs(accProvider *schema.Provider, uniq string) resource.Te
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "renotify_interval", "60"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "thresholds.warning", "0.5"),
+			"data.datadog_monitor.foo", "monitor_thresholds.0.warning", "0.5"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "monitor_thresholds.0.warning", "0.5"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "thresholds.warning_recovery", "0.3"),
+			"data.datadog_monitor.foo", "monitor_thresholds.0.warning_recovery", "0.3"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "monitor_thresholds.0.warning_recovery", "0.3"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "thresholds.critical", "1"),
+			"data.datadog_monitor.foo", "monitor_thresholds.0.critical", "1"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "monitor_thresholds.0.critical", "1"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "thresholds.critical_recovery", "0.7"),
+			"data.datadog_monitor.foo", "monitor_thresholds.0.critical_recovery", "0.7"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "monitor_thresholds.0.critical_recovery", "0.7"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "require_full_window", "true"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "locked", "false"),
-		// Tags are a TypeSet => use a weird way to access members by their hash
-		// TF TypeSet is internally represented as a map that maps computed hashes
-		// to actual values. Since the hashes are always the same for one value,
-		// this is the way to get them.
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "tags.#", "2"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "tags.2644851163", "baz"),
+			"data.datadog_monitor.foo", "tags.0", "baz"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_monitor.foo", "tags.1", fmt.Sprintf("test_datasource_monitor:%s", uniq)),
 	)
 }
 
@@ -106,14 +95,14 @@ resource "datadog_monitor" "foo" {
 
   query = "avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:%s} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1"
 
-  thresholds = {
+  monitor_thresholds {
 	warning = "0.5"
 	critical = "1.0"
 	warning_recovery = "0.3"
 	critical_recovery = "0.7"
   }
 
-	threshold_windows = {
+	monitor_threshold_windows {
 		trigger_window = "last_15m"
 		recovery_window = "last_15m"
 	}

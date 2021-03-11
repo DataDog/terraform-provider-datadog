@@ -1,22 +1,24 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogIntegrationSlackChannel() *schema.Resource {
 	return &schema.Resource{
-		Description: "Resource for interacting with the Datadog Slack channel API",
-		Create:      resourceDatadogIntegrationSlackChannelCreate,
-		Read:        resourceDatadogIntegrationSlackChannelRead,
-		Update:      resourceDatadogIntegrationSlackChannelUpdate,
-		Delete:      resourceDatadogIntegrationSlackChannelDelete,
+		Description:   "Resource for interacting with the Datadog Slack channel API",
+		CreateContext: resourceDatadogIntegrationSlackChannelCreate,
+		ReadContext:   resourceDatadogIntegrationSlackChannelRead,
+		UpdateContext: resourceDatadogIntegrationSlackChannelUpdate,
+		DeleteContext: resourceDatadogIntegrationSlackChannelDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"channel_name": {
@@ -89,7 +91,7 @@ func buildDatadogSlackChannel(d *schema.ResourceData) (*datadogV1.SlackIntegrati
 	return datadogSlackChannel, nil
 }
 
-func resourceDatadogIntegrationSlackChannelCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationSlackChannelCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
@@ -99,21 +101,21 @@ func resourceDatadogIntegrationSlackChannelCreate(d *schema.ResourceData, meta i
 
 	createdChannel, _, err := datadogClient.SlackIntegrationApi.CreateSlackIntegrationChannel(auth, accountName).Body(*ddSlackChannel).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating slack channel")
+		return utils.TranslateClientErrorDiag(err, "error creating slack channel")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", accountName, ddSlackChannel.GetName()))
 	return updateSlackChannelState(d, &createdChannel)
 }
 
-func resourceDatadogIntegrationSlackChannelRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationSlackChannelRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
 
 	accountName, channelName, err := utils.AccountNameAndChannelNameFromID(d.Id())
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	slackChannel, httpResp, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, accountName, channelName).Execute()
@@ -122,13 +124,13 @@ func resourceDatadogIntegrationSlackChannelRead(d *schema.ResourceData, meta int
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error getting slack channel")
+		return utils.TranslateClientErrorDiag(err, "error getting slack channel")
 	}
 
 	return updateSlackChannelState(d, &slackChannel)
 }
 
-func resourceDatadogIntegrationSlackChannelUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationSlackChannelUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
@@ -136,12 +138,12 @@ func resourceDatadogIntegrationSlackChannelUpdate(d *schema.ResourceData, meta i
 	ddObject, err := buildDatadogSlackChannel(d)
 	accountName, channelName, err := utils.AccountNameAndChannelNameFromID(d.Id())
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	slackChannel, _, err := datadogClient.SlackIntegrationApi.UpdateSlackIntegrationChannel(auth, accountName, channelName).Body(*ddObject).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating slack channel")
+		return utils.TranslateClientErrorDiag(err, "error updating slack channel")
 	}
 
 	// Handle case where channel name is updated
@@ -150,32 +152,32 @@ func resourceDatadogIntegrationSlackChannelUpdate(d *schema.ResourceData, meta i
 	return updateSlackChannelState(d, &slackChannel)
 }
 
-func resourceDatadogIntegrationSlackChannelDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationSlackChannelDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
 
 	accountName, channelName, err := utils.AccountNameAndChannelNameFromID(d.Id())
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	_, err = datadogClient.SlackIntegrationApi.RemoveSlackIntegrationChannel(auth, accountName, channelName).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error deleting slack channel")
+		return utils.TranslateClientErrorDiag(err, "error deleting slack channel")
 	}
 
 	return nil
 }
 
-func updateSlackChannelState(d *schema.ResourceData, slackChannel *datadogV1.SlackIntegrationChannel) error {
+func updateSlackChannelState(d *schema.ResourceData, slackChannel *datadogV1.SlackIntegrationChannel) diag.Diagnostics {
 	if err := d.Set("channel_name", slackChannel.GetName()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	tfChannelDisplay := buildTerraformSlackChannelDisplay(slackChannel.GetDisplay())
 	if err := d.Set("display", []map[string]interface{}{tfChannelDisplay}); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	return nil

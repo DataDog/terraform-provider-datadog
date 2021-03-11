@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"some description about foo SLO","id":"","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1612964747","query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"tags":["foo:bar","baz"],"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":99,"timeframe":"30d"},{"target":99,"timeframe":"90d"}],"type":"metric"}
+      {"description":"some description about foo SLO","id":"","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1615213602","query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"tags":["foo:bar","baz"],"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":99,"timeframe":"30d"},{"target":99,"timeframe":"90d"}],"type":"metric"}
     form: {}
     headers:
       Accept:
@@ -13,12 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateSLO
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/slo
     method: POST
   response:
-    body: '{"data":[{"description":"some description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"target":99.0,"target_display":"99.","timeframe":"30d"},{"target":99.0,"target_display":"99.","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"f44372c6fe5452f195a03b7efc1fabbb","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1612964747","created_at":1612964748,"tags":["foo:bar","baz"],"modified_at":1612964748,"type":"metric"}],"error":null}'
+    body: '{"data":[{"description":"some description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"target":99.0,"target_display":"99.","timeframe":"30d"},{"target":99.0,"target_display":"99.","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"48863fe2fe055b36af85d284389c648b","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1615213602","created_at":1615213604,"tags":["foo:bar","baz"],"modified_at":1615213604,"type":"metric"}],"error":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -29,22 +28,17 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 10 Feb 2021 13:45:48 GMT
+      - Mon, 08 Mar 2021 14:26:44 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 17-Feb-2021 13:45:48 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - nLnnBNvlCFDECRnZvzDb0z4sAO35G+IMidcAs8vrCKyjvsKWE8Yd9S3n6OjZ1qRN
       X-Dd-Version:
-      - "35.3880781"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -52,9 +46,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "499"
+      - "497"
       X-Ratelimit-Reset:
-      - "12"
+      - "16"
     status: 200 OK
     code: 200
     duration: ""
@@ -67,12 +61,11 @@ interactions:
       Dd-Operation-Id:
       - GetSLO
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/slo/f44372c6fe5452f195a03b7efc1fabbb
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/slo/48863fe2fe055b36af85d284389c648b
     method: GET
   response:
-    body: '{"data":{"description":"some description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"target":99.0,"target_display":"99.","timeframe":"30d"},{"target":99.0,"target_display":"99.","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"f44372c6fe5452f195a03b7efc1fabbb","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1612964747","created_at":1612964748,"tags":["foo:bar","baz"],"modified_at":1612964748,"type":"metric"},"error":null}'
+    body: '{"data":{"description":"some description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"target":99.0,"target_display":"99.","timeframe":"30d"},{"target":99.0,"target_display":"99.","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"48863fe2fe055b36af85d284389c648b","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1615213602","created_at":1615213604,"tags":["foo:bar","baz"],"modified_at":1615213604,"type":"metric"},"error":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -83,32 +76,27 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 10 Feb 2021 13:45:48 GMT
+      - Mon, 08 Mar 2021 14:26:44 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 17-Feb-2021 13:45:48 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - Um4CoU685QqAscnxhS5BD+goWu2yX1Jd4zCfGzSsEvPPIm1qURZaF8dlLl/OEY4I
       X-Dd-Version:
-      - "35.3880781"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "100"
+      - "3000"
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "99"
+      - "2999"
       X-Ratelimit-Reset:
-      - "2"
+      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -121,12 +109,11 @@ interactions:
       Dd-Operation-Id:
       - GetSLO
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/slo/f44372c6fe5452f195a03b7efc1fabbb
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/slo/48863fe2fe055b36af85d284389c648b
     method: GET
   response:
-    body: '{"data":{"description":"some description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"target":99.0,"target_display":"99.","timeframe":"30d"},{"target":99.0,"target_display":"99.","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"f44372c6fe5452f195a03b7efc1fabbb","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1612964747","created_at":1612964748,"tags":["foo:bar","baz"],"modified_at":1612964748,"type":"metric"},"error":null}'
+    body: '{"data":{"description":"some description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"target":99.0,"target_display":"99.","timeframe":"30d"},{"target":99.0,"target_display":"99.","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"48863fe2fe055b36af85d284389c648b","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1615213602","created_at":1615213604,"tags":["foo:bar","baz"],"modified_at":1615213604,"type":"metric"},"error":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -137,32 +124,27 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 10 Feb 2021 13:45:48 GMT
+      - Mon, 08 Mar 2021 14:26:45 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 17-Feb-2021 13:45:48 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
       X-Dd-Version:
-      - "35.3880781"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "100"
+      - "3000"
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "98"
+      - "2998"
       X-Ratelimit-Reset:
-      - "2"
+      - "5"
     status: 200 OK
     code: 200
     duration: ""
@@ -175,12 +157,11 @@ interactions:
       Dd-Operation-Id:
       - GetSLO
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/slo/f44372c6fe5452f195a03b7efc1fabbb
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/slo/48863fe2fe055b36af85d284389c648b
     method: GET
   response:
-    body: '{"data":{"description":"some description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"target":99.0,"target_display":"99.","timeframe":"30d"},{"target":99.0,"target_display":"99.","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"f44372c6fe5452f195a03b7efc1fabbb","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1612964747","created_at":1612964748,"tags":["foo:bar","baz"],"modified_at":1612964748,"type":"metric"},"error":null}'
+    body: '{"data":{"description":"some description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"target":99.0,"target_display":"99.","timeframe":"30d"},{"target":99.0,"target_display":"99.","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"48863fe2fe055b36af85d284389c648b","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1615213602","created_at":1615213604,"tags":["foo:bar","baz"],"modified_at":1615213604,"type":"metric"},"error":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -191,38 +172,33 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 10 Feb 2021 13:45:49 GMT
+      - Mon, 08 Mar 2021 14:26:46 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 17-Feb-2021 13:45:48 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - l4HFlaRP3QwYSqoGKhzbYfv7zgkK63HIRR7YkyVYZspq0lGjjTBwoK8V/alf+XYt
       X-Dd-Version:
-      - "35.3880781"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "100"
+      - "3000"
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "97"
+      - "2997"
       X-Ratelimit-Reset:
-      - "1"
+      - "4"
     status: 200 OK
     code: 200
     duration: ""
 - request:
     body: |
-      {"description":"some updated description about foo SLO","id":"f44372c6fe5452f195a03b7efc1fabbb","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1612964747-updated","query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"tags":["foo:bar","baz"],"thresholds":[{"target":99.5,"target_display":"99.5","timeframe":"7d","warning":99.8,"warning_display":"99.8"},{"target":98,"target_display":"99.","timeframe":"30d","warning":99},{"target":99.9,"target_display":"99.","timeframe":"90d"}],"type":"metric"}
+      {"description":"some updated description about foo SLO","id":"48863fe2fe055b36af85d284389c648b","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1615213602-updated","query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"tags":["foo:bar","baz"],"thresholds":[{"target":99.5,"target_display":"99.5","timeframe":"7d","warning":99.8,"warning_display":"99.8"},{"target":98,"target_display":"99.","timeframe":"30d","warning":99},{"target":99.9,"target_display":"99.","timeframe":"90d"}],"type":"metric"}
     form: {}
     headers:
       Accept:
@@ -232,13 +208,11 @@ interactions:
       Dd-Operation-Id:
       - UpdateSLO
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/slo/f44372c6fe5452f195a03b7efc1fabbb
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/slo/48863fe2fe055b36af85d284389c648b
     method: PUT
   response:
-    body: '{"data":[{"description":"some updated description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"warning":99.0,"warning_display":"99.","target":98.0,"target_display":"98.","timeframe":"30d"},{"target":99.9,"target_display":"99.9","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{type:good}.as_count()
-      + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"f44372c6fe5452f195a03b7efc1fabbb","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1612964747-updated","created_at":1612964748,"tags":["foo:bar","baz"],"modified_at":1612964749,"type":"metric"}],"error":null}'
+    body: '{"data":[{"description":"some updated description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"warning":99.0,"warning_display":"99.","target":98.0,"target_display":"98.","timeframe":"30d"},{"target":99.9,"target_display":"99.9","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"48863fe2fe055b36af85d284389c648b","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1615213602-updated","created_at":1615213604,"tags":["foo:bar","baz"],"modified_at":1615213607,"type":"metric"}],"error":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -249,32 +223,27 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 10 Feb 2021 13:45:49 GMT
+      - Mon, 08 Mar 2021 14:26:47 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 17-Feb-2021 13:45:49 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
       X-Dd-Version:
-      - "35.3880781"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "12000"
+      - "500"
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "11999"
+      - "499"
       X-Ratelimit-Reset:
-      - "11"
+      - "13"
     status: 200 OK
     code: 200
     duration: ""
@@ -287,13 +256,11 @@ interactions:
       Dd-Operation-Id:
       - GetSLO
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/slo/f44372c6fe5452f195a03b7efc1fabbb
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/slo/48863fe2fe055b36af85d284389c648b
     method: GET
   response:
-    body: '{"data":{"description":"some updated description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"warning":99.0,"warning_display":"99.","target":98.0,"target_display":"98.","timeframe":"30d"},{"target":99.9,"target_display":"99.9","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{type:good}.as_count()
-      + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"f44372c6fe5452f195a03b7efc1fabbb","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1612964747-updated","created_at":1612964748,"tags":["foo:bar","baz"],"modified_at":1612964749,"type":"metric"},"error":null}'
+    body: '{"data":{"description":"some updated description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"warning":99.0,"warning_display":"99.","target":98.0,"target_display":"98.","timeframe":"30d"},{"target":99.9,"target_display":"99.9","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"48863fe2fe055b36af85d284389c648b","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1615213602-updated","created_at":1615213604,"tags":["foo:bar","baz"],"modified_at":1615213607,"type":"metric"},"error":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -304,32 +271,27 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 10 Feb 2021 13:45:49 GMT
+      - Mon, 08 Mar 2021 14:26:47 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 17-Feb-2021 13:45:49 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - Um4CoU685QqAscnxhS5BD+goWu2yX1Jd4zCfGzSsEvPPIm1qURZaF8dlLl/OEY4I
       X-Dd-Version:
-      - "35.3880781"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "100"
+      - "3000"
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "96"
+      - "2996"
       X-Ratelimit-Reset:
-      - "1"
+      - "3"
     status: 200 OK
     code: 200
     duration: ""
@@ -342,13 +304,11 @@ interactions:
       Dd-Operation-Id:
       - GetSLO
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/slo/f44372c6fe5452f195a03b7efc1fabbb
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/slo/48863fe2fe055b36af85d284389c648b
     method: GET
   response:
-    body: '{"data":{"description":"some updated description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"warning":99.0,"warning_display":"99.","target":98.0,"target_display":"98.","timeframe":"30d"},{"target":99.9,"target_display":"99.9","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{type:good}.as_count()
-      + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"f44372c6fe5452f195a03b7efc1fabbb","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1612964747-updated","created_at":1612964748,"tags":["foo:bar","baz"],"modified_at":1612964749,"type":"metric"},"error":null}'
+    body: '{"data":{"description":"some updated description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"warning":99.0,"warning_display":"99.","target":98.0,"target_display":"98.","timeframe":"30d"},{"target":99.9,"target_display":"99.9","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"48863fe2fe055b36af85d284389c648b","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1615213602-updated","created_at":1615213604,"tags":["foo:bar","baz"],"modified_at":1615213607,"type":"metric"},"error":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -359,87 +319,27 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 10 Feb 2021 13:45:49 GMT
+      - Mon, 08 Mar 2021 14:26:48 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 17-Feb-2021 13:45:49 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - nLnnBNvlCFDECRnZvzDb0z4sAO35G+IMidcAs8vrCKyjvsKWE8Yd9S3n6OjZ1qRN
       X-Dd-Version:
-      - "35.3880781"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "100"
+      - "3000"
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "95"
+      - "2995"
       X-Ratelimit-Reset:
-      - "1"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetSLO
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/slo/f44372c6fe5452f195a03b7efc1fabbb
-    method: GET
-  response:
-    body: '{"data":{"description":"some updated description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"warning":99.0,"warning_display":"99.","target":98.0,"target_display":"98.","timeframe":"30d"},{"target":99.9,"target_display":"99.9","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{type:good}.as_count()
-      + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"f44372c6fe5452f195a03b7efc1fabbb","name":"tf-TestAccDatadogServiceLevelObjective_Basic-local-1612964747-updated","created_at":1612964748,"tags":["foo:bar","baz"],"modified_at":1612964749,"type":"metric"},"error":null}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Wed, 10 Feb 2021 13:45:49 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 17-Feb-2021 13:45:49 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
-      X-Dd-Version:
-      - "35.3880781"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "100"
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "94"
-      X-Ratelimit-Reset:
-      - "1"
+      - "2"
     status: 200 OK
     code: 200
     duration: ""
@@ -452,12 +352,11 @@ interactions:
       Dd-Operation-Id:
       - DeleteSLO
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/slo/f44372c6fe5452f195a03b7efc1fabbb
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/slo/48863fe2fe055b36af85d284389c648b
     method: DELETE
   response:
-    body: '{"data":["f44372c6fe5452f195a03b7efc1fabbb"],"error":null}'
+    body: '{"data":["48863fe2fe055b36af85d284389c648b"],"error":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -468,32 +367,27 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 10 Feb 2021 13:45:50 GMT
+      - Mon, 08 Mar 2021 14:26:50 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 17-Feb-2021 13:45:50 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - B1nwy/pPNqX+q4pQT22cdp1QCexE35IF8qwSHy0Nf7IW0Y881qtn4tXN1lpmzaKc
       X-Dd-Version:
-      - "35.3880781"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "12000"
+      - "3000"
       X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11999"
-      X-Ratelimit-Reset:
       - "10"
+      X-Ratelimit-Remaining:
+      - "2999"
+      X-Ratelimit-Reset:
+      - "1"
     status: 200 OK
     code: 200
     duration: ""
@@ -506,12 +400,11 @@ interactions:
       Dd-Operation-Id:
       - GetSLO
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/slo/f44372c6fe5452f195a03b7efc1fabbb
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/slo/48863fe2fe055b36af85d284389c648b
     method: GET
   response:
-    body: '{"errors": ["SLO not found: f44372c6fe5452f195a03b7efc1fabbb not found"]}'
+    body: '{"errors": ["SLO not found: 48863fe2fe055b36af85d284389c648b not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -522,7 +415,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 10 Feb 2021 13:45:50 GMT
+      - Mon, 08 Mar 2021 14:26:50 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -532,15 +425,15 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3880781"
+      - "35.4051246"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "100"
+      - "3000"
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "99"
+      - "2999"
       X-Ratelimit-Reset:
       - "10"
     status: 404 Not Found

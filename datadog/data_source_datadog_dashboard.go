@@ -1,19 +1,20 @@
 package datadog
 
 import (
-	"fmt"
+	"context"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func dataSourceDatadogDashboard() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about an existing dashboard, for use in other resources. In particular, it can be used in a monitor message to link to a specific dashboard.",
-		Read:        dataSourceDatadogDashboardRead,
+		ReadContext: dataSourceDatadogDashboardRead,
 
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -37,7 +38,7 @@ func dataSourceDatadogDashboard() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -46,7 +47,7 @@ func dataSourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) er
 	dashResponse, _, err := datadogClientV1.DashboardsApi.ListDashboards(authV1).Execute()
 
 	if err != nil {
-		return utils.TranslateClientError(err, "error querying dashboard")
+		return utils.TranslateClientErrorDiag(err, "error querying dashboard")
 	}
 
 	searchedName := d.Get("name")
@@ -59,9 +60,9 @@ func dataSourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) er
 	}
 
 	if len(foundDashes) == 0 {
-		return fmt.Errorf("Couldn't find a dashboard named %s", searchedName)
+		return diag.Errorf("Couldn't find a dashboard named %s", searchedName)
 	} else if len(foundDashes) > 1 {
-		return fmt.Errorf("%s returned more than one dashboard", searchedName)
+		return diag.Errorf("%s returned more than one dashboard", searchedName)
 	}
 
 	d.SetId(foundDashes[0].GetId())

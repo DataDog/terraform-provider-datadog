@@ -10,9 +10,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func pipelineConfigForCreation(uniq string) string {
@@ -242,9 +242,9 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckPipelineDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: pipelineConfigForCreation(pipelineName),
@@ -317,9 +317,9 @@ func TestAccDatadogLogsPipelineEmptyFilterQuery(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckPipelineDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: pipelineConfigWithEmptyFilterQuery(pipelineName),
@@ -337,9 +337,10 @@ func TestAccDatadogLogsPipelineEmptyFilterQuery(t *testing.T) {
 	})
 }
 
-func testAccCheckPipelineExists(accProvider *schema.Provider) resource.TestCheckFunc {
+func testAccCheckPipelineExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -362,9 +363,10 @@ func pipelineExistsChecker(ctx context.Context, s *terraform.State, datadogClien
 	return nil
 }
 
-func testAccCheckPipelineDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func testAccCheckPipelineDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 

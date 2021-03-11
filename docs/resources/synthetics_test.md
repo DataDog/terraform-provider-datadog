@@ -206,9 +206,7 @@ resource "datadog_synthetics_test" "test_browser" {
 - **device_ids** (List of String) Array with the different device IDs used to run the test. Allowed enum values: `laptop_large`, `tablet`, `mobile_small` (only available for `browser` tests).
 - **id** (String) The ID of this resource.
 - **message** (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.
-- **options** (Map of String, Deprecated) **Deprecated.** Define `options_list` blocks instead.
 - **options_list** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
-- **request** (Map of String, Deprecated) The synthetics test request. Required if `type = "api"`. **Deprecated.** Define `request_definition` list with one element instead.
 - **request_basicauth** (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
 - **request_client_certificate** (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
 - **request_definition** (Block List, Max: 1) The synthetics test request. Required if `type = "api"`. (see [below for nested schema](#nestedblock--request_definition))

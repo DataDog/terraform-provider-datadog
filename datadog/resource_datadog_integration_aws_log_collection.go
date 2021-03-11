@@ -1,20 +1,24 @@
 package datadog
 
 import (
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"context"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogIntegrationAwsLogCollection() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog - Amazon Web Services integration log collection resource. This can be used to manage which AWS services logs are collected from for an account.",
-		Create:      resourceDatadogIntegrationAwsLogCollectionCreate,
-		Read:        resourceDatadogIntegrationAwsLogCollectionRead,
-		Update:      resourceDatadogIntegrationAwsLogCollectionUpdate,
-		Delete:      resourceDatadogIntegrationAwsLogCollectionDelete,
+		Description:   "Provides a Datadog - Amazon Web Services integration log collection resource. This can be used to manage which AWS services logs are collected from for an account.",
+		CreateContext: resourceDatadogIntegrationAwsLogCollectionCreate,
+		ReadContext:   resourceDatadogIntegrationAwsLogCollectionRead,
+		UpdateContext: resourceDatadogIntegrationAwsLogCollectionUpdate,
+		DeleteContext: resourceDatadogIntegrationAwsLogCollectionDelete,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogIntegrationAwsLogCollectionImport,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -48,7 +52,7 @@ func buildDatadogIntegrationAwsLogCollectionStruct(d *schema.ResourceData) *data
 	return enableLogCollectionServices
 }
 
-func resourceDatadogIntegrationAwsLogCollectionCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -58,15 +62,15 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(d *schema.ResourceData, me
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
 	_, _, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1).Body(*enableLogCollectionServices).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error enabling log collection services for Amazon Web Services integration account")
+		return utils.TranslateClientErrorDiag(err, "error enabling log collection services for Amazon Web Services integration account")
 	}
 
 	d.SetId(accountID)
 
-	return resourceDatadogIntegrationAwsLogCollectionRead(d, meta)
+	return resourceDatadogIntegrationAwsLogCollectionRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationAwsLogCollectionUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -74,13 +78,13 @@ func resourceDatadogIntegrationAwsLogCollectionUpdate(d *schema.ResourceData, me
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
 	_, _, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1).Body(*enableLogCollectionServices).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating log collection services for Amazon Web Services integration account")
+		return utils.TranslateClientErrorDiag(err, "error updating log collection services for Amazon Web Services integration account")
 	}
 
-	return resourceDatadogIntegrationAwsLogCollectionRead(d, meta)
+	return resourceDatadogIntegrationAwsLogCollectionRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationAwsLogCollectionRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationAwsLogCollectionRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -89,7 +93,7 @@ func resourceDatadogIntegrationAwsLogCollectionRead(d *schema.ResourceData, meta
 
 	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
 	if err != nil {
-		return utils.TranslateClientError(err, "error getting log collection for aws integration.")
+		return utils.TranslateClientErrorDiag(err, "error getting log collection for aws integration.")
 	}
 	for _, logCollection := range logCollections {
 		if logCollection.GetAccountId() == accountID {
@@ -103,7 +107,7 @@ func resourceDatadogIntegrationAwsLogCollectionRead(d *schema.ResourceData, meta
 	return nil
 }
 
-func resourceDatadogIntegrationAwsLogCollectionDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationAwsLogCollectionDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -114,15 +118,8 @@ func resourceDatadogIntegrationAwsLogCollectionDelete(d *schema.ResourceData, me
 	_, _, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1).Body(*deleteLogCollectionServices).Execute()
 
 	if err != nil {
-		return utils.TranslateClientError(err, "error disabling Amazon Web Services log collection")
+		return utils.TranslateClientErrorDiag(err, "error disabling Amazon Web Services log collection")
 	}
 
 	return nil
-}
-
-func resourceDatadogIntegrationAwsLogCollectionImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogIntegrationAwsLogCollectionRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }

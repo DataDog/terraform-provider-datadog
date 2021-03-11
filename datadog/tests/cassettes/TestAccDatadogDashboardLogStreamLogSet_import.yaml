@@ -13,22 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "6861333252645937734"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "4387645270642016500"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wq7-7aa-cne","title":"Acceptance
-      Test Log Stream Widget Dashboard","url":"/dashboard/wq7-7aa-cne/acceptance-test-log-stream-widget-dashboard","created_at":"2020-12-31T14:49:31.634951+00:00","modified_at":"2020-12-31T14:49:31.634951+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log
-      Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error
-      env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8175168402995632}],"layout_type":"free"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"f86-m2h-im2","title":"Acceptance Test Log Stream Widget Dashboard","url":"/dashboard/f86-m2h-im2/acceptance-test-log-stream-widget-dashboard","created_at":"2021-03-08T14:39:02.499080+00:00","modified_at":"2021-03-08T14:39:02.499080+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7213790263518865}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -39,12 +28,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:49:34 GMT
+      - Mon, 08 Mar 2021 14:39:05 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:49:31 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -52,9 +38,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - ZTMib3S/rZeXw/RhaeaehRILC7QJAaERfyf3m4/am8FN44e9rxbkPcmk4YzKBISj
+      - bgHykj7A9bfZx0Y5ZO3swhhp5tGUSNJHqFWR868+qg087CYrDOd5hQslC+noiEtH
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051376"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -69,22 +55,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "257877169991355950"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "4387645270642016500"
-    url: https://api.datadoghq.com/api/v1/dashboard/wq7-7aa-cne
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/f86-m2h-im2
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wq7-7aa-cne","title":"Acceptance
-      Test Log Stream Widget Dashboard","url":"/dashboard/wq7-7aa-cne/acceptance-test-log-stream-widget-dashboard","created_at":"2020-12-31T14:49:31.634951+00:00","modified_at":"2020-12-31T14:49:31.634951+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log
-      Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error
-      env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8175168402995632}],"layout_type":"free"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"f86-m2h-im2","title":"Acceptance Test Log Stream Widget Dashboard","url":"/dashboard/f86-m2h-im2/acceptance-test-log-stream-widget-dashboard","created_at":"2021-03-08T14:39:02.499080+00:00","modified_at":"2021-03-08T14:39:02.499080+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7213790263518865}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -95,12 +70,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:49:34 GMT
+      - Mon, 08 Mar 2021 14:39:06 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:49:34 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -108,9 +80,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - GzqFsJiHmsMG2ZkgPZxP4KU7BbP1543ieTDBlTOcSv7mMVZ5sYoywme9ykeCrzfU
+      - tpRCH6w417YjBovRJ8VmtuXmNONVYiRp2c8d2AxjPdGBn8PCtgG4vAztrx3qUZAN
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051376"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -125,22 +97,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4424712151102432629"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "4387645270642016500"
-    url: https://api.datadoghq.com/api/v1/dashboard/wq7-7aa-cne
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/f86-m2h-im2
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wq7-7aa-cne","title":"Acceptance
-      Test Log Stream Widget Dashboard","url":"/dashboard/wq7-7aa-cne/acceptance-test-log-stream-widget-dashboard","created_at":"2020-12-31T14:49:31.634951+00:00","modified_at":"2020-12-31T14:49:31.634951+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log
-      Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error
-      env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8175168402995632}],"layout_type":"free"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"f86-m2h-im2","title":"Acceptance Test Log Stream Widget Dashboard","url":"/dashboard/f86-m2h-im2/acceptance-test-log-stream-widget-dashboard","created_at":"2021-03-08T14:39:02.499080+00:00","modified_at":"2021-03-08T14:39:02.499080+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7213790263518865}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -151,12 +112,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:49:41 GMT
+      - Mon, 08 Mar 2021 14:39:07 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:49:41 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -164,177 +122,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Eb2J7DZKGMCxUULFPVCE5N014uh3tvnvHgnaA7NVroaoqvWd6z7v+RZklq5100Rp
+      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
       X-Dd-Version:
-      - "35.3622023"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4968913752227101242"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "4387645270642016500"
-    url: https://api.datadoghq.com/api/v1/dashboard/wq7-7aa-cne
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wq7-7aa-cne","title":"Acceptance
-      Test Log Stream Widget Dashboard","url":"/dashboard/wq7-7aa-cne/acceptance-test-log-stream-widget-dashboard","created_at":"2020-12-31T14:49:31.634951+00:00","modified_at":"2020-12-31T14:49:31.634951+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log
-      Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error
-      env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8175168402995632}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 31 Dec 2020 14:49:45 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:49:45 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - KZy0Z61AelGSMiW0wwPuJyNwjEfJ0APCpzGlt7XM1KaE6e4cHzuLEBcvgVZz4sZ0
-      X-Dd-Version:
-      - "35.3622023"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4315255607273291556"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "4387645270642016500"
-    url: https://api.datadoghq.com/api/v1/dashboard/wq7-7aa-cne
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wq7-7aa-cne","title":"Acceptance
-      Test Log Stream Widget Dashboard","url":"/dashboard/wq7-7aa-cne/acceptance-test-log-stream-widget-dashboard","created_at":"2020-12-31T14:49:31.634951+00:00","modified_at":"2020-12-31T14:49:31.634951+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log
-      Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error
-      env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8175168402995632}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 31 Dec 2020 14:49:46 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:49:46 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - d31ebXSBBNIfMRbwTUSeNjY3IxejCQxGK8GB7MdTMNs7w40n94in+BXmkLo5BsFJ
-      X-Dd-Version:
-      - "35.3622023"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "8371096725741732417"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "4387645270642016500"
-    url: https://api.datadoghq.com/api/v1/dashboard/wq7-7aa-cne
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in
-      Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wq7-7aa-cne","title":"Acceptance
-      Test Log Stream Widget Dashboard","url":"/dashboard/wq7-7aa-cne/acceptance-test-log-stream-widget-dashboard","created_at":"2020-12-31T14:49:31.634951+00:00","modified_at":"2020-12-31T14:49:31.634951+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"logset":"19","sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log
-      Stream","title_align":"right","message_display":"expanded-md","indexes":[],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error
-      env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8175168402995632}],"layout_type":"free"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 31 Dec 2020 14:49:48 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:49:48 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 5H2EXEXOPQC4s7BfWBFjlM6rKywFNh1Cf33eK1xYuPFdBfR+3y2m7Dyr75gZ4kw1
-      X-Dd-Version:
-      - "35.3622023"
+      - "35.4051376"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -349,18 +139,11 @@ interactions:
       Dd-Operation-Id:
       - DeleteDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "8845490811356218198"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "4387645270642016500"
-    url: https://api.datadoghq.com/api/v1/dashboard/wq7-7aa-cne
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/f86-m2h-im2
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"wq7-7aa-cne"}'
+    body: '{"deleted_dashboard_id":"f86-m2h-im2"}'
     headers:
       Cache-Control:
       - no-cache
@@ -371,12 +154,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:49:52 GMT
+      - Mon, 08 Mar 2021 14:39:07 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:49:52 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -384,9 +164,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - D+hkk7e2X3EuNxftUaY91jzWGBfEd7A+eDYGxWMtn/TmtYeM4TBuB2YAuVObC6zB
+      - vdJ3/nHEY1ioXQ6pQrBVvsQK1s4yyc+wufBMPSoXql71qZVuP/xMdtNo6DafhOAk
       X-Dd-Version:
-      - "34.3622270"
+      - "35.4051376"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -401,18 +181,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "5918838692154937659"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "4387645270642016500"
-    url: https://api.datadoghq.com/api/v1/dashboard/wq7-7aa-cne
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/f86-m2h-im2
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID wq7-7aa-cne not found"]}'
+    body: '{"errors": ["Dashboard with ID f86-m2h-im2 not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -423,7 +196,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:49:53 GMT
+      - Mon, 08 Mar 2021 14:39:08 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -433,7 +206,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4051376"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found
