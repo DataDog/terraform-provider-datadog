@@ -150,10 +150,10 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 						"datadog_service_level_objective.foo", "thresholds.2.target", "99"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "tags.#", "2"),
-					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "tags.0", "baz"),
-					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "tags.1", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
 				),
 			},
 			{
@@ -191,10 +191,10 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 						"datadog_service_level_objective.foo", "thresholds.2.target", "99.9"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "tags.#", "2"),
-					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "tags.0", "baz"),
-					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "tags.1", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
 				),
 			},
 		},

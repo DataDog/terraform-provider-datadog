@@ -36,13 +36,11 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 						"datadog_role.foo",
 						"data.datadog_permissions.foo",
 						"permissions.admin",
-						0,
 					),
 					testCheckRolePermission(
 						"datadog_role.foo",
 						"data.datadog_permissions.foo",
 						"permissions.standard",
-						1,
 					),
 				),
 			},
@@ -56,13 +54,11 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 						"datadog_role.foo",
 						"data.datadog_permissions.foo",
 						"permissions.logs_read_index_data",
-						0,
 					),
 					testCheckRolePermission(
 						"datadog_role.foo",
 						"data.datadog_permissions.foo",
 						"permissions.standard",
-						1,
 					),
 				),
 			},
@@ -93,12 +89,14 @@ func TestAccDatadogRole_InvalidPerm(t *testing.T) {
 	})
 }
 
-func testCheckRolePermission(rolename string, permissionsSource string, permissionName string, index int) resource.TestCheckFunc {
+func testCheckRolePermission(rolename string, permissionsSource string, permissionName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rootModule := s.RootModule()
 		permissionID := rootModule.Resources[permissionsSource].Primary.Attributes[permissionName]
 
-		return resource.TestCheckResourceAttr(rolename, fmt.Sprintf("permission.%v.id", index), permissionID)(s)
+		return resource.TestCheckTypeSetElemNestedAttrs(rolename, "permission.*", map[string]string{
+			"id": permissionID,
+		})(s)
 	}
 }
 
