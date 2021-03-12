@@ -3,7 +3,6 @@ package datadog
 import (
 	"fmt"
 	"regexp"
-	"strings"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -47,21 +46,11 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"metric_name": {
-				Description: "The metric name for this resource.",
-				Type:        schema.TypeString,
-				ForceNew:    true,
-				Required:    true,
-				ValidateFunc: func(val interface{}, k string) (warns []string, errs []error) {
-					v := val.(string)
-					regExpWarns, regExpErrs := validation.StringMatch(regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\\.\\_]*$`), "metric name must be valid")(v, k)
-					lenWarns, lenErrs := validation.StringLenBetween(1, 200)(v, k)
-					warns = append(warns, regExpWarns...)
-					warns = append(warns, lenWarns...)
-					errs = append(errs, regExpErrs...)
-					errs = append(errs, lenErrs...)
-
-					return
-				},
+				Description:  "The metric name for this resource.",
+				Type:         schema.TypeString,
+				ForceNew:     true,
+				Required:     true,
+				ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\.\_]*$`), "metric name must be valid"), validation.StringLenBetween(1, 200)),
 			},
 			"metric_type": {
 				Description:  "The metric's type. This field can't be updated after creation. Allowed enum values: gauge,count,distribution.",
@@ -74,22 +63,8 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				Description: "A list of tag keys that will be queryable for your metric.",
 				Type:        schema.TypeSet,
 				Elem: &schema.Schema{
-					Type: schema.TypeString,
-					ValidateFunc: func(val interface{}, k string) (warns []string, errs []error) {
-						v := val.(string)
-						regExpWarns, regExpErrs := validation.StringMatch(regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\.\-\_:\/]*$`), "tags must be valid")(v, k)
-						lenWarns, lenErrs := validation.StringLenBetween(1, 200)(v, k)
-						warns = append(warns, regExpWarns...)
-						warns = append(warns, lenWarns...)
-						errs = append(errs, regExpErrs...)
-						errs = append(errs, lenErrs...)
-
-						if strings.HasSuffix(v, ":") {
-							errs = append(errs, fmt.Errorf("tag ends in : which is not allowed"))
-						}
-
-						return
-					},
+					Type:         schema.TypeString,
+					ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\.\-\_:\/]*[^:]$`), "tags must be valid"), validation.StringLenBetween(1, 200)),
 				},
 				Required: true,
 			},
