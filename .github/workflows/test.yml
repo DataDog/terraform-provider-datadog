@@ -61,7 +61,7 @@ jobs:
             - name: Test Environtment variable is set
               run: echo $TF_ACC_TERRAFORM_PATH
             - name: Test
-              run: TF_ACC_TERRAFORM_PATH=$TF_ACC_TERRAFORM_PATH make testall
+              run: make testall
               env:
                   RECORD: false
             - name: Check Docs Are Up To Date
