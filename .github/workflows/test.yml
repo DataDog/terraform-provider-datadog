@@ -37,16 +37,16 @@ jobs:
               run: |
                   git config --global core.autocrlf false
                   git config --global core.eol lf
-#            - name: Install Go
-#              uses: actions/setup-go@v2
-#              with:
-#                  go-version: 1.15
-#            - name: Checkout code
-#              uses: actions/checkout@v2
-#            - name: Vet
-#              run: make vet
-#            - name: License Check
-#              run: make license-check
+            - name: Install Go
+              uses: actions/setup-go@v2
+              with:
+                  go-version: 1.15
+            - name: Checkout code
+              uses: actions/checkout@v2
+            - name: Vet
+              run: make vet
+            - name: License Check
+              run: make license-check
             - name: Setup terraform CLI
               uses: hashicorp/setup-terraform@v1
               with:
@@ -60,9 +60,9 @@ jobs:
               run: echo ("TF_ACC_TERRAFORM_PATH=" + (Get-Command terraform).Path) >> $env:GITHUB_ENV
             - name: Test Environtment variable is set
               run: echo $TF_ACC_TERRAFORM_PATH
-#            - name: Test
-#              run: make testall
-#              env:
-#                  RECORD: false
+            - name: Test
+              run: TF_ACC_TERRAFORM_PATH=$TF_ACC_TERRAFORM_PATH make testall
+              env:
+                  RECORD: false
             - name: Check Docs Are Up To Date
               run: make check-docs
