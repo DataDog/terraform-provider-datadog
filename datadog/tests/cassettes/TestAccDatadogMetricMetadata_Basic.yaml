@@ -28,7 +28,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:25:15 GMT
+      - Fri, 12 Mar 2021 22:12:02 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -38,9 +38,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - PerH/5NOzidFkzo4zxAUv9YYS0OkDJJ3ZeM17kc2ObF+fBfwmem2jExaJxvOrw0t
+      - GaBrMp9hG62dX6k8YEI10yL1utZ779uo3r2arahiBdRifYlH17HMqEEnAT7O3yNi
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -50,12 +50,12 @@ interactions:
       X-Ratelimit-Remaining:
       - "1999"
       X-Ratelimit-Reset:
-      - "45"
+      - "58"
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"series":[{"metric":"foo","points":[[1615213515,1]]}]}'
+    body: '{"series":[{"metric":"foo","points":[[1615587121,1]]}]}'
     form: {}
     headers:
       Content-Type:
@@ -76,7 +76,7 @@ interactions:
       Content-Type:
       - text/json
       Date:
-      - Mon, 08 Mar 2021 14:25:16 GMT
+      - Fri, 12 Mar 2021 22:12:02 GMT
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
@@ -110,7 +110,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:25:16 GMT
+      - Fri, 12 Mar 2021 22:12:02 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -120,9 +120,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - njEJ3V9BZ+Y6yTlr4/HSRLMBNQjDhdIZp5Lvdk1mKr2gcsDLYBySEuS85QJfBtt6
+      - Wc/Ep2sab8gerQUoP4aNzYJ/CkbJ9cGZXKf0AQoXNQakZH0hTqKwiThRHWgaxUCj
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -152,7 +152,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:25:16 GMT
+      - Fri, 12 Mar 2021 22:12:03 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -162,9 +162,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - aQZnfvMCSfrK+ln5DuM/5TcS8J+tK7l2fBjMT6d87X6rWVd4luPRyFyPIlTsGk9t
+      - QvFFvarDH9XhNP9g4E/IvNvT5d9KA0ajsyvcdZzG5WNQR1MhY50t8e/AHeaeqfIi
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

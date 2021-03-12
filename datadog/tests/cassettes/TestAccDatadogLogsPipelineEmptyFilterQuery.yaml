@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"filter":{"query":""},"is_enabled":true,"name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1615213513","processors":[{"is_enabled":true,"name":"","sources":["redis.severity"],"type":"status-remapper"}]}
+      {"filter":{"query":""},"is_enabled":true,"name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1615587119","processors":[{"is_enabled":true,"name":"","sources":["redis.severity"],"type":"status-remapper"}]}
     form: {}
     headers:
       Accept:
@@ -17,7 +17,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines
     method: POST
   response:
-    body: '{"id":"-Zr4tek2SM6mOyrjHBR-vQ","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1615213513","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"}]}'
+    body: '{"id":"Ui5aAYcPTr6nMzP2PB6VOg","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1615587119","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Mon, 08 Mar 2021 14:25:13 GMT
+      - Fri, 12 Mar 2021 22:12:00 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -40,9 +40,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
+      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -50,9 +50,9 @@ interactions:
       X-Ratelimit-Period:
       - "300"
       X-Ratelimit-Remaining:
-      - "291"
+      - "288"
       X-Ratelimit-Reset:
-      - "287"
+      - "180"
     status: 200 OK
     code: 200
     duration: ""
@@ -66,10 +66,10 @@ interactions:
       - GetLogsPipeline
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/-Zr4tek2SM6mOyrjHBR-vQ
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Ui5aAYcPTr6nMzP2PB6VOg
     method: GET
   response:
-    body: '{"id":"-Zr4tek2SM6mOyrjHBR-vQ","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1615213513","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"}]}'
+    body: '{"id":"Ui5aAYcPTr6nMzP2PB6VOg","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1615587119","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -82,7 +82,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Mon, 08 Mar 2021 14:25:14 GMT
+      - Fri, 12 Mar 2021 22:12:00 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -92,9 +92,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - SY1h8ScsWq+kYmtbh63ltMLFAZsQjqfrgvdfAoRX+9TzT1sgMBRYaFRwfWWRRe9a
+      - /L+SFFO+m1pPY+hRCpk5325fvfrNl0KmiquUNJolBN/5hu3HIwflqjZSbJ6NxDFG
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -102,9 +102,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4972"
+      - "4959"
       X-Ratelimit-Reset:
-      - "2086"
+      - "2880"
     status: 200 OK
     code: 200
     duration: ""
@@ -118,10 +118,10 @@ interactions:
       - GetLogsPipeline
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/-Zr4tek2SM6mOyrjHBR-vQ
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Ui5aAYcPTr6nMzP2PB6VOg
     method: GET
   response:
-    body: '{"id":"-Zr4tek2SM6mOyrjHBR-vQ","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1615213513","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"}]}'
+    body: '{"id":"Ui5aAYcPTr6nMzP2PB6VOg","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1615587119","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -134,7 +134,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Mon, 08 Mar 2021 14:25:14 GMT
+      - Fri, 12 Mar 2021 22:12:01 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -144,9 +144,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - l4HFlaRP3QwYSqoGKhzbYfv7zgkK63HIRR7YkyVYZspq0lGjjTBwoK8V/alf+XYt
+      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -154,9 +154,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4971"
+      - "4958"
       X-Ratelimit-Reset:
-      - "2086"
+      - "2879"
     status: 200 OK
     code: 200
     duration: ""
@@ -170,7 +170,7 @@ interactions:
       - DeleteLogsPipeline
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/-Zr4tek2SM6mOyrjHBR-vQ
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Ui5aAYcPTr6nMzP2PB6VOg
     method: DELETE
   response:
     body: '{}'
@@ -188,7 +188,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Mon, 08 Mar 2021 14:25:15 GMT
+      - Fri, 12 Mar 2021 22:12:01 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -196,9 +196,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - /L+SFFO+m1pPY+hRCpk5325fvfrNl0KmiquUNJolBN/5hu3HIwflqjZSbJ6NxDFG
+      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -206,9 +206,9 @@ interactions:
       X-Ratelimit-Period:
       - "300"
       X-Ratelimit-Remaining:
-      - "290"
+      - "287"
       X-Ratelimit-Reset:
-      - "285"
+      - "179"
     status: 200 OK
     code: 200
     duration: ""
@@ -222,7 +222,7 @@ interactions:
       - GetLogsPipeline
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/-Zr4tek2SM6mOyrjHBR-vQ
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Ui5aAYcPTr6nMzP2PB6VOg
     method: GET
   response:
     body: '{"error":{"code":"InvalidArgument","message":"Non existing pipeline"}}'
@@ -238,7 +238,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:25:15 GMT
+      - Fri, 12 Mar 2021 22:12:01 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -246,7 +246,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -254,9 +254,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4970"
+      - "4957"
       X-Ratelimit-Reset:
-      - "2085"
+      - "2879"
     status: 400 Bad Request
     code: 400
     duration: ""

@@ -2,7 +2,7 @@
 version: 1
 interactions:
 - request:
-    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615213467","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615213467_2","service_key":"*****"}],"subdomain":"testdomain","schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"api_token":"secret"}'
+    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615587070","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615587070_2","service_key":"*****"}],"subdomain":"testdomain","schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"api_token":"secret"}'
     form: {}
     headers:
       Content-Type:
@@ -21,15 +21,15 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Mon, 08 Mar 2021 14:24:28 GMT
+      - Fri, 12 Mar 2021 22:11:11 GMT
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
+      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -44,7 +44,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615213467","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615213467_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615587070","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615587070_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -55,7 +55,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:24:29 GMT
+      - Fri, 12 Mar 2021 22:11:12 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -65,9 +65,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
+      - 25u1gDlL724DHllbjFT4BhOLorBTilh+aah2uWAUEjFC/+rjczJdiyWrV/HwLwe/
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -82,7 +82,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615213467","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615213467_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615587070","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615587070_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -93,7 +93,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:24:29 GMT
+      - Fri, 12 Mar 2021 22:11:13 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -103,9 +103,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
+      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -120,7 +120,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615213467","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615213467_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615587070","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615587070_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -131,7 +131,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:24:30 GMT
+      - Fri, 12 Mar 2021 22:11:13 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -141,9 +141,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - mNzaoDhdDKO7t4QSrAe5X7pHd0bJND187D+vRbwoluXouE2m1UaQQX0RGCvRpLVE
+      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -158,7 +158,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615213467","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615213467_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615587070","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerduty_TwoServices_local_1615587070_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -169,7 +169,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:24:30 GMT
+      - Fri, 12 Mar 2021 22:11:14 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -179,9 +179,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - HbtaOKlJ6OCrx9tMXO6ivMTrEM+g0c93HDp08trmOmgdHozC5J+vn10F0H4WPjCU
+      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

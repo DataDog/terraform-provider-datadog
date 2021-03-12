@@ -28,7 +28,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:25:17 GMT
+      - Fri, 12 Mar 2021 22:12:04 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -38,9 +38,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 35aWwkkeMlrbnPcnWKFIhnE7YBc2QjIlKXkRgSkkNQKSLszPofRO8Hmkvy142+yn
+      - E+1VETRHejJtZU2J4RKwTITCVJud3d6AfD2N6ITXOWwbuRBfIAeHdqJVTyTstMc7
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -50,12 +50,12 @@ interactions:
       X-Ratelimit-Remaining:
       - "1998"
       X-Ratelimit-Reset:
-      - "43"
+      - "56"
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"series":[{"metric":"foo","points":[[1615213517,1]]}]}'
+    body: '{"series":[{"metric":"foo","points":[[1615587123,1]]}]}'
     form: {}
     headers:
       Content-Type:
@@ -76,7 +76,7 @@ interactions:
       Content-Type:
       - text/json
       Date:
-      - Mon, 08 Mar 2021 14:25:18 GMT
+      - Fri, 12 Mar 2021 22:12:04 GMT
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
@@ -110,7 +110,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:25:18 GMT
+      - Fri, 12 Mar 2021 22:12:04 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -120,9 +120,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 3j0u2GTfQFgb2EI58bre0n8B3mGgD5fDMymGtXFH6VojGXuCGLuQFPAl8Vx6fpNK
+      - Slfd7EQ+iaUr68gMF4Wevg1YeynmFd00Ip8u0r10nxghAjG3Z4J7Vily2m11tJTZ
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -152,7 +152,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:25:18 GMT
+      - Fri, 12 Mar 2021 22:12:05 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -162,9 +162,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - iPuhadL4u/5WRsVD4T7SlKc+tTJmhpZ/y4ZbiayeZ+PPqEyfa4V5SO8krdhBw8qd
+      - Wc/Ep2sab8gerQUoP4aNzYJ/CkbJ9cGZXKf0AQoXNQakZH0hTqKwiThRHWgaxUCj
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -194,7 +194,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:25:19 GMT
+      - Fri, 12 Mar 2021 22:12:05 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -204,9 +204,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - DrYqUhytaoj/avwuX8H0GnpvJiquvexzczrL8w3wuq4ycX0CCaITsjZzzZBv5i6m
+      - GaBrMp9hG62dX6k8YEI10yL1utZ779uo3r2arahiBdRifYlH17HMqEEnAT7O3yNi
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -239,7 +239,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:25:19 GMT
+      - Fri, 12 Mar 2021 22:12:06 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -249,9 +249,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - QvFFvarDH9XhNP9g4E/IvNvT5d9KA0ajsyvcdZzG5WNQR1MhY50t8e/AHeaeqfIi
+      - 3j0u2GTfQFgb2EI58bre0n8B3mGgD5fDMymGtXFH6VojGXuCGLuQFPAl8Vx6fpNK
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -261,7 +261,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "1997"
       X-Ratelimit-Reset:
-      - "41"
+      - "54"
     status: 200 OK
     code: 200
     duration: ""
@@ -289,7 +289,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:25:19 GMT
+      - Fri, 12 Mar 2021 22:12:06 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -301,7 +301,7 @@ interactions:
       X-Dd-Debug:
       - ap4u79DStmmUaZZKftsKVSCatJwzXQobFKbE6QNwYRTAqaaJhfQIZxiNyELpTVRT
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -331,7 +331,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:25:20 GMT
+      - Fri, 12 Mar 2021 22:12:06 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -341,9 +341,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - u7khu7JWxdJTGsRE0CXxvBeGi/DzQgOhZQ4Ytc/EgZ+ev1yZY/hRPDSHIY2Qy/gn
+      - 3D9FJIDKlXJbOW5I4xmTHke7dEGyl6YmfhwBbIfTKq1A+ePdmIVops+3OhJ98ybm
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

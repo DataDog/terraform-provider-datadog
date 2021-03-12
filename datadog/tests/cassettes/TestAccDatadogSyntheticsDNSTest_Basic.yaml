@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"config":{"assertions":[{"operator":"is","property":"A","target":"0.0.0.0","type":"recordSome"}],"configVariables":[],"request":{"dnsServer":"8.8.8.8","host":"https://www.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1615213631","options":{"min_location_failed":1,"tick_every":60},"status":"paused","subtype":"dns","tags":["foo:bar","baz"],"type":"api"}
+      {"config":{"assertions":[{"operator":"is","property":"A","target":"0.0.0.0","type":"recordSome"}],"configVariables":[],"request":{"dnsServer":"8.8.8.8","host":"https://www.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1615587226","options":{"min_location_failed":1,"tick_every":60},"status":"paused","subtype":"dns","tags":["foo:bar","baz"],"type":"api"}
     form: {}
     headers:
       Accept:
@@ -17,7 +17,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/synthetics/tests
     method: POST
   response:
-    body: '{"status":"paused","public_id":"mur-m9y-idg","tags":["foo:bar","baz"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1615213631","monitor_id":31719622,"type":"api","created_at":"2021-03-08T14:27:13.343737+00:00","modified_at":"2021-03-08T14:27:13.343737+00:00","subtype":"dns","config":{"variables":[],"request":{"host":"https://www.datadoghq.com","dnsServer":"8.8.8.8"},"assertions":[{"operator":"is","property":"A","type":"recordSome","target":"0.0.0.0"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"z4r-zye-7b6","tags":["foo:bar","baz"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1615587226","monitor_id":32039264,"type":"api","created_at":"2021-03-12T22:13:48.850952+00:00","modified_at":"2021-03-12T22:13:48.850952+00:00","subtype":"dns","config":{"variables":[],"request":{"host":"https://www.datadoghq.com","dnsServer":"8.8.8.8"},"assertions":[{"operator":"is","property":"A","type":"recordSome","target":"0.0.0.0"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -28,7 +28,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:27:13 GMT
+      - Fri, 12 Mar 2021 22:13:49 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -38,9 +38,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
+      - mNzaoDhdDKO7t4QSrAe5X7pHd0bJND187D+vRbwoluXouE2m1UaQQX0RGCvRpLVE
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -48,9 +48,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "119"
+      - "117"
       X-Ratelimit-Reset:
-      - "47"
+      - "12"
     status: 200 OK
     code: 200
     duration: ""
@@ -64,10 +64,10 @@ interactions:
       - GetTest
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/mur-m9y-idg
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/z4r-zye-7b6
     method: GET
   response:
-    body: '{"status":"paused","public_id":"mur-m9y-idg","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1615213631","monitor_id":31719622,"type":"api","subtype":"dns","config":{"variables":[],"request":{"host":"https://www.datadoghq.com","dnsServer":"8.8.8.8"},"assertions":[{"operator":"is","property":"A","type":"recordSome","target":"0.0.0.0"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"z4r-zye-7b6","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1615587226","monitor_id":32039264,"type":"api","subtype":"dns","config":{"variables":[],"request":{"host":"https://www.datadoghq.com","dnsServer":"8.8.8.8"},"assertions":[{"operator":"is","property":"A","type":"recordSome","target":"0.0.0.0"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -78,7 +78,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:27:13 GMT
+      - Fri, 12 Mar 2021 22:13:49 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -88,9 +88,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - gYZcaADwbKcv7Hm19HJx6WsLoKuOijDWAt2viPeCfWqUgyKY+9e1xZdmMJeXV3YV
+      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -98,9 +98,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "999"
+      - "991"
       X-Ratelimit-Reset:
-      - "47"
+      - "11"
     status: 200 OK
     code: 200
     duration: ""
@@ -114,10 +114,10 @@ interactions:
       - GetTest
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/mur-m9y-idg
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/z4r-zye-7b6
     method: GET
   response:
-    body: '{"status":"paused","public_id":"mur-m9y-idg","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1615213631","monitor_id":31719622,"type":"api","subtype":"dns","config":{"variables":[],"request":{"host":"https://www.datadoghq.com","dnsServer":"8.8.8.8"},"assertions":[{"operator":"is","property":"A","type":"recordSome","target":"0.0.0.0"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"z4r-zye-7b6","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1615587226","monitor_id":32039264,"type":"api","subtype":"dns","config":{"variables":[],"request":{"host":"https://www.datadoghq.com","dnsServer":"8.8.8.8"},"assertions":[{"operator":"is","property":"A","type":"recordSome","target":"0.0.0.0"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -128,7 +128,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:27:13 GMT
+      - Fri, 12 Mar 2021 22:13:49 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -138,9 +138,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
+      - HbtaOKlJ6OCrx9tMXO6ivMTrEM+g0c93HDp08trmOmgdHozC5J+vn10F0H4WPjCU
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -148,9 +148,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "998"
+      - "990"
       X-Ratelimit-Reset:
-      - "47"
+      - "11"
     status: 200 OK
     code: 200
     duration: ""
@@ -164,10 +164,10 @@ interactions:
       - GetTest
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/mur-m9y-idg
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/z4r-zye-7b6
     method: GET
   response:
-    body: '{"status":"paused","public_id":"mur-m9y-idg","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1615213631","monitor_id":31719622,"type":"api","subtype":"dns","config":{"variables":[],"request":{"host":"https://www.datadoghq.com","dnsServer":"8.8.8.8"},"assertions":[{"operator":"is","property":"A","type":"recordSome","target":"0.0.0.0"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"z4r-zye-7b6","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1615587226","monitor_id":32039264,"type":"api","subtype":"dns","config":{"variables":[],"request":{"host":"https://www.datadoghq.com","dnsServer":"8.8.8.8"},"assertions":[{"operator":"is","property":"A","type":"recordSome","target":"0.0.0.0"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -178,7 +178,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:27:14 GMT
+      - Fri, 12 Mar 2021 22:13:50 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -188,9 +188,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Um4CoU685QqAscnxhS5BD+goWu2yX1Jd4zCfGzSsEvPPIm1qURZaF8dlLl/OEY4I
+      - HbtaOKlJ6OCrx9tMXO6ivMTrEM+g0c93HDp08trmOmgdHozC5J+vn10F0H4WPjCU
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -198,15 +198,15 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "997"
+      - "986"
       X-Ratelimit-Reset:
-      - "46"
+      - "10"
     status: 200 OK
     code: 200
     duration: ""
 - request:
     body: |
-      {"public_ids":["mur-m9y-idg"]}
+      {"public_ids":["z4r-zye-7b6"]}
     form: {}
     headers:
       Accept:
@@ -216,11 +216,11 @@ interactions:
       Dd-Operation-Id:
       - DeleteTests
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
     method: POST
   response:
-    body: '{"deleted_tests":[{"deleted_at":"2021-03-08T14:27:15.851100+00:00","public_id":"mur-m9y-idg"}]}'
+    body: '{"deleted_tests":[{"deleted_at":"2021-03-12T22:13:52.388023+00:00","public_id":"z4r-zye-7b6"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -231,7 +231,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:27:15 GMT
+      - Fri, 12 Mar 2021 22:13:52 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -241,9 +241,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - vdJ3/nHEY1ioXQ6pQrBVvsQK1s4yyc+wufBMPSoXql71qZVuP/xMdtNo6DafhOAk
+      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -251,9 +251,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "119"
+      - "117"
       X-Ratelimit-Reset:
-      - "45"
+      - "8"
     status: 200 OK
     code: 200
     duration: ""
@@ -266,8 +266,8 @@ interactions:
       Dd-Operation-Id:
       - GetTest
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/mur-m9y-idg
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/z4r-zye-7b6
     method: GET
   response:
     body: '{"errors": ["Synthetics test not found"]}'
@@ -281,7 +281,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:27:16 GMT
+      - Fri, 12 Mar 2021 22:13:52 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -291,7 +291,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -299,9 +299,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "996"
+      - "979"
       X-Ratelimit-Reset:
-      - "44"
+      - "8"
     status: 404 Not Found
     code: 404
     duration: ""

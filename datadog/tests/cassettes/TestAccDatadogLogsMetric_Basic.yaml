@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"data":{"attributes":{"compute":{"aggregation_type":"distribution","path":"@duration"},"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}]},"id":"tf_TestAccDatadogLogsMetric_Basic_local_1615213532","type":"logs_metrics"}}
+      {"data":{"attributes":{"compute":{"aggregation_type":"distribution","path":"@duration"},"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}]},"id":"tf_TestAccDatadogLogsMetric_Basic_local_1615587158","type":"logs_metrics"}}
     form: {}
     headers:
       Accept:
@@ -13,11 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateLogsMetric
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/metrics
     method: POST
   response:
-    body: '{"data":{"id":"tf_TestAccDatadogLogsMetric_Basic_local_1615213532","attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"aggregation_type":"distribution","path":"@duration"}},"type":"logs_metrics"}}'
+    body: '{"data":{"id":"tf_TestAccDatadogLogsMetric_Basic_local_1615587158","attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"aggregation_type":"distribution","path":"@duration"}},"type":"logs_metrics"}}'
     headers:
       Cache-Control:
       - no-cache
@@ -30,7 +30,59 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Mon, 08 Mar 2021 14:25:33 GMT
+      - Fri, 12 Mar 2021 22:12:40 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - tpRCH6w417YjBovRJ8VmtuXmNONVYiRp2c8d2AxjPdGBn8PCtgG4vAztrx3qUZAN
+      X-Dd-Version:
+      - "35.4088130"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "300"
+      X-Ratelimit-Period:
+      - "300"
+      X-Ratelimit-Remaining:
+      - "286"
+      X-Ratelimit-Reset:
+      - "140"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetLogsMetric
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1615587158
+    method: GET
+  response:
+    body: '{"data":{"id":"tf_TestAccDatadogLogsMetric_Basic_local_1615587158","attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"aggregation_type":"distribution","path":"@duration"}},"type":"logs_metrics"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 12 Mar 2021 22:12:40 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -42,17 +94,17 @@ interactions:
       X-Dd-Debug:
       - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "300"
+      - "5000"
       X-Ratelimit-Period:
-      - "300"
+      - "3600"
       X-Ratelimit-Remaining:
-      - "289"
+      - "4956"
       X-Ratelimit-Reset:
-      - "267"
+      - "2840"
     status: 200 OK
     code: 200
     duration: ""
@@ -66,10 +118,10 @@ interactions:
       - GetLogsMetric
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1615213532
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1615587158
     method: GET
   response:
-    body: '{"data":{"id":"tf_TestAccDatadogLogsMetric_Basic_local_1615213532","attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"aggregation_type":"distribution","path":"@duration"}},"type":"logs_metrics"}}'
+    body: '{"data":{"id":"tf_TestAccDatadogLogsMetric_Basic_local_1615587158","attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"aggregation_type":"distribution","path":"@duration"}},"type":"logs_metrics"}}'
     headers:
       Cache-Control:
       - no-cache
@@ -82,7 +134,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Mon, 08 Mar 2021 14:25:33 GMT
+      - Fri, 12 Mar 2021 22:12:41 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -92,9 +144,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - dCmL/3rURV6BPeaqeP3Rxigq41m5CAb17XjrRE42uZ01zpr07HVhbL5/3TWMkvgu
+      - F5gm0Rce1/Abr9/0Fw8HAqWfiz0FdiH8er/AXnN6lOn3L6KyGgbsLCwgPlob1No8
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -102,61 +154,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4969"
+      - "4955"
       X-Ratelimit-Reset:
-      - "2067"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetLogsMetric
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1615213532
-    method: GET
-  response:
-    body: '{"data":{"id":"tf_TestAccDatadogLogsMetric_Basic_local_1615213532","attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"aggregation_type":"distribution","path":"@duration"}},"type":"logs_metrics"}}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json;charset=utf-8
-      Date:
-      - Mon, 08 Mar 2021 14:25:34 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - /L+SFFO+m1pPY+hRCpk5325fvfrNl0KmiquUNJolBN/5hu3HIwflqjZSbJ6NxDFG
-      X-Dd-Version:
-      - "35.4051246"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "5000"
-      X-Ratelimit-Period:
-      - "3600"
-      X-Ratelimit-Remaining:
-      - "4968"
-      X-Ratelimit-Reset:
-      - "2066"
+      - "2839"
     status: 200 OK
     code: 200
     duration: ""
@@ -170,7 +170,7 @@ interactions:
       - DeleteLogsMetric
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1615213532
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1615587158
     method: DELETE
   response:
     body: '{}'
@@ -188,7 +188,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Mon, 08 Mar 2021 14:25:35 GMT
+      - Fri, 12 Mar 2021 22:12:42 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -196,9 +196,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - bgHykj7A9bfZx0Y5ZO3swhhp5tGUSNJHqFWR868+qg087CYrDOd5hQslC+noiEtH
+      - fIO2C4qGDheGHy4YbS+r3a3CXbh4cbRo7roILOimQyiHGjQdOat0cIpWCkupM1uX
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -206,9 +206,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4967"
+      - "4954"
       X-Ratelimit-Reset:
-      - "2065"
+      - "2838"
     status: 200 OK
     code: 200
     duration: ""
@@ -222,10 +222,10 @@ interactions:
       - GetLogsMetric
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1615213532
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1615587158
     method: GET
   response:
-    body: '{"errors":["not_found(Metric with name ''tf_TestAccDatadogLogsMetric_Basic_local_1615213532'' not found)"]}'
+    body: '{"errors":["not_found(Metric with name ''tf_TestAccDatadogLogsMetric_Basic_local_1615587158'' not found)"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -236,7 +236,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:25:35 GMT
+      - Fri, 12 Mar 2021 22:12:45 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -246,7 +246,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.4051246"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -254,9 +254,9 @@ interactions:
       X-Ratelimit-Period:
       - "3600"
       X-Ratelimit-Remaining:
-      - "4966"
+      - "4952"
       X-Ratelimit-Reset:
-      - "2065"
+      - "2835"
     status: 404 Not Found
     code: 404
     duration: ""

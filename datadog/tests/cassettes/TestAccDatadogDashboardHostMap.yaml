@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardHostMap-local-1615214300","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"group":["region"],"no_group_hosts":true,"no_metric_hosts":true,"node_type":"host","requests":{"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"},"size":{"q":"max:system.cpu.user{env:prod} by {host}"}},"scope":["env:prod"],"style":{"fill_max":"30","fill_min":"10","palette":"YlOrRd","palette_flip":true},"title":"system.cpu.idle, system.cpu.user","title_align":"right","title_size":"16","type":"hostmap"}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardHostMap-local-1615587195","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"group":["region"],"no_group_hosts":true,"no_metric_hosts":true,"node_type":"host","requests":{"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"},"size":{"q":"max:system.cpu.user{env:prod} by {host}"}},"scope":["env:prod"],"style":{"fill_max":"30","fill_min":"10","palette":"YlOrRd","palette_flip":true},"title":"system.cpu.idle, system.cpu.user","title_align":"right","title_size":"16","type":"hostmap"}}]}
     form: {}
     headers:
       Accept:
@@ -13,11 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"ths-pzs-ksk","title":"tf-TestAccDatadogDashboardHostMap-local-1615214300","url":"/dashboard/ths-pzs-ksk/tf-testaccdatadogdashboardhostmap-local-1615214300","created_at":"2021-03-08T14:38:23.000716+00:00","modified_at":"2021-03-08T14:38:23.000716+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod} by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":4003374455394491}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wpr-ngk-x4s","title":"tf-TestAccDatadogDashboardHostMap-local-1615587195","url":"/dashboard/wpr-ngk-x4s/tf-testaccdatadogdashboardhostmap-local-1615587195","created_at":"2021-03-12T22:13:18.503316+00:00","modified_at":"2021-03-12T22:13:18.503316+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod} by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":4740952089759183}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -28,7 +28,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:38:26 GMT
+      - Fri, 12 Mar 2021 22:13:21 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -38,9 +38,93 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
+      - 25u1gDlL724DHllbjFT4BhOLorBTilh+aah2uWAUEjFC/+rjczJdiyWrV/HwLwe/
       X-Dd-Version:
-      - "35.4051376"
+      - "35.4088130"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/wpr-ngk-x4s
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wpr-ngk-x4s","title":"tf-TestAccDatadogDashboardHostMap-local-1615587195","url":"/dashboard/wpr-ngk-x4s/tf-testaccdatadogdashboardhostmap-local-1615587195","created_at":"2021-03-12T22:13:18.503316+00:00","modified_at":"2021-03-12T22:13:18.503316+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod} by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":4740952089759183}],"layout_type":"ordered"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 12 Mar 2021 22:13:21 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
+      X-Dd-Version:
+      - "35.4088130"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/wpr-ngk-x4s
+    method: GET
+  response:
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wpr-ngk-x4s","title":"tf-TestAccDatadogDashboardHostMap-local-1615587195","url":"/dashboard/wpr-ngk-x4s/tf-testaccdatadogdashboardhostmap-local-1615587195","created_at":"2021-03-12T22:13:18.503316+00:00","modified_at":"2021-03-12T22:13:18.503316+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod} by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":4740952089759183}],"layout_type":"ordered"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 12 Mar 2021 22:13:21 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
+      X-Dd-Version:
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -56,10 +140,10 @@ interactions:
       - GetDashboard
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/ths-pzs-ksk
+    url: https://api.datadoghq.com/api/v1/dashboard/wpr-ngk-x4s
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"ths-pzs-ksk","title":"tf-TestAccDatadogDashboardHostMap-local-1615214300","url":"/dashboard/ths-pzs-ksk/tf-testaccdatadogdashboardhostmap-local-1615214300","created_at":"2021-03-08T14:38:23.000716+00:00","modified_at":"2021-03-08T14:38:23.000716+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod} by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":4003374455394491}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"wpr-ngk-x4s","title":"tf-TestAccDatadogDashboardHostMap-local-1615587195","url":"/dashboard/wpr-ngk-x4s/tf-testaccdatadogdashboardhostmap-local-1615587195","created_at":"2021-03-12T22:13:18.503316+00:00","modified_at":"2021-03-12T22:13:18.503316+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod} by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":4740952089759183}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -70,7 +154,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:38:27 GMT
+      - Fri, 12 Mar 2021 22:13:22 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -80,51 +164,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Um4CoU685QqAscnxhS5BD+goWu2yX1Jd4zCfGzSsEvPPIm1qURZaF8dlLl/OEY4I
+      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
       X-Dd-Version:
-      - "35.4051376"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/ths-pzs-ksk
-    method: GET
-  response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"ths-pzs-ksk","title":"tf-TestAccDatadogDashboardHostMap-local-1615214300","url":"/dashboard/ths-pzs-ksk/tf-testaccdatadogdashboardhostmap-local-1615214300","created_at":"2021-03-08T14:38:23.000716+00:00","modified_at":"2021-03-08T14:38:23.000716+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"style":{"fill_min":"10","fill_max":"30","palette":"YlOrRd","palette_flip":true},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","title":"system.cpu.idle, system.cpu.user","title_align":"right","node_type":"host","no_metric_hosts":true,"group":["region"],"requests":{"size":{"q":"max:system.cpu.user{env:prod} by {host}"},"fill":{"q":"avg:system.cpu.idle{env:prod} by {host}"}},"no_group_hosts":true,"type":"hostmap","scope":["env:prod"]},"id":4003374455394491}],"layout_type":"ordered"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 08 Mar 2021 14:38:27 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
-      X-Dd-Version:
-      - "35.4051376"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -139,11 +181,11 @@ interactions:
       Dd-Operation-Id:
       - DeleteDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/ths-pzs-ksk
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/wpr-ngk-x4s
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"ths-pzs-ksk"}'
+    body: '{"deleted_dashboard_id":"wpr-ngk-x4s"}'
     headers:
       Cache-Control:
       - no-cache
@@ -154,7 +196,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:38:29 GMT
+      - Fri, 12 Mar 2021 22:13:24 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -164,9 +206,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
+      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
       X-Dd-Version:
-      - "35.4051376"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -181,11 +223,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/ths-pzs-ksk
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/wpr-ngk-x4s
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID ths-pzs-ksk not found"]}'
+    body: '{"errors": ["Dashboard with ID wpr-ngk-x4s not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -196,7 +238,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Mar 2021 14:38:29 GMT
+      - Fri, 12 Mar 2021 22:13:24 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -206,7 +248,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.4051376"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found
