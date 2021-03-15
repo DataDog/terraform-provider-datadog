@@ -417,8 +417,8 @@ func syntheticsTestOptionsList() *schema.Schema {
 				},
 				"tick_every": {
 					Description:  "How often the test should run (in seconds). Current possible values are `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` plus `60` for API tests or `300` for browser tests.",
+					Required:     true,
 					Type:         schema.TypeInt,
-					Optional:     true,
 					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
 				},
 				"accept_self_signed": {
@@ -706,6 +706,7 @@ func syntheticsBrowserVariableElem() *schema.Resource {
 				Description: "Example for the variable.",
 				Type:        schema.TypeString,
 				Optional:    true,
+				Default:     "",
 			},
 			"id": {
 				Description: "ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.",
@@ -1062,7 +1063,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 			if v, ok := variableMap["name"]; ok {
 				variableName := v.(string)
 				newVariable := datadogV1.NewSyntheticsBrowserVariable(variableName, variableType)
-				if v, ok := variableMap["example"]; ok && v.(string) != "" {
+				if v, ok := variableMap["example"]; ok {
 					newVariable.SetExample(v.(string))
 				}
 				if v, ok := variableMap["id"]; ok && v.(string) != "" {

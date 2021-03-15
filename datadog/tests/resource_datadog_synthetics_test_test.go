@@ -2064,7 +2064,7 @@ func createSyntheticsBrowserTestBrowserVariablesStep(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_variable.0.pattern", "{{numeric(3)}}"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_variable.0.example", "597"),
+				"datadog_synthetics_test.bar", "browser_variable.0.example", ""),
 		),
 	}
 }
@@ -2111,7 +2111,6 @@ resource "datadog_synthetics_test" "bar" {
                type = "text"
                name = "MY_PATTERN_VAR"
                pattern = "{{numeric(3)}}"
-               example = "597"
        }
 }`, uniq)
 }
