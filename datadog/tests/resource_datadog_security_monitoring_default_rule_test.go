@@ -28,35 +28,6 @@ func TestAccDatadogSecurityMonitoringDefaultRule_Basic(t *testing.T) {
 				ImportState:       true,
 				ImportStateIdFunc: idFromDatasource,
 			},
-			{
-				Config:            testAccCheckDatadogSecurityMonitoringDefaultEnable(),
-				ResourceName:      tfSecurityDefaultRuleName,
-				ImportState:       true,
-				ImportStateIdFunc: idFromDatasource,
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr(tfSecurityDefaultRuleName, "enabled", "true"),
-				),
-			},
-			{
-				Config:            testAccCheckDatadogSecurityMonitoringDefaultDisable(),
-				ResourceName:      tfSecurityDefaultRuleName,
-				ImportState:       true,
-				ImportStateIdFunc: idFromDatasource,
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr(tfSecurityDefaultRuleName, "enabled", "false"),
-				),
-			},
-			{
-				Config:            testAccCheckDatadogSecurityMonitoringDefaultNotification(),
-				ResourceName:      tfSecurityDefaultRuleName,
-				ImportState:       true,
-				ImportStateIdFunc: idFromDatasource,
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr(tfSecurityDefaultRuleName, "enabled", "true"),
-					resource.TestCheckResourceAttr(tfSecurityDefaultRuleName, "case.0.status", "high"),
-					resource.TestCheckResourceAttr(tfSecurityDefaultRuleName, "case.0.notifications.0", "@tf-test-notification"),
-				),
-			},
 		},
 	})
 }
@@ -82,47 +53,6 @@ data "datadog_security_monitoring_rules" "bruteforce" {
 }
 
 resource "datadog_security_monitoring_default_rule" "acceptance_test" {
-}
-`)
-}
-
-func testAccCheckDatadogSecurityMonitoringDefaultEnable() string {
-	return fmt.Sprintf(`
-data "datadog_security_monitoring_rules" "bruteforce" {
-	name_filter = "brute"
-}
-
-resource "datadog_security_monitoring_default_rule" "acceptance_test" {
-	enabled = true
-}
-`)
-}
-
-func testAccCheckDatadogSecurityMonitoringDefaultDisable() string {
-	return fmt.Sprintf(`
-data "datadog_security_monitoring_rules" "bruteforce" {
-	name_filter = "brute"
-}
-
-resource "datadog_security_monitoring_default_rule" "acceptance_test" {
-	enabled = false
-}
-`)
-}
-
-func testAccCheckDatadogSecurityMonitoringDefaultNotification() string {
-	return fmt.Sprintf(`
-data "datadog_security_monitoring_rules" "bruteforce" {
-	name_filter = "brute"
-}
-
-resource "datadog_security_monitoring_default_rule" "acceptance_test" {
-	enabled = true
-
-	case {
-		status = "high"
-		notifications = ["@tf-test-notification"]
-	}
 }
 `)
 }

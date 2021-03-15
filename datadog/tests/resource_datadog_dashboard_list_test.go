@@ -3,10 +3,11 @@ package test
 import (
 	"context"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -166,6 +167,8 @@ func TestDatadogDashListInDashboard(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_dashboard.time", "dashboard_lists_removed.#", "0"),
 				),
+				// The plan is non empty, because in this case the list is the same file
+				ExpectNonEmptyPlan: true,
 			},
 			{
 				Config: testAccCheckDatadogDashListConfigRemoveFromDashboard(uniqueName),

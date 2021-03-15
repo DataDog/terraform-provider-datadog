@@ -78,10 +78,10 @@ func checkDatasourceAttrs(accProvider func() (*schema.Provider, error), uniq str
 			"data.datadog_monitor.foo", "locked", "false"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "tags.#", "2"),
-		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "tags.0", "baz"),
-		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "tags.1", fmt.Sprintf("test_datasource_monitor:%s", uniq)),
+		resource.TestCheckTypeSetElemAttr(
+			"data.datadog_monitor.foo", "tags.*", "baz"),
+		resource.TestCheckTypeSetElemAttr(
+			"data.datadog_monitor.foo", "tags.*", fmt.Sprintf("test_datasource_monitor:%s", uniq)),
 	)
 }
 

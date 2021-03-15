@@ -59,10 +59,10 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 						"datadog_monitor.foo", "locked", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "baz"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "foo:bar"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "priority", "3"),
 				),
@@ -116,10 +116,10 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 						"datadog_monitor.foo", "locked", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "baz"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "foo:bar"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "priority", "3"),
 				),
@@ -161,10 +161,10 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 						"datadog_monitor.foo", "locked", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "bar:baz"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "bar:baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "foo:bar"),
 				),
 			},
 		},
@@ -225,10 +225,10 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "locked", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "baz"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "foo:bar"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "priority", "3"),
 				),
@@ -281,10 +281,10 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "locked", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "baz:qux"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "quux"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "baz:qux"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "quux"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "priority", "1"),
 				),
@@ -364,10 +364,10 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "locked", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.0", "baz"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "tags.1", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "foo:bar"),
 				),
 			},
 			{
