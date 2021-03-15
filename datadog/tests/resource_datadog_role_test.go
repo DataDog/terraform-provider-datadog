@@ -16,7 +16,6 @@ import (
 )
 
 func TestAccDatadogRole_CreateUpdate(t *testing.T) {
-	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	rolename := strings.ToLower(uniqueEntityName(ctx, t))
 	accProvider := testAccProvider(t, accProviders)
@@ -73,7 +72,6 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 	})
 }
 func TestAccDatadogRole_InvalidPerm(t *testing.T) {
-	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	rolename := strings.ToLower(uniqueEntityName(ctx, t))
 
