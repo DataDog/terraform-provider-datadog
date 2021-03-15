@@ -50,8 +50,8 @@ jobs:
             - name: Setup terraform CLI
               uses: hashicorp/setup-terraform@v1
               with:
-                terraform_version: ${{ matrix.terraform_version }}
-                terraform_wrapper: false
+                  terraform_version: ${{ matrix.terraform_version }}
+                  terraform_wrapper: false
             - name: Set TF_ACC_TERRAFORM_PATH env var on non-windows platform
               if: ${{ matrix.platform != 'windows-latest' }}
               run: echo "TF_ACC_TERRAFORM_PATH=$(which terraform)" >> $GITHUB_ENV
