@@ -1,3 +1,23 @@
+## 2.23.0 (March 16, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_dashboard`: Implement support for Geomap Dashboard Widget ([#954](https://github.com/Datadog/terraform-provider-datadog/pull/954))
+
+FEATURE:
+
+-   `datadog_dashboard_json`: Add new dashboard JSON resource ([#950](https://github.com/Datadog/terraform-provider-datadog/pull/950))
+
+BUGFIXES:
+
+-   `datadog_monitor`: Explicitly check `monitor_id` for `nil` value to fix an issue with terraformer ([#962](https://github.com/Datadog/terraform-provider-datadog/pull/962))
+-   `datadog_security_monitoring_default_rule`: Fix issue that prevented default rule cases notifications to be updated ([#956](https://github.com/Datadog/terraform-provider-datadog/pull/956))
+-   `datadog_integration_slack_channel`: Fix issue causing slack channels to not be created in some situations ([#981](https://github.com/Datadog/terraform-provider-datadog/pull/981))
+
+NOTES:
+
+-   Update the underlying Datadog go client to v1.0.0-beta.17. See [here](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.0.0-beta.17) for changes.
+
 ## 2.22.0 (March 3, 2021)
 
 IMPROVEMENTS:
