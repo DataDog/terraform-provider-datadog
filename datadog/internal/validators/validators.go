@@ -52,6 +52,14 @@ func ValidateEnumValue(newEnumFunc interface{}) schema.SchemaValidateFunc {
 	}
 }
 
+func ValidateStringValue(v interface{}, k string) (ws []string, errors []error) {
+	value := v.(string)
+	if len(value) == 0 {
+		errors = append(errors, fmt.Errorf("%q must have a length greater than 0, got %q", k, v))
+	}
+	return
+}
+
 // ValidateDatadogDowntimeRecurrenceType ensures a string is a valid recurrence type
 func ValidateDatadogDowntimeRecurrenceType(v interface{}, k string) (ws []string, errors []error) {
 	value := v.(string)

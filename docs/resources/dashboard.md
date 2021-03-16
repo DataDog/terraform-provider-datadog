@@ -232,12 +232,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
       title_size  = "16"
       title_align = "left"
     }
-    widget_layout {
-      height = 43
-      width  = 32
-      x      = 5
-      y      = 5
-    }
   }
 
   widget {
@@ -703,6 +697,7 @@ Optional:
 - **event_stream_definition** (Block List, Max: 1) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--event_stream_definition))
 - **event_timeline_definition** (Block List, Max: 1) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--event_timeline_definition))
 - **free_text_definition** (Block List, Max: 1) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--free_text_definition))
+- **geomap_definition** (Block List, Max: 1) The definition for a Geomap widget. (see [below for nested schema](#nestedblock--widget--geomap_definition))
 - **group_definition** (Block List, Max: 1) The definition for a Group widget. (see [below for nested schema](#nestedblock--widget--group_definition))
 - **heatmap_definition** (Block List, Max: 1) The definition for a Heatmap widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition))
 - **hostmap_definition** (Block List, Max: 1) The definition for a Hostmap widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition))
@@ -1472,6 +1467,194 @@ Optional:
 - **text_align** (String) The alignment of the text in the widget.
 
 
+<a id="nestedblock--widget--geomap_definition"></a>
+### Nested Schema for `widget.geomap_definition`
+
+Required:
+
+- **view** (Block List, Min: 1, Max: 1) The view of the world that the map should render. (see [below for nested schema](#nestedblock--widget--geomap_definition--view))
+
+Optional:
+
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--custom_link))
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--geomap_definition--request))
+- **style** (Block List, Max: 1) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--style))
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
+
+<a id="nestedblock--widget--geomap_definition--view"></a>
+### Nested Schema for `widget.geomap_definition.view`
+
+Required:
+
+- **focus** (String) The 2-letter ISO code of a country to focus the map on. Or `WORLD`.
+
+
+<a id="nestedblock--widget--geomap_definition--custom_link"></a>
+### Nested Schema for `widget.geomap_definition.custom_link`
+
+Required:
+
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
+
+
+<a id="nestedblock--widget--geomap_definition--request"></a>
+### Nested Schema for `widget.geomap_definition.request`
+
+Optional:
+
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query))
+
+<a id="nestedblock--widget--geomap_definition--request--log_query"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query`
+
+Required:
+
+- **index** (String) Name of the index to query.
+
+Optional:
+
+- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
+- **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--group_by))
+- **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--multi_compute))
+- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--geomap_definition--request--rum_query--compute_query"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.compute_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
+
+
+<a id="nestedblock--widget--geomap_definition--request--rum_query--group_by"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.group_by`
+
+Optional:
+
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
+- **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--group_by--sort_query))
+
+<a id="nestedblock--widget--geomap_definition--request--rum_query--group_by--sort_query"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.group_by.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods.
+
+Optional:
+
+- **facet** (String) Facet name.
+
+
+
+<a id="nestedblock--widget--geomap_definition--request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.multi_compute`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
+
+
+
+<a id="nestedblock--widget--geomap_definition--request--rum_query"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query`
+
+Required:
+
+- **index** (String) Name of the index to query.
+
+Optional:
+
+- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
+- **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--group_by))
+- **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--multi_compute))
+- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--geomap_definition--request--rum_query--compute_query"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.compute_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
+
+
+<a id="nestedblock--widget--geomap_definition--request--rum_query--group_by"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.group_by`
+
+Optional:
+
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
+- **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--group_by--sort_query))
+
+<a id="nestedblock--widget--geomap_definition--request--rum_query--group_by--sort_query"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.group_by.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods.
+
+Optional:
+
+- **facet** (String) Facet name.
+
+
+
+<a id="nestedblock--widget--geomap_definition--request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.multi_compute`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
+
+
+
+
+<a id="nestedblock--widget--geomap_definition--style"></a>
+### Nested Schema for `widget.geomap_definition.style`
+
+Required:
+
+- **palette** (String) The color palette to apply to the widget.
+- **palette_flip** (Boolean) Boolean indicating whether to flip the palette tones.
+
+
+
 <a id="nestedblock--widget--group_definition"></a>
 ### Nested Schema for `widget.group_definition`
 
@@ -1497,6 +1680,7 @@ Optional:
 - **event_stream_definition** (Block List, Max: 1) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_stream_definition))
 - **event_timeline_definition** (Block List, Max: 1) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_timeline_definition))
 - **free_text_definition** (Block List, Max: 1) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--free_text_definition))
+- **geomap_definition** (Block List, Max: 1) The definition for a Geomap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition))
 - **heatmap_definition** (Block List, Max: 1) The definition for a Heatmap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition))
 - **hostmap_definition** (Block List, Max: 1) The definition for a Hostmap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition))
 - **iframe_definition** (Block List, Max: 1) The definition for an Iframe widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--iframe_definition))
@@ -2263,6 +2447,194 @@ Optional:
 - **color** (String) The color of the text in the widget.
 - **font_size** (String) The size of the text in the widget.
 - **text_align** (String) The alignment of the text in the widget.
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition"></a>
+### Nested Schema for `widget.group_definition.widget.id`
+
+Required:
+
+- **view** (Block List, Min: 1, Max: 1) The view of the world that the map should render. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--view))
+
+Optional:
+
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--custom_link))
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request))
+- **style** (Block List, Max: 1) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--style))
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
+
+<a id="nestedblock--widget--group_definition--widget--id--view"></a>
+### Nested Schema for `widget.group_definition.widget.id.view`
+
+Required:
+
+- **focus** (String) The 2-letter ISO code of a country to focus the map on. Or `WORLD`.
+
+
+<a id="nestedblock--widget--group_definition--widget--id--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.id.custom_link`
+
+Required:
+
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request"></a>
+### Nested Schema for `widget.group_definition.widget.id.request`
+
+Optional:
+
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--log_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query))
+
+<a id="nestedblock--widget--group_definition--widget--id--request--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query`
+
+Required:
+
+- **index** (String) Name of the index to query.
+
+Optional:
+
+- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
+- **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--group_by))
+- **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--multi_compute))
+- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query`
+
+Optional:
+
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
+- **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--search_query--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods.
+
+Optional:
+
+- **facet** (String) Facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query`
+
+Required:
+
+- **index** (String) Name of the index to query.
+
+Optional:
+
+- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
+- **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--group_by))
+- **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--multi_compute))
+- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query`
+
+Optional:
+
+- **facet** (String) Facet name.
+- **limit** (Number) Maximum number of items in the group.
+- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
+- **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--search_query--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods.
+
+Optional:
+
+- **facet** (String) Facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) Facet name.
+- **interval** (Number) Define a time interval in seconds.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--id--style"></a>
+### Nested Schema for `widget.group_definition.widget.id.style`
+
+Required:
+
+- **palette** (String) The color palette to apply to the widget.
+- **palette_flip** (Boolean) Boolean indicating whether to flip the palette tones.
+
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition"></a>
@@ -5096,12 +5468,12 @@ Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--compute))
 - **data_source** (String) Data source for event platform-based queries.
+- **name** (String) Name of query for use in formulas.
 
 Optional:
 
 - **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--group_by))
 - **indexes** (List of String) An array of index names to query in the stream.
-- **name** (String) Name of query for use in formulas.
 - **search** (Block List, Max: 1) Search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--search))
 
 <a id="nestedblock--widget--group_definition--widget--id--request--style--process_query--compute"></a>
@@ -5157,13 +5529,13 @@ Required:
 
 Required:
 
+- **name** (String) Name of the query for use in formulas.
 - **query** (String) Metrics query definition.
 
 Optional:
 
 - **aggregator** (String) The aggregation methods available for metrics queries.
 - **data_source** (String) Data source for metrics queries.
-- **name** (String) Name of the query for use in formulas.
 
 
 <a id="nestedblock--widget--group_definition--widget--id--request--style--process_query"></a>
@@ -5173,13 +5545,13 @@ Required:
 
 - **data_source** (String) Data source for process queries.
 - **metric** (String) Process metric name.
+- **name** (String) Name of query for use in formulas.
 
 Optional:
 
 - **aggregator** (String) The aggregation methods available for metrics queries.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) Number of hits to return.
-- **name** (String) Name of query for use in formulas.
 - **sort** (String) Direction of sort.
 - **tag_filters** (List of String) An array of tags to filter by.
 - **text_filter** (String) Text to use as filter.
@@ -8573,12 +8945,12 @@ Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--compute))
 - **data_source** (String) Data source for event platform-based queries.
+- **name** (String) Name of query for use in formulas.
 
 Optional:
 
 - **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--group_by))
 - **indexes** (List of String) An array of index names to query in the stream.
-- **name** (String) Name of query for use in formulas.
 - **search** (Block List, Max: 1) Search options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--search))
 
 <a id="nestedblock--widget--timeseries_definition--request--style--event_query--compute"></a>
@@ -8634,13 +9006,13 @@ Required:
 
 Required:
 
+- **name** (String) Name of the query for use in formulas.
 - **query** (String) Metrics query definition.
 
 Optional:
 
 - **aggregator** (String) The aggregation methods available for metrics queries.
 - **data_source** (String) Data source for metrics queries.
-- **name** (String) Name of the query for use in formulas.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--style--process_query"></a>
@@ -8650,13 +9022,13 @@ Required:
 
 - **data_source** (String) Data source for process queries.
 - **metric** (String) Process metric name.
+- **name** (String) Name of query for use in formulas.
 
 Optional:
 
 - **aggregator** (String) The aggregation methods available for metrics queries.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) Number of hits to return.
-- **name** (String) Name of query for use in formulas.
 - **sort** (String) Direction of sort.
 - **tag_filters** (List of String) An array of tags to filter by.
 - **text_filter** (String) Text to use as filter.

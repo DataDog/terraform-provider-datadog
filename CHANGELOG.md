@@ -1,3 +1,60 @@
+## 2.23.0 (March 16, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_dashboard`: Implement support for Geomap Dashboard Widget ([#954](https://github.com/Datadog/terraform-provider-datadog/pull/954))
+
+FEATURE:
+
+-   `datadog_dashboard_json`: Add new dashboard JSON resource ([#950](https://github.com/Datadog/terraform-provider-datadog/pull/950))
+
+BUGFIXES:
+
+-   `datadog_dashboard`: Add a retry on 504 errors when there is a timeout ([#975](https://github.com/Datadog/terraform-provider-datadog/pull/975))
+-   `datadog_integration_slack_channel`: Fix issue causing slack channels to not be created in some situations ([#981](https://github.com/Datadog/terraform-provider-datadog/pull/981))
+-   `datadog_monitor`: Explicitly check `monitor_id` for `nil` value to fix an issue with terraformer ([#962](https://github.com/Datadog/terraform-provider-datadog/pull/962))
+-   `datadog_security_monitoring_default_rule`: Fix issue that prevented default rule cases notifications to be updated ([#956](https://github.com/Datadog/terraform-provider-datadog/pull/956))
+
+NOTES:
+
+-   Update the underlying Datadog go client to v1.0.0-beta.17. See [here](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.0.0-beta.17) for changes.
+
+## 2.22.0 (March 3, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_dashboard`: Improve consistency by using response from POST/PUT requests directly to save state ([#909](https://github.com/Datadog/terraform-provider-datadog/pull/909))
+-   `datadog_downtime`: Improve consistency by using response from POST/PUT requests directly to save state ([#905](https://github.com/Datadog/terraform-provider-datadog/pull/905))
+-   `datadog_ip_ranges`: Add support for reading ipv4/6 prefixes by location for synthetics ([#934](https://github.com/Datadog/terraform-provider-datadog/pull/934))
+-   `datadog_logs_archive_order`: Improve consistency by using response from POST/PUT requests directly to save state ([#912](https://github.com/Datadog/terraform-provider-datadog/pull/912))
+-   `datadog_logs_archive`: Improve consistency by using response from POST/PUT requests directly to save state ([#912](https://github.com/Datadog/terraform-provider-datadog/pull/912))
+-   `datadog_logs_custom_pipeline`: Improve consistency by using response from POST/PUT requests directly to save state ([#913](https://github.com/Datadog/terraform-provider-datadog/pull/913))
+-   `datadog_logs_index_order`: Improve consistency by using response from POST/PUT requests directly to save state ([#915](https://github.com/Datadog/terraform-provider-datadog/pull/915))
+-   `datadog_logs_index`: Improve consistency by using response from POST/PUT requests directly to save state ([#915](https://github.com/Datadog/terraform-provider-datadog/pull/915))
+-   `datadog_logs_integration_pipeline`: Improve consistency by using response from POST/PUT requests directly to save state ([#913](https://github.com/Datadog/terraform-provider-datadog/pull/913))
+-   `datadog_logs_metric`: Improve consistency by using response from POST/PUT requests directly to save state ([#917](https://github.com/Datadog/terraform-provider-datadog/pull/917))
+-   `datadog_logs_pipeline_order`: Improve consistency by using response from POST/PUT requests directly to save state ([#913](https://github.com/Datadog/terraform-provider-datadog/pull/913))
+-   `datadog_metric_metadata`: Improve consistency by using response from POST/PUT requests directly to save state ([#922](https://github.com/Datadog/terraform-provider-datadog/pull/922))
+-   `datadog_monitor`: Add support for `groupby_simple_monitor` option to monitor resource ([#952](https://github.com/Datadog/terraform-provider-datadog/pull/952))
+-   `datadog_monitor`: Improve consistency by using response from POST/PUT requests directly to save state ([#901](https://github.com/Datadog/terraform-provider-datadog/pull/901))
+-   `datadog_role`: Improve consistency by using response from POST/PUT requests directly to save state ([#925](https://github.com/Datadog/terraform-provider-datadog/pull/925))
+-   `datadog_service_level_objective`: Improve consistency by using response from POST/PUT requests directly to save state ([#910](https://github.com/Datadog/terraform-provider-datadog/pull/910))
+-   `datadog_slo_correction`: Improve consistency by using response from POST/PUT requests directly to save state ([#921](https://github.com/Datadog/terraform-provider-datadog/pull/921))
+-   `datadog_user`: Improve consistency by using response from POST/PUT requests directly to save state ([#927](https://github.com/Datadog/terraform-provider-datadog/pull/927))
+
+FEATURE:
+
+-   `datadog_integration_slack_channel`: Add support for slack channel resource ([#932](https://github.com/Datadog/terraform-provider-datadog/pull/932))
+
+BUGFIXES:
+
+-   `datadog_dashboard`: Fix template_variable_presets to support optional template_variables ([#944](https://github.com/Datadog/terraform-provider-datadog/pull/944))
+
+NOTES:
+
+-   `datadog_integration_pagerduty`: Remove deprecation on PagerDuty resource ([#930](https://github.com/Datadog/terraform-provider-datadog/pull/930))
+-   Update the underlying Datadog go client to v1.0.0-beta.16. See [here](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.0.0-beta.16) for changes.
+
 ## 2.21.0 (February 9, 2021)
 
 IMPROVEMENTS:

@@ -217,12 +217,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
       title_size  = "16"
       title_align = "left"
     }
-    widget_layout {
-      height = 43
-      width  = 32
-      x      = 5
-      y      = 5
-    }
   }
 
   widget {

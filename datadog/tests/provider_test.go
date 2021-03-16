@@ -5,7 +5,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,6 +16,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
@@ -79,7 +80,9 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_timeseries_test":                 "dashboards",
 	"tests/resource_datadog_dashboard_top_list_test":                   "dashboards",
 	"tests/resource_datadog_dashboard_trace_service_test":              "dashboards",
+	"tests/resource_datadog_dashboard_json_test":                       "dashboards-json",
 	"tests/resource_datadog_downtime_test":                             "downtimes",
+	"tests/resource_datadog_dashboard_geomap_test":                     "dashboards",
 	"tests/resource_datadog_integration_aws_lambda_arn_test":           "integration-aws",
 	"tests/resource_datadog_integration_aws_log_collection_test":       "integration-aws",
 	"tests/resource_datadog_integration_aws_tag_filter_test":           "integration-aws",
@@ -88,6 +91,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_gcp_test":                      "integration-gcp",
 	"tests/resource_datadog_integration_pagerduty_service_object_test": "integration-pagerduty",
 	"tests/resource_datadog_integration_pagerduty_test":                "integration-pagerduty",
+	"tests/resource_datadog_integration_slack_channel_test":            "integration-slack-channel",
 	"tests/resource_datadog_logs_archive_test":                         "logs-archive",
 	"tests/resource_datadog_logs_archive_order_test":                   "logs-archive-order",
 	"tests/resource_datadog_logs_custom_pipeline_test":                 "logs-pipelines",
