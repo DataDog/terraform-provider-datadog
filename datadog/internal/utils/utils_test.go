@@ -51,11 +51,11 @@ func TestAccountAndRoleFromID(t *testing.T) {
 		accountID, roleName, err := AccountAndRoleFromID(tc.id)
 
 		if err != nil && tc.err != nil && err.Error() != tc.err.Error() {
-			t.Errorf("%s: erros should be '%s', not `%s`", name, tc.err.Error(), err.Error())
+			t.Errorf("%s: errors should be '%s', not `%s`", name, tc.err.Error(), err.Error())
 		} else if err != nil && tc.err == nil {
-			t.Errorf("%s: erros should be nil, not `%s`", name, err.Error())
+			t.Errorf("%s: errors should be nil, not `%s`", name, err.Error())
 		} else if err == nil && tc.err != nil {
-			t.Errorf("%s: erros should be '%s', not nil", name, tc.err.Error())
+			t.Errorf("%s: errors should be '%s', not nil", name, tc.err.Error())
 		}
 
 		if accountID != tc.accountID {
@@ -95,4 +95,44 @@ func TestAccountNameAndChannelNameFromID(t *testing.T) {
 			t.Errorf("%s: role name '%s' didn't match `%s`", name, roleName, tc.channelName)
 		}
 	}
+}
+
+func TestConvertResponseByteToMap(t *testing.T) {
+	cases := map[string]struct {
+		js     string
+		errMsg string
+	}{
+		"validJSON":   {validJSON(), ""},
+		"invalidJSON": {invalidJSON(), "invalid character ':' after object key:value pair"},
+	}
+	for name, tc := range cases {
+		_, err := ConvertResponseByteToMap([]byte(tc.js))
+		if err != nil && tc.errMsg != "" && err.Error() != tc.errMsg {
+			t.Fatalf("%s: error should be %s, not %s", name, tc.errMsg, err.Error())
+		}
+		if err != nil && tc.errMsg == "" {
+			t.Fatalf("%s: error should be nil, not %s", name, err.Error())
+		}
+	}
+}
+
+func validJSON() string {
+	return fmt.Sprint(`
+{
+   "test":"value",
+   "test_two":{
+      "nested_attr":"value"
+   }
+}
+`)
+}
+func invalidJSON() string {
+	return fmt.Sprint(`
+{
+   "test":"value":"value",
+   "test_two":{
+      "nested_attr":"value"
+   }
+}
+`)
 }

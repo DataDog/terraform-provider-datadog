@@ -5,12 +5,12 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"net/url"
 	"strings"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/meta"
 	"github.com/terraform-providers/terraform-provider-datadog/version"
 )
@@ -24,6 +24,9 @@ func TranslateClientError(err error, msg string) error {
 		msg = "an error occurred"
 	}
 
+	if apiErr, ok := err.(CustomRequestAPIError); ok {
+		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
+	}
 	if apiErr, ok := err.(datadogV1.GenericOpenAPIError); ok {
 		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
 	}
@@ -107,4 +110,15 @@ func AccountNameAndChannelNameFromID(id string) (string, string, error) {
 		return "", "", fmt.Errorf("error extracting account name and channel name: %s", id)
 	}
 	return result[0], result[1], nil
+}
+
+// ConvertResponseByteToMap converts JSON []byte to map[string]interface{}
+func ConvertResponseByteToMap(b []byte) (map[string]interface{}, error) {
+	convertedMap := make(map[string]interface{})
+	err := json.Unmarshal(b, &convertedMap)
+	if err != nil {
+		return nil, err
+	}
+
+	return convertedMap, nil
 }
