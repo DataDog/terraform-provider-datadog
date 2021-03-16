@@ -89,7 +89,6 @@ var datadogDashboardLogStreamAsserts = []string{
 	"title = {{uniq}}",
 	"widget.0.log_stream_definition.0.columns.1 = core_service",
 	"widget.0.log_stream_definition.0.title_size = 16",
-	"widget.0.log_stream_definition.0.logset =",
 	"widget.0.widget_layout.0.y = 5",
 	"widget.0.log_stream_definition.0.sort.0.column = time",
 	"widget.0.log_stream_definition.0.title = Log Stream",
@@ -121,7 +120,7 @@ resource "datadog_dashboard" "log_stream_dashboard_logset" {
 			message_display = "expanded-md"
 			query = "status:error env:prod"
 			show_date_column = "true"
-			logset = 19
+			indexes = ["main"]
 			columns = ["core_host", "core_service"]
 			live_span = "1d"
 			sort {
@@ -156,7 +155,7 @@ var datadogDashboardLogStreamLogSetAsserts = []string{
 	"title = Acceptance Test Log Stream Widget Dashboard",
 	"widget.0.log_stream_definition.0.columns.1 = core_service",
 	"widget.0.log_stream_definition.0.title_size = 16",
-	"widget.0.log_stream_definition.0.logset = 19",
+	"widget.0.log_stream_definition.0.indexes.0 = main",
 	"widget.0.widget_layout.0.y = 5",
 	"widget.0.log_stream_definition.0.sort.0.column = time",
 	"widget.0.log_stream_definition.0.title = Log Stream",

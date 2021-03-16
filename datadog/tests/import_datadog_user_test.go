@@ -19,7 +19,7 @@ func TestDatadogUser_import(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogUserDestroy(accProvider),
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogUserConfigImported(username),
@@ -28,7 +28,7 @@ func TestDatadogUser_import(t *testing.T) {
 				ResourceName:            resourceName,
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"access_role", "user_invitation_id", "send_user_invitation"},
+				ImportStateVerifyIgnore: []string{"user_invitation_id", "send_user_invitation"},
 			},
 		},
 	})

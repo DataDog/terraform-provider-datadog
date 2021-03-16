@@ -125,7 +125,7 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 				ResourceName:            "datadog_synthetics_test.bar",
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"options_list", "browser_variable", "variable", "browser_step", "step"},
+				ImportStateVerifyIgnore: []string{"options_list", "browser_variable", "browser_step", "step"},
 			},
 		},
 	})
@@ -1080,13 +1080,13 @@ func createSyntheticsSSLMissingTagsAttributeTestStep(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "request_definition.0.port", "443"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "assertions.#", "1"),
+				"datadog_synthetics_test.ssl", "assertion.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "assertions.0.type", "certificate"),
+				"datadog_synthetics_test.ssl", "assertion.0.type", "certificate"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "assertions.0.operator", "isInMoreThan"),
+				"datadog_synthetics_test.ssl", "assertion.0.operator", "isInMoreThan"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "assertions.0.target", "30"),
+				"datadog_synthetics_test.ssl", "assertion.0.target", "30"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -1120,13 +1120,11 @@ resource "datadog_synthetics_test" "ssl" {
 		port = 443
 	}
 
-	assertions = [
-		{
-			type = "certificate"
-			operator = "isInMoreThan"
-			target = 30
-		}
-	]
+	assertion {
+		type = "certificate"
+		operator = "isInMoreThan"
+		target = 30
+	}
 
 	locations = [ "aws:eu-central-1" ]
 	options_list {
@@ -1604,13 +1602,13 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.type", "text"),
+				"datadog_synthetics_test.bar", "browser_variable.0.type", "text"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.name", "MY_PATTERN_VAR"),
+				"datadog_synthetics_test.bar", "browser_variable.0.name", "MY_PATTERN_VAR"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.pattern", "{{numeric(3)}}"),
+				"datadog_synthetics_test.bar", "browser_variable.0.pattern", "{{numeric(3)}}"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.example", "597"),
+				"datadog_synthetics_test.bar", "browser_variable.0.example", "597"),
 		),
 	}
 }
@@ -1663,7 +1661,7 @@ resource "datadog_synthetics_test" "bar" {
 	    })
 	}
 
-	variable {
+	browser_variable {
 		type = "text"
 		name = "MY_PATTERN_VAR"
 		pattern = "{{numeric(3)}}"
@@ -1745,13 +1743,13 @@ func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.type", "text"),
+				"datadog_synthetics_test.bar", "browser_variable.0.type", "text"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.name", "MY_PATTERN_VAR"),
+				"datadog_synthetics_test.bar", "browser_variable.0.name", "MY_PATTERN_VAR"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.pattern", "{{numeric(4)}}"),
+				"datadog_synthetics_test.bar", "browser_variable.0.pattern", "{{numeric(4)}}"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.example", "5970"),
+				"datadog_synthetics_test.bar", "browser_variable.0.example", "5970"),
 		),
 	}
 }
@@ -1810,7 +1808,7 @@ resource "datadog_synthetics_test" "bar" {
 	    })
 	}
 
-	variable {
+	browser_variable {
 		type = "text"
 		name = "MY_PATTERN_VAR"
 		pattern = "{{numeric(4)}}"

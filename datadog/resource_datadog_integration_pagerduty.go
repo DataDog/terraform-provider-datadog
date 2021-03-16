@@ -29,33 +29,6 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			"individual_services": {
-				Description: "Boolean to specify whether or not individual service objects specified by [datadog_integration_pagerduty_service_object](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_pagerduty_service_object) resource are to be used. Mutually exclusive with `services` key.",
-				Type:        schema.TypeBool,
-				Optional:    true,
-			},
-			"services": {
-				ConflictsWith: []string{"individual_services"},
-				Deprecated:    "set \"individual_services\" to true and use datadog_pagerduty_integration_service_object",
-				Type:          schema.TypeList,
-				Optional:      true,
-				Description:   "A list of service names and service keys.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"service_name": {
-							Description: "Your Service name in PagerDuty.",
-							Type:        schema.TypeString,
-							Required:    true,
-						},
-						"service_key": {
-							Description: "Your Service name associated service key in Pagerduty.",
-							Type:        schema.TypeString,
-							Required:    true,
-							Sensitive:   true,
-						},
-					},
-				},
-			},
 			"subdomain": {
 				Description: "Your PagerDuty account’s personalized subdomain name.",
 				Type:        schema.TypeString,
@@ -87,25 +60,6 @@ func buildIntegrationPagerduty(d *schema.ResourceData) (*datadog.IntegrationPDRe
 		schedules = append(schedules, s.(string))
 	}
 	pd.Schedules = schedules
-
-	var services []datadog.ServicePDRequest
-	if value, ok := d.GetOk("individual_services"); ok && value.(bool) {
-		services = nil
-	} else {
-		configServices, ok := d.GetOk("services")
-		if ok {
-			for _, sInterface := range configServices.([]interface{}) {
-				s := sInterface.(map[string]interface{})
-
-				service := datadog.ServicePDRequest{}
-				service.SetServiceName(s["service_name"].(string))
-				service.SetServiceKey(s["service_key"].(string))
-
-				services = append(services, service)
-			}
-		}
-	}
-	pd.Services = services
 
 	return pd, nil
 }
@@ -149,19 +103,6 @@ func resourceDatadogIntegrationPagerdutyRead(ctx context.Context, d *schema.Reso
 		return utils.TranslateClientErrorDiag(err, "error getting PagerDuty integration")
 	}
 
-	var services []map[string]string
-	if value, ok := d.GetOk("individual_services"); ok && value.(bool) {
-		services = nil
-	} else {
-		for _, service := range pd.Services {
-			services = append(services, map[string]string{
-				"service_name": service.GetServiceName(),
-				"service_key":  service.GetServiceKey(),
-			})
-		}
-	}
-
-	d.Set("services", services)
 	d.Set("subdomain", pd.GetSubdomain())
 	d.Set("schedules", pd.Schedules)
 
@@ -184,23 +125,6 @@ func resourceDatadogIntegrationPagerdutyUpdate(ctx context.Context, d *schema.Re
 		return utils.TranslateClientErrorDiag(err, "error updating PagerDuty integration")
 	}
 
-	// if there are none currently configured services, we actually
-	// have to remove them explicitly, otherwise the underlying API client
-	// would not send the "services" key at all and they wouldn't get deleted
-	if value, ok := d.GetOk("individual_services"); !ok || !value.(bool) {
-		currentServices := d.Get("services").([]interface{})
-		if len(currentServices) == 0 {
-			pd, err := client.GetIntegrationPD()
-			if err != nil {
-				return utils.TranslateClientErrorDiag(err, "error getting PagerDuty integration")
-			}
-			for _, service := range pd.Services {
-				if err := client.DeleteIntegrationPDService(*service.ServiceName); err != nil {
-					return utils.TranslateClientErrorDiag(err, "error deleting PagerDuty integration service")
-				}
-			}
-		}
-	}
 	return resourceDatadogIntegrationPagerdutyRead(ctx, d, meta)
 }
 

@@ -4,12 +4,10 @@ import (
 	"context"
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"log"
-	"net/http"
-	"strconv"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+	"log"
+	"net/http"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -1079,50 +1077,6 @@ func buildDatadogWidgetLayout(terraformLayout map[string]interface{}) *datadogV1
 	datadogLayout.SetHeight(int64(terraformLayout["height"].(int)))
 	datadogLayout.SetWidth(int64(terraformLayout["width"].(int)))
 	return datadogLayout
-}
-
-func buildDatadogWidgetLayoutDeprecated(terraformLayout map[string]interface{}) *datadogV1.WidgetLayout {
-	datadogLayout := datadogV1.NewWidgetLayoutWithDefaults()
-
-	if value, ok := terraformLayout["x"].(string); ok && len(value) != 0 {
-		if v, err := strconv.ParseInt(value, 10, 64); err == nil {
-			datadogLayout.SetX(v)
-		}
-	}
-	if value, ok := terraformLayout["y"].(string); ok && len(value) != 0 {
-		if v, err := strconv.ParseInt(value, 10, 64); err == nil {
-			datadogLayout.SetY(v)
-		}
-	}
-	if value, ok := terraformLayout["height"].(string); ok && len(value) != 0 {
-		if v, err := strconv.ParseInt(value, 10, 64); err == nil {
-			datadogLayout.SetHeight(v)
-		}
-	}
-	if value, ok := terraformLayout["width"].(string); ok && len(value) != 0 {
-		if v, err := strconv.ParseInt(value, 10, 64); err == nil {
-			datadogLayout.SetWidth(v)
-		}
-	}
-	return datadogLayout
-}
-
-func buildTerraformWidgetLayout(datadogLayout datadogV1.WidgetLayout) map[string]string {
-	terraformLayout := map[string]string{}
-
-	if v, ok := datadogLayout.GetXOk(); ok {
-		terraformLayout["x"] = strconv.FormatInt(*v, 10)
-	}
-	if v, ok := datadogLayout.GetYOk(); ok {
-		terraformLayout["y"] = strconv.FormatInt(*v, 10)
-	}
-	if v, ok := datadogLayout.GetHeightOk(); ok {
-		terraformLayout["height"] = strconv.FormatInt(*v, 10)
-	}
-	if v, ok := datadogLayout.GetWidthOk(); ok {
-		terraformLayout["width"] = strconv.FormatInt(*v, 10)
-	}
-	return terraformLayout
 }
 
 //
@@ -2801,12 +2755,6 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
-		"logset": {
-			Description: "ID of the logset to use. Deprecated Use `indexes` instead.",
-			Type:        schema.TypeString,
-			Deprecated:  "This parameter has been deprecated. Use `indexes` instead.",
-			Optional:    true,
-		},
 		"query": {
 			Description: "The query to use in the widget.",
 			Type:        schema.TypeString,
@@ -2882,7 +2830,6 @@ func getWidgetFieldSortSchema() map[string]*schema.Schema {
 func buildDatadogLogStreamDefinition(terraformDefinition map[string]interface{}) *datadogV1.LogStreamWidgetDefinition {
 	datadogDefinition := datadogV1.NewLogStreamWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetLogset(terraformDefinition["logset"].(string))
 	terraformIndexes := terraformDefinition["indexes"].([]interface{})
 	datadogIndexes := make([]string, len(terraformIndexes))
 	for i, index := range terraformIndexes {
@@ -2946,13 +2893,8 @@ func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidg
 	terraformDefinition := map[string]interface{}{}
 	// Optional params
 
-	// Indexes is the recommended required field, but we still allow setting logsets instead for backwards compatibility
 	if v, ok := datadogDefinition.GetIndexesOk(); ok {
 		terraformDefinition["indexes"] = *v
-	}
-
-	if v, ok := datadogDefinition.GetLogsetOk(); ok {
-		terraformDefinition["logset"] = *v
 	}
 	if v, ok := datadogDefinition.GetQueryOk(); ok {
 		terraformDefinition["query"] = *v
@@ -3025,21 +2967,6 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMonitorSummarySortFromValue),
 			Optional:     true,
 		},
-		// The count param is deprecated
-		"count": {
-			Description: "The number of monitors to display.",
-			Type:        schema.TypeInt,
-			Deprecated:  "This parameter has been deprecated.",
-			Optional:    true,
-			Default:     50,
-		},
-		// The start param is deprecated
-		"start": {
-			Description: "The start of the list. Typically 0.",
-			Type:        schema.TypeInt,
-			Deprecated:  "This parameter has been deprecated.",
-			Optional:    true,
-		},
 		"display_format": {
 			Description:  "The display setting to use. One of `counts`, `list`, or `countsAndList`.",
 			Type:         schema.TypeString,
@@ -3092,12 +3019,6 @@ func buildDatadogManageStatusDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["sort"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetSort(datadogV1.WidgetMonitorSummarySort(v))
 	}
-	if v, ok := terraformDefinition["count"].(int); ok {
-		datadogDefinition.SetCount(int64(v))
-	}
-	if v, ok := terraformDefinition["start"].(int); ok {
-		datadogDefinition.SetStart(int64(v))
-	}
 	if v, ok := terraformDefinition["display_format"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetDisplayFormat(datadogV1.WidgetMonitorSummaryDisplayFormat(v))
 	}
@@ -3132,13 +3053,6 @@ func buildTerraformManageStatusDefinition(datadogDefinition datadogV1.MonitorSum
 	}
 	if v, ok := datadogDefinition.GetSortOk(); ok {
 		terraformDefinition["sort"] = *v
-	}
-	//Below fields are deprecated
-	if v, ok := datadogDefinition.GetCountOk(); ok {
-		terraformDefinition["count"] = *v
-	}
-	if v, ok := datadogDefinition.GetStartOk(); ok {
-		terraformDefinition["start"] = *v
 	}
 	if v, ok := datadogDefinition.GetDisplayFormatOk(); ok {
 		terraformDefinition["display_format"] = *v
@@ -5608,22 +5522,6 @@ func buildDatadogQueryCompute(terraformCompute map[string]interface{}) *datadogV
 	return datadogCompute
 }
 
-func buildDatadogQueryComputeDeprecated(terraformCompute map[string]interface{}) *datadogV1.LogsQueryCompute {
-	datadogCompute := datadogV1.NewLogsQueryComputeWithDefaults()
-	if aggr, ok := terraformCompute["aggregation"].(string); ok && len(aggr) != 0 {
-		datadogCompute.SetAggregation(aggr)
-		if facet, ok := terraformCompute["facet"].(string); ok && len(facet) != 0 {
-			datadogCompute.SetFacet(facet)
-		}
-		if interval, ok := terraformCompute["interval"].(string); ok {
-			if v, err := strconv.ParseInt(interval, 10, 64); err == nil {
-				datadogCompute.SetInterval(v)
-			}
-		}
-	}
-	return datadogCompute
-}
-
 func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1.LogQueryDefinition {
 	// Index
 	datadogQuery := datadogV1.NewLogQueryDefinition()
@@ -5700,20 +5598,6 @@ func buildDatadogGroupBySort(sort map[string]interface{}) *datadogV1.LogQueryDef
 	return ddSort
 }
 
-func buildTerraformApmOrLogQueryComputeDeprecated(compute *datadogV1.LogsQueryCompute) map[string]string {
-	terraformCompute := map[string]string{
-		"aggregation": compute.GetAggregation(),
-	}
-	if v, ok := compute.GetFacetOk(); ok {
-		terraformCompute["facet"] = *v
-	}
-	if v, ok := compute.GetIntervalOk(); ok {
-		terraformCompute["interval"] = strconv.FormatInt(*v, 10)
-	}
-
-	return terraformCompute
-}
-
 func buildTerraformApmOrLogQueryCompute(compute *datadogV1.LogsQueryCompute) map[string]interface{} {
 	terraformCompute := map[string]interface{}{
 		"aggregation": compute.GetAggregation(),
@@ -5734,8 +5618,6 @@ func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *u
 	terraformQuery["index"] = datadogQuery.GetIndex()
 	// Compute
 	if compute, ok := datadogQuery.GetComputeOk(); ok {
-		// Set in deprecated field if that's what's in the config, set in new field otherwise
-
 		terraformQuery["compute_query"] = []map[string]interface{}{buildTerraformApmOrLogQueryCompute(compute)}
 	}
 	// Multi-compute
