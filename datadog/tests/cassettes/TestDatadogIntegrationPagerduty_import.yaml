@@ -2,7 +2,7 @@
 version: 1
 interactions:
 - request:
-    body: '{"services":[{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1615587021","service_key":"*****"},{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1615587021_2","service_key":"*****"}],"subdomain":"testdomain","schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"api_token":""}'
+    body: '{"subdomain":"testdomain","schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"api_token":""}'
     form: {}
     headers:
       Content-Type:
@@ -21,15 +21,15 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Fri, 12 Mar 2021 22:10:22 GMT
+      - Tue, 16 Mar 2021 20:28:49 GMT
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - F5gm0Rce1/Abr9/0Fw8HAqWfiz0FdiH8er/AXnN6lOn3L6KyGgbsLCwgPlob1No8
+      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
       X-Dd-Version:
-      - "35.4088130"
+      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -44,7 +44,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1615587021","service_key":"*****"},{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1615587021_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -55,7 +55,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:10:24 GMT
+      - Tue, 16 Mar 2021 20:28:50 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -65,9 +65,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - gYZcaADwbKcv7Hm19HJx6WsLoKuOijDWAt2viPeCfWqUgyKY+9e1xZdmMJeXV3YV
+      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
       X-Dd-Version:
-      - "35.4088130"
+      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -82,7 +82,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1615587021","service_key":"*****"},{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1615587021_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -93,7 +93,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:10:24 GMT
+      - Tue, 16 Mar 2021 20:28:50 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -103,9 +103,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
+      - Um4CoU685QqAscnxhS5BD+goWu2yX1Jd4zCfGzSsEvPPIm1qURZaF8dlLl/OEY4I
       X-Dd-Version:
-      - "35.4088130"
+      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -120,7 +120,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1615587021","service_key":"*****"},{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1615587021_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -131,7 +131,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:10:25 GMT
+      - Tue, 16 Mar 2021 20:28:51 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -141,9 +141,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
+      - fIO2C4qGDheGHy4YbS+r3a3CXbh4cbRo7roILOimQyiHGjQdOat0cIpWCkupM1uX
       X-Dd-Version:
-      - "35.4088130"
+      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -158,7 +158,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1615587021","service_key":"*****"},{"service_name":"tf_TestDatadogIntegrationPagerduty_import_local_1615587021_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -169,7 +169,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:10:26 GMT
+      - Tue, 16 Mar 2021 20:28:52 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -179,9 +179,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - tpRCH6w417YjBovRJ8VmtuXmNONVYiRp2c8d2AxjPdGBn8PCtgG4vAztrx3qUZAN
+      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
       X-Dd-Version:
-      - "35.4088130"
+      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
