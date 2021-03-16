@@ -3471,7 +3471,6 @@ Optional:
 - **columns** (List of String) Stringified list of columns to use. Example: `["column1","column2","column3"]`.
 - **indexes** (List of String) An array of index names to query in the stream.
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **logset** (String, Deprecated) ID of the logset to use. Deprecated Use `indexes` instead. **Deprecated.** This parameter has been deprecated. Use `indexes` instead.
 - **message_display** (String) One of: ['inline', 'expanded-md', 'expanded-lg']
 - **query** (String) The query to use in the widget.
 - **show_date_column** (Boolean) If the date column should be displayed.
@@ -3501,12 +3500,10 @@ Required:
 Optional:
 
 - **color_preference** (String) Whether to colorize text or background. One of `text`, `background`.
-- **count** (Number, Deprecated) The number of monitors to display. **Deprecated.** This parameter has been deprecated.
 - **display_format** (String) The display setting to use. One of `counts`, `list`, or `countsAndList`.
 - **hide_zero_counts** (Boolean) Boolean indicating whether to hide empty categories.
 - **show_last_triggered** (Boolean) Boolean indicating whether to show when monitors/groups last triggered.
 - **sort** (String) The method to use to sort monitors. Example: `status,asc`.
-- **start** (Number, Deprecated) The start of the list. Typically 0. **Deprecated.** This parameter has been deprecated.
 - **summary_type** (String) One of: ['monitors', 'groups', 'combined']
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
@@ -6699,7 +6696,6 @@ Optional:
 - **columns** (List of String) Stringified list of columns to use. Example: `["column1","column2","column3"]`.
 - **indexes** (List of String) An array of index names to query in the stream.
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **logset** (String, Deprecated) ID of the logset to use. Deprecated Use `indexes` instead. **Deprecated.** This parameter has been deprecated. Use `indexes` instead.
 - **message_display** (String) One of: ['inline', 'expanded-md', 'expanded-lg']
 - **query** (String) The query to use in the widget.
 - **show_date_column** (Boolean) If the date column should be displayed.
@@ -6729,12 +6725,10 @@ Required:
 Optional:
 
 - **color_preference** (String) Whether to colorize text or background. One of `text`, `background`.
-- **count** (Number, Deprecated) The number of monitors to display. **Deprecated.** This parameter has been deprecated.
 - **display_format** (String) The display setting to use. One of `counts`, `list`, or `countsAndList`.
 - **hide_zero_counts** (Boolean) Boolean indicating whether to hide empty categories.
 - **show_last_triggered** (Boolean) Boolean indicating whether to show when monitors/groups last triggered.
 - **sort** (String) The method to use to sort monitors. Example: `status,asc`.
-- **start** (Number, Deprecated) The start of the list. Typically 0. **Deprecated.** This parameter has been deprecated.
 - **summary_type** (String) One of: ['monitors', 'groups', 'combined']
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.

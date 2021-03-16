@@ -199,7 +199,6 @@ resource "datadog_synthetics_test" "test_browser" {
 ### Optional
 
 - **assertion** (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--assertion))
-- **assertions** (List of Map of String, Deprecated) List of assertions. **Deprecated.** Define `assertion` blocks instead.
 - **browser_step** (Block List) Steps for browser tests. (see [below for nested schema](#nestedblock--browser_step))
 - **browser_variable** (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
 - **config_variable** (Block List) Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--config_variable))
@@ -215,7 +214,6 @@ resource "datadog_synthetics_test" "test_browser" {
 - **step** (Block List, Deprecated) Steps for browser tests. **Deprecated.** Define `browser_step` blocks instead. (see [below for nested schema](#nestedblock--step))
 - **subtype** (String) When `type` is `api`, choose from `http`, `ssl`, `tcp` or `dns`. Defaults to `http`.
 - **tags** (List of String) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).
-- **variable** (Block List, Deprecated) Variables used for a browser test steps. Multiple `browser_variable` blocks are allowed with the structure below. **Deprecated.** Define `browser_variable` blocks instead. (see [below for nested schema](#nestedblock--variable))
 
 ### Read-Only
 
@@ -427,21 +425,6 @@ Optional:
 - **allow_failure** (Boolean) Determines if the step should be allowed to fail.
 - **force_element_update** (Boolean) Force update of the "element" parameter for the step
 - **timeout** (Number) Used to override the default timeout of a step.
-
-
-<a id="nestedblock--variable"></a>
-### Nested Schema for `variable`
-
-Required:
-
-- **name** (String) Name of the variable.
-- **type** (String) Type of browser test variable. Allowed enum values: `element`, `email`, `global`, `javascript`, `text`.
-
-Optional:
-
-- **example** (String) Example for the variable.
-- **id** (String) ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.
-- **pattern** (String) Pattern of the variable.
 
 ## Import
 
