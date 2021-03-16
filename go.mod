@@ -21,7 +21,7 @@ require (
 	gopkg.in/DataDog/dd-trace-go.v1 v1.29.0-rc.1.0.20210226170446-a8dc39ec3484
 )
 
-go 1.15
+go 1.16
 
 // Use custom fork with performance fix in DecoderSpec
 replace github.com/hashicorp/terraform-plugin-sdk v1.15.0 => github.com/therve/terraform-plugin-sdk v1.16.1-0.20210202202613-4d59f03d3b5f
