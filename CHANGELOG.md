@@ -10,9 +10,10 @@ FEATURE:
 
 BUGFIXES:
 
+-   `datadog_dashboard`: Add a retry on 504 errors when there is a timeout ([#975](https://github.com/Datadog/terraform-provider-datadog/pull/975))
+-   `datadog_integration_slack_channel`: Fix issue causing slack channels to not be created in some situations ([#981](https://github.com/Datadog/terraform-provider-datadog/pull/981))
 -   `datadog_monitor`: Explicitly check `monitor_id` for `nil` value to fix an issue with terraformer ([#962](https://github.com/Datadog/terraform-provider-datadog/pull/962))
 -   `datadog_security_monitoring_default_rule`: Fix issue that prevented default rule cases notifications to be updated ([#956](https://github.com/Datadog/terraform-provider-datadog/pull/956))
--   `datadog_integration_slack_channel`: Fix issue causing slack channels to not be created in some situations ([#981](https://github.com/Datadog/terraform-provider-datadog/pull/981))
 
 NOTES:
 
