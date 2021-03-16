@@ -52,6 +52,7 @@ func ValidateEnumValue(newEnumFunc interface{}) schema.SchemaValidateFunc {
 	}
 }
 
+// ValidateStringValue ensures that a string value is valid
 func ValidateStringValue(v interface{}, k string) (ws []string, errors []error) {
 	value := v.(string)
 	if len(value) == 0 {
