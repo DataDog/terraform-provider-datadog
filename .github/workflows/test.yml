@@ -28,6 +28,7 @@ jobs:
         strategy:
             matrix:
                 platform: [ubuntu-latest, macos-latest, windows-latest]
+                terraform_version: ["0.14.8", "0.13.6"]
         runs-on: ${{ matrix.platform }}
         steps:
             # if we don't do this, `gofmt` will want to rewrite all Go files due to bad line endings,
@@ -46,6 +47,17 @@ jobs:
               run: make vet
             - name: License Check
               run: make license-check
+            - name: Setup terraform CLI
+              uses: hashicorp/setup-terraform@v1
+              with:
+                  terraform_version: ${{ matrix.terraform_version }}
+                  terraform_wrapper: false
+            - name: Set TF_ACC_TERRAFORM_PATH env var on non-windows platform
+              if: ${{ matrix.platform != 'windows-latest' }}
+              run: echo "TF_ACC_TERRAFORM_PATH=$(which terraform)" >> $GITHUB_ENV
+            - name: Set TF_ACC_TERRAFORM_PATH env var on windows platform
+              if: ${{ matrix.platform == 'windows-latest' }}
+              run: echo ("TF_ACC_TERRAFORM_PATH=" + (Get-Command terraform).Path) >> $env:GITHUB_ENV
             - name: Test
               run: make testall
               env:
