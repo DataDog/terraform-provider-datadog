@@ -988,7 +988,7 @@ func TestAccDatadogDashboardFormula(t *testing.T) {
 }
 
 func TestAccDatadogDashboardFormula_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardFormulaConfig, "datadog_dashboard.timeseries_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardFormulaConfig, "datadog_dashboard.timeseries_dashboard")
 }
 
 const datadogDashboardTimeseriesMultiComputeConfig = `
