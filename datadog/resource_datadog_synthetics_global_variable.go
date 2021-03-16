@@ -204,7 +204,7 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 				parseTestOptions.SetField(field.(string))
 			}
 
-			parser := datadogV1.SyntheticsGlobalVariableParseTestOptionsParser{}
+			parser := datadogV1.SyntheticsVariableParser{}
 			parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(d.Get("parse_test_options.0.parser.0.type").(string)))
 
 			if value, ok := d.GetOk("parse_test_options.0.parser.0.value"); ok {
