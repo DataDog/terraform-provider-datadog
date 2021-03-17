@@ -205,8 +205,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Type:        schema.TypeInt,
 				Computed:    true,
 			},
-			"step":         syntheticsTestBrowserStep(false),
-			"browser_step": syntheticsTestBrowserStep(true),
+			"browser_step": syntheticsTestBrowserStep(),
 		},
 	}
 }
@@ -361,18 +360,9 @@ func syntheticsTestOptionsList() *schema.Schema {
 	}
 }
 
-func syntheticsTestBrowserStep(detailedParams bool) *schema.Schema {
+func syntheticsTestBrowserStep() *schema.Schema {
 	var paramsSchema schema.Schema
-
-	if detailedParams {
-		paramsSchema = syntheticsBrowserStepParams()
-	} else {
-		paramsSchema = schema.Schema{
-			Description: "Parameters for the step as JSON string.",
-			Type:        schema.TypeString,
-			Required:    true,
-		}
-	}
+	paramsSchema = syntheticsBrowserStepParams()
 
 	browserStepSchema := schema.Schema{
 		Description: "Steps for browser tests.",
@@ -409,11 +399,6 @@ func syntheticsTestBrowserStep(detailedParams bool) *schema.Schema {
 				},
 			},
 		},
-	}
-
-	if detailedParams == false {
-		browserStepSchema.ConflictsWith = []string{"browser_step"}
-		browserStepSchema.Deprecated = "Define `browser_step` blocks instead."
 	}
 
 	return &browserStepSchema

@@ -341,7 +341,6 @@ func datadogUserV2DestroyHelper(ctx context.Context, s *terraform.State, client 
 		userResponse, httpResponse, err := client.UsersApi.GetUser(ctx, id).Execute()
 
 		if err != nil {
-			fmt.Println("Is it here?", httpResponse)
 			if httpResponse.StatusCode == 404 {
 				continue
 			}
