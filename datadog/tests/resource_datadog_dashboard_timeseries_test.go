@@ -180,6 +180,8 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
 			}
+			legend_layout = "horizontal"
+			legend_columns = ["value", "min", "max"]
 		}
 	}
 	widget {
@@ -364,6 +366,8 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
 			}
+			legend_layout = "horizontal"
+			legend_columns = ["value", "min", "max"]
 		}
 	}
 }
@@ -545,6 +549,8 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
 			}
+			legend_layout = "horizontal"
+			legend_columns = ["value", "min", "max"]
 		}
 	}
 }
@@ -693,6 +699,11 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.request.5.rum_query.0.group_by.0.sort_query.0.order = desc",
 	"widget.0.timeseries_definition.0.request.5.rum_query.0.search_query =",
 	"widget.0.timeseries_definition.0.request.5.on_right_yaxis = true",
+	"widget.0.timeseries_definition.0.legend_layout = horizontal",
+	"widget.0.timeseries_definition.0.legend_columns.# = 3",
+	"widget.0.timeseries_definition.0.legend_columns.0 = value",
+	"widget.0.timeseries_definition.0.legend_columns.1 = min",
+	"widget.0.timeseries_definition.0.legend_columns.2 = max",
 	"widget.0.timeseries_definition.0.custom_link.# = 1",
 	"widget.0.timeseries_definition.0.custom_link.0.label = Test Custom Link label",
 	"widget.0.timeseries_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
@@ -834,6 +845,11 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.1.timeseries_definition.0.request.5.rum_query.0.group_by.0.sort.order = desc",
 	"widget.1.timeseries_definition.0.request.5.rum_query.0.search.query =",
 	"widget.1.timeseries_definition.0.request.5.on_right_yaxis = true",
+	"widget.1.timeseries_definition.0.legend_layout = horizontal",
+	"widget.1.timeseries_definition.0.legend_columns.# = 3",
+	"widget.1.timeseries_definition.0.legend_columns.0 = value",
+	"widget.1.timeseries_definition.0.legend_columns.1 = min",
+	"widget.1.timeseries_definition.0.legend_columns.2 = max",
 	"widget.1.timeseries_definition.0.custom_link.# = 1",
 	"widget.1.timeseries_definition.0.custom_link.0.label = Test Custom Link label",
 	"widget.1.timeseries_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
