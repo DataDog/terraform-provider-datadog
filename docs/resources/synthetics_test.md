@@ -211,7 +211,6 @@ resource "datadog_synthetics_test" "test_browser" {
 - **request_definition** (Block List, Max: 1) The synthetics test request. Required if `type = "api"`. (see [below for nested schema](#nestedblock--request_definition))
 - **request_headers** (Map of String) Header name and value map.
 - **request_query** (Map of String) Query arguments name and value map.
-- **step** (Block List, Deprecated) Steps for browser tests. **Deprecated.** Define `browser_step` blocks instead. (see [below for nested schema](#nestedblock--step))
 - **subtype** (String) When `type` is `api`, choose from `http`, `ssl`, `tcp` or `dns`. Defaults to `http`.
 - **tags** (List of String) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).
 
@@ -409,22 +408,6 @@ Optional:
 - **port** (Number) Port to use when performing the test.
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.
-
-
-<a id="nestedblock--step"></a>
-### Nested Schema for `step`
-
-Required:
-
-- **name** (String) Name of the step.
-- **params** (String) Parameters for the step as JSON string.
-- **type** (String) Type of the step. Refer to [Datadog documentation](https://docs.datadoghq.com/api/v1/synthetics/#create-a-test) for the complete list of available types.
-
-Optional:
-
-- **allow_failure** (Boolean) Determines if the step should be allowed to fail.
-- **force_element_update** (Boolean) Force update of the "element" parameter for the step
-- **timeout** (Number) Used to override the default timeout of a step.
 
 ## Import
 
