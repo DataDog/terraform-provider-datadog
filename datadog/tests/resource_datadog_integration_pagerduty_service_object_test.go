@@ -30,8 +30,6 @@ func TestAccDatadogIntegrationPagerdutyServiceObject_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "api_token", "*****"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty.foo", "individual_services", "true"),
-					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "schedules.0", "https://ddog.pagerduty.com/schedules/X123VF"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty_service_object.testing_foo", "service_name", serviceName+"_foo"),
@@ -67,7 +65,6 @@ func TestAccDatadogIntegrationPagerdutyServiceObject_Basic(t *testing.T) {
 func testAccCheckDatadogIntegrationPagerdutyServiceObjectConfig(uniq string) string {
 	return fmt.Sprintf(`
  resource "datadog_integration_pagerduty" "foo" {
-  individual_services = true
 
   schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
   subdomain = "testdomain"
@@ -92,7 +89,6 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
 func testAccCheckDatadogIntegrationPagerdutyServiceObjectUpdatedConfig(uniq string) string {
 	return fmt.Sprintf(`
  resource "datadog_integration_pagerduty" "foo" {
-  individual_services = true
 
   schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
   subdomain = "testdomain"

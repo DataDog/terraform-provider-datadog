@@ -125,7 +125,7 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 				ResourceName:            "datadog_synthetics_test.bar",
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"options_list", "browser_variable", "variable", "browser_step", "step"},
+				ImportStateVerifyIgnore: []string{"options_list", "browser_variable", "browser_step"},
 			},
 		},
 	})
@@ -1080,13 +1080,13 @@ func createSyntheticsSSLMissingTagsAttributeTestStep(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "request_definition.0.port", "443"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "assertions.#", "1"),
+				"datadog_synthetics_test.ssl", "assertion.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "assertions.0.type", "certificate"),
+				"datadog_synthetics_test.ssl", "assertion.0.type", "certificate"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "assertions.0.operator", "isInMoreThan"),
+				"datadog_synthetics_test.ssl", "assertion.0.operator", "isInMoreThan"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.ssl", "assertions.0.target", "30"),
+				"datadog_synthetics_test.ssl", "assertion.0.target", "30"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -1120,13 +1120,11 @@ resource "datadog_synthetics_test" "ssl" {
 		port = 443
 	}
 
-	assertions = [
-		{
-			type = "certificate"
-			operator = "isInMoreThan"
-			target = 30
-		}
-	]
+	assertion {
+		type = "certificate"
+		operator = "isInMoreThan"
+		target = 30
+	}
 
 	locations = [ "aws:eu-central-1" ]
 	options_list {
@@ -1594,23 +1592,25 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.#", "1"),
+				"datadog_synthetics_test.bar", "browser_step.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.0.name", "first step"),
+				"datadog_synthetics_test.bar", "browser_step.0.name", "first step"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.0.type", "assertCurrentUrl"),
+				"datadog_synthetics_test.bar", "browser_step.0.type", "assertCurrentUrl"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.0.params", "{\"check\":\"contains\",\"value\":\"content\"}"),
+				"datadog_synthetics_test.bar", "browser_step.0.params.0.check", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.params.0.value", "content"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.type", "text"),
+				"datadog_synthetics_test.bar", "browser_variable.0.type", "text"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.name", "MY_PATTERN_VAR"),
+				"datadog_synthetics_test.bar", "browser_variable.0.name", "MY_PATTERN_VAR"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.pattern", "{{numeric(3)}}"),
+				"datadog_synthetics_test.bar", "browser_variable.0.pattern", "{{numeric(3)}}"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.example", "597"),
+				"datadog_synthetics_test.bar", "browser_variable.0.example", "597"),
 		),
 	}
 }
@@ -1654,16 +1654,16 @@ resource "datadog_synthetics_test" "bar" {
 
 	status = "paused"
 
-	step {
+	browser_step {
 	    name = "first step"
 	    type = "assertCurrentUrl"
-	    params = jsonencode({
-	        "check": "contains",
-	        "value": "content"
-	    })
+	    params {
+	        check = "contains"
+	        value = "content"
+	    }
 	}
 
-	variable {
+	browser_variable {
 		type = "text"
 		name = "MY_PATTERN_VAR"
 		pattern = "{{numeric(3)}}"
@@ -1729,29 +1729,31 @@ func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "buz"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.#", "2"),
+				"datadog_synthetics_test.bar", "browser_step.#", "2"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.0.name", "first step updated"),
+				"datadog_synthetics_test.bar", "browser_step.0.name", "first step updated"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.0.type", "assertCurrentUrl"),
+				"datadog_synthetics_test.bar", "browser_step.0.type", "assertCurrentUrl"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.0.params", "{\"check\":\"contains\",\"value\":\"content\"}"),
+				"datadog_synthetics_test.bar", "browser_step.0.params.0.check", "contains"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.1.name", "press key step"),
+				"datadog_synthetics_test.bar", "browser_step.0.params.0.value", "content"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.1.type", "pressKey"),
+				"datadog_synthetics_test.bar", "browser_step.1.name", "press key step"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.1.params", "{\"value\":\"1\"}"),
+				"datadog_synthetics_test.bar", "browser_step.1.type", "pressKey"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.params.0.value", "1"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.type", "text"),
+				"datadog_synthetics_test.bar", "browser_variable.0.type", "text"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.name", "MY_PATTERN_VAR"),
+				"datadog_synthetics_test.bar", "browser_variable.0.name", "MY_PATTERN_VAR"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.pattern", "{{numeric(4)}}"),
+				"datadog_synthetics_test.bar", "browser_variable.0.pattern", "{{numeric(4)}}"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "variable.0.example", "5970"),
+				"datadog_synthetics_test.bar", "browser_variable.0.example", "5970"),
 		),
 	}
 }
@@ -1791,26 +1793,26 @@ resource "datadog_synthetics_test" "bar" {
 	tags = ["foo:bar", "buz"]
 	status = "live"
 
-	step {
+	browser_step {
 	    name = "first step updated"
 	    type = "assertCurrentUrl"
 
-	    params = jsonencode({
-	        "check": "contains",
-	        "value": "content"
-	    })
+	    params {
+	        check = "contains"
+	        value = "content"
+	    }
 	}
 
-	step {
+	browser_step {
 	    name = "press key step"
 	    type = "pressKey"
 
-	    params = jsonencode({
-	        "value": "1"
-	    })
+	    params {
+	        value = "1"
+	    }
 	}
 
-	variable {
+	browser_variable {
 		type = "text"
 		name = "MY_PATTERN_VAR"
 		pattern = "{{numeric(4)}}"
@@ -1860,13 +1862,15 @@ func createSyntheticsBrowserTestBrowserVariablesStep(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.#", "1"),
+				"datadog_synthetics_test.bar", "browser_step.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.0.name", "first step"),
+				"datadog_synthetics_test.bar", "browser_step.0.name", "first step"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.0.type", "assertCurrentUrl"),
+				"datadog_synthetics_test.bar", "browser_step.0.type", "assertCurrentUrl"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "step.0.params", "{\"check\":\"contains\",\"value\":\"content\"}"),
+				"datadog_synthetics_test.bar", "browser_step.0.params.0.check", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.params.0.value", "content"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 			resource.TestCheckResourceAttr(
@@ -1910,13 +1914,13 @@ resource "datadog_synthetics_test" "bar" {
 
        status = "paused"
 
-       step {
+       browser_step {
            name = "first step"
            type = "assertCurrentUrl"
-           params = jsonencode({
-               "check": "contains",
-               "value": "content"
-           })
+           params {
+               check = "contains"
+               value = "content"
+           }
        }
 
        browser_variable {

@@ -101,21 +101,10 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					},
 				},
 			},
-			"assertions": {
-				Description:   "List of assertions.",
-				Type:          schema.TypeList,
-				Optional:      true,
-				ConflictsWith: []string{"assertion"},
-				Deprecated:    "Define `assertion` blocks instead.",
-				Elem: &schema.Schema{
-					Type: schema.TypeMap,
-				},
-			},
 			"assertion": {
-				Description:   "Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below.",
-				Type:          schema.TypeList,
-				Optional:      true,
-				ConflictsWith: []string{"assertions"},
+				Description: "Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below.",
+				Type:        schema.TypeList,
+				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"type": {
@@ -168,7 +157,6 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					},
 				},
 			},
-			"variable":         syntheticsBrowserVariableLegacy(),
 			"browser_variable": syntheticsBrowserVariable(),
 			"config_variable":  syntheticsConfigVariable(),
 			"device_ids": {
@@ -217,8 +205,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Type:        schema.TypeInt,
 				Computed:    true,
 			},
-			"step":         syntheticsTestBrowserStep(false),
-			"browser_step": syntheticsTestBrowserStep(true),
+			"browser_step": syntheticsTestBrowserStep(),
 		},
 	}
 }
@@ -373,18 +360,9 @@ func syntheticsTestOptionsList() *schema.Schema {
 	}
 }
 
-func syntheticsTestBrowserStep(detailedParams bool) *schema.Schema {
+func syntheticsTestBrowserStep() *schema.Schema {
 	var paramsSchema schema.Schema
-
-	if detailedParams {
-		paramsSchema = syntheticsBrowserStepParams()
-	} else {
-		paramsSchema = schema.Schema{
-			Description: "Parameters for the step as JSON string.",
-			Type:        schema.TypeString,
-			Required:    true,
-		}
-	}
+	paramsSchema = syntheticsBrowserStepParams()
 
 	browserStepSchema := schema.Schema{
 		Description: "Steps for browser tests.",
@@ -421,11 +399,6 @@ func syntheticsTestBrowserStep(detailedParams bool) *schema.Schema {
 				},
 			},
 		},
-	}
-
-	if detailedParams == false {
-		browserStepSchema.ConflictsWith = []string{"browser_step"}
-		browserStepSchema.Deprecated = "Define `browser_step` blocks instead."
 	}
 
 	return &browserStepSchema
@@ -573,24 +546,12 @@ func syntheticsBrowserStepParams() schema.Schema {
 	}
 }
 
-func syntheticsBrowserVariableLegacy() *schema.Schema {
-	return &schema.Schema{
-		Type:          schema.TypeList,
-		Description:   "Variables used for a browser test steps. Multiple `browser_variable` blocks are allowed with the structure below.",
-		Optional:      true,
-		ConflictsWith: []string{"browser_variable"},
-		Deprecated:    "Define `browser_variable` blocks instead.",
-		Elem:          syntheticsBrowserVariableElem(),
-	}
-}
-
 func syntheticsBrowserVariable() *schema.Schema {
 	return &schema.Schema{
-		Description:   "Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below.",
-		Type:          schema.TypeList,
-		Optional:      true,
-		ConflictsWith: []string{"variable"},
-		Elem:          syntheticsBrowserVariableElem(),
+		Description: "Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below.",
+		Type:        schema.TypeList,
+		Optional:    true,
+		Elem:        syntheticsBrowserVariableElem(),
 	}
 }
 
@@ -850,33 +811,6 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	config := datadogV1.NewSyntheticsTestConfig([]datadogV1.SyntheticsAssertion{}, *request)
 	config.SetVariables([]datadogV1.SyntheticsBrowserVariable{})
 
-	// Deprecated path, the assertions field is replaced with assertion
-	if attr, ok := d.GetOk("assertions"); ok && attr != nil {
-		for _, assertion := range attr.([]interface{}) {
-			assertionMap := assertion.(map[string]interface{})
-			if v, ok := assertionMap["type"]; ok {
-				assertionType := v.(string)
-				if v, ok := assertionMap["operator"]; ok {
-					assertionOperator := v.(string)
-					assertionTarget := datadogV1.NewSyntheticsAssertionTarget(datadogV1.SyntheticsAssertionOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
-					if v, ok := assertionMap["property"]; ok {
-						assertionProperty := v.(string)
-						assertionTarget.SetProperty(assertionProperty)
-					}
-					if v, ok := assertionMap["target"]; ok {
-						if isTargetOfTypeInt(assertionTarget.GetType(), assertionTarget.GetOperator()) {
-							assertionTargetInt, _ := strconv.Atoi(v.(string))
-							assertionTarget.SetTarget(assertionTargetInt)
-						} else {
-							assertionTarget.SetTarget(v.(string))
-						}
-					}
-					config.Assertions = append(config.Assertions, datadogV1.SyntheticsAssertionTargetAsSyntheticsAssertion(assertionTarget))
-				}
-			}
-		}
-	}
-
 	if attr, ok := d.GetOk("assertion"); ok && attr != nil {
 		for _, assertion := range attr.([]interface{}) {
 			assertionMap := assertion.(map[string]interface{})
@@ -941,8 +875,6 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	var browserVariables []interface{}
 
 	if attr, ok := d.GetOk("browser_variable"); ok && attr != nil {
-		browserVariables = attr.([]interface{})
-	} else if attr, ok := d.GetOk("variable"); ok && attr != nil {
 		browserVariables = attr.([]interface{})
 	}
 
@@ -1293,15 +1225,9 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		}
 		localAssertions[i] = localAssertion
 	}
-	// If the existing state still uses assertions, keep using that in the state to not generate useless diffs
-	if attr, ok := d.GetOk("assertions"); ok && attr != nil && len(attr.([]interface{})) > 0 {
-		if err := d.Set("assertions", localAssertions); err != nil {
-			return diag.FromErr(err)
-		}
-	} else {
-		if err := d.Set("assertion", localAssertions); err != nil {
-			return diag.FromErr(err)
-		}
+
+	if err := d.Set("assertion", localAssertions); err != nil {
+		return diag.FromErr(err)
 	}
 
 	actualVariables := config.GetVariables()
@@ -1326,15 +1252,8 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		localBrowserVariables[i] = localVariable
 	}
 
-	// If the existing state still uses variables, keep using that in the state to not generate useless diffs
-	if attr, ok := d.GetOk("variable"); ok && attr != nil && len(attr.([]interface{})) > 0 {
-		if err := d.Set("variable", localBrowserVariables); err != nil {
-			return diag.FromErr(err)
-		}
-	} else {
-		if err := d.Set("browser_variable", localBrowserVariables); err != nil {
-			return diag.FromErr(err)
-		}
+	if err := d.Set("browser_variable", localBrowserVariables); err != nil {
+		return diag.FromErr(err)
 	}
 
 	configVariables := config.GetConfigVariables()

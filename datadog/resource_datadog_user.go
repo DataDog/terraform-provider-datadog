@@ -3,22 +3,13 @@ package datadog
 import (
 	"context"
 	"log"
-	"regexp"
-	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/zorkian/go-datadog-api"
 )
-
-var uuidRegex = regexp.MustCompile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
-
-func isV2User(id string) bool {
-	return uuidRegex.MatchString(id)
-}
 
 func resourceDatadogUser() *schema.Resource {
 	return &schema.Resource{
@@ -43,39 +34,10 @@ func resourceDatadogUser() *schema.Resource {
 				Type:        schema.TypeString,
 				Required:    true,
 			},
-			"handle": {
-				Description: "The user handle, must be a valid email.",
-				Type:        schema.TypeString,
-				Optional:    true,
-				Deprecated:  "This parameter is deprecated and will be removed from the next Major version.",
-			},
-			"is_admin": {
-				Description: "Whether the user is an administrator. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.",
-				Type:        schema.TypeBool,
-				Computed:    true,
-				Optional:    true,
-				Deprecated:  "This parameter is replaced by `roles` and will be removed from the next Major version.",
-			},
-			"access_role": {
-				Deprecated:  "This parameter is replaced by `roles` and will be removed from the next Major version.",
-				Description: "Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user). Default is `st`. `access_role` is ignored for new users created with this resource. New users have to use the `roles` attribute.",
-				Type:        schema.TypeString,
-				Optional:    true,
-				Default:     "st",
-				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-					return (d.Get("roles").(*schema.Set)).Len() > 0
-				},
-			},
 			"name": {
 				Description: "Name for user.",
 				Type:        schema.TypeString,
 				Optional:    true,
-			},
-			"role": {
-				Description: "Role description for user. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan.",
-				Type:        schema.TypeString,
-				Optional:    true,
-				Deprecated:  "This parameter was removed from the API and has no effect.",
 			},
 			"roles": {
 				Description: "A list a role IDs to assign to the user.",
@@ -105,18 +67,6 @@ func resourceDatadogUser() *schema.Resource {
 			},
 		},
 	}
-}
-
-func buildDatadogUserStruct(d *schema.ResourceData) *datadog.User {
-	var u datadog.User
-	u.SetDisabled(d.Get("disabled").(bool))
-	u.SetEmail(d.Get("email").(string))
-	u.SetHandle(d.Get("handle").(string))
-	u.SetIsAdmin(d.Get("is_admin").(bool))
-	u.SetName(d.Get("name").(string))
-	u.SetAccessRole(d.Get("access_role").(string))
-
-	return &u
 }
 
 func buildDatadogUserV2Struct(d *schema.ResourceData) *datadogV2.UserCreateRequest {
@@ -283,162 +233,78 @@ func updateUserStateV2(d *schema.ResourceData, user *datadogV2.UserResponse) dia
 	return nil
 }
 
-func updateUserStateV1(d *schema.ResourceData, user *datadog.User) diag.Diagnostics {
-	if err := d.Set("disabled", user.GetDisabled()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("email", user.GetEmail()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("handle", user.GetHandle()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("name", user.GetName()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("verified", user.GetVerified()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("access_role", user.GetAccessRole()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("is_admin", user.GetIsAdmin()); err != nil {
-		return diag.FromErr(err)
-	}
-	return nil
-}
-
 func resourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 
-	if isV2User(d.Id()) {
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
 
-		userResponse, httpResponse, err := datadogClientV2.UsersApi.GetUser(authV2, d.Id()).Execute()
-		if err != nil {
-			if httpResponse != nil && httpResponse.StatusCode == 404 {
-				d.SetId("")
-				return nil
-			}
-			return utils.TranslateClientErrorDiag(err, "error getting user")
-		}
-		return updateUserStateV2(d, &userResponse)
-	}
-
-	client := providerConf.CommunityClient
-	u, err := client.GetUser(d.Id())
+	userResponse, httpResponse, err := datadogClientV2.UsersApi.GetUser(authV2, d.Id()).Execute()
 	if err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
+		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
 			return nil
 		}
-		return diag.FromErr(err)
+		return utils.TranslateClientErrorDiag(err, "error getting user")
 	}
-	return updateUserStateV1(d, &u)
+	return updateUserStateV2(d, &userResponse)
 }
 
 func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
 
-	if !isV2User(d.Id()) && (d.Get("roles").(*schema.Set)).Len() > 0 {
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
-		email := d.Get("email").(string)
-		log.Printf("[INFO] Migrating existing Datadog user %s", email)
-		// Find user ID by listing user and filtering by email
-		listResponse, _, err := datadogClientV2.UsersApi.ListUsers(authV2).Filter(email).Execute()
-		if err != nil {
-			return utils.TranslateClientErrorDiag(err, "error searching user")
-		}
-		responseData := listResponse.GetData()
-		if len(responseData) != 1 {
-			return diag.Errorf("could not find single user with email %s", email)
-		}
-		userID := responseData[0].GetId()
-		d.SetId(userID)
-	}
-
-	if isV2User(d.Id()) {
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
-
-		if d.HasChange("roles") {
-			oldRolesI, newRolesI := d.GetChange("roles")
-			oldRoles := oldRolesI.(*schema.Set)
-			newRoles := newRolesI.(*schema.Set)
-			rolesToRemove := oldRoles.Difference(newRoles)
-			rolesToAdd := newRoles.Difference(oldRoles)
-			for _, roleI := range rolesToRemove.List() {
-				role := roleI.(string)
-				userRelation := datadogV2.NewRelationshipToUserWithDefaults()
-				userRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
-				userRelationData.SetId(d.Id())
-				userRelation.SetData(*userRelationData)
-				_, _, err := datadogClientV2.RolesApi.RemoveUserFromRole(authV2, role).Body(*userRelation).Execute()
-				if err != nil {
-					return utils.TranslateClientErrorDiag(err, "error removing user from role")
-				}
-			}
-			for _, roleI := range rolesToAdd.List() {
-				role := roleI.(string)
-				roleRelation := datadogV2.NewRelationshipToUserWithDefaults()
-				roleRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
-				roleRelationData.SetId(d.Id())
-				roleRelation.SetData(*roleRelationData)
-				_, _, err := datadogClientV2.RolesApi.AddUserToRole(authV2, role).Body(*roleRelation).Execute()
-				if err != nil {
-					return utils.TranslateClientErrorDiag(err, "error adding user to role")
-				}
+	if d.HasChange("roles") {
+		oldRolesI, newRolesI := d.GetChange("roles")
+		oldRoles := oldRolesI.(*schema.Set)
+		newRoles := newRolesI.(*schema.Set)
+		rolesToRemove := oldRoles.Difference(newRoles)
+		rolesToAdd := newRoles.Difference(oldRoles)
+		for _, roleI := range rolesToRemove.List() {
+			role := roleI.(string)
+			userRelation := datadogV2.NewRelationshipToUserWithDefaults()
+			userRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
+			userRelationData.SetId(d.Id())
+			userRelation.SetData(*userRelationData)
+			_, _, err := datadogClientV2.RolesApi.RemoveUserFromRole(authV2, role).Body(*userRelation).Execute()
+			if err != nil {
+				return utils.TranslateClientErrorDiag(err, "error removing user from role")
 			}
 		}
-
-		userRequest := buildDatadogUserV2UpdateStruct(d, d.Id())
-		updatedUser, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, d.Id()).Body(*userRequest).Execute()
-		if err != nil {
-			return utils.TranslateClientErrorDiag(err, "error updating user")
+		for _, roleI := range rolesToAdd.List() {
+			role := roleI.(string)
+			roleRelation := datadogV2.NewRelationshipToUserWithDefaults()
+			roleRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
+			roleRelationData.SetId(d.Id())
+			roleRelation.SetData(*roleRelationData)
+			_, _, err := datadogClientV2.RolesApi.AddUserToRole(authV2, role).Body(*roleRelation).Execute()
+			if err != nil {
+				return utils.TranslateClientErrorDiag(err, "error adding user to role")
+			}
 		}
-		// Update state once after we do the UpdateUser operation. At this point, the roles have already been changed
-		// so the updated list is avalaible in the update response.
-		return updateUserStateV2(d, &updatedUser)
 	}
-	client := providerConf.CommunityClient
 
-	u := buildDatadogUserStruct(d)
-	u.SetHandle(d.Id())
-
-	if err := client.UpdateUser(*u); err != nil {
+	userRequest := buildDatadogUserV2UpdateStruct(d, d.Id())
+	updatedUser, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, d.Id()).Body(*userRequest).Execute()
+	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error updating user")
 	}
-	// We don't have a response in v1, so keep relying on the read
-	return resourceDatadogUserRead(ctx, d, meta)
+	// Update state once after we do the UpdateUser operation. At this point, the roles have already been changed
+	// so the updated list is available in the update response.
+	return updateUserStateV2(d, &updatedUser)
 }
 
 func resourceDatadogUserDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
 
-	if isV2User(d.Id()) {
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
-
-		if httpResponse, err := datadogClientV2.UsersApi.DisableUser(authV2, d.Id()).Execute(); err != nil {
-			if httpResponse != nil && httpResponse.StatusCode == 404 {
-				return nil
-			}
-			return utils.TranslateClientErrorDiag(err, "error disabling user")
-		}
-	} else {
-		client := providerConf.CommunityClient
-
-		// Datadog does not actually delete users, but instead marks them as disabled.
-		// Bypass DeleteUser if GetUser returns User.Disabled == true, otherwise it will 400.
-		if u, err := client.GetUser(d.Id()); err == nil && u.GetDisabled() {
+	if httpResponse, err := datadogClientV2.UsersApi.DisableUser(authV2, d.Id()).Execute(); err != nil {
+		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			return nil
 		}
-
-		if err := client.DeleteUser(d.Id()); err != nil {
-			return utils.TranslateClientErrorDiag(err, "error deleting user")
-		}
+		return utils.TranslateClientErrorDiag(err, "error disabling user")
 	}
 
 	return nil
