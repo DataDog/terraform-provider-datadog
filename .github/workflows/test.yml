@@ -59,7 +59,7 @@ jobs:
                 unzip terraform_0.14.8_linux_amd64.zip
                 echo "TF_ACC_TERRAFORM_PATH=$(pwd)/terraform" >> $GITHUB_ENV
             - name: Test
-              run: go test ./...
+              run: go test -v ./...
               env:
                   RECORD: false
                   TF_ACC: 1
