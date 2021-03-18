@@ -4618,7 +4618,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 		},
 		"legend_columns": {
 			Description: "A list of columns to display in the legend. List items one of `value`, `avg`, `sum`, `min`, `max`.",
-			Type:        schema.TypeList,
+			Type:        schema.TypeSet,
 			Optional:    true,
 			Elem: &schema.Schema{
 				Type:         schema.TypeString,
