@@ -58,9 +58,8 @@ jobs:
                 wget https://releases.hashicorp.com/terraform/0.14.8/terraform_0.14.8_linux_amd64.zip
                 unzip terraform_0.14.8_linux_amd64.zip
                 echo "TF_ACC_TERRAFORM_PATH=$(pwd)/terraform" >> $GITHUB_ENV
-                echo "TF_DISABLE_PLUGIN_TLS=1" >> $GITHUB_ENV
             - name: Test
-              run: make testall
+              run: TF_ACC=1 RECORD=false go test ./...
               env:
                   RECORD: false
             - name: Check Docs Are Up To Date
