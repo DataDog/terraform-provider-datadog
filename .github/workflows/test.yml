@@ -27,8 +27,8 @@ jobs:
     test:
         strategy:
             matrix:
-                platform: [ubuntu-latest, macos-latest, windows-latest]
-                terraform_version: ["0.14.8", "0.13.6"]
+                platform: [ubuntu-latest]
+                terraform_version: ["0.14.8"]
         runs-on: ${{ matrix.platform }}
         steps:
             # if we don't do this, `gofmt` will want to rewrite all Go files due to bad line endings,
@@ -54,10 +54,10 @@ jobs:
                   terraform_wrapper: false
             - name: Set TF_ACC_TERRAFORM_PATH env var on non-windows platform
               if: ${{ matrix.platform != 'windows-latest' }}
-              run: echo "TF_ACC_TERRAFORM_PATH=$(which terraform)" >> $GITHUB_ENV
-            - name: Set TF_ACC_TERRAFORM_PATH env var on windows platform
-              if: ${{ matrix.platform == 'windows-latest' }}
-              run: echo ("TF_ACC_TERRAFORM_PATH=" + (Get-Command terraform).Path) >> $env:GITHUB_ENV
+              run: |
+                wget https://releases.hashicorp.com/terraform/0.14.8/terraform_0.14.8_linux_amd64.zip
+                unzip terraform_0.14.8_linux_amd64.zip
+                echo "TF_ACC_TERRAFORM_PATH=$(pwd)/terraform" >> $GITHUB_ENV
             - name: Test
               run: make testall
               env:
