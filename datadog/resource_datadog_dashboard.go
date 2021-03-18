@@ -4622,7 +4622,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Elem: &schema.Schema{
 				Type:         schema.TypeString,
-				ValidateFunc: validateTimeseriesWidgetLegendColumn,
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewTimeseriesWidgetLegendColumnFromValue),
 			},
 		},
 		"time":      getDeprecatedTimeSchema(),
@@ -4686,9 +4686,9 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 		datadogDefinition.SetLegendLayout(datadogV1.TimeseriesWidgetLegendLayout(v))
 	}
 	if v, ok := terraformDefinition["legend_columns"].([]interface{}); ok && len(v) != 0 {
-		datadogLegendColumns := make([]string, len(v))
+		datadogLegendColumns := make([]datadogV1.TimeseriesWidgetLegendColumn, len(v))
 		for i, legendColumn := range v {
-			datadogLegendColumns[i] = legendColumn.(string)
+			datadogLegendColumns[i] = datadogV1.TimeseriesWidgetLegendColumn(legendColumn.(string))
 		}
 		datadogDefinition.SetLegendColumns(datadogLegendColumns)
 	}
@@ -4747,7 +4747,7 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 	if v, ok := datadogDefinition.GetLegendColumnsOk(); ok {
 		terraformLegendColumns := make([]string, len(*v))
 		for i, legendColumn := range *v {
-			terraformLegendColumns[i] = legendColumn
+			terraformLegendColumns[i] = string(legendColumn)
 		}
 		terraformDefinition["legend_columns"] = terraformLegendColumns
 	}
@@ -6495,18 +6495,6 @@ func validateTimeseriesWidgetLegendSize(val interface{}, key string) (warns []st
 	default:
 		errs = append(errs, fmt.Errorf(
 			"%q contains an invalid value %q. Valid values are `0`, `2`, `4`, `8`, `16`, or `auto`", key, value))
-	}
-	return
-}
-
-func validateTimeseriesWidgetLegendColumn(val interface{}, key string) (warns []string, errs []error) {
-	value := val.(string)
-	switch value {
-	case "value", "avg", "sum", "min", "max":
-		break
-	default:
-		errs = append(errs, fmt.Errorf(
-			"%q contains an invalid value %q. Valid values are `value`, `avg`, `sum`, `min` or `max`", key, value))
 	}
 	return
 }
