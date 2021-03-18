@@ -4685,9 +4685,9 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["legend_layout"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetLegendLayout(datadogV1.TimeseriesWidgetLegendLayout(v))
 	}
-	if v, ok := terraformDefinition["legend_columns"].([]interface{}); ok && len(v) != 0 {
-		datadogLegendColumns := make([]datadogV1.TimeseriesWidgetLegendColumn, len(v))
-		for i, legendColumn := range v {
+	if v, ok := terraformDefinition["legend_columns"]; ok && v.(*schema.Set).Len() != 0 {
+		datadogLegendColumns := make([]datadogV1.TimeseriesWidgetLegendColumn, v.(*schema.Set).Len())
+		for i, legendColumn := range v.(*schema.Set).List() {
 			datadogLegendColumns[i] = datadogV1.TimeseriesWidgetLegendColumn(legendColumn.(string))
 		}
 		datadogDefinition.SetLegendColumns(datadogLegendColumns)
