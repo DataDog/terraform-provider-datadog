@@ -4611,7 +4611,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateTimeseriesWidgetLegendSize,
 		},
 		"legend_layout": {
-			Description:  "The layout of the legend displayed in the widget.",
+			Description:  "The layout of the legend displayed in the widget. One of `auto`, `horizontal`, `vertical`.",
 			Type:         schema.TypeString,
 			Optional:     true,
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewTimeseriesWidgetLegendLayoutFromValue),
