@@ -59,7 +59,7 @@ jobs:
               if: ${{ matrix.platform == 'windows-latest' }}
               run: echo ("TF_ACC_TERRAFORM_PATH=" + (Get-Command terraform).Path) >> $env:GITHUB_ENV
             - name: Test
-              run: go test -v ./...
+              run: go test -count=1 ./...
               env:
                   RECORD: false
                   TF_ACC: 1
