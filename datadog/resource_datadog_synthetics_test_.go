@@ -938,14 +938,23 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 			cert.SetFilename(attr.(string))
 		}
 		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
-			cert.SetContent(attr.(string))
+			// only set the certificate content if it is not an already hashed string
+			// this is needed for the update function that receives the data from the state
+			// and not from the config. So we get a hash of the certificate and not it's real
+			// value.
+			if isHash := isCertHash(attr.(string)); isHash == false {
+				cert.SetContent(attr.(string))
+			}
 		}
 
 		if attr, ok := d.GetOk("request_client_certificate.0.key.0.filename"); ok {
 			key.SetFilename(attr.(string))
 		}
 		if attr, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
-			key.SetContent(attr.(string))
+			// only set the key content if it is not an already hashed string
+			if isHash := isCertHash(attr.(string)); isHash == false {
+				key.SetContent(attr.(string))
+			}
 		}
 
 		clientCertificate := datadogV1.SyntheticsTestRequestCertificate{
@@ -1655,15 +1664,23 @@ func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []s
 	return
 }
 
+func isCertHash(content string) bool {
+	contentBytes := []byte(content)
+
+	// hacky way to detect if the value is already a sha256 hash
+	if len(contentBytes) == 64 {
+		return true
+	}
+
+	return false
+}
+
 // get the sha256 of a client certificate content
 // in some case where Terraform compares the state value
 // we already get the hashed value so we don't need to
 // hash it again
 func getCertificateStateValue(content string) string {
-	contentBytes := []byte(content)
-
-	// hacky way to detect if the value is already a sha256 hash
-	if len(contentBytes) == 64 {
+	if isHash := isCertHash(content); isHash {
 		return content
 	}
 
