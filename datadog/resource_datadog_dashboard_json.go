@@ -2,10 +2,12 @@ package datadog
 
 import (
 	"errors"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/structure"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var computedFields = []string{"id", "author_handle", "author_name", "created_at", "modified_at", "url"}
