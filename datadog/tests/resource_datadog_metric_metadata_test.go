@@ -2,9 +2,10 @@ package test
 
 import (
 	"context"
+	"testing"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	communityClient "github.com/zorkian/go-datadog-api"
-	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
