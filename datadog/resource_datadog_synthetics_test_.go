@@ -1665,14 +1665,10 @@ func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []s
 }
 
 func isCertHash(content string) bool {
-	contentBytes := []byte(content)
+	// a sha256 hash consists of 64 hexadecimal characters
+	isHash, _ := regexp.MatchString("^[A-Fa-f0-9]{64}$", content)
 
-	// hacky way to detect if the value is already a sha256 hash
-	if len(contentBytes) == 64 {
-		return true
-	}
-
-	return false
+	return isHash
 }
 
 // get the sha256 of a client certificate content
