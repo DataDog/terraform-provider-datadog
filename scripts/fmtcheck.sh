@@ -4,7 +4,7 @@ EXIT_CODE=0
 
 # Check goimports
 echo "==> Checking that code complies with goimports requirements..."
-goimports_files=$(goimports -d -l `find . -name '*.go' | grep -v vendor`)
+goimports_files=$(goimports -format-only -d -l `find . -name '*.go' | grep -v vendor`)
 if [[ -n ${goimports_files} ]]; then
     echo 'gofmt needs running on the following files:'
     echo "${goimports_files}"
