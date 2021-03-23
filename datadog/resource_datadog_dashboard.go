@@ -4289,6 +4289,11 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTimeWindowsFromValue),
 			},
 		},
+		"global_time_target": {
+			Description: "The global time target of the widget",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 	}
 }
 
@@ -4322,6 +4327,9 @@ func buildDatadogServiceLevelObjectiveDefinition(terraformDefinition map[string]
 			datadogTimeWindows[i] = datadogV1.WidgetTimeWindows(timeWindows.(string))
 		}
 		datadogDefinition.TimeWindows = &datadogTimeWindows
+	}
+	if v, ok := terraformDefinition["global_time_target"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetGlobalTimeTarget(v)
 	}
 	return datadogDefinition
 }
@@ -4357,6 +4365,9 @@ func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition datadogV1.S
 			terraformTimeWindows[i] = string(datadogTimeWindow)
 		}
 		terraformDefinition["time_windows"] = terraformTimeWindows
+	}
+	if globalTimeTarget, ok := datadogDefinition.GetGlobalTimeTargetOk(); ok {
+		terraformDefinition["global_time_target"] = globalTimeTarget
 	}
 	return terraformDefinition
 }
