@@ -2,11 +2,17 @@ package datadog
 
 import (
 	"fmt"
+	"sync"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
+
+// creating/modifying/deleting Slack Channel integration in parallel on one account
+// is unsupported by the API right now; therefore we use the mutex to only operate on one at a time
+var integrationSlackChannelMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationSlackChannel() *schema.Resource {
 	return &schema.Resource{
@@ -94,6 +100,9 @@ func resourceDatadogIntegrationSlackChannelCreate(d *schema.ResourceData, meta i
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
 
+	integrationSlackChannelMutex.Lock()
+	defer integrationSlackChannelMutex.Unlock()
+
 	ddSlackChannel, err := buildDatadogSlackChannel(d)
 	accountName := d.Get("account_name").(string)
 
@@ -133,6 +142,9 @@ func resourceDatadogIntegrationSlackChannelUpdate(d *schema.ResourceData, meta i
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
 
+	integrationSlackChannelMutex.Lock()
+	defer integrationSlackChannelMutex.Unlock()
+
 	ddObject, err := buildDatadogSlackChannel(d)
 	accountName, channelName, err := utils.AccountNameAndChannelNameFromID(d.Id())
 	if err != nil {
@@ -154,6 +166,9 @@ func resourceDatadogIntegrationSlackChannelDelete(d *schema.ResourceData, meta i
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
+
+	integrationSlackChannelMutex.Lock()
+	defer integrationSlackChannelMutex.Unlock()
 
 	accountName, channelName, err := utils.AccountNameAndChannelNameFromID(d.Id())
 	if err != nil {

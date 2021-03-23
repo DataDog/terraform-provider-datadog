@@ -17,9 +17,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -97,6 +96,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_logs_custom_pipeline_test":                 "logs-pipelines",
 	"tests/resource_datadog_logs_metric_test":                          "logs-metric",
 	"tests/resource_datadog_metric_metadata_test":                      "metrics",
+	"tests/resource_datadog_metric_tag_configuration_test":             "metrics",
 	"tests/resource_datadog_monitor_test":                              "monitors",
 	"tests/resource_datadog_role_test":                                 "roles",
 	"tests/resource_datadog_screenboard_test":                          "dashboards",
@@ -442,6 +442,10 @@ func buildDatadogClientV1(httpClient *http.Client) *datadogV1.APIClient {
 func buildDatadogClientV2(httpClient *http.Client) *datadogV2.APIClient {
 	//Datadog V2 API config.HTTPClient
 	configV2 := datadogV2.NewConfiguration()
+	configV2.SetUnstableOperationEnabled("CreateTagConfiguration", true)
+	configV2.SetUnstableOperationEnabled("DeleteTagConfiguration", true)
+	configV2.SetUnstableOperationEnabled("ListTagConfigurationByName", true)
+	configV2.SetUnstableOperationEnabled("UpdateTagConfiguration", true)
 	configV2.Debug = isDebug()
 	configV2.HTTPClient = httpClient
 	configV2.UserAgent = utils.GetUserAgent(configV2.UserAgent)

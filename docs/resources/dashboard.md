@@ -5062,6 +5062,8 @@ Optional:
 
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--custom_link))
 - **event** (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--event))
+- **legend_columns** (Set of String) A list of columns to display in the legend. List items one of `value`, `avg`, `sum`, `min`, `max`.
+- **legend_layout** (String) The layout of the legend displayed in the widget. One of `auto`, `horizontal`, `vertical`.
 - **legend_size** (String) The size of the legend displayed in the widget.
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **marker** (Block List) Nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--marker))
@@ -8409,6 +8411,8 @@ Optional:
 
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--custom_link))
 - **event** (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--event))
+- **legend_columns** (Set of String) A list of columns to display in the legend. List items one of `value`, `avg`, `sum`, `min`, `max`.
+- **legend_layout** (String) The layout of the legend displayed in the widget. One of `auto`, `horizontal`, `vertical`.
 - **legend_size** (String) The size of the legend displayed in the widget.
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **marker** (Block List) Nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--timeseries_definition--marker))

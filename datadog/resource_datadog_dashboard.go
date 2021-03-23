@@ -4610,6 +4610,21 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			Optional:     true,
 			ValidateFunc: validateTimeseriesWidgetLegendSize,
 		},
+		"legend_layout": {
+			Description:  "The layout of the legend displayed in the widget. One of `auto`, `horizontal`, `vertical`.",
+			Type:         schema.TypeString,
+			Optional:     true,
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewTimeseriesWidgetLegendLayoutFromValue),
+		},
+		"legend_columns": {
+			Description: "A list of columns to display in the legend. List items one of `value`, `avg`, `sum`, `min`, `max`.",
+			Type:        schema.TypeSet,
+			Optional:    true,
+			Elem: &schema.Schema{
+				Type:         schema.TypeString,
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewTimeseriesWidgetLegendColumnFromValue),
+			},
+		},
 		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
@@ -4667,6 +4682,16 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["legend_size"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetLegendSize(v)
 	}
+	if v, ok := terraformDefinition["legend_layout"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetLegendLayout(datadogV1.TimeseriesWidgetLegendLayout(v))
+	}
+	if v, ok := terraformDefinition["legend_columns"]; ok && v.(*schema.Set).Len() != 0 {
+		datadogLegendColumns := make([]datadogV1.TimeseriesWidgetLegendColumn, v.(*schema.Set).Len())
+		for i, legendColumn := range v.(*schema.Set).List() {
+			datadogLegendColumns[i] = datadogV1.TimeseriesWidgetLegendColumn(legendColumn.(string))
+		}
+		datadogDefinition.SetLegendColumns(datadogLegendColumns)
+	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
 	}
@@ -4715,6 +4740,16 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 	}
 	if v, ok := datadogDefinition.GetLegendSizeOk(); ok {
 		terraformDefinition["legend_size"] = *v
+	}
+	if v, ok := datadogDefinition.GetLegendLayoutOk(); ok {
+		terraformDefinition["legend_layout"] = *v
+	}
+	if v, ok := datadogDefinition.GetLegendColumnsOk(); ok {
+		terraformLegendColumns := make([]string, len(*v))
+		for i, legendColumn := range *v {
+			terraformLegendColumns[i] = string(legendColumn)
+		}
+		terraformDefinition["legend_columns"] = terraformLegendColumns
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
