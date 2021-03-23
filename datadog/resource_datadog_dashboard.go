@@ -4789,9 +4789,10 @@ func getFormulaQuerySchema() *schema.Schema {
 								Description: "Metrics query definition.",
 							},
 							"aggregator": {
-								Type:        schema.TypeString,
-								Optional:    true,
-								Description: "The aggregation methods available for metrics queries.",
+								Type:         schema.TypeString,
+								Optional:     true,
+								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionMetricAggregationFromValue),
+								Description:  "The aggregation methods available for metrics queries.",
 							},
 							"name": {
 								Type:        schema.TypeString,
@@ -4809,9 +4810,10 @@ func getFormulaQuerySchema() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"data_source": {
-								Type:        schema.TypeString,
-								Required:    true,
-								Description: "Data source for event platform-based queries.",
+								Type:         schema.TypeString,
+								Required:     true,
+								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventsDataSourceFromValue),
+								Description:  "Data source for event platform-based queries.",
 							},
 							"search": {
 								Type:        schema.TypeList,
@@ -4822,7 +4824,7 @@ func getFormulaQuerySchema() *schema.Schema {
 									Schema: map[string]*schema.Schema{
 										"query": {
 											Type:         schema.TypeString,
-											ValidateFunc: validators.ValidateStringValue,
+											ValidateFunc: validation.StringIsNotEmpty,
 											Required:     true,
 											Description:  "Events search string.",
 										},
@@ -4842,9 +4844,10 @@ func getFormulaQuerySchema() *schema.Schema {
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"aggregation": {
-											Type:        schema.TypeString,
-											Required:    true,
-											Description: "Aggregation methods for event platform queries.",
+											Type:         schema.TypeString,
+											Required:     true,
+											ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventAggregationFromValue),
+											Description:  "Aggregation methods for event platform queries.",
 										},
 										"interval": {
 											Type:        schema.TypeInt,
@@ -4883,9 +4886,10 @@ func getFormulaQuerySchema() *schema.Schema {
 											Elem: &schema.Resource{
 												Schema: map[string]*schema.Schema{
 													"aggregation": {
-														Type:        schema.TypeString,
-														Required:    true,
-														Description: "Aggregation methods for event platform queries.",
+														Type:         schema.TypeString,
+														Required:     true,
+														ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventAggregationFromValue),
+														Description:  "Aggregation methods for event platform queries.",
 													},
 													"metric": {
 														Type:        schema.TypeString,
@@ -4893,9 +4897,10 @@ func getFormulaQuerySchema() *schema.Schema {
 														Description: "Metric used for sorting group by results.",
 													},
 													"order": {
-														Type:        schema.TypeString,
-														Optional:    true,
-														Description: "Direction of sort.",
+														Type:         schema.TypeString,
+														Optional:     true,
+														ValidateFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
+														Description:  "Direction of sort.",
 													},
 												},
 											},
@@ -4919,9 +4924,10 @@ func getFormulaQuerySchema() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"data_source": {
-								Type:        schema.TypeString,
-								Required:    true,
-								Description: "Data source for process queries.",
+								Type:         schema.TypeString,
+								Required:     true,
+								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionProcessQueryDataSourceFromValue),
+								Description:  "Data source for process queries.",
 							},
 							"metric": {
 								Type:        schema.TypeString,
@@ -4951,9 +4957,10 @@ func getFormulaQuerySchema() *schema.Schema {
 								Default:     "desc",
 							},
 							"aggregator": {
-								Type:        schema.TypeString,
-								Optional:    true,
-								Description: "The aggregation methods available for metrics queries.",
+								Type:         schema.TypeString,
+								Optional:     true,
+								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionMetricAggregationFromValue),
+								Description:  "The aggregation methods available for metrics queries.",
 							},
 							"is_normalized_cpu": {
 								Type:        schema.TypeBool,
