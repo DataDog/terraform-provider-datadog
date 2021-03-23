@@ -4290,7 +4290,7 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"global_time_target": {
-			Description: "The global time target of the widget",
+			Description: "The global time target of the widget.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
