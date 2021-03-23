@@ -653,7 +653,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 								Default:  "Example of the extracted variable.",
 								Type:     schema.TypeString,
 								Optional: true,
-								Default: "",
+								Default:  "",
 							},
 						},
 					},
@@ -746,7 +746,7 @@ func syntheticsConfigVariable() *schema.Schema {
 					Description: "Example for the variable.",
 					Type:        schema.TypeString,
 					Optional:    true,
-					Default: "",
+					Default:     "",
 				},
 				"name": {
 					Description:  "Name of the variable.",
