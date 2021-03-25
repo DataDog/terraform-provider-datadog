@@ -118,15 +118,12 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(d *schema.ResourceData, me
 		}
 	}
 
-	ruleFilters := make([]interface{}, len(ruleResponse.GetFilters()))
-	for idx := range ruleResponse.GetFilters() {
-		ruleFilter := make(map[string]interface{})
-		responseRuleFilter := ruleResponse.GetFilters()[idx]
-
-		ruleFilter["action"] = responseRuleFilter.GetAction()
-		ruleFilter["query"] = responseRuleFilter.GetQuery()
-
-		ruleFilters[idx] = ruleFilter
+	ruleFilters := make([]map[string]interface{}, len(ruleResponse.GetFilters()))
+	for idx, responseRuleFilter := range ruleResponse.GetFilters() {
+		ruleFilters[idx] = map[string]interface{}{
+			"action": responseRuleFilter.GetAction(),
+			"query":  responseRuleFilter.GetQuery(),
+		}
 	}
 
 	d.Set("filter", ruleFilters)
@@ -238,8 +235,10 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 		structRuleFilter := datadogV2.SecurityMonitoringFilter{}
 
 		ruleFilter := tfRuleFilter.(map[string]interface{})
-		action := datadogV2.SecurityMonitoringFilterAction(ruleFilter["action"].(string))
-		structRuleFilter.Action = &action
+
+		if action, ok := ruleFilter["action"]; ok {
+			structRuleFilter.SetAction(datadogV2.SecurityMonitoringFilterAction(action.(string)))
+		}
 
 		if query, ok := ruleFilter["query"]; ok {
 			structRuleFilter.SetQuery(query.(string))
