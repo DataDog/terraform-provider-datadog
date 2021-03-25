@@ -1,10 +1,11 @@
 TEST?=$$(go list ./...)
 RECORD?=false
-GOFMT_FILES?=$$(find . -name '*.go')
+GOIMPORTS_FILES?=$$(find . -name '*.go')
 PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
 ZORKIAN_VERSION?=master
 API_CLIENT_VERSION?=master
+LOCAL_PACKAGE="github.com/terraform-providers/terraform-provider-datadog"
 
 default: build
 
@@ -45,7 +46,7 @@ lint: get-test-deps
 	golint -set_exit_status ./...
 
 fmt:
-	gofmt -w $(GOFMT_FILES)
+	goimports -format-only -local $(LOCAL_PACKAGE) -w $(GOIMPORTS_FILES)
 	terraform fmt -recursive examples
 
 fmtcheck:
