@@ -16,8 +16,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var (
@@ -96,6 +97,7 @@ func Provider() *schema.Provider {
 			"datadog_logs_metric":                          resourceDatadogLogsMetric(),
 			"datadog_logs_pipeline_order":                  resourceDatadogLogsPipelineOrder(),
 			"datadog_metric_metadata":                      resourceDatadogMetricMetadata(),
+			"datadog_metric_tag_configuration":             resourceDatadogMetricTagConfiguration(),
 			"datadog_monitor":                              resourceDatadogMonitor(),
 			"datadog_role":                                 resourceDatadogRole(),
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
@@ -256,6 +258,12 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		},
 	)
 	configV2 := datadogV2.NewConfiguration()
+	// Enable unstable operations
+	configV2.SetUnstableOperationEnabled("CreateTagConfiguration", true)
+	configV2.SetUnstableOperationEnabled("DeleteTagConfiguration", true)
+	configV2.SetUnstableOperationEnabled("ListTagConfigurationByName", true)
+	configV2.SetUnstableOperationEnabled("UpdateTagConfiguration", true)
+
 	configV2.UserAgent = utils.GetUserAgent(configV2.UserAgent)
 	configV2.Debug = logging.IsDebugOrHigher()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {

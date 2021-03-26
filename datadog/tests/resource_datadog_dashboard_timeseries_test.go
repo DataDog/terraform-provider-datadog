@@ -180,6 +180,8 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
 			}
+			legend_layout = "horizontal"
+			legend_columns = ["value", "min", "max"]
 		}
 	}
 }
@@ -361,6 +363,8 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
 			}
+			legend_layout = "horizontal"
+			legend_columns = ["value", "min", "max"]
 		}
 	}
 }
@@ -509,6 +513,11 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.request.5.rum_query.0.group_by.0.sort_query.0.order = desc",
 	"widget.0.timeseries_definition.0.request.5.rum_query.0.search_query =",
 	"widget.0.timeseries_definition.0.request.5.on_right_yaxis = true",
+	"widget.0.timeseries_definition.0.legend_layout = horizontal",
+	"widget.0.timeseries_definition.0.legend_columns.# = 3",
+	"widget.0.timeseries_definition.0.legend_columns.TypeSet = value",
+	"widget.0.timeseries_definition.0.legend_columns.TypeSet = min",
+	"widget.0.timeseries_definition.0.legend_columns.TypeSet = max",
 	"widget.0.timeseries_definition.0.custom_link.# = 1",
 	"widget.0.timeseries_definition.0.custom_link.0.label = Test Custom Link label",
 	"widget.0.timeseries_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
