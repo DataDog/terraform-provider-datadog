@@ -5024,6 +5024,7 @@ Required:
 
 Optional:
 
+- **global_time_target** (String) The global time target of the widget.
 - **show_error_budget** (Boolean) Whether to show the error budget or not.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
@@ -8373,6 +8374,7 @@ Required:
 
 Optional:
 
+- **global_time_target** (String) The global time target of the widget.
 - **show_error_budget** (Boolean) Whether to show the error budget or not.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
