@@ -270,6 +270,11 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"no_saving_response_body": {
+				Description: "Determines whether or not to save the response body.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -472,6 +477,16 @@ func syntheticsTestOptionsList() *schema.Schema {
 							},
 						},
 					},
+				},
+				"no_screenshot": {
+					Description: "Prevents saving screenshots of the steps.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"disable_cors": {
+					Description: "Whether or not to disable CORS mechanism.",
+					Type:        schema.TypeBool,
+					Optional:    true,
 				},
 			},
 		},
@@ -907,6 +922,9 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	if attr, ok := k.GetOkWith("dns_server"); ok {
 		request.SetDnsServer(attr.(string))
 	}
+	if attr, ok := k.GetOkWith("no_saving_response_body"); ok {
+		request.SetNoSavingResponseBody(attr.(bool))
+	}
 	k.Remove(parts)
 	if attr, ok := d.GetOk("request_query"); ok {
 		query := attr.(map[string]interface{})
@@ -1150,6 +1168,13 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 
 			options.SetMonitorOptions(optionsMonitorOptions)
 		}
+
+		if attr, ok := d.GetOk("options_list.0.no_screenshot"); ok {
+			options.SetNoScreenshot(attr.(bool))
+		}
+		if attr, ok := d.GetOk("options_list.0.disable_cors"); ok {
+			options.SetDisableCors(attr.(bool))
+		}
 	} else {
 		if attr, ok := d.GetOk("options.tick_every"); ok {
 			tickEvery, _ := strconv.Atoi(attr.(string))
@@ -1333,6 +1358,9 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 	if actualRequest.HasDnsServer() {
 		localRequest["dns_server"] = convertToString(actualRequest.GetDnsServer())
+	}
+	if actualRequest.HasNoSavingResponseBody() {
+		localRequest["no_saving_response_body"] = actualRequest.GetNoSavingResponseBody()
 	}
 	// Set deprecated field if that's what's in the config, new field otherwise
 	if setDeprecated {
@@ -1548,6 +1576,12 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		optionsListMonitorOptions := make(map[string]int64)
 		optionsListMonitorOptions["renotify_interval"] = renotifyInterval
 		localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
+	}
+	if actualOptions.HasNoScreenshot() {
+		localOptionsList["no_screenshot"] = actualOptions.GetNoScreenshot()
+	}
+	if actualOptions.HasDisableCors() {
+		localOptionsList["disable_cors"] = actualOptions.GetDisableCors()
 	}
 
 	// If the existing state still uses options, keep using that in the state to not generate useless diffs

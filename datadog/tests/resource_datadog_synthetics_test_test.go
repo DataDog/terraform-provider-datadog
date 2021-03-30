@@ -518,6 +518,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider *schema.Provid
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_definition.0.body", "this is a body"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_definition.0.no_saving_response_body", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.#", "4"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.0.type", "header"),
@@ -600,6 +602,7 @@ resource "datadog_synthetics_test" "foo" {
 		url = "https://www.datadoghq.com"
 		body = "this is a body"
 		timeout = 30
+		no_saving_response_body = true
 	}
 	request_headers = {
 		Accept = "application/json"
@@ -1772,6 +1775,10 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "100"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.no_screenshot", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.disable_cors", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
@@ -1834,6 +1841,9 @@ resource "datadog_synthetics_test" "bar" {
 		monitor_options {
 			renotify_interval = 100
 		}
+
+		no_screenshot = true
+		disable_cors = true
 	}
 
 	name = "%s"
@@ -1907,6 +1917,10 @@ func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.no_screenshot", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.disable_cors", "false"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
@@ -1973,6 +1987,9 @@ resource "datadog_synthetics_test" "bar" {
 		monitor_options {
 			renotify_interval = 120
 		}
+
+		no_screenshot = false
+		disable_cors = false
 	}
 	name = "%s"
 	message = "Notify @pagerduty"
