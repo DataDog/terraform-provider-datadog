@@ -82,7 +82,6 @@ func resourceDatadogIntegrationGcpCreate(d *schema.ResourceData, meta interface{
 	if _, _, err := datadogClientV1.GCPIntegrationApi.CreateGCPIntegration(authV1).Body(
 		datadogV1.GCPAccount{
 			Type:                    datadogV1.PtrString(defaultType),
-			Automute:                datadogV1.PtrBool(d.Get("automute").(bool)),
 			ProjectId:               datadogV1.PtrString(projectID),
 			PrivateKeyId:            datadogV1.PtrString(d.Get("private_key_id").(string)),
 			PrivateKey:              datadogV1.PtrString(d.Get("private_key").(string)),
@@ -93,6 +92,7 @@ func resourceDatadogIntegrationGcpCreate(d *schema.ResourceData, meta interface{
 			AuthProviderX509CertUrl: datadogV1.PtrString(defaultAuthProviderX509CertURL),
 			ClientX509CertUrl:       datadogV1.PtrString(defaultClientX509CertURLPrefix + d.Get("client_email").(string)),
 			HostFilters:             datadogV1.PtrString(d.Get("host_filters").(string)),
+			Automute:                datadogV1.PtrBool(d.Get("automute").(bool)),
 		},
 	).Execute(); err != nil {
 		return utils.TranslateClientError(err, "error creating GCP integration")
