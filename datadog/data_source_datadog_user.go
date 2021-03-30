@@ -2,7 +2,9 @@ package datadog
 
 import (
 	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -18,7 +20,7 @@ func dataSourceDatadogUser() *schema.Resource {
 				Required:    true,
 			},
 			// Computed values
-			"datadog_id": {
+			"id": {
 				Description: "Id of the user.",
 				Type:        schema.TypeString,
 				Computed:    true,
@@ -40,12 +42,12 @@ func dataSourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 	filter := d.Get("filter").(string)
 	founded := false
 
-	req := datadogClientV2.UsersApi.ListUsers(authV2).PageSize(20).PageNumber(pageNumber).FilterStatus("Active")
+	req := datadogClientV2.UsersApi.ListUsers(authV2).PageSize(20).PageNumber(pageNumber).Filter(filter)
 	res, _, err := req.Execute()
-	totalPage := res.Meta.Page.GetTotalCount()
 	if err != nil {
 		return utils.TranslateClientError(err, "error querying user")
 	}
+	totalPage := res.Meta.Page.GetTotalCount()
 	for pageNumber < totalPage {
 		req = req.PageNumber(pageNumber)
 		res, _, err := req.Execute()
@@ -62,16 +64,16 @@ func dataSourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 				if err := d.Set("name", user.Attributes.GetEmail()); err != nil {
 					return err
 				}
-				if err := d.Set("datadog_id", user.GetId()); err != nil {
+				if err := d.Set("id", user.GetId()); err != nil {
 					return err
 				}
 				break
 			}
 		}
-		pageNumber += 1
+		pageNumber++
 	}
 	if !founded {
-		return fmt.Errorf("didn't founded any used mathing this email")
+		return fmt.Errorf("didn't found any user mathing this email")
 	}
 	return nil
 }
