@@ -12,6 +12,7 @@ import (
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/meta"
+
 	"github.com/terraform-providers/terraform-provider-datadog/version"
 )
 
