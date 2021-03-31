@@ -483,11 +483,6 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
-				"disable_cors": {
-					Description: "Whether or not to disable CORS mechanism.",
-					Type:        schema.TypeBool,
-					Optional:    true,
-				},
 			},
 		},
 	}
@@ -1172,9 +1167,6 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		if attr, ok := d.GetOk("options_list.0.no_screenshot"); ok {
 			options.SetNoScreenshot(attr.(bool))
 		}
-		if attr, ok := d.GetOk("options_list.0.disable_cors"); ok {
-			options.SetDisableCors(attr.(bool))
-		}
 	} else {
 		if attr, ok := d.GetOk("options.tick_every"); ok {
 			tickEvery, _ := strconv.Atoi(attr.(string))
@@ -1579,9 +1571,6 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 	}
 	if actualOptions.HasNoScreenshot() {
 		localOptionsList["no_screenshot"] = actualOptions.GetNoScreenshot()
-	}
-	if actualOptions.HasDisableCors() {
-		localOptionsList["disable_cors"] = actualOptions.GetDisableCors()
 	}
 
 	// If the existing state still uses options, keep using that in the state to not generate useless diffs
