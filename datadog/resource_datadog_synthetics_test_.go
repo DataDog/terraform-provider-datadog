@@ -270,6 +270,11 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"no_saving_response_body": {
+				Description: "Determines whether or not to save the response body.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -472,6 +477,11 @@ func syntheticsTestOptionsList() *schema.Schema {
 							},
 						},
 					},
+				},
+				"no_screenshot": {
+					Description: "Prevents saving screenshots of the steps.",
+					Type:        schema.TypeBool,
+					Optional:    true,
 				},
 			},
 		},
@@ -946,6 +956,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := k.GetOkWith("dns_server"); ok {
 		request.SetDnsServer(attr.(string))
 	}
+	if attr, ok := k.GetOkWith("no_saving_response_body"); ok {
+		request.SetNoSavingResponseBody(attr.(bool))
+	}
 	k.Remove(parts)
 	if attr, ok := d.GetOk("request_query"); ok {
 		query := attr.(map[string]interface{})
@@ -1299,6 +1312,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			request.SetQuery(query)
 		}
 	}
+
 	if username, ok := d.GetOk("request_basicauth.0.username"); ok {
 		if password, ok := d.GetOk("request_basicauth.0.password"); ok {
 			basicAuth := datadogV1.NewSyntheticsBasicAuth(password.(string), username.(string))
@@ -1421,6 +1435,10 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			}
 
 			options.SetMonitorOptions(optionsMonitorOptions)
+		}
+
+		if attr, ok := d.GetOk("options_list.0.no_screenshot"); ok {
+			options.SetNoScreenshot(attr.(bool))
 		}
 	} else {
 		if attr, ok := d.GetOk("options.tick_every"); ok {
@@ -1596,6 +1614,7 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	if actualRequest.HasDnsServer() {
 		localRequest["dns_server"] = convertToString(actualRequest.GetDnsServer())
 	}
+
 	// Set deprecated field if that's what's in the config, new field otherwise
 	if setDeprecated {
 		if err := d.Set("request", localRequest); err != nil {
@@ -1763,6 +1782,9 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		optionsListMonitorOptions["renotify_interval"] = renotifyInterval
 		localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
 	}
+	if actualOptions.HasNoScreenshot() {
+		localOptionsList["no_screenshot"] = actualOptions.GetNoScreenshot()
+	}
 
 	// If the existing state still uses options, keep using that in the state to not generate useless diffs
 	if attr, ok := d.GetOk("options"); ok && attr != nil && len(attr.(map[string]interface{})) > 0 {
@@ -1877,6 +1899,9 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 	if actualRequest.HasDnsServer() {
 		localRequest["dns_server"] = convertToString(actualRequest.GetDnsServer())
+	}
+	if actualRequest.HasNoSavingResponseBody() {
+		localRequest["no_saving_response_body"] = actualRequest.GetNoSavingResponseBody()
 	}
 	// Set deprecated field if that's what's in the config, new field otherwise
 	if setDeprecated {
