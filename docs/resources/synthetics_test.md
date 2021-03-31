@@ -338,6 +338,7 @@ Optional:
 - **min_failure_duration** (Number) Minimum amount of time in failure required to trigger an alert. Default is `0`.
 - **min_location_failed** (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`.
 - **monitor_options** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--monitor_options))
+- **no_screenshot** (Boolean) Prevents saving screenshots of the steps.
 - **retry** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--retry))
 - **tick_every** (Number) How often the test should run (in seconds). Current possible values are `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` plus `60` for API tests or `300` for browser tests.
 
@@ -410,6 +411,7 @@ Optional:
 - **dns_server** (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - **host** (String) Host name to perform the test with.
 - **method** (String) The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.
+- **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
 - **port** (Number) Port to use when performing the test.
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.
