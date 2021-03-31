@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"a private location","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1609927092","tags":["foo:bar","baz"]}
+      {"description":"a private location","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1617183099","tags":["foo:bar","baz"]}
     form: {}
     headers:
       Accept:
@@ -13,27 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreatePrivateLocation
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "207795272818079580"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2248398419880011401"
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/private-locations
     method: POST
   response:
-    body: '{"private_location":{"modifiedAt":"2021-01-06T09:58:13.581379+00:00","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1609927092","tags":["foo:bar","baz"],"secrets":{"authentication":{"id":"c81606fb3a1af9c5e7dd353428a9c83c","key":"9bd25169a1ea97d562ecfe28999c6e3377aea72a6f29004d0871e0e9290c09de"},"config_decryption":{"id":"ea7d8c3ed627067e43e8480d2cb08730","key":"-----BEGIN
-      RSA PRIVATE KEY-----\n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\n-----END
-      RSA PRIVATE KEY-----"}},"config":{"site":"datadoghq.com"},"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1609927092-0e73455d3520f4538266462a273d948f","createdAt":"2021-01-06T09:58:13.581379+00:00","description":"a
-      private location"},"config":{"accessKey":"c81606fb3a1af9c5e7dd353428a9c83c","privateKey":"-----BEGIN
-      RSA PRIVATE KEY-----\n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\n-----END
-      RSA PRIVATE KEY-----","site":"datadoghq.com","secretAccessKey":"9bd25169a1ea97d562ecfe28999c6e3377aea72a6f29004d0871e0e9290c09de","publicKey":{"pem":"-----BEGIN
-      PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA0yCGWhamEUB1Xyp8a0lI\nXIJX9xEGS4Os467tfjMXF8SJj2+47EqZNNB0SPbesethiTH/3zVvsFhzCtXOfuKG\nNZIN+6IWVEIsecgiFGYPnCdnOawzKTPHzE+sD/ipbJCkINvbbcgmxYE5Hw1Ju26n\nneFv25fKTAI/JHETBMQGxFbcJ4QU2IdJrQ6Er7mT6s1BT/HO7X7WAWs34FBGDPtg\nlM6erRoY5CSCP5/5x++xDzw4gfWOkawMBgS9GfBnfp3FWy9H33GwvPhBelRbxzOC\n3FMKx5dwngWRFJYekIdwFBEJt088EwyTS9MqYGyt+5AiJVEQ7LV6Hz6HH89sbyQB\n0QxrFQlQ38qeReA8QV6o4SVNa+JmvyHWHExX9Mnb2w1n86iYYinu1DcA+kuXvsG0\njGeym0Uz9l/ufZrhLmFDFOMpN1J6/FK8mHGtXz2weupflNNwWWgyD1jKPn9U1ZQP\ndYXjdBhTHU7H9beoUQ40eYpF4JGBQEu8ARgKYBGSwCsiu0zIykd9zAFndouakFSj\nqSq1h8kNY1Yp/1NZjPbvMTXt+hNPgBBKJ+aV3Z4tl+DB7HLKrWirAX6RNeFqH6Ys\n/CZk1xH3wTGuvBKsdEL93o8EoxhZxh0O4o7936aPYtpDucExXcqaao8jdXprs0q0\nqvDZkEI3/aUB3LclvfXjavMCAwEAAQ==\n-----END
-      PUBLIC KEY-----\n","fingerprint":"sha256$base64$GA8WCOyWvWP6GJAGhywibAf0NuEeFgqJKZVjrCogbqU="},"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1609927092-0e73455d3520f4538266462a273d948f"},"result_encryption":{"id":"sha256$base64$GA8WCOyWvWP6GJAGhywibAf0NuEeFgqJKZVjrCogbqU=","key":"-----BEGIN
-      PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA0yCGWhamEUB1Xyp8a0lI\nXIJX9xEGS4Os467tfjMXF8SJj2+47EqZNNB0SPbesethiTH/3zVvsFhzCtXOfuKG\nNZIN+6IWVEIsecgiFGYPnCdnOawzKTPHzE+sD/ipbJCkINvbbcgmxYE5Hw1Ju26n\nneFv25fKTAI/JHETBMQGxFbcJ4QU2IdJrQ6Er7mT6s1BT/HO7X7WAWs34FBGDPtg\nlM6erRoY5CSCP5/5x++xDzw4gfWOkawMBgS9GfBnfp3FWy9H33GwvPhBelRbxzOC\n3FMKx5dwngWRFJYekIdwFBEJt088EwyTS9MqYGyt+5AiJVEQ7LV6Hz6HH89sbyQB\n0QxrFQlQ38qeReA8QV6o4SVNa+JmvyHWHExX9Mnb2w1n86iYYinu1DcA+kuXvsG0\njGeym0Uz9l/ufZrhLmFDFOMpN1J6/FK8mHGtXz2weupflNNwWWgyD1jKPn9U1ZQP\ndYXjdBhTHU7H9beoUQ40eYpF4JGBQEu8ARgKYBGSwCsiu0zIykd9zAFndouakFSj\nqSq1h8kNY1Yp/1NZjPbvMTXt+hNPgBBKJ+aV3Z4tl+DB7HLKrWirAX6RNeFqH6Ys\n/CZk1xH3wTGuvBKsdEL93o8EoxhZxh0O4o7936aPYtpDucExXcqaao8jdXprs0q0\nqvDZkEI3/aUB3LclvfXjavMCAwEAAQ==\n-----END
-      PUBLIC KEY-----\n"}}'
+    body: '{"private_location":{"modifiedAt":"2021-03-31T09:31:41.502785+00:00","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1617183099","tags":["foo:bar","baz"],"secrets":{"authentication":{"id":"fa2f09d6bf515e64e1590e0d6567dcdf","key":"81c4f34566f1990c276ccf00212c48a095a232af55d59b5bd4fc9e3c1f494814"},"config_decryption":{"id":"d402e51153636efe6ae051a181dea296","key":"-----BEGIN RSA PRIVATE KEY-----\n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\npCizAoIBAH116Zd+xI8nYSPjuK7wJcEhyYHIKTRKtV+fHa0mqtm/lnO1nZxjE9ZH\nb4Fpo20eXZbcPeXR5m9EakYj/FhwAwdlFjRdKJiTcR0C7uNn+ScQsMteS+XceHQr\n540ImDWwv4bPB3wwD/DqXKJtvzRlHUq01eDTiU4Mv12MB4YoVtZ7j1S7yE10n8CI\nkQmQ2Lvu/b+Z5kAht9vtGiH2+FA7DuWvZm0WtlvZF+mFvyBeRYSDHEufTZveUa44\nep9+562G2izHb4Icthb8YfRTrv1+OMqdrWfuEg9GzpWZ5efnFul5dmoHJ8YluZaA\noYuf4RRjwYFA0LVXMY++5RLz2zoR2a8CggEBAJGs6JHxsPb/IL5N2FPceaqJXM3I\nLPTlbQ+UuhDh5jaxO2lIOB9MKhwwvXhL0/rjNE+2NYi2n0tJtOh1dvJ6ir3FJK+M\nODZnkeHjKKDCMsjYIyt3Yi+7MTPbG98SoNuKXHhfJTbo/TJcyHKW9Bmq+G7FVytN\n75dhU7DR/HL1HkX1Ba8fF4VhzysfTGSrgoJ4puNA5TNomYitVntVd5+lyYFSpu/l\nmrSqKM3VNvyzSAxO69dVjY5jjg+be0S1iheCRbRIRIUi5ygVLH6eO6e08otXpdaa\nzBvUtrsisHeTkYN8V/j2+FOorjnCBk+zX+wFa3Utd4dy7bTUU4h2KKxwBzY=\n-----END RSA PRIVATE KEY-----"}},"config":{"site":"datadoghq.com"},"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1617183099-bfd136cf4cde77906d3ef89afd25651d","createdAt":"2021-03-31T09:31:41.502785+00:00","description":"a private location"},"config":{"accessKey":"fa2f09d6bf515e64e1590e0d6567dcdf","privateKey":"-----BEGIN RSA PRIVATE KEY-----\n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\npCizAoIBAH116Zd+xI8nYSPjuK7wJcEhyYHIKTRKtV+fHa0mqtm/lnO1nZxjE9ZH\nb4Fpo20eXZbcPeXR5m9EakYj/FhwAwdlFjRdKJiTcR0C7uNn+ScQsMteS+XceHQr\n540ImDWwv4bPB3wwD/DqXKJtvzRlHUq01eDTiU4Mv12MB4YoVtZ7j1S7yE10n8CI\nkQmQ2Lvu/b+Z5kAht9vtGiH2+FA7DuWvZm0WtlvZF+mFvyBeRYSDHEufTZveUa44\nep9+562G2izHb4Icthb8YfRTrv1+OMqdrWfuEg9GzpWZ5efnFul5dmoHJ8YluZaA\noYuf4RRjwYFA0LVXMY++5RLz2zoR2a8CggEBAJGs6JHxsPb/IL5N2FPceaqJXM3I\nLPTlbQ+UuhDh5jaxO2lIOB9MKhwwvXhL0/rjNE+2NYi2n0tJtOh1dvJ6ir3FJK+M\nODZnkeHjKKDCMsjYIyt3Yi+7MTPbG98SoNuKXHhfJTbo/TJcyHKW9Bmq+G7FVytN\n75dhU7DR/HL1HkX1Ba8fF4VhzysfTGSrgoJ4puNA5TNomYitVntVd5+lyYFSpu/l\nmrSqKM3VNvyzSAxO69dVjY5jjg+be0S1iheCRbRIRIUi5ygVLH6eO6e08otXpdaa\nzBvUtrsisHeTkYN8V/j2+FOorjnCBk+zX+wFa3Utd4dy7bTUU4h2KKxwBzY=\n-----END RSA PRIVATE KEY-----","site":"datadoghq.com","secretAccessKey":"81c4f34566f1990c276ccf00212c48a095a232af55d59b5bd4fc9e3c1f494814","publicKey":{"pem":"-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA0yCGWhamEUB1Xyp8a0lI\nXIJX9xEGS4Os467tfjMXF8SJj2+47EqZNNB0SPbesethiTH/3zVvsFhzCtXOfuKG\nNZIN+6IWVEIsecgiFGYPnCdnOawzKTPHzE+sD/ipbJCkINvbbcgmxYE5Hw1Ju26n\nneFv25fKTAI/JHETBMQGxFbcJ4QU2IdJrQ6Er7mT6s1BT/HO7X7WAWs34FBGDPtg\nlM6erRoY5CSCP5/5x++xDzw4gfWOkawMBgS9GfBnfp3FWy9H33GwvPhBelRbxzOC\n3FMKx5dwngWRFJYekIdwFBEJt088EwyTS9MqYGyt+5AiJVEQ7LV6Hz6HH89sbyQB\n0QxrFQlQ38qeReA8QV6o4SVNa+JmvyHWHExX9Mnb2w1n86iYYinu1DcA+kuXvsG0\njGeym0Uz9l/ufZrhLmFDFOMpN1J6/FK8mHGtXz2weupflNNwWWgyD1jKPn9U1ZQP\ndYXjdBhTHU7H9beoUQ40eYpF4JGBQEu8ARgKYBGSwCsiu0zIykd9zAFndouakFSj\nqSq1h8kNY1Yp/1NZjPbvMTXt+hNPgBBKJ+aV3Z4tl+DB7HLKrWirAX6RNeFqH6Ys\n/CZk1xH3wTGuvBKsdEL93o8EoxhZxh0O4o7936aPYtpDucExXcqaao8jdXprs0q0\nqvDZkEI3/aUB3LclvfXjavMCAwEAAQ==\n-----END PUBLIC KEY-----\n","fingerprint":"sha256$base64$GA8WCOyWvWP6GJAGhywibAf0NuEeFgqJKZVjrCogbqU="},"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1617183099-bfd136cf4cde77906d3ef89afd25651d"},"result_encryption":{"id":"sha256$base64$GA8WCOyWvWP6GJAGhywibAf0NuEeFgqJKZVjrCogbqU=","key":"-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA0yCGWhamEUB1Xyp8a0lI\nXIJX9xEGS4Os467tfjMXF8SJj2+47EqZNNB0SPbesethiTH/3zVvsFhzCtXOfuKG\nNZIN+6IWVEIsecgiFGYPnCdnOawzKTPHzE+sD/ipbJCkINvbbcgmxYE5Hw1Ju26n\nneFv25fKTAI/JHETBMQGxFbcJ4QU2IdJrQ6Er7mT6s1BT/HO7X7WAWs34FBGDPtg\nlM6erRoY5CSCP5/5x++xDzw4gfWOkawMBgS9GfBnfp3FWy9H33GwvPhBelRbxzOC\n3FMKx5dwngWRFJYekIdwFBEJt088EwyTS9MqYGyt+5AiJVEQ7LV6Hz6HH89sbyQB\n0QxrFQlQ38qeReA8QV6o4SVNa+JmvyHWHExX9Mnb2w1n86iYYinu1DcA+kuXvsG0\njGeym0Uz9l/ufZrhLmFDFOMpN1J6/FK8mHGtXz2weupflNNwWWgyD1jKPn9U1ZQP\ndYXjdBhTHU7H9beoUQ40eYpF4JGBQEu8ARgKYBGSwCsiu0zIykd9zAFndouakFSj\nqSq1h8kNY1Yp/1NZjPbvMTXt+hNPgBBKJ+aV3Z4tl+DB7HLKrWirAX6RNeFqH6Ys\n/CZk1xH3wTGuvBKsdEL93o8EoxhZxh0O4o7936aPYtpDucExXcqaao8jdXprs0q0\nqvDZkEI3/aUB3LclvfXjavMCAwEAAQ==\n-----END PUBLIC KEY-----\n"}}'
     headers:
       Cache-Control:
       - no-cache
@@ -44,12 +28,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 06 Jan 2021 09:58:13 GMT
+      - Wed, 31 Mar 2021 09:31:41 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 13-Jan-2021 09:58:12 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -57,9 +38,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 4/n0qOsNbcCLs0O62LExTPssq0SdRyX2Rk0dgQQIozMoViHF7e4pyB0ZeXOioNEA
+      - 25u1gDlL724DHllbjFT4BhOLorBTilh+aah2uWAUEjFC/+rjczJdiyWrV/HwLwe/
       X-Dd-Version:
-      - "35.3647661"
+      - "35.4206674"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -74,19 +55,11 @@ interactions:
       Dd-Operation-Id:
       - GetPrivateLocation
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4846107104076710522"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2248398419880011401"
-    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1609927092-0e73455d3520f4538266462a273d948f
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1617183099-bfd136cf4cde77906d3ef89afd25651d
     method: GET
   response:
-    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1609927092","tags":["foo:bar","baz"],"modifiedAt":"2021-01-06T09:58:13.581379+00:00","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1609927092-0e73455d3520f4538266462a273d948f","createdAt":"2021-01-06T09:58:13.581379+00:00","description":"a
-      private location"}'
+    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1617183099","tags":["foo:bar","baz"],"modifiedAt":"2021-03-31T09:31:41.502785+00:00","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1617183099-bfd136cf4cde77906d3ef89afd25651d","createdAt":"2021-03-31T09:31:41.502785+00:00","description":"a private location"}'
     headers:
       Cache-Control:
       - no-cache
@@ -97,12 +70,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 06 Jan 2021 09:58:13 GMT
+      - Wed, 31 Mar 2021 09:31:41 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 13-Jan-2021 09:58:13 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -110,9 +80,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - pU+5spIfOFTru2RhY1ezKdt9iD04gzaa+zDs5x6Ik5VkXfw5rZx6HoPylEAvTInE
+      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
       X-Dd-Version:
-      - "35.3647661"
+      - "35.4206674"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -127,19 +97,11 @@ interactions:
       Dd-Operation-Id:
       - GetPrivateLocation
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "7488129581533037020"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2248398419880011401"
-    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1609927092-0e73455d3520f4538266462a273d948f
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1617183099-bfd136cf4cde77906d3ef89afd25651d
     method: GET
   response:
-    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1609927092","tags":["foo:bar","baz"],"modifiedAt":"2021-01-06T09:58:13.581379+00:00","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1609927092-0e73455d3520f4538266462a273d948f","createdAt":"2021-01-06T09:58:13.581379+00:00","description":"a
-      private location"}'
+    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1617183099","tags":["foo:bar","baz"],"modifiedAt":"2021-03-31T09:31:41.502785+00:00","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1617183099-bfd136cf4cde77906d3ef89afd25651d","createdAt":"2021-03-31T09:31:41.502785+00:00","description":"a private location"}'
     headers:
       Cache-Control:
       - no-cache
@@ -150,12 +112,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 06 Jan 2021 09:58:13 GMT
+      - Wed, 31 Mar 2021 09:31:41 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 13-Jan-2021 09:58:13 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -163,9 +122,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - mpg/BCzsUMOxVwcAuQg/6c40bDAb3ejXVT4tkiODN0ExybQ/Ia68faurJX6CivjX
+      - l4HFlaRP3QwYSqoGKhzbYfv7zgkK63HIRR7YkyVYZspq0lGjjTBwoK8V/alf+XYt
       X-Dd-Version:
-      - "35.3647661"
+      - "35.4206674"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -180,19 +139,11 @@ interactions:
       Dd-Operation-Id:
       - GetPrivateLocation
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "5282040897017267987"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2248398419880011401"
-    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1609927092-0e73455d3520f4538266462a273d948f
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1617183099-bfd136cf4cde77906d3ef89afd25651d
     method: GET
   response:
-    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1609927092","tags":["foo:bar","baz"],"modifiedAt":"2021-01-06T09:58:13.581379+00:00","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1609927092-0e73455d3520f4538266462a273d948f","createdAt":"2021-01-06T09:58:13.581379+00:00","description":"a
-      private location"}'
+    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1617183099","tags":["foo:bar","baz"],"modifiedAt":"2021-03-31T09:31:41.502785+00:00","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1617183099-bfd136cf4cde77906d3ef89afd25651d","createdAt":"2021-03-31T09:31:41.502785+00:00","description":"a private location"}'
     headers:
       Cache-Control:
       - no-cache
@@ -203,12 +154,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 06 Jan 2021 09:58:14 GMT
+      - Wed, 31 Mar 2021 09:31:42 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 13-Jan-2021 09:58:14 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -216,9 +164,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - iGG1BKNRTmPfZ6ji2H3Z/xn9c4eIM8cOugS+JJDlp5xOVDa6tvCgtO3MGJFoLiiG
+      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
       X-Dd-Version:
-      - "35.3647661"
+      - "35.4206674"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -233,19 +181,11 @@ interactions:
       Dd-Operation-Id:
       - GetPrivateLocation
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "2953892186798262920"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2248398419880011401"
-    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1609927092-0e73455d3520f4538266462a273d948f
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1617183099-bfd136cf4cde77906d3ef89afd25651d
     method: GET
   response:
-    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1609927092","tags":["foo:bar","baz"],"modifiedAt":"2021-01-06T09:58:13.581379+00:00","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1609927092-0e73455d3520f4538266462a273d948f","createdAt":"2021-01-06T09:58:13.581379+00:00","description":"a
-      private location"}'
+    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1617183099","tags":["foo:bar","baz"],"modifiedAt":"2021-03-31T09:31:41.502785+00:00","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1617183099-bfd136cf4cde77906d3ef89afd25651d","createdAt":"2021-03-31T09:31:41.502785+00:00","description":"a private location"}'
     headers:
       Cache-Control:
       - no-cache
@@ -256,12 +196,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 06 Jan 2021 09:58:14 GMT
+      - Wed, 31 Mar 2021 09:31:42 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 13-Jan-2021 09:58:14 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -269,9 +206,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 1rfLNqcZg9qSlP5q1ooqPXZYUps72EabW3bwUPmbzupUim8D/FM4EJTrmumpukR0
+      - bgHykj7A9bfZx0Y5ZO3swhhp5tGUSNJHqFWR868+qg087CYrDOd5hQslC+noiEtH
       X-Dd-Version:
-      - "35.3647661"
+      - "35.4206674"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -286,15 +223,8 @@ interactions:
       Dd-Operation-Id:
       - DeletePrivateLocation
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "1068803287975011517"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2248398419880011401"
-    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1609927092-0e73455d3520f4538266462a273d948f
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1617183099-bfd136cf4cde77906d3ef89afd25651d
     method: DELETE
   response:
     body: ""
@@ -310,20 +240,17 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 06 Jan 2021 09:58:14 GMT
+      - Wed, 31 Mar 2021 09:31:42 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Wed, 13-Jan-2021 09:58:14 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - +TTazL1HF8qoxYARkG/60PGoq8sbkYkmqeurNry46zV0aHqBZfUrKqxtiyo42NRf
+      - SY1h8ScsWq+kYmtbh63ltMLFAZsQjqfrgvdfAoRX+9TzT1sgMBRYaFRwfWWRRe9a
       X-Dd-Version:
-      - "35.3647661"
+      - "35.4206674"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -338,19 +265,11 @@ interactions:
       Dd-Operation-Id:
       - GetPrivateLocation
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.3; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "7289747429946207936"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2248398419880011401"
-    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1609927092-0e73455d3520f4538266462a273d948f
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1617183099-bfd136cf4cde77906d3ef89afd25651d
     method: GET
   response:
-    body: '{"errors": ["Synthetics Private Location: pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1609927092-0e73455d3520f4538266462a273d948f
-      not found"]}'
+    body: '{"errors": ["Synthetics Private Location: pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1617183099-bfd136cf4cde77906d3ef89afd25651d not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -361,7 +280,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 06 Jan 2021 09:58:14 GMT
+      - Wed, 31 Mar 2021 09:31:42 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -371,7 +290,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3647661"
+      - "35.4206674"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found
