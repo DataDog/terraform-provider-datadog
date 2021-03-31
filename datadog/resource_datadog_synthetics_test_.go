@@ -1275,8 +1275,8 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 			stepTypeParams := getParamsKeysForStepType(step.GetType())
 
 			for _, key := range stepTypeParams {
-				if stepParams.(map[string]interface{})[key] != "" {
-					convertedValue := convertStepParamsValueForConfig(step.GetType(), key, stepParams.(map[string]interface{})[key])
+				if stepMap, ok := stepParams.(map[string]interface{}); ok && stepMap[key] != "" {
+					convertedValue := convertStepParamsValueForConfig(step.GetType(), key, stepMap[key])
 					params[convertStepParamsKey(key)] = convertedValue
 				}
 			}
