@@ -42,6 +42,7 @@ func resourceDatadogIntegrationGcp() *schema.Resource {
 				Description: "Your email found in your JSON service account key.",
 				Type:        schema.TypeString,
 				Required:    true,
+				ForceNew:    true,
 			},
 			"client_id": {
 				Description: "Your ID found in your JSON service account key.",
