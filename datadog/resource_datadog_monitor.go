@@ -568,7 +568,7 @@ func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) erro
 	mCreatedID := strconv.FormatInt(mCreated.GetId(), 10)
 	d.SetId(mCreatedID)
 
-	return resourceDatadogMonitorRead(d, meta)
+	return updateMonitorState(d, meta, &mCreated)
 }
 
 func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.Monitor) error {
