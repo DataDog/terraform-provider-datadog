@@ -112,7 +112,7 @@ func resourceDatadogIntegrationSlackChannelCreate(d *schema.ResourceData, meta i
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", accountName, ddSlackChannel.GetName()))
-	return updateSlackChannelState(d, &createdChannel, accountName)
+	return updateSlackChannelState(d, &createdChannel)
 }
 
 func resourceDatadogIntegrationSlackChannelRead(d *schema.ResourceData, meta interface{}) error {
@@ -134,7 +134,7 @@ func resourceDatadogIntegrationSlackChannelRead(d *schema.ResourceData, meta int
 		return utils.TranslateClientError(err, "error getting slack channel")
 	}
 
-	return updateSlackChannelState(d, &slackChannel, accountName)
+	return updateSlackChannelState(d, &slackChannel)
 }
 
 func resourceDatadogIntegrationSlackChannelUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -159,7 +159,7 @@ func resourceDatadogIntegrationSlackChannelUpdate(d *schema.ResourceData, meta i
 	// Handle case where channel name is updated
 	d.SetId(fmt.Sprintf("%s:%s", accountName, slackChannel.GetName()))
 
-	return updateSlackChannelState(d, &slackChannel, accountName)
+	return updateSlackChannelState(d, &slackChannel)
 }
 
 func resourceDatadogIntegrationSlackChannelDelete(d *schema.ResourceData, meta interface{}) error {
@@ -183,8 +183,13 @@ func resourceDatadogIntegrationSlackChannelDelete(d *schema.ResourceData, meta i
 	return nil
 }
 
-func updateSlackChannelState(d *schema.ResourceData, slackChannel *datadogV1.SlackIntegrationChannel, accountName string) error {
+func updateSlackChannelState(d *schema.ResourceData, slackChannel *datadogV1.SlackIntegrationChannel) error {
 	if err := d.Set("channel_name", slackChannel.GetName()); err != nil {
+		return err
+	}
+
+	accountName, _, err := utils.AccountNameAndChannelNameFromID(d.Id())
+	if err != nil {
 		return err
 	}
 
