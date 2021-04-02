@@ -1162,6 +1162,17 @@ func getGroupDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Description: "The title of the group.",
 		},
+		"title_align": {
+			Description:  "The alignment of the group title. Either `left` or `center`.",
+			Type:         schema.TypeString,
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:     true,
+		},
+		"background_color": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "The background color of the group title.",
+		},
 	}
 }
 
@@ -1180,6 +1191,12 @@ func buildDatadogGroupDefinition(terraformGroupDefinition map[string]interface{}
 	}
 	if v, ok := terraformGroupDefinition["title"].(string); ok && len(v) != 0 {
 		datadogGroupDefinition.SetTitle(v)
+	}
+	if v, ok := terraformGroupDefinition["title_align"].(string); ok && len(v) != 0 {
+		datadogGroupDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
+	}
+	if v, ok := terraformGroupDefinition["background_color"].(string); ok && len(v) != 0 {
+		datadogGroupDefinition.SetBackgroundColor(v)
 	}
 
 	return datadogGroupDefinition, nil
@@ -1201,6 +1218,12 @@ func buildTerraformGroupDefinition(datadogGroupDefinition datadogV1.GroupWidgetD
 	}
 	if v, ok := datadogGroupDefinition.GetTitleOk(); ok {
 		terraformGroupDefinition["title"] = v
+	}
+	if v, ok := datadogGroupDefinition.GetTitleAlignOk(); ok {
+		terraformGroupDefinition["title_align"] = v
+	}
+	if v, ok := datadogGroupDefinition.GetBackgroundColorOk(); ok {
+		terraformGroupDefinition["background_color"] = v
 	}
 
 	return terraformGroupDefinition
