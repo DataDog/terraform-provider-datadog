@@ -789,7 +789,7 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 		createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateSyntheticsAPITest(authV1).Body(*syntheticsTest).Execute()
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
-			return utils.TranslateClientError(err, "error creating synthetics test")
+			return utils.TranslateClientError(err, "error creating synthetics API test")
 		}
 
 		// If the Create callback returns with or without an error without an ID set using SetId,
@@ -803,7 +803,7 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 		createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateSyntheticsBrowserTest(authV1).Body(*syntheticsTest).Execute()
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
-			return utils.TranslateClientError(err, "error creating synthetics test")
+			return utils.TranslateClientError(err, "error creating synthetics browser test")
 		}
 
 		// If the Create callback returns with or without an error without an ID set using SetId,
@@ -814,7 +814,7 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 		return resourceDatadogSyntheticsTestRead(d, meta)
 	}
 
-	return fmt.Errorf("Unrecognized synthetics test type %v", testType)
+	return fmt.Errorf("unrecognized synthetics test type %v", testType)
 }
 
 func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{}) error {
@@ -865,14 +865,14 @@ func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{
 
 		if _, _, err := datadogClientV1.SyntheticsApi.UpdateAPITest(authV1, d.Id()).Body(*syntheticsTest).Execute(); err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
-			return utils.TranslateClientError(err, "error updating synthetics test")
+			return utils.TranslateClientError(err, "error updating synthetics API test")
 		}
 	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
 
 		if _, _, err := datadogClientV1.SyntheticsApi.UpdateBrowserTest(authV1, d.Id()).Body(*syntheticsTest).Execute(); err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
-			return utils.TranslateClientError(err, "error updating synthetics test")
+			return utils.TranslateClientError(err, "error updating synthetics browser test")
 		}
 	}
 
