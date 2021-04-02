@@ -62,6 +62,12 @@ func resourceDatadogDashboard() *schema.Resource {
 				Description:  "The layout type of the dashboard, either 'free' or 'ordered'.",
 				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewDashboardLayoutTypeFromValue),
 			},
+			"reflow_type": {
+				Type:         schema.TypeString,
+				Optional:     true,
+				Description:  "The reflow type of the multi-size layout dashboard, either 'auto' or 'fixed'.",
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewDashboardReflowTypeFromValue),
+			},
 			"description": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -208,6 +214,9 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 	if err := d.Set("layout_type", dashboard.GetLayoutType()); err != nil {
 		return err
 	}
+	if err := d.Set("reflow_type", dashboard.GetReflowType()); err != nil {
+		return err
+	}
 	if err := d.Set("description", dashboard.GetDescription()); err != nil {
 		return err
 	}
@@ -293,6 +302,9 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 	}
 	if v, ok := d.GetOk("layout_type"); ok {
 		dashboard.SetLayoutType(datadogV1.DashboardLayoutType(v.(string)))
+	}
+	if v, ok := d.GetOk("reflow_type"); ok {
+		dashboard.SetReflowType(datadogV1.DashboardReflowType(v.(string)))
 	}
 	if v, ok := d.GetOk("description"); ok {
 		dashboard.SetDescription(v.(string))
