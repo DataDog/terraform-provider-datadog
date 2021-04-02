@@ -69,6 +69,36 @@ func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogIntegrationSlackChannel_Import(t *testing.T) {
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	reg, _ := regexp.Compile("[^a-zA-Z0-9]+")
+	uniqueChannelAccountName := reg.ReplaceAllString(uniqueEntityName(ctx, t), "")
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				// Workaround to ensure we create the slack integration before running the tests.
+				Config: emptyLogsArchiveConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					createSlackIntegration(accProvider),
+				),
+			},
+			{
+				Config: testAccCheckDatadogIntegrationSlackChannelConfigCreate(uniqueChannelAccountName),
+			},
+			{
+				ResourceName:      "datadog_integration_slack_channel.slack_channel",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogIntegrationSlackChannelConfigCreate(uniq string) string {
 	return fmt.Sprintf(`
        resource "datadog_integration_slack_channel" "slack_channel" {
