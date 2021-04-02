@@ -824,6 +824,7 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 
 	var syntheticsTest datadogV1.SyntheticsTestDetails
 	var syntheticsAPITest datadogV1.SyntheticsAPITest
+	var syntheticsBrowserTest datadogV1.SyntheticsBrowserTest
 	var err error
 	var httpresp *_nethttp.Response
 
@@ -831,7 +832,7 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 	syntheticsTest, httpresp, err = datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id()).Execute()
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
-		syntheticsTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id()).Execute()
+		syntheticsBrowserTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id()).Execute()
 	} else {
 		syntheticsAPITest, _, err = datadogClientV1.SyntheticsApi.GetAPITest(authV1, d.Id()).Execute()
 	}
@@ -846,7 +847,7 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 	}
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
-		return updateSyntheticsBrowserTestLocalState(d, &syntheticsTest)
+		return updateSyntheticsBrowserTestLocalState(d, &syntheticsBrowserTest)
 	}
 
 	return updateSyntheticsAPITestLocalState(d, &syntheticsAPITest)
@@ -1572,11 +1573,8 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	return syntheticsTest
 }
 
-func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsTestDetails) error {
+func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsBrowserTest) error {
 	d.Set("type", syntheticsTest.GetType())
-	if syntheticsTest.HasSubtype() {
-		d.Set("subtype", syntheticsTest.GetSubtype())
-	}
 
 	config := syntheticsTest.GetConfig()
 	actualRequest := config.GetRequest()
@@ -1705,29 +1703,6 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		if err := d.Set("browser_variable", localBrowserVariables); err != nil {
 			return err
 		}
-	}
-
-	configVariables := config.GetConfigVariables()
-	localConfigVariables := make([]map[string]interface{}, len(configVariables))
-	for i, configVariable := range configVariables {
-		localVariable := make(map[string]interface{})
-		if v, ok := configVariable.GetTypeOk(); ok {
-			localVariable["type"] = *v
-		}
-		if v, ok := configVariable.GetNameOk(); ok {
-			localVariable["name"] = *v
-		}
-		if v, ok := configVariable.GetExampleOk(); ok {
-			localVariable["example"] = *v
-		}
-		if v, ok := configVariable.GetPatternOk(); ok {
-			localVariable["pattern"] = *v
-		}
-		localConfigVariables[i] = localVariable
-	}
-
-	if err := d.Set("config_variable", localConfigVariables); err != nil {
-		return err
 	}
 
 	d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds)
