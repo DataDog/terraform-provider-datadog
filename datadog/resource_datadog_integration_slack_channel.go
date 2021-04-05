@@ -188,6 +188,15 @@ func updateSlackChannelState(d *schema.ResourceData, slackChannel *datadogV1.Sla
 		return err
 	}
 
+	accountName, _, err := utils.AccountNameAndChannelNameFromID(d.Id())
+	if err != nil {
+		return err
+	}
+
+	if err := d.Set("account_name", accountName); err != nil {
+		return err
+	}
+
 	tfChannelDisplay := buildTerraformSlackChannelDisplay(slackChannel.GetDisplay())
 	if err := d.Set("display", []map[string]interface{}{tfChannelDisplay}); err != nil {
 		return err
