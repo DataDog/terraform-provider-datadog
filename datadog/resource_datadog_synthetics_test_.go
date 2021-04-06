@@ -782,19 +782,39 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	syntheticsTest := buildSyntheticsTestStruct(d)
-	createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateTest(authV1).Body(*syntheticsTest).Execute()
-	if err != nil {
-		// Note that Id won't be set, so no state will be saved.
-		return utils.TranslateClientError(err, "error creating synthetics test")
+	testType := getSyntheticsTestType(d)
+
+	if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
+		syntheticsTest := buildSyntheticsAPITestStruct(d)
+		createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateSyntheticsAPITest(authV1).Body(*syntheticsTest).Execute()
+		if err != nil {
+			// Note that Id won't be set, so no state will be saved.
+			return utils.TranslateClientError(err, "error creating synthetics API test")
+		}
+
+		// If the Create callback returns with or without an error without an ID set using SetId,
+		// the resource is assumed to not be created, and no state is saved.
+		d.SetId(createdSyntheticsTest.GetPublicId())
+
+		// Return the read function to ensure the state is reflected in the terraform.state file
+		return resourceDatadogSyntheticsTestRead(d, meta)
+	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
+		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
+		createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateSyntheticsBrowserTest(authV1).Body(*syntheticsTest).Execute()
+		if err != nil {
+			// Note that Id won't be set, so no state will be saved.
+			return utils.TranslateClientError(err, "error creating synthetics browser test")
+		}
+
+		// If the Create callback returns with or without an error without an ID set using SetId,
+		// the resource is assumed to not be created, and no state is saved.
+		d.SetId(createdSyntheticsTest.GetPublicId())
+
+		// Return the read function to ensure the state is reflected in the terraform.state file
+		return resourceDatadogSyntheticsTestRead(d, meta)
 	}
 
-	// If the Create callback returns with or without an error without an ID set using SetId,
-	// the resource is assumed to not be created, and no state is saved.
-	d.SetId(createdSyntheticsTest.GetPublicId())
-
-	// Return the read function to ensure the state is reflected in the terraform.state file
-	return resourceDatadogSyntheticsTestRead(d, meta)
+	return fmt.Errorf("unrecognized synthetics test type %v", testType)
 }
 
 func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{}) error {
@@ -803,18 +823,18 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 	authV1 := providerConf.AuthV1
 
 	var syntheticsTest datadogV1.SyntheticsTestDetails
+	var syntheticsAPITest datadogV1.SyntheticsAPITest
+	var syntheticsBrowserTest datadogV1.SyntheticsBrowserTest
 	var err error
 	var httpresp *_nethttp.Response
 
-	if d.Get("type") == "browser" {
-		syntheticsTest, httpresp, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id()).Execute()
-	} else {
-		syntheticsTest, httpresp, err = datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id()).Execute()
+	// get the generic test to detect if it's an api or browser test
+	syntheticsTest, httpresp, err = datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id()).Execute()
 
-		// re-fetch test if it was actually a browser but we didn't have the info earlier
-		if syntheticsTest.GetType() == "browser" {
-			syntheticsTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id()).Execute()
-		}
+	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
+		syntheticsBrowserTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id()).Execute()
+	} else {
+		syntheticsAPITest, _, err = datadogClientV1.SyntheticsApi.GetAPITest(authV1, d.Id()).Execute()
 	}
 
 	if err != nil {
@@ -826,7 +846,11 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 		return utils.TranslateClientError(err, "error getting synthetics test")
 	}
 
-	return updateSyntheticsTestLocalState(d, &syntheticsTest)
+	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
+		return updateSyntheticsBrowserTestLocalState(d, &syntheticsBrowserTest)
+	}
+
+	return updateSyntheticsAPITestLocalState(d, &syntheticsAPITest)
 }
 
 func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -834,10 +858,22 @@ func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	syntheticsTest := buildSyntheticsTestStruct(d)
-	if _, _, err := datadogClientV1.SyntheticsApi.UpdateTest(authV1, d.Id()).Body(*syntheticsTest).Execute(); err != nil {
-		// If the Update callback returns with or without an error, the full state is saved.
-		return utils.TranslateClientError(err, "error updating synthetics test")
+	testType := getSyntheticsTestType(d)
+
+	if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
+		syntheticsTest := buildSyntheticsAPITestStruct(d)
+
+		if _, _, err := datadogClientV1.SyntheticsApi.UpdateAPITest(authV1, d.Id()).Body(*syntheticsTest).Execute(); err != nil {
+			// If the Update callback returns with or without an error, the full state is saved.
+			return utils.TranslateClientError(err, "error updating synthetics API test")
+		}
+	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
+		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
+
+		if _, _, err := datadogClientV1.SyntheticsApi.UpdateBrowserTest(authV1, d.Id()).Body(*syntheticsTest).Execute(); err != nil {
+			// If the Update callback returns with or without an error, the full state is saved.
+			return utils.TranslateClientError(err, "error updating synthetics browser test")
+		}
 	}
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
@@ -872,8 +908,12 @@ func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertio
 	return false
 }
 
-func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTestDetails {
-	request := datadogV1.NewSyntheticsTestRequest()
+func getSyntheticsTestType(d *schema.ResourceData) datadogV1.SyntheticsTestDetailsType {
+	return datadogV1.SyntheticsTestDetailsType(d.Get("type").(string))
+}
+
+func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsAPITest {
+	request := datadogV1.SyntheticsTestRequest{}
 	k := utils.NewResourceDataKey(d, "")
 	parts := ""
 	if v, ok := k.GetOkWith("request"); ok && v != nil && len(v.(map[string]interface{})) != 0 {
@@ -978,8 +1018,8 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		request.SetCertificate(clientCertificate)
 	}
 
-	config := datadogV1.NewSyntheticsTestConfig([]datadogV1.SyntheticsAssertion{}, *request)
-	config.SetVariables([]datadogV1.SyntheticsBrowserVariable{})
+	config := datadogV1.NewSyntheticsAPITestConfigWithDefaults()
+	config.SetRequest(request)
 
 	// Deprecated path, the assertions field is replaced with assertion
 	if attr, ok := d.GetOk("assertions"); ok && attr != nil {
@@ -1069,6 +1109,258 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		}
 	}
 
+	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
+
+	if attr, ok := d.GetOk("config_variable"); ok && attr != nil {
+		for _, v := range attr.([]interface{}) {
+			variableMap := v.(map[string]interface{})
+			variable := datadogV1.SyntheticsConfigVariable{}
+
+			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
+			variable.SetName(variableMap["name"].(string))
+			variable.SetPattern(variableMap["pattern"].(string))
+			variable.SetExample(variableMap["example"].(string))
+
+			configVariables = append(configVariables, variable)
+		}
+	}
+
+	config.SetConfigVariables(configVariables)
+
+	options := datadogV1.NewSyntheticsTestOptions()
+
+	// use new options_list first, then fallback to legacy options
+	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
+		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
+			options.SetTickEvery(datadogV1.SyntheticsTickInterval(attr.(int)))
+		}
+		if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
+			options.SetAcceptSelfSigned(attr.(bool))
+		}
+		if attr, ok := d.GetOk("options_list.0.min_location_failed"); ok {
+			options.SetMinLocationFailed(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("options_list.0.min_failure_duration"); ok {
+			options.SetMinFailureDuration(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("options_list.0.follow_redirects"); ok {
+			options.SetFollowRedirects(attr.(bool))
+		}
+		if attr, ok := d.GetOk("options_list.0.allow_insecure"); ok {
+			options.SetAllowInsecure(attr.(bool))
+		}
+
+		if retryRaw, ok := d.GetOk("options_list.0.retry"); ok {
+			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
+			retry := retryRaw.([]interface{})[0]
+
+			if count, ok := retry.(map[string]interface{})["count"]; ok {
+				optionsRetry.SetCount(int64(count.(int)))
+			}
+			if interval, ok := retry.(map[string]interface{})["interval"]; ok {
+				optionsRetry.SetInterval(float64(interval.(int)))
+			}
+
+			options.SetRetry(optionsRetry)
+		}
+
+		if monitorOptionsRaw, ok := d.GetOk("options_list.0.monitor_options"); ok {
+			monitorOptions := monitorOptionsRaw.([]interface{})[0]
+			optionsMonitorOptions := datadogV1.SyntheticsTestOptionsMonitorOptions{}
+
+			if renotifyInterval, ok := monitorOptions.(map[string]interface{})["renotify_interval"]; ok {
+				optionsMonitorOptions.SetRenotifyInterval(int64(renotifyInterval.(int)))
+			}
+
+			options.SetMonitorOptions(optionsMonitorOptions)
+		}
+	} else {
+		if attr, ok := d.GetOk("options.tick_every"); ok {
+			tickEvery, _ := strconv.Atoi(attr.(string))
+			options.SetTickEvery(datadogV1.SyntheticsTickInterval(tickEvery))
+		}
+		if attr, ok := d.GetOk("options.follow_redirects"); ok {
+			// follow_redirects is a string ("true" or "false") in TF state
+			// it used to be "1" and "0" but it does not play well with the API
+			// we support both for retro-compatibility
+			followRedirects, _ := strconv.ParseBool(attr.(string))
+			options.SetFollowRedirects(followRedirects)
+		}
+		if attr, ok := d.GetOk("options.min_failure_duration"); ok {
+			minFailureDuration, _ := strconv.Atoi(attr.(string))
+			options.SetMinFailureDuration(int64(minFailureDuration))
+		}
+		if attr, ok := d.GetOk("options.min_location_failed"); ok {
+			minLocationFailed, _ := strconv.Atoi(attr.(string))
+			options.SetMinLocationFailed(int64(minLocationFailed))
+		}
+		if attr, ok := d.GetOk("options.accept_self_signed"); ok {
+			// for some reason, attr is equal to "1" or "0" in TF 0.11
+			// so ParseBool is required for retro-compatibility
+			acceptSelfSigned, _ := strconv.ParseBool(attr.(string))
+			options.SetAcceptSelfSigned(acceptSelfSigned)
+		}
+		if attr, ok := d.GetOk("options.allow_insecure"); ok {
+			// for some reason, attr is equal to "1" or "0" in TF 0.11
+			// so ParseBool is required for retro-compatibility
+			allowInsecure, _ := strconv.ParseBool(attr.(string))
+			options.SetAllowInsecure(allowInsecure)
+		}
+		if attr, ok := d.GetOk("options.retry_count"); ok {
+			retryCount, _ := strconv.Atoi(attr.(string))
+			retry := datadogV1.SyntheticsTestOptionsRetry{}
+			retry.SetCount(int64(retryCount))
+
+			if retryIntervalRaw, ok := d.GetOk("options.retry_interval"); ok {
+				retryInterval, _ := strconv.Atoi(retryIntervalRaw.(string))
+				retry.SetInterval(float64(retryInterval))
+			}
+
+			options.SetRetry(retry)
+		}
+	}
+
+	if attr, ok := d.GetOk("device_ids"); ok {
+		var deviceIds []datadogV1.SyntheticsDeviceID
+		for _, s := range attr.([]interface{}) {
+			deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
+		}
+		options.DeviceIds = &deviceIds
+	}
+
+	syntheticsTest := datadogV1.NewSyntheticsAPITest()
+	syntheticsTest.SetName(d.Get("name").(string))
+	syntheticsTest.SetType(datadogV1.SyntheticsAPITestType(d.Get("type").(string)))
+	syntheticsTest.SetConfig(*config)
+	syntheticsTest.SetOptions(*options)
+	syntheticsTest.SetMessage(d.Get("message").(string))
+	syntheticsTest.SetStatus(datadogV1.SyntheticsTestPauseStatus(d.Get("status").(string)))
+
+	if attr, ok := d.GetOk("locations"); ok {
+		var locations []string
+		for _, s := range attr.(*schema.Set).List() {
+			locations = append(locations, s.(string))
+		}
+		syntheticsTest.SetLocations(locations)
+	}
+
+	tags := make([]string, 0)
+	if attr, ok := d.GetOk("tags"); ok {
+		for _, s := range attr.([]interface{}) {
+			tags = append(tags, s.(string))
+		}
+	}
+	syntheticsTest.SetTags(tags)
+
+	if attr, ok := d.GetOk("subtype"); ok {
+		syntheticsTest.SetSubtype(datadogV1.SyntheticsTestDetailsSubType(attr.(string)))
+	} else {
+		syntheticsTest.SetSubtype(datadogV1.SYNTHETICSTESTDETAILSSUBTYPE_HTTP)
+	}
+
+	return syntheticsTest
+}
+
+func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsBrowserTest {
+	request := datadogV1.SyntheticsTestRequest{}
+	k := utils.NewResourceDataKey(d, "")
+	parts := ""
+	if v, ok := k.GetOkWith("request"); ok && v != nil && len(v.(map[string]interface{})) != 0 {
+		parts = "request"
+	} else {
+		parts = "request_definition.0"
+	}
+	k.Add(parts)
+	if attr, ok := k.GetOkWith("method"); ok {
+		request.SetMethod(datadogV1.HTTPMethod(attr.(string)))
+	}
+	if attr, ok := k.GetOkWith("url"); ok {
+		request.SetUrl(attr.(string))
+	}
+	if attr, ok := k.GetOkWith("body"); ok {
+		request.SetBody(attr.(string))
+	}
+	if attr, ok := k.GetOkWith("timeout"); ok {
+		var timeoutInt int
+		// first try to convert to int if we're getting from the new TypeList field
+		timeoutInt, ok = attr.(int)
+		if !ok {
+			// if it's not an int, means we are in the deprecated TypeMap field, so convert from string
+			timeoutInt, _ = strconv.Atoi(attr.(string))
+		}
+		request.SetTimeout(float64(timeoutInt))
+	}
+	if attr, ok := k.GetOkWith("host"); ok {
+		request.SetHost(attr.(string))
+	}
+	if attr, ok := k.GetOkWith("port"); ok {
+		var portInt int
+		// first try to convert to int if we're getting from the new TypeList field
+		portInt, ok = attr.(int)
+		if !ok {
+			// if it's not an int, means we are in the deprecated TypeMap field, so convert from string
+			portInt, _ = strconv.Atoi(attr.(string))
+		}
+		request.SetPort(int64(portInt))
+	}
+	if attr, ok := k.GetOkWith("dns_server"); ok {
+		request.SetDnsServer(attr.(string))
+	}
+	k.Remove(parts)
+	if attr, ok := d.GetOk("request_query"); ok {
+		query := attr.(map[string]interface{})
+		if len(query) > 0 {
+			request.SetQuery(query)
+		}
+	}
+
+	if username, ok := d.GetOk("request_basicauth.0.username"); ok {
+		if password, ok := d.GetOk("request_basicauth.0.password"); ok {
+			basicAuth := datadogV1.NewSyntheticsBasicAuth(password.(string), username.(string))
+			request.SetBasicAuth(*basicAuth)
+		}
+	}
+	if attr, ok := d.GetOk("request_headers"); ok {
+		headers := attr.(map[string]interface{})
+		if len(headers) > 0 {
+			request.SetHeaders(make(map[string]string))
+		}
+		for k, v := range headers {
+			request.GetHeaders()[k] = v.(string)
+		}
+	}
+
+	if _, ok := d.GetOk("request_client_certificate"); ok {
+		cert := datadogV1.SyntheticsTestRequestCertificateItem{}
+		key := datadogV1.SyntheticsTestRequestCertificateItem{}
+
+		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.filename"); ok {
+			cert.SetFilename(attr.(string))
+		}
+		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
+			cert.SetContent(attr.(string))
+		}
+
+		if attr, ok := d.GetOk("request_client_certificate.0.key.0.filename"); ok {
+			key.SetFilename(attr.(string))
+		}
+		if attr, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
+			key.SetContent(attr.(string))
+		}
+
+		clientCertificate := datadogV1.SyntheticsTestRequestCertificate{
+			Cert: &cert,
+			Key:  &key,
+		}
+
+		request.SetCertificate(clientCertificate)
+	}
+
+	config := datadogV1.SyntheticsBrowserTestConfig{}
+	config.SetAssertions([]datadogV1.SyntheticsAssertion{})
+	config.SetRequest(request)
+	config.SetVariables([]datadogV1.SyntheticsBrowserVariable{})
+
 	var browserVariables []interface{}
 
 	if attr, ok := d.GetOk("browser_variable"); ok && attr != nil {
@@ -1097,24 +1389,6 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 			}
 		}
 	}
-
-	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
-
-	if attr, ok := d.GetOk("config_variable"); ok && attr != nil {
-		for _, v := range attr.([]interface{}) {
-			variableMap := v.(map[string]interface{})
-			variable := datadogV1.SyntheticsConfigVariable{}
-
-			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
-			variable.SetName(variableMap["name"].(string))
-			variable.SetPattern(variableMap["pattern"].(string))
-			variable.SetExample(variableMap["example"].(string))
-
-			configVariables = append(configVariables, variable)
-		}
-	}
-
-	config.SetConfigVariables(configVariables)
 
 	options := datadogV1.NewSyntheticsTestOptions()
 
@@ -1221,12 +1495,11 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		options.DeviceIds = &deviceIds
 	}
 
-	syntheticsTest := datadogV1.NewSyntheticsTestDetails()
+	syntheticsTest := datadogV1.NewSyntheticsBrowserTest(d.Get("message").(string))
 	syntheticsTest.SetName(d.Get("name").(string))
-	syntheticsTest.SetType(datadogV1.SyntheticsTestDetailsType(d.Get("type").(string)))
-	syntheticsTest.SetConfig(*config)
+	syntheticsTest.SetType(datadogV1.SyntheticsBrowserTestType(d.Get("type").(string)))
+	syntheticsTest.SetConfig(config)
 	syntheticsTest.SetOptions(*options)
-	syntheticsTest.SetMessage(d.Get("message").(string))
 	syntheticsTest.SetStatus(datadogV1.SyntheticsTestPauseStatus(d.Get("status").(string)))
 
 	if attr, ok := d.GetOk("locations"); ok {
@@ -1245,16 +1518,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	}
 	syntheticsTest.SetTags(tags)
 
-	if attr, ok := d.GetOk("subtype"); ok {
-		syntheticsTest.SetSubtype(datadogV1.SyntheticsTestDetailsSubType(attr.(string)))
-	} else {
-		if syntheticsTest.GetType() == "api" {
-			// we want to default to "http" subtype when type is "api"
-			syntheticsTest.SetSubtype(datadogV1.SYNTHETICSTESTDETAILSSUBTYPE_HTTP)
-		}
-	}
-
-	if attr, ok := d.GetOk("step"); ok && syntheticsTest.GetType() == "browser" {
+	if attr, ok := d.GetOk("step"); ok {
 		steps := []datadogV1.SyntheticsStep{}
 
 		for _, s := range attr.([]interface{}) {
@@ -1275,7 +1539,7 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 		syntheticsTest.SetSteps(steps)
 	}
 
-	if attr, ok := d.GetOk("browser_step"); ok && syntheticsTest.GetType() == "browser" {
+	if attr, ok := d.GetOk("browser_step"); ok {
 		steps := []datadogV1.SyntheticsStep{}
 
 		for _, s := range attr.([]interface{}) {
@@ -1309,7 +1573,267 @@ func buildSyntheticsTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsTest
 	return syntheticsTest
 }
 
-func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsTestDetails) error {
+func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsBrowserTest) error {
+	d.Set("type", syntheticsTest.GetType())
+
+	config := syntheticsTest.GetConfig()
+	actualRequest := config.GetRequest()
+	localRequest := make(map[string]interface{})
+	setDeprecated := false
+	if v, ok := d.GetOk("request"); ok && len(v.(map[string]interface{})) != 0 {
+		setDeprecated = true
+	}
+	if actualRequest.HasBody() {
+		localRequest["body"] = actualRequest.GetBody()
+	}
+	if actualRequest.HasMethod() {
+		localRequest["method"] = convertToString(actualRequest.GetMethod())
+	}
+	if actualRequest.HasTimeout() {
+		if setDeprecated {
+			localRequest["timeout"] = convertToString(actualRequest.GetTimeout())
+		} else {
+			localRequest["timeout"] = actualRequest.GetTimeout()
+		}
+	}
+	if actualRequest.HasUrl() {
+		localRequest["url"] = actualRequest.GetUrl()
+	}
+	if actualRequest.HasHost() {
+		localRequest["host"] = actualRequest.GetHost()
+	}
+	if actualRequest.HasPort() {
+		if setDeprecated {
+			localRequest["port"] = convertToString(actualRequest.GetPort())
+		} else {
+			localRequest["port"] = actualRequest.GetPort()
+		}
+	}
+	if actualRequest.HasDnsServer() {
+		localRequest["dns_server"] = convertToString(actualRequest.GetDnsServer())
+	}
+
+	// Set deprecated field if that's what's in the config, new field otherwise
+	if setDeprecated {
+		if err := d.Set("request", localRequest); err != nil {
+			return err
+		}
+	} else {
+		if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
+			return err
+		}
+	}
+	d.Set("request_headers", actualRequest.Headers)
+	d.Set("request_query", actualRequest.GetQuery())
+	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok {
+		localAuth := make(map[string]string)
+		localAuth["username"] = basicAuth.Username
+		localAuth["password"] = basicAuth.Password
+		d.Set("request_basicauth", []map[string]string{localAuth})
+	}
+
+	if clientCertificate, ok := actualRequest.GetCertificateOk(); ok {
+		localCertificate := make(map[string][]map[string]string)
+		localCertificate["cert"] = make([]map[string]string, 1)
+		localCertificate["cert"][0] = make(map[string]string)
+		localCertificate["key"] = make([]map[string]string, 1)
+		localCertificate["key"][0] = make(map[string]string)
+
+		cert := clientCertificate.GetCert()
+		localCertificate["cert"][0]["filename"] = cert.GetFilename()
+
+		key := clientCertificate.GetKey()
+		localCertificate["key"][0]["filename"] = key.GetFilename()
+
+		// the content of client certificate is write-only so it will not be returned by the API.
+		// To avoid useless diff but also prevent storing the value in clear in the state
+		// we store a hash of the value.
+		if configCertificateContent, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
+			localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent.(string))
+		}
+		if configKeyContent, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
+			localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
+		}
+
+		d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate})
+	}
+
+	// assertions are required but not used for browser tests
+	localAssertions := make([]map[string]interface{}, 0)
+
+	// If the existing state still uses assertions, keep using that in the state to not generate useless diffs
+	if attr, ok := d.GetOk("assertions"); ok && attr != nil && len(attr.([]interface{})) > 0 {
+		if err := d.Set("assertions", localAssertions); err != nil {
+			return err
+		}
+	} else {
+		if err := d.Set("assertion", localAssertions); err != nil {
+			return err
+		}
+	}
+
+	actualVariables := config.GetVariables()
+	localBrowserVariables := make([]map[string]interface{}, len(actualVariables))
+	for i, variable := range actualVariables {
+		localVariable := make(map[string]interface{})
+		if v, ok := variable.GetTypeOk(); ok {
+			localVariable["type"] = *v
+		}
+		if v, ok := variable.GetNameOk(); ok {
+			localVariable["name"] = *v
+		}
+		if v, ok := variable.GetExampleOk(); ok {
+			localVariable["example"] = *v
+		}
+		if v, ok := variable.GetIdOk(); ok {
+			localVariable["id"] = *v
+		}
+		if v, ok := variable.GetPatternOk(); ok {
+			localVariable["pattern"] = *v
+		}
+		localBrowserVariables[i] = localVariable
+	}
+
+	// If the existing state still uses variables, keep using that in the state to not generate useless diffs
+	if attr, ok := d.GetOk("variable"); ok && attr != nil && len(attr.([]interface{})) > 0 {
+		if err := d.Set("variable", localBrowserVariables); err != nil {
+			return err
+		}
+	} else {
+		if err := d.Set("browser_variable", localBrowserVariables); err != nil {
+			return err
+		}
+	}
+
+	d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds)
+
+	d.Set("locations", syntheticsTest.Locations)
+
+	actualOptions := syntheticsTest.GetOptions()
+	localOptionsList := make(map[string]interface{})
+	localOption := make(map[string]string)
+	if actualOptions.HasFollowRedirects() {
+		localOption["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
+		localOptionsList["follow_redirects"] = actualOptions.GetFollowRedirects()
+	}
+	if actualOptions.HasMinFailureDuration() {
+		localOption["min_failure_duration"] = convertToString(actualOptions.GetMinFailureDuration())
+		localOptionsList["min_failure_duration"] = actualOptions.GetMinFailureDuration()
+	}
+	if actualOptions.HasMinLocationFailed() {
+		localOption["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
+		localOptionsList["min_location_failed"] = actualOptions.GetMinLocationFailed()
+	}
+	if actualOptions.HasTickEvery() {
+		localOption["tick_every"] = convertToString(actualOptions.GetTickEvery())
+		localOptionsList["tick_every"] = actualOptions.GetTickEvery()
+	}
+	if actualOptions.HasAcceptSelfSigned() {
+		localOption["accept_self_signed"] = convertToString(actualOptions.GetAcceptSelfSigned())
+		localOptionsList["accept_self_signed"] = actualOptions.GetAcceptSelfSigned()
+	}
+	if actualOptions.HasAllowInsecure() {
+		localOption["allow_insecure"] = convertToString(actualOptions.GetAllowInsecure())
+		localOptionsList["allow_insecure"] = actualOptions.GetAllowInsecure()
+	}
+	if actualOptions.HasRetry() {
+		retry := actualOptions.GetRetry()
+		optionsListRetry := make(map[string]interface{})
+		localOption["retry_count"] = convertToString(retry.GetCount())
+		optionsListRetry["count"] = retry.GetCount()
+
+		if interval, ok := retry.GetIntervalOk(); ok {
+			localOption["retry_interval"] = convertToString(interval)
+			optionsListRetry["interval"] = interval
+		}
+
+		localOptionsList["retry"] = []map[string]interface{}{optionsListRetry}
+	}
+	if actualOptions.HasMonitorOptions() {
+		actualMonitorOptions := actualOptions.GetMonitorOptions()
+		renotifyInterval := actualMonitorOptions.GetRenotifyInterval()
+
+		optionsListMonitorOptions := make(map[string]int64)
+		optionsListMonitorOptions["renotify_interval"] = renotifyInterval
+		localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
+	}
+	if actualOptions.HasNoScreenshot() {
+		localOptionsList["no_screenshot"] = actualOptions.GetNoScreenshot()
+	}
+
+	// If the existing state still uses options, keep using that in the state to not generate useless diffs
+	if attr, ok := d.GetOk("options"); ok && attr != nil && len(attr.(map[string]interface{})) > 0 {
+		if err := d.Set("options", localOption); err != nil {
+			return err
+		}
+	} else {
+		localOptionsLists := make([]map[string]interface{}, 1)
+		localOptionsLists[0] = localOptionsList
+		if err := d.Set("options_list", localOptionsLists); err != nil {
+			return err
+		}
+	}
+
+	steps := syntheticsTest.GetSteps()
+	var localSteps []map[string]interface{}
+
+	useLegacyStep := false
+
+	if attr, ok := d.GetOk("step"); ok && attr != nil && len(attr.([]interface{})) > 0 {
+		useLegacyStep = true
+	}
+
+	for stepIndex, step := range steps {
+		localStep := make(map[string]interface{})
+		localStep["name"] = step.GetName()
+		localStep["type"] = string(step.GetType())
+		localStep["timeout"] = step.GetTimeout()
+
+		if allowFailure, ok := step.GetAllowFailureOk(); ok {
+			localStep["allow_failure"] = allowFailure
+		}
+
+		if useLegacyStep {
+			localStep["params"] = convertToString(step.GetParams().(interface{}))
+		} else {
+			localParams := make(map[string]interface{})
+			params := step.GetParams()
+			paramsMap := params.(map[string]interface{})
+
+			for key, value := range paramsMap {
+				localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
+			}
+
+			localStep["params"] = []interface{}{localParams}
+
+			if forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex)); ok {
+				localStep["force_element_update"] = forceElementUpdate
+			}
+		}
+
+		localSteps = append(localSteps, localStep)
+	}
+
+	// If the existing state still uses step, keep using that in the state to not generate useless diffs
+	if useLegacyStep {
+		if err := d.Set("step", localSteps); err != nil {
+			return err
+		}
+	} else {
+		if err := d.Set("browser_step", localSteps); err != nil {
+			return err
+		}
+	}
+
+	d.Set("name", syntheticsTest.GetName())
+	d.Set("message", syntheticsTest.GetMessage())
+	d.Set("status", syntheticsTest.GetStatus())
+	d.Set("tags", syntheticsTest.Tags)
+	d.Set("monitor_id", syntheticsTest.MonitorId)
+	return nil
+}
+
+func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsAPITest) error {
 	d.Set("type", syntheticsTest.GetType())
 	if syntheticsTest.HasSubtype() {
 		d.Set("subtype", syntheticsTest.GetSubtype())
@@ -1461,39 +1985,6 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		}
 	}
 
-	actualVariables := config.GetVariables()
-	localBrowserVariables := make([]map[string]interface{}, len(actualVariables))
-	for i, variable := range actualVariables {
-		localVariable := make(map[string]interface{})
-		if v, ok := variable.GetTypeOk(); ok {
-			localVariable["type"] = *v
-		}
-		if v, ok := variable.GetNameOk(); ok {
-			localVariable["name"] = *v
-		}
-		if v, ok := variable.GetExampleOk(); ok {
-			localVariable["example"] = *v
-		}
-		if v, ok := variable.GetIdOk(); ok {
-			localVariable["id"] = *v
-		}
-		if v, ok := variable.GetPatternOk(); ok {
-			localVariable["pattern"] = *v
-		}
-		localBrowserVariables[i] = localVariable
-	}
-
-	// If the existing state still uses variables, keep using that in the state to not generate useless diffs
-	if attr, ok := d.GetOk("variable"); ok && attr != nil && len(attr.([]interface{})) > 0 {
-		if err := d.Set("variable", localBrowserVariables); err != nil {
-			return err
-		}
-	} else {
-		if err := d.Set("browser_variable", localBrowserVariables); err != nil {
-			return err
-		}
-	}
-
 	configVariables := config.GetConfigVariables()
 	localConfigVariables := make([]map[string]interface{}, len(configVariables))
 	for i, configVariable := range configVariables {
@@ -1569,9 +2060,6 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		optionsListMonitorOptions["renotify_interval"] = renotifyInterval
 		localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
 	}
-	if actualOptions.HasNoScreenshot() {
-		localOptionsList["no_screenshot"] = actualOptions.GetNoScreenshot()
-	}
 
 	// If the existing state still uses options, keep using that in the state to not generate useless diffs
 	if attr, ok := d.GetOk("options"); ok && attr != nil && len(attr.(map[string]interface{})) > 0 {
@@ -1584,60 +2072,6 @@ func updateSyntheticsTestLocalState(d *schema.ResourceData, syntheticsTest *data
 		if err := d.Set("options_list", localOptionsLists); err != nil {
 			return err
 		}
-	}
-
-	if syntheticsTest.GetType() == "browser" {
-		steps := syntheticsTest.GetSteps()
-		var localSteps []map[string]interface{}
-
-		useLegacyStep := false
-
-		if attr, ok := d.GetOk("step"); ok && attr != nil && len(attr.([]interface{})) > 0 {
-			useLegacyStep = true
-		}
-
-		for stepIndex, step := range steps {
-			localStep := make(map[string]interface{})
-			localStep["name"] = step.GetName()
-			localStep["type"] = string(step.GetType())
-			localStep["timeout"] = step.GetTimeout()
-
-			if allowFailure, ok := step.GetAllowFailureOk(); ok {
-				localStep["allow_failure"] = allowFailure
-			}
-
-			if useLegacyStep {
-				localStep["params"] = convertToString(step.GetParams().(interface{}))
-			} else {
-				localParams := make(map[string]interface{})
-				params := step.GetParams()
-				paramsMap := params.(map[string]interface{})
-
-				for key, value := range paramsMap {
-					localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
-				}
-
-				localStep["params"] = []interface{}{localParams}
-
-				if forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex)); ok {
-					localStep["force_element_update"] = forceElementUpdate
-				}
-			}
-
-			localSteps = append(localSteps, localStep)
-		}
-
-		// If the existing state still uses step, keep using that in the state to not generate useless diffs
-		if useLegacyStep {
-			if err := d.Set("step", localSteps); err != nil {
-				return err
-			}
-		} else {
-			if err := d.Set("browser_step", localSteps); err != nil {
-				return err
-			}
-		}
-
 	}
 
 	d.Set("name", syntheticsTest.GetName())

@@ -2734,11 +2734,10 @@ func editSyntheticsTestMML(accProvider *schema.Provider) resource.TestCheckFunc 
 				return fmt.Errorf("failed to read synthetics test %s", err)
 			}
 
-			syntheticsTestUpdate := datadogV1.NewSyntheticsTestDetails()
+			syntheticsTestUpdate := datadogV1.NewSyntheticsBrowserTest(syntheticsTest.GetMessage())
 			syntheticsTestUpdate.SetName(syntheticsTest.GetName())
-			syntheticsTestUpdate.SetType(syntheticsTest.GetType())
+			syntheticsTestUpdate.SetType(datadogV1.SYNTHETICSBROWSERTESTTYPE_BROWSER)
 			syntheticsTestUpdate.SetConfig(syntheticsTest.GetConfig())
-			syntheticsTestUpdate.SetMessage(syntheticsTest.GetMessage())
 			syntheticsTestUpdate.SetStatus(syntheticsTest.GetStatus())
 			syntheticsTestUpdate.SetLocations(syntheticsTest.GetLocations())
 			syntheticsTestUpdate.SetOptions(syntheticsTest.GetOptions())
@@ -2755,7 +2754,7 @@ func editSyntheticsTestMML(accProvider *schema.Provider) resource.TestCheckFunc 
 			steps := []datadogV1.SyntheticsStep{step}
 			syntheticsTestUpdate.SetSteps(steps)
 
-			if _, _, err := datadogClientV1.SyntheticsApi.UpdateTest(authV1, r.Primary.ID).Body(*syntheticsTestUpdate).Execute(); err != nil {
+			if _, _, err := datadogClientV1.SyntheticsApi.UpdateBrowserTest(authV1, r.Primary.ID).Body(*syntheticsTestUpdate).Execute(); err != nil {
 				return fmt.Errorf("failed to manually update synthetics test %s", err)
 			}
 		}
