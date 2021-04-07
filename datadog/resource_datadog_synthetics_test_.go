@@ -573,12 +573,11 @@ func syntheticsTestAPIStep() *schema.Schema {
 					},
 				},
 				"request_definition": {
-					Description:   "The request for the api step.",
-					ConflictsWith: []string{"request"},
-					Type:          schema.TypeList,
-					MaxItems:      1,
-					Optional:      true,
-					Elem:          syntheticsTestRequest(),
+					Description: "The request for the api step.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem:        syntheticsTestRequest(),
 				},
 				"request_headers":            syntheticsTestRequestHeaders(),
 				"request_query":              syntheticsTestRequestQuery(),
@@ -1025,7 +1024,6 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		syntheticsTest.SetSubtype(datadogV1.SYNTHETICSTESTDETAILSSUBTYPE_HTTP)
 	}
 
-	request := datadogV1.SyntheticsTestRequest{}
 	k := utils.NewResourceDataKey(d, "")
 	parts := ""
 	if v, ok := k.GetOkWith("request"); ok && v != nil && len(v.(map[string]interface{})) != 0 {
@@ -1034,6 +1032,8 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		parts = "request_definition.0"
 	}
 	k.Add(parts)
+
+	request := datadogV1.SyntheticsTestRequest{}
 	if attr, ok := k.GetOkWith("method"); ok {
 		request.SetMethod(datadogV1.HTTPMethod(attr.(string)))
 	}
@@ -1073,62 +1073,65 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		request.SetNoSavingResponseBody(attr.(bool))
 	}
 	k.Remove(parts)
-	if attr, ok := d.GetOk("request_query"); ok {
-		query := attr.(map[string]interface{})
-		if len(query) > 0 {
-			request.SetQuery(query)
-		}
-	}
-	if username, ok := d.GetOk("request_basicauth.0.username"); ok {
-		if password, ok := d.GetOk("request_basicauth.0.password"); ok {
-			basicAuth := datadogV1.NewSyntheticsBasicAuth(password.(string), username.(string))
-			request.SetBasicAuth(*basicAuth)
-		}
-	}
-	if attr, ok := d.GetOk("request_headers"); ok {
-		headers := attr.(map[string]interface{})
-		if len(headers) > 0 {
-			request.SetHeaders(make(map[string]string))
-		}
-		for k, v := range headers {
-			request.GetHeaders()[k] = v.(string)
-		}
-	}
 
-	if _, ok := d.GetOk("request_client_certificate"); ok {
-		cert := datadogV1.SyntheticsTestRequestCertificateItem{}
-		key := datadogV1.SyntheticsTestRequestCertificateItem{}
+	request = completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}))
 
-		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.filename"); ok {
-			cert.SetFilename(attr.(string))
-		}
-		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
-			// only set the certificate content if it is not an already hashed string
-			// this is needed for the update function that receives the data from the state
-			// and not from the config. So we get a hash of the certificate and not it's real
-			// value.
-			if isHash := isCertHash(attr.(string)); isHash == false {
-				cert.SetContent(attr.(string))
-			}
-		}
+	// if attr, ok := d.GetOk("request_query"); ok {
+	// 	query := attr.(map[string]interface{})
+	// 	if len(query) > 0 {
+	// 		request.SetQuery(query)
+	// 	}
+	// }
+	// if username, ok := d.GetOk("request_basicauth.0.username"); ok {
+	// 	if password, ok := d.GetOk("request_basicauth.0.password"); ok {
+	// 		basicAuth := datadogV1.NewSyntheticsBasicAuth(password.(string), username.(string))
+	// 		request.SetBasicAuth(*basicAuth)
+	// 	}
+	// }
+	// if attr, ok := d.GetOk("request_headers"); ok {
+	// 	headers := attr.(map[string]interface{})
+	// 	if len(headers) > 0 {
+	// 		request.SetHeaders(make(map[string]string))
+	// 	}
+	// 	for k, v := range headers {
+	// 		request.GetHeaders()[k] = v.(string)
+	// 	}
+	// }
 
-		if attr, ok := d.GetOk("request_client_certificate.0.key.0.filename"); ok {
-			key.SetFilename(attr.(string))
-		}
-		if attr, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
-			// only set the key content if it is not an already hashed string
-			if isHash := isCertHash(attr.(string)); isHash == false {
-				key.SetContent(attr.(string))
-			}
-		}
+	// if _, ok := d.GetOk("request_client_certificate"); ok {
+	// 	cert := datadogV1.SyntheticsTestRequestCertificateItem{}
+	// 	key := datadogV1.SyntheticsTestRequestCertificateItem{}
 
-		clientCertificate := datadogV1.SyntheticsTestRequestCertificate{
-			Cert: &cert,
-			Key:  &key,
-		}
+	// 	if attr, ok := d.GetOk("request_client_certificate.0.cert.0.filename"); ok {
+	// 		cert.SetFilename(attr.(string))
+	// 	}
+	// 	if attr, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
+	// 		// only set the certificate content if it is not an already hashed string
+	// 		// this is needed for the update function that receives the data from the state
+	// 		// and not from the config. So we get a hash of the certificate and not it's real
+	// 		// value.
+	// 		if isHash := isCertHash(attr.(string)); isHash == false {
+	// 			cert.SetContent(attr.(string))
+	// 		}
+	// 	}
 
-		request.SetCertificate(clientCertificate)
-	}
+	// 	if attr, ok := d.GetOk("request_client_certificate.0.key.0.filename"); ok {
+	// 		key.SetFilename(attr.(string))
+	// 	}
+	// 	if attr, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
+	// 		// only set the key content if it is not an already hashed string
+	// 		if isHash := isCertHash(attr.(string)); isHash == false {
+	// 			key.SetContent(attr.(string))
+	// 		}
+	// 	}
+
+	// 	clientCertificate := datadogV1.SyntheticsTestRequestCertificate{
+	// 		Cert: &cert,
+	// 		Key:  &key,
+	// 	}
+
+	// 	request.SetCertificate(clientCertificate)
+	// }
 
 	config := datadogV1.NewSyntheticsAPITestConfigWithDefaults()
 
@@ -1211,68 +1214,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			request.SetBody(requestMap["body"].(string))
 			request.SetTimeout(float64(requestMap["timeout"].(int)))
 
-			requestHeaders := stepMap["request_headers"].(map[string]interface{})
-			if len(requestHeaders) > 0 {
-				request.SetHeaders(make(map[string]string))
-			}
-			for k, v := range requestHeaders {
-				request.GetHeaders()[k] = v.(string)
-			}
-
-			requestQuery := stepMap["request_query"].(map[string]interface{})
-			if len(requestQuery) > 0 {
-				request.SetQuery(requestQuery)
-			}
-
-			basicAuth := stepMap["request_basicauth"].([]interface{})
-			requestBasicAuth := basicAuth[0].(map[string]interface{})
-
-			if requestBasicAuth["username"] != "" && requestBasicAuth["password"] != "" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuth(requestBasicAuth["password"].(string), requestBasicAuth["username"].(string))
-				request.SetBasicAuth(*basicAuth)
-			}
-
-			clientCertificates := stepMap["request_client_certificate"].([]interface{})
-			if len(clientCertificates) > 0 {
-				cert := datadogV1.SyntheticsTestRequestCertificateItem{}
-				key := datadogV1.SyntheticsTestRequestCertificateItem{}
-				clientCertificate := clientCertificates[0].(map[string]interface{})
-				clientCerts := clientCertificate["cert"].([]interface{})
-				clientKeys := clientCertificate["key"].([]interface{})
-
-				clientCert := clientCerts[0].(map[string]interface{})
-				clientKey := clientKeys[0].(map[string]interface{})
-
-				if clientCert["content"] != "" {
-					// only set the certificate content if it is not an already hashed string
-					// this is needed for the update function that receives the data from the state
-					// and not from the config. So we get a hash of the certificate and not it's real
-					// value.
-					if isHash := isCertHash(clientCert["content"].(string)); isHash == false {
-						cert.SetContent(clientCert["content"].(string))
-					}
-				}
-				if clientCert["filename"] != "" {
-					cert.SetFilename(clientCert["filename"].(string))
-				}
-
-				if clientKey["content"] != "" {
-					// only set the key content if it is not an already hashed string
-					if isHash := isCertHash(clientKey["content"].(string)); isHash == false {
-						key.SetContent(clientKey["content"].(string))
-					}
-				}
-				if clientKey["filename"] != "" {
-					key.SetFilename(clientKey["filename"].(string))
-				}
-
-				requestClientCertificate := datadogV1.SyntheticsTestRequestCertificate{
-					Cert: &cert,
-					Key:  &key,
-				}
-
-				request.SetCertificate(requestClientCertificate)
-			}
+			request = completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}))
 
 			step.SetRequest(request)
 
@@ -1405,6 +1347,74 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	syntheticsTest.SetTags(tags)
 
 	return syntheticsTest
+}
+
+func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, basicAuth []interface{}, requestClientCertificates []interface{}) datadogV1.SyntheticsTestRequest {
+	if len(requestHeaders) > 0 {
+		headers := make(map[string]string, len(requestHeaders))
+
+		for k, v := range requestHeaders {
+			headers[k] = v.(string)
+		}
+
+		request.SetHeaders(headers)
+	}
+
+	if len(requestQuery) > 0 {
+		request.SetQuery(requestQuery)
+	}
+
+	if len(basicAuth) > 0 {
+		requestBasicAuth := basicAuth[0].(map[string]interface{})
+
+		if requestBasicAuth["username"] != "" && requestBasicAuth["password"] != "" {
+			basicAuth := datadogV1.NewSyntheticsBasicAuth(requestBasicAuth["password"].(string), requestBasicAuth["username"].(string))
+			request.SetBasicAuth(*basicAuth)
+		}
+	}
+
+	if len(requestClientCertificates) > 0 {
+		cert := datadogV1.SyntheticsTestRequestCertificateItem{}
+		key := datadogV1.SyntheticsTestRequestCertificateItem{}
+		clientCertificate := requestClientCertificates[0].(map[string]interface{})
+		clientCerts := clientCertificate["cert"].([]interface{})
+		clientKeys := clientCertificate["key"].([]interface{})
+
+		clientCert := clientCerts[0].(map[string]interface{})
+		clientKey := clientKeys[0].(map[string]interface{})
+
+		if clientCert["content"] != "" {
+			// only set the certificate content if it is not an already hashed string
+			// this is needed for the update function that receives the data from the state
+			// and not from the config. So we get a hash of the certificate and not it's real
+			// value.
+			if isHash := isCertHash(clientCert["content"].(string)); isHash == false {
+				cert.SetContent(clientCert["content"].(string))
+			}
+		}
+		if clientCert["filename"] != "" {
+			cert.SetFilename(clientCert["filename"].(string))
+		}
+
+		if clientKey["content"] != "" {
+			// only set the key content if it is not an already hashed string
+			if isHash := isCertHash(clientKey["content"].(string)); isHash == false {
+				key.SetContent(clientKey["content"].(string))
+			}
+		}
+		if clientKey["filename"] != "" {
+			key.SetFilename(clientKey["filename"].(string))
+		}
+
+		requestClientCertificate := datadogV1.SyntheticsTestRequestCertificate{
+			Cert: &cert,
+			Key:  &key,
+		}
+
+		request.SetCertificate(requestClientCertificate)
+	}
+
+	return request
 }
 
 func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
@@ -2317,9 +2327,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			localSteps[i] = localStep
 		}
 
-		if err := d.Set("api_step", localSteps); err != nil {
-			fmt.Println("####################", err)
-		}
+		d.Set("api_step", localSteps)
 	}
 
 	d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds)
