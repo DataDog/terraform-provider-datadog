@@ -198,6 +198,7 @@ resource "datadog_synthetics_test" "test_browser" {
 
 ### Optional
 
+- **api_step** (Block List) Steps for multistep api tests (see [below for nested schema](#nestedblock--api_step))
 - **assertion** (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--assertion))
 - **assertions** (List of Map of String, Deprecated) List of assertions. **Deprecated.** Define `assertion` blocks instead.
 - **browser_step** (Block List) Steps for browser tests. (see [below for nested schema](#nestedblock--browser_step))
@@ -215,13 +216,140 @@ resource "datadog_synthetics_test" "test_browser" {
 - **request_headers** (Map of String) Header name and value map.
 - **request_query** (Map of String) Query arguments name and value map.
 - **step** (Block List, Deprecated) Steps for browser tests. **Deprecated.** Define `browser_step` blocks instead. (see [below for nested schema](#nestedblock--step))
-- **subtype** (String) When `type` is `api`, choose from `http`, `ssl`, `tcp` or `dns`. Defaults to `http`.
+- **subtype** (String) When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns` or `multi`. Defaults to `http`.
 - **tags** (List of String) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).
 - **variable** (Block List, Deprecated) Variables used for a browser test steps. Multiple `browser_variable` blocks are allowed with the structure below. **Deprecated.** Define `browser_variable` blocks instead. (see [below for nested schema](#nestedblock--variable))
 
 ### Read-Only
 
 - **monitor_id** (Number) ID of the monitor associated with the Datadog synthetics test.
+
+<a id="nestedblock--api_step"></a>
+### Nested Schema for `api_step`
+
+Required:
+
+- **name** (String) The name of the step.
+
+Optional:
+
+- **assertion** (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion))
+- **extracted_value** (Block List) Values to parse and save as variables from the response. (see [below for nested schema](#nestedblock--api_step--extracted_value))
+- **request_basicauth** (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_basicauth))
+- **request_client_certificate** (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_client_certificate))
+- **request_definition** (Block List, Max: 1) The request for the api step. (see [below for nested schema](#nestedblock--api_step--request_definition))
+- **request_headers** (Map of String) Header name and value map.
+- **request_query** (Map of String) Query arguments name and value map.
+- **subtype** (String) The subtype of the Synthetic multistep API test step, currently only supporting `http`.
+
+<a id="nestedblock--api_step--assertion"></a>
+### Nested Schema for `api_step.assertion`
+
+Required:
+
+- **operator** (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
+- **type** (String) Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
+
+Optional:
+
+- **property** (String) If assertion type is `header`, this is the header name.
+- **target** (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
+- **targetjsonpath** (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonpath))
+
+<a id="nestedblock--api_step--assertion--targetjsonpath"></a>
+### Nested Schema for `api_step.assertion.targetjsonpath`
+
+Required:
+
+- **jsonpath** (String) The JSON path to assert.
+- **operator** (String) The specific operator to use on the path.
+- **targetvalue** (String) Expected matching value.
+
+
+
+<a id="nestedblock--api_step--extracted_value"></a>
+### Nested Schema for `api_step.extracted_value`
+
+Required:
+
+- **name** (String)
+- **parser** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--api_step--extracted_value--parser))
+- **type** (String) Property of the Synthetics Test Response to use for the variable: `http_body` or `http_header`
+
+Optional:
+
+- **field** (String) When type is `http_header`, name of the header to use to extract the value.
+
+<a id="nestedblock--api_step--extracted_value--parser"></a>
+### Nested Schema for `api_step.extracted_value.parser`
+
+Required:
+
+- **type** (String) Type of parser for a Synthetics global variable from a synthetics test: `raw`, `json_path`, `regex`
+
+Optional:
+
+- **value** (String) Regex or JSON path used for the parser. Not used with type `raw`.
+
+
+
+<a id="nestedblock--api_step--request_basicauth"></a>
+### Nested Schema for `api_step.request_basicauth`
+
+Required:
+
+- **password** (String, Sensitive) Password for authentication.
+- **username** (String) Username for authentication.
+
+
+<a id="nestedblock--api_step--request_client_certificate"></a>
+### Nested Schema for `api_step.request_client_certificate`
+
+Required:
+
+- **cert** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--api_step--request_client_certificate--cert))
+- **key** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--api_step--request_client_certificate--key))
+
+<a id="nestedblock--api_step--request_client_certificate--cert"></a>
+### Nested Schema for `api_step.request_client_certificate.cert`
+
+Required:
+
+- **content** (String, Sensitive) Content of the certificate.
+
+Optional:
+
+- **filename** (String) File name for the certificate.
+
+
+<a id="nestedblock--api_step--request_client_certificate--key"></a>
+### Nested Schema for `api_step.request_client_certificate.key`
+
+Required:
+
+- **content** (String, Sensitive) Content of the certificate.
+
+Optional:
+
+- **filename** (String) File name for the certificate.
+
+
+
+<a id="nestedblock--api_step--request_definition"></a>
+### Nested Schema for `api_step.request_definition`
+
+Optional:
+
+- **body** (String) The request body.
+- **dns_server** (String) DNS server to use for DNS tests (`subtype = "dns"`).
+- **host** (String) Host name to perform the test with.
+- **method** (String) The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.
+- **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
+- **port** (Number) Port to use when performing the test.
+- **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
+- **url** (String) The URL to send the request to.
+
+
 
 <a id="nestedblock--assertion"></a>
 ### Nested Schema for `assertion`
