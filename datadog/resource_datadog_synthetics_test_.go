@@ -1076,63 +1076,6 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 	request = completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}))
 
-	// if attr, ok := d.GetOk("request_query"); ok {
-	// 	query := attr.(map[string]interface{})
-	// 	if len(query) > 0 {
-	// 		request.SetQuery(query)
-	// 	}
-	// }
-	// if username, ok := d.GetOk("request_basicauth.0.username"); ok {
-	// 	if password, ok := d.GetOk("request_basicauth.0.password"); ok {
-	// 		basicAuth := datadogV1.NewSyntheticsBasicAuth(password.(string), username.(string))
-	// 		request.SetBasicAuth(*basicAuth)
-	// 	}
-	// }
-	// if attr, ok := d.GetOk("request_headers"); ok {
-	// 	headers := attr.(map[string]interface{})
-	// 	if len(headers) > 0 {
-	// 		request.SetHeaders(make(map[string]string))
-	// 	}
-	// 	for k, v := range headers {
-	// 		request.GetHeaders()[k] = v.(string)
-	// 	}
-	// }
-
-	// if _, ok := d.GetOk("request_client_certificate"); ok {
-	// 	cert := datadogV1.SyntheticsTestRequestCertificateItem{}
-	// 	key := datadogV1.SyntheticsTestRequestCertificateItem{}
-
-	// 	if attr, ok := d.GetOk("request_client_certificate.0.cert.0.filename"); ok {
-	// 		cert.SetFilename(attr.(string))
-	// 	}
-	// 	if attr, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
-	// 		// only set the certificate content if it is not an already hashed string
-	// 		// this is needed for the update function that receives the data from the state
-	// 		// and not from the config. So we get a hash of the certificate and not it's real
-	// 		// value.
-	// 		if isHash := isCertHash(attr.(string)); isHash == false {
-	// 			cert.SetContent(attr.(string))
-	// 		}
-	// 	}
-
-	// 	if attr, ok := d.GetOk("request_client_certificate.0.key.0.filename"); ok {
-	// 		key.SetFilename(attr.(string))
-	// 	}
-	// 	if attr, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
-	// 		// only set the key content if it is not an already hashed string
-	// 		if isHash := isCertHash(attr.(string)); isHash == false {
-	// 			key.SetContent(attr.(string))
-	// 		}
-	// 	}
-
-	// 	clientCertificate := datadogV1.SyntheticsTestRequestCertificate{
-	// 		Cert: &cert,
-	// 		Key:  &key,
-	// 	}
-
-	// 	request.SetCertificate(clientCertificate)
-	// }
-
 	config := datadogV1.NewSyntheticsAPITestConfigWithDefaults()
 
 	if syntheticsTest.GetSubtype() != "multi" {
