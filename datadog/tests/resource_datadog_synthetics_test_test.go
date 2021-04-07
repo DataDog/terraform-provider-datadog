@@ -413,6 +413,21 @@ func TestAccDatadogSyntheticsTestBrowserMML_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsMultistepAPITest(ctx, accProvider, t),
+		},
+	})
+}
+
 func createSyntheticsAPITestStepDeprecated(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
@@ -2685,6 +2700,162 @@ resource "datadog_synthetics_test" "bar" {
 		}
 	}
 }`, uniq)
+}
+
+func createSyntheticsMultistepAPITest(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+
+	return resource.TestStep{
+		Config: createSyntheticsMultistepAPITestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "subtype", "multi"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "locations.3056069023", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "options_list.0.tick_every", "900"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "options_list.0.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "options_list.0.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "tags.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "tags.0", "multistep"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "status", "paused"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.url", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.body", "this is a body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.timeout", "30"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_headers.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_headers.Accept", "application/json"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_headers.X-Datadog-Trace-ID", "123456789"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_query.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_query.foo", "bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.username", "admin"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.password", "secret"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.cert.0.content", utils.ConvertToSha256("content-certificate")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.key.0.filename", "key"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.key.0.content", utils.ConvertToSha256("content-key")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.0.type", "statusCode"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.0.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.0.target", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.name", "VAR_EXTRACT"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.type", "http_header"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.field", "content-length"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.type", "regex"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.value", ".*"),
+		),
+	}
+}
+
+func createSyntheticsMultistepAPITestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "multi" {
+       type = "api"
+       subtype = "multi"
+       locations = ["aws:eu-central-1"]
+       options_list {
+               tick_every = 900
+               min_failure_duration = 0
+               min_location_failed = 1
+       }
+       name = "%s"
+       message = "Notify @datadog.user"
+       tags = ["multistep"]
+       status = "paused"
+       api_step {
+               name = "First api step"
+               request_definition {
+                       method = "GET"
+                       url = "https://www.datadoghq.com"
+                       body = "this is a body"
+                       timeout = 30
+               }
+               request_headers = {
+               	       Accept = "application/json"
+               	       X-Datadog-Trace-ID = "123456789"
+               }
+               request_query = {
+                       foo = "bar"
+               }
+               request_basicauth {
+                       username = "admin"
+               	       password = "secret"
+               }
+               request_client_certificate {
+               	       cert {
+               		           content = "content-certificate"
+               	       }
+               	       key {
+               		   	       content = "content-key"
+               			       filename = "key"
+               	       }
+               }
+               assertion {
+                       type = "statusCode"
+                       operator = "is"
+                       target = "200"
+               }
+
+               extracted_value {
+               		   name = "VAR_EXTRACT"
+               		   field = "content-length"
+               		   type = "http_header"
+               		   parser {
+               		   		   type = "regex"
+               		   		   value = ".*"
+               		   }
+               }
+       }
+}
+`, uniq)
 }
 
 func testSyntheticsTestExists(accProvider *schema.Provider) resource.TestCheckFunc {
