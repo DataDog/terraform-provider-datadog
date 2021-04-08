@@ -13,7 +13,7 @@ Resource for interacting with the slo_correction API
 ## Example Usage
 
 ```terraform
-# Create a new Datadog SLO Correction. slo_id can be derived from slo resource or specify an slo id for existing a SLO.  
+# Create a new Datadog SLO Correction. slo_id can be derived from slo resource or specify an slo id of an existing SLO.
 
 resource "datadog_service_level_objective" "example_slo" {
   name        = "example slo"
