@@ -37,7 +37,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
 			},
 			"subtype": {
-				Description: "When `type` is `api`, choose from `http`, `ssl`, `tcp` or `dns`. Defaults to `http`.",
+				Description: "When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns` or `multi`. Defaults to `http`.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
@@ -65,49 +65,10 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Optional:      true,
 				Elem:          syntheticsTestRequest(),
 			},
-			"request_headers": {
-				Description: "Header name and value map.",
-				Type:        schema.TypeMap,
-				Optional:    true,
-			},
-			"request_query": {
-				Description: "Query arguments name and value map.",
-				Type:        schema.TypeMap,
-				Optional:    true,
-			},
-			"request_basicauth": {
-				Description: "The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below.",
-				Type:        schema.TypeList,
-				Optional:    true,
-				MaxItems:    1,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"username": {
-							Description: "Username for authentication.",
-							Type:        schema.TypeString,
-							Required:    true,
-						},
-						"password": {
-							Description: "Password for authentication.",
-							Type:        schema.TypeString,
-							Required:    true,
-							Sensitive:   true,
-						},
-					},
-				},
-			},
-			"request_client_certificate": {
-				Description: "Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below.",
-				Type:        schema.TypeList,
-				Optional:    true,
-				MaxItems:    1,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"cert": syntheticsTestRequestClientCertificateItem(),
-						"key":  syntheticsTestRequestClientCertificateItem(),
-					},
-				},
-			},
+			"request_headers":            syntheticsTestRequestHeaders(),
+			"request_query":              syntheticsTestRequestQuery(),
+			"request_basicauth":          syntheticsTestRequestBasicAuth(),
+			"request_client_certificate": syntheticsTestRequestClientCertificate(),
 			"assertions": {
 				Description:   "List of assertions.",
 				Type:          schema.TypeList,
@@ -118,63 +79,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Type: schema.TypeMap,
 				},
 			},
-			"assertion": {
-				Description:   "Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below.",
-				Type:          schema.TypeList,
-				Optional:      true,
-				ConflictsWith: []string{"assertions"},
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"type": {
-							Description:  "Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
-							Type:         schema.TypeString,
-							ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
-							Required:     true,
-						},
-						"operator": {
-							Description:  "Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
-							Type:         schema.TypeString,
-							Required:     true,
-							ValidateFunc: validateSyntheticsAssertionOperator,
-						},
-						"property": {
-							Description: "If assertion type is `header`, this is the header name.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
-						"target": {
-							Description: "Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
-						"targetjsonpath": {
-							Description: "Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below.",
-							Type:        schema.TypeList,
-							Optional:    true,
-							MaxItems:    1,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"operator": {
-										Description: "The specific operator to use on the path.",
-										Type:        schema.TypeString,
-										Required:    true,
-									},
-									"jsonpath": {
-										Description: "The JSON path to assert.",
-										Type:        schema.TypeString,
-										Required:    true,
-									},
-									"targetvalue": {
-										Description: "Expected matching value.",
-										Type:        schema.TypeString,
-										Required:    true,
-									},
-								},
-							},
-						},
-					},
-				},
-			},
+			"assertion":        syntheticsAPIAssertion(),
 			"variable":         syntheticsBrowserVariableLegacy(),
 			"browser_variable": syntheticsBrowserVariable(),
 			"config_variable":  syntheticsConfigVariable(),
@@ -227,6 +132,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			},
 			"step":         syntheticsTestBrowserStep(false),
 			"browser_step": syntheticsTestBrowserStep(true),
+			"api_step":     syntheticsTestAPIStep(),
 		},
 	}
 }
@@ -279,6 +185,61 @@ func syntheticsTestRequest() *schema.Resource {
 	}
 }
 
+func syntheticsTestRequestHeaders() *schema.Schema {
+	return &schema.Schema{
+		Description: "Header name and value map.",
+		Type:        schema.TypeMap,
+		Optional:    true,
+	}
+}
+
+func syntheticsTestRequestQuery() *schema.Schema {
+	return &schema.Schema{
+		Description: "Query arguments name and value map.",
+		Type:        schema.TypeMap,
+		Optional:    true,
+	}
+}
+
+func syntheticsTestRequestBasicAuth() *schema.Schema {
+	return &schema.Schema{
+		Description: "The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below.",
+		Type:        schema.TypeList,
+		Optional:    true,
+		MaxItems:    1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"username": {
+					Description: "Username for authentication.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"password": {
+					Description: "Password for authentication.",
+					Type:        schema.TypeString,
+					Required:    true,
+					Sensitive:   true,
+				},
+			},
+		},
+	}
+}
+
+func syntheticsTestRequestClientCertificate() *schema.Schema {
+	return &schema.Schema{
+		Description: "Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below.",
+		Type:        schema.TypeList,
+		Optional:    true,
+		MaxItems:    1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"cert": syntheticsTestRequestClientCertificateItem(),
+				"key":  syntheticsTestRequestClientCertificateItem(),
+			},
+		},
+	}
+}
+
 func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
@@ -300,6 +261,66 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Default:     "Provided in Terraform config",
+				},
+			},
+		},
+	}
+}
+
+func syntheticsAPIAssertion() *schema.Schema {
+	return &schema.Schema{
+		Description:   "Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below.",
+		Type:          schema.TypeList,
+		Optional:      true,
+		ConflictsWith: []string{"assertions"},
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"type": {
+					Description:  "Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
+					Type:         schema.TypeString,
+					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
+					Required:     true,
+				},
+				"operator": {
+					Description:  "Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
+					Type:         schema.TypeString,
+					Required:     true,
+					ValidateFunc: validateSyntheticsAssertionOperator,
+				},
+				"property": {
+					Description: "If assertion type is `header`, this is the header name.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"target": {
+					Description: "Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"targetjsonpath": {
+					Description: "Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"operator": {
+								Description: "The specific operator to use on the path.",
+								Type:        schema.TypeString,
+								Required:    true,
+							},
+							"jsonpath": {
+								Description: "The JSON path to assert.",
+								Type:        schema.TypeString,
+								Required:    true,
+							},
+							"targetvalue": {
+								Description: "Expected matching value.",
+								Type:        schema.TypeString,
+								Required:    true,
+							},
+						},
+					},
 				},
 			},
 		},
@@ -483,6 +504,86 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
+			},
+		},
+	}
+}
+
+func syntheticsTestAPIStep() *schema.Schema {
+	return &schema.Schema{
+		Description: "Steps for multistep api tests",
+		Type:        schema.TypeList,
+		Optional:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"name": {
+					Description: "The name of the step.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"subtype": {
+					Description:  "The subtype of the Synthetic multistep API test step, currently only supporting `http`.",
+					Type:         schema.TypeString,
+					Optional:     true,
+					Default:      "http",
+					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAPIStepSubtypeFromValue),
+				},
+				"extracted_value": {
+					Description: "Values to parse and save as variables from the response.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"name": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"type": {
+								Description:  "Property of the Synthetics Test Response to use for the variable: `http_body` or `http_header`",
+								Type:         schema.TypeString,
+								Required:     true,
+								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
+							},
+							"field": {
+								Description: "When type is `http_header`, name of the header to use to extract the value.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+							"parser": {
+								Type:     schema.TypeList,
+								MaxItems: 1,
+								Required: true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"type": {
+											Description:  "Type of parser for a Synthetics global variable from a synthetics test: `raw`, `json_path`, `regex`",
+											Type:         schema.TypeString,
+											Required:     true,
+											ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue),
+										},
+										"value": {
+											Type:        schema.TypeString,
+											Description: "Regex or JSON path used for the parser. Not used with type `raw`.",
+											Optional:    true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+				"request_definition": {
+					Description: "The request for the api step.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem:        syntheticsTestRequest(),
+				},
+				"request_headers":            syntheticsTestRequestHeaders(),
+				"request_query":              syntheticsTestRequestQuery(),
+				"request_basicauth":          syntheticsTestRequestBasicAuth(),
+				"request_client_certificate": syntheticsTestRequestClientCertificate(),
+				"assertion":                  syntheticsAPIAssertion(),
 			},
 		},
 	}
@@ -913,7 +1014,16 @@ func getSyntheticsTestType(d *schema.ResourceData) datadogV1.SyntheticsTestDetai
 }
 
 func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsAPITest {
-	request := datadogV1.SyntheticsTestRequest{}
+	syntheticsTest := datadogV1.NewSyntheticsAPITest()
+	syntheticsTest.SetName(d.Get("name").(string))
+	syntheticsTest.SetType(datadogV1.SYNTHETICSAPITESTTYPE_API)
+
+	if attr, ok := d.GetOk("subtype"); ok {
+		syntheticsTest.SetSubtype(datadogV1.SyntheticsTestDetailsSubType(attr.(string)))
+	} else {
+		syntheticsTest.SetSubtype(datadogV1.SYNTHETICSTESTDETAILSSUBTYPE_HTTP)
+	}
+
 	k := utils.NewResourceDataKey(d, "")
 	parts := ""
 	if v, ok := k.GetOkWith("request"); ok && v != nil && len(v.(map[string]interface{})) != 0 {
@@ -922,6 +1032,8 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		parts = "request_definition.0"
 	}
 	k.Add(parts)
+
+	request := datadogV1.SyntheticsTestRequest{}
 	if attr, ok := k.GetOkWith("method"); ok {
 		request.SetMethod(datadogV1.HTTPMethod(attr.(string)))
 	}
@@ -961,65 +1073,16 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		request.SetNoSavingResponseBody(attr.(bool))
 	}
 	k.Remove(parts)
-	if attr, ok := d.GetOk("request_query"); ok {
-		query := attr.(map[string]interface{})
-		if len(query) > 0 {
-			request.SetQuery(query)
-		}
-	}
-	if username, ok := d.GetOk("request_basicauth.0.username"); ok {
-		if password, ok := d.GetOk("request_basicauth.0.password"); ok {
-			basicAuth := datadogV1.NewSyntheticsBasicAuth(password.(string), username.(string))
-			request.SetBasicAuth(*basicAuth)
-		}
-	}
-	if attr, ok := d.GetOk("request_headers"); ok {
-		headers := attr.(map[string]interface{})
-		if len(headers) > 0 {
-			request.SetHeaders(make(map[string]string))
-		}
-		for k, v := range headers {
-			request.GetHeaders()[k] = v.(string)
-		}
-	}
 
-	if _, ok := d.GetOk("request_client_certificate"); ok {
-		cert := datadogV1.SyntheticsTestRequestCertificateItem{}
-		key := datadogV1.SyntheticsTestRequestCertificateItem{}
-
-		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.filename"); ok {
-			cert.SetFilename(attr.(string))
-		}
-		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
-			// only set the certificate content if it is not an already hashed string
-			// this is needed for the update function that receives the data from the state
-			// and not from the config. So we get a hash of the certificate and not it's real
-			// value.
-			if isHash := isCertHash(attr.(string)); isHash == false {
-				cert.SetContent(attr.(string))
-			}
-		}
-
-		if attr, ok := d.GetOk("request_client_certificate.0.key.0.filename"); ok {
-			key.SetFilename(attr.(string))
-		}
-		if attr, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
-			// only set the key content if it is not an already hashed string
-			if isHash := isCertHash(attr.(string)); isHash == false {
-				key.SetContent(attr.(string))
-			}
-		}
-
-		clientCertificate := datadogV1.SyntheticsTestRequestCertificate{
-			Cert: &cert,
-			Key:  &key,
-		}
-
-		request.SetCertificate(clientCertificate)
-	}
+	request = completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}))
 
 	config := datadogV1.NewSyntheticsAPITestConfigWithDefaults()
-	config.SetRequest(request)
+
+	if syntheticsTest.GetSubtype() != "multi" {
+		config.SetRequest(request)
+	}
+
+	config.Assertions = []datadogV1.SyntheticsAssertion{}
 
 	// Deprecated path, the assertions field is replaced with assertion
 	if attr, ok := d.GetOk("assertions"); ok && attr != nil {
@@ -1049,64 +1112,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 
 	if attr, ok := d.GetOk("assertion"); ok && attr != nil {
-		for _, assertion := range attr.([]interface{}) {
-			assertionMap := assertion.(map[string]interface{})
-			if v, ok := assertionMap["type"]; ok {
-				assertionType := v.(string)
-				if v, ok := assertionMap["operator"]; ok {
-					assertionOperator := v.(string)
-					if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONPATHOPERATOR_VALIDATES_JSON_PATH) {
-						assertionJSONPathTarget := datadogV1.NewSyntheticsAssertionJSONPathTarget(datadogV1.SyntheticsAssertionJSONPathOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
-						if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
-							assertionJSONPathTarget.SetProperty(v)
-						}
-						if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
-							subTarget := datadogV1.NewSyntheticsAssertionJSONPathTargetTarget()
-							targetMap := v[0].(map[string]interface{})
-							if v, ok := targetMap["jsonpath"]; ok {
-								subTarget.SetJsonPath(v.(string))
-							}
-							operator, ok := targetMap["operator"]
-							if ok {
-								subTarget.SetOperator(operator.(string))
-							}
-							if v, ok := targetMap["targetvalue"]; ok {
-								switch datadogV1.SyntheticsAssertionOperator(operator.(string)) {
-								case
-									datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
-									datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
-									setFloatTargetValue(subTarget, v.(string))
-								default:
-									subTarget.SetTargetValue(v)
-								}
-							}
-							assertionJSONPathTarget.SetTarget(*subTarget)
-						}
-						if _, ok := assertionMap["target"]; ok {
-							log.Printf("[WARN] target shouldn't be specified for validateJSONPath operator, only targetjsonpath")
-						}
-						config.Assertions = append(config.Assertions, datadogV1.SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion(assertionJSONPathTarget))
-					} else {
-						assertionTarget := datadogV1.NewSyntheticsAssertionTarget(datadogV1.SyntheticsAssertionOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
-						if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
-							assertionTarget.SetProperty(v)
-						}
-						if v, ok := assertionMap["target"]; ok {
-							if isTargetOfTypeInt(assertionTarget.GetType(), assertionTarget.GetOperator()) {
-								assertionTargetInt, _ := strconv.Atoi(v.(string))
-								assertionTarget.SetTarget(assertionTargetInt)
-							} else {
-								assertionTarget.SetTarget(v.(string))
-							}
-						}
-						if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
-							log.Printf("[WARN] targetjsonpath shouldn't be specified for non-validateJSONPath operator, only target")
-						}
-						config.Assertions = append(config.Assertions, datadogV1.SyntheticsAssertionTargetAsSyntheticsAssertion(assertionTarget))
-					}
-				}
-			}
-		}
+		config.Assertions = buildAssertions(attr.([]interface{}))
 	}
 
 	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
@@ -1126,6 +1132,40 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 
 	config.SetConfigVariables(configVariables)
+
+	if attr, ok := d.GetOk("api_step"); ok && syntheticsTest.GetSubtype() == "multi" {
+		steps := []datadogV1.SyntheticsAPIStep{}
+
+		for _, s := range attr.([]interface{}) {
+			step := datadogV1.SyntheticsAPIStep{}
+			stepMap := s.(map[string]interface{})
+
+			step.SetName(stepMap["name"].(string))
+			step.SetSubtype(datadogV1.SyntheticsAPIStepSubtype(stepMap["subtype"].(string)))
+
+			extractedValues := buildExtractedValues(stepMap["extracted_value"].([]interface{}))
+			step.SetExtractedValues(extractedValues)
+
+			assertions := stepMap["assertion"].([]interface{})
+			step.SetAssertions(buildAssertions(assertions))
+
+			request := datadogV1.SyntheticsTestRequest{}
+			requests := stepMap["request_definition"].([]interface{})
+			requestMap := requests[0].(map[string]interface{})
+			request.SetMethod(datadogV1.HTTPMethod(requestMap["method"].(string)))
+			request.SetUrl(requestMap["url"].(string))
+			request.SetBody(requestMap["body"].(string))
+			request.SetTimeout(float64(requestMap["timeout"].(int)))
+
+			request = completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}))
+
+			step.SetRequest(request)
+
+			steps = append(steps, step)
+		}
+
+		config.SetSteps(steps)
+	}
 
 	options := datadogV1.NewSyntheticsTestOptions()
 
@@ -1228,9 +1268,6 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		options.DeviceIds = &deviceIds
 	}
 
-	syntheticsTest := datadogV1.NewSyntheticsAPITest()
-	syntheticsTest.SetName(d.Get("name").(string))
-	syntheticsTest.SetType(datadogV1.SyntheticsAPITestType(d.Get("type").(string)))
 	syntheticsTest.SetConfig(*config)
 	syntheticsTest.SetOptions(*options)
 	syntheticsTest.SetMessage(d.Get("message").(string))
@@ -1252,13 +1289,140 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 	syntheticsTest.SetTags(tags)
 
-	if attr, ok := d.GetOk("subtype"); ok {
-		syntheticsTest.SetSubtype(datadogV1.SyntheticsTestDetailsSubType(attr.(string)))
-	} else {
-		syntheticsTest.SetSubtype(datadogV1.SYNTHETICSTESTDETAILSSUBTYPE_HTTP)
+	return syntheticsTest
+}
+
+func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, basicAuth []interface{}, requestClientCertificates []interface{}) datadogV1.SyntheticsTestRequest {
+	if len(requestHeaders) > 0 {
+		headers := make(map[string]string, len(requestHeaders))
+
+		for k, v := range requestHeaders {
+			headers[k] = v.(string)
+		}
+
+		request.SetHeaders(headers)
 	}
 
-	return syntheticsTest
+	if len(requestQuery) > 0 {
+		request.SetQuery(requestQuery)
+	}
+
+	if len(basicAuth) > 0 {
+		requestBasicAuth := basicAuth[0].(map[string]interface{})
+
+		if requestBasicAuth["username"] != "" && requestBasicAuth["password"] != "" {
+			basicAuth := datadogV1.NewSyntheticsBasicAuth(requestBasicAuth["password"].(string), requestBasicAuth["username"].(string))
+			request.SetBasicAuth(*basicAuth)
+		}
+	}
+
+	if len(requestClientCertificates) > 0 {
+		cert := datadogV1.SyntheticsTestRequestCertificateItem{}
+		key := datadogV1.SyntheticsTestRequestCertificateItem{}
+		clientCertificate := requestClientCertificates[0].(map[string]interface{})
+		clientCerts := clientCertificate["cert"].([]interface{})
+		clientKeys := clientCertificate["key"].([]interface{})
+
+		clientCert := clientCerts[0].(map[string]interface{})
+		clientKey := clientKeys[0].(map[string]interface{})
+
+		if clientCert["content"] != "" {
+			// only set the certificate content if it is not an already hashed string
+			// this is needed for the update function that receives the data from the state
+			// and not from the config. So we get a hash of the certificate and not it's real
+			// value.
+			if isHash := isCertHash(clientCert["content"].(string)); isHash == false {
+				cert.SetContent(clientCert["content"].(string))
+			}
+		}
+		if clientCert["filename"] != "" {
+			cert.SetFilename(clientCert["filename"].(string))
+		}
+
+		if clientKey["content"] != "" {
+			// only set the key content if it is not an already hashed string
+			if isHash := isCertHash(clientKey["content"].(string)); isHash == false {
+				key.SetContent(clientKey["content"].(string))
+			}
+		}
+		if clientKey["filename"] != "" {
+			key.SetFilename(clientKey["filename"].(string))
+		}
+
+		requestClientCertificate := datadogV1.SyntheticsTestRequestCertificate{
+			Cert: &cert,
+			Key:  &key,
+		}
+
+		request.SetCertificate(requestClientCertificate)
+	}
+
+	return request
+}
+
+func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
+	assertions := make([]datadogV1.SyntheticsAssertion, 0)
+
+	for _, assertion := range attr {
+		assertionMap := assertion.(map[string]interface{})
+		if v, ok := assertionMap["type"]; ok {
+			assertionType := v.(string)
+			if v, ok := assertionMap["operator"]; ok {
+				assertionOperator := v.(string)
+				if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONPATHOPERATOR_VALIDATES_JSON_PATH) {
+					assertionJSONPathTarget := datadogV1.NewSyntheticsAssertionJSONPathTarget(datadogV1.SyntheticsAssertionJSONPathOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
+					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
+						assertionJSONPathTarget.SetProperty(v)
+					}
+					if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
+						subTarget := datadogV1.NewSyntheticsAssertionJSONPathTargetTarget()
+						targetMap := v[0].(map[string]interface{})
+						if v, ok := targetMap["jsonpath"]; ok {
+							subTarget.SetJsonPath(v.(string))
+						}
+						operator, ok := targetMap["operator"]
+						if ok {
+							subTarget.SetOperator(operator.(string))
+						}
+						if v, ok := targetMap["targetvalue"]; ok {
+							switch datadogV1.SyntheticsAssertionOperator(operator.(string)) {
+							case
+								datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
+								datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
+								setFloatTargetValue(subTarget, v.(string))
+							default:
+								subTarget.SetTargetValue(v)
+							}
+						}
+						assertionJSONPathTarget.SetTarget(*subTarget)
+					}
+					if _, ok := assertionMap["target"]; ok {
+						log.Printf("[WARN] target shouldn't be specified for validateJSONPath operator, only targetjsonpath")
+					}
+					assertions = append(assertions, datadogV1.SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion(assertionJSONPathTarget))
+				} else {
+					assertionTarget := datadogV1.NewSyntheticsAssertionTarget(datadogV1.SyntheticsAssertionOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
+					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
+						assertionTarget.SetProperty(v)
+					}
+					if v, ok := assertionMap["target"]; ok {
+						if isTargetOfTypeInt(assertionTarget.GetType(), assertionTarget.GetOperator()) {
+							assertionTargetInt, _ := strconv.Atoi(v.(string))
+							assertionTarget.SetTarget(assertionTargetInt)
+						} else {
+							assertionTarget.SetTarget(v.(string))
+						}
+					}
+					if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
+						log.Printf("[WARN] targetjsonpath shouldn't be specified for non-validateJSONPath operator, only target")
+					}
+					assertions = append(assertions, datadogV1.SyntheticsAssertionTargetAsSyntheticsAssertion(assertionTarget))
+				}
+			}
+		}
+	}
+
+	return assertions
 }
 
 func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsBrowserTest {
@@ -1497,7 +1661,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 	syntheticsTest := datadogV1.NewSyntheticsBrowserTest(d.Get("message").(string))
 	syntheticsTest.SetName(d.Get("name").(string))
-	syntheticsTest.SetType(datadogV1.SyntheticsBrowserTestType(d.Get("type").(string)))
+	syntheticsTest.SetType(datadogV1.SYNTHETICSBROWSERTESTTYPE_BROWSER)
 	syntheticsTest.SetConfig(config)
 	syntheticsTest.SetOptions(*options)
 	syntheticsTest.SetStatus(datadogV1.SyntheticsTestPauseStatus(d.Get("status").(string)))
@@ -1573,45 +1737,156 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	return syntheticsTest
 }
 
+func buildLocalRequest(request datadogV1.SyntheticsTestRequest, useDeprecated bool) map[string]interface{} {
+	localRequest := make(map[string]interface{})
+	if request.HasBody() {
+		localRequest["body"] = request.GetBody()
+	}
+	if request.HasMethod() {
+		localRequest["method"] = convertToString(request.GetMethod())
+	}
+	if request.HasTimeout() {
+		if useDeprecated {
+			localRequest["timeout"] = convertToString(request.GetTimeout())
+		} else {
+			localRequest["timeout"] = request.GetTimeout()
+		}
+	}
+	if request.HasUrl() {
+		localRequest["url"] = request.GetUrl()
+	}
+	if request.HasHost() {
+		localRequest["host"] = request.GetHost()
+	}
+	if request.HasPort() {
+		if useDeprecated {
+			localRequest["port"] = convertToString(request.GetPort())
+		} else {
+			localRequest["port"] = request.GetPort()
+		}
+	}
+	if request.HasDnsServer() {
+		localRequest["dns_server"] = convertToString(request.GetDnsServer())
+	}
+	if request.HasNoSavingResponseBody() {
+		localRequest["no_saving_response_body"] = request.GetNoSavingResponseBody()
+	}
+
+	return localRequest
+}
+
+func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (localAssertions []map[string]interface{}, err error) {
+	localAssertions = make([]map[string]interface{}, len(actualAssertions))
+	for i, assertion := range actualAssertions {
+		localAssertion := make(map[string]interface{})
+		if assertion.SyntheticsAssertionTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if assertionTarget.HasProperty() {
+				localAssertion["property"] = assertionTarget.GetProperty()
+			}
+			if target := assertionTarget.GetTarget(); target != nil {
+				localAssertion["target"] = convertToString(target)
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
+		} else if assertion.SyntheticsAssertionJSONPathTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionJSONPathTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if assertionTarget.HasProperty() {
+				localAssertion["property"] = assertionTarget.GetProperty()
+			}
+			if target, ok := assertionTarget.GetTargetOk(); ok {
+				localTarget := make(map[string]string)
+				if v, ok := target.GetJsonPathOk(); ok {
+					localTarget["jsonpath"] = string(*v)
+				}
+				if v, ok := target.GetOperatorOk(); ok {
+					localTarget["operator"] = string(*v)
+				}
+				if v, ok := target.GetTargetValueOk(); ok {
+					if vAsString, ok := (*v).(string); ok {
+						localTarget["targetvalue"] = vAsString
+					} else if vAsFloat, ok := (*v).(float64); ok {
+						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
+					} else {
+						return localAssertions, fmt.Errorf("Unrecognized targetvalue type %v", v)
+					}
+				}
+				localAssertion["targetjsonpath"] = []map[string]string{localTarget}
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
+		}
+		localAssertions[i] = localAssertion
+	}
+
+	return localAssertions, nil
+}
+
+func buildExtractedValues(stepExtractedValues []interface{}) []datadogV1.SyntheticsParsingOptions {
+	values := make([]datadogV1.SyntheticsParsingOptions, len(stepExtractedValues))
+
+	for i, extractedValue := range stepExtractedValues {
+		extractedValueMap := extractedValue.(map[string]interface{})
+		value := datadogV1.SyntheticsParsingOptions{}
+
+		value.SetName(extractedValueMap["name"].(string))
+		value.SetField(extractedValueMap["field"].(string))
+		value.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(extractedValueMap["type"].(string)))
+
+		valueParsers := extractedValueMap["parser"].([]interface{})
+		valueParser := valueParsers[0].(map[string]interface{})
+
+		parser := datadogV1.SyntheticsVariableParser{}
+		parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(valueParser["type"].(string)))
+		parser.SetValue(valueParser["value"].(string))
+
+		value.SetParser(parser)
+
+		values[i] = value
+	}
+
+	return values
+}
+
+func buildLocalExtractedValues(extractedValues []datadogV1.SyntheticsParsingOptions) []map[string]interface{} {
+	localExtractedValues := make([]map[string]interface{}, len(extractedValues))
+
+	for i, extractedValue := range extractedValues {
+		localExtractedValue := make(map[string]interface{})
+		localExtractedValue["name"] = extractedValue.GetName()
+		localExtractedValue["type"] = string(extractedValue.GetType())
+		localExtractedValue["field"] = extractedValue.GetField()
+
+		parser := extractedValue.GetParser()
+		localParser := make(map[string]interface{})
+		localParser["type"] = string(parser.GetType())
+		localParser["value"] = parser.GetValue()
+		localExtractedValue["parser"] = []map[string]interface{}{localParser}
+
+		localExtractedValues[i] = localExtractedValue
+	}
+
+	return localExtractedValues
+}
+
 func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsBrowserTest) error {
 	d.Set("type", syntheticsTest.GetType())
 
 	config := syntheticsTest.GetConfig()
 	actualRequest := config.GetRequest()
-	localRequest := make(map[string]interface{})
 	setDeprecated := false
 	if v, ok := d.GetOk("request"); ok && len(v.(map[string]interface{})) != 0 {
 		setDeprecated = true
 	}
-	if actualRequest.HasBody() {
-		localRequest["body"] = actualRequest.GetBody()
-	}
-	if actualRequest.HasMethod() {
-		localRequest["method"] = convertToString(actualRequest.GetMethod())
-	}
-	if actualRequest.HasTimeout() {
-		if setDeprecated {
-			localRequest["timeout"] = convertToString(actualRequest.GetTimeout())
-		} else {
-			localRequest["timeout"] = actualRequest.GetTimeout()
-		}
-	}
-	if actualRequest.HasUrl() {
-		localRequest["url"] = actualRequest.GetUrl()
-	}
-	if actualRequest.HasHost() {
-		localRequest["host"] = actualRequest.GetHost()
-	}
-	if actualRequest.HasPort() {
-		if setDeprecated {
-			localRequest["port"] = convertToString(actualRequest.GetPort())
-		} else {
-			localRequest["port"] = actualRequest.GetPort()
-		}
-	}
-	if actualRequest.HasDnsServer() {
-		localRequest["dns_server"] = convertToString(actualRequest.GetDnsServer())
-	}
+	localRequest := buildLocalRequest(actualRequest, setDeprecated)
 
 	// Set deprecated field if that's what's in the config, new field otherwise
 	if setDeprecated {
@@ -1841,51 +2116,22 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 	config := syntheticsTest.GetConfig()
 	actualRequest := config.GetRequest()
-	localRequest := make(map[string]interface{})
 	setDeprecated := false
 	if v, ok := d.GetOk("request"); ok && len(v.(map[string]interface{})) != 0 {
 		setDeprecated = true
 	}
-	if actualRequest.HasBody() {
-		localRequest["body"] = actualRequest.GetBody()
-	}
-	if actualRequest.HasMethod() {
-		localRequest["method"] = convertToString(actualRequest.GetMethod())
-	}
-	if actualRequest.HasTimeout() {
+	localRequest := buildLocalRequest(actualRequest, setDeprecated)
+
+	if syntheticsTest.GetSubtype() != "multi" {
+		// Set deprecated field if that's what's in the config, new field otherwise
 		if setDeprecated {
-			localRequest["timeout"] = convertToString(actualRequest.GetTimeout())
+			if err := d.Set("request", localRequest); err != nil {
+				return err
+			}
 		} else {
-			localRequest["timeout"] = actualRequest.GetTimeout()
-		}
-	}
-	if actualRequest.HasUrl() {
-		localRequest["url"] = actualRequest.GetUrl()
-	}
-	if actualRequest.HasHost() {
-		localRequest["host"] = actualRequest.GetHost()
-	}
-	if actualRequest.HasPort() {
-		if setDeprecated {
-			localRequest["port"] = convertToString(actualRequest.GetPort())
-		} else {
-			localRequest["port"] = actualRequest.GetPort()
-		}
-	}
-	if actualRequest.HasDnsServer() {
-		localRequest["dns_server"] = convertToString(actualRequest.GetDnsServer())
-	}
-	if actualRequest.HasNoSavingResponseBody() {
-		localRequest["no_saving_response_body"] = actualRequest.GetNoSavingResponseBody()
-	}
-	// Set deprecated field if that's what's in the config, new field otherwise
-	if setDeprecated {
-		if err := d.Set("request", localRequest); err != nil {
-			return err
-		}
-	} else {
-		if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
-			return err
+			if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
+				return err
+			}
 		}
 	}
 	d.Set("request_headers", actualRequest.Headers)
@@ -1924,56 +2170,12 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 
 	actualAssertions := config.GetAssertions()
-	localAssertions := make([]map[string]interface{}, len(actualAssertions))
-	for i, assertion := range actualAssertions {
-		localAssertion := make(map[string]interface{})
-		if assertion.SyntheticsAssertionTarget != nil {
-			assertionTarget := assertion.SyntheticsAssertionTarget
-			if v, ok := assertionTarget.GetOperatorOk(); ok {
-				localAssertion["operator"] = string(*v)
-			}
-			if assertionTarget.HasProperty() {
-				localAssertion["property"] = assertionTarget.GetProperty()
-			}
-			if target := assertionTarget.GetTarget(); target != nil {
-				localAssertion["target"] = convertToString(target)
-			}
-			if v, ok := assertionTarget.GetTypeOk(); ok {
-				localAssertion["type"] = string(*v)
-			}
-		} else if assertion.SyntheticsAssertionJSONPathTarget != nil {
-			assertionTarget := assertion.SyntheticsAssertionJSONPathTarget
-			if v, ok := assertionTarget.GetOperatorOk(); ok {
-				localAssertion["operator"] = string(*v)
-			}
-			if assertionTarget.HasProperty() {
-				localAssertion["property"] = assertionTarget.GetProperty()
-			}
-			if target, ok := assertionTarget.GetTargetOk(); ok {
-				localTarget := make(map[string]string)
-				if v, ok := target.GetJsonPathOk(); ok {
-					localTarget["jsonpath"] = string(*v)
-				}
-				if v, ok := target.GetOperatorOk(); ok {
-					localTarget["operator"] = string(*v)
-				}
-				if v, ok := target.GetTargetValueOk(); ok {
-					if vAsString, ok := (*v).(string); ok {
-						localTarget["targetvalue"] = vAsString
-					} else if vAsFloat, ok := (*v).(float64); ok {
-						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
-					} else {
-						return fmt.Errorf("Unrecognized targetvalue type %v", v)
-					}
-				}
-				localAssertion["targetjsonpath"] = []map[string]string{localTarget}
-			}
-			if v, ok := assertionTarget.GetTypeOk(); ok {
-				localAssertion["type"] = string(*v)
-			}
-		}
-		localAssertions[i] = localAssertion
+	localAssertions, err := buildLocalAssertions(actualAssertions)
+
+	if err != nil {
+		return err
 	}
+
 	// If the existing state still uses assertions, keep using that in the state to not generate useless diffs
 	if attr, ok := d.GetOk("assertions"); ok && attr != nil && len(attr.([]interface{})) > 0 {
 		if err := d.Set("assertions", localAssertions); err != nil {
@@ -2006,6 +2208,69 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 	if err := d.Set("config_variable", localConfigVariables); err != nil {
 		return err
+	}
+
+	if steps, ok := config.GetStepsOk(); ok {
+		localSteps := make([]interface{}, len(*steps))
+
+		for i, step := range *steps {
+			localStep := make(map[string]interface{})
+			localStep["name"] = step.GetName()
+			localStep["subtype"] = step.GetSubtype()
+
+			localAssertions, err := buildLocalAssertions(step.GetAssertions())
+			if err != nil {
+				return err
+			}
+			localStep["assertion"] = localAssertions
+			localStep["extracted_value"] = buildLocalExtractedValues(step.GetExtractedValues())
+
+			localRequest := buildLocalRequest(step.GetRequest(), false)
+			localStep["request_definition"] = []map[string]interface{}{localRequest}
+			stepRequest := step.GetRequest()
+			localStep["request_headers"] = stepRequest.GetHeaders()
+			localStep["request_query"] = stepRequest.GetQuery()
+
+			if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok {
+				localAuth := make(map[string]string)
+				localAuth["username"] = basicAuth.Username
+				localAuth["password"] = basicAuth.Password
+				localStep["request_basicauth"] = []map[string]string{localAuth}
+			}
+
+			if clientCertificate, ok := stepRequest.GetCertificateOk(); ok {
+				localCertificate := make(map[string][]map[string]string)
+				localCertificate["cert"] = make([]map[string]string, 1)
+				localCertificate["cert"][0] = make(map[string]string)
+				localCertificate["key"] = make([]map[string]string, 1)
+				localCertificate["key"][0] = make(map[string]string)
+
+				cert := clientCertificate.GetCert()
+				localCertificate["cert"][0]["filename"] = cert.GetFilename()
+
+				key := clientCertificate.GetKey()
+				localCertificate["key"][0]["filename"] = key.GetFilename()
+
+				certContentKey := fmt.Sprintf("api_step.%d.request_client_certificate.0.cert.0.content", i)
+				keyContentKey := fmt.Sprintf("api_step.%d.request_client_certificate.0.key.0.content", i)
+
+				// the content of client certificate is write-only so it will not be returned by the API.
+				// To avoid useless diff but also prevent storing the value in clear in the state
+				// we store a hash of the value.
+				if configCertificateContent, ok := d.GetOk(certContentKey); ok {
+					localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent.(string))
+				}
+				if configKeyContent, ok := d.GetOk(keyContentKey); ok {
+					localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
+				}
+
+				localStep["request_client_certificate"] = []map[string][]map[string]string{localCertificate}
+			}
+
+			localSteps[i] = localStep
+		}
+
+		d.Set("api_step", localSteps)
 	}
 
 	d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds)
