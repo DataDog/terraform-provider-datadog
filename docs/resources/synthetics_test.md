@@ -420,7 +420,7 @@ Optional:
 
 Optional:
 
-- **example** (String)
+- **example** (String) Example of the extracted variable.
 - **name** (String) Name of the extracted variable.
 
 
@@ -458,6 +458,10 @@ Optional:
 <a id="nestedblock--options_list"></a>
 ### Nested Schema for `options_list`
 
+Required:
+
+- **tick_every** (Number) How often the test should run (in seconds). Current possible values are `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` plus `60` for API tests or `300` for browser tests.
+
 Optional:
 
 - **accept_self_signed** (Boolean) For SSL test, whether or not the test should allow self signed certificates.
@@ -468,7 +472,6 @@ Optional:
 - **monitor_options** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--monitor_options))
 - **no_screenshot** (Boolean) Prevents saving screenshots of the steps.
 - **retry** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--retry))
-- **tick_every** (Number) How often the test should run (in seconds). Current possible values are `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` plus `60` for API tests or `300` for browser tests.
 
 <a id="nestedblock--options_list--monitor_options"></a>
 ### Nested Schema for `options_list.monitor_options`
