@@ -35,6 +35,18 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
 }`, uniq, uniq)
 }
 
+func testAccCheckDatadogIntegrationGCPUpdatePrivateKeyConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
+  project_id     = "%s"
+  private_key_id = "1234567890123456789012345678901234567890"
+  private_key    = "-----BEGIN PRIVATE KEY-----\n key updated \n-----END PRIVATE KEY-----\n"
+  client_email   = "%s@awesome-project-id.iam.gserviceaccount.com"
+  client_id      = "123456789012345678901"
+  automute       = true
+}`, uniq, uniq)
+}
+
 func TestAccDatadogIntegrationGCP(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	client := uniqueEntityName(ctx, t)
@@ -67,6 +79,9 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"host_filters", "foo:bar,buzz:lightyear"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration",
+						"automute", "false"),
 				),
 			},
 			{
@@ -91,6 +106,36 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"host_filters", ""),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration",
+						"automute", "false"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogIntegrationGCPUpdatePrivateKeyConfig(client),
+				Check: resource.ComposeTestCheckFunc(
+					checkIntegrationGCPExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration",
+						"project_id", client),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration",
+						"private_key_id", "1234567890123456789012345678901234567890"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration",
+						"private_key", "-----BEGIN PRIVATE KEY-----\n key updated \n-----END PRIVATE KEY-----\n"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration",
+						"client_email", fmt.Sprintf("%s@awesome-project-id.iam.gserviceaccount.com", client)),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration",
+						"client_id", "123456789012345678901"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration",
+						"host_filters", ""),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration",
+						"automute", "true"),
 				),
 			},
 		},

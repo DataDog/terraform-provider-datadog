@@ -15,7 +15,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 			title_size = "16"
 			title_align = "left"
 			show_legend = "true"
-			title = "system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d..."
+			title = "system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d..."
 			legend_size = "2"
 			yaxis {
 				label = ""
@@ -119,7 +119,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				}
 				process_query {
 					search_by = ""
-					metric = "process.stat.cpu.total_pct.norm"
+					metric = "process.stat.cpu.total_pct"
 					limit = "10"
 					filter_by = ["account:prod"]
 				}
@@ -180,6 +180,8 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
 			}
+			legend_layout = "horizontal"
+			legend_columns = ["value", "min", "max"]
 		}
 	}
 	widget {
@@ -187,7 +189,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 			title_size = "16"
 			title_align = "left"
 			show_legend = "true"
-			title = "system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d..."
+			title = "system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d..."
 			legend_size = "2"
 			yaxis {
 				label = ""
@@ -299,7 +301,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				}
 				process_query {
 					search_by = ""
-					metric = "process.stat.cpu.total_pct.norm"
+					metric = "process.stat.cpu.total_pct"
 					limit = "10"
 					filter_by = ["account:prod"]
 				}
@@ -364,6 +366,8 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
 			}
+			legend_layout = "horizontal"
+			legend_columns = ["value", "min", "max"]
 		}
 	}
 }
@@ -380,7 +384,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 			title_size = "16"
 			title_align = "left"
 			show_legend = "true"
-			title = "system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d..."
+			title = "system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d..."
 			legend_size = "2"
 			yaxis {
 				label = ""
@@ -484,7 +488,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				}
 				process_query {
 					search_by = ""
-					metric = "process.stat.cpu.total_pct.norm"
+					metric = "process.stat.cpu.total_pct"
 					limit = "10"
 					filter_by = ["account:prod"]
 				}
@@ -544,6 +548,102 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 			custom_link {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
+			}
+			legend_layout = "horizontal"
+			legend_columns = ["value", "min", "max"]
+		}
+	}
+}
+`
+
+const datadogDashboardFormulaConfig = `
+resource "datadog_dashboard" "timeseries_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+	widget {
+		timeseries_definition {
+			request {
+				formula {
+					formula_expression = "my_query_1 + my_query_2"
+					limit {
+						count = 5
+						order = "asc"
+					}
+					alias = "sum query"
+				}
+				formula {
+					formula_expression = "my_query_1 * my_query_2"
+					limit {
+						count = 7
+						order = "desc"
+					}
+					alias = "multiplicative query"
+				}
+				query {
+					 metric_query {
+						 data_source = "metrics"
+						 query = "avg:system.cpu.user{app:general} by {env}"
+						 name = "my_query_1"
+						 aggregator = "sum"
+					}
+				}
+				query {
+					 metric_query {
+						 data_source = "metrics"
+						 query = "avg:system.cpu.user{app:general} by {env}"
+						 name = "my_query_2"
+						 aggregator = "sum"
+					}
+				}
+
+			}
+		}
+	}
+	widget {
+		timeseries_definition {
+			request {
+				query {
+					event_query {
+						data_source = "logs"
+						indexes = ["days-3"]
+						name = "my_event_query"
+						compute {
+							aggregation = "count"
+						}
+						search {
+							query = "abc"
+						}
+						group_by {
+							facet = "host"
+							sort {
+							  metric = "@lambda.max_memory_used"
+							  aggregation = "avg"
+							  order = "desc"
+							}
+							limit = 10
+						  }
+					}
+				}
+			}
+		}
+	}
+	widget {
+		timeseries_definition {
+			request {
+				query {
+					process_query {
+						data_source = "process"
+						text_filter = "abc"
+						metric = "process.stat.cpu.total_pct"
+						limit = 10
+						tag_filters = ["some_filter"]
+						name = "my_process_query"
+						sort = "asc"
+						is_normalized_cpu = true
+					}
+				}
 			}
 		}
 	}
@@ -663,7 +763,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.legend_size = 2",
 	"widget.0.timeseries_definition.0.live_span = 5m",
 	"widget.0.timeseries_definition.0.title_align = left",
-	"widget.0.timeseries_definition.0.title = system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...",
+	"widget.0.timeseries_definition.0.title = system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d...",
 	"widget.0.timeseries_definition.0.title_size = 16",
 	"widget.0.timeseries_definition.0.event.0.q = sources:test tags:1",
 	"widget.0.timeseries_definition.0.event.0.tags_execution = and",
@@ -709,7 +809,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.request.1.log_query.# = 1",
 	"widget.0.timeseries_definition.0.request.1.on_right_yaxis = false",
 	"widget.0.timeseries_definition.0.request.3.style.0.line_type = solid",
-	"widget.0.timeseries_definition.0.request.3.process_query.0.metric = process.stat.cpu.total_pct.norm",
+	"widget.0.timeseries_definition.0.request.3.process_query.0.metric = process.stat.cpu.total_pct",
 	"widget.0.timeseries_definition.0.request.2.style.0.line_type = dashed",
 	"widget.0.timeseries_definition.0.request.2.display_type = line",
 	"widget.0.timeseries_definition.0.request.2.apm_query.0.group_by.0.facet = status",
@@ -787,6 +887,11 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.request.5.rum_query.0.group_by.0.sort_query.0.order = desc",
 	"widget.0.timeseries_definition.0.request.5.rum_query.0.search_query =",
 	"widget.0.timeseries_definition.0.request.5.on_right_yaxis = true",
+	"widget.0.timeseries_definition.0.legend_layout = horizontal",
+	"widget.0.timeseries_definition.0.legend_columns.# = 3",
+	"widget.0.timeseries_definition.0.legend_columns.1117816132 = value",
+	"widget.0.timeseries_definition.0.legend_columns.3850088288 = min",
+	"widget.0.timeseries_definition.0.legend_columns.4159720207 = max",
 	"widget.0.timeseries_definition.0.custom_link.# = 1",
 	"widget.0.timeseries_definition.0.custom_link.0.label = Test Custom Link label",
 	"widget.0.timeseries_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
@@ -805,7 +910,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.1.timeseries_definition.0.legend_size = 2",
 	"widget.1.timeseries_definition.0.time.live_span = 5m",
 	"widget.1.timeseries_definition.0.title_align = left",
-	"widget.1.timeseries_definition.0.title = system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...",
+	"widget.1.timeseries_definition.0.title = system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d...",
 	"widget.1.timeseries_definition.0.title_size = 16",
 	"widget.1.timeseries_definition.0.event.0.q = sources:test tags:1",
 	"widget.1.timeseries_definition.0.event.0.tags_execution = and",
@@ -851,7 +956,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.1.timeseries_definition.0.request.1.log_query.# = 1",
 	"widget.1.timeseries_definition.0.request.1.on_right_yaxis = false",
 	"widget.1.timeseries_definition.0.request.3.style.0.line_type = solid",
-	"widget.1.timeseries_definition.0.request.3.process_query.0.metric = process.stat.cpu.total_pct.norm",
+	"widget.1.timeseries_definition.0.request.3.process_query.0.metric = process.stat.cpu.total_pct",
 	"widget.1.timeseries_definition.0.request.2.style.0.line_type = dashed",
 	"widget.1.timeseries_definition.0.request.2.display_type = line",
 	"widget.1.timeseries_definition.0.request.2.apm_query.0.group_by.0.facet = status",
@@ -928,6 +1033,11 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.1.timeseries_definition.0.request.5.rum_query.0.group_by.0.sort.order = desc",
 	"widget.1.timeseries_definition.0.request.5.rum_query.0.search.query =",
 	"widget.1.timeseries_definition.0.request.5.on_right_yaxis = true",
+	"widget.1.timeseries_definition.0.legend_layout = horizontal",
+	"widget.1.timeseries_definition.0.legend_columns.# = 3",
+	"widget.1.timeseries_definition.0.legend_columns.1117816132 = value",
+	"widget.1.timeseries_definition.0.legend_columns.3850088288 = min",
+	"widget.1.timeseries_definition.0.legend_columns.4159720207 = max",
 	"widget.1.timeseries_definition.0.custom_link.# = 1",
 	"widget.1.timeseries_definition.0.custom_link.0.label = Test Custom Link label",
 	"widget.1.timeseries_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
@@ -988,7 +1098,7 @@ func TestAccDatadogDashboardFormula(t *testing.T) {
 }
 
 func TestAccDatadogDashboardFormula_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardFormulaConfig, "datadog_dashboard.timeseries_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardFormulaConfig, "datadog_dashboard.timeseries_dashboard")
 }
 
 const datadogDashboardTimeseriesMultiComputeConfig = `
@@ -1002,7 +1112,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 			title_size = "16"
 			title_align = "left"
 			show_legend = "true"
-			title = "system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d..."
+			title = "system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d..."
 			legend_size = "2"
 			yaxis {
 				label = ""
@@ -1069,7 +1179,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 			title_size = "16"
 			title_align = "left"
 			show_legend = "true"
-			title = "system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d..."
+			title = "system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d..."
 			legend_size = "2"
 			yaxis {
 				label = ""
@@ -1149,7 +1259,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 			title_size = "16"
 			title_align = "left"
 			show_legend = "true"
-			title = "system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d..."
+			title = "system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d..."
 			legend_size = "2"
 			yaxis {
 				label = ""
@@ -1250,7 +1360,7 @@ var datadogDashboardTimeseriesMultiComputeAsserts = []string{
 	"widget.0.timeseries_definition.0.request.0.on_right_yaxis = true",
 	"widget.0.timeseries_definition.0.show_legend = true",
 	"widget.0.timeseries_definition.0.live_span = 5m",
-	"widget.0.timeseries_definition.0.title = system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...",
+	"widget.0.timeseries_definition.0.title = system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d...",
 	"widget.0.timeseries_definition.0.title_align = left",
 	"widget.0.timeseries_definition.0.title_size = 16",
 	"widget.0.timeseries_definition.0.yaxis.# = 1",
@@ -1293,7 +1403,7 @@ var datadogDashboardTimeseriesMultiComputeAsserts = []string{
 	"widget.1.timeseries_definition.0.request.0.on_right_yaxis = true",
 	"widget.1.timeseries_definition.0.show_legend = true",
 	"widget.1.timeseries_definition.0.time.live_span = 5m",
-	"widget.1.timeseries_definition.0.title = system.cpu.user, env, process.stat.cpu.total_pct.norm, network.bytes_read, @d...",
+	"widget.1.timeseries_definition.0.title = system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d...",
 	"widget.1.timeseries_definition.0.title_align = left",
 	"widget.1.timeseries_definition.0.title_size = 16",
 	"widget.1.timeseries_definition.0.yaxis.# = 1",

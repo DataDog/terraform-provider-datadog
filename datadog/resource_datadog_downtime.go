@@ -3,12 +3,14 @@ package datadog
 import (
 	"context"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 	"log"
 	"reflect"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	// embed time zone data
 	_ "time/tzdata"
@@ -16,7 +18,6 @@ import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func resourceDatadogDowntime() *schema.Resource {
@@ -374,10 +375,11 @@ func updateDowntimeState(d *schema.ResourceData, dt *datadogV1.Downtime) error {
 	if err := d.Set("message", dt.GetMessage()); err != nil {
 		return err
 	}
-	if err := d.Set("monitor_id", dt.GetMonitorId()); err != nil {
-		return err
+	if v, ok := dt.GetMonitorIdOk(); ok && v != nil {
+		if err := d.Set("monitor_id", v); err != nil {
+			return err
+		}
 	}
-
 	if err := d.Set("timezone", dt.GetTimezone()); err != nil {
 		return err
 	}

@@ -52,6 +52,27 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 				Default:     true,
 				Description: "Enable the rule.",
 			},
+
+			"filter": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "Additional queries to filter matched events before they are processed.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"action": {
+							Type:         schema.TypeString,
+							ValidateFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringFilterActionFromValue),
+							Required:     true,
+							Description:  "The type of filtering action. Allowed enum values: require, suppress",
+						},
+						"query": {
+							Type:        schema.TypeString,
+							Required:    true,
+							Description: "Query for selecting logs to apply the filtering action.",
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -96,6 +117,16 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(d *schema.ResourceData, me
 			d.Set(fmt.Sprintf("case.%d.notifications", i), notification)
 		}
 	}
+
+	ruleFilters := make([]map[string]interface{}, len(ruleResponse.GetFilters()))
+	for idx, responseRuleFilter := range ruleResponse.GetFilters() {
+		ruleFilters[idx] = map[string]interface{}{
+			"action": responseRuleFilter.GetAction(),
+			"query":  responseRuleFilter.GetQuery(),
+		}
+	}
+
+	d.Set("filter", ruleFilters)
 
 	return nil
 }
@@ -142,48 +173,80 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 	isEnabled := d.Get("enabled").(bool)
 	payload.IsEnabled = &isEnabled
 
-	if v, ok := d.GetOk("cases"); ok {
-		matchedCases := 0
-		modifiedCases := 0
-		tfCases := v.([]map[string]interface{})
+	matchedCases := 0
+	modifiedCases := 0
+	tfCasesRaw := d.Get("case").([]interface{})
 
-		updatedRuleCase := make([]datadogV2.SecurityMonitoringRuleCase, len(currentState.GetCases()))
-		for i, ruleCase := range currentState.GetCases() {
-			var updatedNotifications []string
-			if tfCase, ok := findRuleCaseForStatus(tfCases, ruleCase.GetStatus()); ok {
-				matchedCases++
+	updatedRuleCase := make([]datadogV2.SecurityMonitoringRuleCase, len(currentState.GetCases()))
+	for i, ruleCase := range currentState.GetCases() {
 
-				tfNotificationsRaw := tfCase["notifications"].([]interface{})
-				tfNotifications := make([]string, len(tfNotificationsRaw))
-				for notificationIdx, v := range tfNotificationsRaw {
-					tfNotifications[notificationIdx] = v.(string)
-				}
+		updatedRuleCase[i] = datadogV2.SecurityMonitoringRuleCase{
+			Condition:     currentState.GetCases()[i].Condition,
+			Name:          currentState.GetCases()[i].Name,
+			Notifications: currentState.GetCases()[i].Notifications,
+			Status:        currentState.GetCases()[i].Status,
+		}
 
-				if !stringSliceEquals(tfNotifications, ruleCase.GetNotifications()) {
-					modifiedCases++
-					updatedNotifications = tfNotifications
-				}
+		if tfCase, ok := findRuleCaseForStatus(tfCasesRaw, ruleCase.GetStatus()); ok {
+
+			// Update rule case notifications when rule added to terraform configuration
+
+			matchedCases++
+
+			tfNotificationsRaw := tfCase["notifications"].([]interface{})
+			tfNotifications := make([]string, len(tfNotificationsRaw))
+			for notificationIdx, v := range tfNotificationsRaw {
+				tfNotifications[notificationIdx] = v.(string)
 			}
 
-			updatedRuleCase[i] = datadogV2.SecurityMonitoringRuleCase{
-				Condition:     currentState.GetCases()[i].Condition,
-				Name:          currentState.GetCases()[i].Name,
-				Notifications: currentState.GetCases()[i].Notifications,
-				Status:        currentState.GetCases()[i].Status,
+			if !stringSliceEquals(tfNotifications, ruleCase.GetNotifications()) {
+				modifiedCases++
+				updatedRuleCase[i].Notifications = &tfNotifications
 			}
-			if updatedNotifications != nil {
-				updatedRuleCase[i].Notifications = &updatedNotifications
+
+		} else {
+
+			// Clear rule case notifications when rule case removed from terraform configuration
+
+			tfNotifications := make([]string, 0)
+
+			if !stringSliceEquals(tfNotifications, ruleCase.GetNotifications()) {
+				modifiedCases++
+				updatedRuleCase[i].Notifications = &tfNotifications
 			}
 		}
 
-		if matchedCases < len(tfCases) {
-			return nil, false, errors.New("attempted to update notifications for non-existing case for rule " + currentState.GetId())
-		}
-
-		if modifiedCases > 0 {
-			payload.Cases = &updatedRuleCase
-		}
 	}
+
+	if matchedCases < len(tfCasesRaw) {
+		// Enable partial state so that we don't persist the changes
+		d.Partial(true)
+		return nil, false, errors.New("attempted to update notifications for non-existing case for rule " + currentState.GetId())
+	}
+
+	if modifiedCases > 0 {
+		payload.Cases = &updatedRuleCase
+	}
+
+	tfFilters := d.Get("filter").([]interface{})
+	payloadFilters := make([]datadogV2.SecurityMonitoringFilter, len(tfFilters))
+
+	for idx, tfRuleFilter := range tfFilters {
+		structRuleFilter := datadogV2.SecurityMonitoringFilter{}
+
+		ruleFilter := tfRuleFilter.(map[string]interface{})
+
+		if action, ok := ruleFilter["action"]; ok {
+			structRuleFilter.SetAction(datadogV2.SecurityMonitoringFilterAction(action.(string)))
+		}
+
+		if query, ok := ruleFilter["query"]; ok {
+			structRuleFilter.SetQuery(query.(string))
+		}
+
+		payloadFilters[idx] = structRuleFilter
+	}
+	payload.Filters = &payloadFilters
 
 	return &payload, true, nil
 }
@@ -200,8 +263,9 @@ func stringSliceEquals(left []string, right []string) bool {
 	return true
 }
 
-func findRuleCaseForStatus(cases []map[string]interface{}, status datadogV2.SecurityMonitoringRuleSeverity) (map[string]interface{}, bool) {
-	for _, tfCase := range cases {
+func findRuleCaseForStatus(tfCasesRaw []interface{}, status datadogV2.SecurityMonitoringRuleSeverity) (map[string]interface{}, bool) {
+	for _, tfCaseRaw := range tfCasesRaw {
+		tfCase := tfCaseRaw.(map[string]interface{})
 		tfStatus := datadogV2.SecurityMonitoringRuleSeverity(tfCase["status"].(string))
 		if tfStatus == status {
 			return tfCase, true

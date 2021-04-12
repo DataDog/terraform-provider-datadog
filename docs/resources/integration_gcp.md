@@ -37,6 +37,7 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
 
 ### Optional
 
+- **automute** (Boolean) Silence monitors for expected GCE instance shutdowns.
 - **host_filters** (String) Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.
 - **id** (String) The ID of this resource.
 

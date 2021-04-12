@@ -76,6 +76,7 @@ func Provider() terraform.ResourceProvider {
 
 		ResourcesMap: map[string]*schema.Resource{
 			"datadog_dashboard":                            resourceDatadogDashboard(),
+			"datadog_dashboard_json":                       resourceDatadogDashboardJSON(),
 			"datadog_dashboard_list":                       resourceDatadogDashboardList(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
 			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
@@ -86,6 +87,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_integration_gcp":                      resourceDatadogIntegrationGcp(),
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
 			"datadog_integration_pagerduty_service_object": resourceDatadogIntegrationPagerdutySO(),
+			"datadog_integration_slack_channel":            resourceDatadogIntegrationSlackChannel(),
 			"datadog_logs_archive":                         resourceDatadogLogsArchive(),
 			"datadog_logs_archive_order":                   resourceDatadogLogsArchiveOrder(),
 			"datadog_logs_custom_pipeline":                 resourceDatadogLogsCustomPipeline(),
@@ -95,6 +97,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_logs_metric":                          resourceDatadogLogsMetric(),
 			"datadog_logs_pipeline_order":                  resourceDatadogLogsPipelineOrder(),
 			"datadog_metric_metadata":                      resourceDatadogMetricMetadata(),
+			"datadog_metric_tag_configuration":             resourceDatadogMetricTagConfiguration(),
 			"datadog_monitor":                              resourceDatadogMonitor(),
 			"datadog_role":                                 resourceDatadogRole(),
 			"datadog_screenboard":                          resourceDatadogScreenboard(),
@@ -257,6 +260,12 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		},
 	)
 	configV2 := datadogV2.NewConfiguration()
+	// Enable unstable operations
+	configV2.SetUnstableOperationEnabled("CreateTagConfiguration", true)
+	configV2.SetUnstableOperationEnabled("DeleteTagConfiguration", true)
+	configV2.SetUnstableOperationEnabled("ListTagConfigurationByName", true)
+	configV2.SetUnstableOperationEnabled("UpdateTagConfiguration", true)
+
 	configV2.UserAgent = utils.GetUserAgent(configV2.UserAgent)
 	configV2.Debug = logging.IsDebugOrHigher()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {

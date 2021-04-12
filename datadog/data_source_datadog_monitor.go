@@ -231,6 +231,11 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				Type:        schema.TypeBool,
 				Computed:    true,
 			},
+			"groupby_simple_monitor": {
+				Description: "Whether or not to trigger one alert if any source breaches a threshold.",
+				Type:        schema.TypeBool,
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -328,6 +333,7 @@ func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) err
 	d.Set("tags", tags)
 	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
 	d.Set("locked", m.Options.GetLocked())
+	d.Set("groupby_simple_monitor", m.Options.GetGroupbySimpleMonitor())
 
 	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {
 		d.Set("enable_logs_sample", m.Options.GetEnableLogsSample())

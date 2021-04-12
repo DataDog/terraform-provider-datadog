@@ -13,7 +13,7 @@ resource "datadog_dashboard" "slo_dashboard" {
 
 	widget {
 		service_level_objective_definition {
-			time_windows = ["90d","previous_week","month_to_date"]
+			time_windows = ["90d","previous_week","global_time"]
 			title_size = "16"
 			show_error_budget = true
 			title = ""
@@ -21,6 +21,7 @@ resource "datadog_dashboard" "slo_dashboard" {
 			slo_id = "b4c7739b2af25f9d947f828730357832"
 			view_mode = "both"
 			view_type = "detail"
+			global_time_target = "99.0"
 		}
 	}
 }
@@ -39,7 +40,8 @@ var datadogDashboardSLOAsserts = []string{
 	"widget.0.service_level_objective_definition.0.show_error_budget = true",
 	"widget.0.service_level_objective_definition.0.time_windows.0 = 90d",
 	"widget.0.service_level_objective_definition.0.title =",
-	"widget.0.service_level_objective_definition.0.time_windows.2 = month_to_date",
+	"widget.0.service_level_objective_definition.0.time_windows.2 = global_time",
+	"widget.0.service_level_objective_definition.0.global_time_target = 99.0",
 	"layout_type = ordered",
 }
 

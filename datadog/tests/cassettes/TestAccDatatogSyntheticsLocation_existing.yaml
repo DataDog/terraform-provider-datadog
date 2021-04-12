@@ -10,25 +10,11 @@ interactions:
       Dd-Operation-Id:
       - ListLocations
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "2098121212837046218"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2938456858505057245"
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/locations
     method: GET
   response:
-    body: '{"locations":[{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul
-      (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore
-      (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ca-central-1","name":"Canada
-      Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm
-      (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London
-      (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o
-      Paulo (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N.
-      California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606068-7209ef059ca2770dfb5894b3b9235d43","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606068"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606093-73f1f31d77ffd777730831e6a8825d89","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606093"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606122-99f7d291ec05150ade65f9cf30cfd2ef","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606122"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1606125041-1a44b6a209df41e39b615de02a91f74d","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1606125041"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-35133-1607099125-ea8bf7adb5eb526f696f248debea7715","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-35133-1607099125"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-35133-1607099125-567d06c8f1e423d691703cf3eacb9276","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-35133-1607099125"}]}'
+    body: '{"locations":[{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ca-central-1","name":"Canada Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o Paulo (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N. California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-54660-1616933189-52d769fe26874092b32645b81df54ebb","name":"go-TestSyntheticsPrivateLocationLifecycle-54660-1616933189-updated"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -39,12 +25,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:53:37 GMT
+      - Wed, 31 Mar 2021 11:21:33 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:37 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -52,9 +35,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - KcNcHUGB08YdugVH3r9bPpps+kNHA5hdt/i0HnHlCpX4wCTIXYMJnhyM7E+8Tni0
+      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4207809"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -64,7 +47,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "119"
       X-Ratelimit-Reset:
-      - "23"
+      - "27"
     status: 200 OK
     code: 200
     duration: ""
@@ -77,25 +60,11 @@ interactions:
       Dd-Operation-Id:
       - ListLocations
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4892813884024537855"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2938456858505057245"
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/locations
     method: GET
   response:
-    body: '{"locations":[{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul
-      (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore
-      (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ca-central-1","name":"Canada
-      Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm
-      (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London
-      (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o
-      Paulo (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N.
-      California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606068-7209ef059ca2770dfb5894b3b9235d43","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606068"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606093-73f1f31d77ffd777730831e6a8825d89","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606093"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606122-99f7d291ec05150ade65f9cf30cfd2ef","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606122"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1606125041-1a44b6a209df41e39b615de02a91f74d","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1606125041"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-35133-1607099125-ea8bf7adb5eb526f696f248debea7715","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-35133-1607099125"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-35133-1607099125-567d06c8f1e423d691703cf3eacb9276","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-35133-1607099125"}]}'
+    body: '{"locations":[{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ca-central-1","name":"Canada Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o Paulo (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N. California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-54660-1616933189-52d769fe26874092b32645b81df54ebb","name":"go-TestSyntheticsPrivateLocationLifecycle-54660-1616933189-updated"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -106,12 +75,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:53:37 GMT
+      - Wed, 31 Mar 2021 11:21:33 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:37 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -119,9 +85,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 84uqub9zpmlgg8irRO/sOXYuWjXevKJ3PeFDkydS20gUrNiRDeiB84n5Q67dF4oL
+      - B1nwy/pPNqX+q4pQT22cdp1QCexE35IF8qwSHy0Nf7IW0Y881qtn4tXN1lpmzaKc
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4207809"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -131,7 +97,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "118"
       X-Ratelimit-Reset:
-      - "23"
+      - "27"
     status: 200 OK
     code: 200
     duration: ""
@@ -144,25 +110,11 @@ interactions:
       Dd-Operation-Id:
       - ListLocations
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "7996931481296631206"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2938456858505057245"
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/locations
     method: GET
   response:
-    body: '{"locations":[{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul
-      (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore
-      (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ca-central-1","name":"Canada
-      Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm
-      (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London
-      (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o
-      Paulo (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N.
-      California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606068-7209ef059ca2770dfb5894b3b9235d43","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606068"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606093-73f1f31d77ffd777730831e6a8825d89","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606093"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606122-99f7d291ec05150ade65f9cf30cfd2ef","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606122"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1606125041-1a44b6a209df41e39b615de02a91f74d","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1606125041"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-35133-1607099125-ea8bf7adb5eb526f696f248debea7715","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-35133-1607099125"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-35133-1607099125-567d06c8f1e423d691703cf3eacb9276","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-35133-1607099125"}]}'
+    body: '{"locations":[{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ca-central-1","name":"Canada Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o Paulo (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N. California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-54660-1616933189-52d769fe26874092b32645b81df54ebb","name":"go-TestSyntheticsPrivateLocationLifecycle-54660-1616933189-updated"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -173,12 +125,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:53:37 GMT
+      - Wed, 31 Mar 2021 11:21:33 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:37 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -186,9 +135,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - IGILlPY3s4a9aUQtJHHVlvsXLPi5u8MQt/Dx/1ZwzrUgiVNBtJEB93e+6VlWNrdA
+      - tpRCH6w417YjBovRJ8VmtuXmNONVYiRp2c8d2AxjPdGBn8PCtgG4vAztrx3qUZAN
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4207809"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -198,7 +147,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "117"
       X-Ratelimit-Reset:
-      - "23"
+      - "27"
     status: 200 OK
     code: 200
     duration: ""
@@ -211,25 +160,11 @@ interactions:
       Dd-Operation-Id:
       - ListLocations
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4579743826036981645"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "2938456858505057245"
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/locations
     method: GET
   response:
-    body: '{"locations":[{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul
-      (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore
-      (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ca-central-1","name":"Canada
-      Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm
-      (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London
-      (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o
-      Paulo (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N.
-      California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606068-7209ef059ca2770dfb5894b3b9235d43","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606068"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606093-73f1f31d77ffd777730831e6a8825d89","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606093"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1604606122-99f7d291ec05150ade65f9cf30cfd2ef","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1604606122"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-local-1606125041-1a44b6a209df41e39b615de02a91f74d","name":"go-TestSyntheticsPrivateLocationLifecycle-local-1606125041"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-35133-1607099125-ea8bf7adb5eb526f696f248debea7715","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-35133-1607099125"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-35133-1607099125-567d06c8f1e423d691703cf3eacb9276","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-35133-1607099125"}]}'
+    body: '{"locations":[{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ca-central-1","name":"Canada Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o Paulo (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N. California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"pl:go-testsyntheticsprivatelocationlifecycle-54660-1616933189-52d769fe26874092b32645b81df54ebb","name":"go-TestSyntheticsPrivateLocationLifecycle-54660-1616933189-updated"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -240,12 +175,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:53:37 GMT
+      - Wed, 31 Mar 2021 11:21:34 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:53:37 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -253,9 +185,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - s8aX5NtChXwcC0ZqCGPgUtbvI/yT4gadlVvE6/Mqbm4BIdrCBC60TudMJNU/SbvE
+      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4207809"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -265,7 +197,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "116"
       X-Ratelimit-Reset:
-      - "23"
+      - "26"
     status: 200 OK
     code: 200
     duration: ""
