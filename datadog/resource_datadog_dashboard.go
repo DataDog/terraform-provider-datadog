@@ -65,7 +65,7 @@ func resourceDatadogDashboard() *schema.Resource {
 			"reflow_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
-				Description:  "The reflow type of the multi-size layout dashboard, either 'auto' or 'fixed'.",
+				Description:  "The reflow type of a multi-size layout dashboard. Set this only when layout type is ‘ordered’. If set to ‘fixed’, the dashboard expect all widgets to have a layout, and if it’s set to ‘auto’, widgets should not have layouts.",
 				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewDashboardReflowTypeFromValue),
 			},
 			"description": {
