@@ -11,10 +11,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
 
+// ValidateFloatString makes sure a string can be parsed into a float
 func ValidateFloatString(v interface{}, k string) (ws []string, errors []error) {
 	return validation.StringMatch(regexp.MustCompile("\\d*(\\.\\d*)?"), "value must be a float")(v, k)
 }
 
+// ValidateAggregatorMethod ensures a string is a valid aggregator method
 func ValidateAggregatorMethod(v interface{}, k string) (ws []string, errors []error) {
 	value := v.(string)
 	validMethods := map[string]struct{}{
@@ -50,14 +52,7 @@ func ValidateEnumValue(newEnumFunc interface{}) schema.SchemaValidateFunc {
 	}
 }
 
-func ValidateStringValue(v interface{}, k string) (ws []string, errors []error) {
-	value := v.(string)
-	if len(value) == 0 {
-		errors = append(errors, fmt.Errorf("%q must have a length greater than 0, got %q", k, v))
-	}
-	return
-}
-
+// ValidateDatadogDowntimeRecurrenceType ensures a string is a valid recurrence type
 func ValidateDatadogDowntimeRecurrenceType(v interface{}, k string) (ws []string, errors []error) {
 	value := v.(string)
 	switch value {
@@ -70,6 +65,7 @@ func ValidateDatadogDowntimeRecurrenceType(v interface{}, k string) (ws []string
 	return
 }
 
+// ValidateDatadogDowntimeRecurrenceWeekDays ensures a string is a valid recurrence week day
 func ValidateDatadogDowntimeRecurrenceWeekDays(v interface{}, k string) (ws []string, errors []error) {
 	value := v.(string)
 	switch value {
@@ -82,6 +78,7 @@ func ValidateDatadogDowntimeRecurrenceWeekDays(v interface{}, k string) (ws []st
 	return
 }
 
+// ValidateDatadogDowntimeTimezone ensures a string is a valid timezone
 func ValidateDatadogDowntimeTimezone(v interface{}, k string) (ws []string, errors []error) {
 	value := v.(string)
 	switch strings.ToLower(value) {
