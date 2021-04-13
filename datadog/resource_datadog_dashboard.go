@@ -73,17 +73,57 @@ func resourceDatadogDashboard() *schema.Resource {
 				Optional:    true,
 				Description: "The description of the dashboard.",
 			},
-			"is_read_only": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     false,
-				Description: "Whether this dashboard is read-only.",
-			},
 			"url": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
 				Description: "The URL of the dashboard.",
+			},
+			"rbac_enabled": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				Default:     nil,
+				Description: "String repr of boolean of whether RBAC is enabled. Defaults to nil. Internal only.",
+			},
+			"is_read_only": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+				Description: "Whether this dashboard is read-only.",
+				ForceNew:    true,
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// respect flag diffs if RBAC is disabled or if the flag being explicitly set to T
+					if d.Get("rbac_enabled").(string) == "false" || new == "true" {
+						return false
+					}
+					// ignore T->F flag diffs if roles are being changed to be nonempty
+					if d.HasChange("restricted_roles") {
+						_, newRoles := d.GetChange("restricted_roles")
+						return newRoles != nil && newRoles.(*schema.Set).Len() > 0
+					}
+					// ignore T->F flag diffs if roles are stable and nonempty
+					existingRoles := d.Get("restricted_roles")
+					return existingRoles != nil && existingRoles.(*schema.Set).Len() > 0
+				},
+			},
+			"restricted_roles": {
+				// Uncomment when generally available
+				// Description: "Role UUIDs corresponding to users authorized to edit the dashboard.",
+				Type:          schema.TypeSet,
+				Optional:      true,
+				Elem:          &schema.Schema{Type: schema.TypeString},
+				ConflictsWith: []string{"is_read_only"},
+				ForceNew:      true,
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					RbacEnabled := d.Get("rbac_enabled").(string)
+					// updates when RBAC is disabled: always suppress roles
+					if RbacEnabled == "false" {
+						return true
+					}
+					// suppress roles if flag is explicitly marked as T
+					return d.Get("is_read_only").(bool) && (RbacEnabled != "true" || !d.HasChange("is_read_only"))
+				},
 			},
 			"template_variable": {
 				Type:        schema.TypeList,
@@ -220,10 +260,19 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 	if err := d.Set("description", dashboard.GetDescription()); err != nil {
 		return err
 	}
+	if err := d.Set("url", dashboard.GetUrl()); err != nil {
+		return err
+	}
+
+	// Set RBAC role settings
+	if err := d.Set("rbac_enabled", strconv.FormatBool(dashboard.RestrictedRoles != nil)); err != nil {
+		return err
+	}
 	if err := d.Set("is_read_only", dashboard.GetIsReadOnly()); err != nil {
 		return err
 	}
-	if err := d.Set("url", dashboard.GetUrl()); err != nil {
+	restrictedRoles := buildTerraformRestrictedRoles(dashboard.RestrictedRoles)
+	if err := d.Set("restricted_roles", restrictedRoles); err != nil {
 		return err
 	}
 
@@ -311,6 +360,16 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 	}
 	if v, ok := d.GetOk("is_read_only"); ok {
 		dashboard.SetIsReadOnly(v.(bool))
+	}
+	if v, ok := d.GetOk("restricted_roles"); ok {
+		// dashboard.RestrictedRoles = buildDatadogRestrictedRoles(v.([]string))
+		roles := make([]string, 0)
+		if ok {
+			for _, r := range v.(*schema.Set).List() {
+				roles = append(roles, r.(string))
+			}
+		}
+		dashboard.RestrictedRoles = &roles
 	}
 
 	// Build Widgets
@@ -508,6 +567,30 @@ func buildTerraformTemplateVariablePresets(datadogTemplateVariablePresets *[]dat
 	}
 
 	return &terraformTemplateVariablePresets
+}
+
+//
+// Restricted Roles helpers
+//
+
+// func buildDatadogRestrictedRoles(terraformRestrictedRoles []string) *[]string {
+// 	datadogRestrictedRoles := make([]string, len(terraformRestrictedRoles))
+// 	for i, roleUuid := range terraformRestrictedRoles {
+// 		datadogRestrictedRoles[i] = roleUuid.(string)
+// 	}
+// 	return &datadogRestrictedRoles
+// }
+
+func buildTerraformRestrictedRoles(datadogRestrictedRoles *[]string) *[]string {
+	if datadogRestrictedRoles == nil {
+		terraformRestrictedRoles := make([]string, 0)
+		return &terraformRestrictedRoles
+	}
+	terraformRestrictedRoles := make([]string, len(*datadogRestrictedRoles))
+	for i, roleUUID := range *datadogRestrictedRoles {
+		terraformRestrictedRoles[i] = roleUUID
+	}
+	return &terraformRestrictedRoles
 }
 
 //
