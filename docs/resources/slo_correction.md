@@ -13,7 +13,7 @@ Resource for interacting with the slo_correction API
 ## Example Usage
 
 ```terraform
-# Create a new Datadog SLO Correction. slo_id can be derived from slo resource or specify an slo id of an existing SLO.
+# Create a new Datadog SLO correction. slo_id can be derived from slo resource or specify an slo id of an existing SLO.
 
 resource "datadog_service_level_objective" "example_slo" {
   name        = "example slo"
@@ -34,9 +34,9 @@ resource "datadog_service_level_objective" "example_slo" {
 resource "datadog_slo_correction" "example_slo_correction" {
   category    = "Scheduled Maintenance"
   description = "correction example"
+  start       = 1735707000
   end         = 1735718600
   slo_id      = "datadog_service_level_objective.example_slo.id"
-  start       = 1735707000
   timezone    = "UTC"
 }
 ```
