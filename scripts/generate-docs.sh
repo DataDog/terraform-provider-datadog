@@ -21,8 +21,6 @@ fi
 
 tfplugindocs
 
-# This resource's documentation is not currently generated
-rm docs/resources/slo_correction.md
 
 # Remove the changes to files we don't autogenerate
 git checkout HEAD -- "${exclude_files[@]}"

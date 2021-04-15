@@ -559,6 +559,82 @@ resource "datadog_dashboard" "free_dashboard" {
     }
   }
 
+  widget {
+    timeseries_definition {
+      request {
+        formula {
+          formula_expression = "my_query_1 + my_query_2"
+          alias              = "my ff query"
+        }
+        formula {
+          formula_expression = "my_query_1 * my_query_2"
+          limit {
+            count = 5
+            order = "desc"
+          }
+          alias = "my second ff query"
+        }
+        query {
+          metric_query {
+            data_source = "metrics"
+            query       = "avg:system.cpu.user{app:general} by {env}"
+            name        = "my_query_1"
+            aggregator  = "sum"
+          }
+        }
+        query {
+          metric_query {
+            query      = "avg:system.cpu.user{app:general} by {env}"
+            name       = "my_query_2"
+            aggregator = "sum"
+          }
+        }
+      }
+    }
+  }
+  widget {
+    timeseries_definition {
+      request {
+        query {
+          event_query {
+            data_source = "logs"
+            indexes     = ["days-3"]
+            compute {
+              aggregation = "count"
+            }
+            group_by {
+              facet = "host"
+              sort {
+                metric      = "@lambda.max_memory_used"
+                aggregation = "avg"
+              }
+              limit = 10
+            }
+          }
+        }
+      }
+    }
+  }
+  widget {
+    timeseries_definition {
+      request {
+        query {
+          process_query {
+            data_source       = "process"
+            text_filter       = "abc"
+            metric            = "process.stat.cpu.total_pct"
+            limit             = 10
+            tag_filters       = ["some_filter"]
+            name              = "my_process_query"
+            sort              = "asc"
+            is_normalized_cpu = true
+            aggregator        = "sum"
+          }
+        }
+      }
+    }
+  }
+
   template_variable {
     name    = "var_1"
     prefix  = "host"
@@ -5118,12 +5194,14 @@ Optional:
 
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--apm_query))
 - **display_type** (String) How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.
+- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--formula))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--log_query))
 - **metadata** (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--metadata))
 - **network_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--network_query))
 - **on_right_yaxis** (Boolean) Boolean indicating whether the request will use the right or left Y-Axis.
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--process_query))
 - **q** (String) The metric query to use for this widget.
+- **query** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--query))
 - **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query))
 - **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query))
 - **style** (Block List, Max: 1) Style of the widget graph. Exactly one `style` block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style))
@@ -5192,6 +5270,28 @@ Optional:
 
 - **facet** (String) Facet name.
 - **interval** (Number) Define a time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--formula"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
+
+Required:
+
+- **formula_expression** (String) String expression built from queries, formulas and functions.
+
+Optional:
+
+- **alias** (String) Expression alias.
+- **limit** (Block List, Max: 1) Options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--limit))
+
+<a id="nestedblock--widget--group_definition--widget--id--request--style--limit"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.limit`
+
+Optional:
+
+- **count** (Number) Number of results to return
+- **order** (String) Direction of sort.
 
 
 
@@ -5353,6 +5453,112 @@ Optional:
 - **filter_by** (List of String) List of processes.
 - **limit** (Number) Max number of items in the filter list.
 - **search_by** (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
+
+Optional:
+
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--metric_query))
+- **process_query** (Block List, Max: 1) Process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query))
+
+<a id="nestedblock--widget--group_definition--widget--id--request--style--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query`
+
+Required:
+
+- **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--compute))
+- **data_source** (String) Data source for event platform-based queries.
+- **name** (String) Name of query for use in formulas.
+
+Optional:
+
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--group_by))
+- **indexes** (List of String) An array of index names to query in the stream.
+- **search** (Block List, Max: 1) Search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--search))
+
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query.search`
+
+Required:
+
+- **aggregation** (String) Aggregation methods for event platform queries.
+
+Optional:
+
+- **interval** (Number) A time interval in milliseconds.
+- **metric** (String) Measurable attribute to compute.
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query.search`
+
+Required:
+
+- **facet** (String) Event facet.
+
+Optional:
+
+- **limit** (Number) Number of groups to return.
+- **sort** (Block List, Max: 1) Options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--search--sort))
+
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query--search--sort"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query.search.sort`
+
+Required:
+
+- **aggregation** (String) Aggregation methods for event platform queries.
+
+Optional:
+
+- **metric** (String) Metric used for sorting group by results.
+- **order** (String) Direction of sort.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query.search`
+
+Required:
+
+- **query** (String) Events search string.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--style--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query`
+
+Required:
+
+- **name** (String) Name of the query for use in formulas.
+- **query** (String) Metrics query definition.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries.
+- **data_source** (String) Data source for metrics queries.
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query`
+
+Required:
+
+- **data_source** (String) Data source for process queries.
+- **metric** (String) Process metric name.
+- **name** (String) Name of query for use in formulas.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries.
+- **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
+- **limit** (Number) Number of hits to return.
+- **sort** (String) Direction of sort.
+- **tag_filters** (List of String) An array of tags to filter by.
+- **text_filter** (String) Text to use as filter.
+
 
 
 <a id="nestedblock--widget--group_definition--widget--id--request--rum_query"></a>
@@ -8468,12 +8674,14 @@ Optional:
 
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
 - **display_type** (String) How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.
+- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query))
 - **metadata** (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--metadata))
 - **network_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query))
 - **on_right_yaxis** (Boolean) Boolean indicating whether the request will use the right or left Y-Axis.
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--process_query))
 - **q** (String) The metric query to use for this widget.
+- **query** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query))
 - **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query))
 - **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query))
 - **style** (Block List, Max: 1) Style of the widget graph. Exactly one `style` block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style))
@@ -8542,6 +8750,28 @@ Optional:
 
 - **facet** (String) Facet name.
 - **interval** (Number) Define a time interval in seconds.
+
+
+
+<a id="nestedblock--widget--timeseries_definition--request--formula"></a>
+### Nested Schema for `widget.timeseries_definition.request.style`
+
+Required:
+
+- **formula_expression** (String) String expression built from queries, formulas and functions.
+
+Optional:
+
+- **alias** (String) Expression alias.
+- **limit** (Block List, Max: 1) Options for limiting results returned. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--limit))
+
+<a id="nestedblock--widget--timeseries_definition--request--style--limit"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.limit`
+
+Optional:
+
+- **count** (Number) Number of results to return
+- **order** (String) Direction of sort.
 
 
 
@@ -8703,6 +8933,112 @@ Optional:
 - **filter_by** (List of String) List of processes.
 - **limit** (Number) Max number of items in the filter list.
 - **search_by** (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--timeseries_definition--request--query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style`
+
+Optional:
+
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--metric_query))
+- **process_query** (Block List, Max: 1) Process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--process_query))
+
+<a id="nestedblock--widget--timeseries_definition--request--style--event_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.event_query`
+
+Required:
+
+- **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--compute))
+- **data_source** (String) Data source for event platform-based queries.
+- **name** (String) Name of query for use in formulas.
+
+Optional:
+
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--group_by))
+- **indexes** (List of String) An array of index names to query in the stream.
+- **search** (Block List, Max: 1) Search options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--search))
+
+<a id="nestedblock--widget--timeseries_definition--request--style--event_query--compute"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.event_query.search`
+
+Required:
+
+- **aggregation** (String) Aggregation methods for event platform queries.
+
+Optional:
+
+- **interval** (Number) A time interval in milliseconds.
+- **metric** (String) Measurable attribute to compute.
+
+
+<a id="nestedblock--widget--timeseries_definition--request--style--event_query--group_by"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.event_query.search`
+
+Required:
+
+- **facet** (String) Event facet.
+
+Optional:
+
+- **limit** (Number) Number of groups to return.
+- **sort** (Block List, Max: 1) Options for sorting group by results. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--search--sort))
+
+<a id="nestedblock--widget--timeseries_definition--request--style--event_query--search--sort"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.event_query.search.sort`
+
+Required:
+
+- **aggregation** (String) Aggregation methods for event platform queries.
+
+Optional:
+
+- **metric** (String) Metric used for sorting group by results.
+- **order** (String) Direction of sort.
+
+
+
+<a id="nestedblock--widget--timeseries_definition--request--style--event_query--search"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.event_query.search`
+
+Required:
+
+- **query** (String) Events search string.
+
+
+
+<a id="nestedblock--widget--timeseries_definition--request--style--metric_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.metric_query`
+
+Required:
+
+- **name** (String) Name of the query for use in formulas.
+- **query** (String) Metrics query definition.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries.
+- **data_source** (String) Data source for metrics queries.
+
+
+<a id="nestedblock--widget--timeseries_definition--request--style--process_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.process_query`
+
+Required:
+
+- **data_source** (String) Data source for process queries.
+- **metric** (String) Process metric name.
+- **name** (String) Name of query for use in formulas.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries.
+- **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
+- **limit** (Number) Number of hits to return.
+- **sort** (String) Direction of sort.
+- **tag_filters** (List of String) An array of tags to filter by.
+- **text_filter** (String) Text to use as filter.
+
 
 
 <a id="nestedblock--widget--timeseries_definition--request--rum_query"></a>
