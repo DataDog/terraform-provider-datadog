@@ -1,3 +1,33 @@
+## 2.25.0 (April 15, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_slo_correction`: Add docs for SLO Correction resource ([#1021](https://github.com/DataDog/terraform-provider-datadog/pull/1021))
+-   `datadog_synthetics_test`: Use new API models for api tests ([#1005](https://github.com/DataDog/terraform-provider-datadog/pull/1005))
+-   `datadog_monitor`: Improve consistency by using response from POST/PUT requests ([#1015](https://github.com/DataDog/terraform-provider-datadog/pull/1015))
+-   `datadog_synthetics_test`: Add `noSavingResponseBody` and `noScreenshot` fields ([#1012](https://github.com/DataDog/terraform-provider-datadog/pull/1012))
+-   `datadog_logs_metric`: Add `group_by` block to logs_metric example ([#1010](https://github.com/DataDog/terraform-provider-datadog/pull/1010))
+
+FEATURE:
+
+-   `datadog_dashboard`: Add support for Formula and Function support for Timeseries Widgets ([#892](https://github.com/DataDog/terraform-provider-datadog/pull/892))
+-   `datadog_synthetics_test`: Add support for `multi` step synthetics API tests ([#1007](https://github.com/DataDog/terraform-provider-datadog/pull/1007))
+-   `datadog_security_monitoring_default_rule`: Add datadog default security monitoring rule filters ([#965](https://github.com/DataDog/terraform-provider-datadog/pull/965))
+-   `datadog_synthetics_test`: Add support for global_time_target for SLO widgets ([#1003](https://github.com/DataDog/terraform-provider-datadog/pull/1003))
+
+BUGFIXES:
+
+-   `datadog_synthetics_test`: Set `tick_every` as required and add default value for `example` field ([#1020](https://github.com/DataDog/terraform-provider-datadog/pull/1020))
+-   `datadog_monitor`: Fix diff suppression for field `restricted_roles` ([#1011](https://github.com/DataDog/terraform-provider-datadog/pull/1011))
+-   `datadog_integration_slack_channel`: Fix `account_id` field not being set on imports ([#1019](https://github.com/DataDog/terraform-provider-datadog/pull/1019))
+-   `datadog_synthetics_test`: Fix error when passing empty step param ([#1014](https://github.com/DataDog/terraform-provider-datadog/pull/1014))
+-   `datadog_integration_gcp`: Set ForceNew to true on non-updatable GCP resource fields ([#1014](https://github.com/DataDog/terraform-provider-datadog/pull/1007))
+-   `datadog_dashboard`: Add retry on 502's when listing dashbaord ([#1006](https://github.com/DataDog/terraform-provider-datadog/pull/1006))
+
+NOTES:
+
+-   Update the underlying Datadog go client to v1.0.0-beta.19. See [here](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.0.0-beta.19) for changes.
+
 ## 2.24.0 (March 22, 2021)
 
 IMPROVEMENTS:
