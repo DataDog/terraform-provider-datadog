@@ -139,7 +139,9 @@ resource "datadog_dashboard" "top_list_dashboard" {
 				compute {
 				  aggregation = "count"
 				}
-				search_query = "abc"
+				search {
+					query = "abc"
+				}
 			  }
 			}
 		  }
@@ -214,7 +216,7 @@ var datadogDashboardTopListFormulaAsserts = []string{
 	"widget.1.toplist_definition.0.request.0.query.0.event_query.0.indexes.# = 1",
 	"widget.1.toplist_definition.0.request.0.query.0.event_query.0.indexes.0 = *",
 	"widget.1.toplist_definition.0.request.0.query.0.event_query.0.name = query1",
-	"widget.1.toplist_definition.0.request.0.query.0.event_query.0.search_query = abc",
+	"widget.1.toplist_definition.0.request.0.query.0.event_query.0.search.query = abc",
 	"widget.1.toplist_definition.0.request.0.query.0.event_query.0.compute.0.aggregation = count",
 }
 
@@ -230,6 +232,6 @@ func TestAccDatadogDashboardTopListFormula(t *testing.T) {
 	testAccDatadogDashboardWidgetUtil(t, datadogDashboardTopListFormulaConfig, "datadog_dashboard.top_list_dashboard", datadogDashboardTopListFormulaAsserts)
 }
 
-// func TestAccDatadogDashboardTopListFormula_import(t *testing.T) {
-// 	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardTopListFormulaConfig, "datadog_dashboard.top_list_dashboard")
-// }
+func TestAccDatadogDashboardTopListFormula_import(t *testing.T) {
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardTopListFormulaConfig, "datadog_dashboard.top_list_dashboard")
+}
