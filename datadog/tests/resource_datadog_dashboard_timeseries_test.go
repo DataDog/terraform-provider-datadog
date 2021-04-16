@@ -1101,14 +1101,6 @@ func TestAccDatadogDashboardFormula_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardFormulaConfig, "datadog_dashboard.timeseries_dashboard")
 }
 
-func TestAccDatadogDashboardFormula(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil(t, datadogDashboardFormulaConfig, "datadog_dashboard.timeseries_dashboard", datadogDashboardFormulaAsserts)
-}
-
-func TestAccDatadogDashboardFormula_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardFormulaConfig, "datadog_dashboard.timeseries_dashboard")
-}
-
 const datadogDashboardTimeseriesMultiComputeConfig = `
 resource "datadog_dashboard" "timeseries_dashboard" {
 	title         = "{{uniq}}"
