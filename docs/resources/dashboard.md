@@ -4128,9 +4128,11 @@ Optional:
 - **aggregator** (String) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--apm_query))
 - **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--conditional_formats))
+- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--formula))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--log_query))
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--process_query))
 - **q** (String) The metric query to use for this widget.
+- **query** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--query))
 - **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query))
 - **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query))
 
@@ -4220,6 +4222,28 @@ Optional:
 - **timeframe** (String) Defines the displayed timeframe.
 
 
+<a id="nestedblock--widget--group_definition--widget--id--request--formula"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
+
+Required:
+
+- **formula_expression** (String) String expression built from queries, formulas and functions.
+
+Optional:
+
+- **alias** (String) Expression alias.
+- **limit** (Block List, Max: 1) Options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--limit))
+
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--limit"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.limit`
+
+Optional:
+
+- **count** (Number) Number of results to return
+- **order** (String) Direction of sort.
+
+
+
 <a id="nestedblock--widget--group_definition--widget--id--request--log_query"></a>
 ### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
@@ -4299,6 +4323,112 @@ Optional:
 - **filter_by** (List of String) List of processes.
 - **limit** (Number) Max number of items in the filter list.
 - **search_by** (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
+
+Optional:
+
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--metric_query))
+- **process_query** (Block List, Max: 1) Process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--process_query))
+
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.process_query`
+
+Required:
+
+- **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--process_query--compute))
+- **data_source** (String) Data source for event platform-based queries.
+- **name** (String) Name of query for use in formulas.
+
+Optional:
+
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--process_query--group_by))
+- **indexes** (List of String) An array of index names to query in the stream.
+- **search** (Block List, Max: 1) Search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--process_query--search))
+
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--process_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.process_query.search`
+
+Required:
+
+- **aggregation** (String) Aggregation methods for event platform queries.
+
+Optional:
+
+- **interval** (Number) A time interval in milliseconds.
+- **metric** (String) Measurable attribute to compute.
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--process_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.process_query.search`
+
+Required:
+
+- **facet** (String) Event facet.
+
+Optional:
+
+- **limit** (Number) Number of groups to return.
+- **sort** (Block List, Max: 1) Options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--process_query--search--sort))
+
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--process_query--search--sort"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.process_query.search.sort`
+
+Required:
+
+- **aggregation** (String) Aggregation methods for event platform queries.
+
+Optional:
+
+- **metric** (String) Metric used for sorting group by results.
+- **order** (String) Direction of sort.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--process_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.process_query.search`
+
+Required:
+
+- **query** (String) Events search string.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.process_query`
+
+Required:
+
+- **name** (String) Name of the query for use in formulas.
+- **query** (String) Metrics query definition.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries.
+- **data_source** (String) Data source for metrics queries.
+
+
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.process_query`
+
+Required:
+
+- **data_source** (String) Data source for process queries.
+- **metric** (String) Process metric name.
+- **name** (String) Name of query for use in formulas.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries.
+- **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
+- **limit** (Number) Number of hits to return.
+- **sort** (String) Direction of sort.
+- **tag_filters** (List of String) An array of tags to filter by.
+- **text_filter** (String) Text to use as filter.
+
 
 
 <a id="nestedblock--widget--group_definition--widget--id--request--rum_query"></a>
@@ -7608,9 +7738,11 @@ Optional:
 - **aggregator** (String) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query))
 - **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--conditional_formats))
+- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query))
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--process_query))
 - **q** (String) The metric query to use for this widget.
+- **query** (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query))
 - **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query))
 - **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query))
 
@@ -7700,6 +7832,28 @@ Optional:
 - **timeframe** (String) Defines the displayed timeframe.
 
 
+<a id="nestedblock--widget--query_value_definition--request--formula"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query`
+
+Required:
+
+- **formula_expression** (String) String expression built from queries, formulas and functions.
+
+Optional:
+
+- **alias** (String) Expression alias.
+- **limit** (Block List, Max: 1) Options for limiting results returned. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--limit))
+
+<a id="nestedblock--widget--query_value_definition--request--security_query--limit"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.limit`
+
+Optional:
+
+- **count** (Number) Number of results to return
+- **order** (String) Direction of sort.
+
+
+
 <a id="nestedblock--widget--query_value_definition--request--log_query"></a>
 ### Nested Schema for `widget.query_value_definition.request.security_query`
 
@@ -7779,6 +7933,112 @@ Optional:
 - **filter_by** (List of String) List of processes.
 - **limit** (Number) Max number of items in the filter list.
 - **search_by** (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--query_value_definition--request--query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query`
+
+Optional:
+
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--metric_query))
+- **process_query** (Block List, Max: 1) Process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--process_query))
+
+<a id="nestedblock--widget--query_value_definition--request--security_query--event_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.event_query`
+
+Required:
+
+- **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--event_query--compute))
+- **data_source** (String) Data source for event platform-based queries.
+- **name** (String) Name of query for use in formulas.
+
+Optional:
+
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--event_query--group_by))
+- **indexes** (List of String) An array of index names to query in the stream.
+- **search** (Block List, Max: 1) Search options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--event_query--search))
+
+<a id="nestedblock--widget--query_value_definition--request--security_query--event_query--compute"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.event_query.search`
+
+Required:
+
+- **aggregation** (String) Aggregation methods for event platform queries.
+
+Optional:
+
+- **interval** (Number) A time interval in milliseconds.
+- **metric** (String) Measurable attribute to compute.
+
+
+<a id="nestedblock--widget--query_value_definition--request--security_query--event_query--group_by"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.event_query.search`
+
+Required:
+
+- **facet** (String) Event facet.
+
+Optional:
+
+- **limit** (Number) Number of groups to return.
+- **sort** (Block List, Max: 1) Options for sorting group by results. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--event_query--search--sort))
+
+<a id="nestedblock--widget--query_value_definition--request--security_query--event_query--search--sort"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.event_query.search.sort`
+
+Required:
+
+- **aggregation** (String) Aggregation methods for event platform queries.
+
+Optional:
+
+- **metric** (String) Metric used for sorting group by results.
+- **order** (String) Direction of sort.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--security_query--event_query--search"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.event_query.search`
+
+Required:
+
+- **query** (String) Events search string.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--security_query--metric_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.metric_query`
+
+Required:
+
+- **name** (String) Name of the query for use in formulas.
+- **query** (String) Metrics query definition.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries.
+- **data_source** (String) Data source for metrics queries.
+
+
+<a id="nestedblock--widget--query_value_definition--request--security_query--process_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.process_query`
+
+Required:
+
+- **data_source** (String) Data source for process queries.
+- **metric** (String) Process metric name.
+- **name** (String) Name of query for use in formulas.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries.
+- **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
+- **limit** (Number) Number of hits to return.
+- **sort** (String) Direction of sort.
+- **tag_filters** (List of String) An array of tags to filter by.
+- **text_filter** (String) Text to use as filter.
+
 
 
 <a id="nestedblock--widget--query_value_definition--request--rum_query"></a>
