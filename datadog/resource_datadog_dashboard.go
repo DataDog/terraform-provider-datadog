@@ -4990,7 +4990,11 @@ func getFormulaQuerySchema() *schema.Schema {
 								Type:        schema.TypeString,
 								Required:    true,
 								Description: "Name of query for use in formulas.",
+							},
+						},
+					},
 				},
+				"process_query": {
 					Type:        schema.TypeList,
 					Optional:    true,
 					MaxItems:    1,
@@ -5052,7 +5056,11 @@ func getFormulaQuerySchema() *schema.Schema {
 				},
 			},
 		},
+	}
+}
+
 func getTimeseriesRequestSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
 		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
