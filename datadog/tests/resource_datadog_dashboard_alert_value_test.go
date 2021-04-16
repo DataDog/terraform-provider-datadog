@@ -56,5 +56,5 @@ func TestAccDatadogDashboardAlertValue(t *testing.T) {
 }
 
 func TestAccDatadogDashboardAlertValue_import(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil_import(t, datadogDashboardAlertValueConfig, "datadog_dashboard.alert_value_dashboard")
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardAlertValueConfig, "datadog_dashboard.alert_value_dashboard")
 }

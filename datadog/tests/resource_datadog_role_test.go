@@ -3,12 +3,12 @@ package test
 import (
 	"context"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"regexp"
 	"strings"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"

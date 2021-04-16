@@ -6,9 +6,10 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/zorkian/go-datadog-api"
 )
 
@@ -148,7 +149,7 @@ func buildDatadogUserV2Struct(d *schema.ResourceData) *datadogV2.UserCreateReque
 	return userRequest
 }
 
-func buildDatadogUserV2UpdateStruct(d *schema.ResourceData, userId string) *datadogV2.UserUpdateRequest {
+func buildDatadogUserV2UpdateStruct(d *schema.ResourceData, userID string) *datadogV2.UserUpdateRequest {
 	userAttributes := datadogV2.NewUserUpdateAttributesWithDefaults()
 	userAttributes.SetEmail(d.Get("email").(string))
 	if v, ok := d.GetOk("name"); ok {
@@ -158,7 +159,7 @@ func buildDatadogUserV2UpdateStruct(d *schema.ResourceData, userId string) *data
 
 	userUpdate := datadogV2.NewUserUpdateDataWithDefaults()
 	userUpdate.SetAttributes(*userAttributes)
-	userUpdate.SetId(userId)
+	userUpdate.SetId(userID)
 
 	userRequest := datadogV2.NewUserUpdateRequestWithDefaults()
 	userRequest.SetData(*userUpdate)
@@ -322,18 +323,18 @@ func resourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 			return utils.TranslateClientError(err, "error getting user")
 		}
 		return updateUserStateV2(d, &userResponse)
-	} else {
-		client := providerConf.CommunityClient
-		u, err := client.GetUser(d.Id())
-		if err != nil {
-			if strings.Contains(err.Error(), "404 Not Found") {
-				d.SetId("")
-				return nil
-			}
-			return err
-		}
-		return updateUserStateV1(d, &u)
 	}
+
+	client := providerConf.CommunityClient
+	u, err := client.GetUser(d.Id())
+	if err != nil {
+		if strings.Contains(err.Error(), "404 Not Found") {
+			d.SetId("")
+			return nil
+		}
+		return err
+	}
+	return updateUserStateV1(d, &u)
 }
 
 func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -353,8 +354,8 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 		if len(responseData) != 1 {
 			return fmt.Errorf("could not find single user with email %s", email)
 		}
-		userId := responseData[0].GetId()
-		d.SetId(userId)
+		userID := responseData[0].GetId()
+		d.SetId(userID)
 	}
 
 	if isV2User(d.Id()) {
@@ -399,15 +400,14 @@ func resourceDatadogUserUpdate(d *schema.ResourceData, meta interface{}) error {
 		// Update state once after we do the UpdateUser operation. At this point, the roles have already been changed
 		// so the updated list is avalaible in the update response.
 		return updateUserStateV2(d, &updatedUser)
-	} else {
-		client := providerConf.CommunityClient
+	}
+	client := providerConf.CommunityClient
 
-		u := buildDatadogUserStruct(d)
-		u.SetHandle(d.Id())
+	u := buildDatadogUserStruct(d)
+	u.SetHandle(d.Id())
 
-		if err := client.UpdateUser(*u); err != nil {
-			return utils.TranslateClientError(err, "error updating user")
-		}
+	if err := client.UpdateUser(*u); err != nil {
+		return utils.TranslateClientError(err, "error updating user")
 	}
 	// We don't have a response in v1, so keep relying on the read
 	return resourceDatadogUserRead(d, meta)

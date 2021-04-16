@@ -259,7 +259,7 @@ func testAccCheckDatadogUserV2Destroy(accProvider *schema.Provider) func(*terraf
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
 
-		if err := datadogUserV2DestroyHelper(s, datadogClientV2, authV2); err != nil {
+		if err := datadogUserV2DestroyHelper(authV2, s, datadogClientV2); err != nil {
 			return err
 		}
 		return nil
@@ -272,7 +272,7 @@ func testAccCheckDatadogUserV2Exists(accProvider *schema.Provider, n string) res
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
 
-		if err := datadogUserV2ExistsHelper(s, datadogClientV2, authV2, n); err != nil {
+		if err := datadogUserV2ExistsHelper(authV2, s, datadogClientV2, n); err != nil {
 			return err
 		}
 		return nil
@@ -390,10 +390,10 @@ func datadogUserExistsHelper(s *terraform.State, client *communityClient.Client)
 	return nil
 }
 
-func datadogUserV2DestroyHelper(s *terraform.State, client *datadogV2.APIClient, auth context.Context) error {
+func datadogUserV2DestroyHelper(ctx context.Context, s *terraform.State, client *datadogV2.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		id := r.Primary.ID
-		userResponse, httpResponse, err := client.UsersApi.GetUser(auth, id).Execute()
+		userResponse, httpResponse, err := client.UsersApi.GetUser(ctx, id).Execute()
 
 		if err != nil {
 			if httpResponse.StatusCode == 404 {
@@ -413,9 +413,9 @@ func datadogUserV2DestroyHelper(s *terraform.State, client *datadogV2.APIClient,
 	return nil
 }
 
-func datadogUserV2ExistsHelper(s *terraform.State, client *datadogV2.APIClient, auth context.Context, name string) error {
+func datadogUserV2ExistsHelper(ctx context.Context, s *terraform.State, client *datadogV2.APIClient, name string) error {
 	id := s.RootModule().Resources[name].Primary.ID
-	if _, _, err := client.UsersApi.GetUser(auth, id).Execute(); err != nil {
+	if _, _, err := client.UsersApi.GetUser(ctx, id).Execute(); err != nil {
 		return fmt.Errorf("received an error retrieving user %s", err)
 	}
 	return nil

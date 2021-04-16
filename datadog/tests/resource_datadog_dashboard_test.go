@@ -3,11 +3,11 @@ package test
 import (
 	"context"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"strings"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -1338,7 +1338,7 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 	})
 }
 
-func testAccDatadogDashboardWidgetUtil_import(t *testing.T, config string, name string) {
+func testAccDatadogDashboardWidgetUtilImport(t *testing.T, config string, name string) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)

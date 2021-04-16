@@ -3,12 +3,14 @@ package datadog
 import (
 	"context"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 	"log"
 	"reflect"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	// embed time zone data
 	_ "time/tzdata"
@@ -16,7 +18,6 @@ import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func resourceDatadogDowntime() *schema.Resource {
@@ -220,7 +221,7 @@ func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, co
 	return apply
 }
 
-func buildDowntimeStruct(authV1 context.Context, d *schema.ResourceData, client *datadogV1.APIClient, updating bool) (*datadogV1.Downtime, error) {
+func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, client *datadogV1.APIClient, updating bool) (*datadogV1.Downtime, error) {
 	// NOTE: for each of start/start_date/end/end_date, we only send the value when
 	// it has changed or if the configured value is different than current value
 	// (IOW there's a resource drift). This allows users to change other attributes
@@ -237,7 +238,7 @@ func buildDowntimeStruct(authV1 context.Context, d *schema.ResourceData, client 
 		}
 
 		var currdt datadogV1.Downtime
-		currdt, _, err = client.DowntimesApi.GetDowntime(authV1, id).Execute()
+		currdt, _, err = client.DowntimesApi.GetDowntime(ctx, id).Execute()
 		if err != nil {
 			return nil, utils.TranslateClientError(err, "error getting downtime")
 		}
@@ -374,10 +375,11 @@ func updateDowntimeState(d *schema.ResourceData, dt *datadogV1.Downtime) error {
 	if err := d.Set("message", dt.GetMessage()); err != nil {
 		return err
 	}
-	if err := d.Set("monitor_id", dt.GetMonitorId()); err != nil {
-		return err
+	if v, ok := dt.GetMonitorIdOk(); ok && v != nil {
+		if err := d.Set("monitor_id", v); err != nil {
+			return err
+		}
 	}
-
 	if err := d.Set("timezone", dt.GetTimezone()); err != nil {
 		return err
 	}

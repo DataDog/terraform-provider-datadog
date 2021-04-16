@@ -3,11 +3,11 @@ package test
 import (
 	"context"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"strings"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
@@ -65,24 +65,24 @@ func checkIntegrationAWSLambdaArnExists(accProvider *schema.Provider) func(*terr
 	}
 }
 
-func checkIntegrationAwsLambdaArnExistsHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
-	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
+func checkIntegrationAwsLambdaArnExistsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(ctx).Execute()
 	if err != nil {
 		return err
 	}
 
 	for resourceType, r := range s.RootModule().Resources {
 		if strings.Contains(resourceType, "datadog_integration_aws_lambda_arn") {
-			accountId := r.Primary.Attributes["account_id"]
+			accountID := r.Primary.Attributes["account_id"]
 			lambdaArn := r.Primary.Attributes["lambda_arn"]
 			for _, logCollection := range logCollections {
 				for _, logCollectionLambdaArn := range logCollection.GetLambdas() {
-					if logCollection.GetAccountId() == accountId && logCollectionLambdaArn.GetArn() == lambdaArn {
+					if logCollection.GetAccountId() == accountID && logCollectionLambdaArn.GetArn() == lambdaArn {
 						return nil
 					}
 				}
 			}
-			return fmt.Errorf("The AWS Lambda ARN is not attached to the account: accountId=%s, lambdaArn=%s", accountId, lambdaArn)
+			return fmt.Errorf("The AWS Lambda ARN is not attached to the account: accountID=%s, lambdaArn=%s", accountID, lambdaArn)
 		}
 	}
 	return fmt.Errorf("Unable to find AWS Lambda ARN in any account")
@@ -98,8 +98,8 @@ func checkIntegrationAWSLambdaArnDestroy(accProvider *schema.Provider) func(*ter
 	}
 }
 
-func checkIntegrationAWSLambdaArnDestroyHelper(authV1 context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
-	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
+func checkIntegrationAWSLambdaArnDestroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(ctx).Execute()
 	if err != nil {
 		return err
 	}
@@ -107,14 +107,12 @@ func checkIntegrationAWSLambdaArnDestroyHelper(authV1 context.Context, s *terraf
 	err = utils.Retry(2, 5, func() error {
 		for _, r := range s.RootModule().Resources {
 			if r.Primary.ID != "" {
-				accountId := r.Primary.Attributes["account_id"]
+				accountID := r.Primary.Attributes["account_id"]
 				lambdaArn := r.Primary.Attributes["lambda_arn"]
 				for _, logCollection := range logCollections {
 					for _, logCollectionLambdaArn := range logCollection.GetLambdas() {
-						if logCollection.GetAccountId() == accountId && logCollectionLambdaArn.GetArn() == lambdaArn {
-							return &utils.RetryableError{Prob: fmt.Sprintf("The AWS Lambda ARN is still attached to the account: accountId=%s, lambdaArn=%s", accountId, lambdaArn)}
-						} else {
-							return nil
+						if logCollection.GetAccountId() == accountID && logCollectionLambdaArn.GetArn() == lambdaArn {
+							return &utils.RetryableError{Prob: fmt.Sprintf("The AWS Lambda ARN is still attached to the account: accountID=%s, lambdaArn=%s", accountID, lambdaArn)}
 						}
 					}
 				}

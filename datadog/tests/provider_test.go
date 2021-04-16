@@ -5,7 +5,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -19,6 +18,7 @@ import (
 	"time"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
@@ -79,7 +79,9 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_timeseries_test":                 "dashboards",
 	"tests/resource_datadog_dashboard_top_list_test":                   "dashboards",
 	"tests/resource_datadog_dashboard_trace_service_test":              "dashboards",
+	"tests/resource_datadog_dashboard_json_test":                       "dashboards-json",
 	"tests/resource_datadog_downtime_test":                             "downtimes",
+	"tests/resource_datadog_dashboard_geomap_test":                     "dashboards",
 	"tests/resource_datadog_integration_aws_lambda_arn_test":           "integration-aws",
 	"tests/resource_datadog_integration_aws_log_collection_test":       "integration-aws",
 	"tests/resource_datadog_integration_aws_tag_filter_test":           "integration-aws",
@@ -88,11 +90,13 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_gcp_test":                      "integration-gcp",
 	"tests/resource_datadog_integration_pagerduty_service_object_test": "integration-pagerduty",
 	"tests/resource_datadog_integration_pagerduty_test":                "integration-pagerduty",
+	"tests/resource_datadog_integration_slack_channel_test":            "integration-slack-channel",
 	"tests/resource_datadog_logs_archive_test":                         "logs-archive",
 	"tests/resource_datadog_logs_archive_order_test":                   "logs-archive-order",
 	"tests/resource_datadog_logs_custom_pipeline_test":                 "logs-pipelines",
 	"tests/resource_datadog_logs_metric_test":                          "logs-metric",
 	"tests/resource_datadog_metric_metadata_test":                      "metrics",
+	"tests/resource_datadog_metric_tag_configuration_test":             "metrics",
 	"tests/resource_datadog_monitor_test":                              "monitors",
 	"tests/resource_datadog_role_test":                                 "roles",
 	"tests/resource_datadog_screenboard_test":                          "dashboards",
@@ -438,6 +442,10 @@ func buildDatadogClientV1(httpClient *http.Client) *datadogV1.APIClient {
 func buildDatadogClientV2(httpClient *http.Client) *datadogV2.APIClient {
 	//Datadog V2 API config.HTTPClient
 	configV2 := datadogV2.NewConfiguration()
+	configV2.SetUnstableOperationEnabled("CreateTagConfiguration", true)
+	configV2.SetUnstableOperationEnabled("DeleteTagConfiguration", true)
+	configV2.SetUnstableOperationEnabled("ListTagConfigurationByName", true)
+	configV2.SetUnstableOperationEnabled("UpdateTagConfiguration", true)
 	configV2.Debug = isDebug()
 	configV2.HTTPClient = httpClient
 	configV2.UserAgent = utils.GetUserAgent(configV2.UserAgent)

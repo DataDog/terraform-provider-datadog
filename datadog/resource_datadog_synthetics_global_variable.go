@@ -193,9 +193,9 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 
 	syntheticsGlobalVariable.SetValue(syntheticsGlobalVariableValue)
 
-	if parseTestId, ok := d.GetOk("parse_test_id"); ok {
+	if parseTestID, ok := d.GetOk("parse_test_id"); ok {
 		if _, ok := d.GetOk("parse_test_options.0"); ok {
-			syntheticsGlobalVariable.SetParseTestPublicId(parseTestId.(string))
+			syntheticsGlobalVariable.SetParseTestPublicId(parseTestID.(string))
 
 			parseTestOptions := datadogV1.SyntheticsGlobalVariableParseTestOptions{}
 			parseTestOptions.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(d.Get("parse_test_options.0.type").(string)))
@@ -204,7 +204,7 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 				parseTestOptions.SetField(field.(string))
 			}
 
-			parser := datadogV1.SyntheticsGlobalVariableParseTestOptionsParser{}
+			parser := datadogV1.SyntheticsVariableParser{}
 			parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(d.Get("parse_test_options.0.parser.0.type").(string)))
 
 			if value, ok := d.GetOk("parse_test_options.0.parser.0.value"); ok {

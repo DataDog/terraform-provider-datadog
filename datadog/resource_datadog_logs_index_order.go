@@ -1,9 +1,10 @@
 package datadog
 
 import (
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func resourceDatadogLogsIndexOrder() *schema.Resource {
@@ -44,9 +45,9 @@ func resourceDatadogLogsIndexOrderUpdate(d *schema.ResourceData, meta interface{
 		ddList[i] = tfName.(string)
 	}
 	ddIndexList.IndexNames = ddList
-	var tfId string
+	var tfID string
 	if name, exists := d.GetOk("name"); exists {
-		tfId = name.(string)
+		tfID = name.(string)
 	}
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -56,7 +57,7 @@ func resourceDatadogLogsIndexOrderUpdate(d *schema.ResourceData, meta interface{
 	if err != nil {
 		return utils.TranslateClientError(err, "error updating logs index list")
 	}
-	d.SetId(tfId)
+	d.SetId(tfID)
 	return updateLogsIndexOrderState(d, &updatedOrder)
 }
 

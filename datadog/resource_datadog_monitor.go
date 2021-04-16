@@ -19,7 +19,7 @@ import (
 )
 
 // Minimal interface between ResourceData and ResourceDiff so that we can use them interchangeably in buildMonitorStruct
-type BuiltResource interface {
+type builtResource interface {
 	Get(string) interface{}
 	GetOk(string) (interface{}, bool)
 }
@@ -60,7 +60,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"query": {
-				Description: "The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.",
+				Description: "The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.\n\n**Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).",
 				Type:        schema.TypeString,
 				Required:    true,
 				StateFunc: func(val interface{}) string {
@@ -290,13 +290,6 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional:      true,
 				Elem:          &schema.Schema{Type: schema.TypeString},
 				ConflictsWith: []string{"locked"},
-				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
-					// if locked is defined, ignore restricted_roles
-					if _, ok := d.GetOk("locked"); ok {
-						return true
-					}
-					return false
-				},
 			},
 			"silenced": {
 				Description: "Each scope will be muted until the given POSIX timestamp or forever if the value is `0`. Use `-1` if you want to unmute the scope. Deprecated: the silenced parameter is being deprecated in favor of the downtime resource. This will be removed in the next major version of the Terraform Provider.",
@@ -319,6 +312,11 @@ func resourceDatadogMonitor() *schema.Resource {
 				Type:     schema.TypeSet,
 				Optional: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
+			"groupby_simple_monitor": {
+				Description: "Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.",
+				Type:        schema.TypeBool,
+				Optional:    true,
 			},
 			// since this is only useful for "log alert" type, we don't set a default value
 			// if we did set it, it would be used for all types; we have to handle this manually
@@ -346,7 +344,7 @@ func resourceDatadogMonitor() *schema.Resource {
 	}
 }
 
-func buildMonitorStruct(d BuiltResource) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
+func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
 
 	var thresholds datadogV1.MonitorThresholds
 
@@ -459,6 +457,10 @@ func buildMonitorStruct(d BuiltResource) (*datadogV1.Monitor, *datadogV1.Monitor
 		} else {
 			o.SetEnableLogsSample(false)
 		}
+
+		if attr, ok := d.GetOk("groupby_simple_monitor"); ok {
+			o.SetGroupbySimpleMonitor(attr.(bool))
+		}
 	}
 
 	m := datadogV1.NewMonitor()
@@ -556,10 +558,10 @@ func resourceDatadogMonitorCreate(d *schema.ResourceData, meta interface{}) erro
 	if err != nil {
 		return utils.TranslateClientError(err, "error creating monitor")
 	}
-	mCreatedId := strconv.FormatInt(mCreated.GetId(), 10)
-	d.SetId(mCreatedId)
+	mCreatedID := strconv.FormatInt(mCreated.GetId(), 10)
+	d.SetId(mCreatedID)
 
-	return resourceDatadogMonitorRead(d, meta)
+	return updateMonitorState(d, meta, &mCreated)
 }
 
 func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.Monitor) error {
@@ -683,6 +685,9 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 
 	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {
 		if err := d.Set("enable_logs_sample", m.Options.GetEnableLogsSample()); err != nil {
+			return err
+		}
+		if err := d.Set("groupby_simple_monitor", m.Options.GetGroupbySimpleMonitor()); err != nil {
 			return err
 		}
 	}

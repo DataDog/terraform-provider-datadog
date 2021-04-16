@@ -3,12 +3,13 @@ package test
 import (
 	"context"
 	"fmt"
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"strconv"
 	"testing"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
+	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/terraform"
@@ -561,7 +562,7 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "type", "log alert"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "query", "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 2"),
+						"datadog_monitor.foo", "query", "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") > 2"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
@@ -572,6 +573,8 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 						"datadog_monitor.foo", "thresholds.critical", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "enable_logs_sample", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "groupby_simple_monitor", "true"),
 				),
 			},
 		},
@@ -688,7 +691,7 @@ func testAccCheckDatadogMonitorDestroy(accProvider *schema.Provider) func(*terra
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		if err := destroyHelper(s, datadogClientV1, authV1); err != nil {
+		if err := destroyHelper(authV1, s, datadogClientV1); err != nil {
 			return err
 		}
 		return nil
@@ -701,7 +704,7 @@ func testAccCheckDatadogMonitorExists(accProvider *schema.Provider) resource.Tes
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
-		if err := existsHelper(s, datadogClientV1, authV1); err != nil {
+		if err := existsHelper(authV1, s, datadogClientV1); err != nil {
 			return err
 		}
 		return nil
@@ -1090,7 +1093,7 @@ resource "datadog_monitor" "foo" {
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
 
-  query = "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").last(\"5m\") > 2"
+  query = "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") > 2"
 
   thresholds = {
 	warning = "1.0"
@@ -1108,6 +1111,7 @@ resource "datadog_monitor" "foo" {
   locked = false
   tags = ["foo:bar", "baz"]
 	enable_logs_sample = true
+	groupby_simple_monitor = true
 }`, uniq)
 }
 
@@ -1259,17 +1263,16 @@ resource "datadog_monitor" "foo" {
 }`, uniq, uniq)
 }
 
-func destroyHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, authV1 context.Context) error {
+func destroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
 			i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
-			_, httpresp, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
+			_, httpresp, err := datadogClientV1.MonitorsApi.GetMonitor(ctx, i).Execute()
 			if err != nil {
 				if httpresp != nil && httpresp.StatusCode == 404 {
 					return nil
-				} else {
-					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
 				}
+				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
 			}
 			return &utils.RetryableError{Prob: fmt.Sprintf("Monitor still exists")}
 		}
@@ -1278,10 +1281,10 @@ func destroyHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, aut
 	return err
 }
 
-func existsHelper(s *terraform.State, datadogClientV1 *datadogV1.APIClient, authV1 context.Context) error {
+func existsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
-		_, _, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, i).Execute()
+		_, _, err := datadogClientV1.MonitorsApi.GetMonitor(ctx, i).Execute()
 		if err != nil {
 			return utils.TranslateClientError(err, "error retrieving monitor")
 		}

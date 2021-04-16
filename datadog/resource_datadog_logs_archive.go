@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func resourceDatadogLogsArchive() *schema.Resource {
@@ -309,26 +310,26 @@ func buildCreateReqDestination(d *schema.ResourceData) (*datadogV2.LogsArchiveCr
 	destinationMap := d.Get(archiveType)
 	switch strings.TrimSuffix(archiveType, "_archive") {
 	case string(datadogV2.LOGSARCHIVEDESTINATIONAZURETYPE_AZURE):
-		if destination, err := buildAzureDestination(destinationMap); err != nil {
+		destination, err := buildAzureDestination(destinationMap)
+		if err != nil {
 			return nil, err
-		} else {
-			result := datadogV2.LogsArchiveDestinationAzureAsLogsArchiveCreateRequestDestination(destination)
-			return &result, nil
 		}
+		result := datadogV2.LogsArchiveDestinationAzureAsLogsArchiveCreateRequestDestination(destination)
+		return &result, nil
 	case string(datadogV2.LOGSARCHIVEDESTINATIONGCSTYPE_GCS):
-		if destination, err := buildGCSDestination(destinationMap); err != nil {
+		destination, err := buildGCSDestination(destinationMap)
+		if err != nil {
 			return nil, err
-		} else {
-			result := datadogV2.LogsArchiveDestinationGCSAsLogsArchiveCreateRequestDestination(destination)
-			return &result, nil
 		}
+		result := datadogV2.LogsArchiveDestinationGCSAsLogsArchiveCreateRequestDestination(destination)
+		return &result, nil
 	case string(datadogV2.LOGSARCHIVEDESTINATIONS3TYPE_S3):
-		if destination, err := buildS3Destination(destinationMap); err != nil {
+		destination, err := buildS3Destination(destinationMap)
+		if err != nil {
 			return nil, err
-		} else {
-			result := datadogV2.LogsArchiveDestinationS3AsLogsArchiveCreateRequestDestination(destination)
-			return &result, nil
 		}
+		result := datadogV2.LogsArchiveDestinationS3AsLogsArchiveCreateRequestDestination(destination)
+		return &result, nil
 	default:
 		return nil, fmt.Errorf("archive type '%s' doesn't exist", archiveType)
 	}
@@ -359,17 +360,17 @@ func getFromDeprecatedMapOrList(f interface{}) (r map[string]interface{}) {
 
 func buildAzureDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationAzure, error) {
 	d := getFromDeprecatedMapOrList(dest)
-	clientId, ok := d["client_id"]
+	clientID, ok := d["client_id"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationAzure{}, fmt.Errorf("client_id is not defined")
 	}
-	tenantId, ok := d["tenant_id"]
+	tenantID, ok := d["tenant_id"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationAzure{}, fmt.Errorf("tenant_id is not defined")
 	}
 	integration := datadogV2.NewLogsArchiveIntegrationAzure(
-		clientId.(string),
-		tenantId.(string),
+		clientID.(string),
+		tenantID.(string),
 	)
 	container, ok := d["container"]
 	if !ok {
@@ -399,13 +400,13 @@ func buildGCSDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationGCS
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("client_email is not defined")
 	}
-	projectId, ok := d["project_id"]
+	projectID, ok := d["project_id"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("project_id is not defined")
 	}
 	integration := datadogV2.NewLogsArchiveIntegrationGCS(
 		clientEmail.(string),
-		projectId.(string),
+		projectID.(string),
 	)
 	bucket, ok := d["bucket"]
 	if !ok {
@@ -426,7 +427,7 @@ func buildGCSDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationGCS
 
 func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, error) {
 	d := getFromDeprecatedMapOrList(dest)
-	accountId, ok := d["account_id"]
+	accountID, ok := d["account_id"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("account_id is not defined")
 	}
@@ -435,7 +436,7 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("role_name is not defined")
 	}
 	integration := datadogV2.NewLogsArchiveIntegrationS3(
-		accountId.(string),
+		accountID.(string),
 		roleName.(string),
 	)
 	bucket, ok := d["bucket"]

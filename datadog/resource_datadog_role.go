@@ -3,13 +3,14 @@ package datadog
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"reflect"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
 
 // validPermissions is a map of all unrestricted permission IDs to their name
@@ -47,6 +48,7 @@ func resourceDatadogRole() *schema.Resource {
 	}
 }
 
+// GetRolePermissionSchema returns the schema specific to permissions
 func GetRolePermissionSchema() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
@@ -65,21 +67,21 @@ func GetRolePermissionSchema() *schema.Resource {
 	}
 }
 
-func getValidPermissions(client *datadog.APIClient, auth context.Context) (map[string]string, error) {
+func getValidPermissions(ctx context.Context, client *datadog.APIClient) (map[string]string, error) {
 	// Get a list of all permissions, to ignore restricted perms
 	if validPermissions == nil {
-		res, _, err := client.RolesApi.ListPermissions(auth).Execute()
+		res, _, err := client.RolesApi.ListPermissions(ctx).Execute()
 		if err != nil {
 			return nil, utils.TranslateClientError(err, "error listing permissions")
 		}
 		permsList := res.GetData()
-		permsNameToId := make(map[string]string, len(permsList))
+		permsNameToID := make(map[string]string, len(permsList))
 		for _, perm := range permsList {
 			if !perm.Attributes.GetRestricted() {
-				permsNameToId[perm.GetId()] = perm.Attributes.GetName()
+				permsNameToID[perm.GetId()] = perm.Attributes.GetName()
 			}
 		}
-		validPermissions = permsNameToId
+		validPermissions = permsNameToID
 	}
 	return validPermissions, nil
 }
@@ -89,7 +91,7 @@ func validatePermissionsUnrestricted(value interface{}, meta interface{}) error 
 	auth := meta.(*ProviderConfiguration).AuthV2
 
 	// Get a list of all valid permissions
-	validPerms, err := getValidPermissions(client, auth)
+	validPerms, err := getValidPermissions(auth, client)
 	if err != nil {
 		return err
 	}
@@ -121,10 +123,10 @@ func resourceDatadogRoleCreate(d *schema.ResourceData, meta interface{}) error {
 	roleData := resp.GetData()
 	d.SetId(roleData.GetId())
 
-	return updateRoleState(d, roleData.Attributes, roleData.Relationships, client, auth)
+	return updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, client)
 }
 
-func updateRoleState(d *schema.ResourceData, roleAttrsI interface{}, roleRelations *datadog.RoleResponseRelationships, client *datadog.APIClient, auth context.Context) error {
+func updateRoleState(ctx context.Context, d *schema.ResourceData, roleAttrsI interface{}, roleRelations *datadog.RoleResponseRelationships, client *datadog.APIClient) error {
 	type namer interface {
 		GetName() string
 	}
@@ -147,13 +149,13 @@ func updateRoleState(d *schema.ResourceData, roleAttrsI interface{}, roleRelatio
 	}
 
 	rolePerms := roleRelations.GetPermissions()
-	return updateRolePermissionsState(d, rolePerms.GetData(), client, auth)
+	return updateRolePermissionsState(ctx, d, rolePerms.GetData(), client)
 }
 
-func updateRolePermissionsState(d *schema.ResourceData, rolePermsI interface{}, client *datadog.APIClient, auth context.Context) error {
+func updateRolePermissionsState(ctx context.Context, d *schema.ResourceData, rolePermsI interface{}, client *datadog.APIClient) error {
 
 	// Get a list of all valid permissions, to ignore restricted perms
-	permsIDToName, err := getValidPermissions(client, auth)
+	permsIDToName, err := getValidPermissions(ctx, client)
 	if err != nil {
 		return err
 	}
@@ -204,7 +206,7 @@ func resourceDatadogRoleRead(d *schema.ResourceData, meta interface{}) error {
 		return utils.TranslateClientError(err, "error getting role")
 	}
 	roleData := resp.GetData()
-	return updateRoleState(d, roleData.Attributes, roleData.Relationships, client, auth)
+	return updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, client)
 }
 
 func resourceDatadogRoleUpdate(d *schema.ResourceData, meta interface{}) error {
@@ -218,7 +220,7 @@ func resourceDatadogRoleUpdate(d *schema.ResourceData, meta interface{}) error {
 			return utils.TranslateClientError(err, "error updating role")
 		}
 		roleData := resp.GetData()
-		if err := updateRoleState(d, roleData.Attributes, roleData.Relationships, client, auth); err != nil {
+		if err := updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, client); err != nil {
 			return err
 		}
 	}
@@ -256,7 +258,7 @@ func resourceDatadogRoleUpdate(d *schema.ResourceData, meta interface{}) error {
 			}
 		}
 		// Only need to update once all the permissions have been added/revoked, with the last call response
-		if err := updateRolePermissionsState(d, permsResponse.GetData(), client, auth); err != nil {
+		if err := updateRolePermissionsState(auth, d, permsResponse.GetData(), client); err != nil {
 			return err
 		}
 	}

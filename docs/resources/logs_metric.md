@@ -26,6 +26,10 @@ resource "datadog_logs_metric" "testing_logs_metric" {
     path     = "@status"
     tag_name = "status"
   }
+  group_by {
+    path     = "@version"
+    tag_name = "version"
+  }
 }
 ```
 
