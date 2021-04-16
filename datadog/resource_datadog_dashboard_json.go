@@ -35,6 +35,8 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 					for _, f := range computedFields {
 						delete(attrMap, f)
 					}
+					// Remove every widget id too
+					deleteWidgetID(attrMap["widgets"].([]interface{}))
 					res, _ := structure.FlattenJsonToString(attrMap)
 					return res
 				},
@@ -47,6 +49,17 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 				Description: "The URL of the dashboard.",
 			},
 		},
+	}
+}
+
+func deleteWidgetID(widgets []interface{}) {
+	for _, w := range widgets {
+		widget := w.(map[string]interface{})
+		def := widget["definition"].(map[string]interface{})
+		if def["type"] == "group" {
+			deleteWidgetID(def["widgets"].([]interface{}))
+		}
+		delete(widget, "id")
 	}
 }
 
@@ -147,6 +160,9 @@ func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]inter
 	for _, f := range computedFields {
 		delete(dashboard, f)
 	}
+
+	// Remove every widget id too
+	deleteWidgetID(dashboard["widgets"].([]interface{}))
 
 	dashboardString, err := structure.FlattenJsonToString(dashboard)
 	if err != nil {
