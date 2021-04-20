@@ -54,6 +54,27 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 				Default:     true,
 				Description: "Enable the rule.",
 			},
+
+			"filter": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "Additional queries to filter matched events before they are processed.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"action": {
+							Type:         schema.TypeString,
+							ValidateFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringFilterActionFromValue),
+							Required:     true,
+							Description:  "The type of filtering action. Allowed enum values: require, suppress",
+						},
+						"query": {
+							Type:        schema.TypeString,
+							Required:    true,
+							Description: "Query for selecting logs to apply the filtering action.",
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -98,6 +119,16 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 			d.Set(fmt.Sprintf("case.%d.notifications", i), notification)
 		}
 	}
+
+	ruleFilters := make([]map[string]interface{}, len(ruleResponse.GetFilters()))
+	for idx, responseRuleFilter := range ruleResponse.GetFilters() {
+		ruleFilters[idx] = map[string]interface{}{
+			"action": responseRuleFilter.GetAction(),
+			"query":  responseRuleFilter.GetQuery(),
+		}
+	}
+
+	d.Set("filter", ruleFilters)
 
 	return nil
 }
@@ -198,6 +229,26 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 	if modifiedCases > 0 {
 		payload.Cases = &updatedRuleCase
 	}
+
+	tfFilters := d.Get("filter").([]interface{})
+	payloadFilters := make([]datadogV2.SecurityMonitoringFilter, len(tfFilters))
+
+	for idx, tfRuleFilter := range tfFilters {
+		structRuleFilter := datadogV2.SecurityMonitoringFilter{}
+
+		ruleFilter := tfRuleFilter.(map[string]interface{})
+
+		if action, ok := ruleFilter["action"]; ok {
+			structRuleFilter.SetAction(datadogV2.SecurityMonitoringFilterAction(action.(string)))
+		}
+
+		if query, ok := ruleFilter["query"]; ok {
+			structRuleFilter.SetQuery(query.(string))
+		}
+
+		payloadFilters[idx] = structRuleFilter
+	}
+	payload.Filters = &payloadFilters
 
 	return &payload, true, nil
 }

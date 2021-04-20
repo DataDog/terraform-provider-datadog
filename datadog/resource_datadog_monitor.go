@@ -233,13 +233,6 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional:      true,
 				Elem:          &schema.Schema{Type: schema.TypeString},
 				ConflictsWith: []string{"locked"},
-				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
-					// if locked is defined, ignore restricted_roles
-					if _, ok := d.GetOk("locked"); ok {
-						return true
-					}
-					return false
-				},
 			},
 			"silenced": {
 				Description: "Each scope will be muted until the given POSIX timestamp or forever if the value is `0`. Use `-1` if you want to unmute the scope. Deprecated: the silenced parameter is being deprecated in favor of the downtime resource. This will be removed in the next major version of the Terraform Provider.",
@@ -489,7 +482,7 @@ func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, m
 	mCreatedID := strconv.FormatInt(mCreated.GetId(), 10)
 	d.SetId(mCreatedID)
 
-	return resourceDatadogMonitorRead(ctx, d, meta)
+	return updateMonitorState(d, meta, &mCreated)
 }
 
 func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.Monitor) diag.Diagnostics {
