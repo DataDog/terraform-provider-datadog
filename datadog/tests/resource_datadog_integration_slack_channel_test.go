@@ -78,7 +78,7 @@ func TestAccDatadogIntegrationSlackChannel_Import(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogDowntimeDestroy(accProvider),
+		CheckDestroy: testAccCheckDatadogIntegrationSlackChannelDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				// Workaround to ensure we create the slack integration before running the tests.
