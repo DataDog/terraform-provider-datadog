@@ -181,6 +181,24 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
+			"number_of_packets": {
+				Description: "Number of pings to use per test.",
+				Type:        schema.TypeInt,
+				Optional:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					// todo only if icmp
+					v := val.(int)
+					if v < 0 || v > 10 {
+						errs = append(errs, fmt.Errorf("%q must be between 0 and 10 inclusive, got: %d", key, v))
+					}
+					return
+				},
+			},
+			"should_track_hops": {
+				Description: "This will turn on a traceroute probe to discover all gateways along the path to the host destination.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -1000,7 +1018,7 @@ func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{
 }
 
 func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertionOperator datadogV1.SyntheticsAssertionOperator) bool {
-	for _, intTargetAssertionType := range []datadogV1.SyntheticsAssertionType{datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME, datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE} {
+	for _, intTargetAssertionType := range []datadogV1.SyntheticsAssertionType{datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME, datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE, datadogV1.SYNTHETICSASSERTIONTYPE_LATENCY} {
 		if assertionType == intTargetAssertionType {
 			return true
 		}
@@ -1074,6 +1092,12 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 	if attr, ok := k.GetOkWith("no_saving_response_body"); ok {
 		request.SetNoSavingResponseBody(attr.(bool))
+	}
+	if attr, ok := k.GetOkWith("number_of_packets"); ok {
+		request.SetNumberOfPackets(int32(attr.(int)))
+	}
+	if attr, ok := k.GetOkWith("should_track_hops"); ok {
+		request.SetShouldTrackHops(attr.(bool))
 	}
 	k.Remove(parts)
 
@@ -1773,6 +1797,12 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest, useDeprecated bo
 	}
 	if request.HasNoSavingResponseBody() {
 		localRequest["no_saving_response_body"] = request.GetNoSavingResponseBody()
+	}
+	if request.HasNumberOfPackets() {
+		localRequest["number_of_packets"] = request.GetNumberOfPackets()
+	}
+	if request.HasShouldTrackHops() {
+		localRequest["should_track_hops"] = request.GetShouldTrackHops()
 	}
 
 	return localRequest
