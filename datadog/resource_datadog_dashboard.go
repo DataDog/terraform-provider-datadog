@@ -3322,6 +3322,9 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 		"process_query":  getProcessQuerySchema(),
 		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getFormulaSchema(),
 		// Settings specific to QueryValue requests
 		"conditional_formats": {
 			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below.",
@@ -3362,6 +3365,28 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
 			securityQuery := v[0].(map[string]interface{})
 			datadogQueryValueRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
+		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+			for i, q := range v {
+				query := q.(map[string]interface{})
+				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogEventQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				}
+			}
+			datadogQueryValueRequest.SetQueries(queries)
+			// Query Value requests for formulas and functions always has a response format of "scalar"
+			datadogQueryValueRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
+		}
+		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+			formulas := make([]datadogV1.WidgetFormula, len(v))
+			for i, formula := range v {
+				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
+			}
+			datadogQueryValueRequest.SetFormulas(formulas)
 		}
 
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
@@ -3400,6 +3425,12 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.security_query.0", i))
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
+			terraformRequest["query"] = buildTerraformQuery(*v)
+		}
+
+		if v, ok := datadogRequest.GetFormulasOk(); ok {
+			terraformRequest["formula"] = buildTerraformFormula(*v)
 		}
 
 		if datadogRequest.ConditionalFormats != nil {
@@ -4564,6 +4595,266 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 	return terraformDefinition
 }
 
+func getFormulaSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"formula_expression": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "String expression built from queries, formulas and functions.",
+				},
+				"limit": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "Options for limiting results returned.",
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"count": {
+								Type:        schema.TypeInt,
+								Optional:    true,
+								Description: "Number of results to return",
+							},
+							"order": {
+								Type:         schema.TypeString,
+								Optional:     true,
+								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
+								Default:      "desc",
+								Description:  "Direction of sort.",
+							},
+						},
+					},
+				},
+				"alias": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Expression alias.",
+				},
+			},
+		},
+	}
+}
+
+func getFormulaQuerySchema() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"metric_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "A timeseries formula and functions metrics query.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Default:     "metrics",
+								Description: "Data source for metrics queries.",
+							},
+							"query": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "Metrics query definition.",
+							},
+							"aggregator": {
+								Type:         schema.TypeString,
+								Optional:     true,
+								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionMetricAggregationFromValue),
+								Description:  "The aggregation methods available for metrics queries.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "Name of the query for use in formulas.",
+							},
+						},
+					},
+				},
+				"event_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "A timeseries formula and functions events query.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:         schema.TypeString,
+								Required:     true,
+								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventsDataSourceFromValue),
+								Description:  "Data source for event platform-based queries.",
+							},
+							"search": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "Search options.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"query": {
+											Type:         schema.TypeString,
+											ValidateFunc: validation.StringIsNotEmpty,
+											Required:     true,
+											Description:  "Events search string.",
+										},
+									},
+								},
+							},
+							"indexes": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Elem:        &schema.Schema{Type: schema.TypeString},
+								Description: "An array of index names to query in the stream.",
+							},
+							"compute": {
+								Type:        schema.TypeList,
+								Required:    true,
+								Description: "Compute options.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"aggregation": {
+											Type:         schema.TypeString,
+											Required:     true,
+											ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventAggregationFromValue),
+											Description:  "Aggregation methods for event platform queries.",
+										},
+										"interval": {
+											Type:        schema.TypeInt,
+											Optional:    true,
+											Description: "A time interval in milliseconds.",
+										},
+										"metric": {
+											Type:        schema.TypeString,
+											Optional:    true,
+											Description: "Measurable attribute to compute.",
+										},
+									},
+								},
+							},
+							"group_by": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Description: "Group by options.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"facet": {
+											Type:        schema.TypeString,
+											Required:    true,
+											Description: "Event facet.",
+										},
+										"limit": {
+											Type:        schema.TypeInt,
+											Optional:    true,
+											Description: "Number of groups to return.",
+										},
+										"sort": {
+											Type:        schema.TypeList,
+											Optional:    true,
+											MaxItems:    1,
+											Description: "Options for sorting group by results.",
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"aggregation": {
+														Type:         schema.TypeString,
+														Required:     true,
+														ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventAggregationFromValue),
+														Description:  "Aggregation methods for event platform queries.",
+													},
+													"metric": {
+														Type:        schema.TypeString,
+														Optional:    true,
+														Description: "Metric used for sorting group by results.",
+													},
+													"order": {
+														Type:         schema.TypeString,
+														Optional:     true,
+														ValidateFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
+														Description:  "Direction of sort.",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "Name of query for use in formulas.",
+							},
+						},
+					},
+				},
+				"process_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "Process query using formulas and functions.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:         schema.TypeString,
+								Required:     true,
+								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionProcessQueryDataSourceFromValue),
+								Description:  "Data source for process queries.",
+							},
+							"metric": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "Process metric name.",
+							},
+							"text_filter": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Text to use as filter.",
+							},
+							"tag_filters": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Elem:        &schema.Schema{Type: schema.TypeString},
+								Description: "An array of tags to filter by.",
+							},
+							"limit": {
+								Type:        schema.TypeInt,
+								Optional:    true,
+								Description: "Number of hits to return.",
+							},
+							"sort": {
+								Type:         schema.TypeString,
+								Optional:     true,
+								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
+								Description:  "Direction of sort.",
+								Default:      "desc",
+							},
+							"aggregator": {
+								Type:         schema.TypeString,
+								Optional:     true,
+								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionMetricAggregationFromValue),
+								Description:  "The aggregation methods available for metrics queries.",
+							},
+							"is_normalized_cpu": {
+								Type:        schema.TypeBool,
+								Optional:    true,
+								Description: "Whether to normalize the CPU percentages.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "Name of query for use in formulas.",
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func getTimeseriesRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
@@ -4574,6 +4865,9 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		"network_query":  getApmLogNetworkRumSecurityQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getFormulaSchema(),
 		// Settings specific to Timeseries requests
 		"style": {
 			Description: "Style of the widget graph. Exactly one `style` block is allowed with the structure below.",
@@ -4634,6 +4928,147 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
+func buildDatadogFormula(data map[string]interface{}) datadogV1.WidgetFormula {
+	formula := datadogV1.WidgetFormula{}
+	if formulaExpression, ok := data["formula_expression"].(string); ok && len(formulaExpression) != 0 {
+		formula.SetFormula(formulaExpression)
+	}
+	if alias, ok := data["alias"].(string); ok && len(alias) != 0 {
+		formula.SetAlias(alias)
+	}
+	if limits, ok := data["limit"].([]interface{}); ok && len(limits) != 0 {
+		datadogLimit := datadogV1.NewWidgetFormulaLimit()
+		limit := limits[0].(map[string]interface{})
+		if count, ok := limit["count"].(int); ok && count != 0 {
+			datadogLimit.SetCount(int64(count))
+		}
+		if order, ok := limit["order"].(string); ok && len(order) > 0 {
+			datadogLimit.SetOrder(datadogV1.QuerySortOrder(order))
+		}
+		formula.SetLimit(*datadogLimit)
+	}
+	return formula
+}
+
+func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.FormulaAndFunctionEventsDataSource(data["data_source"].(string))
+	computeList := data["compute"].([]interface{})
+	computeMap := computeList[0].(map[string]interface{})
+	aggregation := datadogV1.FormulaAndFunctionEventAggregation(computeMap["aggregation"].(string))
+	compute := datadogV1.NewFormulaAndFunctionEventQueryDefinitionCompute(aggregation)
+	if interval, ok := computeMap["interval"].(int); ok && interval != 0 {
+		compute.SetInterval(int64(interval))
+	}
+	if metric, ok := computeMap["metric"].(string); ok && len(metric) > 0 {
+		compute.SetMetric(metric)
+	}
+	eventQuery := datadogV1.NewFormulaAndFunctionEventQueryDefinition(*compute, dataSource, data["name"].(string))
+	eventQueryIndexes := data["indexes"].([]interface{})
+	indexes := make([]string, len(eventQueryIndexes))
+	for i, index := range eventQueryIndexes {
+		indexes[i] = index.(string)
+	}
+	eventQuery.SetIndexes(indexes)
+
+	if terraformSearches, ok := data["search"].([]interface{}); ok && len(terraformSearches) > 0 {
+		terraformSearch := terraformSearches[0].(map[string]interface{})
+		eventQuery.Search = datadogV1.NewFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
+	}
+
+	// GroupBy
+	if terraformGroupBys, ok := data["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
+		datadogGroupBys := make([]datadogV1.FormulaAndFunctionEventQueryGroupBy, len(terraformGroupBys))
+		for i, g := range terraformGroupBys {
+			groupBy := g.(map[string]interface{})
+
+			// Facet
+			datadogGroupBy := datadogV1.NewFormulaAndFunctionEventQueryGroupBy(groupBy["facet"].(string))
+
+			// Limit
+			if v, ok := groupBy["limit"].(int); ok && v != 0 {
+				datadogGroupBy.SetLimit(int64(v))
+			}
+
+			// Sort
+			if v, ok := groupBy["sort"].([]interface{}); ok && len(v) > 0 {
+				if v, ok := v[0].(map[string]interface{}); ok && len(v) > 0 {
+					sortMap := &datadogV1.FormulaAndFunctionEventQueryGroupBySort{}
+					if aggr, ok := v["aggregation"].(string); ok && len(aggr) > 0 {
+						aggregation := datadogV1.FormulaAndFunctionEventAggregation(v["aggregation"].(string))
+						sortMap.SetAggregation(aggregation)
+					}
+					if order, ok := v["order"].(string); ok && len(order) > 0 {
+						eventSort := datadogV1.QuerySortOrder(order)
+						sortMap.SetOrder(eventSort)
+					}
+					if metric, ok := v["metric"].(string); ok && len(metric) > 0 {
+						sortMap.SetMetric(metric)
+					}
+					datadogGroupBy.SetSort(*sortMap)
+				}
+			}
+
+			datadogGroupBys[i] = *datadogGroupBy
+		}
+		eventQuery.SetGroupBy(datadogGroupBys)
+	}
+
+	return datadogV1.FormulaAndFunctionEventQueryDefinitionAsFormulaAndFunctionQueryDefinition(eventQuery)
+}
+
+func buildDatadogMetricQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.FormulaAndFunctionMetricDataSource("metrics")
+	metricQuery := datadogV1.NewFormulaAndFunctionMetricQueryDefinition(dataSource, data["name"].(string), data["query"].(string))
+	if v, ok := data["aggregator"].(string); ok && len(v) != 0 {
+		aggregator := datadogV1.FormulaAndFunctionMetricAggregation(data["aggregator"].(string))
+		metricQuery.SetAggregator(aggregator)
+	}
+
+	return datadogV1.FormulaAndFunctionMetricQueryDefinitionAsFormulaAndFunctionQueryDefinition(metricQuery)
+}
+
+func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.FormulaAndFunctionProcessQueryDataSource(data["data_source"].(string))
+	processQuery := datadogV1.NewFormulaAndFunctionProcessQueryDefinition(dataSource, data["metric"].(string), data["name"].(string))
+
+	// Text Filter
+	if v, ok := data["text_filter"].(string); ok && len(v) != 0 {
+		processQuery.SetTextFilter(v)
+	}
+
+	terraformFilters := data["tag_filters"].([]interface{})
+	datadogFilters := make([]string, len(terraformFilters))
+	for i, filter := range terraformFilters {
+		datadogFilters[i] = filter.(string)
+	}
+	processQuery.SetTagFilters(datadogFilters)
+
+	// Limit
+	if v, ok := data["limit"].(int); ok && v != 0 {
+		processQuery.SetLimit(int64(v))
+	}
+
+	// Aggregator
+	if v, ok := data["aggregator"].(string); ok && len(v) != 0 {
+		aggregator := datadogV1.FormulaAndFunctionMetricAggregation(data["aggregator"].(string))
+		processQuery.SetAggregator(aggregator)
+	}
+
+	// is_normalized_cpu
+	if v, ok := data["is_normalized_cpu"].(bool); ok {
+		processQuery.SetIsNormalizedCpu(v)
+	}
+
+	// Sort
+	if v, ok := data["sort"].(string); ok && len(v) != 0 {
+		sort := datadogV1.QuerySortOrder(v)
+		processQuery.SetSort(sort)
+	}
+
+	return datadogV1.FormulaAndFunctionProcessQueryDefinitionAsFormulaAndFunctionQueryDefinition(processQuery)
+}
+
 func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadogV1.TimeseriesWidgetRequest {
 	datadogRequests := make([]datadogV1.TimeseriesWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
@@ -4660,6 +5095,27 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogTimeseriesRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+			for i, q := range v {
+				query := q.(map[string]interface{})
+				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogEventQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				}
+			}
+			datadogTimeseriesRequest.SetQueries(queries)
+			datadogTimeseriesRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("timeseries"))
+		}
+		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+			formulas := make([]datadogV1.WidgetFormula, len(v))
+			for i, formula := range v {
+				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
+			}
+			datadogTimeseriesRequest.SetFormulas(formulas)
 		}
 		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
 			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
@@ -4723,7 +5179,14 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.security_query.0", i))
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
+			terraformRequest["query"] = buildTerraformQuery(*v)
 		}
+
+		if v, ok := datadogRequest.GetFormulasOk(); ok {
+			terraformRequest["formula"] = buildTerraformFormula(*v)
+		}
+
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := buildTerraformWidgetRequestStyle(*v)
 			terraformRequest["style"] = []map[string]interface{}{style}
@@ -5643,6 +6106,157 @@ func buildDatadogGroupBySort(sort map[string]interface{}) *datadogV1.LogQueryDef
 		ddSort.SetFacet(facet)
 	}
 	return ddSort
+}
+
+func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefinition) []map[string]interface{} {
+	queries := make([]map[string]interface{}, len(datadogQueries))
+	for i, query := range datadogQueries {
+		terraformQuery := map[string]interface{}{}
+		terraformEventQueryDefinition := query.FormulaAndFunctionEventQueryDefinition
+		if terraformEventQueryDefinition != nil {
+			if dataSource, ok := terraformEventQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if name, ok := terraformEventQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			if indexes, ok := terraformEventQueryDefinition.GetIndexesOk(); ok {
+				terraformQuery["indexes"] = indexes
+			}
+			if search, ok := terraformEventQueryDefinition.GetSearchOk(); ok {
+				if len(search.GetQuery()) > 0 {
+					terraformSearch := map[string]interface{}{}
+					terraformSearch["query"] = search.GetQuery()
+					terraformSearchList := []map[string]interface{}{terraformSearch}
+					terraformQuery["search"] = terraformSearchList
+				}
+			}
+			if compute, ok := terraformEventQueryDefinition.GetComputeOk(); ok {
+				terraformCompute := map[string]interface{}{}
+				if aggregation, ok := compute.GetAggregationOk(); ok {
+					terraformCompute["aggregation"] = aggregation
+				}
+				if interval, ok := compute.GetIntervalOk(); ok {
+					terraformCompute["interval"] = interval
+				}
+				if metric, ok := compute.GetMetricOk(); ok {
+					terraformCompute["metric"] = metric
+				}
+				terraformComputeList := []map[string]interface{}{terraformCompute}
+				terraformQuery["compute"] = terraformComputeList
+			}
+			if terraformEventQuery, ok := terraformEventQueryDefinition.GetGroupByOk(); ok {
+				terraformGroupBys := make([]map[string]interface{}, len(*terraformEventQuery))
+				for i, groupBy := range *terraformEventQuery {
+					// Facet
+					terraformGroupBy := map[string]interface{}{
+						"facet": groupBy.GetFacet(),
+					}
+					// Limit
+					if v, ok := groupBy.GetLimitOk(); ok {
+						terraformGroupBy["limit"] = *v
+					}
+					// Sort
+					if v, ok := groupBy.GetSortOk(); ok {
+						terraformSort := map[string]interface{}{}
+						if metric, ok := v.GetMetricOk(); ok {
+							terraformSort["metric"] = metric
+						}
+						if order, ok := v.GetOrderOk(); ok {
+							terraformSort["order"] = order
+						}
+						if aggregation, ok := v.GetAggregationOk(); ok {
+							terraformSort["aggregation"] = aggregation
+						}
+						terraformGroupBy["sort"] = []map[string]interface{}{terraformSort}
+					}
+					terraformGroupBys[i] = terraformGroupBy
+				}
+				terraformQuery["group_by"] = &terraformGroupBys
+			}
+			terraformQueries := []map[string]interface{}{terraformQuery}
+			terraformEventQuery := map[string]interface{}{}
+			terraformEventQuery["event_query"] = terraformQueries
+			queries[i] = terraformEventQuery
+		}
+		terraformMetricQueryDefinition := query.FormulaAndFunctionMetricQueryDefinition
+		if terraformMetricQueryDefinition != nil {
+			if dataSource, ok := terraformMetricQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if metricQuery, ok := terraformMetricQueryDefinition.GetQueryOk(); ok {
+				terraformQuery["query"] = metricQuery
+			}
+			if aggregator, ok := terraformMetricQueryDefinition.GetAggregatorOk(); ok {
+				terraformQuery["aggregator"] = aggregator
+			}
+			if name, ok := terraformMetricQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			terraformQueries := []map[string]interface{}{terraformQuery}
+			terraformMetricQuery := map[string]interface{}{}
+			terraformMetricQuery["metric_query"] = terraformQueries
+			queries[i] = terraformMetricQuery
+		}
+		terraformProcessqueryDefinition := query.FormulaAndFunctionProcessQueryDefinition
+		if terraformProcessqueryDefinition != nil {
+			if dataSource, ok := terraformProcessqueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if metric, ok := terraformProcessqueryDefinition.GetMetricOk(); ok {
+				terraformQuery["metric"] = metric
+			}
+			if textFilter, ok := terraformProcessqueryDefinition.GetTextFilterOk(); ok {
+				terraformQuery["text_filter"] = textFilter
+			}
+			if tagFilters, ok := terraformProcessqueryDefinition.GetTagFiltersOk(); ok {
+				terraformQuery["tag_filters"] = tagFilters
+			}
+			if limit, ok := terraformProcessqueryDefinition.GetLimitOk(); ok {
+				terraformQuery["limit"] = limit
+			}
+			if sort, ok := terraformProcessqueryDefinition.GetSortOk(); ok {
+				terraformQuery["sort"] = sort
+			}
+			if isNormalizedCPU, ok := terraformProcessqueryDefinition.GetIsNormalizedCpuOk(); ok {
+				terraformQuery["is_normalized_cpu"] = isNormalizedCPU
+			}
+			if aggregator, ok := terraformProcessqueryDefinition.GetAggregatorOk(); ok {
+				terraformQuery["aggregator"] = aggregator
+			}
+			if name, ok := terraformProcessqueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			terraformQueries := []map[string]interface{}{terraformQuery}
+			terraformProcessQuery := map[string]interface{}{}
+			terraformProcessQuery["process_query"] = terraformQueries
+			queries[i] = terraformProcessQuery
+		}
+	}
+	return queries
+}
+
+func buildTerraformFormula(datadogFormulas []datadogV1.WidgetFormula) []map[string]interface{} {
+	formulas := make([]map[string]interface{}, len(datadogFormulas))
+	for i, formula := range datadogFormulas {
+		terraformFormula := map[string]interface{}{}
+		terraformFormula["formula_expression"] = formula.GetFormula()
+		if alias, ok := formula.GetAliasOk(); ok {
+			terraformFormula["alias"] = alias
+		}
+		if limit, ok := formula.GetLimitOk(); ok {
+			terraFormLimit := make(map[string]interface{})
+			if count, ok := limit.GetCountOk(); ok {
+				terraFormLimit["count"] = count
+			}
+			if order, ok := limit.GetOrderOk(); ok {
+				terraFormLimit["order"] = string(*order)
+			}
+			terraformFormula["limit"] = []map[string]interface{}{terraFormLimit}
+		}
+		formulas[i] = terraformFormula
+	}
+	return formulas
 }
 
 func buildTerraformApmOrLogQueryCompute(compute *datadogV1.LogsQueryCompute) map[string]interface{} {

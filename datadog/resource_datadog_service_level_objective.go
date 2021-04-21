@@ -201,7 +201,6 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 	slor := datadogV1.NewServiceLevelObjectiveRequestWithDefaults()
 	slor.SetName(d.Get("name").(string))
 	slor.SetType(datadogV1.SLOType(d.Get("type").(string)))
-	slor.SetId(d.Id())
 
 	if attr, ok := d.GetOk("description"); ok {
 		slo.SetDescription(attr.(string))
