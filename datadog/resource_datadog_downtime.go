@@ -33,17 +33,13 @@ func resourceDatadogDowntime() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"active": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-					_, recurrencePresent := d.GetOk("recurrence")
-					return recurrencePresent
-				},
+				Type:        schema.TypeBool,
+				Computed:    true,
 				Description: "When true indicates this downtime is being actively applied",
 			},
 			"disabled": {
 				Type:        schema.TypeBool,
-				Optional:    true,
+				Computed:    true,
 				Description: "When true indicates this downtime is not being applied",
 			},
 			"start": {
@@ -246,12 +242,6 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, client *da
 		currentEnd = currdt.GetEnd()
 	}
 
-	if attr, ok := d.GetOk("active"); ok {
-		dt.SetActive(attr.(bool))
-	}
-	if attr, ok := d.GetOk("disabled"); ok {
-		dt.SetDisabled(attr.(bool))
-	}
 	endValue, endAttrName := getDowntimeBoundaryTimestamp(d, "end_date", "end")
 	if downtimeBoundaryNeedsApply(d, endAttrName, currentEnd, endValue, updating) {
 		dt.SetEnd(endValue)
