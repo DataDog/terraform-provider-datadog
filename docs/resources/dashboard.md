@@ -673,7 +673,6 @@ resource "datadog_dashboard" "free_dashboard" {
 
 - **dashboard_lists** (Set of Number) The list of dashboard lists this dashboard belongs to.
 - **description** (String) The description of the dashboard.
-- **id** (String) The ID of this resource.
 - **is_read_only** (Boolean) Whether this dashboard is read-only.
 - **notify_list** (List of String) The list of handles of users to notify when changes are made to this dashboard.
 - **reflow_type** (String) The reflow type of a multi-size layout dashboard. Set this only when layout type is ‘ordered’. If set to ‘fixed’, the dashboard expect all widgets to have a layout, and if it’s set to ‘auto’, widgets should not have layouts.
@@ -684,6 +683,7 @@ resource "datadog_dashboard" "free_dashboard" {
 ### Read-Only
 
 - **dashboard_lists_removed** (Set of Number) The list of dashboard lists this dashboard should be removed from. Internal only.
+- **id** (String) The ID of this resource.
 
 <a id="nestedblock--widget"></a>
 ### Nested Schema for `widget`

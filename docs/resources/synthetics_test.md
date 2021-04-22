@@ -205,7 +205,6 @@ resource "datadog_synthetics_test" "test_browser" {
 - **browser_variable** (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
 - **config_variable** (Block List) Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--config_variable))
 - **device_ids** (List of String) Array with the different device IDs used to run the test. Allowed enum values: `laptop_large`, `tablet`, `mobile_small` (only available for `browser` tests).
-- **id** (String) The ID of this resource.
 - **message** (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.
 - **options** (Map of String, Deprecated) **Deprecated.** Define `options_list` blocks instead.
 - **options_list** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
@@ -222,6 +221,7 @@ resource "datadog_synthetics_test" "test_browser" {
 
 ### Read-Only
 
+- **id** (String) The ID of this resource.
 - **monitor_id** (Number) ID of the monitor associated with the Datadog synthetics test.
 
 <a id="nestedblock--api_step"></a>

@@ -167,10 +167,13 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
 ### Optional
 
 - **api_token** (String, Sensitive) Your PagerDuty API token.
-- **id** (String) The ID of this resource.
 - **individual_services** (Boolean) Boolean to specify whether or not individual service objects specified by [datadog_integration_pagerduty_service_object](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_pagerduty_service_object) resource are to be used. Mutually exclusive with `services` key.
 - **schedules** (List of String) Array of your schedule URLs.
 - **services** (Block List, Deprecated) A list of service names and service keys. **Deprecated.** set "individual_services" to true and use datadog_pagerduty_integration_service_object (see [below for nested schema](#nestedblock--services))
+
+### Read-Only
+
+- **id** (String) The ID of this resource.
 
 <a id="nestedblock--services"></a>
 ### Nested Schema for `services`

@@ -173,9 +173,12 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
 
 ### Optional
 
-- **id** (String) The ID of this resource.
 - **is_enabled** (Boolean)
 - **processor** (Block List) (see [below for nested schema](#nestedblock--processor))
+
+### Read-Only
+
+- **id** (String) The ID of this resource.
 
 <a id="nestedblock--filter"></a>
 ### Nested Schema for `filter`

@@ -50,6 +50,9 @@ resource "datadog_logs_index" "sample_index" {
 ### Optional
 
 - **exclusion_filter** (Block List) List of exclusion filters. (see [below for nested schema](#nestedblock--exclusion_filter))
+
+### Read-Only
+
 - **id** (String) The ID of this resource.
 
 <a id="nestedblock--filter"></a>

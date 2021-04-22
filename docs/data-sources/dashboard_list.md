@@ -25,7 +25,7 @@ data "datadog_dashboard_list" "test" {
 
 - **name** (String) A dashboard list name to limit the search.
 
-### Optional
+### Read-Only
 
 - **id** (String) The ID of this resource.
 

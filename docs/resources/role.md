@@ -37,11 +37,11 @@ resource "datadog_role" "foo" {
 
 ### Optional
 
-- **id** (String) The ID of this resource.
 - **permission** (Block Set) Set of objects containing the permission ID and the name of the permissions granted to this role. (see [below for nested schema](#nestedblock--permission))
 
 ### Read-Only
 
+- **id** (String) The ID of this resource.
 - **user_count** (Number) Number of users that have this role.
 
 <a id="nestedblock--permission"></a>
