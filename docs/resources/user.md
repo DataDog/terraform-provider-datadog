@@ -38,7 +38,6 @@ resource "datadog_user" "foo" {
 - **access_role** (String, Deprecated) Role description for user. Can be `st` (standard user), `adm` (admin user) or `ro` (read-only user). Default is `st`. `access_role` is ignored for new users created with this resource. New users have to use the `roles` attribute. **Deprecated.** This parameter is replaced by `roles` and will be removed from the next Major version.
 - **disabled** (Boolean) Whether the user is disabled.
 - **handle** (String, Deprecated) The user handle, must be a valid email. **Deprecated.** This parameter is deprecated and will be removed from the next Major version.
-- **id** (String) The ID of this resource.
 - **is_admin** (Boolean, Deprecated) Whether the user is an administrator. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan. **Deprecated.** This parameter is replaced by `roles` and will be removed from the next Major version.
 - **name** (String) Name for user.
 - **role** (String, Deprecated) Role description for user. Warning: the corresponding query parameter is ignored by the Datadog API, thus the argument would always trigger an execution plan. **Deprecated.** This parameter was removed from the API and has no effect.
@@ -47,6 +46,7 @@ resource "datadog_user" "foo" {
 
 ### Read-Only
 
+- **id** (String) The ID of this resource.
 - **user_invitation_id** (String) The ID of the user invitation that was sent when creating the user.
 - **verified** (Boolean) Returns `true` if the user is verified.
 

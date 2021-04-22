@@ -514,7 +514,10 @@ EOF
 
 ### Optional
 
-- **id** (String) The ID of this resource.
 - **url** (String) The URL of the dashboard.
+
+### Read-Only
+
+- **id** (String) The ID of this resource.
 
 
