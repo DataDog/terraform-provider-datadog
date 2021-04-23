@@ -778,7 +778,6 @@ resource "datadog_downtime" "foo" {
   scope = ["somescope"]
 
   monitor_tags = ["*"]
-  active = true
   message = "%s"
 }`, uniq)
 }
