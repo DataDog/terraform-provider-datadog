@@ -50,8 +50,6 @@ resource "datadog_downtime" "foo" {
 
 ### Optional
 
-- **active** (Boolean) When true indicates this downtime is being actively applied
-- **disabled** (Boolean) When true indicates this downtime is not being applied
 - **end** (Number) Optionally specify an end date when this downtime should expire
 - **end_date** (String) String representing date and time to end the downtime in RFC3339 format.
 - **message** (String) An optional message to provide when creating the downtime, can include notification handles
@@ -64,6 +62,8 @@ resource "datadog_downtime" "foo" {
 
 ### Read-Only
 
+- **active** (Boolean) When true indicates this downtime is being actively applied
+- **disabled** (Boolean) When true indicates this downtime is not being applied
 - **id** (String) The ID of this resource.
 
 <a id="nestedblock--recurrence"></a>
