@@ -1282,7 +1282,7 @@ func checkDashboardExists(accProvider *schema.Provider) resource.TestCheckFunc {
 		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
-			if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID).Execute(); err != nil {
+			if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID); err != nil {
 				return fmt.Errorf("received an error retrieving dashboard1 %s", err)
 			}
 		}
@@ -1298,7 +1298,7 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 
 		err := utils.Retry(2, 10, func() error {
 			for _, r := range s.RootModule().Resources {
-				if _, httpResp, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID).Execute(); err != nil {
+				if _, httpResp, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID); err != nil {
 					if httpResp != nil && httpResp.StatusCode == 404 {
 						return nil
 					}

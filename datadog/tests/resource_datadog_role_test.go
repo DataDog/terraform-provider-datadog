@@ -113,7 +113,7 @@ func testAccCheckDatadogRoleDestroy(accProvider *schema.Provider) func(*terrafor
 				// Only care about roles
 				continue
 			}
-			_, httpresp, err := client.RolesApi.GetRole(auth, r.Primary.ID).Execute()
+			_, httpresp, err := client.RolesApi.GetRole(auth, r.Primary.ID)
 			if err != nil {
 				if !(httpresp != nil && httpresp.StatusCode == 404) {
 					return utils.TranslateClientError(err, "error getting role")
@@ -134,7 +134,7 @@ func testAccCheckDatadogRoleExists(accProvider *schema.Provider, rolename string
 		auth := providerConf.AuthV2
 
 		id := s.RootModule().Resources[rolename].Primary.ID
-		_, _, err := client.RolesApi.GetRole(auth, id).Execute()
+		_, _, err := client.RolesApi.GetRole(auth, id)
 		if err != nil {
 			return utils.TranslateClientError(err, "error checking role existence")
 		}

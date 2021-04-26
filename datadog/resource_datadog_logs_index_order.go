@@ -53,7 +53,7 @@ func resourceDatadogLogsIndexOrderUpdate(d *schema.ResourceData, meta interface{
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	updatedOrder, _, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndexOrder(authV1).Body(ddIndexList).Execute()
+	updatedOrder, _, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndexOrder(authV1, ddIndexList)
 	if err != nil {
 		return utils.TranslateClientError(err, "error updating logs index list")
 	}
@@ -72,7 +72,7 @@ func resourceDatadogLogsIndexOrderRead(d *schema.ResourceData, meta interface{})
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
-	ddIndexList, _, err := client.LogsIndexesApi.GetLogsIndexOrder(auth).Execute()
+	ddIndexList, _, err := client.LogsIndexesApi.GetLogsIndexOrder(auth)
 	if err != nil {
 		return utils.TranslateClientError(err, "error getting logs index list")
 	}

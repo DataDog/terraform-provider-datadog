@@ -156,7 +156,7 @@ func testAccCheckDatadogMetricTagConfigurationExists(accProvider *schema.Provide
 
 		id := resourceID
 
-		_, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, id).Execute()
+		_, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, id)
 
 		if err != nil {
 			return utils.TranslateClientError(err, "error checking if tag configuration exists")
@@ -187,7 +187,7 @@ func testAccCheckDatadogMetricTagConfigurationDestroy(accProvider *schema.Provid
 
 			id := r.Primary.ID
 
-			_, resp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, id).Execute()
+			_, resp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, id)
 
 			if err != nil {
 				if resp.StatusCode == 404 {
