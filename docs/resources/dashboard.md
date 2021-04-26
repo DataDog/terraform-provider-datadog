@@ -1512,7 +1512,6 @@ Optional:
 - **q** (String) The metric query to use for this widget.
 - **query** (Block List) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query))
 - **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--security_query))
 
 <a id="nestedblock--widget--geomap_definition--request--formula"></a>
 ### Nested Schema for `widget.geomap_definition.request.formula`
@@ -1764,73 +1763,6 @@ Optional:
 
 <a id="nestedblock--widget--geomap_definition--request--rum_query--multi_compute"></a>
 ### Nested Schema for `widget.geomap_definition.request.rum_query.multi_compute`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) Facet name.
-- **interval** (Number) Define a time interval in seconds.
-
-
-
-<a id="nestedblock--widget--geomap_definition--request--security_query"></a>
-### Nested Schema for `widget.geomap_definition.request.security_query`
-
-Required:
-
-- **index** (String) Name of the index to query.
-
-Optional:
-
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
-- **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--security_query--group_by))
-- **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
-- **search_query** (String) The search query to use.
-
-<a id="nestedblock--widget--geomap_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.geomap_definition.request.security_query.compute_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) Facet name.
-- **interval** (Number) Define a time interval in seconds.
-
-
-<a id="nestedblock--widget--geomap_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.geomap_definition.request.security_query.group_by`
-
-Optional:
-
-- **facet** (String) Facet name.
-- **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
-- **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--security_query--group_by--sort_query))
-
-<a id="nestedblock--widget--geomap_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.geomap_definition.request.security_query.group_by.sort_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
-
-Optional:
-
-- **facet** (String) Facet name.
-
-
-
-<a id="nestedblock--widget--geomap_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.geomap_definition.request.security_query.multi_compute`
 
 Required:
 
@@ -2692,7 +2624,6 @@ Optional:
 - **q** (String) The metric query to use for this widget.
 - **query** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query))
 - **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula"></a>
 ### Nested Schema for `widget.group_definition.widget.geomap_definition.request.formula`
@@ -2944,73 +2875,6 @@ Optional:
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--multi_compute"></a>
 ### Nested Schema for `widget.group_definition.widget.geomap_definition.request.rum_query.multi_compute`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) Facet name.
-- **interval** (Number) Define a time interval in seconds.
-
-
-
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--security_query"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.security_query`
-
-Required:
-
-- **index** (String) Name of the index to query.
-
-Optional:
-
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
-- **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--security_query--group_by))
-- **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
-- **search_query** (String) The search query to use.
-
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.security_query.compute_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) Facet name.
-- **interval** (Number) Define a time interval in seconds.
-
-
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.security_query.group_by`
-
-Optional:
-
-- **facet** (String) Facet name.
-- **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
-- **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--security_query--group_by--sort_query))
-
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.security_query.group_by.sort_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
-
-Optional:
-
-- **facet** (String) Facet name.
-
-
-
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.security_query.multi_compute`
 
 Required:
 

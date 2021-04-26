@@ -4494,10 +4494,9 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 func getGeomapRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":              getMetricQuerySchema(),
-		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"q":         getMetricQuerySchema(),
+		"log_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"rum_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// "query" and "formula" go together
 		"query":   getFormulaQuerySchema(),
 		"formula": getFormulaSchema(),
@@ -4566,9 +4565,6 @@ func buildDatadogGeomapRequests(terraformRequests *[]interface{}) *[]datadogV1.G
 		} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
 			rumQuery := v[0].(map[string]interface{})
 			datadogGeomapRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
-		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
-			securityQuery := v[0].(map[string]interface{})
-			datadogGeomapRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
 			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
 			for i, q := range v {
@@ -4612,10 +4608,6 @@ func buildTerraformGeomapRequests(datadogGeomapRequests *[]datadogV1.GeomapWidge
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.rum_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.rum_query.0", i))
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
-		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.security_query.0", i))
-			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(*v)
 		}
