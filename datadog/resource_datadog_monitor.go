@@ -525,7 +525,7 @@ func resourceDatadogMonitorCustomizeDiff(diff *schema.ResourceDiff, meta interfa
 	return resource.Retry(retryTimeout, func() *resource.RetryError {
 		_, httpresp, err := datadogClientV1.MonitorsApi.ValidateMonitor(authV1).Body(*m).Execute()
 		if err != nil {
-			if httpresp != nil && httpresp.StatusCode == 502 {
+			if httpresp != nil && (httpresp.StatusCode == 502 || httpresp.StatusCode == 504) {
 				return resource.RetryableError(utils.TranslateClientError(err, "error validating monitor, retrying"))
 			}
 			return resource.NonRetryableError(utils.TranslateClientError(err, "error validating monitor"))
