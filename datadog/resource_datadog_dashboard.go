@@ -4494,9 +4494,13 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 func getGeomapRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":         getMetricQuerySchema(),
-		"log_query": getApmLogNetworkRumSecurityQuerySchema(),
-		"rum_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"q":              getMetricQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getFormulaSchema(),
 	}
 }
 
@@ -4562,6 +4566,31 @@ func buildDatadogGeomapRequests(terraformRequests *[]interface{}) *[]datadogV1.G
 		} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
 			rumQuery := v[0].(map[string]interface{})
 			datadogGeomapRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
+		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
+			securityQuery := v[0].(map[string]interface{})
+			datadogGeomapRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
+		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+			for i, q := range v {
+				query := q.(map[string]interface{})
+				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogEventQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				}
+			}
+			datadogGeomapRequest.SetQueries(queries)
+			// Geomap requests for formulas and functions always has a response format of "scalar"
+			datadogGeomapRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
+		}
+		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+			formulas := make([]datadogV1.WidgetFormula, len(v))
+			for i, formula := range v {
+				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
+			}
+			datadogGeomapRequest.SetFormulas(formulas)
 		}
 
 		datadogRequests[i] = *datadogGeomapRequest
@@ -4583,7 +4612,18 @@ func buildTerraformGeomapRequests(datadogGeomapRequests *[]datadogV1.GeomapWidge
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.rum_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.rum_query.0", i))
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
+			k.Remove(fmt.Sprintf("%d.security_query.0", i))
+			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
+			terraformRequest["query"] = buildTerraformQuery(*v)
 		}
+
+		if v, ok := datadogRequest.GetFormulasOk(); ok {
+			terraformRequest["formula"] = buildTerraformFormula(*v)
+		}
+
 		terraformRequests[i] = terraformRequest
 	}
 	return &terraformRequests
