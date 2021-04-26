@@ -147,6 +147,37 @@ resource "datadog_dashboard" "geomap_dashboard" {
 		  }
 		}
 	  }
+	  widget {
+		geomap_definition {
+		  request {
+			formula {
+			  formula_expression = "query1"
+			}
+			query {
+			  event_query {
+				data_source = "security_signals"
+				name        = "query1"
+				indexes     = ["*"]
+				compute {
+				  aggregation = "count"
+				}
+			  }
+			}
+		  }
+		  style {
+			palette      = "hostmap_blues"
+			palette_flip = false
+		  }
+		  view {
+			focus = "WORLD"
+		  }
+		  live_span = "4h"
+		  custom_link {
+			label = "my custom link"
+			link  = "https://app.datadoghq.com/dashboard/lists"
+		  }
+		}
+	  }
 }
 `
 
@@ -207,6 +238,15 @@ var datadogDashboardGeomapFormulaAsserts = []string{
 	"widget.1.geomap_definition.0.view.0.focus = WORLD",
 	"widget.1.geomap_definition.0.style.0.palette_flip = false",
 	"widget.1.geomap_definition.0.view.0.focus = WORLD",
+	"widget.2.geomap_definition.0.request.0.formula.0.formula_expression = query1",
+	"widget.2.geomap_definition.0.request.0.query.0.event_query.0.data_source = security_signals",
+	"widget.2.geomap_definition.0.request.0.query.0.event_query.0.indexes.# = 1",
+	"widget.2.geomap_definition.0.request.0.query.0.event_query.0.indexes.0 = *",
+	"widget.2.geomap_definition.0.request.0.query.0.event_query.0.name = query1",
+	"widget.2.geomap_definition.0.request.0.query.0.event_query.0.compute.0.aggregation = count",
+	"widget.2.geomap_definition.0.view.0.focus = WORLD",
+	"widget.2.geomap_definition.0.style.0.palette_flip = false",
+	"widget.2.geomap_definition.0.view.0.focus = WORLD",
 }
 
 func TestAccDatadogDashboardGeomap(t *testing.T) {
