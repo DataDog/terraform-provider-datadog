@@ -65,7 +65,7 @@ func resourceDatadogDashboard() *schema.Resource {
 			"reflow_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
-				Description:  "The reflow type of a multi-size layout dashboard. Set this only when layout type is ‘ordered’. If set to ‘fixed’, the dashboard expect all widgets to have a layout, and if it’s set to ‘auto’, widgets should not have layouts.",
+				Description:  "The reflow type of a new dashboard layout. Set this only when layout type is ‘ordered’. If set to ‘fixed’, the dashboard expect all widgets to have a layout, and if it’s set to ‘auto’, widgets should not have layouts.",
 				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewDashboardReflowTypeFromValue),
 			},
 			"description": {
@@ -957,12 +957,18 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataK
 		if _, ok := k.GetOkWith("layout"); ok {
 			terraformWidget["layout"] = buildTerraformWidgetLayout(*v)
 		} else {
-			terraformWidget["widget_layout"] = []map[string]int64{{
+			widget_layout := map[string]interface{}{
 				"x":      (*v).GetX(),
 				"y":      (*v).GetY(),
 				"height": (*v).GetHeight(),
 				"width":  (*v).GetWidth(),
-			}}
+			}
+			if value, ok := (*v).GetIsColumnBreakOk(); ok {
+				widget_layout["is_column_break"] = value
+			}
+			terraformWidget["widget_layout"] = [](map[string]interface{}){
+				widget_layout,
+			}
 		}
 	}
 	terraformWidget["id"] = datadogWidget.GetId()
@@ -1093,6 +1099,11 @@ func getWidgetLayoutSchema() map[string]*schema.Schema {
 			Type:        schema.TypeInt,
 			Required:    true,
 		},
+		"is_column_break": {
+			Description: "Whether the widget should be the first one on the second column in high density or not. Only for the new dashboard layout and only one widget in the dashboard should have this property set to `true`.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
 	}
 }
 
@@ -1102,6 +1113,9 @@ func buildDatadogWidgetLayout(terraformLayout map[string]interface{}) *datadogV1
 	datadogLayout.SetY(int64(terraformLayout["y"].(int)))
 	datadogLayout.SetHeight(int64(terraformLayout["height"].(int)))
 	datadogLayout.SetWidth(int64(terraformLayout["width"].(int)))
+	if value, ok := terraformLayout["is_column_break"].(bool); ok {
+		datadogLayout.SetIsColumnBreak(value)
+	}
 	return datadogLayout
 }
 
