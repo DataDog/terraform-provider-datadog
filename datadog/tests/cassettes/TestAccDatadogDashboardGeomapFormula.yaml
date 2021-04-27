@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardGeomapFormula-local-1619475319","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}],"response_format":"scalar"}],"style":{"palette":"hostmap_blues","palette_flip":false},"type":"geomap","view":{"focus":"WORLD"}}},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"abc"}}],"response_format":"scalar"}],"style":{"palette":"hostmap_blues","palette_flip":false},"type":"geomap","view":{"focus":"WORLD"}}},{"definition":{"custom_links":[{"label":"my custom link","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"compute":{"aggregation":"count"},"data_source":"security_signals","indexes":["*"],"name":"query1"}],"response_format":"scalar"}],"style":{"palette":"hostmap_blues","palette_flip":false},"time":{"live_span":"4h"},"type":"geomap","view":{"focus":"WORLD"}}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardGeomapFormula-local-1619506707","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}],"response_format":"scalar"}],"style":{"palette":"hostmap_blues","palette_flip":false},"type":"geomap","view":{"focus":"WORLD"}}},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"abc"}}],"response_format":"scalar"}],"style":{"palette":"hostmap_blues","palette_flip":false},"type":"geomap","view":{"focus":"WORLD"}}},{"definition":{"custom_links":[{"label":"my custom link","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"compute":{"aggregation":"count"},"data_source":"security_signals","indexes":["*"],"name":"query1"}],"response_format":"scalar"}],"style":{"palette":"hostmap_blues","palette_flip":false},"time":{"live_span":"4h"},"type":"geomap","view":{"focus":"WORLD"}}}]}
     form: {}
     headers:
       Accept:
@@ -13,11 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.15.6; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.15.7; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"ncr-ugi-fa2","title":"tf-TestAccDatadogDashboardGeomapFormula-local-1619475319","url":"/dashboard/ncr-ugi-fa2/tf-testaccdatadogdashboardgeomapformula-local-1619475319","created_at":"2021-04-26T22:15:21.109602+00:00","modified_at":"2021-04-26T22:15:21.109602+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"response_format":"scalar","queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":8563751841742835},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"response_format":"scalar","queries":[{"search":{"query":"abc"},"data_source":"rum","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":5346761924905997},{"definition":{"style":{"palette":"hostmap_blues","palette_flip":false},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"my custom link"}],"time":{"live_span":"4h"},"requests":[{"formulas":[{"formula":"query1"}],"response_format":"scalar","queries":[{"data_source":"security_signals","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","view":{"focus":"WORLD"}},"id":2593144089614814}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3jk-mfp-nsn","title":"tf-TestAccDatadogDashboardGeomapFormula-local-1619506707","url":"/dashboard/3jk-mfp-nsn/tf-testaccdatadogdashboardgeomapformula-local-1619506707","created_at":"2021-04-27T06:58:29.303490+00:00","modified_at":"2021-04-27T06:58:29.303490+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"response_format":"scalar","queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":1149146342854926},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"response_format":"scalar","queries":[{"search":{"query":"abc"},"data_source":"rum","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":5478869481740425},{"definition":{"style":{"palette":"hostmap_blues","palette_flip":false},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"my custom link"}],"time":{"live_span":"4h"},"requests":[{"formulas":[{"formula":"query1"}],"response_format":"scalar","queries":[{"data_source":"security_signals","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","view":{"focus":"WORLD"}},"id":18914160855721}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -28,7 +28,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Apr 2021 22:15:24 GMT
+      - Tue, 27 Apr 2021 06:58:32 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -38,7 +38,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - F5gm0Rce1/Abr9/0Fw8HAqWfiz0FdiH8er/AXnN6lOn3L6KyGgbsLCwgPlob1No8
+      - Um4CoU685QqAscnxhS5BD+goWu2yX1Jd4zCfGzSsEvPPIm1qURZaF8dlLl/OEY4I
       X-Dd-Version:
       - "35.4397207"
       X-Frame-Options:
@@ -55,11 +55,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.15.6; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/ncr-ugi-fa2
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3jk-mfp-nsn
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"ncr-ugi-fa2","title":"tf-TestAccDatadogDashboardGeomapFormula-local-1619475319","url":"/dashboard/ncr-ugi-fa2/tf-testaccdatadogdashboardgeomapformula-local-1619475319","created_at":"2021-04-26T22:15:21.109602+00:00","modified_at":"2021-04-26T22:15:21.109602+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"response_format":"scalar","queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":8563751841742835},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"response_format":"scalar","queries":[{"search":{"query":"abc"},"data_source":"rum","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":5346761924905997},{"definition":{"style":{"palette":"hostmap_blues","palette_flip":false},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"my custom link"}],"time":{"live_span":"4h"},"requests":[{"formulas":[{"formula":"query1"}],"response_format":"scalar","queries":[{"data_source":"security_signals","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","view":{"focus":"WORLD"}},"id":2593144089614814}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3jk-mfp-nsn","title":"tf-TestAccDatadogDashboardGeomapFormula-local-1619506707","url":"/dashboard/3jk-mfp-nsn/tf-testaccdatadogdashboardgeomapformula-local-1619506707","created_at":"2021-04-27T06:58:29.303490+00:00","modified_at":"2021-04-27T06:58:29.303490+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"response_format":"scalar","queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":1149146342854926},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"response_format":"scalar","queries":[{"search":{"query":"abc"},"data_source":"rum","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":5478869481740425},{"definition":{"style":{"palette":"hostmap_blues","palette_flip":false},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"my custom link"}],"time":{"live_span":"4h"},"requests":[{"formulas":[{"formula":"query1"}],"response_format":"scalar","queries":[{"data_source":"security_signals","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","view":{"focus":"WORLD"}},"id":18914160855721}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -70,7 +70,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Apr 2021 22:15:24 GMT
+      - Tue, 27 Apr 2021 06:58:32 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -80,7 +80,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - F5gm0Rce1/Abr9/0Fw8HAqWfiz0FdiH8er/AXnN6lOn3L6KyGgbsLCwgPlob1No8
+      - SY1h8ScsWq+kYmtbh63ltMLFAZsQjqfrgvdfAoRX+9TzT1sgMBRYaFRwfWWRRe9a
       X-Dd-Version:
       - "35.4397207"
       X-Frame-Options:
@@ -97,11 +97,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.15.6; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/ncr-ugi-fa2
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3jk-mfp-nsn
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"ncr-ugi-fa2","title":"tf-TestAccDatadogDashboardGeomapFormula-local-1619475319","url":"/dashboard/ncr-ugi-fa2/tf-testaccdatadogdashboardgeomapformula-local-1619475319","created_at":"2021-04-26T22:15:21.109602+00:00","modified_at":"2021-04-26T22:15:21.109602+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"response_format":"scalar","queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":8563751841742835},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"response_format":"scalar","queries":[{"search":{"query":"abc"},"data_source":"rum","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":5346761924905997},{"definition":{"style":{"palette":"hostmap_blues","palette_flip":false},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"my custom link"}],"time":{"live_span":"4h"},"requests":[{"formulas":[{"formula":"query1"}],"response_format":"scalar","queries":[{"data_source":"security_signals","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","view":{"focus":"WORLD"}},"id":2593144089614814}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3jk-mfp-nsn","title":"tf-TestAccDatadogDashboardGeomapFormula-local-1619506707","url":"/dashboard/3jk-mfp-nsn/tf-testaccdatadogdashboardgeomapformula-local-1619506707","created_at":"2021-04-27T06:58:29.303490+00:00","modified_at":"2021-04-27T06:58:29.303490+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"response_format":"scalar","queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":1149146342854926},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"response_format":"scalar","queries":[{"search":{"query":"abc"},"data_source":"rum","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":5478869481740425},{"definition":{"style":{"palette":"hostmap_blues","palette_flip":false},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"my custom link"}],"time":{"live_span":"4h"},"requests":[{"formulas":[{"formula":"query1"}],"response_format":"scalar","queries":[{"data_source":"security_signals","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","view":{"focus":"WORLD"}},"id":18914160855721}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -112,7 +112,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Apr 2021 22:15:24 GMT
+      - Tue, 27 Apr 2021 06:58:32 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -122,7 +122,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - twvpGlmuom5y6A0pjGtXzTf554cmwJgTcCZ71fK4H/RDi+v5ehBK0zQiRcTJQG5C
+      - SY1h8ScsWq+kYmtbh63ltMLFAZsQjqfrgvdfAoRX+9TzT1sgMBRYaFRwfWWRRe9a
       X-Dd-Version:
       - "35.4397207"
       X-Frame-Options:
@@ -139,11 +139,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.15.6; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/ncr-ugi-fa2
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3jk-mfp-nsn
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"ncr-ugi-fa2","title":"tf-TestAccDatadogDashboardGeomapFormula-local-1619475319","url":"/dashboard/ncr-ugi-fa2/tf-testaccdatadogdashboardgeomapformula-local-1619475319","created_at":"2021-04-26T22:15:21.109602+00:00","modified_at":"2021-04-26T22:15:21.109602+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"response_format":"scalar","queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":8563751841742835},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"response_format":"scalar","queries":[{"search":{"query":"abc"},"data_source":"rum","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":5346761924905997},{"definition":{"style":{"palette":"hostmap_blues","palette_flip":false},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"my custom link"}],"time":{"live_span":"4h"},"requests":[{"formulas":[{"formula":"query1"}],"response_format":"scalar","queries":[{"data_source":"security_signals","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","view":{"focus":"WORLD"}},"id":2593144089614814}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3jk-mfp-nsn","title":"tf-TestAccDatadogDashboardGeomapFormula-local-1619506707","url":"/dashboard/3jk-mfp-nsn/tf-testaccdatadogdashboardgeomapformula-local-1619506707","created_at":"2021-04-27T06:58:29.303490+00:00","modified_at":"2021-04-27T06:58:29.303490+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"response_format":"scalar","queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":1149146342854926},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"response_format":"scalar","queries":[{"search":{"query":"abc"},"data_source":"rum","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":5478869481740425},{"definition":{"style":{"palette":"hostmap_blues","palette_flip":false},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"my custom link"}],"time":{"live_span":"4h"},"requests":[{"formulas":[{"formula":"query1"}],"response_format":"scalar","queries":[{"data_source":"security_signals","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","view":{"focus":"WORLD"}},"id":18914160855721}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -154,7 +154,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Apr 2021 22:15:25 GMT
+      - Tue, 27 Apr 2021 06:58:33 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -164,7 +164,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
+      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
       X-Dd-Version:
       - "35.4397207"
       X-Frame-Options:
@@ -181,11 +181,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.15.6; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/ncr-ugi-fa2
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3jk-mfp-nsn
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"ncr-ugi-fa2","title":"tf-TestAccDatadogDashboardGeomapFormula-local-1619475319","url":"/dashboard/ncr-ugi-fa2/tf-testaccdatadogdashboardgeomapformula-local-1619475319","created_at":"2021-04-26T22:15:21.109602+00:00","modified_at":"2021-04-26T22:15:21.109602+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"response_format":"scalar","queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":8563751841742835},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"response_format":"scalar","queries":[{"search":{"query":"abc"},"data_source":"rum","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":5346761924905997},{"definition":{"style":{"palette":"hostmap_blues","palette_flip":false},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"my custom link"}],"time":{"live_span":"4h"},"requests":[{"formulas":[{"formula":"query1"}],"response_format":"scalar","queries":[{"data_source":"security_signals","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","view":{"focus":"WORLD"}},"id":2593144089614814}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"3jk-mfp-nsn","title":"tf-TestAccDatadogDashboardGeomapFormula-local-1619506707","url":"/dashboard/3jk-mfp-nsn/tf-testaccdatadogdashboardgeomapformula-local-1619506707","created_at":"2021-04-27T06:58:29.303490+00:00","modified_at":"2021-04-27T06:58:29.303490+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"response_format":"scalar","queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":1149146342854926},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"response_format":"scalar","queries":[{"search":{"query":"abc"},"data_source":"rum","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","style":{"palette":"hostmap_blues","palette_flip":false},"view":{"focus":"WORLD"}},"id":5478869481740425},{"definition":{"style":{"palette":"hostmap_blues","palette_flip":false},"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"my custom link"}],"time":{"live_span":"4h"},"requests":[{"formulas":[{"formula":"query1"}],"response_format":"scalar","queries":[{"data_source":"security_signals","compute":{"aggregation":"count"},"name":"query1","indexes":["*"]}]}],"type":"geomap","view":{"focus":"WORLD"}},"id":18914160855721}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -196,49 +196,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Apr 2021 22:15:26 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
-      X-Dd-Version:
-      - "35.4397207"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - DeleteDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.15.6; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/ncr-ugi-fa2
-    method: DELETE
-  response:
-    body: '{"deleted_dashboard_id":"ncr-ugi-fa2"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 26 Apr 2021 22:15:26 GMT
+      - Tue, 27 Apr 2021 06:58:34 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -263,13 +221,13 @@ interactions:
       Accept:
       - application/json
       Dd-Operation-Id:
-      - GetDashboard
+      - DeleteDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.15.6; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/ncr-ugi-fa2
-    method: GET
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3jk-mfp-nsn
+    method: DELETE
   response:
-    body: '{"errors": ["Dashboard with ID ncr-ugi-fa2 not found"]}'
+    body: '{"deleted_dashboard_id":"3jk-mfp-nsn"}'
     headers:
       Cache-Control:
       - no-cache
@@ -280,7 +238,49 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 26 Apr 2021 22:15:26 GMT
+      - Tue, 27 Apr 2021 06:58:34 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - mNzaoDhdDKO7t4QSrAe5X7pHd0bJND187D+vRbwoluXouE2m1UaQQX0RGCvRpLVE
+      X-Dd-Version:
+      - "35.4397207"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDashboard
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.15.7; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/3jk-mfp-nsn
+    method: GET
+  response:
+    body: '{"errors": ["Dashboard with ID 3jk-mfp-nsn not found"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 27 Apr 2021 06:58:34 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
