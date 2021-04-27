@@ -2885,16 +2885,45 @@ func getImageDefinitionSchema() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Required:    true,
 		},
+		"url_dark_theme": {
+			Description: "The URL in dark mode to use as a data source for the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"sizing": {
-			Description:  "The preferred method to adapt the dimensions of the image to those of the widget. One of `center` (center the image in the tile), `zoom` (zoom the image to cover the whole tile) or `fit` (fit the image dimensions to those of the tile).",
+			Description:  "The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties and are either: `fill`, `contain`, `cover`, `none` or `scale-down`. Note: `zoom`, `fit` and `center` values are deprecated.",
 			Type:         schema.TypeString,
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetImageSizingFromValue),
 			Optional:     true,
 		},
 		"margin": {
-			Description:  "The margins to use around the image. Either `small` or `large`.",
+			Description:  "The margins to use around the image. Either `sm`, `md`, or `lg`. Note: `small` and `large` values are deprecated.",
 			Type:         schema.TypeString,
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMarginFromValue),
+			Optional:     true,
+		},
+		"has_background": {
+			Description: "Whether to display a background or not.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Default:     true,
+		},
+		"has_border": {
+			Description: "Whether to display a border or not.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Default:     true,
+		},
+		"horizontal_align": {
+			Description:  "The horizontal alignment for the widget.",
+			Type:         schema.TypeString,
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetHorizontalAlignFromValue),
+			Optional:     true,
+		},
+		"vertical_align": {
+			Description:  "The vertical alignment for the widget.",
+			Type:         schema.TypeString,
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetVerticalAlignFromValue),
 			Optional:     true,
 		},
 	}
@@ -2905,11 +2934,26 @@ func buildDatadogImageDefinition(terraformDefinition map[string]interface{}) *da
 	// Required params
 	datadogDefinition.SetUrl(terraformDefinition["url"].(string))
 	// Optional params
+	if v, ok := terraformDefinition["url_dark_theme"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetUrlDarkTheme(v)
+	}
 	if v, ok := terraformDefinition["sizing"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetSizing(datadogV1.WidgetImageSizing(v))
 	}
 	if v, ok := terraformDefinition["margin"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetMargin(datadogV1.WidgetMargin(v))
+	}
+	if v, ok := terraformDefinition["has_background"].(bool); ok {
+		datadogDefinition.SetHasBackground(v)
+	}
+	if v, ok := terraformDefinition["has_border"].(bool); ok {
+		datadogDefinition.SetHasBorder(v)
+	}
+	if v, ok := terraformDefinition["horizontal_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetHorizontalAlign(datadogV1.WidgetHorizontalAlign(v))
+	}
+	if v, ok := terraformDefinition["vertical_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetVerticalAlign(datadogV1.WidgetVerticalAlign(v))
 	}
 	return datadogDefinition
 }
@@ -2919,11 +2963,26 @@ func buildTerraformImageDefinition(datadogDefinition datadogV1.ImageWidgetDefini
 	// Required params
 	terraformDefinition["url"] = datadogDefinition.GetUrl()
 	// Optional params
+	if v, ok := datadogDefinition.GetUrlDarkThemeOk(); ok {
+		terraformDefinition["url_dark_theme"] = *v
+	}
 	if v, ok := datadogDefinition.GetSizingOk(); ok {
 		terraformDefinition["sizing"] = *v
 	}
 	if v, ok := datadogDefinition.GetMarginOk(); ok {
 		terraformDefinition["margin"] = *v
+	}
+	if v, ok := datadogDefinition.GetHasBackgroundOk(); ok {
+		terraformDefinition["has_background"] = *v
+	}
+	if v, ok := datadogDefinition.GetHasBorderOk(); ok {
+		terraformDefinition["has_border"] = *v
+	}
+	if v, ok := datadogDefinition.GetHorizontalAlignOk(); ok {
+		terraformDefinition["horizontal_align"] = *v
+	}
+	if v, ok := datadogDefinition.GetVerticalAlignOk(); ok {
+		terraformDefinition["vertical_align"] = *v
 	}
 	return terraformDefinition
 }
