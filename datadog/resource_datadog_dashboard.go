@@ -1188,6 +1188,22 @@ func getGroupDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Description: "The title of the group.",
 		},
+		"background_color": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Background color of the group title.",
+		},
+		"banner_img": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "URL of image to display as a banner for the group.",
+		},
+		"show_title": {
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Description: "Whether to show the title or not.",
+			Default:     true,
+		},
 	}
 }
 
@@ -1206,6 +1222,15 @@ func buildDatadogGroupDefinition(terraformGroupDefinition map[string]interface{}
 	}
 	if v, ok := terraformGroupDefinition["title"].(string); ok && len(v) != 0 {
 		datadogGroupDefinition.SetTitle(v)
+	}
+	if v, ok := terraformGroupDefinition["background_color"].(string); ok && len(v) != 0 {
+		datadogGroupDefinition.SetBackgroundColor(v)
+	}
+	if v, ok := terraformGroupDefinition["banner_img"].(string); ok && len(v) != 0 {
+		datadogGroupDefinition.SetBannerImg(v)
+	}
+	if v, ok := terraformGroupDefinition["show_title"].(bool); ok {
+		datadogGroupDefinition.SetShowTitle(v)
 	}
 
 	return datadogGroupDefinition, nil
@@ -1227,6 +1252,15 @@ func buildTerraformGroupDefinition(datadogGroupDefinition datadogV1.GroupWidgetD
 	}
 	if v, ok := datadogGroupDefinition.GetTitleOk(); ok {
 		terraformGroupDefinition["title"] = v
+	}
+	if v, ok := datadogGroupDefinition.GetBackgroundColorOk(); ok {
+		terraformGroupDefinition["background_color"] = v
+	}
+	if v, ok := datadogGroupDefinition.GetBannerImgOk(); ok {
+		terraformGroupDefinition["banner_img"] = v
+	}
+	if v, ok := datadogGroupDefinition.GetShowTitleOk(); ok {
+		terraformGroupDefinition["show_title"] = v
 	}
 
 	return terraformGroupDefinition
