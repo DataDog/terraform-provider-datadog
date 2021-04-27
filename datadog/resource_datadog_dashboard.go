@@ -3398,6 +3398,18 @@ func getNoteDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
+		"vertical_align": {
+			Description:  "The vertical alignment for the widget.",
+			Type:         schema.TypeString,
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetVerticalAlignFromValue),
+			Optional:     true,
+		},
+		"has_padding": {
+			Description: "Whether to add padding or not.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Default:     true,
+		},
 		"show_tick": {
 			Description: "Whether to show a tick or not.",
 			Type:        schema.TypeBool,
@@ -3431,6 +3443,12 @@ func buildDatadogNoteDefinition(terraformDefinition map[string]interface{}) *dat
 	if v, ok := terraformDefinition["text_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTextAlign(datadogV1.WidgetTextAlign(v))
 	}
+	if v, ok := terraformDefinition["vertical_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetVerticalAlign(datadogV1.WidgetVerticalAlign(v))
+	}
+	if v, ok := terraformDefinition["has_padding"].(bool); ok {
+		datadogDefinition.SetHasPadding(v)
+	}
 	if v, ok := terraformDefinition["show_tick"]; ok {
 		datadogDefinition.SetShowTick(v.(bool))
 	}
@@ -3456,6 +3474,12 @@ func buildTerraformNoteDefinition(datadogDefinition datadogV1.NoteWidgetDefiniti
 	}
 	if v, ok := datadogDefinition.GetTextAlignOk(); ok {
 		terraformDefinition["text_align"] = *v
+	}
+	if v, ok := datadogDefinition.GetVerticalAlignOk(); ok {
+		terraformDefinition["vertical_align"] = *v
+	}
+	if v, ok := datadogDefinition.GetHasPaddingOk(); ok {
+		terraformDefinition["has_padding"] = *v
 	}
 	if v, ok := datadogDefinition.GetShowTickOk(); ok {
 		terraformDefinition["show_tick"] = *v
