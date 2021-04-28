@@ -345,7 +345,7 @@ Optional:
 - **host** (String) Host name to perform the test with.
 - **method** (String) The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
-- **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`).
+- **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - **port** (Number) Port to use when performing the test.
 - **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
@@ -545,7 +545,7 @@ Optional:
 - **host** (String) Host name to perform the test with.
 - **method** (String) The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
-- **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`).
+- **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - **port** (Number) Port to use when performing the test.
 - **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
