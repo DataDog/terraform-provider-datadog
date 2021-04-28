@@ -37,7 +37,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
 			},
 			"subtype": {
-				Description: "When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns` or `multi`. Defaults to `http`.",
+				Description: "When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns`, `icmp` or `multi`. Defaults to `http`.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
@@ -182,7 +182,7 @@ func syntheticsTestRequest() *schema.Resource {
 				Optional:    true,
 			},
 			"number_of_packets": {
-				Description: "Number of pings to use per test.",
+				Description: "Number of pings to use per test for ICMP tests (`subtype = \"icmp\"`).",
 				Type:        schema.TypeInt,
 				Optional:    true,
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
@@ -195,7 +195,7 @@ func syntheticsTestRequest() *schema.Resource {
 				},
 			},
 			"should_track_hops": {
-				Description: "This will turn on a traceroute probe to discover all gateways along the path to the host destination.",
+				Description: "This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = \"icmp\"`).",
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
