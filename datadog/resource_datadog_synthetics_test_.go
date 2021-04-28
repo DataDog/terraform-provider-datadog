@@ -182,17 +182,10 @@ func syntheticsTestRequest() *schema.Resource {
 				Optional:    true,
 			},
 			"number_of_packets": {
-				Description: "Number of pings to use per test for ICMP tests (`subtype = \"icmp\"`).",
-				Type:        schema.TypeInt,
-				Optional:    true,
-				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-					// todo only if icmp
-					v := val.(int)
-					if v < 0 || v > 10 {
-						errs = append(errs, fmt.Errorf("%q must be between 0 and 10 inclusive, got: %d", key, v))
-					}
-					return
-				},
+				Description:  "Number of pings to use per test for ICMP tests (`subtype = \"icmp\"`) between 0 and 10.",
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ValidateFunc: validation.IntBetween(0, 10),
 			},
 			"should_track_hops": {
 				Description: "This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = \"icmp\"`).",
