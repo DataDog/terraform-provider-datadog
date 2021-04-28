@@ -1,7 +1,7 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
-	github.com/DataDog/datadog-api-client-go v1.0.0-beta.19
+	github.com/DataDog/datadog-api-client-go v1.0.0-beta.20
 	github.com/DataDog/datadog-go v3.6.0+incompatible // indirect
 	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
 	github.com/dnaeon/go-vcr v1.0.1
@@ -18,7 +18,7 @@ require (
 	github.com/philhofer/fwd v1.0.0 // indirect
 	github.com/zorkian/go-datadog-api v2.30.0+incompatible
 	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect
-	gopkg.in/DataDog/dd-trace-go.v1 v1.29.0-rc.1.0.20210226170446-a8dc39ec3484
+	gopkg.in/DataDog/dd-trace-go.v1 v1.30.0-rc.1.0.20210420124628-f63633f38e8f
 )
 
 go 1.16

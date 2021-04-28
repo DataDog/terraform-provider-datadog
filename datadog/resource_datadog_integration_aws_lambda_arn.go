@@ -50,7 +50,7 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(d *schema.ResourceData, meta i
 	authV1 := providerConf.AuthV1
 
 	attachLambdaArnRequest := buildDatadogIntegrationAwsLambdaArnStruct(d)
-	_, _, err := datadogClientV1.AWSLogsIntegrationApi.CreateAWSLambdaARN(authV1).Body(*attachLambdaArnRequest).Execute()
+	_, _, err := datadogClientV1.AWSLogsIntegrationApi.CreateAWSLambdaARN(authV1, *attachLambdaArnRequest)
 	if err != nil {
 		return utils.TranslateClientError(err, "error attaching Lambda ARN to AWS integration account")
 	}
@@ -70,7 +70,7 @@ func resourceDatadogIntegrationAwsLambdaArnRead(d *schema.ResourceData, meta int
 		return utils.TranslateClientError(err, fmt.Sprintf("error getting aws account ID and lambda ARN from id: %s", d.Id()))
 	}
 
-	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1).Execute()
+	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1)
 	if err != nil {
 		return utils.TranslateClientError(err, "error getting aws log integrations for datadog account.")
 	}
@@ -101,7 +101,7 @@ func resourceDatadogIntegrationAwsLambdaArnDelete(d *schema.ResourceData, meta i
 	}
 
 	attachLambdaArnRequest := datadogV1.NewAWSAccountAndLambdaRequest(accountID, lambdaArn)
-	_, _, err = datadogClientV1.AWSLogsIntegrationApi.DeleteAWSLambdaARN(authV1).Body(*attachLambdaArnRequest).Execute()
+	_, _, err = datadogClientV1.AWSLogsIntegrationApi.DeleteAWSLambdaARN(authV1, *attachLambdaArnRequest)
 	if err != nil {
 		return utils.TranslateClientError(err, "error deleting an AWS integration Lambda ARN")
 	}

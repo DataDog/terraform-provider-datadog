@@ -52,7 +52,7 @@ func resourceDatadogSyntheticsPrivateLocationCreate(d *schema.ResourceData, meta
 	authV1 := providerConf.AuthV1
 
 	syntheticsPrivateLocation := buildSyntheticsPrivateLocationStruct(d)
-	createdSyntheticsPrivateLocationResponse, _, err := datadogClientV1.SyntheticsApi.CreatePrivateLocation(authV1).Body(*syntheticsPrivateLocation).Execute()
+	createdSyntheticsPrivateLocationResponse, _, err := datadogClientV1.SyntheticsApi.CreatePrivateLocation(authV1, *syntheticsPrivateLocation)
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
 		return utils.TranslateClientError(err, "error creating synthetics private location")
@@ -76,7 +76,7 @@ func resourceDatadogSyntheticsPrivateLocationRead(d *schema.ResourceData, meta i
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	syntheticsPrivateLocation, httpresp, err := datadogClientV1.SyntheticsApi.GetPrivateLocation(authV1, d.Id()).Execute()
+	syntheticsPrivateLocation, httpresp, err := datadogClientV1.SyntheticsApi.GetPrivateLocation(authV1, d.Id())
 
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
@@ -96,7 +96,7 @@ func resourceDatadogSyntheticsPrivateLocationUpdate(d *schema.ResourceData, meta
 	authV1 := providerConf.AuthV1
 
 	syntheticsPrivateLocation := buildSyntheticsPrivateLocationStruct(d)
-	if _, _, err := datadogClientV1.SyntheticsApi.UpdatePrivateLocation(authV1, d.Id()).Body(*syntheticsPrivateLocation).Execute(); err != nil {
+	if _, _, err := datadogClientV1.SyntheticsApi.UpdatePrivateLocation(authV1, d.Id(), *syntheticsPrivateLocation); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
 		return utils.TranslateClientError(err, "error updating synthetics private location")
 	}
@@ -110,7 +110,7 @@ func resourceDatadogSyntheticsPrivateLocationDelete(d *schema.ResourceData, meta
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	if _, err := datadogClientV1.SyntheticsApi.DeletePrivateLocation(authV1, d.Id()).Execute(); err != nil {
+	if _, err := datadogClientV1.SyntheticsApi.DeletePrivateLocation(authV1, d.Id()); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
 		return utils.TranslateClientError(err, "error deleting synthetics private location")
 	}

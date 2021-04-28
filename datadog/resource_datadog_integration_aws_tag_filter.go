@@ -65,7 +65,7 @@ func resourceDatadogIntegrationAwsTagFilterCreate(d *schema.ResourceData, meta i
 	authV1 := providerConf.AuthV1
 
 	req := buildDatadogIntegrationAwsTagFilter(d)
-	if _, _, err := datadogClientV1.AWSIntegrationApi.CreateAWSTagFilter(authV1).Body(*req).Execute(); err != nil {
+	if _, _, err := datadogClientV1.AWSIntegrationApi.CreateAWSTagFilter(authV1, *req); err != nil {
 		return utils.TranslateClientError(err, "error creating aws tag filter")
 	}
 
@@ -79,7 +79,7 @@ func resourceDatadogIntegrationAwsTagFilterUpdate(d *schema.ResourceData, meta i
 	authV1 := providerConf.AuthV1
 
 	req := buildDatadogIntegrationAwsTagFilter(d)
-	if _, _, err := datadogClientV1.AWSIntegrationApi.CreateAWSTagFilter(authV1).Body(*req).Execute(); err != nil {
+	if _, _, err := datadogClientV1.AWSIntegrationApi.CreateAWSTagFilter(authV1, *req); err != nil {
 		return utils.TranslateClientError(err, "error updating aws tag filter")
 	}
 
@@ -97,7 +97,7 @@ func resourceDatadogIntegrationAwsTagFilterRead(d *schema.ResourceData, meta int
 	}
 	namespace := datadogV1.AWSNamespace(tfNamespace)
 
-	resp, _, err := datadogClientV1.AWSIntegrationApi.ListAWSTagFilters(authV1).AccountId(accountID).Execute()
+	resp, _, err := datadogClientV1.AWSIntegrationApi.ListAWSTagFilters(authV1, accountID)
 	if err != nil {
 		return utils.TranslateClientError(err, "error listing aws tag filter")
 	}
@@ -132,7 +132,7 @@ func resourceDatadogIntegrationAwsTagFilterDelete(d *schema.ResourceData, meta i
 		Namespace: &namespace,
 	}
 
-	if _, _, err := datadogClientV1.AWSIntegrationApi.DeleteAWSTagFilter(authV1).Body(deleteRequest).Execute(); err != nil {
+	if _, _, err := datadogClientV1.AWSIntegrationApi.DeleteAWSTagFilter(authV1, deleteRequest); err != nil {
 		return utils.TranslateClientError(err, "error deleting aws tag filter")
 	}
 

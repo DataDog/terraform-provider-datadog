@@ -146,7 +146,7 @@ func testAccCheckDatadogIntegrationSlackChannelExists(accProvider *schema.Provid
 		accountName := s.RootModule().Resources[resourceName].Primary.Attributes["account_name"]
 		channelName := s.RootModule().Resources[resourceName].Primary.Attributes["channel_name"]
 
-		_, _, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, accountName, channelName).Execute()
+		_, _, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, accountName, channelName)
 		if err != nil {
 			return utils.TranslateClientError(err, "error checking slack_channel existence")
 		}
@@ -170,7 +170,7 @@ func testAccCheckDatadogIntegrationSlackChannelDestroy(accProvider *schema.Provi
 			accountName := r.Primary.Attributes["account_name"]
 			channelName := r.Primary.Attributes["channel_name"]
 
-			_, resp, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, accountName, channelName).Execute()
+			_, resp, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, accountName, channelName)
 
 			if err != nil {
 				if resp.StatusCode == 404 {

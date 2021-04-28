@@ -2865,7 +2865,7 @@ func testSyntheticsTestExists(accProvider *schema.Provider) resource.TestCheckFu
 		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
-			if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID).Execute(); err != nil {
+			if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID); err != nil {
 				return fmt.Errorf("received an error retrieving synthetics test %s", err)
 			}
 		}
@@ -2880,7 +2880,7 @@ func testSyntheticsTestIsDestroyed(accProvider *schema.Provider) resource.TestCh
 		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
-			if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID).Execute(); err != nil {
+			if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID); err != nil {
 				if strings.Contains(err.Error(), "404 Not Found") {
 					continue
 				}
@@ -2899,7 +2899,7 @@ func editSyntheticsTestMML(accProvider *schema.Provider) resource.TestCheckFunc 
 			datadogClientV1 := providerConf.DatadogClientV1
 			authV1 := providerConf.AuthV1
 
-			syntheticsTest, _, err := datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, r.Primary.ID).Execute()
+			syntheticsTest, _, err := datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, r.Primary.ID)
 
 			if err != nil {
 				return fmt.Errorf("failed to read synthetics test %s", err)
@@ -2925,7 +2925,7 @@ func editSyntheticsTestMML(accProvider *schema.Provider) resource.TestCheckFunc 
 			steps := []datadogV1.SyntheticsStep{step}
 			syntheticsTestUpdate.SetSteps(steps)
 
-			if _, _, err := datadogClientV1.SyntheticsApi.UpdateBrowserTest(authV1, r.Primary.ID).Body(*syntheticsTestUpdate).Execute(); err != nil {
+			if _, _, err := datadogClientV1.SyntheticsApi.UpdateBrowserTest(authV1, r.Primary.ID, *syntheticsTestUpdate); err != nil {
 				return fmt.Errorf("failed to manually update synthetics test %s", err)
 			}
 		}
