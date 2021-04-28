@@ -37,7 +37,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
 			},
 			"subtype": {
-				Description: "When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns` or `multi`. Defaults to `http`.",
+				Description: "When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns`, `icmp` or `multi`. Defaults to `http`.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
@@ -178,6 +178,17 @@ func syntheticsTestRequest() *schema.Resource {
 			},
 			"no_saving_response_body": {
 				Description: "Determines whether or not to save the response body.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
+			"number_of_packets": {
+				Description:  "Number of pings to use per test for ICMP tests (`subtype = \"icmp\"`) between 0 and 10.",
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ValidateFunc: validation.IntBetween(0, 10),
+			},
+			"should_track_hops": {
+				Description: "This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = \"icmp\"`).",
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
@@ -1000,7 +1011,7 @@ func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{
 }
 
 func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertionOperator datadogV1.SyntheticsAssertionOperator) bool {
-	for _, intTargetAssertionType := range []datadogV1.SyntheticsAssertionType{datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME, datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE} {
+	for _, intTargetAssertionType := range []datadogV1.SyntheticsAssertionType{datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME, datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE, datadogV1.SYNTHETICSASSERTIONTYPE_LATENCY} {
 		if assertionType == intTargetAssertionType {
 			return true
 		}
@@ -1074,6 +1085,12 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 	if attr, ok := k.GetOkWith("no_saving_response_body"); ok {
 		request.SetNoSavingResponseBody(attr.(bool))
+	}
+	if attr, ok := k.GetOkWith("number_of_packets"); ok {
+		request.SetNumberOfPackets(int32(attr.(int)))
+	}
+	if attr, ok := k.GetOkWith("should_track_hops"); ok {
+		request.SetShouldTrackHops(attr.(bool))
 	}
 	k.Remove(parts)
 
@@ -1773,6 +1790,12 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest, useDeprecated bo
 	}
 	if request.HasNoSavingResponseBody() {
 		localRequest["no_saving_response_body"] = request.GetNoSavingResponseBody()
+	}
+	if request.HasNumberOfPackets() {
+		localRequest["number_of_packets"] = request.GetNumberOfPackets()
+	}
+	if request.HasShouldTrackHops() {
+		localRequest["should_track_hops"] = request.GetShouldTrackHops()
 	}
 
 	return localRequest

@@ -332,6 +332,21 @@ func TestAccDatadogSyntheticsDNSTest_Updated(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsICMPTest_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsICMPTestStep(ctx, accProvider, t),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -1740,6 +1755,88 @@ resource "datadog_synthetics_test" "dns" {
 	tags = ["foo:bar", "baz", "env:test"]
 
 	status = "live"
+}`, uniq)
+}
+
+func createSyntheticsICMPTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+	return resource.TestStep{
+		Config: createSyntheticsICMPTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "subtype", "icmp"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "request_definition.0.host", "www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "request_definition.0.number_of_packets", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "request_definition.0.should_track_hops", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.0.type", "latency"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.0.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.0.property", "avg"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.0.target", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "locations.3056069023", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "options_list.0.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.icmp", "monitor_id"),
+		),
+	}
+}
+
+func createSyntheticsICMPTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "icmp" {
+	type = "api"
+	subtype = "icmp"
+
+	request_definition {
+		host = "www.datadoghq.com"
+		number_of_packets = 2
+		should_track_hops = true
+	}
+
+	assertion {
+		type = "latency"
+		operator = "lessThan"
+		property = "avg"
+		target = 200
+	}
+
+	locations = [ "aws:eu-central-1" ]
+	options_list {
+		tick_every = 60
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
 }`, uniq)
 }
 
