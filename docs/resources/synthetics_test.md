@@ -215,7 +215,7 @@ resource "datadog_synthetics_test" "test_browser" {
 - **request_headers** (Map of String) Header name and value map.
 - **request_query** (Map of String) Query arguments name and value map.
 - **step** (Block List, Deprecated) Steps for browser tests. **Deprecated.** Define `browser_step` blocks instead. (see [below for nested schema](#nestedblock--step))
-- **subtype** (String) When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns` or `multi`. Defaults to `http`.
+- **subtype** (String) When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns`, `icmp` or `multi`. Defaults to `http`.
 - **tags** (List of String) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).
 - **variable** (Block List, Deprecated) Variables used for a browser test steps. Multiple `browser_variable` blocks are allowed with the structure below. **Deprecated.** Define `browser_variable` blocks instead. (see [below for nested schema](#nestedblock--variable))
 
@@ -345,7 +345,9 @@ Optional:
 - **host** (String) Host name to perform the test with.
 - **method** (String) The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
+- **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`).
 - **port** (Number) Port to use when performing the test.
+- **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.
 
@@ -543,7 +545,9 @@ Optional:
 - **host** (String) Host name to perform the test with.
 - **method** (String) The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
+- **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`).
 - **port** (Number) Port to use when performing the test.
+- **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.
 
