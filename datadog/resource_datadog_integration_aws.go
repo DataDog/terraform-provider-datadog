@@ -143,8 +143,13 @@ func resourceDatadogIntegrationAwsRead(d *schema.ResourceData, meta interface{})
 		return err
 	}
 
-	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1)
+	integrations, httpresp, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1)
 	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 400 {
+			// API returns 400 if integration is not installed
+			d.SetId("")
+			return nil
+		}
 		return utils.TranslateClientError(err, "error getting AWS integration")
 	}
 
