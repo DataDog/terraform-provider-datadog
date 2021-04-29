@@ -3,6 +3,7 @@ package datadog
 import (
 	"fmt"
 
+	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -54,21 +55,21 @@ func dataSourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta int
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	req := datadogClientV1.ServiceLevelObjectivesApi.ListSLOs(authV1)
+	reqParams := datadog.NewListSLOsOptionalParameters()
 	if v, ok := d.GetOk("id"); ok {
-		req = req.Ids(v.(string))
+		reqParams.WithIds(v.(string))
 	}
 	if v, ok := d.GetOk("name_query"); ok {
-		req = req.Query(v.(string))
+		reqParams.WithQuery(v.(string))
 	}
 	if v, ok := d.GetOk("tags_query"); ok {
-		req = req.TagsQuery(v.(string))
+		reqParams.WithTagsQuery(v.(string))
 	}
 	if v, ok := d.GetOk("metrics_query"); ok {
-		req = req.MetricsQuery(v.(string))
+		reqParams.WithMetricsQuery(v.(string))
 	}
 
-	slosResp, _, err := req.Execute()
+	slosResp, _, err := datadogClientV1.ServiceLevelObjectivesApi.ListSLOs(authV1, *reqParams)
 	if err != nil {
 		return utils.TranslateClientError(err, "error querying service level objectives")
 	}
