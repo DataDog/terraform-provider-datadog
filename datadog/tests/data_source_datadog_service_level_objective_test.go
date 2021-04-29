@@ -69,7 +69,7 @@ data "datadog_service_level_objective" "foo" {
     datadog_service_level_objective.foo,
   ]
   id = datadog_service_level_objective.foo.id
-}`, testAccCheckDatadogServiceLevelObjectiveConfig(uniq))
+}`, testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(uniq))
 }
 
 func testAccDatasourceServiceLevelObjectiveNameFilterConfig(uniq string) string {
@@ -81,7 +81,7 @@ data "datadog_service_level_objective" "foo" {
   ]
   name_query = "%s"
 }
-`, testAccCheckDatadogServiceLevelObjectiveConfig(uniq), uniq)
+`, testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(uniq), uniq)
 }
 
 func testAccDatasourceServiceLevelObjectiveTagsFilterConfig(uniq string) string {
@@ -91,9 +91,9 @@ data "datadog_service_level_objective" "foo" {
   depends_on = [
     datadog_service_level_objective.foo,
   ]
-  tags_query = "foo:bar"
+  tags_query = "%s"
 }
-`, testAccCheckDatadogServiceLevelObjectiveConfig(uniq))
+`, testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(uniq), strings.ToLower(uniq))
 }
 
 func testAccDatasourceServiceLevelObjectiveMetricsFilterConfig(uniq string) string {
@@ -103,7 +103,7 @@ data "datadog_service_level_objective" "foo" {
   depends_on = [
     datadog_service_level_objective.foo,
   ]
-  metrics_query = "my.metric"
+  metrics_query = "%s"
 }
-`, testAccCheckDatadogServiceLevelObjectiveConfig(uniq))
+`, testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(uniq), uniq)
 }
