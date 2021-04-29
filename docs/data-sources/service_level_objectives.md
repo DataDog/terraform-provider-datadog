@@ -23,7 +23,6 @@ data "datadog_service_level_objectives" "ft_foo_slos" {
 
 ### Optional
 
-- **id** (String) The ID of this resource.
 - **ids** (List of String) An array of SLO IDs to limit the search.
 - **metrics_query** (String) Filter results based on SLO numerator and denominator.
 - **name_query** (String) Filter results based on SLO names.
@@ -31,6 +30,7 @@ data "datadog_service_level_objectives" "ft_foo_slos" {
 
 ### Read-Only
 
+- **id** (String) The ID of this resource.
 - **slos** (List of Object) List of SLOs (see [below for nested schema](#nestedatt--slos))
 
 <a id="nestedatt--slos"></a>
