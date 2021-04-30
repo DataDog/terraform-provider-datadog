@@ -111,7 +111,7 @@ func testAccCheckDatadogLogsMetricExists(accProvider func() (*schema.Provider, e
 
 		id := resourceID
 
-		_, _, err = datadogClient.LogsMetricsApi.GetLogsMetric(auth, id).Execute()
+		_, _, err = datadogClient.LogsMetricsApi.GetLogsMetric(auth, id)
 
 		if err != nil {
 			return utils.TranslateClientError(err, "error checking logs_metric existence")
@@ -136,7 +136,7 @@ func testAccCheckDatadogLogsMetricDestroy(accProvider func() (*schema.Provider, 
 
 			id := r.Primary.ID
 
-			_, resp, err := datadogClient.LogsMetricsApi.GetLogsMetric(auth, id).Execute()
+			_, resp, err := datadogClient.LogsMetricsApi.GetLogsMetric(auth, id)
 
 			if err != nil {
 				if resp.StatusCode == 404 {

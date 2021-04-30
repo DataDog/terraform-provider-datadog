@@ -181,6 +181,7 @@ go.sum,github.com/Masterminds/sprig,MIT,2013-2020 Masterminds
 go.sum,github.com/andybalholm/crlf,BSD-2-Clause,2015 Andy Balholm.
 go.sum,github.com/apparentlymart/go-textseg/v12,MIT,2017 Martin Atkins
 go.sum,github.com/hashicorp/terraform-plugin-docs,MPL-2.0,
+go.sum,github.com/zippolyte/terraform-plugin-docs,MPL-2.0,
 go.sum,github.com/huandu/xstrings,MIT,2015 Huan Du.
 go.sum,github.com/russross/blackfriday,BSD-2-Clause,2011 Russ Ross
 go.sum,github.com/vmihailenco/msgpack/v4,BSD-2-Clause,2013 The github.com/vmihailenco/msgpack Authors.

@@ -95,7 +95,7 @@ func resourceDatadogLogsArchiveCreate(ctx context.Context, d *schema.ResourceDat
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	createdArchive, _, err := datadogClientV2.LogsArchivesApi.CreateLogsArchive(authV2).Body(*ddArchive).Execute()
+	createdArchive, _, err := datadogClientV2.LogsArchivesApi.CreateLogsArchive(authV2, *ddArchive)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "failed to create logs archive using Datadog API")
 	}
@@ -136,7 +136,7 @@ func resourceDatadogLogsArchiveRead(ctx context.Context, d *schema.ResourceData,
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	ddArchive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, d.Id()).Execute()
+	ddArchive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(authV2, d.Id())
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -156,7 +156,7 @@ func resourceDatadogLogsArchiveUpdate(ctx context.Context, d *schema.ResourceDat
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	updatedArchive, _, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchive(authV2, d.Id()).Body(*ddArchive).Execute()
+	updatedArchive, _, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchive(authV2, d.Id(), *ddArchive)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error updating logs archive")
 	}
@@ -168,7 +168,7 @@ func resourceDatadogLogsArchiveDelete(ctx context.Context, d *schema.ResourceDat
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	if httpresp, err := datadogClientV2.LogsArchivesApi.DeleteLogsArchive(authV2, d.Id()).Execute(); err != nil {
+	if httpresp, err := datadogClientV2.LogsArchivesApi.DeleteLogsArchive(authV2, d.Id()); err != nil {
 		// API returns 404 when the specific archive id doesn't exist.
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			return nil

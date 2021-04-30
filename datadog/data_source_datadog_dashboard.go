@@ -46,7 +46,7 @@ func dataSourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData,
 	authV1 := providerConf.AuthV1
 
 	err := resource.RetryContext(ctx, d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
-		dashResponse, httpresp, err := datadogClientV1.DashboardsApi.ListDashboards(authV1).Execute()
+		dashResponse, httpresp, err := datadogClientV1.DashboardsApi.ListDashboards(authV1)
 		if err != nil {
 			if httpresp != nil && (httpresp.StatusCode == 504 || httpresp.StatusCode == 502) {
 				return resource.RetryableError(utils.TranslateClientError(err, "error querying dashboard, retrying"))
@@ -62,6 +62,7 @@ func dataSourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData,
 				foundDashes = append(foundDashes, dash)
 			}
 		}
+
 		if len(foundDashes) == 0 {
 			return resource.NonRetryableError(fmt.Errorf("Couldn't find a dashboard named %s", searchedName))
 		} else if len(foundDashes) > 1 {

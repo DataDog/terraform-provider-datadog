@@ -64,7 +64,7 @@ func resourceDatadogDashboardListCreate(ctx context.Context, d *schema.ResourceD
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	dashboardList, _, err := datadogClientV1.DashboardListsApi.CreateDashboardList(authV1).Body(*dashboardListPayload).Execute()
+	dashboardList, _, err := datadogClientV1.DashboardListsApi.CreateDashboardList(authV1, *dashboardListPayload)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error creating dashboard list")
 	}
@@ -77,7 +77,7 @@ func resourceDatadogDashboardListCreate(ctx context.Context, d *schema.ResourceD
 		if err != nil {
 			return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 		}
-		_, _, err = datadogClientV2.DashboardListsApi.UpdateDashboardListItems(authV2, id).Body(*dashboardListV2Items).Execute()
+		_, _, err = datadogClientV2.DashboardListsApi.UpdateDashboardListItems(authV2, id, *dashboardListV2Items)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, "error updating dashboard list item")
 		}
@@ -104,13 +104,13 @@ func resourceDatadogDashboardListUpdate(ctx context.Context, d *schema.ResourceD
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	dashList.SetName(d.Get("name").(string))
-	_, _, err = datadogClientV1.DashboardListsApi.UpdateDashboardList(authV1, id).Body(*dashList).Execute()
+	_, _, err = datadogClientV1.DashboardListsApi.UpdateDashboardList(authV1, id, *dashList)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error updating dashboard list")
 	}
 
 	// Delete all elements from the dash list and add back only the ones in the config
-	completeDashListV2, _, err := datadogClientV2.DashboardListsApi.GetDashboardListItems(authV2, id).Execute()
+	completeDashListV2, _, err := datadogClientV2.DashboardListsApi.GetDashboardListItems(authV2, id)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error getting dashboard list item")
 	}
@@ -118,7 +118,7 @@ func resourceDatadogDashboardListUpdate(ctx context.Context, d *schema.ResourceD
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error creating dashboard list delete item")
 	}
-	_, _, err = datadogClientV2.DashboardListsApi.DeleteDashboardListItems(authV2, id).Body(*completeDashListDeleteV2).Execute()
+	_, _, err = datadogClientV2.DashboardListsApi.DeleteDashboardListItems(authV2, id, *completeDashListDeleteV2)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error deleting dashboard list item")
 	}
@@ -127,7 +127,7 @@ func resourceDatadogDashboardListUpdate(ctx context.Context, d *schema.ResourceD
 		if err != nil {
 			return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 		}
-		_, _, err = datadogClientV2.DashboardListsApi.UpdateDashboardListItems(authV2, id).Body(*dashboardListV2Items).Execute()
+		_, _, err = datadogClientV2.DashboardListsApi.UpdateDashboardListItems(authV2, id, *dashboardListV2Items)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, "error updating dashboard list item")
 		}
@@ -146,7 +146,7 @@ func resourceDatadogDashboardListRead(ctx context.Context, d *schema.ResourceDat
 	id, err := strconv.ParseInt(d.Id(), 10, 64)
 
 	//Read the overall Dashboard List object
-	dashList, httpresp, err := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, id).Execute()
+	dashList, httpresp, err := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, id)
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -157,7 +157,7 @@ func resourceDatadogDashboardListRead(ctx context.Context, d *schema.ResourceDat
 	d.Set("name", dashList.GetName())
 
 	// Read and set all the dashboard list elements
-	completeItemListV2, _, err := datadogClientV2.DashboardListsApi.GetDashboardListItems(authV2, id).Execute()
+	completeItemListV2, _, err := datadogClientV2.DashboardListsApi.GetDashboardListItems(authV2, id)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error getting dashboard list item")
 	}
@@ -178,7 +178,7 @@ func resourceDatadogDashboardListDelete(ctx context.Context, d *schema.ResourceD
 	// Deleting the overall List will also take care of deleting its sub elements
 	// Deletion of individual dash items happens in the Update method
 	// Note this doesn't delete the actual dashboards, just removes them from the deleted list
-	_, _, err := datadogClientV1.DashboardListsApi.DeleteDashboardList(authV1, id).Execute()
+	_, _, err := datadogClientV1.DashboardListsApi.DeleteDashboardList(authV1, id)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error deleting dashboard list")
 	}

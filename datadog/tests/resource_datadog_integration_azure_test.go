@@ -59,7 +59,7 @@ func TestAccDatadogIntegrationAzure(t *testing.T) {
 }
 
 func checkIntegrationAzureExistsHelper(ctx context.Context, s *terraform.State, client *datadogV1.APIClient) error {
-	integrations, _, err := client.AzureIntegrationApi.ListAzureIntegration(ctx).Execute()
+	integrations, _, err := client.AzureIntegrationApi.ListAzureIntegration(ctx)
 	if err != nil {
 		return err
 	}
@@ -93,7 +93,7 @@ func checkIntegrationAzureExists(accProvider func() (*schema.Provider, error)) r
 }
 
 func checkIntegrationAzureDestroyHelper(ctx context.Context, s *terraform.State, client *datadogV1.APIClient) error {
-	integrations, _, err := client.AzureIntegrationApi.ListAzureIntegration(ctx).Execute()
+	integrations, _, err := client.AzureIntegrationApi.ListAzureIntegration(ctx)
 	if err != nil && !strings.Contains(string(err.(datadogV1.GenericOpenAPIError).Body()), "Azure Integration not yet installed.") {
 		return fmt.Errorf("Error listing Azure Accounts: Response %s: %v", err.(datadogV1.GenericOpenAPIError).Body(), err)
 	}

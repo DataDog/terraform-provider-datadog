@@ -780,7 +780,6 @@ resource "datadog_downtime" "foo" {
   scope = ["somescope"]
 
   monitor_tags = ["*"]
-  active = true
   message = "%s"
 }`, uniq)
 }
@@ -796,7 +795,7 @@ func datadogDowntimeDestroyHelper(ctx context.Context, s *terraform.State, datad
 		err := utils.Retry(2, 5, func() error {
 			for _, r := range s.RootModule().Resources {
 				if r.Primary.ID != "" {
-					dt, httpResp, err := datadogClientV1.DowntimesApi.GetDowntime(ctx, int64(id)).Execute()
+					dt, httpResp, err := datadogClientV1.DowntimesApi.GetDowntime(ctx, int64(id))
 					if err != nil {
 						if httpResp != nil && httpResp.StatusCode == 404 {
 							return nil
@@ -823,7 +822,7 @@ func datadogDowntimeExistsHelper(ctx context.Context, s *terraform.State, datado
 		}
 
 		id, _ := strconv.Atoi(r.Primary.ID)
-		if _, _, err := datadogClientV1.DowntimesApi.GetDowntime(ctx, int64(id)).Execute(); err != nil {
+		if _, _, err := datadogClientV1.DowntimesApi.GetDowntime(ctx, int64(id)); err != nil {
 			return fmt.Errorf("received an error retrieving downtime %s", err)
 		}
 	}

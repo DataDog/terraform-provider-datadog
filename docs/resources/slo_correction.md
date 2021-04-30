@@ -54,8 +54,11 @@ resource "datadog_slo_correction" "example_slo_correction" {
 ### Optional
 
 - **description** (String) Description of the correction being made.
-- **id** (String) The ID of this resource.
 - **timezone** (String) The timezone to display in the UI for the correction times (defaults to "UTC")
+
+### Read-Only
+
+- **id** (String) The ID of this resource.
 
 ## Import
 

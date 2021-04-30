@@ -112,7 +112,7 @@ func resourceDatadogSloCorrectionCreate(ctx context.Context, d *schema.ResourceD
 
 	ddObject, err := buildDatadogSloCorrection(d)
 
-	response, _, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.CreateSLOCorrection(auth).Body(*ddObject).Execute()
+	response, _, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.CreateSLOCorrection(auth, *ddObject)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error creating SloCorrection")
 	}
@@ -166,7 +166,7 @@ func resourceDatadogSloCorrectionRead(ctx context.Context, d *schema.ResourceDat
 
 	id := d.Id()
 
-	sloCorrectionGetResp, httpResp, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.GetSLOCorrection(auth, id).Execute()
+	sloCorrectionGetResp, httpResp, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.GetSLOCorrection(auth, id)
 	if err != nil {
 		if httpResp.StatusCode == 404 {
 			// this condition takes on the job of the deprecated Exists handlers
@@ -189,7 +189,7 @@ func resourceDatadogSloCorrectionUpdate(ctx context.Context, d *schema.ResourceD
 	}
 	id := d.Id()
 
-	response, _, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.UpdateSLOCorrection(auth, id).Body(*ddObject).Execute()
+	response, _, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.UpdateSLOCorrection(auth, id, *ddObject)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error creating SloCorrection")
 
@@ -206,7 +206,7 @@ func resourceDatadogSloCorrectionDelete(ctx context.Context, d *schema.ResourceD
 
 	id := d.Id()
 
-	_, err = datadogClient.ServiceLevelObjectiveCorrectionsApi.DeleteSLOCorrection(auth, id).Execute()
+	_, err = datadogClient.ServiceLevelObjectiveCorrectionsApi.DeleteSLOCorrection(auth, id)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error deleting SloCorrection")

@@ -193,18 +193,18 @@ func dataSourceDatadogMonitorsRead(ctx context.Context, d *schema.ResourceData, 
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	req := datadogClientV1.MonitorsApi.ListMonitors(authV1)
+	optionalParams := datadogV1.NewListMonitorsOptionalParameters()
 	if v, ok := d.GetOk("name_filter"); ok {
-		req = req.Name(v.(string))
+		optionalParams = optionalParams.WithName(v.(string))
 	}
 	if v, ok := d.GetOk("tags_filter"); ok {
-		req = req.Tags(strings.Join(expandStringList(v.([]interface{})), ","))
+		optionalParams = optionalParams.WithTags(strings.Join(expandStringList(v.([]interface{})), ","))
 	}
 	if v, ok := d.GetOk("monitor_tags_filter"); ok {
-		req = req.MonitorTags(strings.Join(expandStringList(v.([]interface{})), ","))
+		optionalParams = optionalParams.WithMonitorTags(strings.Join(expandStringList(v.([]interface{})), ","))
 	}
 
-	monitors, _, err := req.Execute()
+	monitors, _, err := datadogClientV1.MonitorsApi.ListMonitors(authV1, *optionalParams)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error querying monitors")
 	}

@@ -200,7 +200,7 @@ func datadogDashListDestroyHelper(ctx context.Context, s *terraform.State, datad
 			continue
 		}
 		id, _ := strconv.Atoi(r.Primary.ID)
-		_, _, errList := datadogClientV1.DashboardListsApi.GetDashboardList(ctx, int64(id)).Execute()
+		_, _, errList := datadogClientV1.DashboardListsApi.GetDashboardList(ctx, int64(id))
 		if errList != nil {
 			if strings.Contains(strings.ToLower(errList.Error()), "not found") {
 				continue
