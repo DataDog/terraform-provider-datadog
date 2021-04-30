@@ -133,6 +133,11 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			"step":         syntheticsTestBrowserStep(false),
 			"browser_step": syntheticsTestBrowserStep(true),
 			"api_step":     syntheticsTestAPIStep(),
+			"set_cookie": {
+				Description: "Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -175,6 +180,12 @@ func syntheticsTestRequest() *schema.Resource {
 				Description: "DNS server to use for DNS tests (`subtype = \"dns\"`).",
 				Type:        schema.TypeString,
 				Optional:    true,
+			},
+			"dns_server_port": {
+				Description:  "DNS server port to use for DNS tests.",
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ValidateFunc: validation.IntBetween(1, 65535),
 			},
 			"no_saving_response_body": {
 				Description: "Determines whether or not to save the response body.",
@@ -595,6 +606,16 @@ func syntheticsTestAPIStep() *schema.Schema {
 				"request_basicauth":          syntheticsTestRequestBasicAuth(),
 				"request_client_certificate": syntheticsTestRequestClientCertificate(),
 				"assertion":                  syntheticsAPIAssertion(),
+				"allow_failure": {
+					Description: "Determines whether or not to continue with test if this step fails.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"is_critical": {
+					Description: "Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 			},
 		},
 	}
@@ -1083,6 +1104,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := k.GetOkWith("dns_server"); ok {
 		request.SetDnsServer(attr.(string))
 	}
+	if attr, ok := k.GetOkWith("dns_server_port"); ok {
+		request.SetDnsServerPort(int32(attr.(int)))
+	}
 	if attr, ok := k.GetOkWith("no_saving_response_body"); ok {
 		request.SetNoSavingResponseBody(attr.(bool))
 	}
@@ -1180,6 +1204,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			request = completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}))
 
 			step.SetRequest(request)
+
+			step.SetAllowFailure(stepMap["allow_failure"].(bool))
+			step.SetIsCritical(stepMap["is_critical"].(bool))
 
 			steps = append(steps, step)
 		}
@@ -1679,6 +1706,10 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		options.DeviceIds = &deviceIds
 	}
 
+	if attr, ok := d.GetOk("set_cookie"); ok {
+		config.SetSetCookie(attr.(string))
+	}
+
 	syntheticsTest := datadogV1.NewSyntheticsBrowserTest(d.Get("message").(string))
 	syntheticsTest.SetName(d.Get("name").(string))
 	syntheticsTest.SetType(datadogV1.SYNTHETICSBROWSERTESTTYPE_BROWSER)
@@ -1787,6 +1818,9 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest, useDeprecated bo
 	}
 	if request.HasDnsServer() {
 		localRequest["dns_server"] = convertToString(request.GetDnsServer())
+	}
+	if request.HasDnsServerPort() {
+		localRequest["dns_server_port"] = request.GetDnsServerPort()
 	}
 	if request.HasNoSavingResponseBody() {
 		localRequest["no_saving_response_body"] = request.GetNoSavingResponseBody()
@@ -1913,6 +1947,10 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		setDeprecated = true
 	}
 	localRequest := buildLocalRequest(actualRequest, setDeprecated)
+
+	if config.HasSetCookie() {
+		d.Set("set_cookie", config.GetSetCookie())
+	}
 
 	// Set deprecated field if that's what's in the config, new field otherwise
 	if setDeprecated {
@@ -2292,6 +2330,9 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 				localStep["request_client_certificate"] = []map[string][]map[string]string{localCertificate}
 			}
+
+			localStep["allow_failure"] = step.GetAllowFailure()
+			localStep["is_critical"] = step.GetIsCritical()
 
 			localSteps[i] = localStep
 		}
