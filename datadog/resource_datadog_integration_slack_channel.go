@@ -108,7 +108,7 @@ func resourceDatadogIntegrationSlackChannelCreate(ctx context.Context, d *schema
 	ddSlackChannel, err := buildDatadogSlackChannel(d)
 	accountName := d.Get("account_name").(string)
 
-	createdChannel, _, err := datadogClient.SlackIntegrationApi.CreateSlackIntegrationChannel(auth, accountName).Body(*ddSlackChannel).Execute()
+	createdChannel, _, err := datadogClient.SlackIntegrationApi.CreateSlackIntegrationChannel(auth, accountName, *ddSlackChannel)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error creating slack channel")
 	}
@@ -127,7 +127,7 @@ func resourceDatadogIntegrationSlackChannelRead(ctx context.Context, d *schema.R
 		return diag.FromErr(err)
 	}
 
-	slackChannel, httpResp, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, accountName, channelName).Execute()
+	slackChannel, httpResp, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, accountName, channelName)
 	if err != nil {
 		if httpResp.StatusCode == 404 {
 			d.SetId("")
@@ -153,7 +153,7 @@ func resourceDatadogIntegrationSlackChannelUpdate(ctx context.Context, d *schema
 		return diag.FromErr(err)
 	}
 
-	slackChannel, _, err := datadogClient.SlackIntegrationApi.UpdateSlackIntegrationChannel(auth, accountName, channelName).Body(*ddObject).Execute()
+	slackChannel, _, err := datadogClient.SlackIntegrationApi.UpdateSlackIntegrationChannel(auth, accountName, channelName, *ddObject)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error updating slack channel")
 	}
@@ -177,7 +177,7 @@ func resourceDatadogIntegrationSlackChannelDelete(ctx context.Context, d *schema
 		return diag.FromErr(err)
 	}
 
-	_, err = datadogClient.SlackIntegrationApi.RemoveSlackIntegrationChannel(auth, accountName, channelName).Execute()
+	_, err = datadogClient.SlackIntegrationApi.RemoveSlackIntegrationChannel(auth, accountName, channelName)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error deleting slack channel")
 	}

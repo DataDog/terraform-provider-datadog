@@ -1259,7 +1259,7 @@ func destroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *dat
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
 			i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
-			_, httpresp, err := datadogClientV1.MonitorsApi.GetMonitor(ctx, i).Execute()
+			_, httpresp, err := datadogClientV1.MonitorsApi.GetMonitor(ctx, i)
 			if err != nil {
 				if httpresp != nil && httpresp.StatusCode == 404 {
 					return nil
@@ -1276,7 +1276,7 @@ func destroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *dat
 func existsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
-		_, _, err := datadogClientV1.MonitorsApi.GetMonitor(ctx, i).Execute()
+		_, _, err := datadogClientV1.MonitorsApi.GetMonitor(ctx, i)
 		if err != nil {
 			return utils.TranslateClientError(err, "error retrieving monitor")
 		}

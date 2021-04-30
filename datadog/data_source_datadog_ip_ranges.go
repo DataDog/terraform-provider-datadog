@@ -121,7 +121,7 @@ func dataSourceDatadogIPRangesRead(ctx context.Context, d *schema.ResourceData, 
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	ipAddresses, _, err := datadogClientV1.IPRangesApi.GetIPRanges(authV1).Execute()
+	ipAddresses, _, err := datadogClientV1.IPRangesApi.GetIPRanges(authV1)
 	if err != nil {
 		return diag.FromErr(err)
 	}

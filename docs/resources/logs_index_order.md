@@ -32,7 +32,7 @@ resource "datadog_logs_index_order" "sample_index_order" {
 - **indexes** (List of String) The index resource list. Logs are tested against the query filter of each index one by one following the order of the list.
 - **name** (String) The unique name of the index order resource.
 
-### Optional
+### Read-Only
 
 - **id** (String) The ID of this resource.
 

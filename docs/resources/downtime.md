@@ -50,11 +50,8 @@ resource "datadog_downtime" "foo" {
 
 ### Optional
 
-- **active** (Boolean) When true indicates this downtime is being actively applied
-- **disabled** (Boolean) When true indicates this downtime is not being applied
 - **end** (Number) Optionally specify an end date when this downtime should expire
 - **end_date** (String) String representing date and time to end the downtime in RFC3339 format.
-- **id** (String) The ID of this resource.
 - **message** (String) An optional message to provide when creating the downtime, can include notification handles
 - **monitor_id** (Number) When specified, this downtime will only apply to this monitor
 - **monitor_tags** (Set of String) A list of monitor tags (up to 25), i.e. tags that are applied directly to monitors to which the downtime applies
@@ -62,6 +59,12 @@ resource "datadog_downtime" "foo" {
 - **start** (Number) Specify when this downtime should start
 - **start_date** (String) String representing date and time to start the downtime in RFC3339 format.
 - **timezone** (String) The timezone for the downtime, default UTC
+
+### Read-Only
+
+- **active** (Boolean) When true indicates this downtime is being actively applied
+- **disabled** (Boolean) When true indicates this downtime is not being applied
+- **id** (String) The ID of this resource.
 
 <a id="nestedblock--recurrence"></a>
 ### Nested Schema for `recurrence`

@@ -40,7 +40,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
 			},
 			"subtype": {
-				Description: "When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns` or `multi`. Defaults to `http`.",
+				Description: "When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns`, `icmp` or `multi`. Defaults to `http`.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
@@ -159,6 +159,17 @@ func syntheticsTestRequest() *schema.Resource {
 			},
 			"no_saving_response_body": {
 				Description: "Determines whether or not to save the response body.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
+			"number_of_packets": {
+				Description:  "Number of pings to use per test for ICMP tests (`subtype = \"icmp\"`) between 0 and 10.",
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ValidateFunc: validation.IntBetween(0, 10),
+			},
+			"should_track_hops": {
+				Description: "This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = \"icmp\"`).",
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
@@ -745,7 +756,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 
 	if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
 		syntheticsTest := buildSyntheticsAPITestStruct(d)
-		createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateSyntheticsAPITest(authV1).Body(*syntheticsTest).Execute()
+		createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateSyntheticsAPITest(authV1, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
 			return utils.TranslateClientErrorDiag(err, "error creating synthetics API test")
@@ -759,7 +770,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		return resourceDatadogSyntheticsTestRead(ctx, d, meta)
 	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
-		createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateSyntheticsBrowserTest(authV1).Body(*syntheticsTest).Execute()
+		createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateSyntheticsBrowserTest(authV1, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
 			return utils.TranslateClientErrorDiag(err, "error creating synthetics browser test")
@@ -788,12 +799,12 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	var httpresp *_nethttp.Response
 
 	// get the generic test to detect if it's an api or browser test
-	syntheticsTest, httpresp, err = datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id()).Execute()
+	syntheticsTest, httpresp, err = datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id())
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
-		syntheticsBrowserTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id()).Execute()
+		syntheticsBrowserTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id())
 	} else {
-		syntheticsAPITest, _, err = datadogClientV1.SyntheticsApi.GetAPITest(authV1, d.Id()).Execute()
+		syntheticsAPITest, _, err = datadogClientV1.SyntheticsApi.GetAPITest(authV1, d.Id())
 	}
 
 	if err != nil {
@@ -822,14 +833,14 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 	if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
 		syntheticsTest := buildSyntheticsAPITestStruct(d)
 
-		if _, _, err := datadogClientV1.SyntheticsApi.UpdateAPITest(authV1, d.Id()).Body(*syntheticsTest).Execute(); err != nil {
+		if _, _, err := datadogClientV1.SyntheticsApi.UpdateAPITest(authV1, d.Id(), *syntheticsTest); err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
 			return utils.TranslateClientErrorDiag(err, "error updating synthetics API test")
 		}
 	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
 
-		if _, _, err := datadogClientV1.SyntheticsApi.UpdateBrowserTest(authV1, d.Id()).Body(*syntheticsTest).Execute(); err != nil {
+		if _, _, err := datadogClientV1.SyntheticsApi.UpdateBrowserTest(authV1, d.Id(), *syntheticsTest); err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
 			return utils.TranslateClientErrorDiag(err, "error updating synthetics browser test")
 		}
@@ -845,7 +856,7 @@ func resourceDatadogSyntheticsTestDelete(ctx context.Context, d *schema.Resource
 	authV1 := providerConf.AuthV1
 
 	syntheticsDeleteTestsPayload := datadogV1.SyntheticsDeleteTestsPayload{PublicIds: &[]string{d.Id()}}
-	if _, _, err := datadogClientV1.SyntheticsApi.DeleteTests(authV1).Body(syntheticsDeleteTestsPayload).Execute(); err != nil {
+	if _, _, err := datadogClientV1.SyntheticsApi.DeleteTests(authV1, syntheticsDeleteTestsPayload); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
 		return utils.TranslateClientErrorDiag(err, "error deleting synthetics test")
 	}
@@ -855,7 +866,7 @@ func resourceDatadogSyntheticsTestDelete(ctx context.Context, d *schema.Resource
 }
 
 func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertionOperator datadogV1.SyntheticsAssertionOperator) bool {
-	for _, intTargetAssertionType := range []datadogV1.SyntheticsAssertionType{datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME, datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE} {
+	for _, intTargetAssertionType := range []datadogV1.SyntheticsAssertionType{datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME, datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE, datadogV1.SYNTHETICSASSERTIONTYPE_LATENCY} {
 		if assertionType == intTargetAssertionType {
 			return true
 		}
@@ -910,6 +921,12 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 	if attr, ok := k.GetOkWith("no_saving_response_body"); ok {
 		request.SetNoSavingResponseBody(attr.(bool))
+	}
+	if attr, ok := k.GetOkWith("number_of_packets"); ok {
+		request.SetNumberOfPackets(int32(attr.(int)))
+	}
+	if attr, ok := k.GetOkWith("should_track_hops"); ok {
+		request.SetShouldTrackHops(attr.(bool))
 	}
 	k.Remove(parts)
 
@@ -1386,27 +1403,6 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	}
 	syntheticsTest.SetTags(tags)
 
-	if attr, ok := d.GetOk("step"); ok {
-		steps := []datadogV1.SyntheticsStep{}
-
-		for _, s := range attr.([]interface{}) {
-			step := datadogV1.SyntheticsStep{}
-			stepMap := s.(map[string]interface{})
-
-			step.SetName(stepMap["name"].(string))
-			step.SetType(datadogV1.SyntheticsStepType(stepMap["type"].(string)))
-			step.SetAllowFailure(stepMap["allow_failure"].(bool))
-			step.SetTimeout(int64(stepMap["timeout"].(int)))
-			params := make(map[string]interface{})
-			utils.GetMetadataFromJSON([]byte(stepMap["params"].(string)), &params)
-			step.SetParams(params)
-
-			steps = append(steps, step)
-		}
-
-		syntheticsTest.SetSteps(steps)
-	}
-
 	if attr, ok := d.GetOk("browser_step"); ok {
 		steps := []datadogV1.SyntheticsStep{}
 
@@ -1466,6 +1462,12 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	}
 	if request.HasNoSavingResponseBody() {
 		localRequest["no_saving_response_body"] = request.GetNoSavingResponseBody()
+	}
+	if request.HasNumberOfPackets() {
+		localRequest["number_of_packets"] = request.GetNumberOfPackets()
+	}
+	if request.HasShouldTrackHops() {
+		localRequest["should_track_hops"] = request.GetShouldTrackHops()
 	}
 
 	return localRequest
@@ -1723,12 +1725,6 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	steps := syntheticsTest.GetSteps()
 	var localSteps []map[string]interface{}
 
-	useLegacyStep := false
-
-	if attr, ok := d.GetOk("step"); ok && attr != nil && len(attr.([]interface{})) > 0 {
-		useLegacyStep = true
-	}
-
 	for stepIndex, step := range steps {
 		localStep := make(map[string]interface{})
 		localStep["name"] = step.GetName()
@@ -1739,36 +1735,25 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 			localStep["allow_failure"] = allowFailure
 		}
 
-		if useLegacyStep {
-			localStep["params"] = convertToString(step.GetParams().(interface{}))
-		} else {
-			localParams := make(map[string]interface{})
-			params := step.GetParams()
-			paramsMap := params.(map[string]interface{})
+		localParams := make(map[string]interface{})
+		params := step.GetParams()
+		paramsMap := params.(map[string]interface{})
 
-			for key, value := range paramsMap {
-				localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
-			}
+		for key, value := range paramsMap {
+			localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
+		}
 
-			localStep["params"] = []interface{}{localParams}
+		localStep["params"] = []interface{}{localParams}
 
-			if forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex)); ok {
-				localStep["force_element_update"] = forceElementUpdate
-			}
+		if forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex)); ok {
+			localStep["force_element_update"] = forceElementUpdate
 		}
 
 		localSteps = append(localSteps, localStep)
 	}
 
-	// If the existing state still uses step, keep using that in the state to not generate useless diffs
-	if useLegacyStep {
-		if err := d.Set("step", localSteps); err != nil {
-			return diag.FromErr(err)
-		}
-	} else {
-		if err := d.Set("browser_step", localSteps); err != nil {
-			return diag.FromErr(err)
-		}
+	if err := d.Set("browser_step", localSteps); err != nil {
+		return diag.FromErr(err)
 	}
 
 	d.Set("name", syntheticsTest.GetName())

@@ -204,7 +204,6 @@ resource "datadog_synthetics_test" "test_browser" {
 - **browser_variable** (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
 - **config_variable** (Block List) Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--config_variable))
 - **device_ids** (List of String) Array with the different device IDs used to run the test. Allowed enum values: `laptop_large`, `tablet`, `mobile_small` (only available for `browser` tests).
-- **id** (String) The ID of this resource.
 - **message** (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.
 - **options_list** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
 - **request_basicauth** (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
@@ -212,11 +211,12 @@ resource "datadog_synthetics_test" "test_browser" {
 - **request_definition** (Block List, Max: 1) The synthetics test request. Required if `type = "api"`. (see [below for nested schema](#nestedblock--request_definition))
 - **request_headers** (Map of String) Header name and value map.
 - **request_query** (Map of String) Query arguments name and value map.
-- **subtype** (String) When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns` or `multi`. Defaults to `http`.
+- **subtype** (String) When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns`, `icmp` or `multi`. Defaults to `http`.
 - **tags** (List of String) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).
 
 ### Read-Only
 
+- **id** (String) The ID of this resource.
 - **monitor_id** (Number) ID of the monitor associated with the Datadog synthetics test.
 
 <a id="nestedblock--api_step"></a>
@@ -340,7 +340,9 @@ Optional:
 - **host** (String) Host name to perform the test with.
 - **method** (String) The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
+- **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - **port** (Number) Port to use when performing the test.
+- **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.
 
@@ -538,7 +540,9 @@ Optional:
 - **host** (String) Host name to perform the test with.
 - **method** (String) The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
+- **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - **port** (Number) Port to use when performing the test.
+- **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.
 

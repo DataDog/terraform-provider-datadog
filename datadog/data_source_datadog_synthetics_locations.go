@@ -29,7 +29,7 @@ func dataSourceDatadogSyntheticsLocationsRead(ctx context.Context, d *schema.Res
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	syntheticsLocations, _, err := datadogClientV1.SyntheticsApi.ListLocations(authV1).Execute()
+	syntheticsLocations, _, err := datadogClientV1.SyntheticsApi.ListLocations(authV1)
 
 	if err != nil {
 		return diag.FromErr(err)

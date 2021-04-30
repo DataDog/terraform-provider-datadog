@@ -52,7 +52,7 @@ func resourceDatadogLogsPipelineOrderRead(ctx context.Context, d *schema.Resourc
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
-	order, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipelineOrder(authV1).Execute()
+	order, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipelineOrder(authV1)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error getting logs pipeline order")
 	}
@@ -75,11 +75,11 @@ func resourceDatadogLogsPipelineOrderUpdate(ctx context.Context, d *schema.Resou
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
-	updatedOrder, _, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipelineOrder(authV1).Body(ddPipelineList).Execute()
+	updatedOrder, _, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipelineOrder(authV1, ddPipelineList)
 	if err != nil {
 		// Cannot map pipelines to existing ones
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
-			ddPipelineOrder, _, getErr := datadogClientV1.LogsPipelinesApi.GetLogsPipelineOrder(authV1).Execute()
+			ddPipelineOrder, _, getErr := datadogClientV1.LogsPipelinesApi.GetLogsPipelineOrder(authV1)
 			if getErr != nil {
 				return utils.TranslateClientErrorDiag(err, "error getting logs pipeline order")
 			}

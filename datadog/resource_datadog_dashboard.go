@@ -64,6 +64,12 @@ func resourceDatadogDashboard() *schema.Resource {
 				Description:  "The layout type of the dashboard, either 'free' or 'ordered'.",
 				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewDashboardLayoutTypeFromValue),
 			},
+			"reflow_type": {
+				Type:         schema.TypeString,
+				Optional:     true,
+				Description:  "The reflow type of a multi-size layout dashboard. Set this only when layout type is ‘ordered’. If set to ‘fixed’, the dashboard expect all widgets to have a layout, and if it’s set to ‘auto’, widgets should not have layouts.",
+				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewDashboardReflowTypeFromValue),
+			},
 			"description": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -127,7 +133,7 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	dashboard, _, err := datadogClientV1.DashboardsApi.CreateDashboard(authV1).Body(*dashboardPayload).Execute()
+	dashboard, _, err := datadogClientV1.DashboardsApi.CreateDashboard(authV1, *dashboardPayload)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error creating dashboard")
 	}
@@ -136,7 +142,7 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 	var getDashboard datadogV1.Dashboard
 	var httpResponse *http.Response
 	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
-		getDashboard, httpResponse, err = datadogClientV1.DashboardsApi.GetDashboard(authV1, *dashboard.Id).Execute()
+		getDashboard, httpResponse, err = datadogClientV1.DashboardsApi.GetDashboard(authV1, *dashboard.Id)
 		if err != nil {
 			if httpResponse != nil && httpResponse.StatusCode == 404 {
 				return resource.RetryableError(fmt.Errorf("dashboard not created yet"))
@@ -166,7 +172,7 @@ func resourceDatadogDashboardUpdate(ctx context.Context, d *schema.ResourceData,
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	updatedDashboard, _, err := datadogClientV1.DashboardsApi.UpdateDashboard(authV1, id).Body(*dashboard).Execute()
+	updatedDashboard, _, err := datadogClientV1.DashboardsApi.UpdateDashboard(authV1, id, *dashboard)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error updating dashboard")
 	}
@@ -191,7 +197,7 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 		items.SetDashboards(itemsRequest)
 
 		for _, id := range v.(*schema.Set).List() {
-			_, _, err := datadogClientV2.DashboardListsApi.CreateDashboardListItems(authV2, int64(id.(int))).Body(*items).Execute()
+			_, _, err := datadogClientV2.DashboardListsApi.CreateDashboardListItems(authV2, int64(id.(int)), *items)
 			if err != nil {
 				log.Printf("[DEBUG] Got error adding to dashboard list %d: %v", id.(int), err)
 			}
@@ -203,7 +209,7 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 		items.SetDashboards(itemsRequest)
 
 		for _, id := range v.(*schema.Set).List() {
-			_, _, err := datadogClientV2.DashboardListsApi.DeleteDashboardListItems(authV2, int64(id.(int))).Body(*items).Execute()
+			_, _, err := datadogClientV2.DashboardListsApi.DeleteDashboardListItems(authV2, int64(id.(int)), *items)
 			if err != nil {
 				log.Printf("[DEBUG] Got error removing from dashboard list %d: %v", id.(int), err)
 			}
@@ -216,6 +222,9 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 		return diag.FromErr(err)
 	}
 	if err := d.Set("layout_type", dashboard.GetLayoutType()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("reflow_type", dashboard.GetReflowType()); err != nil {
 		return diag.FromErr(err)
 	}
 	if err := d.Set("description", dashboard.GetDescription()); err != nil {
@@ -263,7 +272,7 @@ func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, m
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	id := d.Id()
-	dashboard, httpresp, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, id).Execute()
+	dashboard, httpresp, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, id)
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -280,7 +289,7 @@ func resourceDatadogDashboardDelete(ctx context.Context, d *schema.ResourceData,
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	id := d.Id()
-	if _, _, err := datadogClientV1.DashboardsApi.DeleteDashboard(authV1, id).Execute(); err != nil {
+	if _, _, err := datadogClientV1.DashboardsApi.DeleteDashboard(authV1, id); err != nil {
 		return utils.TranslateClientErrorDiag(err, "error deleting dashboard")
 	}
 	return nil
@@ -296,6 +305,9 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 	}
 	if v, ok := d.GetOk("layout_type"); ok {
 		dashboard.SetLayoutType(datadogV1.DashboardLayoutType(v.(string)))
+	}
+	if v, ok := d.GetOk("reflow_type"); ok {
+		dashboard.SetReflowType(datadogV1.DashboardReflowType(v.(string)))
 	}
 	if v, ok := d.GetOk("description"); ok {
 		dashboard.SetDescription(v.(string))
@@ -4289,6 +4301,9 @@ func getGeomapRequestSchema() map[string]*schema.Schema {
 		"q":         getMetricQuerySchema(),
 		"log_query": getApmLogNetworkRumSecurityQuerySchema(),
 		"rum_query": getApmLogNetworkRumSecurityQuerySchema(),
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getFormulaSchema(),
 	}
 }
 
@@ -4354,6 +4369,28 @@ func buildDatadogGeomapRequests(terraformRequests *[]interface{}) *[]datadogV1.G
 		} else if v, ok := terraformRequest["rum_query"].([]interface{}); ok && len(v) > 0 {
 			rumQuery := v[0].(map[string]interface{})
 			datadogGeomapRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
+		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+			for i, q := range v {
+				query := q.(map[string]interface{})
+				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogEventQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				}
+			}
+			datadogGeomapRequest.SetQueries(queries)
+			// Geomap requests for formulas and functions always has a response format of "scalar"
+			datadogGeomapRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
+		}
+		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+			formulas := make([]datadogV1.WidgetFormula, len(v))
+			for i, formula := range v {
+				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
+			}
+			datadogGeomapRequest.SetFormulas(formulas)
 		}
 
 		datadogRequests[i] = *datadogGeomapRequest
@@ -4375,7 +4412,14 @@ func buildTerraformGeomapRequests(datadogGeomapRequests *[]datadogV1.GeomapWidge
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.rum_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.rum_query.0", i))
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
+			terraformRequest["query"] = buildTerraformQuery(*v)
 		}
+
+		if v, ok := datadogRequest.GetFormulasOk(); ok {
+			terraformRequest["formula"] = buildTerraformFormula(*v)
+		}
+
 		terraformRequests[i] = terraformRequest
 	}
 	return &terraformRequests
@@ -5318,6 +5362,9 @@ func getToplistRequestSchema() map[string]*schema.Schema {
 		"process_query":  getProcessQuerySchema(),
 		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getFormulaSchema(),
 		// Settings specific to Toplist requests
 		"conditional_formats": {
 			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below.",
@@ -5361,6 +5408,28 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
 			securityQuery := v[0].(map[string]interface{})
 			datadogToplistRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
+		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+			for i, q := range v {
+				query := q.(map[string]interface{})
+				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogEventQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				}
+			}
+			datadogToplistRequest.SetQueries(queries)
+			// Toplist requests for formulas and functions always has a response format of "scalar"
+			datadogToplistRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
+		}
+		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+			formulas := make([]datadogV1.WidgetFormula, len(v))
+			for i, formula := range v {
+				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
+			}
+			datadogToplistRequest.SetFormulas(formulas)
 		}
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
 			datadogToplistRequest.ConditionalFormats = buildDatadogWidgetConditionalFormat(&v)
@@ -5399,6 +5468,12 @@ func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWi
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.security_query.0", i))
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
+			terraformRequest["query"] = buildTerraformQuery(*v)
+		}
+
+		if v, ok := datadogRequest.GetFormulasOk(); ok {
+			terraformRequest["formula"] = buildTerraformFormula(*v)
 		}
 
 		if v, ok := datadogRequest.GetConditionalFormatsOk(); ok {

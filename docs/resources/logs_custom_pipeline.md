@@ -173,9 +173,12 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
 
 ### Optional
 
-- **id** (String) The ID of this resource.
 - **is_enabled** (Boolean)
 - **processor** (Block List) (see [below for nested schema](#nestedblock--processor))
+
+### Read-Only
+
+- **id** (String) The ID of this resource.
 
 <a id="nestedblock--filter"></a>
 ### Nested Schema for `filter`
@@ -262,7 +265,7 @@ Required:
 - **name** (String)
 
 <a id="nestedblock--processor--category_processor--category--filter"></a>
-### Nested Schema for `processor.category_processor.category.name`
+### Nested Schema for `processor.category_processor.category.filter`
 
 Required:
 
@@ -393,7 +396,7 @@ Optional:
 - **user_agent_parser** (Block List, Max: 1) User-Agent Parser Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#user-agent-parser) (see [below for nested schema](#nestedblock--processor--pipeline--processor--user_agent_parser))
 
 <a id="nestedblock--processor--pipeline--processor--arithmetic_processor"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser`
+### Nested Schema for `processor.pipeline.processor.arithmetic_processor`
 
 Required:
 
@@ -408,7 +411,7 @@ Optional:
 
 
 <a id="nestedblock--processor--pipeline--processor--attribute_remapper"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser`
+### Nested Schema for `processor.pipeline.processor.attribute_remapper`
 
 Required:
 
@@ -427,11 +430,11 @@ Optional:
 
 
 <a id="nestedblock--processor--pipeline--processor--category_processor"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser`
+### Nested Schema for `processor.pipeline.processor.category_processor`
 
 Required:
 
-- **category** (Block List, Min: 1) List of filters to match or exclude a log with their corresponding name to assign a custom value to the log. (see [below for nested schema](#nestedblock--processor--pipeline--processor--user_agent_parser--category))
+- **category** (Block List, Min: 1) List of filters to match or exclude a log with their corresponding name to assign a custom value to the log. (see [below for nested schema](#nestedblock--processor--pipeline--processor--category_processor--category))
 - **target** (String) Name of the target attribute whose value is defined by the matching category.
 
 Optional:
@@ -439,16 +442,16 @@ Optional:
 - **is_enabled** (Boolean) If the processor is enabled or not.
 - **name** (String) Name of the category
 
-<a id="nestedblock--processor--pipeline--processor--user_agent_parser--category"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser.category`
+<a id="nestedblock--processor--pipeline--processor--category_processor--category"></a>
+### Nested Schema for `processor.pipeline.processor.category_processor.category`
 
 Required:
 
-- **filter** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--user_agent_parser--category--filter))
+- **filter** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--category_processor--category--filter))
 - **name** (String)
 
-<a id="nestedblock--processor--pipeline--processor--user_agent_parser--category--filter"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser.category.name`
+<a id="nestedblock--processor--pipeline--processor--category_processor--category--filter"></a>
+### Nested Schema for `processor.pipeline.processor.category_processor.category.filter`
 
 Required:
 
@@ -458,7 +461,7 @@ Required:
 
 
 <a id="nestedblock--processor--pipeline--processor--date_remapper"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser`
+### Nested Schema for `processor.pipeline.processor.date_remapper`
 
 Required:
 
@@ -471,7 +474,7 @@ Optional:
 
 
 <a id="nestedblock--processor--pipeline--processor--geo_ip_parser"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser`
+### Nested Schema for `processor.pipeline.processor.geo_ip_parser`
 
 Required:
 
@@ -485,11 +488,11 @@ Optional:
 
 
 <a id="nestedblock--processor--pipeline--processor--grok_parser"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser`
+### Nested Schema for `processor.pipeline.processor.grok_parser`
 
 Required:
 
-- **grok** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--user_agent_parser--grok))
+- **grok** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--grok_parser--grok))
 - **source** (String) Name of the log attribute to parse.
 
 Optional:
@@ -498,8 +501,8 @@ Optional:
 - **name** (String) Name of the processor
 - **samples** (List of String) List of sample logs for this parser. It can save up to 5 samples. Each sample takes up to 5000 characters.
 
-<a id="nestedblock--processor--pipeline--processor--user_agent_parser--grok"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser.grok`
+<a id="nestedblock--processor--pipeline--processor--grok_parser--grok"></a>
+### Nested Schema for `processor.pipeline.processor.grok_parser.grok`
 
 Required:
 
@@ -509,7 +512,7 @@ Required:
 
 
 <a id="nestedblock--processor--pipeline--processor--lookup_processor"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser`
+### Nested Schema for `processor.pipeline.processor.lookup_processor`
 
 Required:
 
@@ -525,7 +528,7 @@ Optional:
 
 
 <a id="nestedblock--processor--pipeline--processor--message_remapper"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser`
+### Nested Schema for `processor.pipeline.processor.message_remapper`
 
 Required:
 
@@ -538,7 +541,7 @@ Optional:
 
 
 <a id="nestedblock--processor--pipeline--processor--service_remapper"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser`
+### Nested Schema for `processor.pipeline.processor.service_remapper`
 
 Required:
 
@@ -551,7 +554,7 @@ Optional:
 
 
 <a id="nestedblock--processor--pipeline--processor--status_remapper"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser`
+### Nested Schema for `processor.pipeline.processor.status_remapper`
 
 Required:
 
@@ -564,7 +567,7 @@ Optional:
 
 
 <a id="nestedblock--processor--pipeline--processor--string_builder_processor"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser`
+### Nested Schema for `processor.pipeline.processor.string_builder_processor`
 
 Required:
 
@@ -579,7 +582,7 @@ Optional:
 
 
 <a id="nestedblock--processor--pipeline--processor--trace_id_remapper"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser`
+### Nested Schema for `processor.pipeline.processor.trace_id_remapper`
 
 Required:
 
@@ -592,7 +595,7 @@ Optional:
 
 
 <a id="nestedblock--processor--pipeline--processor--url_parser"></a>
-### Nested Schema for `processor.pipeline.processor.user_agent_parser`
+### Nested Schema for `processor.pipeline.processor.url_parser`
 
 Required:
 

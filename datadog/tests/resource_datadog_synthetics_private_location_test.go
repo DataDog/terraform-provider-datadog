@@ -143,7 +143,7 @@ func testSyntheticsPrivateLocationExists(accProvider func() (*schema.Provider, e
 		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
-			if _, _, err := datadogClientV1.SyntheticsApi.GetPrivateLocation(authV1, r.Primary.ID).Execute(); err != nil {
+			if _, _, err := datadogClientV1.SyntheticsApi.GetPrivateLocation(authV1, r.Primary.ID); err != nil {
 				return fmt.Errorf("received an error retrieving synthetics private location %s", err)
 			}
 		}
@@ -159,7 +159,7 @@ func testSyntheticsPrivateLocationIsDestroyed(accProvider func() (*schema.Provid
 		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
-			if _, httpresp, err := datadogClientV1.SyntheticsApi.GetPrivateLocation(authV1, r.Primary.ID).Execute(); err != nil {
+			if _, httpresp, err := datadogClientV1.SyntheticsApi.GetPrivateLocation(authV1, r.Primary.ID); err != nil {
 				if httpresp != nil && httpresp.StatusCode == 404 {
 					continue
 				}
