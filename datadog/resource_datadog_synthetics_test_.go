@@ -1501,22 +1501,6 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		}
 		request.SetTimeout(float64(timeoutInt))
 	}
-	if attr, ok := k.GetOkWith("host"); ok {
-		request.SetHost(attr.(string))
-	}
-	if attr, ok := k.GetOkWith("port"); ok {
-		var portInt int
-		// first try to convert to int if we're getting from the new TypeList field
-		portInt, ok = attr.(int)
-		if !ok {
-			// if it's not an int, means we are in the deprecated TypeMap field, so convert from string
-			portInt, _ = strconv.Atoi(attr.(string))
-		}
-		request.SetPort(int64(portInt))
-	}
-	if attr, ok := k.GetOkWith("dns_server"); ok {
-		request.SetDnsServer(attr.(string))
-	}
 	k.Remove(parts)
 	if attr, ok := d.GetOk("request_query"); ok {
 		query := attr.(map[string]interface{})
