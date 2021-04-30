@@ -234,13 +234,6 @@ func resourceDatadogMonitor() *schema.Resource {
 				Elem:          &schema.Schema{Type: schema.TypeString},
 				ConflictsWith: []string{"locked"},
 			},
-			"silenced": {
-				Description: "Each scope will be muted until the given POSIX timestamp or forever if the value is `0`. Use `-1` if you want to unmute the scope. Deprecated: the silenced parameter is being deprecated in favor of the downtime resource. This will be removed in the next major version of the Terraform Provider.",
-				Type:        schema.TypeMap,
-				Optional:    true,
-				Elem:        schema.TypeInt,
-				Deprecated:  "Use the Downtime resource instead.",
-			},
 			"include_tags": {
 				Description: "A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`.",
 				Type:        schema.TypeBool,
@@ -336,14 +329,6 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 		o.SetThresholdWindows(thresholdWindows)
 	}
 
-	if attr, ok := d.GetOk("silenced"); ok {
-		s := make(map[string]int64)
-		// TODO: this is not very defensive, test if we can fail on non int input
-		for k, v := range attr.(map[string]interface{}) {
-			s[k] = int64(v.(int))
-		}
-		o.Silenced = &s
-	}
 	if attr, ok := d.GetOk("notify_no_data"); ok {
 		o.SetNotifyNoData(attr.(bool))
 	}
@@ -455,20 +440,6 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 	})
 }
 
-func getUnmutedScopes(d *schema.ResourceData) []string {
-	var unmuteScopes []string
-
-	if attr, ok := d.GetOk("silenced"); ok {
-		for k, v := range attr.(map[string]interface{}) {
-			if v.(int) == -1 {
-				unmuteScopes = append(unmuteScopes, k)
-			}
-		}
-		log.Printf("[DEBUG] Unmute Scopes are: %v", unmuteScopes)
-	}
-	return unmuteScopes
-}
-
 func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -486,8 +457,6 @@ func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, m
 }
 
 func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.Monitor) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-
 	thresholds := make(map[string]string)
 
 	if v, ok := m.Options.Thresholds.GetOkOk(); ok {
@@ -585,7 +554,6 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("tags", tags); err != nil {
 		return diag.FromErr(err)
 	}
-	// TODO Is this one of those options that we neeed to check?
 	if err := d.Set("require_full_window", m.Options.GetRequireFullWindow()); err != nil {
 		return diag.FromErr(err)
 	}
@@ -600,28 +568,6 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		if err := d.Set("groupby_simple_monitor", m.Options.GetGroupbySimpleMonitor()); err != nil {
 			return diag.FromErr(err)
 		}
-	}
-
-	// The Datadog API doesn't return old timestamps or support a special value for unmuting scopes
-	// So we provide this functionality by saving values to the state
-	apiSilenced := m.Options.GetSilenced()
-	configSilenced := d.Get("silenced").(map[string]interface{})
-
-	for _, scope := range getUnmutedScopes(d) {
-		if _, ok := apiSilenced[scope]; !ok {
-			apiSilenced[scope] = -1
-		}
-	}
-
-	// Ignore any timestamps in the past that aren't -1 or 0
-	for k, v := range configSilenced {
-		if v.(int) < int(providerConf.Now().Unix()) && v.(int) != 0 && v.(int) != -1 {
-			// sync the state with whats in the config so its ignored
-			apiSilenced[k] = int64(v.(int))
-		}
-	}
-	if err := d.Set("silenced", apiSilenced); err != nil {
-		return diag.FromErr(err)
 	}
 
 	return nil
@@ -678,73 +624,9 @@ func resourceDatadogMonitorUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	m.Id = &i
 
-	silenced := false
-	configuredSilenced := map[string]int{}
-	if attr, ok := d.GetOk("silenced"); ok {
-		// TODO: this is not very defensive, test if we can fail non int input
-		s := make(map[string]int)
-		for k, v := range attr.(map[string]interface{}) {
-			s[k] = v.(int)
-			configuredSilenced[k] = v.(int)
-		}
-		silenced = true
-	}
-
 	monitorResp, _, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i, *m)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error updating monitor")
-	}
-
-	if diagErr := updateMonitorState(d, meta, &monitorResp); diagErr != nil {
-		return diagErr
-	}
-
-	// if the silenced section was removed from the config, we unmute it via the API
-	// The API wouldn't automatically unmute the monitor if the config is just missing
-	// else we check what other silenced scopes were added from API response in the
-	// "read" above and add them to "unmutedScopes" to be explicitly unmuted (because
-	// they're "drift")
-	unmutedScopes := getUnmutedScopes(d)
-	if newSilenced, ok := d.GetOk("silenced"); ok && !silenced {
-		// Because the Update method had a payload object which is not the same as the return result,
-		// we need to set this attribute from one to the other.
-		m.Options.SetSilenced(monitorResp.Options.GetSilenced())
-		mSilenced := m.Options.GetSilenced()
-		for k := range mSilenced {
-			// Since the Datadog GO client doesn't support unmuting on all scopes, loop over GetSilenced() and set the
-			// end timestamp to time.Now().Unix()
-			mSilenced[k] = providerConf.Now().Unix()
-		}
-		monitorResp, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i, *m)
-		if err != nil {
-			return utils.TranslateClientErrorDiag(err, "error updating monitor")
-		}
-		if err := d.Set("silenced", map[string]int{}); err != nil {
-			return diag.FromErr(err)
-		}
-	} else {
-		for scope := range newSilenced.(map[string]interface{}) {
-			if _, ok := configuredSilenced[scope]; !ok {
-				unmutedScopes = append(unmutedScopes, scope)
-			}
-		}
-	}
-
-	// Similarly, if the silenced attribute is -1, lets unmute those scopes
-	if len(unmutedScopes) != 0 {
-		// Because the Update method had a payload object which is not the same as the return result,
-		// we need to set this attribute from one to the other.
-		m.Options.SetSilenced(monitorResp.Options.GetSilenced())
-		silencedList := m.Options.GetSilenced()
-		for _, scope := range unmutedScopes {
-			if _, ok := silencedList[scope]; ok {
-				delete(silencedList, scope)
-			}
-		}
-		monitorResp, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i, *m)
-		if err != nil {
-			return utils.TranslateClientErrorDiag(err, "error updating monitor")
-		}
 	}
 
 	return updateMonitorState(d, meta, &monitorResp)

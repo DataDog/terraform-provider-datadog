@@ -275,8 +275,6 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "include_tags", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "silenced.*", "0"),
-					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "true"),
@@ -411,8 +409,6 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "timeout_h", "70"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "include_tags", "false"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "silenced.*", "0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "false"),
 					resource.TestCheckResourceAttr(
@@ -704,41 +700,6 @@ func testAccCheckDatadogMonitorExists(accProvider func() (*schema.Provider, erro
 	}
 }
 
-func TestAccDatadogMonitor_SilencedUpdateNoDiff(t *testing.T) {
-	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	monitorName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogMonitorSilenceZero(monitorName),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists(accProvider),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", monitorName),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "query", "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "type", "query alert"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "silenced.*", "0"),
-				),
-			},
-			{
-				Config:             testAccCheckDatadogMonitorSilenceZero(monitorName),
-				ExpectNonEmptyPlan: false,
-			},
-		},
-	})
-}
-
 func TestAccDatadogMonitor_ZeroDelay(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -793,21 +754,6 @@ func TestAccDatadogMonitor_RestrictedRoles(t *testing.T) {
 			},
 		},
 	})
-}
-
-func testAccCheckDatadogMonitorSilenceZero(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_monitor" "foo" {
-	name = "%s"
-	type = "query alert"
-	message = "some message Notify: @hipchat-channel"
-
-	query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
-
-	silenced = {
-    "*" = 0
-  }
-}`, uniq)
 }
 
 func testAccCheckDatadogMonitorConfig(uniq string) string {
@@ -983,9 +929,6 @@ resource "datadog_monitor" "foo" {
   include_tags = false
   require_full_window = false
   locked = true
-  silenced = {
-	"*" = 0
-  }
   tags = ["baz:qux", "quux"]
 }`, uniq)
 }
@@ -1018,9 +961,6 @@ resource "datadog_monitor" "foo" {
   include_tags = false
   require_full_window = false
   locked = true
-  silenced = {
-	"*" = 0
-  }
 }`, uniq)
 }
 
