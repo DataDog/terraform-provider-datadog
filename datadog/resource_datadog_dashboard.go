@@ -1191,7 +1191,7 @@ func getGroupDefinitionSchema() map[string]*schema.Schema {
 		"background_color": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "Background color of the group title.",
+			Description: "Background color of the group title. One of `vivid_blue`, `vivid_purple`, `vivid_pink`, `vivid_orange`, `vivid_yellow`, `vivid_green`, `blue`, `purple`, `pink`, `orange`, `yellow`, `green`, `gray` or `white`",
 		},
 		"banner_img": {
 			Type:        schema.TypeString,
