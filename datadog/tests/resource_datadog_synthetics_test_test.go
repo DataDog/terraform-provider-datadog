@@ -1598,8 +1598,8 @@ func createSyntheticsICMPTestStep(ctx context.Context, accProvider func() (*sche
 				"datadog_synthetics_test.icmp", "assertion.0.target", "200"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.icmp", "locations.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.icmp", "locations.3056069023", "aws:eu-central-1"),
+			resource.TestCheckTypeSetElemAttr(
+				"datadog_synthetics_test.icmp", "locations.*", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.icmp", "options_list.0.tick_every", "60"),
 			resource.TestCheckResourceAttr(
