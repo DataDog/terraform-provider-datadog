@@ -5,11 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"net/url"
 	"runtime"
 	"strings"
 	"time"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
@@ -183,6 +185,11 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
+	// Initialize the HTTP Client
+	httpClient := http.DefaultClient
+	customTransport := transport.NewCustomTransport()
+	httpClient.Transport = customTransport
+
 	// Initialize the official Datadog V1 API client
 	authV1 := context.WithValue(
 		context.Background(),
@@ -197,6 +204,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		},
 	)
 	configV1 := datadogV1.NewConfiguration()
+	configV1.HTTPClient = httpClient
 	// Enable unstable operations
 	configV1.SetUnstableOperationEnabled("GetLogsIndex", true)
 	configV1.SetUnstableOperationEnabled("ListLogIndexes", true)
@@ -260,6 +268,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		},
 	)
 	configV2 := datadogV2.NewConfiguration()
+	configV2.HTTPClient = httpClient
 	// Enable unstable operations
 	configV2.SetUnstableOperationEnabled("CreateTagConfiguration", true)
 	configV2.SetUnstableOperationEnabled("DeleteTagConfiguration", true)
