@@ -575,8 +575,6 @@ resource "datadog_downtime" "foo" {
 }
 
 func testAccCheckDatadogDowntimeConfigWithMonitor(uniq string, start int64, end int64) string {
-	//When scheduling downtime, Datadog switches the silenced property of monitor to the "end" property of downtime.
-	//If that is omitted, the plan doesn't become empty after removing the downtime.
 	return fmt.Sprintf(`
 resource "datadog_monitor" "downtime_monitor" {
   name = "%s"
@@ -590,9 +588,6 @@ resource "datadog_monitor" "downtime_monitor" {
     warning = "1.0"
     critical = "2.0"
   }
-  silenced = {
-    "*" = %d
-  }
 }
 
 resource "datadog_downtime" "foo" {
@@ -603,12 +598,10 @@ resource "datadog_downtime" "foo" {
   message = "%s"
   monitor_id = "${datadog_monitor.downtime_monitor.id}"
 }
-`, uniq, end, start, end, uniq)
+`, uniq, start, end, uniq)
 }
 
 func testAccCheckDatadogDowntimeConfigWithMonitorTags(uniq string, start int64, end int64) string {
-	//When scheduling downtime, Datadog switches the silenced property of monitor to the "end" property of downtime.
-	//If that is omitted, the plan doesn't become empty after removing the downtime.
 	return fmt.Sprintf(`
 resource "datadog_monitor" "downtime_monitor" {
   name = "%s"
@@ -623,9 +616,6 @@ resource "datadog_monitor" "downtime_monitor" {
     warning = "1.0"
     critical = "2.0"
   }
-  silenced = {
-    "*" = %d
-  }
 }
 
 resource "datadog_downtime" "foo" {
@@ -636,7 +626,7 @@ resource "datadog_downtime" "foo" {
   message = "%s"
   monitor_tags = ["app:webserver"]
 }
-`, uniq, end, start, end, uniq)
+`, uniq, start, end, uniq)
 }
 
 func testAccCheckDatadogDowntimeConfigMultiScope(uniq string) string {
