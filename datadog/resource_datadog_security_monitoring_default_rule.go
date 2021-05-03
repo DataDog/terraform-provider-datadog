@@ -87,7 +87,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(d *schema.ResourceData, me
 	authV2 := providerConf.AuthV2
 
 	id := d.Id()
-	ruleResponse, _, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, id).Execute()
+	ruleResponse, _, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, id)
 	if err != nil {
 		return err
 	}
@@ -138,7 +138,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(d *schema.ResourceData, 
 
 	ruleID := d.Id()
 
-	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, ruleID).Execute()
+	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, ruleID)
 
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
@@ -159,7 +159,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(d *schema.ResourceData, 
 	}
 
 	if shouldUpdate {
-		if _, _, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, ruleID).Body(*ruleUpdate).Execute(); err != nil {
+		if _, _, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, ruleID, *ruleUpdate); err != nil {
 			return utils.TranslateClientError(err, "error updating security monitoring rule on resource creation")
 		}
 	}

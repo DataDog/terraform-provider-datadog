@@ -426,7 +426,7 @@ func testAccCheckDatadogSecurityMonitoringRuleExists(provider *schema.Provider, 
 		client := providerConf.DatadogClientV2
 
 		for _, rule := range s.RootModule().Resources {
-			_, _, err := client.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, rule.Primary.ID).Execute()
+			_, _, err := client.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, rule.Primary.ID)
 			if err != nil {
 				return fmt.Errorf("received an error retrieving security monitoring rule: %s", err)
 			}
@@ -443,7 +443,7 @@ func testAccCheckDatadogSecurityMonitoringRuleDestroy(provider *schema.Provider)
 
 		for _, resource := range s.RootModule().Resources {
 			if resource.Type == "datadog_security_monitoring_rule" {
-				_, httpResponse, err := client.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, resource.Primary.ID).Execute()
+				_, httpResponse, err := client.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, resource.Primary.ID)
 				if err != nil {
 					if httpResponse != nil && httpResponse.StatusCode == 404 {
 						continue

@@ -80,7 +80,7 @@ func resourceDatadogIntegrationGcpCreate(d *schema.ResourceData, meta interface{
 
 	projectID := d.Get("project_id").(string)
 
-	if _, _, err := datadogClientV1.GCPIntegrationApi.CreateGCPIntegration(authV1).Body(
+	if _, _, err := datadogClientV1.GCPIntegrationApi.CreateGCPIntegration(authV1,
 		datadogV1.GCPAccount{
 			Type:                    datadogV1.PtrString(defaultType),
 			ProjectId:               datadogV1.PtrString(projectID),
@@ -95,7 +95,7 @@ func resourceDatadogIntegrationGcpCreate(d *schema.ResourceData, meta interface{
 			HostFilters:             datadogV1.PtrString(d.Get("host_filters").(string)),
 			Automute:                datadogV1.PtrBool(d.Get("automute").(bool)),
 		},
-	).Execute(); err != nil {
+	); err != nil {
 		return utils.TranslateClientError(err, "error creating GCP integration")
 	}
 
@@ -111,7 +111,7 @@ func resourceDatadogIntegrationGcpRead(d *schema.ResourceData, meta interface{})
 
 	projectID := d.Id()
 
-	integrations, _, err := datadogClientV1.GCPIntegrationApi.ListGCPIntegration(authV1).Execute()
+	integrations, _, err := datadogClientV1.GCPIntegrationApi.ListGCPIntegration(authV1)
 	if err != nil {
 		return utils.TranslateClientError(err, "error getting GCP integration")
 	}
@@ -133,14 +133,14 @@ func resourceDatadogIntegrationGcpUpdate(d *schema.ResourceData, meta interface{
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	if _, _, err := datadogClientV1.GCPIntegrationApi.UpdateGCPIntegration(authV1).Body(
+	if _, _, err := datadogClientV1.GCPIntegrationApi.UpdateGCPIntegration(authV1,
 		datadogV1.GCPAccount{
 			ProjectId:   datadogV1.PtrString(d.Id()),
 			ClientEmail: datadogV1.PtrString(d.Get("client_email").(string)),
 			HostFilters: datadogV1.PtrString(d.Get("host_filters").(string)),
 			Automute:    datadogV1.PtrBool(d.Get("automute").(bool)),
 		},
-	).Execute(); err != nil {
+	); err != nil {
 		return utils.TranslateClientError(err, "error updating GCP integration")
 	}
 
@@ -152,12 +152,12 @@ func resourceDatadogIntegrationGcpDelete(d *schema.ResourceData, meta interface{
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	if _, _, err := datadogClientV1.GCPIntegrationApi.DeleteGCPIntegration(authV1).Body(
+	if _, _, err := datadogClientV1.GCPIntegrationApi.DeleteGCPIntegration(authV1,
 		datadogV1.GCPAccount{
 			ProjectId:   datadogV1.PtrString(d.Id()),
 			ClientEmail: datadogV1.PtrString(d.Get("client_email").(string)),
 		},
-	).Execute(); err != nil {
+	); err != nil {
 		return utils.TranslateClientError(err, "error deleting GCP integration")
 	}
 

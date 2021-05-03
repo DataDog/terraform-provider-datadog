@@ -33,7 +33,7 @@ func dataSourceDatadogDashboardListRead(d *schema.ResourceData, meta interface{}
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	listResponse, _, err := datadogClientV1.DashboardListsApi.ListDashboardLists(authV1).Execute()
+	listResponse, _, err := datadogClientV1.DashboardListsApi.ListDashboardLists(authV1)
 
 	if err != nil {
 		return utils.TranslateClientError(err, "error querying dashboard lists")

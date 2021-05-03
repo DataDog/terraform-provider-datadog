@@ -30,7 +30,7 @@ func dataSourceDatadogPermissionsRead(d *schema.ResourceData, meta interface{}) 
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	res, _, err := datadogClientV2.RolesApi.ListPermissions(authV2).Execute()
+	res, _, err := datadogClientV2.RolesApi.ListPermissions(authV2)
 	if err != nil {
 		return utils.TranslateClientError(err, "error listing permissions")
 	}

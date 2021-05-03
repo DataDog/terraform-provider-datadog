@@ -121,7 +121,7 @@ func listFiltersHelper(accProvider *schema.Provider, resourceID string) (*[]data
 		return nil, err
 	}
 
-	resp, _, err := datadogClient.AWSIntegrationApi.ListAWSTagFilters(auth).AccountId(accountID).Execute()
+	resp, _, err := datadogClient.AWSIntegrationApi.ListAWSTagFilters(auth, accountID)
 	if err != nil {
 		return nil, err
 	}

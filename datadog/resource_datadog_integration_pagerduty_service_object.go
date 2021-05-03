@@ -66,7 +66,7 @@ func resourceDatadogIntegrationPagerdutySOCreate(d *schema.ResourceData, meta in
 	defer integrationPdMutex.Unlock()
 
 	so := buildIntegrationPagerdutySO(d)
-	if _, _, err := datadogClientV1.PagerDutyIntegrationApi.CreatePagerDutyIntegrationService(authV1).Body(*so).Execute(); err != nil {
+	if _, _, err := datadogClientV1.PagerDutyIntegrationApi.CreatePagerDutyIntegrationService(authV1, *so); err != nil {
 		// TODO: warn user that PD integration must be enabled to be able to create service objects
 		return utils.TranslateClientError(err, "error creating PagerDuty integration service")
 	}
@@ -80,7 +80,7 @@ func resourceDatadogIntegrationPagerdutySORead(d *schema.ResourceData, meta inte
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	so, httpresp, err := datadogClientV1.PagerDutyIntegrationApi.GetPagerDutyIntegrationService(authV1, d.Id()).Execute()
+	so, httpresp, err := datadogClientV1.PagerDutyIntegrationApi.GetPagerDutyIntegrationService(authV1, d.Id())
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -108,7 +108,7 @@ func resourceDatadogIntegrationPagerdutySOUpdate(d *schema.ResourceData, meta in
 	defer integrationPdMutex.Unlock()
 
 	serviceKey := buildIntegrationPagerdutyServiceKey(d)
-	if _, err := datadogClientV1.PagerDutyIntegrationApi.UpdatePagerDutyIntegrationService(authV1, d.Id()).Body(*serviceKey).Execute(); err != nil {
+	if _, err := datadogClientV1.PagerDutyIntegrationApi.UpdatePagerDutyIntegrationService(authV1, d.Id(), *serviceKey); err != nil {
 		return utils.TranslateClientError(err, "error updating PagerDuty integration service")
 	}
 
@@ -123,7 +123,7 @@ func resourceDatadogIntegrationPagerdutySODelete(d *schema.ResourceData, meta in
 	integrationPdMutex.Lock()
 	defer integrationPdMutex.Unlock()
 
-	if _, err := datadogClientV1.PagerDutyIntegrationApi.DeletePagerDutyIntegrationService(authV1, d.Id()).Execute(); err != nil {
+	if _, err := datadogClientV1.PagerDutyIntegrationApi.DeletePagerDutyIntegrationService(authV1, d.Id()); err != nil {
 		return utils.TranslateClientError(err, "error deleting PagerDuty integration service")
 	}
 

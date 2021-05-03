@@ -62,7 +62,7 @@ func testAccCheckDatadogMetricTagConfigurationDestroy(accProvider *schema.Provid
 
 			id := r.Primary.ID
 
-			_, resp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, id).Execute()
+			_, resp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, id)
 
 			if err != nil {
 				if resp.StatusCode == 404 {

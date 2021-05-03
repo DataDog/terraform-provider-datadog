@@ -105,7 +105,7 @@ func checkIntegrationAWSExists(accProvider *schema.Provider) func(*terraform.Sta
 }
 
 func checkIntegrationAWSExistsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
-	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(ctx).Execute()
+	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(ctx)
 	if err != nil {
 		return err
 	}
@@ -132,7 +132,7 @@ func checkIntegrationAWSDestroy(accProvider *schema.Provider) func(*terraform.St
 }
 
 func checkIntegrationAWSDestroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
-	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(ctx).Execute()
+	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(ctx)
 	if err != nil {
 		return err
 	}

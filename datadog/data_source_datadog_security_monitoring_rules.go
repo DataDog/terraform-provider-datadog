@@ -105,10 +105,11 @@ func dataSourceDatadogSecurityMonitoringRulesRead(d *schema.ResourceData, meta i
 	page := int64(0)
 
 	for {
-		response, _, err := datadogClientV2.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2).
-			PageNumber(page).
-			PageSize(100).
-			Execute()
+		response, _, err := datadogClientV2.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
+			datadogV2.ListSecurityMonitoringRulesOptionalParameters{
+				PageNumber: datadogV2.PtrInt64(page),
+				PageSize:   datadogV2.PtrInt64(100),
+			})
 
 		if err != nil {
 			return utils.TranslateClientError(err, "error listing rules")
