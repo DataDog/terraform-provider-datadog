@@ -185,11 +185,10 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
-	// Initialize the HTTP Client
-	httpClient := http.DefaultClient
-	customTransport := transport.NewCustomTransport()
-	httpClient.Transport = customTransport
-
+	// Initialize HTTP Client for datadogClientV1
+	httpClientV1 := http.DefaultClient
+	customTransportV1 := transport.NewCustomTransport()
+	httpClientV1.Transport = customTransportV1
 	// Initialize the official Datadog V1 API client
 	authV1 := context.WithValue(
 		context.Background(),
@@ -204,7 +203,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		},
 	)
 	configV1 := datadogV1.NewConfiguration()
-	configV1.HTTPClient = httpClient
+	configV1.HTTPClient = httpClientV1
 	// Enable unstable operations
 	configV1.SetUnstableOperationEnabled("GetLogsIndex", true)
 	configV1.SetUnstableOperationEnabled("ListLogIndexes", true)
@@ -254,6 +253,10 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
 	datadogClientV1 := datadogV1.NewAPIClient(configV1)
 
+	// Initialize HTTP Client for datadogClientV1
+	httpClientV2 := http.DefaultClient
+	customTransportV2 := transport.NewCustomTransport()
+	httpClientV1.Transport = customTransportV2
 	// Initialize the official Datadog V2 API client
 	authV2 := context.WithValue(
 		context.Background(),
@@ -268,7 +271,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		},
 	)
 	configV2 := datadogV2.NewConfiguration()
-	configV2.HTTPClient = httpClient
+	configV2.HTTPClient = httpClientV2
 	// Enable unstable operations
 	configV2.SetUnstableOperationEnabled("CreateTagConfiguration", true)
 	configV2.SetUnstableOperationEnabled("DeleteTagConfiguration", true)
