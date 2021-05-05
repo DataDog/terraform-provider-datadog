@@ -18,7 +18,6 @@ import (
 	"time"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
@@ -461,7 +460,6 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 		}
 
 		c := ddhttp.WrapClient(httpClient)
-		c.Transport = transport.NewCustomTransport(c.Transport, transport.CustomTransportOptions{})
 
 		communityClient.HttpClient = c
 		communityClient.ExtraHeader["User-Agent"] = utils.GetUserAgent(fmt.Sprintf(
