@@ -1,21 +1,30 @@
 package transport
 
 import (
+	"bytes"
 	"context"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
 )
 
 var (
-	defaultRetryDuration = 5 * time.Second
-	defaultTimeout       = 3600 * time.Second
-	rateLimitResetHeader = "X-Ratelimit-Reset"
+	defaultHTTPRetryDuration = 5 * time.Second
+	defaultHTTPRetryTimeout  = 60 * time.Second
+	rateLimitResetHeader     = "X-Ratelimit-Reset"
 )
 
 // CustomTransport holds DefaultTransport configuration and is used to for custom http error handling
 type CustomTransport struct {
-	defaultTransport http.RoundTripper
+	defaultTransport  http.RoundTripper
+	hTTPRetryDuration time.Duration
+	hTTPRetryTimeout  time.Duration
+}
+
+// CustomTransportOptions Set options for CustomTransport
+type CustomTransportOptions struct {
+	Timeout *time.Duration
 }
 
 // RoundTrip method used to retry http errors
@@ -23,7 +32,7 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	var ccancel context.CancelFunc
 	ctx := req.Context()
 	if _, set := ctx.Deadline(); !set {
-		ctx, ccancel = context.WithTimeout(ctx, defaultTimeout)
+		ctx, ccancel = context.WithTimeout(ctx, t.hTTPRetryTimeout)
 		defer ccancel()
 	}
 
@@ -31,19 +40,23 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	for {
 		newRequest := t.copyRequest(req)
 		resp, respErr := t.defaultTransport.RoundTrip(newRequest)
+		// Close the body so connection can be re-used
+		localVarBody, _ := ioutil.ReadAll(resp.Body)
+		resp.Body.Close()
+		resp.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
 		if respErr != nil {
 			return resp, respErr
 		}
 
-		// Check if request should be retried and long
+		// Check if request should be retried and get retry time
 		retryDuration, retry := t.retryRequest(resp)
 		if !retry {
 			return resp, respErr
 		}
 
 		if retryDuration == nil {
-			newVal := time.Duration(retryCount) * defaultRetryDuration
-			retryDuration = &newVal
+			newRetryDurationVal := time.Duration(retryCount) * t.hTTPRetryDuration
+			retryDuration = &newRetryDurationVal
 		}
 
 		select {
@@ -75,7 +88,7 @@ func (t *CustomTransport) retryRequest(response *http.Response) (*time.Duration,
 		if err != nil {
 			return nil, true
 		}
-		retryDuration := time.Duration(vInt)
+		retryDuration := time.Duration(vInt) * time.Second
 		return &retryDuration, true
 	}
 
@@ -86,10 +99,18 @@ func (t *CustomTransport) retryRequest(response *http.Response) (*time.Duration,
 	return nil, false
 }
 
-// NewCustomTransport returns new CustomTransport struct from existing http.Client
-func NewCustomTransport() *CustomTransport {
-
-	return &CustomTransport{
-		defaultTransport: http.DefaultTransport,
+// NewCustomTransport returns new CustomTransport struct
+func NewCustomTransport(t http.RoundTripper, opt CustomTransportOptions) *CustomTransport {
+	ct := CustomTransport{
+		defaultTransport:  t,
+		hTTPRetryDuration: defaultHTTPRetryDuration,
 	}
+
+	if opt.Timeout != nil {
+		ct.hTTPRetryTimeout = *opt.Timeout
+	} else {
+		ct.hTTPRetryTimeout = defaultHTTPRetryTimeout
+	}
+
+	return &ct
 }

@@ -74,6 +74,18 @@ func Provider() terraform.ResourceProvider {
 				Default:     true,
 				Description: "Enables validation of the provided API and APP keys during provider initialization. Default is true. When false, api_key and app_key won't be checked.",
 			},
+			"http_client_retry_enabled": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_ENABLED", false),
+				Description: "Enables HTTP request retries on HTTP errors.",
+			},
+			"http_client_retry_timeout": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_TIMEOUT", nil),
+				Description: "The HTTP request retry timeout period",
+			},
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
@@ -146,6 +158,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	apiKey := d.Get("api_key").(string)
 	appKey := d.Get("app_key").(string)
 	validate := d.Get("validate").(bool)
+	httpRetryEnabled := d.Get("http_client_retry_enabled").(bool)
 
 	if validate && (apiKey == "" || appKey == "") {
 		return nil, errors.New("api_key and app_key must be set unless validate = false")
@@ -185,10 +198,19 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
-	// Initialize HTTP Client for datadogClientV1
+	// Initialize http.Client for the Datadog API Clients
 	httpClientV1 := http.DefaultClient
-	customTransportV1 := transport.NewCustomTransport()
-	httpClientV1.Transport = customTransportV1
+	httpClientV2 := http.DefaultClient
+	if httpRetryEnabled {
+		ctOptions := transport.CustomTransportOptions{}
+		if v, ok := d.GetOk("http_client_retry_timeout"); ok {
+			timeout := time.Duration(int64(v.(int))) * time.Second
+			ctOptions.Timeout = &timeout
+		}
+		customTransportV1 := transport.NewCustomTransport(httpClientV1.Transport, ctOptions)
+		httpClientV1.Transport = customTransportV1
+	}
+
 	// Initialize the official Datadog V1 API client
 	authV1 := context.WithValue(
 		context.Background(),
@@ -253,10 +275,6 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
 	datadogClientV1 := datadogV1.NewAPIClient(configV1)
 
-	// Initialize HTTP Client for datadogClientV1
-	httpClientV2 := http.DefaultClient
-	customTransportV2 := transport.NewCustomTransport()
-	httpClientV1.Transport = customTransportV2
 	// Initialize the official Datadog V2 API client
 	authV2 := context.WithValue(
 		context.Background(),
