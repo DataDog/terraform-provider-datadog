@@ -54,6 +54,7 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 			return resp, respErr
 		}
 
+		// Calculate retryDuration if nil
 		if retryDuration == nil {
 			newRetryDurationVal := time.Duration(retryCount) * t.hTTPRetryDuration
 			retryDuration = &newRetryDurationVal
@@ -101,6 +102,11 @@ func (t *CustomTransport) retryRequest(response *http.Response) (*time.Duration,
 
 // NewCustomTransport returns new CustomTransport struct
 func NewCustomTransport(t http.RoundTripper, opt CustomTransportOptions) *CustomTransport {
+	// Use default transport if one provided is nil
+	if t == nil {
+		t = http.DefaultTransport
+	}
+
 	ct := CustomTransport{
 		defaultTransport:  t,
 		hTTPRetryDuration: defaultHTTPRetryDuration,
