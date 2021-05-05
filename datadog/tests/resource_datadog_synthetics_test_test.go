@@ -1613,6 +1613,8 @@ func createSyntheticsDNSTestStep(ctx context.Context, accProvider *schema.Provid
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "request_definition.0.dns_server", "8.8.8.8"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.dns", "request_definition.0.dns_server_port", "120"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "assertion.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "assertion.0.type", "recordSome"),
@@ -1655,6 +1657,7 @@ resource "datadog_synthetics_test" "dns" {
 	request_definition {
 		host = "https://www.datadoghq.com"
 		dns_server = "8.8.8.8"
+		dns_server_port = 120
 	}
 
 	assertion {
@@ -1863,6 +1866,8 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_headers.X-Datadog-Trace-ID", "123456789"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "set_cookie", "name=value"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "device_ids.#", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "device_ids.0", "laptop_large"),
@@ -1935,6 +1940,8 @@ resource "datadog_synthetics_test" "bar" {
 		Accept = "application/json"
 		X-Datadog-Trace-ID = "123456789"
 	}
+
+	set_cookie = "name=value"
 
 	device_ids = [ "laptop_large", "mobile_small" ]
 	locations = [ "aws:eu-central-1" ]
@@ -2888,6 +2895,10 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider *schema.P
 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.type", "regex"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.value", ".*"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.allow_failure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.is_critical", "false"),
 		),
 	}
 }
@@ -2950,6 +2961,8 @@ resource "datadog_synthetics_test" "multi" {
                		   		   value = ".*"
                		   }
                }
+               allow_failure = true
+               is_critical = false
        }
 }
 `, uniq)
