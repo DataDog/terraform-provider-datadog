@@ -17,9 +17,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -36,8 +35,6 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		ctx, ccancel = context.WithTimeout(ctx, t.hTTPRetryTimeout)
 		defer ccancel()
 	}
-
-	log.Println("Original request", req)
 
 	retryCount := 0
 	for {

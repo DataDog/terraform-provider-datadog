@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"log"
 	"strconv"
 	"testing"
 
@@ -1268,7 +1267,6 @@ func destroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *dat
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
 			i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
-			log.Println("This i i", i)
 			_, httpresp, err := datadogClientV1.MonitorsApi.GetMonitor(ctx, i)
 			if err != nil {
 				if httpresp != nil && httpresp.StatusCode == 404 {
