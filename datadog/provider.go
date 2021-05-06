@@ -84,7 +84,7 @@ func Provider() terraform.ResourceProvider {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_TIMEOUT", nil),
-				Description: "The HTTP request retry timeout period",
+				Description: "The HTTP request retry timeout period.",
 			},
 		},
 
@@ -208,7 +208,9 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 			ctOptions.Timeout = &timeout
 		}
 		customTransportV1 := transport.NewCustomTransport(httpClientV1.Transport, ctOptions)
+		customTransportV2 := transport.NewCustomTransport(httpClientV2.Transport, ctOptions)
 		httpClientV1.Transport = customTransportV1
+		httpClientV1.Transport = customTransportV2
 	}
 
 	// Initialize the official Datadog V1 API client
