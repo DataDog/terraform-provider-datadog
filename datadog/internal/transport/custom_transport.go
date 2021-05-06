@@ -41,9 +41,11 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		newRequest := t.copyRequest(req)
 		resp, respErr := t.defaultTransport.RoundTrip(newRequest)
 		// Close the body so connection can be re-used
-		localVarBody, _ := ioutil.ReadAll(resp.Body)
-		resp.Body.Close()
-		resp.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+		if resp != nil {
+			localVarBody, _ := ioutil.ReadAll(resp.Body)
+			resp.Body.Close()
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+		}
 		if respErr != nil {
 			return resp, respErr
 		}
