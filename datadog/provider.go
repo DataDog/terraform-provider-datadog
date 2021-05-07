@@ -210,7 +210,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		customTransportV1 := transport.NewCustomTransport(httpClientV1.Transport, ctOptions)
 		customTransportV2 := transport.NewCustomTransport(httpClientV2.Transport, ctOptions)
 		httpClientV1.Transport = customTransportV1
-		httpClientV1.Transport = customTransportV2
+		httpClientV2.Transport = customTransportV2
 	}
 
 	// Initialize the official Datadog V1 API client
