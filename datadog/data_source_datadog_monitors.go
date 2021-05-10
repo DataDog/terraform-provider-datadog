@@ -55,11 +55,6 @@ func dataSourceDatadogMonitors() *schema.Resource {
 							Type:        schema.TypeString,
 							Computed:    true,
 						},
-						"query": {
-							Description: "Query of the monitor.",
-							Type:        schema.TypeString,
-							Computed:    true,
-						},
 					},
 				},
 			},

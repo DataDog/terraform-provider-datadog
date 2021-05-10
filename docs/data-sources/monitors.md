@@ -33,7 +33,6 @@ Read-Only:
 
 - **id** (Number)
 - **name** (String)
-- **query** (String)
 - **type** (String)
 
 
