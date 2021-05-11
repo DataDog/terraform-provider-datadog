@@ -6047,14 +6047,28 @@ func buildTerraformWidgetConditionalFormat(datadogWidgetConditionalFormat *[]dat
 func getWidgetCustomLinkSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"label": {
-			Description: "The label for the custom link URL.",
-			Type:        schema.TypeString,
-			Required:    true,
+			Description:   "The label for the custom link URL.",
+			Type:          schema.TypeString,
+			Required:      false,
+			ConflictsWith: []string{"is_hidden", "override_label"},
 		},
 		"link": {
 			Description: "The URL of the custom link.",
 			Type:        schema.TypeString,
-			Required:    true,
+			Required:    false,
+		},
+		"is_hidden": {
+			Description:   "The flag for toggling context menu link visibility",
+			Type:          schema.TypeBool,
+			Required:      false,
+			ConflictsWith: []string{"label"},
+		},
+		"override_label": {
+			Description:   "The label id that refers to a context menu link item",
+			Type:          schema.TypeString,
+			Required:      false,
+			ValidateFunc:  validation.StringIsNotEmpty,
+			ConflictsWith: []string{"label"},
 		},
 	}
 }
