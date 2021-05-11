@@ -157,7 +157,7 @@ func resourceDatadogMetricTagConfigurationCreate(d *schema.ResourceData, meta in
 	ddObject.SetData(*resultMetricTagConfigurationData)
 	metricName := d.Get("metric_name").(string)
 
-	response, _, err := datadogClient.MetricsApi.CreateTagConfiguration(auth, metricName).Body(*ddObject).Execute()
+	response, _, err := datadogClient.MetricsApi.CreateTagConfiguration(auth, metricName, *ddObject)
 	if err != nil {
 		return utils.TranslateClientError(err, "error creating MetricTagConfiguration")
 	}
@@ -204,7 +204,7 @@ func resourceDatadogMetricTagConfigurationRead(d *schema.ResourceData, meta inte
 	auth := providerConf.AuthV2
 
 	metricName := d.Id()
-	metricTagConfigurationResponse, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName).Execute()
+	metricTagConfigurationResponse, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName)
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -229,7 +229,7 @@ func resourceDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, meta in
 	auth := providerConf.AuthV2
 
 	metricName := d.Id()
-	metricTagConfigurationResponse, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName).Execute()
+	metricTagConfigurationResponse, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName)
 	if err != nil {
 		return utils.TranslateClientError(err, "metric not found")
 	}
@@ -250,7 +250,7 @@ func resourceDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, meta in
 	ddObject := datadogV2.NewMetricTagConfigurationUpdateRequestWithDefaults()
 	ddObject.SetData(*resultMetricTagConfigurationUpdateData)
 
-	response, _, err := datadogClient.MetricsApi.UpdateTagConfiguration(auth, metricName).Body(*ddObject).Execute()
+	response, _, err := datadogClient.MetricsApi.UpdateTagConfiguration(auth, metricName, *ddObject)
 	if err != nil {
 		return utils.TranslateClientError(err, "error updating MetricTagConfiguration")
 	}
@@ -265,7 +265,7 @@ func resourceDatadogMetricTagConfigurationDelete(d *schema.ResourceData, meta in
 	var err error
 
 	metricName := d.Id()
-	_, err = datadogClient.MetricsApi.DeleteTagConfiguration(auth, metricName).Execute()
+	_, err = datadogClient.MetricsApi.DeleteTagConfiguration(auth, metricName)
 
 	if err != nil {
 		return utils.TranslateClientError(err, "error deleting MetricTagConfiguration")

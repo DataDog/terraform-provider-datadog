@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
@@ -41,11 +43,11 @@ func dataSourceDatadogRoleRead(d *schema.ResourceData, meta interface{}) error {
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	req := datadogClientV2.RolesApi.ListRoles(authV2)
+	optionalParams := datadogV2.NewListRolesOptionalParameters()
 	filter := d.Get("filter").(string)
-	req = req.Filter(filter)
+	optionalParams = optionalParams.WithFilter(filter)
 
-	res, _, err := req.Execute()
+	res, _, err := datadogClientV2.RolesApi.ListRoles(authV2, *optionalParams)
 	if err != nil {
 		return utils.TranslateClientError(err, "error querying roles")
 	}

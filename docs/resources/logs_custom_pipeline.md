@@ -229,10 +229,10 @@ Optional:
 
 Required:
 
-- **source_type** (String) Defines where the sources are from (log attribute or tag).
+- **source_type** (String) Defines where the sources are from (log `attribute` or `tag`).
 - **sources** (List of String) List of source attributes or tags.
 - **target** (String) Final attribute or tag name to remap the sources.
-- **target_type** (String) Defines if the target is a log attribute or tag.
+- **target_type** (String) Defines if the target is a log `attribute` or `tag`.
 
 Optional:
 
@@ -415,10 +415,10 @@ Optional:
 
 Required:
 
-- **source_type** (String) Defines where the sources are from (log attribute or tag).
+- **source_type** (String) Defines where the sources are from (log `attribute` or `tag`).
 - **sources** (List of String) List of source attributes or tags.
 - **target** (String) Final attribute or tag name to remap the sources.
-- **target_type** (String) Defines if the target is a log attribute or tag.
+- **target_type** (String) Defines if the target is a log `attribute` or `tag`.
 
 Optional:
 

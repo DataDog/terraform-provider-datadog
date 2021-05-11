@@ -107,7 +107,7 @@ func resourceDatadogSyntheticsGlobalVariableCreate(d *schema.ResourceData, meta 
 	authV1 := providerConf.AuthV1
 
 	syntheticsGlobalVariable := buildSyntheticsGlobalVariableStruct(d)
-	createdSyntheticsGlobalVariable, _, err := datadogClientV1.SyntheticsApi.CreateGlobalVariable(authV1).Body(*syntheticsGlobalVariable).Execute()
+	createdSyntheticsGlobalVariable, _, err := datadogClientV1.SyntheticsApi.CreateGlobalVariable(authV1, *syntheticsGlobalVariable)
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
 		return utils.TranslateClientError(err, "error creating synthetics global variable")
@@ -126,7 +126,7 @@ func resourceDatadogSyntheticsGlobalVariableRead(d *schema.ResourceData, meta in
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	syntheticsGlobalVariable, httpresp, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, d.Id()).Execute()
+	syntheticsGlobalVariable, httpresp, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, d.Id())
 
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
@@ -146,7 +146,7 @@ func resourceDatadogSyntheticsGlobalVariableUpdate(d *schema.ResourceData, meta 
 	authV1 := providerConf.AuthV1
 
 	syntheticsGlobalVariable := buildSyntheticsGlobalVariableStruct(d)
-	if _, _, err := datadogClientV1.SyntheticsApi.EditGlobalVariable(authV1, d.Id()).Body(*syntheticsGlobalVariable).Execute(); err != nil {
+	if _, _, err := datadogClientV1.SyntheticsApi.EditGlobalVariable(authV1, d.Id(), *syntheticsGlobalVariable); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
 		utils.TranslateClientError(err, "error updating synthetics global variable")
 	}
@@ -160,7 +160,7 @@ func resourceDatadogSyntheticsGlobalVariableDelete(d *schema.ResourceData, meta 
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	if _, err := datadogClientV1.SyntheticsApi.DeleteGlobalVariable(authV1, d.Id()).Execute(); err != nil {
+	if _, err := datadogClientV1.SyntheticsApi.DeleteGlobalVariable(authV1, d.Id()); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
 		return utils.TranslateClientError(err, "error deleting synthetics global variable")
 	}

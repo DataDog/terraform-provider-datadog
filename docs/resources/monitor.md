@@ -109,7 +109,7 @@ Optional:
 
 Optional:
 
-- **critical** (String) The monitor `CRITICAL` recovery threshold. Must be a number.
+- **critical** (String) The monitor `CRITICAL` threshold. Must be a number.
 - **critical_recovery** (String) The monitor `CRITICAL` recovery threshold. Must be a number.
 - **ok** (String) The monitor `OK` threshold. Must be a number.
 - **unknown** (String) The monitor `UNKNOWN` threshold. Must be a number.

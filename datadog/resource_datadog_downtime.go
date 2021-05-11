@@ -234,7 +234,7 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, client *da
 		}
 
 		var currdt datadogV1.Downtime
-		currdt, _, err = client.DowntimesApi.GetDowntime(ctx, id).Execute()
+		currdt, _, err = client.DowntimesApi.GetDowntime(ctx, id)
 		if err != nil {
 			return nil, utils.TranslateClientError(err, "error getting downtime")
 		}
@@ -313,7 +313,7 @@ func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) err
 	if err != nil {
 		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	dt, _, err := datadogClientV1.DowntimesApi.CreateDowntime(authV1).Body(*dts).Execute()
+	dt, _, err := datadogClientV1.DowntimesApi.CreateDowntime(authV1, *dts)
 	if err != nil {
 		return utils.TranslateClientError(err, "error creating downtime")
 	}
@@ -333,7 +333,7 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 		return err
 	}
 
-	dt, httpresp, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, id).Execute()
+	dt, httpresp, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, id)
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -437,7 +437,7 @@ func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) err
 	// is replaced, the ID of the downtime will be set to 0.
 	dt.SetId(id)
 
-	updatedDowntime, _, err := datadogClientV1.DowntimesApi.UpdateDowntime(authV1, id).Body(*dt).Execute()
+	updatedDowntime, _, err := datadogClientV1.DowntimesApi.UpdateDowntime(authV1, id, *dt)
 	if err != nil {
 		return utils.TranslateClientError(err, "error updating downtime")
 	}
@@ -457,7 +457,7 @@ func resourceDatadogDowntimeDelete(d *schema.ResourceData, meta interface{}) err
 		return err
 	}
 
-	if _, err = datadogClientV1.DowntimesApi.CancelDowntime(authV1, id).Execute(); err != nil {
+	if _, err = datadogClientV1.DowntimesApi.CancelDowntime(authV1, id); err != nil {
 		return utils.TranslateClientError(err, "error deleting downtime")
 	}
 

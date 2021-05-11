@@ -332,6 +332,21 @@ func TestAccDatadogSyntheticsDNSTest_Updated(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsICMPTest_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    accProviders,
+		CheckDestroy: testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsICMPTestStep(ctx, accProvider, t),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -1598,6 +1613,8 @@ func createSyntheticsDNSTestStep(ctx context.Context, accProvider *schema.Provid
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "request_definition.0.dns_server", "8.8.8.8"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.dns", "request_definition.0.dns_server_port", "120"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "assertion.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "assertion.0.type", "recordSome"),
@@ -1640,6 +1657,7 @@ resource "datadog_synthetics_test" "dns" {
 	request_definition {
 		host = "https://www.datadoghq.com"
 		dns_server = "8.8.8.8"
+		dns_server_port = 120
 	}
 
 	assertion {
@@ -1743,6 +1761,88 @@ resource "datadog_synthetics_test" "dns" {
 }`, uniq)
 }
 
+func createSyntheticsICMPTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+	return resource.TestStep{
+		Config: createSyntheticsICMPTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "subtype", "icmp"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "request_definition.0.host", "www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "request_definition.0.number_of_packets", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "request_definition.0.should_track_hops", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.0.type", "latency"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.0.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.0.property", "avg"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.0.target", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "locations.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "locations.3056069023", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "options_list.0.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.icmp", "monitor_id"),
+		),
+	}
+}
+
+func createSyntheticsICMPTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "icmp" {
+	type = "api"
+	subtype = "icmp"
+
+	request_definition {
+		host = "www.datadoghq.com"
+		number_of_packets = 2
+		should_track_hops = true
+	}
+
+	assertion {
+		type = "latency"
+		operator = "lessThan"
+		property = "avg"
+		target = 200
+	}
+
+	locations = [ "aws:eu-central-1" ]
+	options_list {
+		tick_every = 60
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
+}`, uniq)
+}
+
 func createSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
@@ -1765,6 +1865,8 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 				"datadog_synthetics_test.bar", "request_headers.Accept", "application/json"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_headers.X-Datadog-Trace-ID", "123456789"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "set_cookie", "name=value"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "device_ids.#", "2"),
 			resource.TestCheckResourceAttr(
@@ -1838,6 +1940,8 @@ resource "datadog_synthetics_test" "bar" {
 		Accept = "application/json"
 		X-Datadog-Trace-ID = "123456789"
 	}
+
+	set_cookie = "name=value"
 
 	device_ids = [ "laptop_large", "mobile_small" ]
 	locations = [ "aws:eu-central-1" ]
@@ -2791,6 +2895,10 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider *schema.P
 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.type", "regex"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.value", ".*"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.allow_failure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.is_critical", "false"),
 		),
 	}
 }
@@ -2853,6 +2961,8 @@ resource "datadog_synthetics_test" "multi" {
                		   		   value = ".*"
                		   }
                }
+               allow_failure = true
+               is_critical = false
        }
 }
 `, uniq)
@@ -2865,7 +2975,7 @@ func testSyntheticsTestExists(accProvider *schema.Provider) resource.TestCheckFu
 		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
-			if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID).Execute(); err != nil {
+			if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID); err != nil {
 				return fmt.Errorf("received an error retrieving synthetics test %s", err)
 			}
 		}
@@ -2880,7 +2990,7 @@ func testSyntheticsTestIsDestroyed(accProvider *schema.Provider) resource.TestCh
 		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
-			if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID).Execute(); err != nil {
+			if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID); err != nil {
 				if strings.Contains(err.Error(), "404 Not Found") {
 					continue
 				}
@@ -2899,7 +3009,7 @@ func editSyntheticsTestMML(accProvider *schema.Provider) resource.TestCheckFunc 
 			datadogClientV1 := providerConf.DatadogClientV1
 			authV1 := providerConf.AuthV1
 
-			syntheticsTest, _, err := datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, r.Primary.ID).Execute()
+			syntheticsTest, _, err := datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, r.Primary.ID)
 
 			if err != nil {
 				return fmt.Errorf("failed to read synthetics test %s", err)
@@ -2925,7 +3035,7 @@ func editSyntheticsTestMML(accProvider *schema.Provider) resource.TestCheckFunc 
 			steps := []datadogV1.SyntheticsStep{step}
 			syntheticsTestUpdate.SetSteps(steps)
 
-			if _, _, err := datadogClientV1.SyntheticsApi.UpdateBrowserTest(authV1, r.Primary.ID).Body(*syntheticsTestUpdate).Execute(); err != nil {
+			if _, _, err := datadogClientV1.SyntheticsApi.UpdateBrowserTest(authV1, r.Primary.ID, *syntheticsTestUpdate); err != nil {
 				return fmt.Errorf("failed to manually update synthetics test %s", err)
 			}
 		}

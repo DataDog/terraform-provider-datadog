@@ -44,7 +44,7 @@ func resourceDatadogLogsArchiveOrderCreate(d *schema.ResourceData, meta interfac
 	if len(ddArchiveList.Data.Attributes.GetArchiveIds()) > 0 {
 		return resourceDatadogLogsArchiveOrderUpdate(d, meta)
 	}
-	order, httpResponse, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2).Body(*ddArchiveList).Execute()
+	order, httpResponse, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2, *ddArchiveList)
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 422 {
 			fmt.Printf("cannot map archives to existing ones, will try to import it with Id `archiveOrderID`\n")
@@ -61,7 +61,7 @@ func resourceDatadogLogsArchiveOrderRead(d *schema.ResourceData, meta interface{
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
-	order, _, err := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2).Execute()
+	order, _, err := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2)
 	if err != nil {
 		return utils.TranslateClientError(err, "error getting logs archive order")
 	}
@@ -85,11 +85,11 @@ func resourceDatadogLogsArchiveOrderUpdate(d *schema.ResourceData, meta interfac
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
-	updatedOrder, httpResponse, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2).Body(*ddArchiveList).Execute()
+	updatedOrder, httpResponse, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2, *ddArchiveList)
 	if err != nil {
 		// Cannot map archives to existing ones
 		if httpResponse != nil && httpResponse.StatusCode == 422 {
-			ddArchiveOrder, _, getErr := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2).Execute()
+			ddArchiveOrder, _, getErr := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2)
 			if getErr != nil {
 				return utils.TranslateClientError(err, "error getting logs archive order")
 			}

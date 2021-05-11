@@ -349,13 +349,13 @@ func testSyntheticsResourceExists(accProvider *schema.Provider) resource.TestChe
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type == "datadog_synthetics_test" {
-				if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID).Execute(); err != nil {
+				if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID); err != nil {
 					return fmt.Errorf("received an error retrieving synthetics test %s", err)
 				}
 			}
 
 			if r.Type == "datadog_synthetics_global_variable" {
-				if _, _, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, r.Primary.ID).Execute(); err != nil {
+				if _, _, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, r.Primary.ID); err != nil {
 					return fmt.Errorf("received an error retrieving synthetics global variable %s", err)
 				}
 			}
@@ -372,7 +372,7 @@ func testSyntheticsGlobalVariableIsDestroyed(accProvider *schema.Provider) resou
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type == "datadog_synthetics_test" {
-				if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID).Execute(); err != nil {
+				if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID); err != nil {
 					if strings.Contains(err.Error(), "404 Not Found") {
 						continue
 					}
@@ -381,7 +381,7 @@ func testSyntheticsGlobalVariableIsDestroyed(accProvider *schema.Provider) resou
 				return fmt.Errorf("synthetics test still exists")
 			}
 
-			if _, _, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, r.Primary.ID).Execute(); err != nil {
+			if _, _, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, r.Primary.ID); err != nil {
 				if strings.Contains(err.Error(), "404 Not Found") {
 					continue
 				}

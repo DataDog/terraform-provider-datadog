@@ -7,6 +7,8 @@ import (
 	"strings"
 	"testing"
 
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
@@ -71,7 +73,10 @@ func securityMonitoringCheckRuleCountNoFilter(accProvider *schema.Provider) func
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
 
-		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2).PageNumber(0).PageSize(1000).Execute()
+		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
+			*datadogV2.NewListSecurityMonitoringRulesOptionalParameters().
+				WithPageNumber(0).
+				WithPageSize(1000))
 		if err != nil {
 			return err
 		}
@@ -85,7 +90,8 @@ func securityMonitoringCheckRuleCountNameFilter(accProvider *schema.Provider, na
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
 
-		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2).PageSize(1000).Execute()
+		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
+			*datadogV2.NewListSecurityMonitoringRulesOptionalParameters().WithPageSize(1000))
 		if err != nil {
 			return err
 		}
@@ -106,7 +112,8 @@ func securityMonitoringCheckRuleCountTagsFilter(accProvider *schema.Provider, fi
 		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
-		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2).PageSize(1000).Execute()
+		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
+			*datadogV2.NewListSecurityMonitoringRulesOptionalParameters().WithPageSize(1000))
 		if err != nil {
 			return err
 		}
@@ -128,7 +135,8 @@ func securityMonitoringCheckRuleCountDefaultFilter(accProvider *schema.Provider,
 		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
-		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2).PageSize(1000).Execute()
+		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
+			*datadogV2.NewListSecurityMonitoringRulesOptionalParameters().WithPageSize(1000))
 		if err != nil {
 			return err
 		}

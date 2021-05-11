@@ -15,7 +15,7 @@ import (
 func dataSourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about an existing monitor for use in other resources.",
-		Read:        dataSourceDatadogMonitorsRead,
+		Read:        dataSourceDatadogMonitorRead,
 		Schema: map[string]*schema.Schema{
 			"name_filter": {
 				Description: "A monitor name to limit the search.",
@@ -240,23 +240,23 @@ func dataSourceDatadogMonitor() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	req := datadogClientV1.MonitorsApi.ListMonitors(authV1)
+	optionalParams := datadogV1.NewListMonitorsOptionalParameters()
 	if v, ok := d.GetOk("name_filter"); ok {
-		req = req.Name(v.(string))
+		optionalParams = optionalParams.WithName(v.(string))
 	}
 	if v, ok := d.GetOk("tags_filter"); ok {
-		req = req.Tags(strings.Join(expandStringList(v.([]interface{})), ","))
+		optionalParams = optionalParams.WithTags(strings.Join(expandStringList(v.([]interface{})), ","))
 	}
 	if v, ok := d.GetOk("monitor_tags_filter"); ok {
-		req = req.MonitorTags(strings.Join(expandStringList(v.([]interface{})), ","))
+		optionalParams = optionalParams.WithMonitorTags(strings.Join(expandStringList(v.([]interface{})), ","))
 	}
 
-	monitors, _, err := req.Execute()
+	monitors, _, err := datadogClientV1.MonitorsApi.ListMonitors(authV1, *optionalParams)
 	if err != nil {
 		return utils.TranslateClientError(err, "error querying monitors")
 	}
