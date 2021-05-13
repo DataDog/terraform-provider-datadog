@@ -31,5 +31,3 @@ replace github.com/hashicorp/terraform-plugin-docs v0.4.0 => github.com/zippolyt
 
 // Use branch of dd-trace-go for additional APM features
 replace gopkg.in/DataDog/dd-trace-go.v1 => github.com/DataDog/dd-trace-go v1.29.0-alpha.1.0.20210128154316-c84d7933b726
-
-replace github.com/DataDog/datadog-api-client-go => ../datadog-api-spec/generated/datadog-api-client-go
