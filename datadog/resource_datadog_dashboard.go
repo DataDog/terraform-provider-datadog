@@ -6178,28 +6178,24 @@ func buildTerraformWidgetConditionalFormat(datadogWidgetConditionalFormat *[]dat
 func getWidgetCustomLinkSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"label": {
-			Description:   "The label for the custom link URL.",
-			Type:          schema.TypeString,
-			Required:      false,
-			ConflictsWith: []string{"is_hidden", "override_label"},
+			Description: "The label for the custom link URL.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"link": {
 			Description: "The URL of the custom link.",
 			Type:        schema.TypeString,
-			Required:    false,
+			Optional:    true,
 		},
 		"is_hidden": {
-			Description:   "The flag for toggling context menu link visibility",
-			Type:          schema.TypeBool,
-			Required:      false,
-			ConflictsWith: []string{"label"},
+			Description: "The flag for toggling context menu link visibility",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"override_label": {
-			Description:   "The label id that refers to a context menu link item",
-			Type:          schema.TypeString,
-			Required:      false,
-			ValidateFunc:  validation.StringIsNotEmpty,
-			ConflictsWith: []string{"label"},
+			Description: "The label id that refers to a context menu link item",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }
@@ -6208,13 +6204,13 @@ func buildDatadogWidgetCustomLinks(terraformWidgetCustomLinks *[]interface{}) *[
 	for i, customLink := range *terraformWidgetCustomLinks {
 		terraformCustomLink := customLink.(map[string]interface{})
 		datadogWidgetCustomLink := datadogV1.WidgetCustomLink{}
-		if v, ok := terraformCustomLink["label"].(string); ok {
+		if v, ok := terraformCustomLink["label"].(string); ok && len(v) > 0 {
 			datadogWidgetCustomLink.SetLabel(v)
 		}
-		if v, ok := terraformCustomLink["link"].(string); ok {
+		if v, ok := terraformCustomLink["link"].(string); ok && len(v) > 0 {
 			datadogWidgetCustomLink.SetLink(v)
 		}
-		if v, ok := terraformCustomLink["override_label"].(string); ok {
+		if v, ok := terraformCustomLink["override_label"].(string); ok && len(v) > 0 {
 			datadogWidgetCustomLink.SetOverrideLabel(v)
 		}
 		if v, ok := terraformCustomLink["is_hidden"].(bool); ok {
@@ -6224,10 +6220,10 @@ func buildDatadogWidgetCustomLinks(terraformWidgetCustomLinks *[]interface{}) *[
 	}
 	return &datadogWidgetCustomLinks
 }
-func buildTerraformWidgetCustomLinks(datadogWidgetCustomLinks *[]datadogV1.WidgetCustomLink) *[]map[string]string {
-	terraformWidgetCustomLinks := make([]map[string]string, len(*datadogWidgetCustomLinks))
+func buildTerraformWidgetCustomLinks(datadogWidgetCustomLinks *[]datadogV1.WidgetCustomLink) *[]map[string]interface{} {
+	terraformWidgetCustomLinks := make([]map[string]interface{}, len(*datadogWidgetCustomLinks))
 	for i, customLink := range *datadogWidgetCustomLinks {
-		terraformWidgetCustomLink := map[string]string{}
+		terraformWidgetCustomLink := map[string]interface{}{}
 		// Optional params
 		if v, ok := customLink.GetLabelOk(); ok {
 			terraformWidgetCustomLink["label"] = *v
@@ -6239,7 +6235,7 @@ func buildTerraformWidgetCustomLinks(datadogWidgetCustomLinks *[]datadogV1.Widge
 			terraformWidgetCustomLink["override_label"] = *v
 		}
 		if v, ok := customLink.GetIsHiddenOk(); ok {
-			terraformWidgetCustomLink["is_hidden"] = strconv.FormatBool(*v)
+			terraformWidgetCustomLink["is_hidden"] = *v
 		}
 		terraformWidgetCustomLinks[i] = terraformWidgetCustomLink
 	}
