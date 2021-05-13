@@ -276,6 +276,12 @@ func getDowntimeBoundaryTimestamp(d *schema.ResourceData, dateAttr, tsAttr strin
 // * `configTs` - desired value (from TF configuration) of the boundary
 // * `updating` - `true` if this call is from Update method of the downtime resource, `false` if from Create
 func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, configTs int64, updating bool) (apply bool) {
+	// We don't want to apply the start/end boundaries for recurring child downtimes, as doing so will lead to 400s for:
+	//   Scheduled downtime start cannot be in the past.
+	if _, ok := d.GetOk("active_child_id"); ok {
+		return apply
+	}
+
 	if tsFrom == "" {
 		// if the boundary was not specified in the config, don't apply it
 		return apply
