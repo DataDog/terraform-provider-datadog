@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"regexp"
 	"testing"
@@ -71,7 +72,7 @@ func testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider func() (*schem
 		for _, filter := range *filters {
 			if filter.GetNamespace() == namespace {
 				if len(filter.GetTagFilterStr()) == 0 {
-					return utils.TranslateClientError(nil, fmt.Sprintf("tag_filter_str is empty for resource %s", namespace))
+					return errors.New(fmt.Sprintf("tag_filter_str is empty for resource %s", namespace))
 				}
 				return nil
 			}
@@ -99,7 +100,7 @@ func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider func() (*sche
 		for _, filter := range *filters {
 			if filter.GetNamespace() == namespace {
 				if len(filter.GetTagFilterStr()) != 0 {
-					return utils.TranslateClientError(nil, fmt.Sprintf("tag_filter_str is not empty for namespace %s", namespace))
+					return errors.New(fmt.Sprintf("tag_filter_str is not empty for namespace %s", namespace))
 				}
 				return nil
 			}
