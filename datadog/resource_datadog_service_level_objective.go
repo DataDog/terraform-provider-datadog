@@ -349,20 +349,21 @@ func resourceDatadogServiceLevelObjectiveCreate(d *schema.ResourceData, meta int
 }
 
 func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta interface{}) error {
-	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	// providerConf := meta.(*ProviderConfiguration)
+	// datadogClientV1 := providerConf.DatadogClientV1
+	// authV1 := providerConf.AuthV1
 
-	sloResp, httpresp, err := datadogClientV1.ServiceLevelObjectivesApi.GetSLO(authV1, d.Id())
-	if err != nil {
-		if httpresp != nil && httpresp.StatusCode == 404 {
-			d.SetId("")
-			return nil
-		}
-		return utils.TranslateClientError(err, "error getting service level objective")
-	}
+	// sloResp, httpresp, err := datadogClientV1.ServiceLevelObjectivesApi.GetSLO(authV1, d.Id())
+	// if err != nil {
+	// 	if httpresp != nil && httpresp.StatusCode == 404 {
+	// 		d.SetId("")
+	// 		return nil
+	// 	}
+	// 	return utils.TranslateClientError(err, "error getting service level objective")
+	// }
 
-	return updateSLOState(d, sloResp.Data)
+	// return updateSLOState(d, sloResp.Data)
+	return nil
 }
 
 func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective) error {
