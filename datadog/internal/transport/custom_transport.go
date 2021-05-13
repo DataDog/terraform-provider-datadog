@@ -18,8 +18,8 @@ var (
 // CustomTransport holds DefaultTransport configuration and is used to for custom http error handling
 type CustomTransport struct {
 	defaultTransport  http.RoundTripper
-	hTTPRetryDuration time.Duration
-	hTTPRetryTimeout  time.Duration
+	httpRetryDuration time.Duration
+	httpRetryTimeout  time.Duration
 }
 
 // CustomTransportOptions Set options for CustomTransport
@@ -32,7 +32,7 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	var ccancel context.CancelFunc
 	ctx := req.Context()
 	if _, set := ctx.Deadline(); !set {
-		ctx, ccancel = context.WithTimeout(ctx, t.hTTPRetryTimeout)
+		ctx, ccancel = context.WithTimeout(ctx, t.httpRetryTimeout)
 		defer ccancel()
 	}
 
@@ -58,7 +58,7 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 		// Calculate retryDuration if nil
 		if retryDuration == nil {
-			newRetryDurationVal := time.Duration(retryCount) * t.hTTPRetryDuration
+			newRetryDurationVal := time.Duration(retryCount) * t.httpRetryDuration
 			retryDuration = &newRetryDurationVal
 		}
 
@@ -111,13 +111,13 @@ func NewCustomTransport(t http.RoundTripper, opt CustomTransportOptions) *Custom
 
 	ct := CustomTransport{
 		defaultTransport:  t,
-		hTTPRetryDuration: defaultHTTPRetryDuration,
+		httpRetryDuration: defaultHTTPRetryDuration,
 	}
 
 	if opt.Timeout != nil {
-		ct.hTTPRetryTimeout = *opt.Timeout
+		ct.httpRetryTimeout = *opt.Timeout
 	} else {
-		ct.hTTPRetryTimeout = defaultHTTPRetryTimeout
+		ct.httpRetryTimeout = defaultHTTPRetryTimeout
 	}
 
 	return &ct

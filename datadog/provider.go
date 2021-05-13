@@ -78,7 +78,7 @@ func Provider() terraform.ResourceProvider {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_ENABLED", false),
-				Description: "Enables HTTP request retries on HTTP errors.",
+				Description: "Enables request retries on HTTP status codes 429 and 5xx.",
 			},
 			"http_client_retry_timeout": {
 				Type:        schema.TypeInt,
