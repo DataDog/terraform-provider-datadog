@@ -34,10 +34,9 @@ func dataSourceDatadogDashboardListRead(ctx context.Context, d *schema.ResourceD
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	listResponse, _, err := datadogClientV1.DashboardListsApi.ListDashboardLists(authV1)
-
+	listResponse, httpresp, err := datadogClientV1.DashboardListsApi.ListDashboardLists(authV1)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error querying dashboard lists")
+		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error querying dashboard lists")
 	}
 
 	searchedName := d.Get("name")

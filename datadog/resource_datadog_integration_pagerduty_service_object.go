@@ -69,9 +69,9 @@ func resourceDatadogIntegrationPagerdutySOCreate(ctx context.Context, d *schema.
 	defer integrationPdMutex.Unlock()
 
 	so := buildIntegrationPagerdutySO(d)
-	if _, _, err := datadogClientV1.PagerDutyIntegrationApi.CreatePagerDutyIntegrationService(authV1, *so); err != nil {
+	if _, httpresp, err := datadogClientV1.PagerDutyIntegrationApi.CreatePagerDutyIntegrationService(authV1, *so); err != nil {
 		// TODO: warn user that PD integration must be enabled to be able to create service objects
-		return utils.TranslateClientErrorDiag(err, "error creating PagerDuty integration service")
+		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error creating PagerDuty integration service")
 	}
 	d.SetId(so.GetServiceName())
 
@@ -89,7 +89,7 @@ func resourceDatadogIntegrationPagerdutySORead(ctx context.Context, d *schema.Re
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, "error getting PagerDuty integration service")
+		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error getting PagerDuty integration service")
 	}
 
 	d.Set("service_name", so.GetServiceName())
@@ -111,8 +111,8 @@ func resourceDatadogIntegrationPagerdutySOUpdate(ctx context.Context, d *schema.
 	defer integrationPdMutex.Unlock()
 
 	serviceKey := buildIntegrationPagerdutyServiceKey(d)
-	if _, err := datadogClientV1.PagerDutyIntegrationApi.UpdatePagerDutyIntegrationService(authV1, d.Id(), *serviceKey); err != nil {
-		return utils.TranslateClientErrorDiag(err, "error updating PagerDuty integration service")
+	if httpresp, err := datadogClientV1.PagerDutyIntegrationApi.UpdatePagerDutyIntegrationService(authV1, d.Id(), *serviceKey); err != nil {
+		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error updating PagerDuty integration service")
 	}
 
 	return resourceDatadogIntegrationPagerdutySORead(ctx, d, meta)
@@ -126,8 +126,8 @@ func resourceDatadogIntegrationPagerdutySODelete(ctx context.Context, d *schema.
 	integrationPdMutex.Lock()
 	defer integrationPdMutex.Unlock()
 
-	if _, err := datadogClientV1.PagerDutyIntegrationApi.DeletePagerDutyIntegrationService(authV1, d.Id()); err != nil {
-		return utils.TranslateClientErrorDiag(err, "error deleting PagerDuty integration service")
+	if httpresp, err := datadogClientV1.PagerDutyIntegrationApi.DeletePagerDutyIntegrationService(authV1, d.Id()); err != nil {
+		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error deleting PagerDuty integration service")
 	}
 
 	return nil
