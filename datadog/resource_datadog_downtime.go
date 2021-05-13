@@ -427,7 +427,7 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 		return nil
 	}
 
-	// Hack for recurring downtimes,compare the downtime definition in state with the most recent recurring child
+	// Hack for recurring downtimes, compare the downtime definition in state with the most recent recurring child
 	// downtime definition returned by the API. Fields which change on each subsequent reschedule will not be compared
 	// (i.e., start and end), but will be mutated if the terraform resource definition changes (since we update the active
 	// child downtime we keep a reference to in the terraform state).
@@ -584,7 +584,7 @@ func getID(d *schema.ResourceData) (int64, error) {
 	}
 
 	if activeChildID, ok := d.GetOk("active_child_id"); ok {
-		id = activeChildID.(int64)
+		id = int64(activeChildID.(int))
 	}
 	return id, nil
 }
