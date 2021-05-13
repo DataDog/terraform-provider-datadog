@@ -553,8 +553,12 @@ func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) err
 	if err != nil {
 		return utils.TranslateClientError(err, "error updating downtime")
 	}
-	// handle the case when a downtime is replaced
-	d.SetId(strconv.FormatInt(dt.GetId(), 10))
+
+	// Handle the case when a downtime is replaced. Don't set it if the `active_child_id` is set as we want to maintain
+	// a reference to the original parent downtime ID.
+	if _, ok := d.GetOk("active_child_id"); !ok {
+		d.SetId(strconv.FormatInt(dt.GetId(), 10))
+	}
 
 	return updateDowntimeState(d, &updatedDowntime)
 }
