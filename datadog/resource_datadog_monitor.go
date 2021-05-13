@@ -423,9 +423,9 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 		_, httpresp, err := datadogClientV1.MonitorsApi.ValidateMonitor(authV1, *m)
 		if err != nil {
 			if httpresp != nil && (httpresp.StatusCode == 502 || httpresp.StatusCode == 504) {
-				return resource.RetryableError(utils.TranslateClientError(err, "error validating monitor, retrying"))
+				return resource.RetryableError(utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error validating monitor, retrying"))
 			}
-			return resource.NonRetryableError(utils.TranslateClientError(err, "error validating monitor"))
+			return resource.NonRetryableError(utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error validating monitor"))
 		}
 		return nil
 	})
@@ -439,7 +439,7 @@ func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, m
 	m, _ := buildMonitorStruct(d)
 	mCreated, _, err := datadogClientV1.MonitorsApi.CreateMonitor(authV1, *m)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error creating monitor")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error creating monitor")
 	}
 	mCreatedID := strconv.FormatInt(mCreated.GetId(), 10)
 	d.SetId(mCreatedID)
@@ -583,10 +583,10 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 					d.SetId("")
 					return nil
 				} else if httpresp.StatusCode == 502 {
-					return resource.RetryableError(utils.TranslateClientError(err, "error getting monitor, retrying"))
+					return resource.RetryableError(utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error getting monitor, retrying"))
 				}
 			}
-			return resource.NonRetryableError(utils.TranslateClientError(err, "error getting monitor"))
+			return resource.NonRetryableError(utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error getting monitor"))
 		}
 		return nil
 	}); err != nil {
@@ -615,7 +615,59 @@ func resourceDatadogMonitorUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	monitorResp, _, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i, *m)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error updating monitor")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error updating monitor")
+	}
+
+	if err := updateMonitorState(d, meta, &monitorResp); err != nil {
+		return err
+	}
+
+	// if the silenced section was removed from the config, we unmute it via the API
+	// The API wouldn't automatically unmute the monitor if the config is just missing
+	// else we check what other silenced scopes were added from API response in the
+	// "read" above and add them to "unmutedScopes" to be explicitly unmuted (because
+	// they're "drift")
+	unmutedScopes := getUnmutedScopes(d)
+	if newSilenced, ok := d.GetOk("silenced"); ok && !silenced {
+		// Because the Update method had a payload object which is not the same as the return result,
+		// we need to set this attribute from one to the other.
+		m.Options.SetSilenced(monitorResp.Options.GetSilenced())
+		mSilenced := m.Options.GetSilenced()
+		for k := range mSilenced {
+			// Since the Datadog GO client doesn't support unmuting on all scopes, loop over GetSilenced() and set the
+			// end timestamp to time.Now().Unix()
+			mSilenced[k] = providerConf.Now().Unix()
+		}
+		monitorResp, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i, *m)
+		if err != nil {
+			return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error updating monitor")
+		}
+		if err := d.Set("silenced", map[string]int{}); err != nil {
+			return err
+		}
+	} else {
+		for scope := range newSilenced.(map[string]interface{}) {
+			if _, ok := configuredSilenced[scope]; !ok {
+				unmutedScopes = append(unmutedScopes, scope)
+			}
+		}
+	}
+
+	// Similarly, if the silenced attribute is -1, lets unmute those scopes
+	if len(unmutedScopes) != 0 {
+		// Because the Update method had a payload object which is not the same as the return result,
+		// we need to set this attribute from one to the other.
+		m.Options.SetSilenced(monitorResp.Options.GetSilenced())
+		silencedList := m.Options.GetSilenced()
+		for _, scope := range unmutedScopes {
+			if _, ok := silencedList[scope]; ok {
+				delete(silencedList, scope)
+			}
+		}
+		monitorResp, _, err = datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i, *m)
+		if err != nil {
+			return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error updating monitor")
+		}
 	}
 
 	return updateMonitorState(d, meta, &monitorResp)
@@ -639,7 +691,7 @@ func resourceDatadogMonitorDelete(ctx context.Context, d *schema.ResourceData, m
 	}
 
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error deleting monitor")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error deleting monitor")
 	}
 
 	return nil

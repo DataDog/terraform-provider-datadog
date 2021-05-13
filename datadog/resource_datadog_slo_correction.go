@@ -114,7 +114,7 @@ func resourceDatadogSloCorrectionCreate(ctx context.Context, d *schema.ResourceD
 
 	response, _, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.CreateSLOCorrection(auth, *ddObject)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error creating SloCorrection")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error creating SloCorrection")
 	}
 	sloCorrection := response.GetData()
 	d.SetId(sloCorrection.GetId())
@@ -173,7 +173,7 @@ func resourceDatadogSloCorrectionRead(ctx context.Context, d *schema.ResourceDat
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, "error reading SloCorrection")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error reading SloCorrection")
 	}
 	return updateSLOCorrectionState(d, sloCorrectionGetResp.Data)
 }
@@ -188,8 +188,7 @@ func resourceDatadogSloCorrectionUpdate(ctx context.Context, d *schema.ResourceD
 
 	response, _, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.UpdateSLOCorrection(auth, id, *ddObject)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error creating SloCorrection")
-
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error creating SloCorrection")
 	}
 
 	return updateSLOCorrectionState(d, response.Data)
@@ -206,7 +205,7 @@ func resourceDatadogSloCorrectionDelete(ctx context.Context, d *schema.ResourceD
 	_, err = datadogClient.ServiceLevelObjectiveCorrectionsApi.DeleteSLOCorrection(auth, id)
 
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error deleting SloCorrection")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error deleting SloCorrection")
 	}
 
 	return nil

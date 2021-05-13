@@ -180,7 +180,7 @@ func resourceDatadogLogsMetricCreate(ctx context.Context, d *schema.ResourceData
 
 	resultLogsMetricCreateData, err := buildDatadogLogsMetric(d)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error building LogsMetric object")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error building LogsMetric object")
 	}
 
 	ddObject := datadogV2.NewLogsMetricCreateRequestWithDefaults()
@@ -188,7 +188,7 @@ func resourceDatadogLogsMetricCreate(ctx context.Context, d *schema.ResourceData
 
 	response, _, err := datadogClient.LogsMetricsApi.CreateLogsMetric(auth, *ddObject)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error creating LogsMetric")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error creating LogsMetric")
 	}
 	id := *response.GetData().Id
 	d.SetId(id)
@@ -264,7 +264,7 @@ func resourceDatadogLogsMetricRead(ctx context.Context, d *schema.ResourceData, 
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, "error reading LogsMetric")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error reading LogsMetric")
 	}
 
 	resource := resourceLogsMetricResponse.GetData()
@@ -299,7 +299,7 @@ func resourceDatadogLogsMetricUpdate(ctx context.Context, d *schema.ResourceData
 
 	resultLogsMetricUpdateData, err := buildDatadogLogsMetricUpdate(d)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error building LogsMetric object")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error building LogsMetric object")
 	}
 
 	ddObject := datadogV2.NewLogsMetricUpdateRequestWithDefaults()
@@ -308,7 +308,7 @@ func resourceDatadogLogsMetricUpdate(ctx context.Context, d *schema.ResourceData
 
 	response, _, err := datadogClient.LogsMetricsApi.UpdateLogsMetric(auth, id, *ddObject)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error updating LogsMetric")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error updating LogsMetric")
 	}
 
 	return updateLogsMetricState(d, response.Data)
@@ -325,7 +325,7 @@ func resourceDatadogLogsMetricDelete(ctx context.Context, d *schema.ResourceData
 	_, err = datadogClient.LogsMetricsApi.DeleteLogsMetric(auth, id)
 
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error deleting LogsMetric")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error deleting LogsMetric")
 	}
 
 	return nil

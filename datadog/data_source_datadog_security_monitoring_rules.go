@@ -114,7 +114,7 @@ func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema
 			})
 
 		if err != nil {
-			return utils.TranslateClientErrorDiag(err, "error listing rules")
+			return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error listing rules")
 		}
 
 		for _, rule := range response.GetData() {

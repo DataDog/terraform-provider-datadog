@@ -62,7 +62,7 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *sc
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
 	_, _, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1, *enableLogCollectionServices)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error enabling log collection services for Amazon Web Services integration account")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error enabling log collection services for Amazon Web Services integration account")
 	}
 
 	d.SetId(accountID)
@@ -78,7 +78,7 @@ func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *sc
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
 	_, _, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1, *enableLogCollectionServices)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error updating log collection services for Amazon Web Services integration account")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error updating log collection services for Amazon Web Services integration account")
 	}
 
 	return resourceDatadogIntegrationAwsLogCollectionRead(ctx, d, meta)
@@ -93,7 +93,7 @@ func resourceDatadogIntegrationAwsLogCollectionRead(ctx context.Context, d *sche
 
 	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error getting log collection for aws integration.")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error getting log collection for aws integration.")
 	}
 	for _, logCollection := range logCollections {
 		if logCollection.GetAccountId() == accountID {
@@ -118,7 +118,7 @@ func resourceDatadogIntegrationAwsLogCollectionDelete(ctx context.Context, d *sc
 	_, _, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1, *deleteLogCollectionServices)
 
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error disabling Amazon Web Services log collection")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error disabling Amazon Web Services log collection")
 	}
 
 	return nil

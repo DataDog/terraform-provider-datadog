@@ -49,7 +49,7 @@ func dataSourceDatadogRoleRead(ctx context.Context, d *schema.ResourceData, meta
 
 	res, _, err := datadogClientV2.RolesApi.ListRoles(authV2, *optionalParams)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error querying roles")
+		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error querying roles")
 	}
 	roles := res.GetData()
 	roleIndex := 0
