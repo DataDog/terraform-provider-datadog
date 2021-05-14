@@ -128,9 +128,9 @@ var attributeRemapper = &schema.Schema{
 			"name":        {Description: "Name of the processor", Type: schema.TypeString, Optional: true},
 			"is_enabled":  {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
 			"sources":     {Description: "List of source attributes or tags.", Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
-			"source_type": {Description: "Defines where the sources are from (log attribute or tag).", Type: schema.TypeString, Required: true},
+			"source_type": {Description: "Defines where the sources are from (log `attribute` or `tag`).", Type: schema.TypeString, Required: true},
 			"target":      {Description: "Final attribute or tag name to remap the sources.", Type: schema.TypeString, Required: true},
-			"target_type": {Description: "Defines if the target is a log attribute or tag.", Type: schema.TypeString, Required: true},
+			"target_type": {Description: "Defines if the target is a log `attribute` or `tag`.", Type: schema.TypeString, Required: true},
 			"target_format": {
 				Description:  "If the `target_type` of the remapper is `attribute`, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. `string`, `integer`, or `double` are the possible types. If the `target_type` is `tag`, this parameter may not be specified.",
 				Type:         schema.TypeString,
