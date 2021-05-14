@@ -6204,17 +6204,18 @@ func buildDatadogWidgetCustomLinks(terraformWidgetCustomLinks *[]interface{}) *[
 	for i, customLink := range *terraformWidgetCustomLinks {
 		terraformCustomLink := customLink.(map[string]interface{})
 		datadogWidgetCustomLink := datadogV1.WidgetCustomLink{}
-		if v, ok := terraformCustomLink["label"].(string); ok && len(v) > 0 {
-			datadogWidgetCustomLink.SetLabel(v)
-		}
-		if v, ok := terraformCustomLink["link"].(string); ok && len(v) > 0 {
-			datadogWidgetCustomLink.SetLink(v)
-		}
 		if v, ok := terraformCustomLink["override_label"].(string); ok && len(v) > 0 {
 			datadogWidgetCustomLink.SetOverrideLabel(v)
 		}
-		if v, ok := terraformCustomLink["is_hidden"].(bool); ok {
+		// if override_label is provided, it would context menu override, thus omit label field
+		if v, ok := terraformCustomLink["label"].(string); ok && len(v) > 0 && !datadogWidgetCustomLink.HasOverrideLabel() {
+			datadogWidgetCustomLink.SetLabel(v)
+		}
+		if v, ok := terraformCustomLink["is_hidden"].(bool); ok && v && datadogWidgetCustomLink.HasOverrideLabel() {
 			datadogWidgetCustomLink.SetIsHidden(v)
+		}
+		if v, ok := terraformCustomLink["link"].(string); ok && len(v) > 0 {
+			datadogWidgetCustomLink.SetLink(v)
 		}
 		datadogWidgetCustomLinks[i] = datadogWidgetCustomLink
 	}
