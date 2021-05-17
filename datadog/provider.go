@@ -5,11 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"net/url"
 	"runtime"
 	"strings"
 	"time"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
@@ -71,6 +73,18 @@ func Provider() terraform.ResourceProvider {
 				Optional:    true,
 				Default:     true,
 				Description: "Enables validation of the provided API and APP keys during provider initialization. Default is true. When false, api_key and app_key won't be checked.",
+			},
+			"http_client_retry_enabled": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_ENABLED", false),
+				Description: "Enables request retries on HTTP status codes 429 and 5xx.",
+			},
+			"http_client_retry_timeout": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_TIMEOUT", nil),
+				Description: "The HTTP request retry timeout period.",
 			},
 		},
 
@@ -147,6 +161,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	apiKey := d.Get("api_key").(string)
 	appKey := d.Get("app_key").(string)
 	validate := d.Get("validate").(bool)
+	httpRetryEnabled := d.Get("http_client_retry_enabled").(bool)
 
 	if validate && (apiKey == "" || appKey == "") {
 		return nil, errors.New("api_key and app_key must be set unless validate = false")
@@ -186,6 +201,21 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
+	// Initialize http.Client for the Datadog API Clients
+	httpClientV1 := http.DefaultClient
+	httpClientV2 := http.DefaultClient
+	if httpRetryEnabled {
+		ctOptions := transport.CustomTransportOptions{}
+		if v, ok := d.GetOk("http_client_retry_timeout"); ok {
+			timeout := time.Duration(int64(v.(int))) * time.Second
+			ctOptions.Timeout = &timeout
+		}
+		customTransportV1 := transport.NewCustomTransport(httpClientV1.Transport, ctOptions)
+		customTransportV2 := transport.NewCustomTransport(httpClientV2.Transport, ctOptions)
+		httpClientV1.Transport = customTransportV1
+		httpClientV2.Transport = customTransportV2
+	}
+
 	// Initialize the official Datadog V1 API client
 	authV1 := context.WithValue(
 		context.Background(),
@@ -200,6 +230,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		},
 	)
 	configV1 := datadogV1.NewConfiguration()
+	configV1.HTTPClient = httpClientV1
 	// Enable unstable operations
 	configV1.SetUnstableOperationEnabled("GetLogsIndex", true)
 	configV1.SetUnstableOperationEnabled("ListLogIndexes", true)
@@ -263,6 +294,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		},
 	)
 	configV2 := datadogV2.NewConfiguration()
+	configV2.HTTPClient = httpClientV2
 	// Enable unstable operations
 	configV2.SetUnstableOperationEnabled("CreateTagConfiguration", true)
 	configV2.SetUnstableOperationEnabled("DeleteTagConfiguration", true)
