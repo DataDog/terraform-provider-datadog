@@ -3,6 +3,7 @@ package datadog
 import (
 	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -10,6 +11,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 )
+
+var logCustomPipelineMutex = sync.Mutex{}
 
 const (
 	tfArithmeticProcessor        = "arithmetic_processor"
@@ -358,6 +361,10 @@ func resourceDatadogLogsPipelineCreate(d *schema.ResourceData, meta interface{})
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
+
+	logCustomPipelineMutex.Lock()
+	defer logCustomPipelineMutex.Unlock()
+
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
 		return err
@@ -411,6 +418,9 @@ func resourceDatadogLogsPipelineUpdate(d *schema.ResourceData, meta interface{})
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
+	logCustomPipelineMutex.Lock()
+	defer logCustomPipelineMutex.Unlock()
+
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
 		return err
@@ -426,6 +436,9 @@ func resourceDatadogLogsPipelineDelete(d *schema.ResourceData, meta interface{})
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
+
+	logCustomPipelineMutex.Lock()
+	defer logCustomPipelineMutex.Unlock()
 
 	if _, err := datadogClientV1.LogsPipelinesApi.DeleteLogsPipeline(authV1, d.Id()); err != nil {
 		// API returns 400 when the specific pipeline id doesn't exist through DELETE request.
