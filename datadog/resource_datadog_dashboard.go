@@ -6194,8 +6194,8 @@ func buildDatadogWidgetCustomLinks(terraformWidgetCustomLinks *[]interface{}) *[
 	for i, customLink := range *terraformWidgetCustomLinks {
 		terraformCustomLink := customLink.(map[string]interface{})
 		datadogWidgetCustomLink := datadogV1.WidgetCustomLink{
-			Label: terraformCustomLink["label"].(string),
-			Link:  terraformCustomLink["link"].(string),
+			Label: datadogV1.PtrString(terraformCustomLink["label"].(string)),
+			Link:  datadogV1.PtrString(terraformCustomLink["link"].(string)),
 		}
 		datadogWidgetCustomLinks[i] = datadogWidgetCustomLink
 	}
