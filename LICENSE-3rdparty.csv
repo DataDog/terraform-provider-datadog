@@ -191,3 +191,4 @@ go.sum,gopkg.in/yaml.v3,MIT/Apache-2.0,2006-2010 Kirill Simonov 2011-2019 Canoni
 go.sum,github.com/Microsoft/go-winio,MIT,2015 Microsoft
 go.sum,github.com/konsorten/go-windows-terminal-sequences,MIT,2017 marvin + konsorten GmbH
 go.sum,github.com/sirupsen/logrus,MIT,2014 Simon Eskildsen
+go.sum,golang.org/x/term,BSD-3-Clause,2009 The Go Authors
