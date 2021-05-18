@@ -217,7 +217,7 @@ func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, co
 	return apply
 }
 
-func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, client *datadogV1.APIClient, providerConf *ProviderConfiguration, updating bool) (*datadogV1.Downtime, error) {
+func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, client *datadogV1.APIClient, updating bool) (*datadogV1.Downtime, error) {
 	// NOTE: for each of start/start_date/end/end_date, we only send the value when
 	// it has changed or if the configured value is different than current value
 	// (IOW there's a resource drift). This allows users to change other attributes
@@ -309,7 +309,7 @@ func resourceDatadogDowntimeCreate(ctx context.Context, d *schema.ResourceData, 
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	dts, err := buildDowntimeStruct(authV1, d, datadogClientV1, providerConf, false)
+	dts, err := buildDowntimeStruct(authV1, d, datadogClientV1, false)
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
@@ -423,7 +423,7 @@ func resourceDatadogDowntimeUpdate(ctx context.Context, d *schema.ResourceData, 
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	dt, err := buildDowntimeStruct(authV1, d, datadogClientV1, providerConf, true)
+	dt, err := buildDowntimeStruct(authV1, d, datadogClientV1, true)
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
