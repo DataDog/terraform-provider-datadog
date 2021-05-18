@@ -179,7 +179,6 @@ func testAccCheckDatadogSloCorrectionExists(accProvider func() (*schema.Provider
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV1
 		auth := providerConf.AuthV1
-		var err error
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_slo_correction" {
