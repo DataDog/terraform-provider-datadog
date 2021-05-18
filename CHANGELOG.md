@@ -5,7 +5,6 @@ IMPROVEMENTS:
 -   `datadog_logs_custom_pipeline`: Add mutex to logs custom pipeline resource ([#1069](https://github.com/DataDog/terraform-provider-datadog/pull/1069))
 -   `datadog_logs_custom_pipeline`: Use code formatting in description for attribute re-mapper ([#1061](https://github.com/DataDog/terraform-provider-datadog/pull/1061))
 -   `datadog_monitor`: Update monitor critical threshold documentation ([#1055](https://github.com/DataDog/terraform-provider-datadog/pull/1055))
--   `datadog_integration_aws`: Mark AWS account as non existent if GET returns 400 when AWS integration not installed ([#1047](https://github.com/DataDog/terraform-provider-datadog/pull/1047))
 -   `datadog_monitor`: Retry on 504's when validating monitors ([#1038](https://github.com/DataDog/terraform-provider-datadog/pull/1038))
 -   `datadog_dashboard_json`: Ignore widget IDs for diff on dashboard JSON resource ([#1028](https://github.com/DataDog/terraform-provider-datadog/pull/1028))
 -   `datadog_monitor`: Add monitors datasource for multiple monitors ([#1048](https://github.com/DataDog/terraform-provider-datadog/pull/1048))
@@ -24,6 +23,7 @@ FEATURES:
 BUGFIXES:
 
 -   `datadog_downtime`: Properly mark active/disabled fields as readonly to avoid diffs ([#1034](https://github.com/DataDog/terraform-provider-datadog/pull/1034))
+-   `datadog_integration_aws`: Mark AWS account as non existent if GET returns 400 when AWS integration not installed ([#1047](https://github.com/DataDog/terraform-provider-datadog/pull/1047))
 
 NOTES:
 
