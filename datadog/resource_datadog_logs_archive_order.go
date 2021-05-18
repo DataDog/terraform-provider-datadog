@@ -53,7 +53,7 @@ func resourceDatadogLogsArchiveOrderCreate(ctx context.Context, d *schema.Resour
 			d.SetId("archiveOrderID")
 			return resourceDatadogLogsArchiveOrderRead(ctx, d, meta)
 		}
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error creating logs archive order")
+		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error creating logs archive order")
 	}
 	d.SetId("archiveOrderID")
 	return updateLogsArchiveOrderState(d, &order)
@@ -63,9 +63,9 @@ func resourceDatadogLogsArchiveOrderRead(ctx context.Context, d *schema.Resource
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
-	order, _, err := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2)
+	order, httpResponse, err := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2)
 	if err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error getting logs archive order")
+		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error getting logs archive order")
 	}
 
 	return updateLogsArchiveOrderState(d, &order)
@@ -93,13 +93,13 @@ func resourceDatadogLogsArchiveOrderUpdate(ctx context.Context, d *schema.Resour
 		if httpResponse != nil && httpResponse.StatusCode == 422 {
 			ddArchiveOrder, _, getErr := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2)
 			if getErr != nil {
-				return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error getting logs archive order")
+				return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error getting logs archive order")
 			}
 			return diag.Errorf("cannot map archives to existing ones\n existing archives: %s\n archive to be updated: %s",
 				ddArchiveOrder.Data.Attributes.ArchiveIds,
 				ddArchiveList.Data.Attributes.GetArchiveIds())
 		}
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error updating logs archive order")
+		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error updating logs archive order")
 	}
 	d.SetId("archiveOrderID")
 	return updateLogsArchiveOrderState(d, &updatedOrder)

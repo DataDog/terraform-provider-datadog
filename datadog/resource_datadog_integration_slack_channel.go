@@ -108,9 +108,9 @@ func resourceDatadogIntegrationSlackChannelCreate(ctx context.Context, d *schema
 	ddSlackChannel := buildDatadogSlackChannel(d)
 	accountName := d.Get("account_name").(string)
 
-	createdChannel, _, err := datadogClient.SlackIntegrationApi.CreateSlackIntegrationChannel(auth, accountName, *ddSlackChannel)
+	createdChannel, httpresp, err := datadogClient.SlackIntegrationApi.CreateSlackIntegrationChannel(auth, accountName, *ddSlackChannel)
 	if err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error creating slack channel")
+		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error creating slack channel")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", accountName, ddSlackChannel.GetName()))
@@ -127,13 +127,13 @@ func resourceDatadogIntegrationSlackChannelRead(ctx context.Context, d *schema.R
 		return diag.FromErr(err)
 	}
 
-	slackChannel, httpResp, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, accountName, channelName)
+	slackChannel, httpresp, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, accountName, channelName)
 	if err != nil {
-		if httpResp.StatusCode == 404 {
+		if httpresp.StatusCode == 404 {
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error getting slack channel")
+		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error getting slack channel")
 	}
 
 	return updateSlackChannelState(d, &slackChannel)
@@ -153,9 +153,9 @@ func resourceDatadogIntegrationSlackChannelUpdate(ctx context.Context, d *schema
 		return diag.FromErr(err)
 	}
 
-	slackChannel, _, err := datadogClient.SlackIntegrationApi.UpdateSlackIntegrationChannel(auth, accountName, channelName, *ddObject)
+	slackChannel, httpresp, err := datadogClient.SlackIntegrationApi.UpdateSlackIntegrationChannel(auth, accountName, channelName, *ddObject)
 	if err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error updating slack channel")
+		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error updating slack channel")
 	}
 
 	// Handle case where channel name is updated
@@ -177,9 +177,9 @@ func resourceDatadogIntegrationSlackChannelDelete(ctx context.Context, d *schema
 		return diag.FromErr(err)
 	}
 
-	_, err = datadogClient.SlackIntegrationApi.RemoveSlackIntegrationChannel(auth, accountName, channelName)
+	httpresp, err := datadogClient.SlackIntegrationApi.RemoveSlackIntegrationChannel(auth, accountName, channelName)
 	if err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error deleting slack channel")
+		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error deleting slack channel")
 	}
 
 	return nil

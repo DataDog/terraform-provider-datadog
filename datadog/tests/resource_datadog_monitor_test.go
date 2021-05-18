@@ -1218,7 +1218,7 @@ func existsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *data
 		i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
 		_, _, err := datadogClientV1.MonitorsApi.GetMonitor(ctx, i)
 		if err != nil {
-			return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(), "error retrieving monitor")
+			return utils.TranslateClientError(err, httpresp.Request.URL.Host , "error retrieving monitor")
 		}
 	}
 	return nil

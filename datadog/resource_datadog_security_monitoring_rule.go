@@ -173,9 +173,9 @@ func resourceDatadogSecurityMonitoringRuleCreate(ctx context.Context, d *schema.
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	response, _, err := datadogClientV2.SecurityMonitoringApi.CreateSecurityMonitoringRule(authV2, ruleCreate)
+	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.CreateSecurityMonitoringRule(authV2, ruleCreate)
 	if err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error creating security monitoring rule")
+		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error creating security monitoring rule")
 	}
 
 	d.SetId(response.GetId())
@@ -401,9 +401,9 @@ func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.
 	authV2 := providerConf.AuthV2
 
 	ruleUpdate := buildUpdatePayload(d)
-	response, _, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, d.Id(), ruleUpdate)
+	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, d.Id(), ruleUpdate)
 	if err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error updating security monitoring rule")
+		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error updating security monitoring rule")
 	}
 
 	updateResourceDataFromResponse(d, response)
@@ -538,8 +538,8 @@ func resourceDatadogSecurityMonitoringRuleDelete(ctx context.Context, d *schema.
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	if _, err := datadogClientV2.SecurityMonitoringApi.DeleteSecurityMonitoringRule(authV2, d.Id()); err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error deleting security monitoring rule")
+	if httpResponse, err := datadogClientV2.SecurityMonitoringApi.DeleteSecurityMonitoringRule(authV2, d.Id()); err != nil {
+		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error deleting security monitoring rule")
 	}
 
 	return nil

@@ -148,7 +148,7 @@ func testAccCheckDatadogIntegrationSlackChannelExists(accProvider func() (*schem
 
 		_, _, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, accountName, channelName)
 		if err != nil {
-			return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error checking slack_channel existence")
+			return utils.TranslateClientError(err, httpresp.Request.URL.Host ,  "error checking slack_channel existence")
 		}
 
 		return nil

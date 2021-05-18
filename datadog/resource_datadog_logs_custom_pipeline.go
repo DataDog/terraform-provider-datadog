@@ -371,9 +371,9 @@ func resourceDatadogLogsPipelineCreate(ctx context.Context, d *schema.ResourceDa
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	createdPipeline, _, err := datadogClientV1.LogsPipelinesApi.CreateLogsPipeline(authV1, *ddPipeline)
+	createdPipeline, httpResponse, err := datadogClientV1.LogsPipelinesApi.CreateLogsPipeline(authV1, *ddPipeline)
 	if err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "failed to create logs pipeline using Datadog API")
+		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "failed to create logs pipeline using Datadog API")
 	}
 	d.SetId(*createdPipeline.Id)
 	return updateLogsCustomPipelineState(d, &createdPipeline)
@@ -410,7 +410,7 @@ func resourceDatadogLogsPipelineRead(ctx context.Context, d *schema.ResourceData
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "failed to get logs pipeline using Datadog API")
+		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "failed to get logs pipeline using Datadog API")
 	}
 	return updateLogsCustomPipelineState(d, &ddPipeline)
 }
@@ -427,9 +427,9 @@ func resourceDatadogLogsPipelineUpdate(ctx context.Context, d *schema.ResourceDa
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	updatedPipeline, _, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipeline(authV1, d.Id(), *ddPipeline)
+	updatedPipeline, httpResponse, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipeline(authV1, d.Id(), *ddPipeline)
 	if err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error updating logs pipeline")
+		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error updating logs pipeline")
 	}
 	return updateLogsCustomPipelineState(d, &updatedPipeline)
 }
@@ -442,12 +442,12 @@ func resourceDatadogLogsPipelineDelete(ctx context.Context, d *schema.ResourceDa
 	logCustomPipelineMutex.Lock()
 	defer logCustomPipelineMutex.Unlock()
 
-	if _, err := datadogClientV1.LogsPipelinesApi.DeleteLogsPipeline(authV1, d.Id()); err != nil {
+	if httpResponse, err := datadogClientV1.LogsPipelinesApi.DeleteLogsPipeline(authV1, d.Id()); err != nil {
 		// API returns 400 when the specific pipeline id doesn't exist through DELETE request.
 		if strings.Contains(err.Error(), "400 Bad Request") {
 			return nil
 		}
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error deleting logs pipeline")
+		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error deleting logs pipeline")
 	}
 	return nil
 }

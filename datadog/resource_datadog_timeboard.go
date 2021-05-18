@@ -864,7 +864,7 @@ func resourceDatadogTimeboardCreate(d *schema.ResourceData, meta interface{}) er
 	client := providerConf.CommunityClient
 	timeboard, err = client.CreateDashboard(timeboard)
 	if err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error creating timeboard")
+		return utils.TranslateClientError(err, "", "error creating timeboard")
 	}
 	d.SetId(strconv.Itoa(timeboard.GetId()))
 	return resourceDatadogTimeboardRead(d, meta)
@@ -878,7 +878,7 @@ func resourceDatadogTimeboardUpdate(d *schema.ResourceData, meta interface{}) er
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	if err = client.UpdateDashboard(timeboard); err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error updating timeboard")
+		return utils.TranslateClientError(err, "", "error updating timeboard")
 	}
 	return resourceDatadogTimeboardRead(d, meta)
 }
@@ -1163,7 +1163,7 @@ func resourceDatadogTimeboardRead(d *schema.ResourceData, meta interface{}) erro
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error getting timeboard")
+		return utils.TranslateClientError(err, "", "error getting timeboard")
 	}
 	log.Printf("[DataDog] timeboard: %v", pretty.Sprint(timeboard))
 	if err := d.Set("title", timeboard.GetTitle()); err != nil {
@@ -1213,7 +1213,7 @@ func resourceDatadogTimeboardDelete(d *schema.ResourceData, meta interface{}) er
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	if err = client.DeleteDashboard(id); err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error deleting timeboard")
+		return utils.TranslateClientError(err, "", "error deleting timeboard")
 	}
 	return nil
 }

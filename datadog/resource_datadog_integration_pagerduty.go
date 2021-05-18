@@ -77,12 +77,12 @@ func resourceDatadogIntegrationPagerdutyCreate(ctx context.Context, d *schema.Re
 	}
 
 	if err := client.CreateIntegrationPD(pd); err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error creating PagerDuty integration")
+		return utils.TranslateClientError(err, "", "error creating PagerDuty integration")
 	}
 
 	pdIntegration, err := client.GetIntegrationPD()
 	if err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error getting PagerDuty integration")
+		return utils.TranslateClientError(err, "", "error getting PagerDuty integration")
 	}
 
 	d.SetId(pdIntegration.GetSubdomain())
@@ -100,7 +100,7 @@ func resourceDatadogIntegrationPagerdutyRead(ctx context.Context, d *schema.Reso
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error getting PagerDuty integration")
+		return utils.TranslateClientError(err, "", "error getting PagerDuty integration")
 	}
 
 	d.Set("subdomain", pd.GetSubdomain())
@@ -122,7 +122,7 @@ func resourceDatadogIntegrationPagerdutyUpdate(ctx context.Context, d *schema.Re
 	}
 
 	if err := client.UpdateIntegrationPD(pd); err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error updating PagerDuty integration")
+		return utils.TranslateClientError(err, "", "error updating PagerDuty integration")
 	}
 
 	// if there are none currently configured services, we actually
@@ -133,11 +133,11 @@ func resourceDatadogIntegrationPagerdutyUpdate(ctx context.Context, d *schema.Re
 		if len(currentServices) == 0 {
 			pd, err := client.GetIntegrationPD()
 			if err != nil {
-				return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error getting PagerDuty integration")
+				return utils.TranslateClientError(err, "", "error getting PagerDuty integration")
 			}
 			for _, service := range pd.Services {
 				if err := client.DeleteIntegrationPDService(*service.ServiceName); err != nil {
-					return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error deleting PagerDuty integration service")
+					return utils.TranslateClientError(err, "", "error deleting PagerDuty integration service")
 				}
 			}
 		}

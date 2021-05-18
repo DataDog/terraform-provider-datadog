@@ -1388,7 +1388,7 @@ func resourceDatadogScreenboardCreate(d *schema.ResourceData, meta interface{}) 
 	client := providerConf.CommunityClient
 	screenboard, err = client.CreateScreenboard(screenboard)
 	if err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error creating screenboard")
+		return utils.TranslateClientError(err, "", "error creating screenboard")
 	}
 	d.SetId(strconv.Itoa(screenboard.GetId()))
 
@@ -1861,7 +1861,7 @@ func resourceDatadogScreenboardRead(d *schema.ResourceData, meta interface{}) er
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error getting screenboard")
+		return utils.TranslateClientError(err, "", "error getting screenboard")
 	}
 	log.Printf("[DataDog] screenboard: %v", pretty.Sprint(screenboard))
 	if err := d.Set("title", screenboard.GetTitle()); err != nil {
@@ -1929,7 +1929,7 @@ func resourceDatadogScreenboardUpdate(d *schema.ResourceData, meta interface{}) 
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	if err = client.UpdateScreenboard(screenboard); err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error updating screenboard")
+		return utils.TranslateClientError(err, "", "error updating screenboard")
 	}
 	return resourceDatadogScreenboardRead(d, meta)
 }
@@ -1942,7 +1942,7 @@ func resourceDatadogScreenboardDelete(d *schema.ResourceData, meta interface{}) 
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 	if err = client.DeleteScreenboard(id); err != nil {
-		return utils.TranslateClientError(err, providerConf.CommunityClient.GetBaseUrl(),  "error deleting screenboard")
+		return utils.TranslateClientError(err, "", "error deleting screenboard")
 	}
 	return nil
 }
