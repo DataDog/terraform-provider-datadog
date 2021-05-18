@@ -68,7 +68,7 @@ func GetRolePermissionSchema() *schema.Resource {
 	}
 }
 
-func getValidPermissions(ctx context.Context, client *datadog.APIClient, providerConf *ProviderConfiguration) (map[string]string, error) {
+func getValidPermissions(ctx context.Context, client *datadog.APIClient) (map[string]string, error) {
 	// Get a list of all permissions, to ignore restricted perms
 	if validPermissions == nil {
 		res, httpResponse, err := client.RolesApi.ListPermissions(ctx)
@@ -90,10 +90,9 @@ func getValidPermissions(ctx context.Context, client *datadog.APIClient, provide
 func validatePermissionsUnrestricted(ctx context.Context, value interface{}, meta interface{}) error {
 	client := meta.(*ProviderConfiguration).DatadogClientV2
 	auth := meta.(*ProviderConfiguration).AuthV2
-	providerConf := meta.(*ProviderConfiguration)
 
 	// Get a list of all valid permissions
-	validPerms, err := getValidPermissions(auth, client, providerConf)
+	validPerms, err := getValidPermissions(auth, client)
 	if err != nil {
 		return err
 	}
@@ -158,7 +157,7 @@ func updateRoleState(ctx context.Context, d *schema.ResourceData, roleAttrsI int
 func updateRolePermissionsState(ctx context.Context, d *schema.ResourceData, rolePermsI interface{}, client *datadog.APIClient, providerConf *ProviderConfiguration) error {
 
 	// Get a list of all valid permissions, to ignore restricted perms
-	permsIDToName, err := getValidPermissions(ctx, client, providerConf)
+	permsIDToName, err := getValidPermissions(ctx, client)
 	if err != nil {
 		return diag.FromErr(err)
 	}
