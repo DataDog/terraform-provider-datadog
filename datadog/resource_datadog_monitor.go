@@ -112,7 +112,7 @@ func resourceDatadogMonitor() *schema.Resource {
 							Optional:     true,
 						},
 						"critical": {
-							Description:  "The monitor `CRITICAL` recovery threshold. Must be a number.",
+							Description:  "The monitor `CRITICAL` threshold. Must be a number.",
 							Type:         schema.TypeString,
 							ValidateFunc: validators.ValidateFloatString,
 							Optional:     true,

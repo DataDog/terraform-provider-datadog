@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","host_filters":"foo:bar,buzz:lightyear","private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484","token_uri":"https://accounts.google.com/o/oauth2/token","type":"service_account"}
+      {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","host_filters":"foo:bar,buzz:lightyear","private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454","token_uri":"https://accounts.google.com/o/oauth2/token","type":"service_account"}
     form: {}
     headers:
       Accept:
@@ -13,7 +13,7 @@ interactions:
       Dd-Operation-Id:
       - CreateGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: POST
   response:
@@ -30,101 +30,17 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:54:45 GMT
+      - Tue, 30 Mar 2021 17:30:55 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - F5gm0Rce1/Abr9/0Fw8HAqWfiz0FdiH8er/AXnN6lOn3L6KyGgbsLCwgPlob1No8
-      X-Dd-Version:
-      - "35.4351688"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListGCPIntegration
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-  response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-58989-1618579551","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-58989-1618579556","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579561","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579563","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484","client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 20 Apr 2021 14:54:45 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - gYZcaADwbKcv7Hm19HJx6WsLoKuOijDWAt2viPeCfWqUgyKY+9e1xZdmMJeXV3YV
-      X-Dd-Version:
-      - "35.4351688"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListGCPIntegration
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-  response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-58989-1618579551","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-58989-1618579556","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579561","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579563","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484","client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 20 Apr 2021 14:54:45 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
       - mNzaoDhdDKO7t4QSrAe5X7pHd0bJND187D+vRbwoluXouE2m1UaQQX0RGCvRpLVE
       X-Dd-Version:
-      - "35.4351688"
+      - "35.4202512"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -139,11 +55,11 @@ interactions:
       Dd-Operation-Id:
       - ListGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-58989-1618579551","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-58989-1618579556","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579561","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579563","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484","client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454","client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -154,7 +70,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:54:46 GMT
+      - Tue, 30 Mar 2021 17:30:55 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -164,9 +80,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
+      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
       X-Dd-Version:
-      - "35.4351688"
+      - "35.4202512"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -181,11 +97,11 @@ interactions:
       Dd-Operation-Id:
       - ListGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-58989-1618579551","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-58989-1618579556","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579561","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579563","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484","client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454","client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Cache-Control:
       - no-cache
@@ -196,7 +112,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:54:46 GMT
+      - Tue, 30 Mar 2021 17:30:55 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -206,9 +122,93 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
+      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
       X-Dd-Version:
-      - "35.4351688"
+      - "35.4202512"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListGCPIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/gcp
+    method: GET
+  response:
+    body: '[{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454","client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Mar 2021 17:30:55 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - fIO2C4qGDheGHy4YbS+r3a3CXbh4cbRo7roILOimQyiHGjQdOat0cIpWCkupM1uX
+      X-Dd-Version:
+      - "35.4202512"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListGCPIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/gcp
+    method: GET
+  response:
+    body: '[{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454","client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Mar 2021 17:30:56 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
+      X-Dd-Version:
+      - "35.4202512"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -216,7 +216,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","host_filters":"","project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484"}
+      {"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","host_filters":"","project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454"}
     form: {}
     headers:
       Accept:
@@ -226,7 +226,7 @@ interactions:
       Dd-Operation-Id:
       - UpdateGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: PUT
   response:
@@ -243,7 +243,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:54:47 GMT
+      - Tue, 30 Mar 2021 17:30:56 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -251,9 +251,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
+      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
       X-Dd-Version:
-      - "35.4351688"
+      - "35.4202512"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -268,11 +268,11 @@ interactions:
       Dd-Operation-Id:
       - ListGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-58989-1618579551","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-58989-1618579556","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579561","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579563","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484","client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    body: '[{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454","client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -283,49 +283,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:54:47 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
-      X-Dd-Version:
-      - "35.4351688"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListGCPIntegration
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-  response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-58989-1618579551","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-58989-1618579556","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579561","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579563","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484","client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 20 Apr 2021 14:54:47 GMT
+      - Tue, 30 Mar 2021 17:30:56 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -335,9 +293,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - tpRCH6w417YjBovRJ8VmtuXmNONVYiRp2c8d2AxjPdGBn8PCtgG4vAztrx3qUZAN
+      - l4HFlaRP3QwYSqoGKhzbYfv7zgkK63HIRR7YkyVYZspq0lGjjTBwoK8V/alf+XYt
       X-Dd-Version:
-      - "35.4351688"
+      - "35.4202512"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -352,11 +310,11 @@ interactions:
       Dd-Operation-Id:
       - ListGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-58989-1618579551","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-58989-1618579556","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579561","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579563","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484","client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    body: '[{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454","client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -367,7 +325,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:54:47 GMT
+      - Tue, 30 Mar 2021 17:30:56 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -379,7 +337,7 @@ interactions:
       X-Dd-Debug:
       - vdJ3/nHEY1ioXQ6pQrBVvsQK1s4yyc+wufBMPSoXql71qZVuP/xMdtNo6DafhOAk
       X-Dd-Version:
-      - "35.4351688"
+      - "35.4202512"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -394,11 +352,11 @@ interactions:
       Dd-Operation-Id:
       - ListGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-58989-1618579551","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-58989-1618579556","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579561","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579563","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484","client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    body: '[{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454","client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -409,7 +367,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:54:48 GMT
+      - Tue, 30 Mar 2021 17:30:56 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -419,9 +377,51 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - F5gm0Rce1/Abr9/0Fw8HAqWfiz0FdiH8er/AXnN6lOn3L6KyGgbsLCwgPlob1No8
+      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
       X-Dd-Version:
-      - "35.4351688"
+      - "35.4202512"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListGCPIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/gcp
+    method: GET
+  response:
+    body: '[{"automute":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454","client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Mar 2021 17:30:56 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
+      X-Dd-Version:
+      - "35.4202512"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -429,7 +429,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484"}
+      {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454"}
     form: {}
     headers:
       Accept:
@@ -439,7 +439,7 @@ interactions:
       Dd-Operation-Id:
       - DeleteGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: DELETE
   response:
@@ -456,7 +456,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:54:48 GMT
+      - Tue, 30 Mar 2021 17:30:56 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -464,9 +464,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - tpRCH6w417YjBovRJ8VmtuXmNONVYiRp2c8d2AxjPdGBn8PCtgG4vAztrx3qUZAN
+      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
       X-Dd-Version:
-      - "35.4351688"
+      - "35.4202512"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -474,7 +474,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","automute":true,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","host_filters":"","private_key":"-----BEGIN PRIVATE KEY-----\n key updated \n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484","token_uri":"https://accounts.google.com/o/oauth2/token","type":"service_account"}
+      {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","automute":true,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","host_filters":"","private_key":"-----BEGIN PRIVATE KEY-----\n key updated \n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454","token_uri":"https://accounts.google.com/o/oauth2/token","type":"service_account"}
     form: {}
     headers:
       Accept:
@@ -484,7 +484,7 @@ interactions:
       Dd-Operation-Id:
       - CreateGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: POST
   response:
@@ -501,143 +501,185 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:54:49 GMT
+      - Tue, 30 Mar 2021 17:30:57 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
-      X-Dd-Version:
-      - "35.4351688"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListGCPIntegration
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-  response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-58989-1618579551","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-58989-1618579556","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579561","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579563","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484","client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 20 Apr 2021 14:54:49 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - twvpGlmuom5y6A0pjGtXzTf554cmwJgTcCZ71fK4H/RDi+v5ehBK0zQiRcTJQG5C
-      X-Dd-Version:
-      - "35.4351688"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListGCPIntegration
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-  response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-58989-1618579551","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-58989-1618579556","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579561","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579563","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484","client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 20 Apr 2021 14:54:49 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
-      X-Dd-Version:
-      - "35.4351688"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListGCPIntegration
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-  response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-58989-1618579551","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-58989-1618579556","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579561","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579563","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":true,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484","client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Tue, 20 Apr 2021 14:54:50 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
       - vdJ3/nHEY1ioXQ6pQrBVvsQK1s4yyc+wufBMPSoXql71qZVuP/xMdtNo6DafhOAk
       X-Dd-Version:
-      - "35.4351688"
+      - "35.4202512"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListGCPIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/gcp
+    method: GET
+  response:
+    body: '[{"automute":true,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454","client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Mar 2021 17:30:57 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
+      X-Dd-Version:
+      - "35.4202512"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListGCPIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/gcp
+    method: GET
+  response:
+    body: '[{"automute":true,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454","client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Mar 2021 17:30:57 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - gYZcaADwbKcv7Hm19HJx6WsLoKuOijDWAt2viPeCfWqUgyKY+9e1xZdmMJeXV3YV
+      X-Dd-Version:
+      - "35.4202512"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListGCPIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/gcp
+    method: GET
+  response:
+    body: '[{"automute":true,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454","client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Mar 2021 17:30:57 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - B1nwy/pPNqX+q4pQT22cdp1QCexE35IF8qwSHy0Nf7IW0Y881qtn4tXN1lpmzaKc
+      X-Dd-Version:
+      - "35.4202512"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListGCPIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/gcp
+    method: GET
+  response:
+    body: '[{"automute":true,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454","client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":""}]'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Mar 2021 17:30:57 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - 25u1gDlL724DHllbjFT4BhOLorBTilh+aah2uWAUEjFC/+rjczJdiyWrV/HwLwe/
+      X-Dd-Version:
+      - "35.4202512"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -645,7 +687,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1618930484@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-TestAccDatadogIntegrationGCP-local-1618930484"}
+      {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1617125454@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-TestAccDatadogIntegrationGCP-local-1617125454"}
     form: {}
     headers:
       Accept:
@@ -655,7 +697,7 @@ interactions:
       Dd-Operation-Id:
       - DeleteGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: DELETE
   response:
@@ -672,7 +714,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:54:50 GMT
+      - Tue, 30 Mar 2021 17:30:57 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -680,9 +722,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
+      - l4HFlaRP3QwYSqoGKhzbYfv7zgkK63HIRR7YkyVYZspq0lGjjTBwoK8V/alf+XYt
       X-Dd-Version:
-      - "35.4351688"
+      - "35.4202512"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -697,34 +739,34 @@ interactions:
       Dd-Operation-Id:
       - ListGCPIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-58989-1618579551","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-58989-1618579556","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579561","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-58989-1618579563","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"}]'
+    body: '[]'
     headers:
       Cache-Control:
       - no-cache
       Connection:
       - keep-alive
+      Content-Length:
+      - "2"
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:54:50 GMT
+      - Tue, 30 Mar 2021 17:30:58 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
-      Vary:
-      - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - nLnnBNvlCFDECRnZvzDb0z4sAO35G+IMidcAs8vrCKyjvsKWE8Yd9S3n6OjZ1qRN
+      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
       X-Dd-Version:
-      - "35.4351688"
+      - "35.4202512"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

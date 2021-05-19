@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"message":"tf-TestAccDatadogDowntime_DiffStart-local-1619780433","monitor_tags":["*"],"scope":["somescope"],"timezone":"UTC"}
+      {"message":"tf-TestAccDatadogDowntime_DiffStart-local-1619107551","monitor_tags":["*"],"scope":["somescope"],"timezone":"UTC"}
     form: {}
     headers:
       Accept:
@@ -13,11 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.5) datadog-api-client-go/1.0.0-beta.20 (go go1.16; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.16; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/downtime
     method: POST
   response:
-    body: '{"recurrence":null,"end":null,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1619780434,"creator_id":1379828,"parent_id":null,"timezone":"UTC","active":true,"scope":["somescope"],"message":"tf-TestAccDatadogDowntime_DiffStart-local-1619780433","downtime_type":2,"id":1242338573,"updater_id":null}'
+    body: '{"recurrence":null,"end":null,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1619107552,"creator_id":1379828,"parent_id":null,"timezone":"UTC","active":true,"scope":["somescope"],"message":"tf-TestAccDatadogDowntime_DiffStart-local-1619107551","downtime_type":2,"id":1231449153,"updater_id":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -28,7 +28,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 30 Apr 2021 11:00:34 GMT
+      - Thu, 22 Apr 2021 16:05:52 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -38,7 +38,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.4430423"
+      - "35.4372143"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -53,11 +53,11 @@ interactions:
       Dd-Operation-Id:
       - GetDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.5) datadog-api-client-go/1.0.0-beta.20 (go go1.16; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/downtime/1242338573
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.16; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/1231449153
     method: GET
   response:
-    body: '{"recurrence":null,"end":null,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1619780434,"creator_id":1379828,"parent_id":null,"timezone":"UTC","active":true,"scope":["somescope"],"message":"tf-TestAccDatadogDowntime_DiffStart-local-1619780433","downtime_type":2,"id":1242338573,"updater_id":null}'
+    body: '{"recurrence":null,"end":null,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1619107552,"creator_id":1379828,"parent_id":null,"timezone":"UTC","active":true,"scope":["somescope"],"message":"tf-TestAccDatadogDowntime_DiffStart-local-1619107551","downtime_type":2,"id":1231449153,"updater_id":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -68,7 +68,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 30 Apr 2021 11:00:34 GMT
+      - Thu, 22 Apr 2021 16:05:52 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -78,7 +78,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.4430423"
+      - "35.4372143"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -93,11 +93,11 @@ interactions:
       Dd-Operation-Id:
       - GetDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.5) datadog-api-client-go/1.0.0-beta.20 (go go1.16; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/downtime/1242338573
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.16; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/1231449153
     method: GET
   response:
-    body: '{"recurrence":null,"end":null,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1619780434,"creator_id":1379828,"parent_id":null,"timezone":"UTC","active":true,"scope":["somescope"],"message":"tf-TestAccDatadogDowntime_DiffStart-local-1619780433","downtime_type":2,"id":1242338573,"updater_id":null}'
+    body: '{"recurrence":null,"end":null,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1619107552,"creator_id":1379828,"parent_id":null,"timezone":"UTC","active":true,"scope":["somescope"],"message":"tf-TestAccDatadogDowntime_DiffStart-local-1619107551","downtime_type":2,"id":1231449153,"updater_id":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -108,7 +108,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 30 Apr 2021 11:00:35 GMT
+      - Thu, 22 Apr 2021 16:05:52 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -118,7 +118,47 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.4430423"
+      - "35.4372143"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetDowntime
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.16; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/1231449153
+    method: GET
+  response:
+    body: '{"recurrence":null,"end":null,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1619107552,"creator_id":1379828,"parent_id":null,"timezone":"UTC","active":true,"scope":["somescope"],"message":"tf-TestAccDatadogDowntime_DiffStart-local-1619107551","downtime_type":2,"id":1231449153,"updater_id":null}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 22 Apr 2021 16:05:52 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - "35.4372143"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -133,8 +173,8 @@ interactions:
       Dd-Operation-Id:
       - CancelDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.5) datadog-api-client-go/1.0.0-beta.20 (go go1.16; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/downtime/1242338573
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.16; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/1231449153
     method: DELETE
   response:
     body: ""
@@ -150,7 +190,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 30 Apr 2021 11:00:36 GMT
+      - Thu, 22 Apr 2021 16:05:53 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -158,7 +198,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.4430423"
+      - "35.4372143"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -173,11 +213,11 @@ interactions:
       Dd-Operation-Id:
       - GetDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.5) datadog-api-client-go/1.0.0-beta.20 (go go1.16; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/downtime/1242338573
+      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19 (go go1.16; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/1231449153
     method: GET
   response:
-    body: '{"recurrence":null,"end":null,"monitor_tags":["*"],"child_id":null,"canceled":1619780436,"monitor_id":null,"org_id":321813,"disabled":true,"start":1619780434,"creator_id":1379828,"parent_id":null,"timezone":"UTC","active":false,"scope":["somescope"],"message":"tf-TestAccDatadogDowntime_DiffStart-local-1619780433","downtime_type":2,"id":1242338573,"updater_id":1379828}'
+    body: '{"recurrence":null,"end":null,"monitor_tags":["*"],"child_id":null,"canceled":1619107553,"monitor_id":null,"org_id":321813,"disabled":true,"start":1619107552,"creator_id":1379828,"parent_id":null,"timezone":"UTC","active":false,"scope":["somescope"],"message":"tf-TestAccDatadogDowntime_DiffStart-local-1619107551","downtime_type":2,"id":1231449153,"updater_id":1379828}'
     headers:
       Cache-Control:
       - no-cache
@@ -188,7 +228,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 30 Apr 2021 11:00:36 GMT
+      - Thu, 22 Apr 2021 16:05:53 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -198,7 +238,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.4430423"
+      - "35.4372143"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

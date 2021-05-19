@@ -236,7 +236,6 @@ func updateUserStateV2(d *schema.ResourceData, user *datadogV2.UserResponse) dia
 
 func resourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 

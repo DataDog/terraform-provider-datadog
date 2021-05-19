@@ -83,6 +83,7 @@ resource "datadog_service_level_objective" "bar" {
 - **force_delete** (Boolean) A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. dashboards).
 - **groups** (Set of String) A static set of groups to filter monitor-based SLOs
 - **monitor_ids** (Set of Number) A static set of monitor IDs to use as part of the SLO
+- **monitor_search** (String)
 - **query** (Block List, Max: 1) The metric query of good / total events (see [below for nested schema](#nestedblock--query))
 - **tags** (Set of String) A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
 - **validate** (Boolean) Whether or not to validate the SLO.
