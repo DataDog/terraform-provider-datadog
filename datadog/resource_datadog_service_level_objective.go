@@ -362,10 +362,74 @@ func resourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta inter
 		return utils.TranslateClientError(err, "error getting service level objective")
 	}
 
-	return updateSLOState(d, sloResp.Data)
+	return updateSLOStateFromRead(d, sloResp.Data)
 }
 
 func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective) error {
+	thresholds := make([]map[string]interface{}, 0)
+	for _, threshold := range slo.GetThresholds() {
+		t := map[string]interface{}{
+			"timeframe": threshold.GetTimeframe(),
+			"target":    threshold.GetTarget(),
+		}
+		if warning, ok := threshold.GetWarningOk(); ok {
+			t["warning"] = warning
+		}
+		if targetDisplay, ok := threshold.GetTargetDisplayOk(); ok {
+			t["target_display"] = targetDisplay
+		}
+		if warningDisplay, ok := threshold.GetWarningDisplayOk(); ok {
+			t["warning_display"] = warningDisplay
+		}
+		thresholds = append(thresholds, t)
+	}
+
+	tags := make([]string, 0)
+	for _, s := range slo.GetTags() {
+		tags = append(tags, s)
+	}
+
+	if err := d.Set("name", slo.GetName()); err != nil {
+		return err
+	}
+	if err := d.Set("description", slo.GetDescription()); err != nil {
+		return err
+	}
+	if err := d.Set("type", slo.GetType()); err != nil {
+		return err
+	}
+	if err := d.Set("tags", tags); err != nil {
+		return err
+	}
+	if err := d.Set("thresholds", thresholds); err != nil {
+		return err
+	}
+	switch slo.GetType() {
+	case datadogV1.SLOTYPE_MONITOR:
+		// monitor type
+		if len(slo.GetMonitorIds()) > 0 {
+			if err := d.Set("monitor_ids", slo.GetMonitorIds()); err != nil {
+				return err
+			}
+		}
+		if err := d.Set("groups", slo.GetGroups()); err != nil {
+			return err
+		}
+	default:
+		// metric type
+		query := make(map[string]interface{})
+		q := slo.GetQuery()
+		query["numerator"] = q.GetNumerator()
+		query["denominator"] = q.GetDenominator()
+		if err := d.Set("query", []map[string]interface{}{query}); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// This duplicates updateSLOState for the SLOResponseData structure, which has mostly the same interface
+func updateSLOStateFromRead(d *schema.ResourceData, slo *datadogV1.SLOResponseData) error {
 	thresholds := make([]map[string]interface{}, 0)
 	for _, threshold := range slo.GetThresholds() {
 		t := map[string]interface{}{

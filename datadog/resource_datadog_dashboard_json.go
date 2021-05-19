@@ -92,9 +92,9 @@ func resourceDatadogDashboardJSONCreate(d *schema.ResourceData, meta interface{}
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	dashboard := d.Get("dashboard")
+	dashboard := d.Get("dashboard").(string)
 
-	respByte, _, err := utils.SendRequest(authV1, datadogClientV1, "POST", path, dashboard)
+	respByte, _, err := utils.SendRequest(authV1, datadogClientV1, "POST", path, &dashboard)
 	if err != nil {
 		return utils.TranslateClientError(err, "error creating resource")
 	}
@@ -121,7 +121,7 @@ func resourceDatadogDashboardJSONUpdate(d *schema.ResourceData, meta interface{}
 	dashboard := d.Get("dashboard")
 	id := d.Id()
 
-	respByte, _, err := utils.SendRequest(authV1, datadogClientV1, "PUT", path+"/"+id, dashboard)
+	respByte, _, err := utils.SendRequest(authV1, datadogClientV1, "PUT", path+"/"+id, &dashboard)
 	if err != nil {
 		return utils.TranslateClientError(err, "error updating dashboard")
 	}

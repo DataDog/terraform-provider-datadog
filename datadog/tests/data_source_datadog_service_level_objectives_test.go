@@ -27,7 +27,7 @@ func TestAccDatadogServiceLevelObjectivesDatasource(t *testing.T) {
 				// Because of the `depends_on` in the datasource, the plan cannot be empty.
 				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
 				ExpectNonEmptyPlan: true,
-				Check:              checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, firstSLOName),
+				Check:              checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, firstSLOName),
 			},
 			{
 				Config: testAccDatasourceServiceLevelObjectivesNameFilterConfig(firstSLOName, secondSLOName),
@@ -110,16 +110,13 @@ resource "datadog_service_level_objective" "foo" {
 func testAccDatasourceServiceLevelObjectivesIdsConfig(uniq string) string {
 	return fmt.Sprintf(`
 %s
-%s
 data "datadog_service_level_objectives" "foo" {
   depends_on = [
     datadog_service_level_objective.foo,
-    datadog_service_level_objective.bar,
   ]
-  ids = [datadog_service_level_objective.foo.id, datadog_service_level_objective.bar.id]
+  ids = [datadog_service_level_objective.foo.id]
 }`,
 		testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(uniq),
-		strings.ReplaceAll(testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(uniq), "\"foo\"", "\"bar\""),
 	)
 }
 

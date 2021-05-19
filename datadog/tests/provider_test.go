@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
@@ -502,7 +503,8 @@ func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[s
 	rec := initRecorder(t)
 	ctx = context.WithValue(ctx, clockContextKey("clock"), testClock(t))
 	c := cleanhttp.DefaultClient()
-	c.Transport = logging.NewTransport("Datadog", rec)
+	loggingTransport := logging.NewTransport("Datadog", rec)
+	c.Transport = transport.NewCustomTransport(loggingTransport, transport.CustomTransportOptions{})
 	p := testAccProvidersWithHTTPClient(ctx, t, c)
 	t.Cleanup(func() {
 		rec.Stop()
