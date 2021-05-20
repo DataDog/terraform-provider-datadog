@@ -227,9 +227,6 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 	if err := d.Set("reflow_type", dashboard.GetReflowType()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("reflow_type", dashboard.GetReflowType()); err != nil {
-		return diag.FromErr(err)
-	}
 	if err := d.Set("description", dashboard.GetDescription()); err != nil {
 		return diag.FromErr(err)
 	}

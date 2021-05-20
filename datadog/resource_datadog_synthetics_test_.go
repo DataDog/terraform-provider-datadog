@@ -1023,7 +1023,6 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 	options := datadogV1.NewSyntheticsTestOptions()
 
-	// use new options_list first, then fallback to legacy options
 	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
 		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
 			options.SetTickEvery(datadogV1.SyntheticsTickInterval(attr.(int)))
@@ -1067,50 +1066,6 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			}
 
 			options.SetMonitorOptions(optionsMonitorOptions)
-		}
-	} else {
-		if attr, ok := d.GetOk("options.tick_every"); ok {
-			tickEvery, _ := strconv.Atoi(attr.(string))
-			options.SetTickEvery(datadogV1.SyntheticsTickInterval(tickEvery))
-		}
-		if attr, ok := d.GetOk("options.follow_redirects"); ok {
-			// follow_redirects is a string ("true" or "false") in TF state
-			// it used to be "1" and "0" but it does not play well with the API
-			// we support both for retro-compatibility
-			followRedirects, _ := strconv.ParseBool(attr.(string))
-			options.SetFollowRedirects(followRedirects)
-		}
-		if attr, ok := d.GetOk("options.min_failure_duration"); ok {
-			minFailureDuration, _ := strconv.Atoi(attr.(string))
-			options.SetMinFailureDuration(int64(minFailureDuration))
-		}
-		if attr, ok := d.GetOk("options.min_location_failed"); ok {
-			minLocationFailed, _ := strconv.Atoi(attr.(string))
-			options.SetMinLocationFailed(int64(minLocationFailed))
-		}
-		if attr, ok := d.GetOk("options.accept_self_signed"); ok {
-			// for some reason, attr is equal to "1" or "0" in TF 0.11
-			// so ParseBool is required for retro-compatibility
-			acceptSelfSigned, _ := strconv.ParseBool(attr.(string))
-			options.SetAcceptSelfSigned(acceptSelfSigned)
-		}
-		if attr, ok := d.GetOk("options.allow_insecure"); ok {
-			// for some reason, attr is equal to "1" or "0" in TF 0.11
-			// so ParseBool is required for retro-compatibility
-			allowInsecure, _ := strconv.ParseBool(attr.(string))
-			options.SetAllowInsecure(allowInsecure)
-		}
-		if attr, ok := d.GetOk("options.retry_count"); ok {
-			retryCount, _ := strconv.Atoi(attr.(string))
-			retry := datadogV1.SyntheticsTestOptionsRetry{}
-			retry.SetCount(int64(retryCount))
-
-			if retryIntervalRaw, ok := d.GetOk("options.retry_interval"); ok {
-				retryInterval, _ := strconv.Atoi(retryIntervalRaw.(string))
-				retry.SetInterval(float64(retryInterval))
-			}
-
-			options.SetRetry(retry)
 		}
 	}
 
@@ -1380,7 +1335,6 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 	options := datadogV1.NewSyntheticsTestOptions()
 
-	// use new options_list first, then fallback to legacy options
 	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
 		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
 			options.SetTickEvery(datadogV1.SyntheticsTickInterval(attr.(int)))
@@ -1428,50 +1382,6 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 		if attr, ok := d.GetOk("options_list.0.no_screenshot"); ok {
 			options.SetNoScreenshot(attr.(bool))
-		}
-	} else {
-		if attr, ok := d.GetOk("options.tick_every"); ok {
-			tickEvery, _ := strconv.Atoi(attr.(string))
-			options.SetTickEvery(datadogV1.SyntheticsTickInterval(tickEvery))
-		}
-		if attr, ok := d.GetOk("options.follow_redirects"); ok {
-			// follow_redirects is a string ("true" or "false") in TF state
-			// it used to be "1" and "0" but it does not play well with the API
-			// we support both for retro-compatibility
-			followRedirects, _ := strconv.ParseBool(attr.(string))
-			options.SetFollowRedirects(followRedirects)
-		}
-		if attr, ok := d.GetOk("options.min_failure_duration"); ok {
-			minFailureDuration, _ := strconv.Atoi(attr.(string))
-			options.SetMinFailureDuration(int64(minFailureDuration))
-		}
-		if attr, ok := d.GetOk("options.min_location_failed"); ok {
-			minLocationFailed, _ := strconv.Atoi(attr.(string))
-			options.SetMinLocationFailed(int64(minLocationFailed))
-		}
-		if attr, ok := d.GetOk("options.accept_self_signed"); ok {
-			// for some reason, attr is equal to "1" or "0" in TF 0.11
-			// so ParseBool is required for retro-compatibility
-			acceptSelfSigned, _ := strconv.ParseBool(attr.(string))
-			options.SetAcceptSelfSigned(acceptSelfSigned)
-		}
-		if attr, ok := d.GetOk("options.allow_insecure"); ok {
-			// for some reason, attr is equal to "1" or "0" in TF 0.11
-			// so ParseBool is required for retro-compatibility
-			allowInsecure, _ := strconv.ParseBool(attr.(string))
-			options.SetAllowInsecure(allowInsecure)
-		}
-		if attr, ok := d.GetOk("options.retry_count"); ok {
-			retryCount, _ := strconv.Atoi(attr.(string))
-			retry := datadogV1.SyntheticsTestOptionsRetry{}
-			retry.SetCount(int64(retryCount))
-
-			if retryIntervalRaw, ok := d.GetOk("options.retry_interval"); ok {
-				retryInterval, _ := strconv.Atoi(retryIntervalRaw.(string))
-				retry.SetInterval(float64(retryInterval))
-			}
-
-			options.SetRetry(retry)
 		}
 	}
 
