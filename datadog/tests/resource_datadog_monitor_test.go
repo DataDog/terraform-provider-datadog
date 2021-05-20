@@ -1215,6 +1215,9 @@ func destroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *dat
 
 func existsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
+		if r.Type != "datadog_monitor" {
+			continue
+		}
 		i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
 		_, _, err := datadogClientV1.MonitorsApi.GetMonitor(ctx, i)
 		if err != nil {

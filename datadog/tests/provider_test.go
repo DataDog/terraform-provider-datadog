@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
@@ -45,9 +46,12 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_dashboard_list_test":                    "dashboard-lists",
 	"tests/data_source_datadog_ip_ranges_test":                         "ip-ranges",
 	"tests/data_source_datadog_monitor_test":                           "monitors",
+	"tests/data_source_datadog_monitors_test":                          "monitors",
 	"tests/data_source_datadog_permissions_test":                       "permissions",
 	"tests/data_source_datadog_role_test":                              "roles",
 	"tests/data_source_datadog_security_monitoring_rules_test":         "security-monitoring",
+	"tests/data_source_datadog_service_level_objective_test":           "service-level-objectives",
+	"tests/data_source_datadog_service_level_objectives_test":          "service-level-objectives",
 	"tests/data_source_datadog_synthetics_locations_test":              "synthetics",
 	"tests/import_datadog_downtime_test":                               "downtimes",
 	"tests/import_datadog_integration_pagerduty_test":                  "integration-pagerduty",
@@ -502,7 +506,8 @@ func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[s
 	rec := initRecorder(t)
 	ctx = context.WithValue(ctx, clockContextKey("clock"), testClock(t))
 	c := cleanhttp.DefaultClient()
-	c.Transport = logging.NewTransport("Datadog", rec)
+	loggingTransport := logging.NewTransport("Datadog", rec)
+	c.Transport = transport.NewCustomTransport(loggingTransport, transport.CustomTransportOptions{})
 	p := testAccProvidersWithHTTPClient(ctx, t, c)
 	t.Cleanup(func() {
 		rec.Stop()

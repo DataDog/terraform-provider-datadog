@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"free","notify_list":[],"template_variable_presets":[{"name":"preset_1","template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}]},{"name":"preset_2","template_variables":[{"name":"var_1","value":"var_1_value"}]},{"name":"preset_3","template_variables":[]}],"template_variables":[{"default":"aws","name":"var_1","prefix":"host"},{"default":"autoscaling","name":"var_2","prefix":"service_name"}],"title":"tf-TestAccDatadogFreeDashboard-local-1615927739","widgets":[{"definition":{"event_size":"l","query":"*","time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_stream"},"layout":{"height":43,"width":32,"x":5,"y":5}},{"definition":{"query":"*","time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_timeline"},"layout":{"height":9,"width":65,"x":42,"y":73}},{"definition":{"color":"#d00","font_size":"88","text":"free text content","text_align":"left","type":"free_text"},"layout":{"height":20,"width":30,"x":42,"y":5}},{"definition":{"type":"iframe","url":"http://google.com"},"layout":{"height":46,"width":39,"x":111,"y":8}},{"definition":{"margin":"small","sizing":"fit","type":"image","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress\u0026cs=tinysrgb\u0026h=350"},"layout":{"height":20,"width":30,"x":77,"y":7}},{"definition":{"columns":["core_host","core_service","tag_source"],"indexes":["main"],"message_display":"expanded-md","query":"error","show_date_column":true,"show_message_column":true,"sort":{"column":"time","order":"desc"},"type":"log_stream"},"layout":{"height":36,"width":32,"x":5,"y":51}},{"definition":{"color_preference":"text","display_format":"countsAndList","hide_zero_counts":true,"query":"type:metric","show_last_triggered":true,"sort":"status,asc","summary_type":"monitors","title":"Widget Title","title_align":"left","title_size":"16","type":"manage_status"},"layout":{"height":40,"width":30,"x":112,"y":55}},{"definition":{"display_format":"three_column","env":"datad0g.com","service":"alerting-cassandra","show_breakdown":true,"show_distribution":true,"show_errors":true,"show_hits":true,"show_latency":false,"show_resource_list":false,"size_format":"large","span_name":"cassandra.query","time":{"live_span":"1h"},"title":"alerting-cassandra #env:datad0g.com","title_align":"center","title_size":"13","type":"trace_service"},"layout":{"height":38,"width":67,"x":40,"y":28}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"free","notify_list":[],"template_variable_presets":[{"name":"preset_1","template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}]},{"name":"preset_2","template_variables":[{"name":"var_1","value":"var_1_value"}]},{"name":"preset_3","template_variables":[]}],"template_variables":[{"default":"aws","name":"var_1","prefix":"host"},{"default":"autoscaling","name":"var_2","prefix":"service_name"}],"title":"tf-TestAccDatadogFreeDashboard-local-1621467920","widgets":[{"definition":{"event_size":"l","query":"*","time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_stream"},"layout":{"height":43,"is_column_break":false,"width":32,"x":5,"y":5}},{"definition":{"query":"*","time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_timeline"},"layout":{"height":9,"is_column_break":false,"width":65,"x":42,"y":73}},{"definition":{"color":"#d00","font_size":"88","text":"free text content","text_align":"left","type":"free_text"},"layout":{"height":20,"is_column_break":false,"width":30,"x":42,"y":5}},{"definition":{"type":"iframe","url":"http://google.com"},"layout":{"height":46,"is_column_break":false,"width":39,"x":111,"y":8}},{"definition":{"has_background":true,"has_border":true,"margin":"small","sizing":"fit","type":"image","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress\u0026cs=tinysrgb\u0026h=350"},"layout":{"height":20,"is_column_break":false,"width":30,"x":77,"y":7}},{"definition":{"columns":["core_host","core_service","tag_source"],"indexes":["main"],"message_display":"expanded-md","query":"error","show_date_column":true,"show_message_column":true,"sort":{"column":"time","order":"desc"},"type":"log_stream"},"layout":{"height":36,"is_column_break":false,"width":32,"x":5,"y":51}},{"definition":{"color_preference":"text","display_format":"countsAndList","hide_zero_counts":true,"query":"type:metric","show_last_triggered":true,"sort":"status,asc","summary_type":"monitors","title":"Widget Title","title_align":"left","title_size":"16","type":"manage_status"},"layout":{"height":40,"is_column_break":false,"width":30,"x":112,"y":55}},{"definition":{"display_format":"three_column","env":"datad0g.com","service":"alerting-cassandra","show_breakdown":true,"show_distribution":true,"show_errors":true,"show_hits":true,"show_latency":false,"show_resource_list":false,"size_format":"large","span_name":"cassandra.query","time":{"live_span":"1h"},"title":"alerting-cassandra #env:datad0g.com","title_align":"center","title_size":"13","type":"trace_service"},"layout":{"height":38,"is_column_break":false,"width":67,"x":40,"y":28}}]}
     form: {}
     headers:
       Accept:
@@ -13,11 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.22 (go go1.15.11; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"},{"template_variables":[],"name":"preset_3"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"2sb-b5e-ii5","title":"tf-TestAccDatadogFreeDashboard-local-1615927739","url":"/dashboard/2sb-b5e-ii5/tf-testaccdatadogfreedashboard-local-1615927739","created_at":"2021-03-16T20:49:01.037489+00:00","modified_at":"2021-03-16T20:49:01.037489+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":6730668953832585},{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":8590417197657950},{"definition":{"color":"#d00","text":"free text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6013123325935823},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":5112555925263629},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":3107165862136702},{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":["main"],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":2955337214564970},{"definition":{"sort":"status,asc","title_size":"16","title":"Widget Title","title_align":"left","hide_zero_counts":true,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":4030121700737128},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":6306848552738971}],"layout_type":"free"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"},{"template_variables":[],"name":"preset_3"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"znm-366-cnp","title":"tf-TestAccDatadogFreeDashboard-local-1621467920","url":"/dashboard/znm-366-cnp/tf-testaccdatadogfreedashboard-local-1621467920","created_at":"2021-05-19T23:45:22.395842+00:00","modified_at":"2021-05-19T23:45:22.395842+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"is_column_break":false,"x":5,"height":43},"id":7710687486278264},{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"is_column_break":false,"x":42,"height":9},"id":641702707173131},{"definition":{"color":"#d00","text":"free text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"is_column_break":false,"x":42,"height":20},"id":8574011458382656},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"is_column_break":false,"x":111,"height":46},"id":7545202320954716},{"definition":{"sizing":"fit","has_background":true,"has_border":true,"url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350","margin":"small","type":"image"},"layout":{"y":7,"width":30,"is_column_break":false,"x":77,"height":20},"id":7519096745038689},{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":["main"],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"is_column_break":false,"x":5,"height":36},"id":3958661366200500},{"definition":{"sort":"status,asc","title_size":"16","title":"Widget Title","title_align":"left","hide_zero_counts":true,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"is_column_break":false,"x":112,"height":40},"id":2487417690189369},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"is_column_break":false,"x":40,"height":38},"id":1657091192650736}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -28,7 +28,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:49:01 GMT
+      - Wed, 19 May 2021 23:45:22 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -38,9 +38,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - bgHykj7A9bfZx0Y5ZO3swhhp5tGUSNJHqFWR868+qg087CYrDOd5hQslC+noiEtH
+      - F5gm0Rce1/Abr9/0Fw8HAqWfiz0FdiH8er/AXnN6lOn3L6KyGgbsLCwgPlob1No8
       X-Dd-Version:
-      - "35.4109881"
+      - "35.4569410"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -55,11 +55,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2sb-b5e-ii5
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.22 (go go1.15.11; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/znm-366-cnp
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"},{"template_variables":[],"name":"preset_3"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"2sb-b5e-ii5","title":"tf-TestAccDatadogFreeDashboard-local-1615927739","url":"/dashboard/2sb-b5e-ii5/tf-testaccdatadogfreedashboard-local-1615927739","created_at":"2021-03-16T20:49:01.037489+00:00","modified_at":"2021-03-16T20:49:01.037489+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":6730668953832585},{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":8590417197657950},{"definition":{"color":"#d00","text":"free text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6013123325935823},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":5112555925263629},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":3107165862136702},{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":["main"],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":2955337214564970},{"definition":{"sort":"status,asc","title_size":"16","title":"Widget Title","title_align":"left","hide_zero_counts":true,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":4030121700737128},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":6306848552738971}],"layout_type":"free"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"},{"template_variables":[],"name":"preset_3"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"znm-366-cnp","title":"tf-TestAccDatadogFreeDashboard-local-1621467920","url":"/dashboard/znm-366-cnp/tf-testaccdatadogfreedashboard-local-1621467920","created_at":"2021-05-19T23:45:22.395842+00:00","modified_at":"2021-05-19T23:45:22.395842+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"is_column_break":false,"x":5,"height":43},"id":7710687486278264},{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"is_column_break":false,"x":42,"height":9},"id":641702707173131},{"definition":{"color":"#d00","text":"free text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"is_column_break":false,"x":42,"height":20},"id":8574011458382656},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"is_column_break":false,"x":111,"height":46},"id":7545202320954716},{"definition":{"sizing":"fit","has_background":true,"has_border":true,"url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350","margin":"small","type":"image"},"layout":{"y":7,"width":30,"is_column_break":false,"x":77,"height":20},"id":7519096745038689},{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":["main"],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"is_column_break":false,"x":5,"height":36},"id":3958661366200500},{"definition":{"sort":"status,asc","title_size":"16","title":"Widget Title","title_align":"left","hide_zero_counts":true,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"is_column_break":false,"x":112,"height":40},"id":2487417690189369},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"is_column_break":false,"x":40,"height":38},"id":1657091192650736}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -70,7 +70,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:49:01 GMT
+      - Wed, 19 May 2021 23:45:22 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -80,9 +80,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - HbtaOKlJ6OCrx9tMXO6ivMTrEM+g0c93HDp08trmOmgdHozC5J+vn10F0H4WPjCU
+      - fIO2C4qGDheGHy4YbS+r3a3CXbh4cbRo7roILOimQyiHGjQdOat0cIpWCkupM1uX
       X-Dd-Version:
-      - "35.4109881"
+      - "35.4569410"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -97,11 +97,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2sb-b5e-ii5
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.22 (go go1.15.11; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/znm-366-cnp
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"},{"template_variables":[],"name":"preset_3"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"2sb-b5e-ii5","title":"tf-TestAccDatadogFreeDashboard-local-1615927739","url":"/dashboard/2sb-b5e-ii5/tf-testaccdatadogfreedashboard-local-1615927739","created_at":"2021-03-16T20:49:01.037489+00:00","modified_at":"2021-03-16T20:49:01.037489+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":6730668953832585},{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":8590417197657950},{"definition":{"color":"#d00","text":"free text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6013123325935823},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":5112555925263629},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":3107165862136702},{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":["main"],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":2955337214564970},{"definition":{"sort":"status,asc","title_size":"16","title":"Widget Title","title_align":"left","hide_zero_counts":true,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":4030121700737128},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":6306848552738971}],"layout_type":"free"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"},{"template_variables":[],"name":"preset_3"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"znm-366-cnp","title":"tf-TestAccDatadogFreeDashboard-local-1621467920","url":"/dashboard/znm-366-cnp/tf-testaccdatadogfreedashboard-local-1621467920","created_at":"2021-05-19T23:45:22.395842+00:00","modified_at":"2021-05-19T23:45:22.395842+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"is_column_break":false,"x":5,"height":43},"id":7710687486278264},{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"is_column_break":false,"x":42,"height":9},"id":641702707173131},{"definition":{"color":"#d00","text":"free text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"is_column_break":false,"x":42,"height":20},"id":8574011458382656},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"is_column_break":false,"x":111,"height":46},"id":7545202320954716},{"definition":{"sizing":"fit","has_background":true,"has_border":true,"url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350","margin":"small","type":"image"},"layout":{"y":7,"width":30,"is_column_break":false,"x":77,"height":20},"id":7519096745038689},{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":["main"],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"is_column_break":false,"x":5,"height":36},"id":3958661366200500},{"definition":{"sort":"status,asc","title_size":"16","title":"Widget Title","title_align":"left","hide_zero_counts":true,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"is_column_break":false,"x":112,"height":40},"id":2487417690189369},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"is_column_break":false,"x":40,"height":38},"id":1657091192650736}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -112,7 +112,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:49:01 GMT
+      - Wed, 19 May 2021 23:45:22 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -122,9 +122,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
+      - tpRCH6w417YjBovRJ8VmtuXmNONVYiRp2c8d2AxjPdGBn8PCtgG4vAztrx3qUZAN
       X-Dd-Version:
-      - "35.4109881"
+      - "35.4569410"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -139,11 +139,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2sb-b5e-ii5
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.22 (go go1.15.11; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/znm-366-cnp
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"},{"template_variables":[],"name":"preset_3"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"2sb-b5e-ii5","title":"tf-TestAccDatadogFreeDashboard-local-1615927739","url":"/dashboard/2sb-b5e-ii5/tf-testaccdatadogfreedashboard-local-1615927739","created_at":"2021-03-16T20:49:01.037489+00:00","modified_at":"2021-03-16T20:49:01.037489+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":6730668953832585},{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"x":42,"height":9},"id":8590417197657950},{"definition":{"color":"#d00","text":"free text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"x":42,"height":20},"id":6013123325935823},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"x":111,"height":46},"id":5112555925263629},{"definition":{"sizing":"fit","type":"image","margin":"small","url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350"},"layout":{"y":7,"width":30,"x":77,"height":20},"id":3107165862136702},{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":["main"],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"x":5,"height":36},"id":2955337214564970},{"definition":{"sort":"status,asc","title_size":"16","title":"Widget Title","title_align":"left","hide_zero_counts":true,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"x":112,"height":40},"id":4030121700737128},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"x":40,"height":38},"id":6306848552738971}],"layout_type":"free"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[{"template_variables":[{"name":"var_1","value":"var_1_value"},{"name":"var_2","value":"var_2_value"}],"name":"preset_1"},{"template_variables":[{"name":"var_1","value":"var_1_value"}],"name":"preset_2"},{"template_variables":[],"name":"preset_3"}],"template_variables":[{"default":"aws","prefix":"host","name":"var_1"},{"default":"autoscaling","prefix":"service_name","name":"var_2"}],"is_read_only":false,"id":"znm-366-cnp","title":"tf-TestAccDatadogFreeDashboard-local-1621467920","url":"/dashboard/znm-366-cnp/tf-testaccdatadogfreedashboard-local-1621467920","created_at":"2021-05-19T23:45:22.395842+00:00","modified_at":"2021-05-19T23:45:22.395842+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_stream","event_size":"l"},"layout":{"y":5,"width":32,"is_column_break":false,"x":5,"height":43},"id":7710687486278264},{"definition":{"title_size":"16","title":"Widget Title","title_align":"left","time":{"live_span":"1h"},"query":"*","type":"event_timeline"},"layout":{"y":73,"width":65,"is_column_break":false,"x":42,"height":9},"id":641702707173131},{"definition":{"color":"#d00","text":"free text content","font_size":"88","text_align":"left","type":"free_text"},"layout":{"y":5,"width":30,"is_column_break":false,"x":42,"height":20},"id":8574011458382656},{"definition":{"url":"http://google.com","type":"iframe"},"layout":{"y":8,"width":39,"is_column_break":false,"x":111,"height":46},"id":7545202320954716},{"definition":{"sizing":"fit","has_background":true,"has_border":true,"url":"https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&h=350","margin":"small","type":"image"},"layout":{"y":7,"width":30,"is_column_break":false,"x":77,"height":20},"id":7519096745038689},{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":["main"],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"layout":{"y":51,"width":32,"is_column_break":false,"x":5,"height":36},"id":3958661366200500},{"definition":{"sort":"status,asc","title_size":"16","title":"Widget Title","title_align":"left","hide_zero_counts":true,"summary_type":"monitors","color_preference":"text","query":"type:metric","show_last_triggered":true,"type":"manage_status","display_format":"countsAndList"},"layout":{"y":55,"width":30,"is_column_break":false,"x":112,"height":40},"id":2487417690189369},{"definition":{"span_name":"cassandra.query","title_size":"13","service":"alerting-cassandra","title":"alerting-cassandra #env:datad0g.com","size_format":"large","show_hits":true,"title_align":"center","show_errors":true,"show_breakdown":true,"type":"trace_service","env":"datad0g.com","time":{"live_span":"1h"},"show_distribution":true,"display_format":"three_column","show_latency":false,"show_resource_list":false},"layout":{"y":28,"width":67,"is_column_break":false,"x":40,"height":38},"id":1657091192650736}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -154,7 +154,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:49:02 GMT
+      - Wed, 19 May 2021 23:45:23 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -164,9 +164,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - /L+SFFO+m1pPY+hRCpk5325fvfrNl0KmiquUNJolBN/5hu3HIwflqjZSbJ6NxDFG
+      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
       X-Dd-Version:
-      - "35.4109881"
+      - "35.4569410"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -181,11 +181,11 @@ interactions:
       Dd-Operation-Id:
       - DeleteDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2sb-b5e-ii5
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.22 (go go1.15.11; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/znm-366-cnp
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"2sb-b5e-ii5"}'
+    body: '{"deleted_dashboard_id":"znm-366-cnp"}'
     headers:
       Cache-Control:
       - no-cache
@@ -196,7 +196,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:49:03 GMT
+      - Wed, 19 May 2021 23:45:24 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -206,9 +206,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
+      - mNzaoDhdDKO7t4QSrAe5X7pHd0bJND187D+vRbwoluXouE2m1UaQQX0RGCvRpLVE
       X-Dd-Version:
-      - "35.4109881"
+      - "35.4569410"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -223,11 +223,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/2sb-b5e-ii5
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.22 (go go1.15.11; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/znm-366-cnp
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID 2sb-b5e-ii5 not found"]}'
+    body: '{"errors": ["Dashboard with ID znm-366-cnp not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -238,7 +238,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:49:03 GMT
+      - Wed, 19 May 2021 23:45:25 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -248,7 +248,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.4109881"
+      - "35.4569410"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found

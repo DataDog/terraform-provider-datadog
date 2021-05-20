@@ -8,88 +8,11 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
-
-func TestAccDatadogMetricTagConfiguration_import(t *testing.T) {
-	resourceName := "datadog_metric_tag_configuration.testing_metric_tag_config"
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogMetricTagConfigurationDistCreate(uniqueMetricTagConfig),
-			},
-			{
-				ResourceName:      resourceName,
-				ImportState:       true,
-				ImportStateVerify: true,
-			},
-			{
-				ResourceName:      resourceName,
-				ImportStateId:     resourceName + "123",
-				ImportState:       true,
-				ImportStateVerify: true,
-				ExpectError:       regexp.MustCompile("Cannot import non-existent remote object*"),
-			},
-		},
-	})
-}
-
-func TestAccDatadogMetricTagConfiguration_Basic(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogMetricTagConfigurationDistCreate(uniqueMetricTagConfig),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMetricTagConfigurationExists(accProvider, "datadog_metric_tag_configuration.testing_metric_tag_config"),
-					resource.TestCheckResourceAttr(
-						"datadog_metric_tag_configuration.testing_metric_tag_config", "id", uniqueMetricTagConfig),
-					resource.TestCheckResourceAttr(
-						"datadog_metric_tag_configuration.testing_metric_tag_config", "metric_name", uniqueMetricTagConfig),
-					resource.TestCheckResourceAttr(
-						"datadog_metric_tag_configuration.testing_metric_tag_config", "metric_type", "distribution"),
-					resource.TestCheckResourceAttr(
-						"datadog_metric_tag_configuration.testing_metric_tag_config", "tags.#", "2"),
-					resource.TestCheckResourceAttr(
-						"datadog_metric_tag_configuration.testing_metric_tag_config", "include_percentiles", "false"),
-				),
-			},
-			{
-				Config: testAccCheckDatadogMetricTagConfigurationDistUpdate(uniqueMetricTagConfig),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMetricTagConfigurationExists(accProvider, "datadog_metric_tag_configuration.testing_metric_tag_config"),
-					resource.TestCheckResourceAttr(
-						"datadog_metric_tag_configuration.testing_metric_tag_config", "id", uniqueMetricTagConfig),
-					resource.TestCheckResourceAttr(
-						"datadog_metric_tag_configuration.testing_metric_tag_config", "metric_name", uniqueMetricTagConfig),
-					resource.TestCheckResourceAttr(
-						"datadog_metric_tag_configuration.testing_metric_tag_config", "metric_type", "distribution"),
-					resource.TestCheckResourceAttr(
-						"datadog_metric_tag_configuration.testing_metric_tag_config", "tags.#", "1"),
-					resource.TestCheckResourceAttr(
-						"datadog_metric_tag_configuration.testing_metric_tag_config", "include_percentiles", "true"),
-				),
-			},
-		},
-	})
-}
 
 func TestAccDatadogMetricTagConfiguration_Error(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -113,28 +36,6 @@ func TestAccDatadogMetricTagConfiguration_Error(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogMetricTagConfigurationDistCreate(uniq string) string {
-	return fmt.Sprintf(`
-        resource "datadog_metric_tag_configuration" "testing_metric_tag_config" {
-			metric_name = "%s"
-			metric_type = "distribution"
-			tags = ["sport","datacenter"]
-			include_percentiles = false
-        }
-    `, uniq)
-}
-
-func testAccCheckDatadogMetricTagConfigurationDistUpdate(uniq string) string {
-	return fmt.Sprintf(`
-        resource "datadog_metric_tag_configuration" "testing_metric_tag_config" {
-			metric_name = "%s"
-			metric_type = "distribution"
-			tags = ["something_new"]
-			include_percentiles = true
-        }
-    `, uniq)
-}
-
 func testAccCheckDatadogMetricTagConfigurationIncludePercentilesError(uniq string, metricType string) string {
 	return fmt.Sprintf(`
         resource "datadog_metric_tag_configuration" "testing_metric_tag_config_icl_count" {
@@ -146,36 +47,11 @@ func testAccCheckDatadogMetricTagConfigurationIncludePercentilesError(uniq strin
     `, uniq, metricType)
 }
 
-func testAccCheckDatadogMetricTagConfigurationExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		resourceID := s.RootModule().Resources[resourceName].Primary.ID
-		datadogClient := providerConf.DatadogClientV2
-		auth := providerConf.AuthV2
-
-		id := resourceID
-
-		_, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, id)
-
-		if err != nil {
-			return utils.TranslateClientError(err, "error checking if tag configuration exists")
-		}
-		if httpresp == nil {
-			return fmt.Errorf("unexpeted response when checking if tag configuration exists")
-		}
-		if httpresp.StatusCode != 200 {
-			return fmt.Errorf("got unexpected status code when checking if tag config exists %d", httpresp.StatusCode)
-		}
-
-		return nil
-	}
-}
-
 func testAccCheckDatadogMetricTagConfigurationDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
+		meta := provider.Meta()
+		providerConf := meta.(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV2
 		auth := providerConf.AuthV2
 		for _, r := range s.RootModule().Resources {

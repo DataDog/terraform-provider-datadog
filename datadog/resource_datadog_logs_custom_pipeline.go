@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -12,6 +13,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
+
+var logCustomPipelineMutex = sync.Mutex{}
 
 const (
 	tfArithmeticProcessor        = "arithmetic_processor"
@@ -130,9 +133,9 @@ var attributeRemapper = &schema.Schema{
 			"name":        {Description: "Name of the processor", Type: schema.TypeString, Optional: true},
 			"is_enabled":  {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
 			"sources":     {Description: "List of source attributes or tags.", Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}},
-			"source_type": {Description: "Defines where the sources are from (log attribute or tag).", Type: schema.TypeString, Required: true},
+			"source_type": {Description: "Defines where the sources are from (log `attribute` or `tag`).", Type: schema.TypeString, Required: true},
 			"target":      {Description: "Final attribute or tag name to remap the sources.", Type: schema.TypeString, Required: true},
-			"target_type": {Description: "Defines if the target is a log attribute or tag.", Type: schema.TypeString, Required: true},
+			"target_type": {Description: "Defines if the target is a log `attribute` or `tag`.", Type: schema.TypeString, Required: true},
 			"target_format": {
 				Description:  "If the `target_type` of the remapper is `attribute`, try to cast the value to a new specific type. If the cast is not possible, the original type is kept. `string`, `integer`, or `double` are the possible types. If the `target_type` is `tag`, this parameter may not be specified.",
 				Type:         schema.TypeString,
@@ -360,6 +363,10 @@ func resourceDatadogLogsPipelineCreate(ctx context.Context, d *schema.ResourceDa
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
+
+	logCustomPipelineMutex.Lock()
+	defer logCustomPipelineMutex.Unlock()
+
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
 		return diag.FromErr(err)
@@ -413,6 +420,9 @@ func resourceDatadogLogsPipelineUpdate(ctx context.Context, d *schema.ResourceDa
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
+	logCustomPipelineMutex.Lock()
+	defer logCustomPipelineMutex.Unlock()
+
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
 		return diag.FromErr(err)
@@ -428,6 +438,9 @@ func resourceDatadogLogsPipelineDelete(ctx context.Context, d *schema.ResourceDa
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
+
+	logCustomPipelineMutex.Lock()
+	defer logCustomPipelineMutex.Unlock()
 
 	if _, err := datadogClientV1.LogsPipelinesApi.DeleteLogsPipeline(authV1, d.Id()); err != nil {
 		// API returns 400 when the specific pipeline id doesn't exist through DELETE request.

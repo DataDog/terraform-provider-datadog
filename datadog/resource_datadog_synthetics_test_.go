@@ -12,12 +12,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -114,6 +113,11 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			},
 			"browser_step": syntheticsTestBrowserStep(),
 			"api_step":     syntheticsTestAPIStep(),
+			"set_cookie": {
+				Description: "Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -156,6 +160,12 @@ func syntheticsTestRequest() *schema.Resource {
 				Description: "DNS server to use for DNS tests (`subtype = \"dns\"`).",
 				Type:        schema.TypeString,
 				Optional:    true,
+			},
+			"dns_server_port": {
+				Description:  "DNS server port to use for DNS tests.",
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ValidateFunc: validation.IntBetween(1, 65535),
 			},
 			"no_saving_response_body": {
 				Description: "Determines whether or not to save the response body.",
@@ -478,6 +488,16 @@ func syntheticsTestAPIStep() *schema.Schema {
 				"request_basicauth":          syntheticsTestRequestBasicAuth(),
 				"request_client_certificate": syntheticsTestRequestClientCertificate(),
 				"assertion":                  syntheticsAPIAssertion(),
+				"allow_failure": {
+					Description: "Determines whether or not to continue with test if this step fails.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"is_critical": {
+					Description: "Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 			},
 		},
 	}
@@ -919,6 +939,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := k.GetOkWith("dns_server"); ok {
 		request.SetDnsServer(attr.(string))
 	}
+	if attr, ok := k.GetOkWith("dns_server_port"); ok {
+		request.SetDnsServerPort(int32(attr.(int)))
+	}
 	if attr, ok := k.GetOkWith("no_saving_response_body"); ok {
 		request.SetNoSavingResponseBody(attr.(bool))
 	}
@@ -939,7 +962,6 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 
 	config.Assertions = []datadogV1.SyntheticsAssertion{}
-
 	if attr, ok := d.GetOk("assertion"); ok && attr != nil {
 		config.Assertions = buildAssertions(attr.([]interface{}))
 	}
@@ -989,6 +1011,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			request = completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}))
 
 			step.SetRequest(request)
+
+			step.SetAllowFailure(stepMap["allow_failure"].(bool))
+			step.SetIsCritical(stepMap["is_critical"].(bool))
 
 			steps = append(steps, step)
 		}
@@ -1226,15 +1251,6 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	if attr, ok := k.GetOkWith("timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
 	}
-	if attr, ok := k.GetOkWith("host"); ok {
-		request.SetHost(attr.(string))
-	}
-	if attr, ok := k.GetOkWith("port"); ok {
-		request.SetPort(int64(attr.(int)))
-	}
-	if attr, ok := k.GetOkWith("dns_server"); ok {
-		request.SetDnsServer(attr.(string))
-	}
 	k.Remove(parts)
 	if attr, ok := d.GetOk("request_query"); ok {
 		query := attr.(map[string]interface{})
@@ -1294,8 +1310,6 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 	if attr, ok := d.GetOk("browser_variable"); ok && attr != nil {
 		browserVariables = attr.([]interface{})
-	} else if attr, ok := d.GetOk("variable"); ok && attr != nil {
-		browserVariables = attr.([]interface{})
 	}
 
 	for _, variable := range browserVariables {
@@ -1321,7 +1335,6 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 	options := datadogV1.NewSyntheticsTestOptions()
 
-	// use new options_list first, then fallback to legacy options
 	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
 		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
 			options.SetTickEvery(datadogV1.SyntheticsTickInterval(attr.(int)))
@@ -1378,6 +1391,10 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
 		}
 		options.DeviceIds = &deviceIds
+	}
+
+	if attr, ok := d.GetOk("set_cookie"); ok {
+		config.SetSetCookie(attr.(string))
 	}
 
 	syntheticsTest := datadogV1.NewSyntheticsBrowserTest(d.Get("message").(string))
@@ -1459,6 +1476,9 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	}
 	if request.HasDnsServer() {
 		localRequest["dns_server"] = convertToString(request.GetDnsServer())
+	}
+	if request.HasDnsServerPort() {
+		localRequest["dns_server_port"] = request.GetDnsServerPort()
 	}
 	if request.HasNoSavingResponseBody() {
 		localRequest["no_saving_response_body"] = request.GetNoSavingResponseBody()
@@ -1582,6 +1602,9 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	actualRequest := config.GetRequest()
 	localRequest := buildLocalRequest(actualRequest)
 
+	if config.HasSetCookie() {
+		d.Set("set_cookie", config.GetSetCookie())
+	}
 	if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
 		return diag.FromErr(err)
 	}
@@ -1649,15 +1672,8 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		localBrowserVariables[i] = localVariable
 	}
 
-	// If the existing state still uses variables, keep using that in the state to not generate useless diffs
-	if attr, ok := d.GetOk("variable"); ok && attr != nil && len(attr.([]interface{})) > 0 {
-		if err := d.Set("variable", localBrowserVariables); err != nil {
-			return diag.FromErr(err)
-		}
-	} else {
-		if err := d.Set("browser_variable", localBrowserVariables); err != nil {
-			return diag.FromErr(err)
-		}
+	if err := d.Set("browser_variable", localBrowserVariables); err != nil {
+		return diag.FromErr(err)
 	}
 
 	d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds)
@@ -1904,6 +1920,9 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 				localStep["request_client_certificate"] = []map[string][]map[string]string{localCertificate}
 			}
+
+			localStep["allow_failure"] = step.GetAllowFailure()
+			localStep["is_critical"] = step.GetIsCritical()
 
 			localSteps[i] = localStep
 		}

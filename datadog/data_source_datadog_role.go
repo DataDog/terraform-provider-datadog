@@ -5,10 +5,10 @@ import (
 	"log"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func dataSourceDatadogRole() *schema.Resource {

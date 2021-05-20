@@ -433,8 +433,6 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_definition.0.no_saving_response_body", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "request_definition.0.no_saving_response_body", "true"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.#", "4"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.0.type", "header"),
@@ -1425,6 +1423,8 @@ func createSyntheticsDNSTestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "request_definition.0.dns_server", "8.8.8.8"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.dns", "request_definition.0.dns_server_port", "120"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "assertion.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.dns", "assertion.0.type", "recordSome"),
@@ -1467,6 +1467,7 @@ resource "datadog_synthetics_test" "dns" {
 	request_definition {
 		host = "https://www.datadoghq.com"
 		dns_server = "8.8.8.8"
+		dns_server_port = 120
 	}
 
 	assertion {
@@ -1675,6 +1676,8 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_headers.X-Datadog-Trace-ID", "123456789"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "set_cookie", "name=value"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "device_ids.#", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "device_ids.0", "laptop_large"),
@@ -1749,6 +1752,8 @@ resource "datadog_synthetics_test" "bar" {
 		Accept = "application/json"
 		X-Datadog-Trace-ID = "123456789"
 	}
+
+	set_cookie = "name=value"
 
 	device_ids = [ "laptop_large", "mobile_small" ]
 	locations = [ "aws:eu-central-1" ]
@@ -2706,6 +2711,10 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.type", "regex"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.value", ".*"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.allow_failure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.is_critical", "false"),
 		),
 	}
 }
@@ -2768,6 +2777,8 @@ resource "datadog_synthetics_test" "multi" {
                		   		   value = ".*"
                		   }
                }
+               allow_failure = true
+               is_critical = false
        }
 }
 `, uniq)

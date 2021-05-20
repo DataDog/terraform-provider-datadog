@@ -195,3 +195,4 @@ go.sum,github.com/hashicorp/go-cty,MIT,Copyright (c) 2017-2018 Martin Atkins
 go.sum,github.com/hashicorp/terraform-plugin-go,MPL-2.0,
 go.sum,github.com/hashicorp/terraform-plugin-sdk/v2,MPL-2.0,
 go.sum,github.com/nsf/jsondiff,MIT,Copyright (C) 2019 nsf <no.smile.face@gmail.com>
+go.sum,golang.org/x/term,BSD-3-Clause,2009 The Go Authors

@@ -675,7 +675,7 @@ resource "datadog_dashboard" "free_dashboard" {
 - **description** (String) The description of the dashboard.
 - **is_read_only** (Boolean) Whether this dashboard is read-only.
 - **notify_list** (List of String) The list of handles of users to notify when changes are made to this dashboard.
-- **reflow_type** (String) The reflow type of a multi-size layout dashboard. Set this only when layout type is ‘ordered’. If set to ‘fixed’, the dashboard expect all widgets to have a layout, and if it’s set to ‘auto’, widgets should not have layouts.
+- **reflow_type** (String) The reflow type of a new dashboard layout. Set this only when layout type is ‘ordered’. If set to ‘fixed’, the dashboard expect all widgets to have a layout, and if it’s set to ‘auto’, widgets should not have layouts.
 - **template_variable** (Block List) The list of template variables for this dashboard. (see [below for nested schema](#nestedblock--template_variable))
 - **template_variable_preset** (Block List) The list of selectable template variable presets for this dashboard. (see [below for nested schema](#nestedblock--template_variable_preset))
 - **url** (String) The URL of the dashboard.
@@ -1759,6 +1759,9 @@ Required:
 
 Optional:
 
+- **background_color** (String) Background color of the group title. One of `vivid_blue`, `vivid_purple`, `vivid_pink`, `vivid_orange`, `vivid_yellow`, `vivid_green`, `blue`, `purple`, `pink`, `orange`, `yellow`, `green`, `gray` or `white`
+- **banner_img** (String) URL of image to display as a banner for the group.
+- **show_title** (Boolean) Whether to show the title or not.
 - **title** (String) The title of the group.
 
 <a id="nestedblock--widget--group_definition--widget"></a>
@@ -3796,8 +3799,13 @@ Required:
 
 Optional:
 
-- **margin** (String) The margins to use around the image. Either `small` or `large`.
-- **sizing** (String) The preferred method to adapt the dimensions of the image to those of the widget. One of `center` (center the image in the tile), `zoom` (zoom the image to cover the whole tile) or `fit` (fit the image dimensions to those of the tile).
+- **has_background** (Boolean) Whether to display a background or not.
+- **has_border** (Boolean) Whether to display a border or not.
+- **horizontal_align** (String) The horizontal alignment for the widget.
+- **margin** (String) The margins to use around the image. Either `sm`, `md`, or `lg`. Note: `small` and `large` values are deprecated.
+- **sizing** (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties and are either: `fill`, `contain`, `cover`, `none` or `scale-down`. Note: `zoom`, `fit` and `center` values are deprecated.
+- **url_dark_theme** (String) The URL in dark mode to use as a data source for the widget.
+- **vertical_align** (String) The vertical alignment for the widget.
 
 
 <a id="nestedblock--widget--group_definition--widget--log_stream_definition"></a>
@@ -3858,10 +3866,12 @@ Optional:
 
 - **background_color** (String) Background color of the note.
 - **font_size** (String) Size of the text.
+- **has_padding** (Boolean) Whether to add padding or not.
 - **show_tick** (Boolean) Whether to show a tick or not.
 - **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`.
 - **tick_edge** (String) When `tick = true`, string indicating on which side of the widget the tick should be displayed. One of `bottom`, `top`, `left`, `right`.
 - **tick_pos** (String) When `tick = true`, string with a percent sign indicating the position of the tick. Example: use `tick_pos = "50%"` for centered alignment.
+- **vertical_align** (String) The vertical alignment for the widget.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition"></a>
@@ -6439,6 +6449,10 @@ Required:
 - **x** (Number) The position of the widget on the x (horizontal) axis. Should be greater or equal to 0.
 - **y** (Number) The position of the widget on the y (vertical) axis. Should be greater or equal to 0.
 
+Optional:
+
+- **is_column_break** (Boolean) Whether the widget should be the first one on the second column in high density or not. Only for the new dashboard layout and only one widget in the dashboard should have this property set to `true`.
+
 
 
 
@@ -7414,8 +7428,13 @@ Required:
 
 Optional:
 
-- **margin** (String) The margins to use around the image. Either `small` or `large`.
-- **sizing** (String) The preferred method to adapt the dimensions of the image to those of the widget. One of `center` (center the image in the tile), `zoom` (zoom the image to cover the whole tile) or `fit` (fit the image dimensions to those of the tile).
+- **has_background** (Boolean) Whether to display a background or not.
+- **has_border** (Boolean) Whether to display a border or not.
+- **horizontal_align** (String) The horizontal alignment for the widget.
+- **margin** (String) The margins to use around the image. Either `sm`, `md`, or `lg`. Note: `small` and `large` values are deprecated.
+- **sizing** (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties and are either: `fill`, `contain`, `cover`, `none` or `scale-down`. Note: `zoom`, `fit` and `center` values are deprecated.
+- **url_dark_theme** (String) The URL in dark mode to use as a data source for the widget.
+- **vertical_align** (String) The vertical alignment for the widget.
 
 
 <a id="nestedblock--widget--log_stream_definition"></a>
@@ -7476,10 +7495,12 @@ Optional:
 
 - **background_color** (String) Background color of the note.
 - **font_size** (String) Size of the text.
+- **has_padding** (Boolean) Whether to add padding or not.
 - **show_tick** (Boolean) Whether to show a tick or not.
 - **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`.
 - **tick_edge** (String) When `tick = true`, string indicating on which side of the widget the tick should be displayed. One of `bottom`, `top`, `left`, `right`.
 - **tick_pos** (String) When `tick = true`, string with a percent sign indicating the position of the tick. Example: use `tick_pos = "50%"` for centered alignment.
+- **vertical_align** (String) The vertical alignment for the widget.
 
 
 <a id="nestedblock--widget--query_table_definition"></a>
@@ -10056,6 +10077,10 @@ Required:
 - **width** (Number) The width of the widget.
 - **x** (Number) The position of the widget on the x (horizontal) axis. Should be greater or equal to 0.
 - **y** (Number) The position of the widget on the y (vertical) axis. Should be greater or equal to 0.
+
+Optional:
+
+- **is_column_break** (Boolean) Whether the widget should be the first one on the second column in high density or not. Only for the new dashboard layout and only one widget in the dashboard should have this property set to `true`.
 
 
 

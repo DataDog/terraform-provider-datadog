@@ -67,7 +67,7 @@ func resourceDatadogDashboard() *schema.Resource {
 			"reflow_type": {
 				Type:         schema.TypeString,
 				Optional:     true,
-				Description:  "The reflow type of a multi-size layout dashboard. Set this only when layout type is ‘ordered’. If set to ‘fixed’, the dashboard expect all widgets to have a layout, and if it’s set to ‘auto’, widgets should not have layouts.",
+				Description:  "The reflow type of a new dashboard layout. Set this only when layout type is ‘ordered’. If set to ‘fixed’, the dashboard expect all widgets to have a layout, and if it’s set to ‘auto’, widgets should not have layouts.",
 				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewDashboardReflowTypeFromValue),
 			},
 			"description": {
@@ -1080,6 +1080,11 @@ func getWidgetLayoutSchema() map[string]*schema.Schema {
 			Type:        schema.TypeInt,
 			Required:    true,
 		},
+		"is_column_break": {
+			Description: "Whether the widget should be the first one on the second column in high density or not. Only for the new dashboard layout and only one widget in the dashboard should have this property set to `true`.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
 	}
 }
 
@@ -1089,6 +1094,9 @@ func buildDatadogWidgetLayout(terraformLayout map[string]interface{}) *datadogV1
 	datadogLayout.SetY(int64(terraformLayout["y"].(int)))
 	datadogLayout.SetHeight(int64(terraformLayout["height"].(int)))
 	datadogLayout.SetWidth(int64(terraformLayout["width"].(int)))
+	if value, ok := terraformLayout["is_column_break"].(bool); ok {
+		datadogLayout.SetIsColumnBreak(value)
+	}
 	return datadogLayout
 }
 
@@ -1117,6 +1125,22 @@ func getGroupDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Description: "The title of the group.",
 		},
+		"background_color": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Background color of the group title. One of `vivid_blue`, `vivid_purple`, `vivid_pink`, `vivid_orange`, `vivid_yellow`, `vivid_green`, `blue`, `purple`, `pink`, `orange`, `yellow`, `green`, `gray` or `white`",
+		},
+		"banner_img": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "URL of image to display as a banner for the group.",
+		},
+		"show_title": {
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Description: "Whether to show the title or not.",
+			Default:     true,
+		},
 	}
 }
 
@@ -1135,6 +1159,15 @@ func buildDatadogGroupDefinition(terraformGroupDefinition map[string]interface{}
 	}
 	if v, ok := terraformGroupDefinition["title"].(string); ok && len(v) != 0 {
 		datadogGroupDefinition.SetTitle(v)
+	}
+	if v, ok := terraformGroupDefinition["background_color"].(string); ok && len(v) != 0 {
+		datadogGroupDefinition.SetBackgroundColor(v)
+	}
+	if v, ok := terraformGroupDefinition["banner_img"].(string); ok && len(v) != 0 {
+		datadogGroupDefinition.SetBannerImg(v)
+	}
+	if v, ok := terraformGroupDefinition["show_title"].(bool); ok {
+		datadogGroupDefinition.SetShowTitle(v)
 	}
 
 	return datadogGroupDefinition, nil
@@ -1156,6 +1189,15 @@ func buildTerraformGroupDefinition(datadogGroupDefinition datadogV1.GroupWidgetD
 	}
 	if v, ok := datadogGroupDefinition.GetTitleOk(); ok {
 		terraformGroupDefinition["title"] = v
+	}
+	if v, ok := datadogGroupDefinition.GetBackgroundColorOk(); ok {
+		terraformGroupDefinition["background_color"] = v
+	}
+	if v, ok := datadogGroupDefinition.GetBannerImgOk(); ok {
+		terraformGroupDefinition["banner_img"] = v
+	}
+	if v, ok := datadogGroupDefinition.GetShowTitleOk(); ok {
+		terraformGroupDefinition["show_title"] = v
 	}
 
 	return terraformGroupDefinition
@@ -2713,16 +2755,45 @@ func getImageDefinitionSchema() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Required:    true,
 		},
+		"url_dark_theme": {
+			Description: "The URL in dark mode to use as a data source for the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"sizing": {
-			Description:  "The preferred method to adapt the dimensions of the image to those of the widget. One of `center` (center the image in the tile), `zoom` (zoom the image to cover the whole tile) or `fit` (fit the image dimensions to those of the tile).",
+			Description:  "The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties and are either: `fill`, `contain`, `cover`, `none` or `scale-down`. Note: `zoom`, `fit` and `center` values are deprecated.",
 			Type:         schema.TypeString,
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetImageSizingFromValue),
 			Optional:     true,
 		},
 		"margin": {
-			Description:  "The margins to use around the image. Either `small` or `large`.",
+			Description:  "The margins to use around the image. Either `sm`, `md`, or `lg`. Note: `small` and `large` values are deprecated.",
 			Type:         schema.TypeString,
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMarginFromValue),
+			Optional:     true,
+		},
+		"has_background": {
+			Description: "Whether to display a background or not.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Default:     true,
+		},
+		"has_border": {
+			Description: "Whether to display a border or not.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Default:     true,
+		},
+		"horizontal_align": {
+			Description:  "The horizontal alignment for the widget.",
+			Type:         schema.TypeString,
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetHorizontalAlignFromValue),
+			Optional:     true,
+		},
+		"vertical_align": {
+			Description:  "The vertical alignment for the widget.",
+			Type:         schema.TypeString,
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetVerticalAlignFromValue),
 			Optional:     true,
 		},
 	}
@@ -2733,11 +2804,26 @@ func buildDatadogImageDefinition(terraformDefinition map[string]interface{}) *da
 	// Required params
 	datadogDefinition.SetUrl(terraformDefinition["url"].(string))
 	// Optional params
+	if v, ok := terraformDefinition["url_dark_theme"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetUrlDarkTheme(v)
+	}
 	if v, ok := terraformDefinition["sizing"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetSizing(datadogV1.WidgetImageSizing(v))
 	}
 	if v, ok := terraformDefinition["margin"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetMargin(datadogV1.WidgetMargin(v))
+	}
+	if v, ok := terraformDefinition["has_background"].(bool); ok {
+		datadogDefinition.SetHasBackground(v)
+	}
+	if v, ok := terraformDefinition["has_border"].(bool); ok {
+		datadogDefinition.SetHasBorder(v)
+	}
+	if v, ok := terraformDefinition["horizontal_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetHorizontalAlign(datadogV1.WidgetHorizontalAlign(v))
+	}
+	if v, ok := terraformDefinition["vertical_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetVerticalAlign(datadogV1.WidgetVerticalAlign(v))
 	}
 	return datadogDefinition
 }
@@ -2747,11 +2833,26 @@ func buildTerraformImageDefinition(datadogDefinition datadogV1.ImageWidgetDefini
 	// Required params
 	terraformDefinition["url"] = datadogDefinition.GetUrl()
 	// Optional params
+	if v, ok := datadogDefinition.GetUrlDarkThemeOk(); ok {
+		terraformDefinition["url_dark_theme"] = *v
+	}
 	if v, ok := datadogDefinition.GetSizingOk(); ok {
 		terraformDefinition["sizing"] = *v
 	}
 	if v, ok := datadogDefinition.GetMarginOk(); ok {
 		terraformDefinition["margin"] = *v
+	}
+	if v, ok := datadogDefinition.GetHasBackgroundOk(); ok {
+		terraformDefinition["has_background"] = *v
+	}
+	if v, ok := datadogDefinition.GetHasBorderOk(); ok {
+		terraformDefinition["has_border"] = *v
+	}
+	if v, ok := datadogDefinition.GetHorizontalAlignOk(); ok {
+		terraformDefinition["horizontal_align"] = *v
+	}
+	if v, ok := datadogDefinition.GetVerticalAlignOk(); ok {
+		terraformDefinition["vertical_align"] = *v
 	}
 	return terraformDefinition
 }
@@ -3119,6 +3220,18 @@ func getNoteDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:     true,
 		},
+		"vertical_align": {
+			Description:  "The vertical alignment for the widget.",
+			Type:         schema.TypeString,
+			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetVerticalAlignFromValue),
+			Optional:     true,
+		},
+		"has_padding": {
+			Description: "Whether to add padding or not.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Default:     true,
+		},
 		"show_tick": {
 			Description: "Whether to show a tick or not.",
 			Type:        schema.TypeBool,
@@ -3152,6 +3265,12 @@ func buildDatadogNoteDefinition(terraformDefinition map[string]interface{}) *dat
 	if v, ok := terraformDefinition["text_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTextAlign(datadogV1.WidgetTextAlign(v))
 	}
+	if v, ok := terraformDefinition["vertical_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetVerticalAlign(datadogV1.WidgetVerticalAlign(v))
+	}
+	if v, ok := terraformDefinition["has_padding"].(bool); ok {
+		datadogDefinition.SetHasPadding(v)
+	}
 	if v, ok := terraformDefinition["show_tick"]; ok {
 		datadogDefinition.SetShowTick(v.(bool))
 	}
@@ -3177,6 +3296,12 @@ func buildTerraformNoteDefinition(datadogDefinition datadogV1.NoteWidgetDefiniti
 	}
 	if v, ok := datadogDefinition.GetTextAlignOk(); ok {
 		terraformDefinition["text_align"] = *v
+	}
+	if v, ok := datadogDefinition.GetVerticalAlignOk(); ok {
+		terraformDefinition["vertical_align"] = *v
+	}
+	if v, ok := datadogDefinition.GetHasPaddingOk(); ok {
+		terraformDefinition["has_padding"] = *v
 	}
 	if v, ok := datadogDefinition.GetShowTickOk(); ok {
 		terraformDefinition["show_tick"] = *v
@@ -5842,8 +5967,8 @@ func buildDatadogWidgetCustomLinks(terraformWidgetCustomLinks *[]interface{}) *[
 	for i, customLink := range *terraformWidgetCustomLinks {
 		terraformCustomLink := customLink.(map[string]interface{})
 		datadogWidgetCustomLink := datadogV1.WidgetCustomLink{
-			Label: terraformCustomLink["label"].(string),
-			Link:  terraformCustomLink["link"].(string),
+			Label: datadogV1.PtrString(terraformCustomLink["label"].(string)),
+			Link:  datadogV1.PtrString(terraformCustomLink["link"].(string)),
 		}
 		datadogWidgetCustomLinks[i] = datadogWidgetCustomLink
 	}

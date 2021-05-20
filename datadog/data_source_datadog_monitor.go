@@ -17,7 +17,7 @@ import (
 func dataSourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about an existing monitor for use in other resources.",
-		ReadContext: dataSourceDatadogMonitorsRead,
+		ReadContext: dataSourceDatadogMonitorRead,
 		Schema: map[string]*schema.Schema{
 			"name_filter": {
 				Description: "A monitor name to limit the search.",
@@ -188,7 +188,7 @@ func dataSourceDatadogMonitor() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogMonitorsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
