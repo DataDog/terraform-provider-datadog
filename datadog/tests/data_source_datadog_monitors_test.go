@@ -23,24 +23,15 @@ func TestAccDatadogMonitorsDatasource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceMonitorsNameFilterConfig(uniq),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkDatasourceMonitorsAttrs(accProvider, uniq, fmt.Sprintf("%s||", uniq)),
+				Check:  checkDatasourceMonitorsAttrs(accProvider, uniq, fmt.Sprintf("%s||", uniq)),
 			},
 			{
 				Config: testAccDatasourceMonitorsTagsFilterConfig(uniq),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkDatasourceMonitorsAttrs(accProvider, uniq, fmt.Sprintf("|test_datasource_monitor_scope:%s|", uniq)),
+				Check:  checkDatasourceMonitorsAttrs(accProvider, uniq, fmt.Sprintf("|test_datasource_monitor_scope:%s|", uniq)),
 			},
 			{
 				Config: testAccDatasourceMonitorsMonitorTagsFilterConfig(uniq),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkDatasourceMonitorsAttrs(accProvider, uniq, fmt.Sprintf("||test_datasource_monitor:%s", uniq)),
+				Check:  checkDatasourceMonitorsAttrs(accProvider, uniq, fmt.Sprintf("||test_datasource_monitor:%s", uniq)),
 			},
 		},
 	})
@@ -68,14 +59,14 @@ resource "datadog_monitor" "foo" {
 
   query = "avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:%s} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1"
 
-  thresholds = {
+  monitor_thresholds {
 	warning = "0.5"
 	critical = "1.0"
 	warning_recovery = "0.3"
 	critical_recovery = "0.7"
   }
 
-	threshold_windows = {
+	monitor_threshold_windows {
 		trigger_window = "last_15m"
 		recovery_window = "last_15m"
 	}
@@ -106,7 +97,7 @@ resource "datadog_monitor" "bar" {
 	critical_recovery = 0.7
   }
 
-	threshold_windows = {
+	monitor_threshold_windows {
 		trigger_window = "last_15m"
 		recovery_window = "last_15m"
 	}

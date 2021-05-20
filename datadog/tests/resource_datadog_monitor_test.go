@@ -1215,8 +1215,6 @@ func destroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *dat
 
 func existsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
 	for _, r := range s.RootModule().Resources {
-		fmt.Println("lalalalalal")
-		fmt.Println(r.String())
 		if r.Type != "datadog_monitor" {
 			continue
 		}

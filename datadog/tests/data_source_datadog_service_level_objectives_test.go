@@ -13,8 +13,8 @@ import (
 func TestAccDatadogServiceLevelObjectivesDatasource(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
-	firstSLOName := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
-	secondSLOName := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
+	firstSLOName := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
+	secondSLOName := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -24,31 +24,19 @@ func TestAccDatadogServiceLevelObjectivesDatasource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceServiceLevelObjectivesIdsConfig(firstSLOName),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, firstSLOName),
+				Check:  checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, firstSLOName),
 			},
 			{
 				Config: testAccDatasourceServiceLevelObjectivesNameFilterConfig(firstSLOName, secondSLOName),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, firstSLOName),
+				Check:  checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, firstSLOName),
 			},
 			{
 				Config: testAccDatasourceServiceLevelObjectivesTagsFilterConfig(firstSLOName),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, firstSLOName),
+				Check:  checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, firstSLOName),
 			},
 			{
 				Config: testAccDatasourceServiceLevelObjectivesMetricsFilterConfig(firstSLOName),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, firstSLOName),
+				Check:  checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, firstSLOName),
 			},
 		},
 	})
