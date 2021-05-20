@@ -1,3 +1,9 @@
+## 2.27.0 (May 20, 2021)
+
+BUGFIXES:
+
+-   `datadog_dashboard_json`: Fix update method in dashboard_json resource ([#1072](https://github.com/DataDog/terraform-provider-datadog/pull/1072))
+
 ## 2.26.0 (May 18, 2021)
 
 IMPROVEMENTS:
