@@ -118,7 +118,7 @@ func resourceDatadogDashboardJSONUpdate(d *schema.ResourceData, meta interface{}
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	dashboard := d.Get("dashboard")
+	dashboard := d.Get("dashboard").(string)
 	id := d.Id()
 
 	respByte, _, err := utils.SendRequest(authV1, datadogClientV1, "PUT", path+"/"+id, &dashboard)
