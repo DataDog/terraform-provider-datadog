@@ -38,6 +38,11 @@ resource "datadog_dashboard" "query_value_dashboard" {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
 			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				is_hidden = true
+				override_label = "logs"
+			}
 		}
 	}
 	widget {
@@ -207,9 +212,12 @@ var datadogDashboardQueryValueAsserts = []string{
 	"widget.0.query_value_definition.0.request.0.conditional_formats.0.custom_fg_color =",
 	"is_read_only = true",
 	"title = {{uniq}}",
-	"widget.0.query_value_definition.0.custom_link.# = 1",
+	"widget.0.query_value_definition.0.custom_link.# = 2",
 	"widget.0.query_value_definition.0.custom_link.0.label = Test Custom Link label",
 	"widget.0.query_value_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.0.query_value_definition.0.custom_link.1.override_label = logs",
+	"widget.0.query_value_definition.0.custom_link.1.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.0.query_value_definition.0.custom_link.1.is_hidden = true",
 	// Deprecated widget
 	"widget.1.query_value_definition.0.request.0.conditional_formats.0.comparator = <",
 	"widget.1.query_value_definition.0.time.live_span = 1h",

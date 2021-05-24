@@ -50,6 +50,11 @@ resource "datadog_dashboard" "query_table_dashboard" {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
 			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				is_hidden = true
+				override_label = "logs"
+			}
 			has_search_bar = "auto"
 		}
 	}
@@ -230,9 +235,12 @@ var datadogDashboardQueryTableAsserts = []string{
 	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.primary_tag = tag:*",
 	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.name = name",
 	"widget.1.query_table_definition.0.request.0.apm_stats_query.0.row_type = resource",
-	"widget.0.query_table_definition.0.custom_link.# = 1",
+	"widget.0.query_table_definition.0.custom_link.# = 2",
 	"widget.0.query_table_definition.0.custom_link.0.label = Test Custom Link label",
 	"widget.0.query_table_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.0.query_table_definition.0.custom_link.1.override_label = logs",
+	"widget.0.query_table_definition.0.custom_link.1.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.0.query_table_definition.0.custom_link.1.is_hidden = true",
 	"widget.0.query_table_definition.0.request.0.cell_display_mode.0 = number",
 	"widget.0.query_table_definition.0.request.1.cell_display_mode.0 = number",
 	"widget.0.query_table_definition.0.has_search_bar = auto",
