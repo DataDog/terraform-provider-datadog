@@ -192,3 +192,7 @@ go.sum,github.com/Microsoft/go-winio,MIT,2015 Microsoft
 go.sum,github.com/konsorten/go-windows-terminal-sequences,MIT,2017 marvin + konsorten GmbH
 go.sum,github.com/sirupsen/logrus,MIT,2014 Simon Eskildsen
 go.sum,golang.org/x/term,BSD-3-Clause,2009 The Go Authors
+go.sum,github.com/hashicorp/go-cty,MIT,Copyright (c) 2017-2018 Martin Atkins
+go.sum,github.com/hashicorp/terraform-plugin-go,MPL-2.0,
+go.sum,github.com/hashicorp/terraform-plugin-sdk/v2,MPL-2.0,
+go.sum,github.com/nsf/jsondiff,MIT,Copyright (C) 2019 nsf <no.smile.face@gmail.com>
