@@ -2,6 +2,8 @@
 
 resource "datadog_logs_index" "sample_index" {
   name = "your index"
+  daily_limit = 200000
+  retention_days = 7
   filter {
     query = "*"
   }

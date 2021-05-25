@@ -16,6 +16,16 @@ var indexSchema = map[string]*schema.Schema{
 		Type:        schema.TypeString,
 		Required:    true,
 	},
+	"daily_limit": {
+		Description: "The number of log events you can send in this index per day before you are rate-limited.",
+		Type:        schema.TypeString,
+		Required:    true,
+	},
+	"retention_days": {
+		Description: "The number of days before logs are deleted from this index.",
+		Type:        schema.TypeString,
+		Required:    true,
+	},
 	"filter": {
 		Description: "Logs filter",
 		Type:        schema.TypeList,
@@ -97,6 +107,12 @@ func resourceDatadogLogsIndexCreate(d *schema.ResourceData, meta interface{}) er
 
 func updateLogsIndexState(d *schema.ResourceData, index *datadogV1.LogsIndex) error {
 	if err := d.Set("name", index.GetName()); err != nil {
+		return err
+	}
+	if err := d.Set("daily_limit", index.GetDailyLimit()); err != nil {
+		return err
+	}
+	if err := d.Set("retention_days", index.GetNumRetentionDays()); err != nil {
 		return err
 	}
 	if err := d.Set("filter", buildTerraformIndexFilter(index.GetFilter())); err != nil {
