@@ -389,7 +389,7 @@ func pipelineDestroyHelper(ctx context.Context, s *terraform.State, datadogClien
 					}
 					return &utils.FatalError{Prob: fmt.Sprintf("received an error when retrieving pipeline, (%s)", err)}
 				}
-				return nil
+				return &utils.RetryableError{Prob: "pipeline still exists"}
 			})
 			return err
 		}

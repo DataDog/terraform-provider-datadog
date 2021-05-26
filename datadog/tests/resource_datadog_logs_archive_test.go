@@ -355,6 +355,7 @@ func archiveDestroyHelper(ctx context.Context, s *terraform.State, datadogClient
 						}
 						return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving logs archives %s", err)}
 					}
+					return &utils.RetryableError{Prob: "logs archive still exists"}
 				}
 				return nil
 			})
