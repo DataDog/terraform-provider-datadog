@@ -1302,7 +1302,7 @@ func checkDashboardDestroy(accProvider func() (*schema.Provider, error)) resourc
 					}
 					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Dashboard %s", err)}
 				}
-				return &utils.RetryableError{Prob: fmt.Sprintf("Dashboard still exists")}
+				return &utils.RetryableError{Prob: "Dashboard still exists"}
 			}
 			return nil
 		})

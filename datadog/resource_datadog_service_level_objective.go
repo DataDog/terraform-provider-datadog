@@ -303,18 +303,18 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 }
 
 func floatOk(val interface{}) (float64, bool) {
-	switch val.(type) {
+	switch val := val.(type) {
 	case float64:
-		return val.(float64), true
+		return val, true
 	case *float64:
-		return *(val.(*float64)), true
+		return *val, true
 	case string:
-		f, err := strconv.ParseFloat(val.(string), 64)
+		f, err := strconv.ParseFloat(val, 64)
 		if err == nil {
 			return f, true
 		}
 	case *string:
-		f, err := strconv.ParseFloat(*(val.(*string)), 64)
+		f, err := strconv.ParseFloat(*val, 64)
 		if err == nil {
 			return f, true
 		}
@@ -378,9 +378,7 @@ func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective
 	}
 
 	tags := make([]string, 0)
-	for _, s := range slo.GetTags() {
-		tags = append(tags, s)
-	}
+	tags = append(tags, slo.GetTags()...)
 
 	if err := d.Set("name", slo.GetName()); err != nil {
 		return diag.FromErr(err)
@@ -442,9 +440,7 @@ func updateSLOStateFromRead(d *schema.ResourceData, slo *datadogV1.SLOResponseDa
 	}
 
 	tags := make([]string, 0)
-	for _, s := range slo.GetTags() {
-		tags = append(tags, s)
-	}
+	tags = append(tags, slo.GetTags()...)
 
 	if err := d.Set("name", slo.GetName()); err != nil {
 		return diag.FromErr(err)

@@ -2,7 +2,6 @@ package test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -47,12 +46,12 @@ data "datadog_security_monitoring_rules" "bruteforce" {
 }
 
 func testAccCheckDatadogSecurityMonitoringDefaultNoop() string {
-	return fmt.Sprintf(`
+	return `
 data "datadog_security_monitoring_rules" "bruteforce" {
     name_filter = "brute"
 }
 
 resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 }
-`)
+`
 }

@@ -2,7 +2,6 @@ package test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -31,9 +30,9 @@ func TestDatadogIntegrationPagerduty_import(t *testing.T) {
 }
 
 func testAccCheckDatadogIntegrationPagerdutyConfigImported() string {
-	return fmt.Sprintf(`
+	return `
 resource "datadog_integration_pagerduty" "pd" {
   schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
   subdomain = "testdomain"
-}`)
+}`
 }

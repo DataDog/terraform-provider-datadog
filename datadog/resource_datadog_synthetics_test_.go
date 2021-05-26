@@ -820,6 +820,14 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 
 	// get the generic test to detect if it's an api or browser test
 	syntheticsTest, httpresp, err = datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id())
+	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			// Delete the resource from the local state since it doesn't exist anymore in the actual state
+			d.SetId("")
+			return nil
+		}
+		return utils.TranslateClientErrorDiag(err, "error getting synthetics test")
+	}
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsBrowserTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id())
@@ -1533,7 +1541,7 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 					} else if vAsFloat, ok := (*v).(float64); ok {
 						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
 					} else {
-						return localAssertions, fmt.Errorf("Unrecognized targetvalue type %v", v)
+						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
 					}
 				}
 				localAssertion["targetjsonpath"] = []map[string]string{localTarget}

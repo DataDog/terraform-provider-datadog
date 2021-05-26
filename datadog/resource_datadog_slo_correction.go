@@ -57,7 +57,7 @@ func resourceDatadogSloCorrection() *schema.Resource {
 	}
 }
 
-func buildDatadogSloCorrection(d *schema.ResourceData) (*datadogV1.SLOCorrectionCreateRequest, error) {
+func buildDatadogSloCorrection(d *schema.ResourceData) *datadogV1.SLOCorrectionCreateRequest {
 	result := datadogV1.NewSLOCorrectionCreateRequestWithDefaults()
 	// `type` is hardcoded to 'correction' in Data
 	// only need to set `attributes` here
@@ -78,10 +78,10 @@ func buildDatadogSloCorrection(d *schema.ResourceData) (*datadogV1.SLOCorrection
 	}
 	createData.SetAttributes(*attributes)
 	result.SetData(*createData)
-	return result, nil
+	return result
 }
 
-func buildDatadogSloCorrectionUpdate(d *schema.ResourceData) (*datadogV1.SLOCorrectionUpdateRequest, error) {
+func buildDatadogSloCorrectionUpdate(d *schema.ResourceData) *datadogV1.SLOCorrectionUpdateRequest {
 	result := datadogV1.NewSLOCorrectionUpdateRequestWithDefaults()
 	updateData := datadogV1.NewSLOCorrectionUpdateData()
 	attributes := datadogV1.NewSLOCorrectionUpdateRequestAttributesWithDefaults()
@@ -102,7 +102,7 @@ func buildDatadogSloCorrectionUpdate(d *schema.ResourceData) (*datadogV1.SLOCorr
 	}
 	updateData.SetAttributes(*attributes)
 	result.SetData(*updateData)
-	return result, nil
+	return result
 }
 
 func resourceDatadogSloCorrectionCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -110,7 +110,7 @@ func resourceDatadogSloCorrectionCreate(ctx context.Context, d *schema.ResourceD
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
 
-	ddObject, err := buildDatadogSloCorrection(d)
+	ddObject := buildDatadogSloCorrection(d)
 
 	response, _, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.CreateSLOCorrection(auth, *ddObject)
 	if err != nil {
@@ -183,10 +183,7 @@ func resourceDatadogSloCorrectionUpdate(ctx context.Context, d *schema.ResourceD
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
 
-	ddObject, err := buildDatadogSloCorrectionUpdate(d)
-	if err != nil {
-		return diag.FromErr(err)
-	}
+	ddObject := buildDatadogSloCorrectionUpdate(d)
 	id := d.Id()
 
 	response, _, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.UpdateSLOCorrection(auth, id, *ddObject)

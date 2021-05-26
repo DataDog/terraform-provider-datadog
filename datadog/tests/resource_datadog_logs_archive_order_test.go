@@ -16,16 +16,16 @@ import (
 )
 
 func ArchiveOrderConfig() string {
-	return fmt.Sprintf(`
+	return `
 resource "datadog_logs_archive_order" "archives" {
 	archive_ids = []
-}`)
+}`
 }
 
 func ArchiveOrderEmptyConfig() string {
-	return fmt.Sprintf(`
+	return `
 resource "datadog_logs_archive_order" "archives" {
-}`)
+}`
 }
 
 func TestAccDatadogLogsArchiveOrder_basic(t *testing.T) {

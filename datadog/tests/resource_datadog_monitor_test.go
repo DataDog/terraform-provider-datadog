@@ -1206,7 +1206,7 @@ func destroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *dat
 				}
 				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
 			}
-			return &utils.RetryableError{Prob: fmt.Sprintf("Monitor still exists")}
+			return &utils.RetryableError{Prob: "Monitor still exists"}
 		}
 		return nil
 	})

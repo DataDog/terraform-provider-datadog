@@ -245,7 +245,7 @@ func destroyServiceLevelObjectiveHelper(ctx context.Context, s *terraform.State,
 					}
 					return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving service level objective %s", err)}
 				}
-				return &utils.RetryableError{Prob: fmt.Sprintf("service Level Objective still exists")}
+				return &utils.RetryableError{Prob: "service Level Objective still exists"}
 			}
 		}
 		return nil

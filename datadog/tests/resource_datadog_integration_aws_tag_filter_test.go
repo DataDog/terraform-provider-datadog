@@ -60,7 +60,7 @@ resource "datadog_integration_aws_tag_filter" "testing_aws_tag_filter" {
 func testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		resourceID := s.RootModule().Resources[resourceName].Primary.ID
-		_, tfNamespace, err := utils.AccountAndNamespaceFromID(resourceID)
+		_, tfNamespace, _ := utils.AccountAndNamespaceFromID(resourceID)
 		namespace := datadogV1.AWSNamespace(tfNamespace)
 
 		filters, err := listFiltersHelper(accProvider, resourceID)
@@ -84,7 +84,7 @@ func testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider func() (*schem
 func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider func() (*schema.Provider, error), resourceName string) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		resourceID := s.RootModule().Resources[resourceName].Primary.ID
-		_, tfNamespace, err := utils.AccountAndNamespaceFromID(resourceID)
+		_, tfNamespace, _ := utils.AccountAndNamespaceFromID(resourceID)
 		namespace := datadogV1.AWSNamespace(tfNamespace)
 
 		filters, err := listFiltersHelper(accProvider, resourceID)

@@ -71,10 +71,10 @@ func testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider func() (*schema.
 // the test will fail on non-empty diff after apply, as the resource is (unfortunately) created in a way
 // to not overwrite existing schedules with empty list on creation.
 func testAccCheckDatadogIntegrationPagerdutyConfig() string {
-	return fmt.Sprintf(`
+	return `
  resource "datadog_integration_pagerduty" "foo" {
    schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
    subdomain = "testdomain"
    api_token = "secret"
- }`)
+ }`
 }

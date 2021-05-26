@@ -249,9 +249,7 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	}
 
 	var tags []string
-	for _, s := range m.GetTags() {
-		tags = append(tags, s)
-	}
+	tags = append(tags, m.GetTags()...)
 	sort.Strings(tags)
 
 	d.SetId(strconv.FormatInt(m.GetId(), 10))

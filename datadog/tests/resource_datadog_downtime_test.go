@@ -795,7 +795,7 @@ func datadogDowntimeDestroyHelper(ctx context.Context, s *terraform.State, datad
 						// Datadog only cancels downtime on DELETE so if its not Active, its deleted
 						return nil
 					}
-					return &utils.RetryableError{Prob: fmt.Sprintf("Downtime still exists or is active")}
+					return &utils.RetryableError{Prob: "Downtime still exists or is active"}
 				}
 			}
 			return nil

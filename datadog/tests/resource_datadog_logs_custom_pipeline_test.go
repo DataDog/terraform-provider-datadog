@@ -382,15 +382,12 @@ func pipelineDestroyHelper(ctx context.Context, s *terraform.State, datadogClien
 		if r.Type == "datadog_logs_custom_pipeline" {
 			err := utils.Retry(2, 5, func() error {
 				id := r.Primary.ID
-				p, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(ctx, id)
+				_, _, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(ctx, id)
 				if err != nil {
 					if strings.Contains(err.Error(), "400 Bad Request") {
 						return nil
 					}
 					return &utils.FatalError{Prob: fmt.Sprintf("received an error when retrieving pipeline, (%s)", err)}
-				}
-				if &p != nil {
-					return &utils.RetryableError{Prob: fmt.Sprintf("pipeline still exists")}
 				}
 				return nil
 			})

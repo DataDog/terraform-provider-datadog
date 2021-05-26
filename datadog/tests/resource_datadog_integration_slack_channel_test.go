@@ -130,10 +130,10 @@ func testAccCheckDatadogIntegrationSlackChannelConfigUpdate(uniq string) string 
 }
 
 func emptyLogsArchiveConfig() string {
-	return fmt.Sprintf(`
+	return `
 		data "datadog_ip_ranges" "test" {
 		}
-   `)
+   `
 }
 
 func testAccCheckDatadogIntegrationSlackChannelExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {

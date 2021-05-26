@@ -28,11 +28,11 @@ func NewResourceDataKey(d *schema.ResourceData, initial string) *ResourceDataKey
 //interfaceToPartsStr converts an interface to string, assuming it's a string or int,
 // it panics otherwise.
 func (k *ResourceDataKey) interfaceToPartsStr(i interface{}, method string) string {
-	switch i.(type) {
+	switch i := i.(type) {
 	case string:
-		return i.(string)
+		return i
 	case int:
-		return fmt.Sprintf("%d", i.(int))
+		return fmt.Sprintf("%d", i)
 	}
 
 	panic(fmt.Sprintf("ResourceDataKey.%s only accepts string and int argument, got %T\n", method, i))

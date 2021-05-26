@@ -64,7 +64,7 @@ func dataSourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData,
 		}
 
 		if len(foundDashes) == 0 {
-			return resource.NonRetryableError(fmt.Errorf("Couldn't find a dashboard named %s", searchedName))
+			return resource.NonRetryableError(fmt.Errorf("couldn't find a dashboard named %s", searchedName))
 		} else if len(foundDashes) > 1 {
 			return resource.NonRetryableError(fmt.Errorf("%s returned more than one dashboard", searchedName))
 		}

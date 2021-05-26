@@ -67,7 +67,7 @@ func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.Resource
 			d.Set("tenant_name", integration.GetTenantName())
 			d.Set("client_id", integration.GetClientId())
 			hostFilters, exists := integration.GetHostFiltersOk()
-			if exists == true {
+			if exists {
 				d.Set("host_filters", hostFilters)
 			}
 			return nil
@@ -141,21 +141,21 @@ func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.Resource
 	datadogDefinition.SetClientId(clientID)
 	// Optional params
 	hostFilters, exists := terraformDefinition.GetOk("host_filters")
-	if exists == true {
+	if exists {
 		datadogDefinition.SetHostFilters(hostFilters.(string))
 	}
 	clientSecret, exists := terraformDefinition.GetOk("client_secret")
-	if exists == true {
+	if exists {
 		datadogDefinition.SetClientSecret(clientSecret.(string))
 	}
 	// Only do the following if building for the Update
-	if update == true {
+	if update {
 		newTenantName, exists := terraformDefinition.GetOk("tenant_name")
-		if exists == true {
+		if exists {
 			datadogDefinition.SetNewTenantName(newTenantName.(string))
 		}
 		newClientID, exists := terraformDefinition.GetOk("client_id")
-		if exists == true {
+		if exists {
 			datadogDefinition.SetNewClientId(newClientID.(string))
 		}
 	}

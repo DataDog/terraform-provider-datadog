@@ -489,9 +489,7 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	}
 
 	var tags []string
-	for _, s := range m.GetTags() {
-		tags = append(tags, s)
-	}
+	tags = append(tags, m.GetTags()...)
 	sort.Strings(tags)
 
 	log.Printf("[DEBUG] monitor: %+v", m)
@@ -586,7 +584,7 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 		m        datadogV1.Monitor
 		httpresp *http.Response
 	)
-	if err = resource.Retry(d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
+	if err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
 		m, httpresp, err = datadogClientV1.MonitorsApi.GetMonitor(authV1, i)
 		if err != nil {
 			if httpresp != nil {

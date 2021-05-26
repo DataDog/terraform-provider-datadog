@@ -599,7 +599,7 @@ func CheckResourceAttr(name, key, value string) resource.TestCheckFunc {
 		}
 
 		for k, val := range is.Attributes {
-			fmt.Println(fmt.Sprintf("%v = %v", k, val))
+			fmt.Printf("%v = %v\n", k, val)
 		}
 
 		// Empty containers may be elided from the state.

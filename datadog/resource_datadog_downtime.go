@@ -392,9 +392,7 @@ func updateDowntimeState(d *schema.ResourceData, dt *datadogV1.Downtime) diag.Di
 		}
 		if r.GetWeekDays() != nil {
 			weekDays := make([]string, 0, len(r.GetWeekDays()))
-			for _, weekDay := range *r.WeekDays {
-				weekDays = append(weekDays, weekDay)
-			}
+			weekDays = append(weekDays, *r.WeekDays...)
 			recurrence["week_days"] = weekDays
 		}
 		if attr, ok := r.GetRruleOk(); ok {

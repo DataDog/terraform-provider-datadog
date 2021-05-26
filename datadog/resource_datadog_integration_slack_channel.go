@@ -76,7 +76,7 @@ func resourceDatadogIntegrationSlackChannel() *schema.Resource {
 	}
 }
 
-func buildDatadogSlackChannel(d *schema.ResourceData) (*datadogV1.SlackIntegrationChannel, error) {
+func buildDatadogSlackChannel(d *schema.ResourceData) *datadogV1.SlackIntegrationChannel {
 	k := utils.NewResourceDataKey(d, "")
 	datadogSlackChannel := datadogV1.NewSlackIntegrationChannelWithDefaults()
 
@@ -94,7 +94,7 @@ func buildDatadogSlackChannel(d *schema.ResourceData) (*datadogV1.SlackIntegrati
 
 	datadogSlackChannel.SetDisplay(*resultDisplay)
 
-	return datadogSlackChannel, nil
+	return datadogSlackChannel
 }
 
 func resourceDatadogIntegrationSlackChannelCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -105,7 +105,7 @@ func resourceDatadogIntegrationSlackChannelCreate(ctx context.Context, d *schema
 	integrationSlackChannelMutex.Lock()
 	defer integrationSlackChannelMutex.Unlock()
 
-	ddSlackChannel, err := buildDatadogSlackChannel(d)
+	ddSlackChannel := buildDatadogSlackChannel(d)
 	accountName := d.Get("account_name").(string)
 
 	createdChannel, _, err := datadogClient.SlackIntegrationApi.CreateSlackIntegrationChannel(auth, accountName, *ddSlackChannel)
@@ -147,7 +147,7 @@ func resourceDatadogIntegrationSlackChannelUpdate(ctx context.Context, d *schema
 	integrationSlackChannelMutex.Lock()
 	defer integrationSlackChannelMutex.Unlock()
 
-	ddObject, err := buildDatadogSlackChannel(d)
+	ddObject := buildDatadogSlackChannel(d)
 	accountName, channelName, err := utils.AccountNameAndChannelNameFromID(d.Id())
 	if err != nil {
 		return diag.FromErr(err)

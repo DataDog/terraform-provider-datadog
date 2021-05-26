@@ -348,15 +348,12 @@ func archiveDestroyHelper(ctx context.Context, s *terraform.State, datadogClient
 			id := r.Primary.ID
 			err := utils.Retry(2, 5, func() error {
 				if r.Primary.ID != "" {
-					archive, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(ctx, id)
+					_, httpresp, err := datadogClientV2.LogsArchivesApi.GetLogsArchive(ctx, id)
 					if err != nil {
 						if httpresp != nil && httpresp.StatusCode == 404 {
 							return nil
 						}
 						return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving logs archives %s", err)}
-					}
-					if &archive != nil {
-						return &utils.RetryableError{Prob: fmt.Sprintf("logs archive still exists")}
 					}
 				}
 				return nil

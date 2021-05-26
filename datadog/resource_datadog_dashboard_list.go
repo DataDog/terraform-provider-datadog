@@ -143,7 +143,7 @@ func resourceDatadogDashboardListRead(ctx context.Context, d *schema.ResourceDat
 	authV1 := providerConf.AuthV1
 	authV2 := providerConf.AuthV2
 
-	id, err := strconv.ParseInt(d.Id(), 10, 64)
+	id, _ := strconv.ParseInt(d.Id(), 10, 64)
 
 	//Read the overall Dashboard List object
 	dashList, httpresp, err := datadogClientV1.DashboardListsApi.GetDashboardList(authV1, id)
