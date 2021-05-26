@@ -292,9 +292,8 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated(monitorNameUpdated),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
-					// even though this is defined as a metric alert, the API will actually return query alert
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.complex_metric_alert_example_monitor", "type", "query alert"),
+						"datadog_monitor.complex_metric_alert_example_monitor", "type", "metric alert"),
 				),
 			},
 			{
@@ -423,9 +422,8 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 				Config: testAccCheckDatadogMonitorConfigMetricAlertNotUpdated(monitorNameUpdated),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
-					// even though this is defined as a metric alert, the API will actually return query alert
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.complex_metric_alert_example_monitor", "type", "query alert"),
+						"datadog_monitor.complex_metric_alert_example_monitor", "type", "metric alert"),
 				),
 			},
 			{
@@ -747,9 +745,8 @@ func TestAccDatadogMonitor_RestrictedRoles(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", monitorName),
-				//  // API currently returns null on field creation.
-				//	resource.TestCheckResourceAttr(
-				//		"datadog_monitor.foo", "restricted_roles.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "restricted_roles.#", "1"),
 				),
 			},
 		},
@@ -1191,7 +1188,7 @@ resource "datadog_monitor" "foo" {
 	critical = "2.0"
   }
 
-#  restricted_roles = ["${datadog_role.foo.id}"]
+  restricted_roles = ["${datadog_role.foo.id}"]
 }`, uniq, uniq)
 }
 
