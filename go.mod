@@ -8,16 +8,15 @@ require (
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2
-	github.com/hashicorp/go-cty v1.4.1-0.20200414143053-d3edf31b6320 // indirect
+	github.com/hashicorp/go-cty v1.4.1-0.20200414143053-d3edf31b6320
 	github.com/hashicorp/go-uuid v1.0.2 // indirect
 	github.com/hashicorp/terraform-plugin-docs v0.4.0
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.4.4
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.6.1
 	github.com/jonboulle/clockwork v0.1.0
 	github.com/philhofer/fwd v1.0.0 // indirect
 	github.com/zorkian/go-datadog-api v2.30.0+incompatible
 	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect
 	gopkg.in/DataDog/dd-trace-go.v1 v1.30.0-rc.1.0.20210420124628-f63633f38e8f
-	honnef.co/go/tools v0.0.1-2020.1.4 // indirect
 )
 
 go 1.16
