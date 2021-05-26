@@ -70,11 +70,11 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"type": {
-				Description:  "The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created.",
-				Type:         schema.TypeString,
-				Required:     true,
-				ForceNew:     true,
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewMonitorTypeFromValue),
+				Description:      "The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created.",
+				Type:             schema.TypeString,
+				Required:         true,
+				ForceNew:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorTypeFromValue),
 				// Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 					if (oldVal == "query alert" && newVal == "metric alert") ||

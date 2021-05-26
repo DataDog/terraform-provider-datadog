@@ -23,10 +23,10 @@ func resourceDatadogSloCorrection() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"category": {
-				Type:         schema.TypeString,
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSLOCorrectionCategoryFromValue),
-				Required:     true,
-				Description:  "Category the SLO correction belongs to",
+				Type:             schema.TypeString,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOCorrectionCategoryFromValue),
+				Required:         true,
+				Description:      "Category the SLO correction belongs to",
 			},
 			"description": {
 				Type:        schema.TypeString,

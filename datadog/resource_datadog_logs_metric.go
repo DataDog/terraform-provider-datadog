@@ -33,11 +33,11 @@ func resourceDatadogLogsMetric() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 
 						"aggregation_type": {
-							Type:         schema.TypeString,
-							Required:     true,
-							ForceNew:     true,
-							ValidateFunc: validators.ValidateEnumValue(datadogV2.NewLogsMetricComputeAggregationTypeFromValue),
-							Description:  "The type of aggregation to use. This field can't be updated after creation.",
+							Type:             schema.TypeString,
+							Required:         true,
+							ForceNew:         true,
+							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewLogsMetricComputeAggregationTypeFromValue),
+							Description:      "The type of aggregation to use. This field can't be updated after creation.",
 						},
 
 						"path": {

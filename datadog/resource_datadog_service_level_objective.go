@@ -57,10 +57,10 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"timeframe": {
-							Description:  "The time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Available options to choose from are: `7d`, `30d`, `90d`.",
-							Type:         schema.TypeString,
-							Required:     true,
-							ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSLOTimeframeFromValue),
+							Description:      "The time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Available options to choose from are: `7d`, `30d`, `90d`.",
+							Type:             schema.TypeString,
+							Required:         true,
+							ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTimeframeFromValue),
 						},
 						"target": {
 							Description:      "The objective's target in`[0,100]`.",
@@ -90,11 +90,11 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				},
 			},
 			"type": {
-				Description:  "The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object). Available options to choose from are: `metric` and `monitor`.",
-				Type:         schema.TypeString,
-				Required:     true,
-				ForceNew:     true,
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSLOTypeFromValue),
+				Description:      "The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object). Available options to choose from are: `metric` and `monitor`.",
+				Type:             schema.TypeString,
+				Required:         true,
+				ForceNew:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTypeFromValue),
 			},
 			"force_delete": {
 				Description: "A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. dashboards).",

@@ -33,10 +33,10 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"status": {
-							Type:         schema.TypeString,
-							ValidateFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
-							Required:     true,
-							Description:  "Status of the rule case to match.",
+							Type:             schema.TypeString,
+							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
+							Required:         true,
+							Description:      "Status of the rule case to match.",
 						},
 						"notifications": {
 							Type:        schema.TypeList,
@@ -62,10 +62,10 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"action": {
-							Type:         schema.TypeString,
-							ValidateFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringFilterActionFromValue),
-							Required:     true,
-							Description:  "The type of filtering action. Allowed enum values: require, suppress",
+							Type:             schema.TypeString,
+							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringFilterActionFromValue),
+							Required:         true,
+							Description:      "The type of filtering action. Allowed enum values: require, suppress",
 						},
 						"query": {
 							Type:        schema.TypeString,

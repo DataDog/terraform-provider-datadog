@@ -30,11 +30,11 @@ func resourceDatadogIntegrationAwsTagFilter() *schema.Resource {
 				Required:    true,
 			},
 			"namespace": {
-				Description:  "The namespace associated with the tag filter entry. Allowed enum values: 'elb', 'application_elb', 'sqs', 'rds', 'custom', 'network_elb,lambda'",
-				Type:         schema.TypeString,
-				Required:     true,
-				ForceNew:     true,
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewAWSNamespaceFromValue),
+				Description:      "The namespace associated with the tag filter entry. Allowed enum values: 'elb', 'application_elb', 'sqs', 'rds', 'custom', 'network_elb,lambda'",
+				Type:             schema.TypeString,
+				Required:         true,
+				ForceNew:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewAWSNamespaceFromValue),
 			},
 			"tag_filter_str": {
 				Description: "The tag filter string.",

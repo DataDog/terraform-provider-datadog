@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/hashicorp/go-cty/cty"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -16,39 +18,28 @@ func ValidateFloatString(v interface{}, k string) (ws []string, errors []error) 
 	return validation.StringMatch(regexp.MustCompile("\\d*(\\.\\d*)?"), "value must be a float")(v, k)
 }
 
-// ValidateAggregatorMethod ensures a string is a valid aggregator method
-func ValidateAggregatorMethod(v interface{}, k string) (ws []string, errors []error) {
-	value := v.(string)
-	validMethods := map[string]struct{}{
-		"avg":   {},
-		"max":   {},
-		"min":   {},
-		"sum":   {},
-		"last":  {},
-		"count": {},
-	}
-	if _, ok := validMethods[value]; !ok {
-		errors = append(errors, fmt.Errorf(
-			`%q contains an invalid method %q. Valid methods are either "avg", "max", "min", "sum", "count", or "last"`, k, value))
-	}
-	return
-}
-
 // ValidateEnumValue returns a validate func for an enum value. It takes the constructor with validation for the enum as an argument.
 // Such a constructor is for instance `datadogV1.NewWidgetLineWidthFromValue`
-func ValidateEnumValue(newEnumFunc interface{}) schema.SchemaValidateFunc {
+func ValidateEnumValue(newEnumFunc interface{}) schema.SchemaValidateDiagFunc {
 
 	// Get type of arg to convert int to int32/64 for instance
 	f := reflect.TypeOf(newEnumFunc)
 	argT := f.In(0)
 
-	return func(val interface{}, key string) (warns []string, errs []error) {
+	return func(val interface{}, path cty.Path) diag.Diagnostics {
+		var diags diag.Diagnostics
+
 		arg := reflect.ValueOf(val)
 		outs := reflect.ValueOf(newEnumFunc).Call([]reflect.Value{arg.Convert(argT)})
 		if err := outs[1].Interface(); err != nil {
-			errs = append(errs, err.(error))
+			diags = append(diags, diag.Diagnostic{
+				Severity:      diag.Error,
+				Summary:       "Invalid enum value",
+				Detail:        err.(error).Error(),
+				AttributePath: path,
+			})
 		}
-		return
+		return diags
 	}
 }
 

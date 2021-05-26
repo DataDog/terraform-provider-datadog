@@ -56,11 +56,11 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\.\_]*$`), "metric name must be valid"), validation.StringLenBetween(1, 200)),
 			},
 			"metric_type": {
-				Description:  "The metric's type. This field can't be updated after creation. Allowed enum values: gauge,count,distribution.",
-				Type:         schema.TypeString,
-				ForceNew:     true,
-				Required:     true,
-				ValidateFunc: validators.ValidateEnumValue(datadogV2.NewMetricTagConfigurationMetricTypesFromValue),
+				Description:      "The metric's type. This field can't be updated after creation. Allowed enum values: gauge,count,distribution.",
+				Type:             schema.TypeString,
+				ForceNew:         true,
+				Required:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricTagConfigurationMetricTypesFromValue),
 			},
 			"tags": {
 				Description: "A list of tag keys that will be queryable for your metric.",
