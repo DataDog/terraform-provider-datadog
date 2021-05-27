@@ -2,9 +2,6 @@
 # Generate the documentation using tfplugindocs and remove changes to files that shouldn't change
 
 exclude_files=(
-  # Timeboard + Screenbaord is deprecated
-  'docs/resources/timeboard.md'
-  'docs/resources/screenboard.md'
   # There is an issue with the security_monitoring schema that requires the docs to be updated by hand if needed
   'docs/data-sources/security_monitoring_rules.md'
   'docs/resources/security_monitoring_default_rule.md'
