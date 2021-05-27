@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
@@ -8,18 +9,19 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog Security Monitoring Rule API resource for default rules.",
-		Create:      resourceDatadogSecurityMonitoringDefaultRuleCreate,
-		Read:        resourceDatadogSecurityMonitoringDefaultRuleRead,
-		Update:      resourceDatadogSecurityMonitoringDefaultRuleUpdate,
-		Delete:      resourceDatadogSecurityMonitoringDefaultRuleDelete,
+		Description:   "Provides a Datadog Security Monitoring Rule API resource for default rules.",
+		CreateContext: resourceDatadogSecurityMonitoringDefaultRuleCreate,
+		ReadContext:   resourceDatadogSecurityMonitoringDefaultRuleRead,
+		UpdateContext: resourceDatadogSecurityMonitoringDefaultRuleUpdate,
+		DeleteContext: resourceDatadogSecurityMonitoringDefaultRuleDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -31,10 +33,10 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"status": {
-							Type:         schema.TypeString,
-							ValidateFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
-							Required:     true,
-							Description:  "Status of the rule case to match.",
+							Type:             schema.TypeString,
+							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
+							Required:         true,
+							Description:      "Status of the rule case to match.",
 						},
 						"notifications": {
 							Type:        schema.TypeList,
@@ -60,10 +62,10 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"action": {
-							Type:         schema.TypeString,
-							ValidateFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringFilterActionFromValue),
-							Required:     true,
-							Description:  "The type of filtering action. Allowed enum values: require, suppress",
+							Type:             schema.TypeString,
+							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringFilterActionFromValue),
+							Required:         true,
+							Description:      "The type of filtering action. Allowed enum values: require, suppress",
 						},
 						"query": {
 							Type:        schema.TypeString,
@@ -77,11 +79,11 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 	}
 }
 
-func resourceDatadogSecurityMonitoringDefaultRuleCreate(d *schema.ResourceData, meta interface{}) error {
-	return errors.New("cannot create a default rule, please import it first before making changes")
+func resourceDatadogSecurityMonitoringDefaultRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return diag.FromErr(errors.New("cannot create a default rule, please import it first before making changes"))
 }
 
-func resourceDatadogSecurityMonitoringDefaultRuleRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
@@ -89,7 +91,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(d *schema.ResourceData, me
 	id := d.Id()
 	ruleResponse, _, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, id)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	d.Set("enabled", *ruleResponse.IsEnabled)
@@ -108,7 +110,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(d *schema.ResourceData, me
 				}
 			}
 			if ruleCase == nil {
-				return errors.New("error: no rule case with status " + string(tfStatus))
+				return diag.FromErr(errors.New("error: no rule case with status " + string(tfStatus)))
 			}
 			readNotifications[i] = ruleCase.GetNotifications()
 		}
@@ -131,7 +133,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(d *schema.ResourceData, me
 	return nil
 }
 
-func resourceDatadogSecurityMonitoringDefaultRuleUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
@@ -142,25 +144,25 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(d *schema.ResourceData, 
 
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
-			return errors.New("default rule does not exist")
+			return diag.FromErr(errors.New("default rule does not exist"))
 		}
 
-		return utils.TranslateClientError(err, "error fetching default rule")
+		return utils.TranslateClientErrorDiag(err, "error fetching default rule")
 	}
 
 	if !response.GetIsDefault() {
-		return errors.New("rule is not a default rule")
+		return diag.FromErr(errors.New("rule is not a default rule"))
 	}
 
 	ruleUpdate, shouldUpdate, err := buildSecMonDefaultRuleUpdatePayload(response, d)
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if shouldUpdate {
 		if _, _, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, ruleID, *ruleUpdate); err != nil {
-			return utils.TranslateClientError(err, "error updating security monitoring rule on resource creation")
+			return utils.TranslateClientErrorDiag(err, "error updating security monitoring rule on resource creation")
 		}
 	}
 
@@ -275,7 +277,7 @@ func findRuleCaseForStatus(tfCasesRaw []interface{}, status datadogV2.SecurityMo
 	return nil, false
 }
 
-func resourceDatadogSecurityMonitoringDefaultRuleDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSecurityMonitoringDefaultRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	// no-op
 	return nil
 }

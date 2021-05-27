@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"sync"
@@ -8,8 +9,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 var logCustomPipelineMutex = sync.Mutex{}
@@ -345,19 +347,19 @@ var userAgentParser = &schema.Schema{
 
 func resourceDatadogLogsCustomPipeline() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDatadogLogsPipelineCreate,
-		Update: resourceDatadogLogsPipelineUpdate,
-		Read:   resourceDatadogLogsPipelineRead,
-		Delete: resourceDatadogLogsPipelineDelete,
+		CreateContext: resourceDatadogLogsPipelineCreate,
+		UpdateContext: resourceDatadogLogsPipelineUpdate,
+		ReadContext:   resourceDatadogLogsPipelineRead,
+		DeleteContext: resourceDatadogLogsPipelineDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Description: "Provides a Datadog [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/) resource, which is used to create and manage Datadog logs custom pipelines. Each `datadog_logs_custom_pipeline` resource defines a complete pipeline. The order of the pipelines is maintained in a different resource: `datadog_logs_pipeline_order`. When creating a new pipeline, you need to **explicitly** add this pipeline to the `datadog_logs_pipeline_order` resource to track the pipeline. Similarly, when a pipeline needs to be destroyed, remove its references from the `datadog_logs_pipeline_order` resource.",
 		Schema:      getPipelineSchema(false),
 	}
 }
 
-func resourceDatadogLogsPipelineCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsPipelineCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -367,37 +369,37 @@ func resourceDatadogLogsPipelineCreate(d *schema.ResourceData, meta interface{})
 
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	createdPipeline, _, err := datadogClientV1.LogsPipelinesApi.CreateLogsPipeline(authV1, *ddPipeline)
 	if err != nil {
-		return utils.TranslateClientError(err, "failed to create logs pipeline using Datadog API")
+		return utils.TranslateClientErrorDiag(err, "failed to create logs pipeline using Datadog API")
 	}
 	d.SetId(*createdPipeline.Id)
 	return updateLogsCustomPipelineState(d, &createdPipeline)
 }
 
-func updateLogsCustomPipelineState(d *schema.ResourceData, pipeline *datadogV1.LogsPipeline) error {
+func updateLogsCustomPipelineState(d *schema.ResourceData, pipeline *datadogV1.LogsPipeline) diag.Diagnostics {
 	if err := d.Set("name", pipeline.GetName()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("is_enabled", pipeline.GetIsEnabled()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("filter", buildTerraformFilter(pipeline.Filter)); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	tfProcessors, err := buildTerraformProcessors(pipeline.GetProcessors())
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("processor", tfProcessors); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	return nil
 }
 
-func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsPipelineRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -408,12 +410,12 @@ func resourceDatadogLogsPipelineRead(d *schema.ResourceData, meta interface{}) e
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "failed to get logs pipeline using Datadog API")
+		return utils.TranslateClientErrorDiag(err, "failed to get logs pipeline using Datadog API")
 	}
 	return updateLogsCustomPipelineState(d, &ddPipeline)
 }
 
-func resourceDatadogLogsPipelineUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsPipelineUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -423,16 +425,16 @@ func resourceDatadogLogsPipelineUpdate(d *schema.ResourceData, meta interface{})
 
 	ddPipeline, err := buildDatadogPipeline(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	updatedPipeline, _, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipeline(authV1, d.Id(), *ddPipeline)
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating logs pipeline")
+		return utils.TranslateClientErrorDiag(err, "error updating logs pipeline")
 	}
 	return updateLogsCustomPipelineState(d, &updatedPipeline)
 }
 
-func resourceDatadogLogsPipelineDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsPipelineDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -445,7 +447,7 @@ func resourceDatadogLogsPipelineDelete(d *schema.ResourceData, meta interface{})
 		if strings.Contains(err.Error(), "400 Bad Request") {
 			return nil
 		}
-		return utils.TranslateClientError(err, "error deleting logs pipeline")
+		return utils.TranslateClientErrorDiag(err, "error deleting logs pipeline")
 	}
 	return nil
 }

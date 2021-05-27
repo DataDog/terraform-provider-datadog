@@ -1,21 +1,24 @@
 package datadog
 
 import (
+	"context"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogIntegrationGcp() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
-		Create:      resourceDatadogIntegrationGcpCreate,
-		Read:        resourceDatadogIntegrationGcpRead,
-		Update:      resourceDatadogIntegrationGcpUpdate,
-		Delete:      resourceDatadogIntegrationGcpDelete,
+		Description:   "Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
+		CreateContext: resourceDatadogIntegrationGcpCreate,
+		ReadContext:   resourceDatadogIntegrationGcpRead,
+		UpdateContext: resourceDatadogIntegrationGcpUpdate,
+		DeleteContext: resourceDatadogIntegrationGcpDelete,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogIntegrationGcpImport,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -73,7 +76,7 @@ const (
 	defaultClientX509CertURLPrefix = "https://www.googleapis.com/robot/v1/metadata/x509/"
 )
 
-func resourceDatadogIntegrationGcpCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationGcpCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -96,15 +99,15 @@ func resourceDatadogIntegrationGcpCreate(d *schema.ResourceData, meta interface{
 			Automute:                datadogV1.PtrBool(d.Get("automute").(bool)),
 		},
 	); err != nil {
-		return utils.TranslateClientError(err, "error creating GCP integration")
+		return utils.TranslateClientErrorDiag(err, "error creating GCP integration")
 	}
 
 	d.SetId(projectID)
 
-	return resourceDatadogIntegrationGcpRead(d, meta)
+	return resourceDatadogIntegrationGcpRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationGcpRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationGcpRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -113,7 +116,7 @@ func resourceDatadogIntegrationGcpRead(d *schema.ResourceData, meta interface{})
 
 	integrations, _, err := datadogClientV1.GCPIntegrationApi.ListGCPIntegration(authV1)
 	if err != nil {
-		return utils.TranslateClientError(err, "error getting GCP integration")
+		return utils.TranslateClientErrorDiag(err, "error getting GCP integration")
 	}
 	for _, integration := range integrations {
 		if integration.GetProjectId() == projectID {
@@ -128,7 +131,7 @@ func resourceDatadogIntegrationGcpRead(d *schema.ResourceData, meta interface{})
 	return nil
 }
 
-func resourceDatadogIntegrationGcpUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationGcpUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -141,13 +144,13 @@ func resourceDatadogIntegrationGcpUpdate(d *schema.ResourceData, meta interface{
 			Automute:    datadogV1.PtrBool(d.Get("automute").(bool)),
 		},
 	); err != nil {
-		return utils.TranslateClientError(err, "error updating GCP integration")
+		return utils.TranslateClientErrorDiag(err, "error updating GCP integration")
 	}
 
-	return resourceDatadogIntegrationGcpRead(d, meta)
+	return resourceDatadogIntegrationGcpRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationGcpDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogIntegrationGcpDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -158,15 +161,8 @@ func resourceDatadogIntegrationGcpDelete(d *schema.ResourceData, meta interface{
 			ClientEmail: datadogV1.PtrString(d.Get("client_email").(string)),
 		},
 	); err != nil {
-		return utils.TranslateClientError(err, "error deleting GCP integration")
+		return utils.TranslateClientErrorDiag(err, "error deleting GCP integration")
 	}
 
 	return nil
-}
-
-func resourceDatadogIntegrationGcpImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogIntegrationGcpRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }

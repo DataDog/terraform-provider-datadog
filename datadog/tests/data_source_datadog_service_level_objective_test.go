@@ -6,54 +6,42 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func TestAccDatadogServiceLevelObjectiveDatasource(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
-	uniq := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
+	uniq := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceServiceLevelObjectiveIDConfig(uniq),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkServiceLevelObjectiveDatasourceAttrs(accProvider, uniq),
+				Check:  checkServiceLevelObjectiveDatasourceAttrs(accProvider, uniq),
 			},
 			{
 				Config: testAccDatasourceServiceLevelObjectiveNameFilterConfig(uniq),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkServiceLevelObjectiveDatasourceAttrs(accProvider, uniq),
+				Check:  checkServiceLevelObjectiveDatasourceAttrs(accProvider, uniq),
 			},
 			{
 				Config: testAccDatasourceServiceLevelObjectiveTagsFilterConfig(uniq),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkServiceLevelObjectiveDatasourceAttrs(accProvider, uniq),
+				Check:  checkServiceLevelObjectiveDatasourceAttrs(accProvider, uniq),
 			},
 			{
 				Config: testAccDatasourceServiceLevelObjectiveMetricsFilterConfig(uniq),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkServiceLevelObjectiveDatasourceAttrs(accProvider, uniq),
+				Check:  checkServiceLevelObjectiveDatasourceAttrs(accProvider, uniq),
 			},
 		},
 	})
 }
 
-func checkServiceLevelObjectiveDatasourceAttrs(accProvider *schema.Provider, uniq string) resource.TestCheckFunc {
+func checkServiceLevelObjectiveDatasourceAttrs(accProvider func() (*schema.Provider, error), uniq string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogServiceLevelObjectiveExists(accProvider, ""),
 		resource.TestCheckResourceAttr("data.datadog_service_level_objective.foo", "name", uniq),

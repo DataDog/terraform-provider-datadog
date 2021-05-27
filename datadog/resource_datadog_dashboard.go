@@ -1,28 +1,30 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"log"
-	"strconv"
+	"net/http"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceDatadogDashboard() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.",
-		Create:      resourceDatadogDashboardCreate,
-		Update:      resourceDatadogDashboardUpdate,
-		Read:        resourceDatadogDashboardRead,
-		Delete:      resourceDatadogDashboardDelete,
-		CustomizeDiff: func(diff *schema.ResourceDiff, meta interface{}) error {
+		Description:   "Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.",
+		CreateContext: resourceDatadogDashboardCreate,
+		UpdateContext: resourceDatadogDashboardUpdate,
+		ReadContext:   resourceDatadogDashboardRead,
+		DeleteContext: resourceDatadogDashboardDelete,
+		CustomizeDiff: func(_ context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 			oldValue, newValue := diff.GetChange("dashboard_lists")
 			if !oldValue.(*schema.Set).Equal(newValue.(*schema.Set)) {
 				// Only calculate removed when the list change, to no create useless diffs
@@ -39,7 +41,7 @@ func resourceDatadogDashboard() *schema.Resource {
 			return nil
 		},
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogDashboardImport,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"title": {
@@ -56,17 +58,17 @@ func resourceDatadogDashboard() *schema.Resource {
 				},
 			},
 			"layout_type": {
-				Type:         schema.TypeString,
-				Required:     true,
-				ForceNew:     true,
-				Description:  "The layout type of the dashboard, either 'free' or 'ordered'.",
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewDashboardLayoutTypeFromValue),
+				Type:             schema.TypeString,
+				Required:         true,
+				ForceNew:         true,
+				Description:      "The layout type of the dashboard, either 'free' or 'ordered'.",
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewDashboardLayoutTypeFromValue),
 			},
 			"reflow_type": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				Description:  "The reflow type of a new dashboard layout. Set this only when layout type is ‘ordered’. If set to ‘fixed’, the dashboard expect all widgets to have a layout, and if it’s set to ‘auto’, widgets should not have layouts.",
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewDashboardReflowTypeFromValue),
+				Type:             schema.TypeString,
+				Optional:         true,
+				Description:      "The reflow type of a new dashboard layout. Set this only when layout type is ‘ordered’. If set to ‘fixed’, the dashboard expect all widgets to have a layout, and if it’s set to ‘auto’, widgets should not have layouts.",
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewDashboardReflowTypeFromValue),
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -123,48 +125,56 @@ func resourceDatadogDashboard() *schema.Resource {
 	}
 }
 
-func resourceDatadogDashboardCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	dashboardPayload, err := buildDatadogDashboard(d)
 	if err != nil {
-		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	dashboard, _, err := datadogClientV1.DashboardsApi.CreateDashboard(authV1, *dashboardPayload)
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating dashboard")
+		return utils.TranslateClientErrorDiag(err, "error creating dashboard")
 	}
 	d.SetId(*dashboard.Id)
 
-	return resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
-		getDashboard, httpResponse, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, *dashboard.Id)
+	var getDashboard datadogV1.Dashboard
+	var httpResponse *http.Response
+	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		getDashboard, httpResponse, err = datadogClientV1.DashboardsApi.GetDashboard(authV1, *dashboard.Id)
 		if err != nil {
 			if httpResponse != nil && httpResponse.StatusCode == 404 {
 				return resource.RetryableError(fmt.Errorf("dashboard not created yet"))
 			}
+
 			return resource.NonRetryableError(err)
 		}
 
 		// We only log the error, as failing to update the list shouldn't fail dashboard creation
 		updateDashboardLists(d, providerConf, *dashboard.Id)
 
-		return resource.NonRetryableError(updateDashboardState(d, &getDashboard))
+		return nil
 	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	return updateDashboardState(d, &getDashboard)
 }
 
-func resourceDatadogDashboardUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	id := d.Id()
 	dashboard, err := buildDatadogDashboard(d)
 	if err != nil {
-		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	updatedDashboard, _, err := datadogClientV1.DashboardsApi.UpdateDashboard(authV1, id, *dashboard)
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating dashboard")
+		return utils.TranslateClientErrorDiag(err, "error updating dashboard")
 	}
 
 	updateDashboardLists(d, providerConf, *dashboard.Id)
@@ -207,57 +217,57 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 	}
 }
 
-func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard) error {
+func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard) diag.Diagnostics {
 	if err := d.Set("title", dashboard.GetTitle()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("layout_type", dashboard.GetLayoutType()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("reflow_type", dashboard.GetReflowType()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("description", dashboard.GetDescription()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("is_read_only", dashboard.GetIsReadOnly()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("url", dashboard.GetUrl()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	// Set widgets
 	terraformWidgets, err := buildTerraformWidgets(&dashboard.Widgets, d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("widget", terraformWidgets); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	// Set template variables
 	templateVariables := buildTerraformTemplateVariables(&dashboard.TemplateVariables)
 	if err := d.Set("template_variable", templateVariables); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	// Set template variable presets
 	templateVariablePresets := buildTerraformTemplateVariablePresets(&dashboard.TemplateVariablePresets)
 	if err := d.Set("template_variable_preset", templateVariablePresets); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	// Set notify list
 	notifyList := buildTerraformNotifyList(&dashboard.NotifyList)
 	if err := d.Set("notify_list", notifyList); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	return nil
 }
 
-func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -268,28 +278,21 @@ func resourceDatadogDashboardRead(d *schema.ResourceData, meta interface{}) erro
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error getting dashboard")
+		return utils.TranslateClientErrorDiag(err, "error getting dashboard")
 	}
 
 	return updateDashboardState(d, &dashboard)
 }
 
-func resourceDatadogDashboardDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	id := d.Id()
 	if _, _, err := datadogClientV1.DashboardsApi.DeleteDashboard(authV1, id); err != nil {
-		return utils.TranslateClientError(err, "error deleting dashboard")
+		return utils.TranslateClientErrorDiag(err, "error deleting dashboard")
 	}
 	return nil
-}
-
-func resourceDatadogDashboardImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogDashboardRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }
 
 func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error) {
@@ -552,15 +555,6 @@ func getWidgetSchema() map[string]*schema.Schema {
 
 func getNonGroupWidgetSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"layout": {
-			Type:        schema.TypeMap,
-			Deprecated:  "Define `widget_layout` list with one element instead.",
-			Optional:    true,
-			Description: "The layout of the widget on a 'free' dashboard.",
-			Elem: &schema.Resource{
-				Schema: getWidgetLayoutSchema(),
-			},
-		},
 		"widget_layout": {
 			Type:        schema.TypeList,
 			MaxItems:    1,
@@ -922,9 +916,7 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 	datadogWidget := datadogV1.NewWidget(definition)
 
 	// Build widget layout
-	if v, ok := terraformWidget["layout"].(map[string]interface{}); ok && len(v) != 0 {
-		datadogWidget.SetLayout(*buildDatadogWidgetLayoutDeprecated(v))
-	} else if wl, ok := terraformWidget["widget_layout"].([]interface{}); ok && len(wl) != 0 {
+	if wl, ok := terraformWidget["widget_layout"].([]interface{}); ok && len(wl) != 0 {
 		if v, ok := wl[0].(map[string]interface{}); ok && len(v) != 0 {
 			datadogWidget.SetLayout(*buildDatadogWidgetLayout(v))
 		}
@@ -953,23 +945,12 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataK
 
 	// Build layout
 	if v, ok := datadogWidget.GetLayoutOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("layout"); ok {
-			terraformWidget["layout"] = buildTerraformWidgetLayout(*v)
-		} else {
-			widgetLayout := map[string]interface{}{
-				"x":      (*v).GetX(),
-				"y":      (*v).GetY(),
-				"height": (*v).GetHeight(),
-				"width":  (*v).GetWidth(),
-			}
-			if value, ok := (*v).GetIsColumnBreakOk(); ok {
-				widgetLayout["is_column_break"] = value
-			}
-			terraformWidget["widget_layout"] = [](map[string]interface{}){
-				widgetLayout,
-			}
-		}
+		terraformWidget["widget_layout"] = []map[string]int64{{
+			"x":      (*v).GetX(),
+			"y":      (*v).GetY(),
+			"height": (*v).GetHeight(),
+			"width":  (*v).GetWidth(),
+		}}
 	}
 	terraformWidget["id"] = datadogWidget.GetId()
 
@@ -1119,50 +1100,6 @@ func buildDatadogWidgetLayout(terraformLayout map[string]interface{}) *datadogV1
 	return datadogLayout
 }
 
-func buildDatadogWidgetLayoutDeprecated(terraformLayout map[string]interface{}) *datadogV1.WidgetLayout {
-	datadogLayout := datadogV1.NewWidgetLayoutWithDefaults()
-
-	if value, ok := terraformLayout["x"].(string); ok && len(value) != 0 {
-		if v, err := strconv.ParseInt(value, 10, 64); err == nil {
-			datadogLayout.SetX(v)
-		}
-	}
-	if value, ok := terraformLayout["y"].(string); ok && len(value) != 0 {
-		if v, err := strconv.ParseInt(value, 10, 64); err == nil {
-			datadogLayout.SetY(v)
-		}
-	}
-	if value, ok := terraformLayout["height"].(string); ok && len(value) != 0 {
-		if v, err := strconv.ParseInt(value, 10, 64); err == nil {
-			datadogLayout.SetHeight(v)
-		}
-	}
-	if value, ok := terraformLayout["width"].(string); ok && len(value) != 0 {
-		if v, err := strconv.ParseInt(value, 10, 64); err == nil {
-			datadogLayout.SetWidth(v)
-		}
-	}
-	return datadogLayout
-}
-
-func buildTerraformWidgetLayout(datadogLayout datadogV1.WidgetLayout) map[string]string {
-	terraformLayout := map[string]string{}
-
-	if v, ok := datadogLayout.GetXOk(); ok {
-		terraformLayout["x"] = strconv.FormatInt(*v, 10)
-	}
-	if v, ok := datadogLayout.GetYOk(); ok {
-		terraformLayout["y"] = strconv.FormatInt(*v, 10)
-	}
-	if v, ok := datadogLayout.GetHeightOk(); ok {
-		terraformLayout["height"] = strconv.FormatInt(*v, 10)
-	}
-	if v, ok := datadogLayout.GetWidthOk(); ok {
-		terraformLayout["width"] = strconv.FormatInt(*v, 10)
-	}
-	return terraformLayout
-}
-
 //
 // Group Widget helpers
 //
@@ -1178,10 +1115,10 @@ func getGroupDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"layout_type": {
-			Type:         schema.TypeString,
-			Required:     true,
-			Description:  "The layout type of the group, only 'ordered' for now.",
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLayoutTypeFromValue),
+			Type:             schema.TypeString,
+			Required:         true,
+			Description:      "The layout type of the group, only 'ordered' for now.",
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLayoutTypeFromValue),
 		},
 		"title": {
 			Type:        schema.TypeString,
@@ -1278,10 +1215,10 @@ func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"viz_type": {
-			Description:  "Type of visualization to use when displaying the widget. Either `timeseries` or `toplist`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetVizTypeFromValue),
-			Required:     true,
+			Description:      "Type of visualization to use when displaying the widget. Either `timeseries` or `toplist`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetVizTypeFromValue),
+			Required:         true,
 		},
 		"title": {
 			Description: "The title of the widget.",
@@ -1294,27 +1231,12 @@ func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
-	}
-}
-
-func getDeprecatedTimeSchema() *schema.Schema {
-	return &schema.Schema{
-		Description: "Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below.",
-		Deprecated:  "Define `live_span` directly in the widget definition instead.",
-		Type:        schema.TypeMap,
-		Optional:    true,
-		Elem: &schema.Resource{
-			Schema: map[string]*schema.Schema{
-				"live_span": getWidgetLiveSpanSchema(),
-			},
-		},
 	}
 }
 
@@ -1333,9 +1255,7 @@ func buildDatadogAlertGraphDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -1359,12 +1279,7 @@ func buildTerraformAlertGraphDefinition(datadogDefinition datadogV1.AlertGraphWi
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	return terraformDefinition
 }
@@ -1391,10 +1306,10 @@ func getAlertValueDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"text_align": {
-			Description:  "The alignment of the text in the widget.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the text in the widget.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
 		"title": {
 			Description: "The title of the widget.",
@@ -1407,10 +1322,10 @@ func getAlertValueDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
 	}
 }
@@ -1492,12 +1407,11 @@ func getChangeDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -1524,9 +1438,7 @@ func buildDatadogChangeDefinition(terraformDefinition map[string]interface{}) *d
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -1552,12 +1464,7 @@ func buildTerraformChangeDefinition(datadogDefinition datadogV1.ChangeWidgetDefi
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -1576,16 +1483,16 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 		"process_query":  getProcessQuerySchema(),
 		// Settings specific to Change requests
 		"change_type": {
-			Description:  "Whether to show absolute or relative change. One of `absolute`, `relative`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetChangeTypeFromValue),
-			Optional:     true,
+			Description:      "Whether to show absolute or relative change. One of `absolute`, `relative`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetChangeTypeFromValue),
+			Optional:         true,
 		},
 		"compare_to": {
-			Description:  "Choose from when to compare current data to. One of `hour_before`, `day_before`, `week_before` or `month_before`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetCompareToFromValue),
-			Optional:     true,
+			Description:      "Choose from when to compare current data to. One of `hour_before`, `day_before`, `week_before` or `month_before`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetCompareToFromValue),
+			Optional:         true,
 		},
 		"increase_good": {
 			Description: "Boolean indicating whether an increase in the value is good (thus displayed in green) or not (thus displayed in red).",
@@ -1593,16 +1500,16 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"order_by": {
-			Description:  "One of `change`, `name`, `present` (present value) or `past` (past value).",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetOrderByFromValue),
-			Optional:     true,
+			Description:      "One of `change`, `name`, `present` (present value) or `past` (past value).",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetOrderByFromValue),
+			Optional:         true,
 		},
 		"order_dir": {
-			Description:  "Either `asc` (ascending) or `desc` (descending).",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
-			Optional:     true,
+			Description:      "Either `asc` (ascending) or `desc` (descending).",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
+			Optional:         true,
 		},
 		"show_present": {
 			Description: "If set to `true`, displays current value.",
@@ -1734,10 +1641,10 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
 		"legend_size": {
 			Description:  "The size of the legend displayed in the widget.",
@@ -1750,7 +1657,6 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 	}
 }
@@ -1775,9 +1681,7 @@ func buildDatadogDistributionDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -1806,12 +1710,8 @@ func buildTerraformDistributionDefinition(datadogDefinition datadogV1.Distributi
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	return terraformDefinition
 }
@@ -1918,10 +1818,10 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"event_size": {
-			Description:  "The size to use to display an event. One of `s`, `l`",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetEventSizeFromValue),
-			Optional:     true,
+			Description:      "The size to use to display an event. One of `s`, `l`",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetEventSizeFromValue),
+			Optional:         true,
 		},
 		"title": {
 			Description: "The title of the widget.",
@@ -1934,12 +1834,11 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"tags_execution": {
 			Description: "The execution method for multi-value filters. Can be either `and` or `or`.",
@@ -1966,9 +1865,7 @@ func buildDatadogEventStreamDefinition(terraformDefinition map[string]interface{
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -1997,12 +1894,7 @@ func buildTerraformEventStreamDefinition(datadogDefinition datadogV1.EventStream
 		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if datadogDefinition.TagsExecution != nil {
 		terraformDefinition["tags_execution"] = *datadogDefinition.TagsExecution
@@ -2032,12 +1924,11 @@ func getEventTimelineDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"tags_execution": {
 			Description: "The execution method for multi-value filters. Can be either `and` or `or`.",
@@ -2061,9 +1952,7 @@ func buildDatadogEventTimelineDefinition(terraformDefinition map[string]interfac
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -2089,12 +1978,8 @@ func buildTerraformEventTimelineDefinition(datadogDefinition datadogV1.EventTime
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetTagsExecutionOk(); ok {
 		terraformDefinition["tags_execution"] = *v
@@ -2114,10 +1999,10 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"grouping": {
-			Description:  "Either `check` or `cluster`, depending on whether the widget should use a single check or a cluster of checks.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetGroupingFromValue),
-			Required:     true,
+			Description:      "Either `check` or `cluster`, depending on whether the widget should use a single check or a cluster of checks.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetGroupingFromValue),
+			Required:         true,
 		},
 		"group": {
 			Description: "The check group to use in the widget.",
@@ -2147,12 +2032,11 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 	}
 }
@@ -2189,9 +2073,7 @@ func buildDatadogCheckStatusDefinition(terraformDefinition map[string]interface{
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -2232,12 +2114,7 @@ func buildTerraformCheckStatusDefinition(datadogDefinition datadogV1.CheckStatus
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	return terraformDefinition
 }
@@ -2264,10 +2141,10 @@ func getFreeTextDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"text_align": {
-			Description:  "The alignment of the text in the widget.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the text in the widget.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
 	}
 }
@@ -2340,10 +2217,10 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
 		"event": {
 			Description: "The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below.",
@@ -2364,7 +2241,6 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			Optional:     true,
 			ValidateFunc: validateTimeseriesWidgetLegendSize,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -2405,9 +2281,7 @@ func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -2446,12 +2320,8 @@ func buildTerraformHeatmapDefinition(datadogDefinition datadogV1.HeatMapWidgetDe
 		terraformDefinition["legend_size"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
+
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -2582,10 +2452,10 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"node_type": {
-			Description:  "The type of node used. Either `host` or `container`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetNodeTypeFromValue),
-			Optional:     true,
+			Description:      "The type of node used. Either `host` or `container`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetNodeTypeFromValue),
+			Optional:         true,
 		},
 		"no_metric_hosts": {
 			Description: "Boolean indicating whether to show nodes with no metrics.",
@@ -2650,10 +2520,10 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -2891,16 +2761,16 @@ func getImageDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"sizing": {
-			Description:  "The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties and are either: `fill`, `contain`, `cover`, `none` or `scale-down`. Note: `zoom`, `fit` and `center` values are deprecated.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetImageSizingFromValue),
-			Optional:     true,
+			Description:      "The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties and are either: `fill`, `contain`, `cover`, `none` or `scale-down`. Note: `zoom`, `fit` and `center` values are deprecated.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetImageSizingFromValue),
+			Optional:         true,
 		},
 		"margin": {
-			Description:  "The margins to use around the image. Either `sm`, `md`, or `lg`. Note: `small` and `large` values are deprecated.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMarginFromValue),
-			Optional:     true,
+			Description:      "The margins to use around the image. Either `sm`, `md`, or `lg`. Note: `small` and `large` values are deprecated.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMarginFromValue),
+			Optional:         true,
 		},
 		"has_background": {
 			Description: "Whether to display a background or not.",
@@ -2915,16 +2785,16 @@ func getImageDefinitionSchema() map[string]*schema.Schema {
 			Default:     true,
 		},
 		"horizontal_align": {
-			Description:  "The horizontal alignment for the widget.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetHorizontalAlignFromValue),
-			Optional:     true,
+			Description:      "The horizontal alignment for the widget.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetHorizontalAlignFromValue),
+			Optional:         true,
 		},
 		"vertical_align": {
-			Description:  "The vertical alignment for the widget.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetVerticalAlignFromValue),
-			Optional:     true,
+			Description:      "The vertical alignment for the widget.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetVerticalAlignFromValue),
+			Optional:         true,
 		},
 	}
 }
@@ -2999,12 +2869,6 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
-		"logset": {
-			Description: "ID of the logset to use. Deprecated Use `indexes` instead.",
-			Type:        schema.TypeString,
-			Deprecated:  "This parameter has been deprecated. Use `indexes` instead.",
-			Optional:    true,
-		},
 		"query": {
 			Description: "The query to use in the widget.",
 			Type:        schema.TypeString,
@@ -3027,10 +2891,10 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"message_display": {
-			Type:         schema.TypeString,
-			Optional:     true,
-			Description:  "One of: ['inline', 'expanded-md', 'expanded-lg']",
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMessageDisplayFromValue),
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "One of: ['inline', 'expanded-md', 'expanded-lg']",
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMessageDisplayFromValue),
 		},
 		"sort": {
 			Description: "The facet and order to sort the data based upon. Example: `{\"column\": \"time\", \"order\": \"desc\"}`.",
@@ -3052,12 +2916,11 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 	}
 }
@@ -3070,10 +2933,10 @@ func getWidgetFieldSortSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"order": {
-			Description:  "Widget sorting methods.",
-			Type:         schema.TypeString,
-			Required:     true,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
+			Description:      "Widget sorting methods.",
+			Type:             schema.TypeString,
+			Required:         true,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
 		},
 	}
 }
@@ -3081,7 +2944,6 @@ func getWidgetFieldSortSchema() map[string]*schema.Schema {
 func buildDatadogLogStreamDefinition(terraformDefinition map[string]interface{}) *datadogV1.LogStreamWidgetDefinition {
 	datadogDefinition := datadogV1.NewLogStreamWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetLogset(terraformDefinition["logset"].(string))
 	terraformIndexes := terraformDefinition["indexes"].([]interface{})
 	datadogIndexes := make([]string, len(terraformIndexes))
 	for i, index := range terraformIndexes {
@@ -3122,9 +2984,7 @@ func buildDatadogLogStreamDefinition(terraformDefinition map[string]interface{})
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -3147,13 +3007,8 @@ func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidg
 	terraformDefinition := map[string]interface{}{}
 	// Optional params
 
-	// Indexes is the recommended required field, but we still allow setting logsets instead for backwards compatibility
 	if v, ok := datadogDefinition.GetIndexesOk(); ok {
 		terraformDefinition["indexes"] = *v
-	}
-
-	if v, ok := datadogDefinition.GetLogsetOk(); ok {
-		terraformDefinition["logset"] = *v
 	}
 	if v, ok := datadogDefinition.GetQueryOk(); ok {
 		terraformDefinition["query"] = *v
@@ -3188,12 +3043,7 @@ func buildTerraformLogStreamDefinition(datadogDefinition datadogV1.LogStreamWidg
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	return terraformDefinition
 }
@@ -3220,43 +3070,28 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"summary_type": {
-			Type:         schema.TypeString,
-			Optional:     true,
-			Description:  "One of: ['monitors', 'groups', 'combined']",
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSummaryTypeFromValue),
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "One of: ['monitors', 'groups', 'combined']",
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSummaryTypeFromValue),
 		},
 		"sort": {
-			Description:  "The method to use to sort monitors. Example: `status,asc`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMonitorSummarySortFromValue),
-			Optional:     true,
-		},
-		// The count param is deprecated
-		"count": {
-			Description: "The number of monitors to display.",
-			Type:        schema.TypeInt,
-			Deprecated:  "This parameter has been deprecated.",
-			Optional:    true,
-			Default:     50,
-		},
-		// The start param is deprecated
-		"start": {
-			Description: "The start of the list. Typically 0.",
-			Type:        schema.TypeInt,
-			Deprecated:  "This parameter has been deprecated.",
-			Optional:    true,
+			Description:      "The method to use to sort monitors. Example: `status,asc`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMonitorSummarySortFromValue),
+			Optional:         true,
 		},
 		"display_format": {
-			Description:  "The display setting to use. One of `counts`, `list`, or `countsAndList`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMonitorSummaryDisplayFormatFromValue),
-			Optional:     true,
+			Description:      "The display setting to use. One of `counts`, `list`, or `countsAndList`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMonitorSummaryDisplayFormatFromValue),
+			Optional:         true,
 		},
 		"color_preference": {
-			Description:  "Whether to colorize text or background. One of `text`, `background`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetColorPreferenceFromValue),
-			Optional:     true,
+			Description:      "Whether to colorize text or background. One of `text`, `background`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetColorPreferenceFromValue),
+			Optional:         true,
 		},
 		"hide_zero_counts": {
 			Description: "Boolean indicating whether to hide empty categories.",
@@ -3279,10 +3114,10 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
 	}
 }
@@ -3297,12 +3132,6 @@ func buildDatadogManageStatusDefinition(terraformDefinition map[string]interface
 	}
 	if v, ok := terraformDefinition["sort"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetSort(datadogV1.WidgetMonitorSummarySort(v))
-	}
-	if v, ok := terraformDefinition["count"].(int); ok {
-		datadogDefinition.SetCount(int64(v))
-	}
-	if v, ok := terraformDefinition["start"].(int); ok {
-		datadogDefinition.SetStart(int64(v))
 	}
 	if v, ok := terraformDefinition["display_format"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetDisplayFormat(datadogV1.WidgetMonitorSummaryDisplayFormat(v))
@@ -3338,13 +3167,6 @@ func buildTerraformManageStatusDefinition(datadogDefinition datadogV1.MonitorSum
 	}
 	if v, ok := datadogDefinition.GetSortOk(); ok {
 		terraformDefinition["sort"] = *v
-	}
-	//Below fields are deprecated
-	if v, ok := datadogDefinition.GetCountOk(); ok {
-		terraformDefinition["count"] = *v
-	}
-	if v, ok := datadogDefinition.GetStartOk(); ok {
-		terraformDefinition["start"] = *v
 	}
 	if v, ok := datadogDefinition.GetDisplayFormatOk(); ok {
 		terraformDefinition["display_format"] = *v
@@ -3393,16 +3215,16 @@ func getNoteDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"text_align": {
-			Description:  "The alignment of the widget's text. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's text. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
 		"vertical_align": {
-			Description:  "The vertical alignment for the widget.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetVerticalAlignFromValue),
-			Optional:     true,
+			Description:      "The vertical alignment for the widget.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetVerticalAlignFromValue),
+			Optional:         true,
 		},
 		"has_padding": {
 			Description: "Whether to add padding or not.",
@@ -3421,10 +3243,10 @@ func getNoteDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"tick_edge": {
-			Description:  "When `tick = true`, string indicating on which side of the widget the tick should be displayed. One of `bottom`, `top`, `left`, `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTickEdgeFromValue),
-			Optional:     true,
+			Description:      "When `tick = true`, string indicating on which side of the widget the tick should be displayed. One of `bottom`, `top`, `left`, `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTickEdgeFromValue),
+			Optional:         true,
 		},
 	}
 }
@@ -3523,10 +3345,10 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"text_align": {
-			Description:  "The alignment of the widget's text. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's text. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
 		"title": {
 			Description: "The title of the widget.",
@@ -3539,12 +3361,11 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -3583,9 +3404,7 @@ func buildDatadogQueryValueDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -3623,12 +3442,7 @@ func buildTerraformQueryValueDefinition(datadogDefinition datadogV1.QueryValueWi
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -3658,10 +3472,10 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"aggregator": {
-			Description:  "The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
-			Optional:     true,
+			Description:      "The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
+			Optional:         true,
 		},
 	}
 }
@@ -3793,12 +3607,11 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -3809,10 +3622,10 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"has_search_bar": {
-			Description:  "Controls the display of the search bar. One of `auto`, `always`, `never`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetHasSearchBarFromValue),
-			Optional:     true,
+			Description:      "Controls the display of the search bar. One of `auto`, `always`, `never`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetHasSearchBarFromValue),
+			Optional:         true,
 		},
 	}
 }
@@ -3831,9 +3644,7 @@ func buildDatadogQueryTableDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -3862,12 +3673,7 @@ func buildTerraformQueryTableDefinition(datadogDefinition datadogV1.TableWidgetD
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -3903,10 +3709,10 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"aggregator": {
-			Description:  "The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
-			Optional:     true,
+			Description:      "The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
+			Optional:         true,
 		},
 		"limit": {
 			Description: "The number of lines to show in the table.",
@@ -3914,18 +3720,18 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"order": {
-			Description:  "The sort order for the rows. One of `desc` or `asc`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
-			Optional:     true,
+			Description:      "The sort order for the rows. One of `desc` or `asc`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
+			Optional:         true,
 		},
 		"cell_display_mode": {
 			Description: "A list of display modes for each table cell. List items one of `number`, `bar`.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Schema{
-				Type:         schema.TypeString,
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
+				Type:             schema.TypeString,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
 			},
 		},
 	}
@@ -4112,12 +3918,11 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -4173,9 +3978,7 @@ func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -4228,12 +4031,7 @@ func buildTerraformScatterplotDefinition(datadogDefinition datadogV1.ScatterPlot
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -4252,10 +4050,10 @@ func getScatterplotRequestSchema() map[string]*schema.Schema {
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
 		// Settings specific to Scatterplot requests
 		"aggregator": {
-			Description:  "Aggregator used for the request.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
-			Optional:     true,
+			Description:      "Aggregator used for the request.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
+			Optional:         true,
 		},
 	}
 }
@@ -4346,10 +4144,10 @@ func getServiceMapDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -4428,10 +4226,10 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
 		"view_type": {
 			Description: "Type of view to use when displaying the widget. Only `detail` is currently supported.",
@@ -4449,18 +4247,18 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"view_mode": {
-			Description:  "View mode for the widget. One of `overall`, `component`, or `both`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetViewModeFromValue),
-			Required:     true,
+			Description:      "View mode for the widget. One of `overall`, `component`, or `both`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetViewModeFromValue),
+			Required:         true,
 		},
 		"time_windows": {
 			Description: "List of time windows to display in the widget. Each value in the list must be one of `7d`, `30d`, `90d`, `week_to_date`, `previous_week`, `month_to_date`, or `previous_month`.",
 			Type:        schema.TypeList,
 			Required:    true,
 			Elem: &schema.Schema{
-				Type:         schema.TypeString,
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTimeWindowsFromValue),
+				Type:             schema.TypeString,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTimeWindowsFromValue),
 			},
 		},
 		"global_time_target": {
@@ -4605,10 +4403,10 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
@@ -4811,10 +4609,10 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
 		"show_legend": {
 			Description: "Whether or not to show the legend on this widget.",
@@ -4828,21 +4626,20 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			ValidateFunc: validateTimeseriesWidgetLegendSize,
 		},
 		"legend_layout": {
-			Description:  "The layout of the legend displayed in the widget. One of `auto`, `horizontal`, `vertical`.",
-			Type:         schema.TypeString,
-			Optional:     true,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewTimeseriesWidgetLegendLayoutFromValue),
+			Description:      "The layout of the legend displayed in the widget. One of `auto`, `horizontal`, `vertical`.",
+			Type:             schema.TypeString,
+			Optional:         true,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTimeseriesWidgetLegendLayoutFromValue),
 		},
 		"legend_columns": {
 			Description: "A list of columns to display in the legend. List items one of `value`, `avg`, `sum`, `min`, `max`.",
 			Type:        schema.TypeSet,
 			Optional:    true,
 			Elem: &schema.Schema{
-				Type:         schema.TypeString,
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewTimeseriesWidgetLegendColumnFromValue),
+				Type:             schema.TypeString,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTimeseriesWidgetLegendColumnFromValue),
 			},
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -4886,9 +4683,7 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -4945,12 +4740,7 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetShowLegendOk(); ok {
 		terraformDefinition["show_legend"] = *v
@@ -4998,11 +4788,11 @@ func getFormulaSchema() *schema.Schema {
 								Description: "Number of results to return",
 							},
 							"order": {
-								Type:         schema.TypeString,
-								Optional:     true,
-								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
-								Default:      "desc",
-								Description:  "Direction of sort.",
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
+								Default:          "desc",
+								Description:      "Direction of sort.",
 							},
 						},
 					},
@@ -5042,10 +4832,10 @@ func getFormulaQuerySchema() *schema.Schema {
 								Description: "Metrics query definition.",
 							},
 							"aggregator": {
-								Type:         schema.TypeString,
-								Optional:     true,
-								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionMetricAggregationFromValue),
-								Description:  "The aggregation methods available for metrics queries.",
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionMetricAggregationFromValue),
+								Description:      "The aggregation methods available for metrics queries.",
 							},
 							"name": {
 								Type:        schema.TypeString,
@@ -5063,10 +4853,10 @@ func getFormulaQuerySchema() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"data_source": {
-								Type:         schema.TypeString,
-								Required:     true,
-								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventsDataSourceFromValue),
-								Description:  "Data source for event platform-based queries.",
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventsDataSourceFromValue),
+								Description:      "Data source for event platform-based queries.",
 							},
 							"search": {
 								Type:        schema.TypeList,
@@ -5097,10 +4887,10 @@ func getFormulaQuerySchema() *schema.Schema {
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"aggregation": {
-											Type:         schema.TypeString,
-											Required:     true,
-											ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventAggregationFromValue),
-											Description:  "Aggregation methods for event platform queries.",
+											Type:             schema.TypeString,
+											Required:         true,
+											ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventAggregationFromValue),
+											Description:      "Aggregation methods for event platform queries.",
 										},
 										"interval": {
 											Type:        schema.TypeInt,
@@ -5139,10 +4929,10 @@ func getFormulaQuerySchema() *schema.Schema {
 											Elem: &schema.Resource{
 												Schema: map[string]*schema.Schema{
 													"aggregation": {
-														Type:         schema.TypeString,
-														Required:     true,
-														ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventAggregationFromValue),
-														Description:  "Aggregation methods for event platform queries.",
+														Type:             schema.TypeString,
+														Required:         true,
+														ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventAggregationFromValue),
+														Description:      "Aggregation methods for event platform queries.",
 													},
 													"metric": {
 														Type:        schema.TypeString,
@@ -5150,10 +4940,10 @@ func getFormulaQuerySchema() *schema.Schema {
 														Description: "Metric used for sorting group by results.",
 													},
 													"order": {
-														Type:         schema.TypeString,
-														Optional:     true,
-														ValidateFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
-														Description:  "Direction of sort.",
+														Type:             schema.TypeString,
+														Optional:         true,
+														ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
+														Description:      "Direction of sort.",
 													},
 												},
 											},
@@ -5177,10 +4967,10 @@ func getFormulaQuerySchema() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"data_source": {
-								Type:         schema.TypeString,
-								Required:     true,
-								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionProcessQueryDataSourceFromValue),
-								Description:  "Data source for process queries.",
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionProcessQueryDataSourceFromValue),
+								Description:      "Data source for process queries.",
 							},
 							"metric": {
 								Type:        schema.TypeString,
@@ -5204,17 +4994,17 @@ func getFormulaQuerySchema() *schema.Schema {
 								Description: "Number of hits to return.",
 							},
 							"sort": {
-								Type:         schema.TypeString,
-								Optional:     true,
-								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
-								Description:  "Direction of sort.",
-								Default:      "desc",
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
+								Description:      "Direction of sort.",
+								Default:          "desc",
 							},
 							"aggregator": {
-								Type:         schema.TypeString,
-								Optional:     true,
-								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionMetricAggregationFromValue),
-								Description:  "The aggregation methods available for metrics queries.",
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionMetricAggregationFromValue),
+								Description:      "The aggregation methods available for metrics queries.",
 							},
 							"is_normalized_cpu": {
 								Type:        schema.TypeBool,
@@ -5261,16 +5051,16 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 						Optional:    true,
 					},
 					"line_type": {
-						Description:  "Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.",
-						Type:         schema.TypeString,
-						ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLineTypeFromValue),
-						Optional:     true,
+						Description:      "Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.",
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLineTypeFromValue),
+						Optional:         true,
 					},
 					"line_width": {
-						Description:  "Width of line displayed. Available values are: `normal`, `thick`, or `thin`.",
-						Type:         schema.TypeString,
-						ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLineWidthFromValue),
-						Optional:     true,
+						Description:      "Width of line displayed. Available values are: `normal`, `thick`, or `thin`.",
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLineWidthFromValue),
+						Optional:         true,
 					},
 				},
 			},
@@ -5295,10 +5085,10 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"display_type": {
-			Description:  "How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetDisplayTypeFromValue),
-			Optional:     true,
+			Description:      "How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetDisplayTypeFromValue),
+			Optional:         true,
 		},
 		"on_right_yaxis": {
 			Description: "Boolean indicating whether the request will use the right or left Y-Axis.",
@@ -5623,12 +5413,11 @@ func getToplistDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
@@ -5655,9 +5444,7 @@ func buildDatadogToplistDefinition(terraformDefinition map[string]interface{}) *
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -5683,12 +5470,7 @@ func buildTerraformToplistDefinition(datadogDefinition datadogV1.ToplistWidgetDe
 		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -5884,16 +5666,16 @@ func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"size_format": {
-			Description:  "Size of the widget. Available values are: `small`, `medium`, or `large`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSizeFormatFromValue),
-			Optional:     true,
+			Description:      "Size of the widget. Available values are: `small`, `medium`, or `large`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSizeFormatFromValue),
+			Optional:         true,
 		},
 		"display_format": {
-			Description:  "Number of columns to display. Available values are: `one_column`, `two_column`, or `three_column`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetServiceSummaryDisplayFormatFromValue),
-			Optional:     true,
+			Description:      "Number of columns to display. Available values are: `one_column`, `two_column`, or `three_column`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetServiceSummaryDisplayFormatFromValue),
+			Optional:         true,
 		},
 		"title": {
 			Description: "The title of the widget.",
@@ -5906,12 +5688,11 @@ func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_align": {
-			Description:  "The alignment of the widget's title. One of `left`, `center`, or `right`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
-			Optional:     true,
+			Description:      "The alignment of the widget's title. One of `left`, `center`, or `right`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
 		},
-		"time":      getDeprecatedTimeSchema(),
 		"live_span": getWidgetLiveSpanSchema(),
 	}
 }
@@ -5956,10 +5737,7 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-
-	if v, ok := terraformDefinition["time"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Time = buildDatadogWidgetTime(v)
-	} else if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
@@ -6048,12 +5826,7 @@ func buildTerraformTraceServiceDefinition(datadogDefinition datadogV1.ServiceSum
 		terraformDefinition["title_align"] = v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		// Set to deprecated field if that's what is used in the config, otherwise, set in the new field
-		if _, ok := k.GetOkWith("time"); ok {
-			terraformDefinition["time"] = buildTerraformWidgetTimeDeprecated(*v)
-		} else {
-			terraformDefinition["live_span"] = v.GetLiveSpan()
-		}
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	return terraformDefinition
 }
@@ -6062,10 +5835,10 @@ func buildTerraformTraceServiceDefinition(datadogDefinition datadogV1.ServiceSum
 func getWidgetConditionalFormatSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"comparator": {
-			Description:  "Comparator to use. One of `>`, `>=`, `<`, or `<=`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetComparatorFromValue),
-			Required:     true,
+			Description:      "Comparator to use. One of `>`, `>=`, `<`, or `<=`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetComparatorFromValue),
+			Required:         true,
 		},
 		"value": {
 			Description: "Value for the comparator.",
@@ -6073,10 +5846,10 @@ func getWidgetConditionalFormatSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"palette": {
-			Description:  "Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.",
-			Type:         schema.TypeString,
-			ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetPaletteFromValue),
-			Required:     true,
+			Description:      "Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetPaletteFromValue),
+			Required:         true,
 		},
 		"custom_bg_color": {
 			Description: "Color palette to apply to the background, same values available as palette.",
@@ -6260,29 +6033,13 @@ func buildTerraformWidgetEvents(datadogWidgetEvents *[]datadogV1.WidgetEvent) *[
 }
 
 // Widget Time helpers
-
 func getWidgetLiveSpanSchema() *schema.Schema {
 	return &schema.Schema{
-		Description:  "The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.",
-		Type:         schema.TypeString,
-		ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
-		Optional:     true,
+		Description:      "The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.",
+		Type:             schema.TypeString,
+		ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
+		Optional:         true,
 	}
-}
-
-func buildDatadogWidgetTime(terraformWidgetTime map[string]interface{}) *datadogV1.WidgetTime {
-	datadogWidgetTime := &datadogV1.WidgetTime{}
-	if v, ok := terraformWidgetTime["live_span"].(string); ok && len(v) != 0 {
-		datadogWidgetTime.SetLiveSpan(datadogV1.WidgetLiveSpan(v))
-	}
-	return datadogWidgetTime
-}
-func buildTerraformWidgetTimeDeprecated(datadogWidgetTime datadogV1.WidgetTime) map[string]string {
-	terraformWidgetTime := map[string]string{}
-	if v, ok := datadogWidgetTime.GetLiveSpanOk(); ok {
-		terraformWidgetTime["live_span"] = string(*v)
-	}
-	return terraformWidgetTime
 }
 
 // Widget Marker helpers
@@ -6367,13 +6124,6 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 					Type:        schema.TypeString,
 					Required:    true,
 				},
-				"compute": {
-					Description: "One of `compute` or `multi_compute` is required. The map has the keys as below.",
-					Deprecated:  "Define `compute_query` list with one element instead.",
-					Type:        schema.TypeMap,
-					Optional:    true,
-					Elem:        getComputeSchema(),
-				},
 				"compute_query": {
 					Description: "One of `compute_query` or `multi_compute` is required. The map has the keys as below.",
 					Type:        schema.TypeList,
@@ -6386,21 +6136,6 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 					Type:        schema.TypeList,
 					Optional:    true,
 					Elem:        getComputeSchema(),
-				},
-				"search": {
-					Description: "Map defining the search query to use.",
-					Deprecated:  "Define `search_query` directly instead.",
-					Type:        schema.TypeMap,
-					Optional:    true,
-					Elem: &schema.Resource{
-						Schema: map[string]*schema.Schema{
-							"query": {
-								Description: "Query to use.",
-								Type:        schema.TypeString,
-								Required:    true,
-							},
-						},
-					},
 				},
 				"search_query": {
 					Description: "The search query to use.",
@@ -6422,13 +6157,6 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 								Description: "Maximum number of items in the group.",
 								Type:        schema.TypeInt,
 								Optional:    true,
-							},
-							"sort": {
-								Description: "One map is allowed with the keys as below.",
-								Deprecated:  "Define `sort_query` list with one element instead.",
-								Type:        schema.TypeMap,
-								Optional:    true,
-								Elem:        getQueryGroupBySortSchema(),
 							},
 							"sort_query": {
 								Description: "List of exactly one element describing the sort query to use.",
@@ -6454,10 +6182,10 @@ func getQueryGroupBySortSchema() *schema.Resource {
 				Required:    true,
 			},
 			"order": {
-				Description:  "Widget sorting methods.",
-				Type:         schema.TypeString,
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
-				Required:     true,
+				Description:      "Widget sorting methods.",
+				Type:             schema.TypeString,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
+				Required:         true,
 			},
 			"facet": {
 				Description: "Facet name.",
@@ -6504,31 +6232,13 @@ func buildDatadogQueryCompute(terraformCompute map[string]interface{}) *datadogV
 	return datadogCompute
 }
 
-func buildDatadogQueryComputeDeprecated(terraformCompute map[string]interface{}) *datadogV1.LogsQueryCompute {
-	datadogCompute := datadogV1.NewLogsQueryComputeWithDefaults()
-	if aggr, ok := terraformCompute["aggregation"].(string); ok && len(aggr) != 0 {
-		datadogCompute.SetAggregation(aggr)
-		if facet, ok := terraformCompute["facet"].(string); ok && len(facet) != 0 {
-			datadogCompute.SetFacet(facet)
-		}
-		if interval, ok := terraformCompute["interval"].(string); ok {
-			if v, err := strconv.ParseInt(interval, 10, 64); err == nil {
-				datadogCompute.SetInterval(v)
-			}
-		}
-	}
-	return datadogCompute
-}
-
 func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1.LogQueryDefinition {
 	// Index
 	datadogQuery := datadogV1.NewLogQueryDefinition()
 	datadogQuery.SetIndex(terraformQuery["index"].(string))
 
 	// Compute
-	if terraformCompute, ok := terraformQuery["compute"].(map[string]interface{}); ok && len(terraformCompute) > 0 {
-		datadogQuery.SetCompute(*buildDatadogQueryComputeDeprecated(terraformCompute))
-	} else if terraformComputeList, ok := terraformQuery["compute_query"].([]interface{}); ok && len(terraformComputeList) != 0 {
+	if terraformComputeList, ok := terraformQuery["compute_query"].([]interface{}); ok && len(terraformComputeList) != 0 {
 		if terraformCompute, ok := terraformComputeList[0].(map[string]interface{}); ok {
 			datadogQuery.SetCompute(*buildDatadogQueryCompute(terraformCompute))
 		}
@@ -6555,11 +6265,7 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 		datadogQuery.SetMultiCompute(datadogComputeList)
 	}
 	// Search
-	if terraformSearch, ok := terraformQuery["search"].(map[string]interface{}); ok && len(terraformSearch) > 0 {
-		datadogQuery.Search = &datadogV1.LogQueryDefinitionSearch{
-			Query: terraformSearch["query"].(string),
-		}
-	} else if terraformSearchQuery, ok := terraformQuery["search_query"].(string); ok {
+	if terraformSearchQuery, ok := terraformQuery["search_query"].(string); ok {
 		datadogQuery.Search = &datadogV1.LogQueryDefinitionSearch{
 			Query: terraformSearchQuery,
 		}
@@ -6576,9 +6282,7 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 				datadogGroupBy.SetLimit(int64(v))
 			}
 			// Sort
-			if sort, ok := groupBy["sort"].(map[string]interface{}); ok && len(sort) > 0 {
-				datadogGroupBy.Sort = buildDatadogGroupBySort(sort)
-			} else if sortList, ok := groupBy["sort_query"].([]interface{}); ok && len(sortList) > 0 {
+			if sortList, ok := groupBy["sort_query"].([]interface{}); ok && len(sortList) > 0 {
 				if sort, ok := sortList[0].(map[string]interface{}); ok && len(sort) > 0 {
 					datadogGroupBy.Sort = buildDatadogGroupBySort(sort)
 				}
@@ -6755,20 +6459,6 @@ func buildTerraformFormula(datadogFormulas []datadogV1.WidgetFormula) []map[stri
 	return formulas
 }
 
-func buildTerraformApmOrLogQueryComputeDeprecated(compute *datadogV1.LogsQueryCompute) map[string]string {
-	terraformCompute := map[string]string{
-		"aggregation": compute.GetAggregation(),
-	}
-	if v, ok := compute.GetFacetOk(); ok {
-		terraformCompute["facet"] = *v
-	}
-	if v, ok := compute.GetIntervalOk(); ok {
-		terraformCompute["interval"] = strconv.FormatInt(*v, 10)
-	}
-
-	return terraformCompute
-}
-
 func buildTerraformApmOrLogQueryCompute(compute *datadogV1.LogsQueryCompute) map[string]interface{} {
 	terraformCompute := map[string]interface{}{
 		"aggregation": compute.GetAggregation(),
@@ -6789,12 +6479,7 @@ func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *u
 	terraformQuery["index"] = datadogQuery.GetIndex()
 	// Compute
 	if compute, ok := datadogQuery.GetComputeOk(); ok {
-		// Set in deprecated field if that's what's in the config, set in new field otherwise
-		if _, ok := k.GetOkWith("compute"); ok {
-			terraformQuery["compute"] = buildTerraformApmOrLogQueryComputeDeprecated(compute)
-		} else {
-			terraformQuery["compute_query"] = []map[string]interface{}{buildTerraformApmOrLogQueryCompute(compute)}
-		}
+		terraformQuery["compute_query"] = []map[string]interface{}{buildTerraformApmOrLogQueryCompute(compute)}
 	}
 	// Multi-compute
 	if multiCompute, ok := datadogQuery.GetMultiComputeOk(); ok {
@@ -6815,12 +6500,7 @@ func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *u
 	}
 	// Search
 	if datadogQuery.Search != nil {
-		// Set in deprecated field if that's what's in the config, set in new field otherwise
-		if _, ok := k.GetOkWith("search"); ok {
-			terraformQuery["search"] = map[string]interface{}{"query": datadogQuery.Search.Query}
-		} else {
-			terraformQuery["search_query"] = datadogQuery.Search.Query
-		}
+		terraformQuery["search_query"] = datadogQuery.Search.Query
 	}
 	// GroupBy
 	if v, ok := datadogQuery.GetGroupByOk(); ok {
@@ -6843,12 +6523,7 @@ func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *u
 				if groupBy.Sort.Facet != nil {
 					sort["facet"] = *groupBy.Sort.Facet
 				}
-				// Set in deprecated field if that's what's in the config, set in new field otherwise
-				if _, ok := k.GetOkWith(fmt.Sprintf("group_by.%d.sort", i)); ok {
-					terraformGroupBy["sort"] = sort
-				} else {
-					terraformGroupBy["sort_query"] = []map[string]string{sort}
-				}
+				terraformGroupBy["sort_query"] = []map[string]string{sort}
 			}
 
 			terraformGroupBys[i] = terraformGroupBy
@@ -6967,10 +6642,10 @@ func getApmStatsQuerySchema() *schema.Schema {
 					Required:    true,
 				},
 				"row_type": {
-					Description:  "The level of detail for the request.",
-					Type:         schema.TypeString,
-					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewApmStatsQueryRowTypeFromValue),
-					Required:     true,
+					Description:      "The level of detail for the request.",
+					Type:             schema.TypeString,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewApmStatsQueryRowTypeFromValue),
+					Required:         true,
 				},
 				"resource": {
 					Description: "Resource name.",
@@ -6994,16 +6669,16 @@ func getApmStatsQuerySchema() *schema.Schema {
 								Optional:    true,
 							},
 							"order": {
-								Description:  "Widget sorting methods.",
-								Type:         schema.TypeString,
-								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
-								Optional:     true,
+								Description:      "Widget sorting methods.",
+								Type:             schema.TypeString,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
+								Optional:         true,
 							},
 							"cell_display_mode": {
-								Description:  "A list of display modes for each table cell.",
-								Type:         schema.TypeString,
-								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
-								Optional:     true,
+								Description:      "A list of display modes for each table cell.",
+								Type:             schema.TypeString,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
+								Optional:         true,
 							},
 						},
 					},

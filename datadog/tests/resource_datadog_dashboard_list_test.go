@@ -10,9 +10,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func testAccCheckDatadogDashListConfig(uniq string) string {
@@ -47,9 +47,7 @@ resource "datadog_dashboard" "time" {
 			alert_id = "1234"
 			viz_type = "timeseries"
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+			live_span = "1h"
 		}
 	}
 }
@@ -66,11 +64,9 @@ resource "datadog_dashboard" "screen" {
 			title = "Widget Title"
 			title_size = 16
 			title_align = "left"
-			time = {
-				live_span = "1h"
-			}
+            live_span = "1h"
 		}
-		layout = {
+		widget_layout {
 			height = 43
 			width = 32
 			x = 5
@@ -96,9 +92,7 @@ resource "datadog_dashboard" "time" {
 			alert_id = "1234"
 			viz_type = "timeseries"
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+            live_span = "1h"
 		}
 	}
 	dashboard_lists = ["${datadog_dashboard_list.new_list.id}"]
@@ -121,15 +115,14 @@ resource "datadog_dashboard" "time" {
 			alert_id = "1234"
 			viz_type = "timeseries"
 			title = "Widget Title"
-			time = {
-				live_span = "1h"
-			}
+            live_span = "1h"
 		}
 	}
 }`, uniq, uniq)
 }
 
 func TestDatadogDashListImport(t *testing.T) {
+	t.Parallel()
 	resourceName := "datadog_dashboard_list.new_list"
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueName := uniqueEntityName(ctx, t)
@@ -138,11 +131,10 @@ func TestDatadogDashListImport(t *testing.T) {
 	// Getting the hash for a TypeSet element that has dynamic elements isn't possible
 	// So instead we use an import test to make sure the resource can be imported properly.
 
-	t.Parallel()
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogDashListDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogDashListDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDashListConfig(uniqueName),
@@ -157,15 +149,15 @@ func TestDatadogDashListImport(t *testing.T) {
 }
 
 func TestDatadogDashListInDashboard(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	t.Parallel()
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogDashListDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogDashListDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDashListConfigInDashboard(uniqueName),
@@ -191,9 +183,10 @@ func TestDatadogDashListInDashboard(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogDashListDestroy(accProvider *schema.Provider) resource.TestCheckFunc {
+func testAccCheckDatadogDashListDestroy(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
