@@ -1,21 +1,24 @@
 package datadog
 
 import (
+	"context"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogLogsIndexOrder() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog Logs Index API resource. This can be used to manage the order of Datadog logs indexes.",
-		Create:      resourceDatadogLogsIndexOrderCreate,
-		Update:      resourceDatadogLogsIndexOrderUpdate,
-		Read:        resourceDatadogLogsIndexOrderRead,
-		Delete:      resourceDatadogLogsIndexOrderDelete,
+		Description:   "Provides a Datadog Logs Index API resource. This can be used to manage the order of Datadog logs indexes.",
+		CreateContext: resourceDatadogLogsIndexOrderCreate,
+		UpdateContext: resourceDatadogLogsIndexOrderUpdate,
+		ReadContext:   resourceDatadogLogsIndexOrderRead,
+		DeleteContext: resourceDatadogLogsIndexOrderDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -33,11 +36,11 @@ func resourceDatadogLogsIndexOrder() *schema.Resource {
 	}
 }
 
-func resourceDatadogLogsIndexOrderCreate(d *schema.ResourceData, meta interface{}) error {
-	return resourceDatadogLogsIndexOrderUpdate(d, meta)
+func resourceDatadogLogsIndexOrderCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return resourceDatadogLogsIndexOrderUpdate(ctx, d, meta)
 }
 
-func resourceDatadogLogsIndexOrderUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsIndexOrderUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var ddIndexList datadogV1.LogsIndexesOrder
 	tfList := d.Get("indexes").([]interface{})
 	ddList := make([]string, len(tfList))
@@ -55,30 +58,30 @@ func resourceDatadogLogsIndexOrderUpdate(d *schema.ResourceData, meta interface{
 
 	updatedOrder, _, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndexOrder(authV1, ddIndexList)
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating logs index list")
+		return utils.TranslateClientErrorDiag(err, "error updating logs index list")
 	}
 	d.SetId(tfID)
 	return updateLogsIndexOrderState(d, &updatedOrder)
 }
 
-func updateLogsIndexOrderState(d *schema.ResourceData, order *datadogV1.LogsIndexesOrder) error {
+func updateLogsIndexOrderState(d *schema.ResourceData, order *datadogV1.LogsIndexesOrder) diag.Diagnostics {
 	if err := d.Set("indexes", order.GetIndexNames()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	return nil
 }
 
-func resourceDatadogLogsIndexOrderRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsIndexOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
 	ddIndexList, _, err := client.LogsIndexesApi.GetLogsIndexOrder(auth)
 	if err != nil {
-		return utils.TranslateClientError(err, "error getting logs index list")
+		return utils.TranslateClientErrorDiag(err, "error getting logs index list")
 	}
 	return updateLogsIndexOrderState(d, &ddIndexList)
 }
 
-func resourceDatadogLogsIndexOrderDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsIndexOrderDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	return nil
 }

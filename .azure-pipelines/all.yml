@@ -31,7 +31,7 @@ resources:
 jobs:
     - job: IntegrationTests
       pool:
-          vmImage: "Ubuntu-16.04"
+          vmImage: "Ubuntu-20.04"
       container:
           image: golang:latest
       services:

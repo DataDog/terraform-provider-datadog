@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func TestAccDatadogMonitorsDatasource(t *testing.T) {
@@ -17,36 +17,27 @@ func TestAccDatadogMonitorsDatasource(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceMonitorsNameFilterConfig(uniq),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkDatasourceMonitorsAttrs(accProvider, uniq, fmt.Sprintf("%s||", uniq)),
+				Check:  checkDatasourceMonitorsAttrs(accProvider, uniq, fmt.Sprintf("%s||", uniq)),
 			},
 			{
 				Config: testAccDatasourceMonitorsTagsFilterConfig(uniq),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkDatasourceMonitorsAttrs(accProvider, uniq, fmt.Sprintf("|test_datasource_monitor_scope:%s|", uniq)),
+				Check:  checkDatasourceMonitorsAttrs(accProvider, uniq, fmt.Sprintf("|test_datasource_monitor_scope:%s|", uniq)),
 			},
 			{
 				Config: testAccDatasourceMonitorsMonitorTagsFilterConfig(uniq),
-				// Because of the `depends_on` in the datasource, the plan cannot be empty.
-				// See https://www.terraform.io/docs/configuration/data-sources.html#data-resource-dependencies
-				ExpectNonEmptyPlan: true,
-				Check:              checkDatasourceMonitorsAttrs(accProvider, uniq, fmt.Sprintf("||test_datasource_monitor:%s", uniq)),
+				Check:  checkDatasourceMonitorsAttrs(accProvider, uniq, fmt.Sprintf("||test_datasource_monitor:%s", uniq)),
 			},
 		},
 	})
 }
 
-func checkDatasourceMonitorsAttrs(accProvider *schema.Provider, uniq, id string) resource.TestCheckFunc {
+func checkDatasourceMonitorsAttrs(accProvider func() (*schema.Provider, error), uniq, id string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogMonitorExists(accProvider),
 		resource.TestCheckResourceAttr("data.datadog_monitors.foo", "monitors.#", "2"),
@@ -62,20 +53,20 @@ func testAccMonitorsConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
   name = "%s"
-  type = "metric alert"
+  type = "query alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
 
   query = "avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:%s} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1"
 
-  thresholds = {
+  monitor_thresholds {
 	warning = "0.5"
 	critical = "1.0"
 	warning_recovery = "0.3"
 	critical_recovery = "0.7"
   }
 
-	threshold_windows = {
+	monitor_threshold_windows {
 		trigger_window = "last_15m"
 		recovery_window = "last_15m"
 	}
@@ -93,7 +84,7 @@ resource "datadog_monitor" "foo" {
 }
 resource "datadog_monitor" "bar" {
   name = "%s"
-  type = "metric alert"
+  type = "query alert"
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
 
@@ -106,7 +97,7 @@ resource "datadog_monitor" "bar" {
 	critical_recovery = 0.7
   }
 
-	threshold_windows = {
+	monitor_threshold_windows {
 		trigger_window = "last_15m"
 		recovery_window = "last_15m"
 	}

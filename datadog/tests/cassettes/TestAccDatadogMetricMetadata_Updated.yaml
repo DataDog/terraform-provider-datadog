@@ -13,19 +13,11 @@ interactions:
       Dd-Operation-Id:
       - UpdateMetricMetadata
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "8323165033835399262"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7616816010191954611"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: PUT
   response:
-    body: '{"description":"some description","short_name":"short name for metric_metadata
-      foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
+    body: '{"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
     headers:
       Cache-Control:
       - no-cache
@@ -36,12 +28,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:44:35 GMT
+      - Fri, 12 Mar 2021 22:12:04 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:44:35 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -49,9 +38,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - K+LsnQGhykcclCO/QBe1u9yP/vNF8TRWSb2OTZtzGOlFx5BKK+mFDQpddQfZ9etG
+      - E+1VETRHejJtZU2J4RKwTITCVJud3d6AfD2N6ITXOWwbuRBfIAeHdqJVTyTstMc7
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -61,78 +50,18 @@ interactions:
       X-Ratelimit-Remaining:
       - "1998"
       X-Ratelimit-Reset:
-      - "25"
+      - "56"
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetMetricMetadata
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "9156106207134939534"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7616816010191954611"
-    url: https://api.datadoghq.com/api/v1/metrics/foo
-    method: GET
-  response:
-    body: '{"description":"some description","short_name":"short name for metric_metadata
-      foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 31 Dec 2020 14:44:35 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:44:35 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - cB3Yf+wJS5vlTpgzj24AQglNOrIEZtFePsfYmr0BbATPUfZpsVci5ROJIo1ylPFB
-      X-Dd-Version:
-      - "35.3622023"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: '{"series":[{"metric":"foo","points":[[1609425875,1]]}]}'
+    body: '{"series":[{"metric":"foo","points":[[1615587123,1]]}]}'
     form: {}
     headers:
       Content-Type:
       - application/json
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4500069002748261506"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "4500069002748261506"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/series
     method: POST
   response:
@@ -147,7 +76,7 @@ interactions:
       Content-Type:
       - text/json
       Date:
-      - Thu, 31 Dec 2020 14:44:35 GMT
+      - Fri, 12 Mar 2021 22:12:04 GMT
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
@@ -161,20 +90,16 @@ interactions:
     body: ""
     form: {}
     headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetMetricMetadata
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "7135409366970858"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7135409366970858"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
-    body: '{"description":"some description","short_name":"short name for metric_metadata
-      foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
+    body: '{"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
     headers:
       Cache-Control:
       - no-cache
@@ -185,12 +110,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:44:36 GMT
+      - Fri, 12 Mar 2021 22:12:04 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:44:36 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -198,9 +120,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - hvGgrZKJsunVw/EkhwCmQ6hho+DHMjc+JnsPJbwWroIPe2LyJs6C9dZvNRMLwmj/
+      - Slfd7EQ+iaUr68gMF4Wevg1YeynmFd00Ip8u0r10nxghAjG3Z4J7Vily2m11tJTZ
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -215,19 +137,11 @@ interactions:
       Dd-Operation-Id:
       - GetMetricMetadata
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "1110657005095363804"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7616816010191954611"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
-    body: '{"description":"some description","short_name":"short name for metric_metadata
-      foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
+    body: '{"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
     headers:
       Cache-Control:
       - no-cache
@@ -238,12 +152,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:44:36 GMT
+      - Fri, 12 Mar 2021 22:12:05 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:44:36 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -251,9 +162,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - L9yXsS+ObtxheM9j1h3Fl4ipUfwPEbPegvGYeU5IgaGzTjsfxyM0nvhrfhmFCfk+
+      - Wc/Ep2sab8gerQUoP4aNzYJ/CkbJ9cGZXKf0AQoXNQakZH0hTqKwiThRHWgaxUCj
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -268,19 +179,11 @@ interactions:
       Dd-Operation-Id:
       - GetMetricMetadata
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "2893601038932730795"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7616816010191954611"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
-    body: '{"description":"some description","short_name":"short name for metric_metadata
-      foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
+    body: '{"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
     headers:
       Cache-Control:
       - no-cache
@@ -291,12 +194,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:44:36 GMT
+      - Fri, 12 Mar 2021 22:12:05 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:44:36 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -304,9 +204,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - YmcVoRdHC2FQU/pMgyid9ykpRqCXukT4YflUpTu4RMcvvg88qgN1Qs+pR3pna/tm
+      - GaBrMp9hG62dX6k8YEI10yL1utZ779uo3r2arahiBdRifYlH17HMqEEnAT7O3yNi
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -324,19 +224,11 @@ interactions:
       Dd-Operation-Id:
       - UpdateMetricMetadata
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "8455031674546994534"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7616816010191954611"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: PUT
   response:
-    body: '{"description":"a different description","short_name":"short name for metric_metadata
-      foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
+    body: '{"description":"a different description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
     headers:
       Cache-Control:
       - no-cache
@@ -347,12 +239,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:44:36 GMT
+      - Fri, 12 Mar 2021 22:12:06 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:44:36 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -360,9 +249,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 5se8YKL0cb5J4OSl/2lq3WFGmK1rTpgzSvBGcOrt8j33GdSyuurH+nDwG98JB3Pp
+      - 3j0u2GTfQFgb2EI58bre0n8B3mGgD5fDMymGtXFH6VojGXuCGLuQFPAl8Vx6fpNK
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -372,7 +261,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "1997"
       X-Ratelimit-Reset:
-      - "24"
+      - "54"
     status: 200 OK
     code: 200
     duration: ""
@@ -385,19 +274,11 @@ interactions:
       Dd-Operation-Id:
       - GetMetricMetadata
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "2748173920201669854"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7616816010191954611"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
-    body: '{"description":"a different description","short_name":"short name for metric_metadata
-      foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
+    body: '{"description":"a different description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
     headers:
       Cache-Control:
       - no-cache
@@ -408,12 +289,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:44:36 GMT
+      - Fri, 12 Mar 2021 22:12:06 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:44:36 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -421,58 +299,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - cmtR0GAE97Cw31RDxatNZFm3eZ0KmOMKU4MtdmpiYxppDJKsmDIBWP3BOXxY/6Xa
+      - ap4u79DStmmUaZZKftsKVSCatJwzXQobFKbE6QNwYRTAqaaJhfQIZxiNyELpTVRT
       X-Dd-Version:
-      - "35.3622023"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/go-datadog-api (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "1863521883762799141"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "1863521883762799141"
-    url: https://api.datadoghq.com/api/v1/metrics/foo
-    method: GET
-  response:
-    body: '{"description":"a different description","short_name":"short name for metric_metadata
-      foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 31 Dec 2020 14:44:36 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:44:36 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - O9TPQbH0Gf+dXYG3y9ZJXIrqlw9ARqKjROukWmpAUcSENX3KNtySis6hG/k6KXkd
-      X-Dd-Version:
-      - "35.3622023"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -487,19 +316,11 @@ interactions:
       Dd-Operation-Id:
       - GetMetricMetadata
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "6528915876291262479"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7616816010191954611"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
-    body: '{"description":"a different description","short_name":"short name for metric_metadata
-      foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
+    body: '{"description":"a different description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
     headers:
       Cache-Control:
       - no-cache
@@ -510,12 +331,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:44:37 GMT
+      - Fri, 12 Mar 2021 22:12:06 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:44:37 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -523,62 +341,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - Y4/yu86z+h99DQoueX03p+B7lx5e5ONoY6NAIL7daGtW01orINbTRyE85hoWyxkS
+      - 3D9FJIDKlXJbOW5I4xmTHke7dEGyl6YmfhwBbIfTKq1A+ePdmIVops+3OhJ98ybm
       X-Dd-Version:
-      - "35.3622023"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetMetricMetadata
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "6086035566959715106"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7616816010191954611"
-    url: https://api.datadoghq.com/api/v1/metrics/foo
-    method: GET
-  response:
-    body: '{"description":"a different description","short_name":"short name for metric_metadata
-      foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 31 Dec 2020 14:44:37 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:44:37 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - cB3Yf+wJS5vlTpgzj24AQglNOrIEZtFePsfYmr0BbATPUfZpsVci5ROJIo1ylPFB
-      X-Dd-Version:
-      - "35.3622023"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestAccDatadogIpRangesDatasource_existing(t *testing.T) {
@@ -12,7 +12,7 @@ func TestAccDatadogIpRangesDatasource_existing(t *testing.T) {
 	_, accProviders := testAccProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		Providers: accProviders,
+		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: `

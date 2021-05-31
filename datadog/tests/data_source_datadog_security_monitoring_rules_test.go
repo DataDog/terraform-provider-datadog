@@ -11,9 +11,9 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 const tfSecurityRulesSource = "data.datadog_security_monitoring_rules.acceptance_test"
@@ -25,9 +25,9 @@ func TestAccDatadogSecurityMonitoringRuleDatasource(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				// Create a rule to make sure we have at least one non-default rule
@@ -67,9 +67,10 @@ func TestAccDatadogSecurityMonitoringRuleDatasource(t *testing.T) {
 	})
 }
 
-func securityMonitoringCheckRuleCountNoFilter(accProvider *schema.Provider) func(state *terraform.State) error {
+func securityMonitoringCheckRuleCountNoFilter(accProvider func() (*schema.Provider, error)) func(state *terraform.State) error {
 	return func(state *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
 
@@ -84,9 +85,10 @@ func securityMonitoringCheckRuleCountNoFilter(accProvider *schema.Provider) func
 	}
 }
 
-func securityMonitoringCheckRuleCountNameFilter(accProvider *schema.Provider, name string) resource.TestCheckFunc {
+func securityMonitoringCheckRuleCountNameFilter(accProvider func() (*schema.Provider, error), name string) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
 
@@ -107,9 +109,10 @@ func securityMonitoringCheckRuleCountNameFilter(accProvider *schema.Provider, na
 	}
 }
 
-func securityMonitoringCheckRuleCountTagsFilter(accProvider *schema.Provider, filterTag string) resource.TestCheckFunc {
+func securityMonitoringCheckRuleCountTagsFilter(accProvider func() (*schema.Provider, error), filterTag string) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
 		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
@@ -130,9 +133,10 @@ func securityMonitoringCheckRuleCountTagsFilter(accProvider *schema.Provider, fi
 	}
 }
 
-func securityMonitoringCheckRuleCountDefaultFilter(accProvider *schema.Provider, isDefault bool) resource.TestCheckFunc {
+func securityMonitoringCheckRuleCountDefaultFilter(accProvider func() (*schema.Provider, error), isDefault bool) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
 		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,

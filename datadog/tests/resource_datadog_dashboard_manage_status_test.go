@@ -14,12 +14,10 @@ resource "datadog_dashboard" "manage_status_dashboard" {
 	widget {
 		manage_status_definition {
 			sort = "triggered,desc"
-			count = "50"
 			title_size = "20"
 			title = ""
 			title_align = "center"
 			hide_zero_counts = true
-			start = "0"
 			summary_type = "combined"
 			color_preference = "background"
 			query = "env:prod group_status:alert"
@@ -53,8 +51,6 @@ var datadogDashboardManageStatusAsserts = []string{
 	"widget.0.manage_status_definition.0.title_size = 20",
 	"widget.0.manage_status_definition.0.sort = triggered,desc",
 	"widget.0.manage_status_definition.0.title_align = center",
-	"widget.0.manage_status_definition.0.start = 0",
-	"widget.0.manage_status_definition.0.count = 50",
 	"title = {{uniq}}",
 	"widget.0.manage_status_definition.0.query = env:prod group_status:alert",
 }

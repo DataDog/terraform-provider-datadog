@@ -9,10 +9,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
-	communityClient "github.com/zorkian/go-datadog-api"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func TestAccDatadogUser_Updated(t *testing.T) {
@@ -22,9 +21,9 @@ func TestAccDatadogUser_Updated(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogUserConfigRequired(username),
@@ -64,9 +63,9 @@ func TestAccDatadogUser_Invitation(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogUserConfigRequired(username),
@@ -93,9 +92,9 @@ func TestAccDatadogUser_NoInvitation(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogUserConfigRequiredNoInvitation(username),
@@ -122,9 +121,9 @@ func TestAccDatadogUser_Existing(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogUserConfigRequired(username),
@@ -161,9 +160,9 @@ func TestAccDatadogUser_RoleDatasource(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogUserDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogUserConfigReadOnlyRole(username),
@@ -187,9 +186,9 @@ func TestAccDatadogUser_UpdateRole(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogUserDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogUserConfigRoleUpdate1(username),
@@ -199,8 +198,8 @@ func TestAccDatadogUser_UpdateRole(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "2"),
-					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.ro_role"),
 					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.st_role"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.ro_role"),
 				),
 			},
 			{
@@ -211,8 +210,8 @@ func TestAccDatadogUser_UpdateRole(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
 					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "2"),
-					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.adm_role"),
 					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.st_role"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.adm_role"),
 				),
 			},
 		},
@@ -223,39 +222,15 @@ func testCheckUserHasRole(username string, roleSource string) resource.TestCheck
 	return func(s *terraform.State) error {
 		rootModule := s.RootModule()
 		roleID := rootModule.Resources[roleSource].Primary.Attributes["id"]
-		roleIDHash := schema.HashSchema(&schema.Schema{Type: schema.TypeString})(roleID)
 
-		return resource.TestCheckResourceAttr(username, fmt.Sprintf("roles.%d", roleIDHash), roleID)(s)
+		return resource.TestCheckTypeSetElemAttr(username, "roles.*", roleID)(s)
 	}
 }
 
-func testAccCheckDatadogUserDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func testAccCheckDatadogUserV2Destroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
-		client := providerConf.CommunityClient
-
-		if err := datadogUserDestroyHelper(s, client); err != nil {
-			return err
-		}
-		return nil
-	}
-}
-
-func testAccCheckDatadogUserExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
-		client := providerConf.CommunityClient
-
-		if err := datadogUserExistsHelper(s, client); err != nil {
-			return err
-		}
-		return nil
-	}
-}
-
-func testAccCheckDatadogUserV2Destroy(accProvider *schema.Provider) func(*terraform.State) error {
-	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
 
@@ -266,9 +241,10 @@ func testAccCheckDatadogUserV2Destroy(accProvider *schema.Provider) func(*terraf
 	}
 }
 
-func testAccCheckDatadogUserV2Exists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
+func testAccCheckDatadogUserV2Exists(accProvider func() (*schema.Provider, error), n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV2 := providerConf.AuthV2
 
@@ -357,37 +333,6 @@ resource "datadog_user" "bar" {
   email     = "%s"
   name      = "Other User"
 }`, uniq)
-}
-
-func datadogUserDestroyHelper(s *terraform.State, client *communityClient.Client) error {
-	for _, r := range s.RootModule().Resources {
-		id := r.Primary.ID
-		u, err := client.GetUser(id)
-
-		if err != nil {
-			if strings.Contains(err.Error(), "404 Not Found") {
-				continue
-			}
-			return fmt.Errorf("received an error retrieving user %s", err)
-		}
-
-		// Datadog only disables user on DELETE
-		if u.GetDisabled() {
-			continue
-		}
-		return fmt.Errorf("user still enabled")
-	}
-	return nil
-}
-
-func datadogUserExistsHelper(s *terraform.State, client *communityClient.Client) error {
-	for _, r := range s.RootModule().Resources {
-		id := r.Primary.ID
-		if _, err := client.GetUser(id); err != nil {
-			return fmt.Errorf("received an error retrieving user %s", err)
-		}
-	}
-	return nil
 }
 
 func datadogUserV2DestroyHelper(ctx context.Context, s *terraform.State, client *datadogV2.APIClient) error {

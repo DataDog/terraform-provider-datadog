@@ -20,10 +20,10 @@ func Retry(interval time.Duration, count int, call func() error) error {
 		if err == nil {
 			return nil
 		} else if errors.Is(err, retryErrorType) {
-			log.Printf(err.Error())
+			log.Print(err.Error())
 			time.Sleep(interval)
 		} else if errors.Is(err, fatalErrorType) {
-			log.Printf(err.Error())
+			log.Print(err.Error())
 			return err
 		}
 	}

@@ -1,13 +1,15 @@
 package datadog
 
 import (
+	"context"
 	"errors"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/structure"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/structure"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var computedFields = []string{"id", "author_handle", "author_name", "created_at", "modified_at", "url"}
@@ -16,13 +18,13 @@ const path = "/api/v1/dashboard"
 
 func resourceDatadogDashboardJSON() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog dashboard JSON resource. This can be used to create and manage Datadog dashboards using the JSON definition.",
-		Create:      resourceDatadogDashboardJSONCreate,
-		Read:        resourceDatadogDashboardJSONRead,
-		Update:      resourceDatadogDashboardJSONUpdate,
-		Delete:      resourceDatadogDashboardJSONDelete,
+		Description:   "Provides a Datadog dashboard JSON resource. This can be used to create and manage Datadog dashboards using the JSON definition.",
+		CreateContext: resourceDatadogDashboardJSONCreate,
+		ReadContext:   resourceDatadogDashboardJSONRead,
+		UpdateContext: resourceDatadogDashboardJSONUpdate,
+		DeleteContext: resourceDatadogDashboardJSONDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"dashboard": {
@@ -63,7 +65,7 @@ func deleteWidgetID(widgets []interface{}) {
 	}
 }
 
-func resourceDatadogDashboardJSONRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardJSONRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -76,65 +78,65 @@ func resourceDatadogDashboardJSONRead(d *schema.ResourceData, meta interface{}) 
 			d.SetId("")
 			return nil
 		}
-		return err
+		return diag.FromErr(err)
 	}
 
 	respMap, err := utils.ConvertResponseByteToMap(respByte)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	return updateDashboardJSONState(d, respMap)
 }
 
-func resourceDatadogDashboardJSONCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	dashboard := d.Get("dashboard")
+	dashboard := d.Get("dashboard").(string)
 
-	respByte, _, err := utils.SendRequest(authV1, datadogClientV1, "POST", path, dashboard)
+	respByte, _, err := utils.SendRequest(authV1, datadogClientV1, "POST", path, &dashboard)
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating resource")
+		return utils.TranslateClientErrorDiag(err, "error creating resource")
 	}
 
 	respMap, err := utils.ConvertResponseByteToMap(respByte)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	id, ok := respMap["id"]
 	if !ok {
-		return errors.New("error retrieving id from response")
+		return diag.FromErr(errors.New("error retrieving id from response"))
 	}
 	d.SetId(id.(string))
 
 	return updateDashboardJSONState(d, respMap)
 }
 
-func resourceDatadogDashboardJSONUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardJSONUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	dashboard := d.Get("dashboard")
+	dashboard := d.Get("dashboard").(string)
 	id := d.Id()
 
-	respByte, _, err := utils.SendRequest(authV1, datadogClientV1, "PUT", path+"/"+id, dashboard)
+	respByte, _, err := utils.SendRequest(authV1, datadogClientV1, "PUT", path+"/"+id, &dashboard)
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating dashboard")
+		return utils.TranslateClientErrorDiag(err, "error updating dashboard")
 	}
 
 	respMap, err := utils.ConvertResponseByteToMap(respByte)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	return updateDashboardJSONState(d, respMap)
 }
 
-func resourceDatadogDashboardJSONDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDashboardJSONDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -143,16 +145,16 @@ func resourceDatadogDashboardJSONDelete(d *schema.ResourceData, meta interface{}
 
 	_, _, err := utils.SendRequest(authV1, datadogClientV1, "DELETE", path+"/"+id, nil)
 	if err != nil {
-		return utils.TranslateClientError(err, "error deleting dashboard")
+		return utils.TranslateClientErrorDiag(err, "error deleting dashboard")
 	}
 
 	return nil
 }
 
-func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]interface{}) error {
+func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]interface{}) diag.Diagnostics {
 	if v, ok := dashboard["url"]; ok {
 		if err := d.Set("url", v.(string)); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 
@@ -166,11 +168,11 @@ func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]inter
 
 	dashboardString, err := structure.FlattenJsonToString(dashboard)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if err = d.Set("dashboard", dashboardString); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	return nil
 }

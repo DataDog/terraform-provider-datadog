@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"reflect"
 	"strconv"
@@ -16,8 +15,9 @@ import (
 	_ "time/tzdata"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 type downtimeOrDowntimeChild interface {
@@ -96,13 +96,13 @@ func (d *downtimeChild) GetActiveChildOk() (*datadogV1.DowntimeChild, bool) {
 
 func resourceDatadogDowntime() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.",
-		Create:      resourceDatadogDowntimeCreate,
-		Read:        resourceDatadogDowntimeRead,
-		Update:      resourceDatadogDowntimeUpdate,
-		Delete:      resourceDatadogDowntimeDelete,
+		Description:   "Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.",
+		CreateContext: resourceDatadogDowntimeCreate,
+		ReadContext:   resourceDatadogDowntimeRead,
+		UpdateContext: resourceDatadogDowntimeUpdate,
+		DeleteContext: resourceDatadogDowntimeDelete,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogDowntimeImport,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"active": {
@@ -390,18 +390,18 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, client *da
 	return &dt, nil
 }
 
-func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDowntimeCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
 	dts, err := buildDowntimeStruct(authV1, d, datadogClientV1, false)
 	if err != nil {
-		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	dt, _, err := datadogClientV1.DowntimesApi.CreateDowntime(authV1, *dts)
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating downtime")
+		return utils.TranslateClientErrorDiag(err, "error creating downtime")
 	}
 
 	d.SetId(strconv.Itoa(int(dt.GetId())))
@@ -409,14 +409,14 @@ func resourceDatadogDowntimeCreate(d *schema.ResourceData, meta interface{}) err
 	return updateDowntimeState(d, &dt)
 }
 
-func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDowntimeRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
 	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	dt, httpresp, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, id)
@@ -425,7 +425,7 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error getting downtime")
+		return utils.TranslateClientErrorDiag(err, "error getting downtime")
 	}
 
 	if canceled, ok := dt.GetCanceledOk(); ok && canceled != nil {
@@ -444,25 +444,25 @@ func resourceDatadogDowntimeRead(d *schema.ResourceData, meta interface{}) error
 	return updateDowntimeState(d, &dt)
 }
 
-func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild) error {
+func updateDowntimeState(d *schema.ResourceData, dt *datadogV1.Downtime) diag.Diagnostics {
 	log.Printf("[DEBUG] downtime: %v", dt)
 
 	if err := d.Set("active", dt.GetActive()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("disabled", dt.GetDisabled()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("message", dt.GetMessage()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if v, ok := dt.GetMonitorIdOk(); ok && v != nil {
 		if err := d.Set("monitor_id", v); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 	if err := d.Set("timezone", dt.GetTimezone()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if r, ok := dt.GetRecurrenceOk(); ok && r != nil {
@@ -483,9 +483,7 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild) err
 		}
 		if r.GetWeekDays() != nil {
 			weekDays := make([]string, 0, len(r.GetWeekDays()))
-			for _, weekDay := range *r.WeekDays {
-				weekDays = append(weekDays, weekDay)
-			}
+			weekDays = append(weekDays, *r.WeekDays...)
 			recurrence["week_days"] = weekDays
 		}
 		if attr, ok := r.GetRruleOk(); ok {
@@ -493,16 +491,16 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild) err
 		}
 		recurrenceList = append(recurrenceList, recurrence)
 		if err := d.Set("recurrence", recurrenceList); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 	if err := d.Set("scope", dt.GetScope()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	// See the comment for monitor_tags in the schema definition above
 	if !reflect.DeepEqual(dt.GetMonitorTags(), []string{"*"}) {
 		if err := d.Set("monitor_tags", dt.GetMonitorTags()); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 
@@ -510,10 +508,10 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild) err
 	switch dt.(type) {
 	case *datadogV1.Downtime:
 		if err := d.Set("start", dt.GetStart()); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 		if err := d.Set("end", dt.GetEnd()); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 		if attr, ok := dt.GetActiveChildOk(); ok {
 			if err := d.Set("active_child_id", attr.GetId()); err != nil {
@@ -530,19 +528,19 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild) err
 	return nil
 }
 
-func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDowntimeUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
 	dt, err := buildDowntimeStruct(authV1, d, datadogClientV1, true)
 	if err != nil {
-		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 
 	id, err := getID(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	// above downtimeStruct returns nil if downtime is not set. Hence, if we are handling the cases where downtime
@@ -551,7 +549,7 @@ func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) err
 
 	updatedDowntime, _, err := datadogClientV1.DowntimesApi.UpdateDowntime(authV1, id, *dt)
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating downtime")
+		return utils.TranslateClientErrorDiag(err, "error updating downtime")
 	}
 
 	// Handle the case when a downtime is replaced. Don't set it if the `active_child_id` is set as we want to maintain
@@ -563,18 +561,18 @@ func resourceDatadogDowntimeUpdate(d *schema.ResourceData, meta interface{}) err
 	return updateDowntimeState(d, &updatedDowntime)
 }
 
-func resourceDatadogDowntimeDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogDowntimeDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
 	id, err := getID(d)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if _, err = datadogClientV1.DowntimesApi.CancelDowntime(authV1, id); err != nil {
-		return utils.TranslateClientError(err, "error deleting downtime")
+		return utils.TranslateClientErrorDiag(err, "error deleting downtime")
 	}
 
 	return nil
