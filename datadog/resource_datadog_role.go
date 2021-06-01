@@ -120,7 +120,7 @@ func resourceDatadogRoleCreate(ctx context.Context, d *schema.ResourceData, meta
 	roleReq := buildRoleCreateRequest(d)
 	resp, httpResponse, err := client.RolesApi.CreateRole(auth, roleReq)
 	if err != nil {
-		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error creating role")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error creating role")
 	}
 	roleData := resp.GetData()
 	d.SetId(roleData.GetId())
@@ -128,7 +128,7 @@ func resourceDatadogRoleCreate(ctx context.Context, d *schema.ResourceData, meta
 	return updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, client)
 }
 
-func updateRoleState(ctx context.Context, d *schema.ResourceData, roleAttrsI interface{}, roleRelations *datadog.RoleResponseRelationships, client *datadog.APIClient) error {
+func updateRoleState(ctx context.Context, d *schema.ResourceData, roleAttrsI interface{}, roleRelations *datadog.RoleResponseRelationships, client *datadog.APIClient) diag.Diagnostics {
 	type namer interface {
 		GetName() string
 	}
@@ -154,7 +154,7 @@ func updateRoleState(ctx context.Context, d *schema.ResourceData, roleAttrsI int
 	return updateRolePermissionsState(ctx, d, rolePerms.GetData(), client)
 }
 
-func updateRolePermissionsState(ctx context.Context, d *schema.ResourceData, rolePermsI interface{}, client *datadog.APIClient) error {
+func updateRolePermissionsState(ctx context.Context, d *schema.ResourceData, rolePermsI interface{}, client *datadog.APIClient) diag.Diagnostics {
 
 	// Get a list of all valid permissions, to ignore restricted perms
 	permsIDToName, err := getValidPermissions(ctx, client)
@@ -205,7 +205,7 @@ func resourceDatadogRoleRead(ctx context.Context, d *schema.ResourceData, meta i
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error getting role")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error getting role")
 	}
 	roleData := resp.GetData()
 	return updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, client)
@@ -219,7 +219,7 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 		roleReq := buildRoleUpdateRequest(d)
 		resp, httpResponse, err := client.RolesApi.UpdateRole(auth, d.Id(), roleReq)
 		if err != nil {
-			return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error updating role")
+			return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error updating role")
 		}
 		roleData := resp.GetData()
 		if err := updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, client); err != nil {
@@ -245,7 +245,7 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 			permRelation.SetData(*permRelationData)
 			permsResponse, httpResponse, err = client.RolesApi.RemovePermissionFromRole(auth, d.Id(), *permRelation)
 			if err != nil {
-				return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error removing permission from role")
+				return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error removing permission from role")
 			}
 
 		}
@@ -257,7 +257,7 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 			permRelation.SetData(*permRelationData)
 			permsResponse, httpResponse, err = client.RolesApi.AddPermissionToRole(auth, d.Id(), *permRelation)
 			if err != nil {
-				return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error adding permission to role")
+				return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error adding permission to role")
 			}
 		}
 		// Only need to update once all the permissions have been added/revoked, with the last call response
@@ -275,7 +275,7 @@ func resourceDatadogRoleDelete(ctx context.Context, d *schema.ResourceData, meta
 
 	httpResponse, err := client.RolesApi.DeleteRole(auth, d.Id())
 	if err != nil {
-		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error deleting role")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error deleting role")
 	}
 
 	return nil

@@ -373,7 +373,7 @@ func resourceDatadogLogsPipelineCreate(ctx context.Context, d *schema.ResourceDa
 	}
 	createdPipeline, httpResponse, err := datadogClientV1.LogsPipelinesApi.CreateLogsPipeline(authV1, *ddPipeline)
 	if err != nil {
-		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "failed to create logs pipeline using Datadog API")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "failed to create logs pipeline using Datadog API")
 	}
 	d.SetId(*createdPipeline.Id)
 	return updateLogsCustomPipelineState(d, &createdPipeline)
@@ -410,7 +410,7 @@ func resourceDatadogLogsPipelineRead(ctx context.Context, d *schema.ResourceData
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "failed to get logs pipeline using Datadog API")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "failed to get logs pipeline using Datadog API")
 	}
 	return updateLogsCustomPipelineState(d, &ddPipeline)
 }
@@ -429,7 +429,7 @@ func resourceDatadogLogsPipelineUpdate(ctx context.Context, d *schema.ResourceDa
 	}
 	updatedPipeline, httpResponse, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipeline(authV1, d.Id(), *ddPipeline)
 	if err != nil {
-		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error updating logs pipeline")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error updating logs pipeline")
 	}
 	return updateLogsCustomPipelineState(d, &updatedPipeline)
 }
@@ -447,7 +447,7 @@ func resourceDatadogLogsPipelineDelete(ctx context.Context, d *schema.ResourceDa
 		if strings.Contains(err.Error(), "400 Bad Request") {
 			return nil
 		}
-		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error deleting logs pipeline")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error deleting logs pipeline")
 	}
 	return nil
 }

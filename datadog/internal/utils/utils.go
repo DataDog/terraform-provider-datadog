@@ -43,8 +43,8 @@ func TranslateClientError(err error, apiURL, msg string) error {
 }
 
 // TranslateClientErrorDiag returns client error as type diag.Diagnostics
-func TranslateClientErrorDiag(err error, msg string) diag.Diagnostics {
-	return diag.FromErr(TranslateClientError(err, msg))
+func TranslateClientErrorDiag(err error, apiURL, msg string) diag.Diagnostics {
+	return diag.FromErr(TranslateClientError(err, apiURL, msg))
 }
 
 // GetUserAgent augments the default user agent with provider details

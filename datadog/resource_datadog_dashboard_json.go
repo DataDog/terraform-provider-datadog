@@ -98,7 +98,7 @@ func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceD
 
 	respByte, httpresp, err := utils.SendRequest(authV1, datadogClientV1, "POST", path, &dashboard)
 	if err != nil {
-		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error creating resource")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error creating resource")
 	}
 
 	respMap, err := utils.ConvertResponseByteToMap(respByte)
@@ -125,7 +125,7 @@ func resourceDatadogDashboardJSONUpdate(ctx context.Context, d *schema.ResourceD
 
 	respByte, httpresp, err := utils.SendRequest(authV1, datadogClientV1, "PUT", path+"/"+id, &dashboard)
 	if err != nil {
-		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error updating dashboard")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error updating dashboard")
 	}
 
 	respMap, err := utils.ConvertResponseByteToMap(respByte)
@@ -145,7 +145,7 @@ func resourceDatadogDashboardJSONDelete(ctx context.Context, d *schema.ResourceD
 
 	_, httpresp, err := utils.SendRequest(authV1, datadogClientV1, "DELETE", path+"/"+id, nil)
 	if err != nil {
-		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error deleting dashboard")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error deleting dashboard")
 	}
 
 	return nil

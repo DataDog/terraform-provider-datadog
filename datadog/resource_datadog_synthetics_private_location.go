@@ -57,7 +57,7 @@ func resourceDatadogSyntheticsPrivateLocationCreate(ctx context.Context, d *sche
 	createdSyntheticsPrivateLocationResponse, httpResponse, err := datadogClientV1.SyntheticsApi.CreatePrivateLocation(authV1, *syntheticsPrivateLocation)
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
-		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error creating synthetics private location")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error creating synthetics private location")
 	}
 
 	createdSyntheticsPrivateLocation := createdSyntheticsPrivateLocationResponse.GetPrivateLocation()
@@ -86,7 +86,7 @@ func resourceDatadogSyntheticsPrivateLocationRead(ctx context.Context, d *schema
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error getting synthetics private location")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error getting synthetics private location")
 	}
 
 	return updateSyntheticsPrivateLocationLocalState(d, &syntheticsPrivateLocation)
@@ -100,7 +100,7 @@ func resourceDatadogSyntheticsPrivateLocationUpdate(ctx context.Context, d *sche
 	syntheticsPrivateLocation := buildSyntheticsPrivateLocationStruct(d)
 	if _, httpResponse, err := datadogClientV1.SyntheticsApi.UpdatePrivateLocation(authV1, d.Id(), *syntheticsPrivateLocation); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
-		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error updating synthetics private location")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error updating synthetics private location")
 	}
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
@@ -114,7 +114,7 @@ func resourceDatadogSyntheticsPrivateLocationDelete(ctx context.Context, d *sche
 
 	if httpResponse, err := datadogClientV1.SyntheticsApi.DeletePrivateLocation(authV1, d.Id()); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
-		return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error deleting synthetics private location")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error deleting synthetics private location")
 	}
 
 	// The resource is assumed to be destroyed, and all state is removed.

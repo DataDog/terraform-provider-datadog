@@ -71,7 +71,7 @@ func resourceDatadogIntegrationPagerdutySOCreate(ctx context.Context, d *schema.
 	so := buildIntegrationPagerdutySO(d)
 	if _, httpresp, err := datadogClientV1.PagerDutyIntegrationApi.CreatePagerDutyIntegrationService(authV1, *so); err != nil {
 		// TODO: warn user that PD integration must be enabled to be able to create service objects
-		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error creating PagerDuty integration service")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error creating PagerDuty integration service")
 	}
 	d.SetId(so.GetServiceName())
 
@@ -89,7 +89,7 @@ func resourceDatadogIntegrationPagerdutySORead(ctx context.Context, d *schema.Re
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error getting PagerDuty integration service")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error getting PagerDuty integration service")
 	}
 
 	d.Set("service_name", so.GetServiceName())
@@ -112,7 +112,7 @@ func resourceDatadogIntegrationPagerdutySOUpdate(ctx context.Context, d *schema.
 
 	serviceKey := buildIntegrationPagerdutyServiceKey(d)
 	if httpresp, err := datadogClientV1.PagerDutyIntegrationApi.UpdatePagerDutyIntegrationService(authV1, d.Id(), *serviceKey); err != nil {
-		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error updating PagerDuty integration service")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error updating PagerDuty integration service")
 	}
 
 	return resourceDatadogIntegrationPagerdutySORead(ctx, d, meta)
@@ -127,7 +127,7 @@ func resourceDatadogIntegrationPagerdutySODelete(ctx context.Context, d *schema.
 	defer integrationPdMutex.Unlock()
 
 	if httpresp, err := datadogClientV1.PagerDutyIntegrationApi.DeletePagerDutyIntegrationService(authV1, d.Id()); err != nil {
-		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error deleting PagerDuty integration service")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error deleting PagerDuty integration service")
 	}
 
 	return nil

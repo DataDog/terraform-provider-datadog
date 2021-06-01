@@ -35,7 +35,7 @@ func dataSourceDatadogPermissionsRead(ctx context.Context, d *schema.ResourceDat
 
 	res, resp, err := datadogClientV2.RolesApi.ListPermissions(authV2)
 	if err != nil {
-		return utils.TranslateClientError(err, resp.Request.URL.Host, "error listing permissions")
+		return utils.TranslateClientErrorDiag(err, resp.Request.URL.Host, "error listing permissions")
 	}
 	perms := res.GetData()
 	permsNameToID := make(map[string]string, len(perms))

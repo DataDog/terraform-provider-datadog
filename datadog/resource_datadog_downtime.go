@@ -315,7 +315,7 @@ func resourceDatadogDowntimeCreate(ctx context.Context, d *schema.ResourceData, 
 	}
 	dt, httpresp, err := datadogClientV1.DowntimesApi.CreateDowntime(authV1, *dts)
 	if err != nil {
-		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error creating downtime")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error creating downtime")
 	}
 
 	d.SetId(strconv.Itoa(int(dt.GetId())))
@@ -339,7 +339,7 @@ func resourceDatadogDowntimeRead(ctx context.Context, d *schema.ResourceData, me
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error getting downtime")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error getting downtime")
 	}
 
 	if canceled, ok := dt.GetCanceledOk(); ok && canceled != nil {
@@ -437,7 +437,7 @@ func resourceDatadogDowntimeUpdate(ctx context.Context, d *schema.ResourceData, 
 
 	updatedDowntime, httpresp, err := datadogClientV1.DowntimesApi.UpdateDowntime(authV1, id, *dt)
 	if err != nil {
-		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error updating downtime")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error updating downtime")
 	}
 	// handle the case when a downtime is replaced
 	d.SetId(strconv.FormatInt(dt.GetId(), 10))
@@ -456,7 +456,7 @@ func resourceDatadogDowntimeDelete(ctx context.Context, d *schema.ResourceData, 
 	}
 
 	if httpresp, err := datadogClientV1.DowntimesApi.CancelDowntime(authV1, id); err != nil {
-		return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error deleting downtime")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error deleting downtime")
 	}
 
 	return nil
