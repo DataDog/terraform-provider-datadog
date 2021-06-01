@@ -186,7 +186,7 @@ func testAccCheckDatadogSloCorrectionExists(accProvider func() (*schema.Provider
 			}
 			id := r.Primary.ID
 			if _, httpresp, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.GetSLOCorrection(auth, id); err != nil {
-				return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error checking slo_correction existence")
+				return utils.TranslateClientError(err, httpresp.Request.URL.Host, "error checking slo_correction existence")
 			}
 		}
 		return nil
