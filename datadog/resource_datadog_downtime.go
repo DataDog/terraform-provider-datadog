@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"reflect"
 	"strconv"
@@ -444,7 +445,7 @@ func resourceDatadogDowntimeRead(ctx context.Context, d *schema.ResourceData, me
 	return updateDowntimeState(d, &dt)
 }
 
-func updateDowntimeState(d *schema.ResourceData, dt *datadogV1.Downtime) diag.Diagnostics {
+func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild) diag.Diagnostics {
 	log.Printf("[DEBUG] downtime: %v", dt)
 
 	if err := d.Set("active", dt.GetActive()); err != nil {
@@ -515,15 +516,15 @@ func updateDowntimeState(d *schema.ResourceData, dt *datadogV1.Downtime) diag.Di
 		}
 		if attr, ok := dt.GetActiveChildOk(); ok {
 			if err := d.Set("active_child_id", attr.GetId()); err != nil {
-				return err
+				return diag.FromErr(err)
 			}
 		}
 	case *downtimeChild:
 		if err := d.Set("active_child_id", dt.GetId()); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	default:
-		return fmt.Errorf("Unsupported interface passed into updateDowntimeState.")
+		return diag.FromErr(fmt.Errorf("Unsupported interface passed into updateDowntimeState."))
 	}
 	return nil
 }
@@ -576,13 +577,6 @@ func resourceDatadogDowntimeDelete(ctx context.Context, d *schema.ResourceData, 
 	}
 
 	return nil
-}
-
-func resourceDatadogDowntimeImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogDowntimeRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }
 
 func getID(d *schema.ResourceData) (int64, error) {
