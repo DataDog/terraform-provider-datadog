@@ -524,7 +524,7 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild) dia
 			return diag.FromErr(err)
 		}
 	default:
-		return diag.FromErr(fmt.Errorf("Unsupported interface passed into updateDowntimeState."))
+		return diag.FromErr(fmt.Errorf("unsupported interface passed into updateDowntimeState"))
 	}
 	return nil
 }
