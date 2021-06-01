@@ -1,3 +1,38 @@
+## 3.0.0 (May 27, 2021)
+
+IMPROVEMENTS:
+
+-   Upgrade terraform-plugin-sdk to v2. See https://www.terraform.io/docs/extend/guides/v2-upgrade-guide.html for all the internal changes.
+
+NOTES:
+
+-   `datadog_monitor`: Remove the `threshold` deprecated property.
+-   `datadog_monitor`: Remove the `threshold_windows` deprecated property.
+-   `datadog_monitor`: Remove the `silenced` deprecated property.
+-   `datadog_dashboard`: Remove the `layout` deprecated property from widgets.
+-   `datadog_dashboard`: Remove the `time` deprecated property from widgets.
+-   `datadog_dashboard`: Remove the `logset` deprecated property from widgets.
+-   `datadog_dashboard`: Remove the `count` deprecated property from widgets.
+-   `datadog_dashboard`: Remove the `start` deprecated property from widgets.
+-   `datadog_dashboard`: Remove the `compute` deprecated property from widgets.
+-   `datadog_dashboard`: Remove the `search` deprecated property from widgets.
+-   `datadog_integration_pagerduty`: Remove the `services` deprecated property.
+-   `datadog_logs_archive`: Remove the `s3` deprecated property.
+-   `datadog_logs_archive`: Remove the `azure` deprecated property.
+-   `datadog_logs_archive`: Remove the `gcs` deprecated property.
+-   `datadog_screenboard`: Remove the deprecated resource
+-   `datadog_service_level_objective`: Remove the `monitor_search` deprecated property.
+-   `datadog_timeboard`: Remove the deprecated resource.
+-   `datadog_synthetics_test`: Remove the `request` deprecated property.
+-   `datadog_synthetics_test`: Remove the `assertions` deprecated property.
+-   `datadog_synthetics_test`: Remove the `options` deprecated property.
+-   `datadog_synthetics_test`: Remove the `step` deprecated property.
+-   `datadog_synthetics_test`: Remove the `variable` deprecated property.
+-   `datadog_user`: Remove the `handle` deprecated property.
+-   `datadog_user`: Remove the `is_admin` deprecated property.
+-   `datadog_user`: Remove the `access_role` deprecated property.
+-   `datadog_user`: Remove the `role` deprecated property.
+
 ## 2.26.1 (May 20, 2021)
 
 BUGFIXES:
