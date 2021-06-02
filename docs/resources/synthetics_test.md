@@ -461,7 +461,7 @@ Optional:
 
 Required:
 
-- **tick_every** (Number) How often the test should run (in seconds). Current possible values are `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` plus `60` for API tests or `300` for browser tests.
+- **tick_every** (Number) How often the test should run (in seconds). Current possible values are `30`, `60`, `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` for API tests or `300` for browser tests.
 
 Optional:
 

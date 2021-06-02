@@ -346,7 +346,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:    true,
 				},
 				"tick_every": {
-					Description:      "How often the test should run (in seconds). Current possible values are `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` plus `60` for API tests or `300` for browser tests.",
+					Description:      "How often the test should run (in seconds). Current possible values are `30`, `60`, `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` for API tests or `300` for browser tests.",
 					Type:             schema.TypeInt,
 					Required:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
