@@ -140,10 +140,9 @@ func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.Resource
 	datadogDefinition.SetTenantName(tenantName)
 	datadogDefinition.SetClientId(clientID)
 	// Optional params
-	hostFilters, exists := terraformDefinition.GetOk("host_filters")
-	if exists {
-		datadogDefinition.SetHostFilters(hostFilters.(string))
-	}
+	hostFilters := terraformDefinition.Get("host_filters")
+	datadogDefinition.SetHostFilters(hostFilters.(string))
+
 	clientSecret, exists := terraformDefinition.GetOk("client_secret")
 	if exists {
 		datadogDefinition.SetClientSecret(clientSecret.(string))

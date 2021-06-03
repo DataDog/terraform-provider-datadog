@@ -90,6 +90,30 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 						"excluded_regions.1", "us-west-2"),
 				),
 			},
+			{
+				Config: testAccDatadogIntegrationAWSConfig(accountID),
+				Check: resource.ComposeTestCheckFunc(
+					checkIntegrationAWSExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"account_id", accountID),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"role_name", "testacc-datadog-integration-role"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"excluded_regions.#", "0"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"filter_tags.#", "0"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"host_tags.#", "0"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"account_specific_namespace_rules.#", "0"),
+				),
+			},
 		},
 	})
 }

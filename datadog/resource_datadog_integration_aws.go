@@ -80,16 +80,16 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData, accountID string, 
 		for _, s := range attr.([]interface{}) {
 			filterTags = append(filterTags, s.(string))
 		}
-		iaws.SetFilterTags(filterTags)
 	}
+	iaws.SetFilterTags(filterTags)
 
 	hostTags := make([]string, 0)
 	if attr, ok := d.GetOk("host_tags"); ok {
 		for _, s := range attr.([]interface{}) {
 			hostTags = append(hostTags, s.(string))
 		}
-		iaws.SetHostTags(hostTags)
 	}
+	iaws.SetHostTags(hostTags)
 
 	accountSpecificNamespaceRules := make(map[string]bool)
 	if attr, ok := d.GetOk("account_specific_namespace_rules"); ok {
@@ -97,16 +97,16 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData, accountID string, 
 		for k, v := range attr.(map[string]interface{}) {
 			accountSpecificNamespaceRules[k] = v.(bool)
 		}
-		iaws.SetAccountSpecificNamespaceRules(accountSpecificNamespaceRules)
 	}
+	iaws.SetAccountSpecificNamespaceRules(accountSpecificNamespaceRules)
 
 	excludedRegions := make([]string, 0)
 	if attr, ok := d.GetOk("excluded_regions"); ok {
 		for _, s := range attr.([]interface{}) {
 			excludedRegions = append(excludedRegions, s.(string))
 		}
-		iaws.SetExcludedRegions(excludedRegions)
 	}
+	iaws.SetExcludedRegions(excludedRegions)
 
 	return iaws
 }
