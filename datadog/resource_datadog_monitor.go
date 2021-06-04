@@ -613,9 +613,9 @@ func resourceDatadogMonitorUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	m.Id = &i
 
-	monitorResp, _, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i, *m)
+	monitorResp, httpresp, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i, *m)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "", "error updating monitor")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error updating monitor")
 	}
 
 	return updateMonitorState(d, meta, &monitorResp)
