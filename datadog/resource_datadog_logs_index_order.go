@@ -58,7 +58,7 @@ func resourceDatadogLogsIndexOrderUpdate(ctx context.Context, d *schema.Resource
 
 	updatedOrder, httpResponse, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndexOrder(authV1, ddIndexList)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error updating logs index list")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error updating logs index list")
 	}
 	d.SetId(tfID)
 	return updateLogsIndexOrderState(d, &updatedOrder)
@@ -77,7 +77,7 @@ func resourceDatadogLogsIndexOrderRead(ctx context.Context, d *schema.ResourceDa
 	auth := providerConf.AuthV1
 	ddIndexList, httpResponse, err := client.LogsIndexesApi.GetLogsIndexOrder(auth)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error getting logs index list")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error getting logs index list")
 	}
 	return updateLogsIndexOrderState(d, &ddIndexList)
 }

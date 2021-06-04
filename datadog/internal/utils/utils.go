@@ -21,29 +21,29 @@ import (
 var DatadogProvider *schema.Provider
 
 // TranslateClientError turns an error into a message
-func TranslateClientError(err error, apiURL, msg string) error {
+func TranslateClientError(err error, apiURL *url.URL, msg string) error {
 	if msg == "" {
 		msg = "an error occurred"
 	}
 
 	if apiErr, ok := err.(CustomRequestAPIError); ok {
-		return fmt.Errorf(msg+" from %s: %v: %s", apiURL, err, apiErr.Body())
+		return fmt.Errorf(msg+" from %s: %v: %s", apiURL.String(), err, apiErr.Body())
 	}
 	if apiErr, ok := err.(datadogV1.GenericOpenAPIError); ok {
-		return fmt.Errorf(msg+" from %s: %v: %s", apiURL, err, apiErr.Body())
+		return fmt.Errorf(msg+" from %s: %v: %s", apiURL.String(), err, apiErr.Body())
 	}
 	if apiErr, ok := err.(datadogV2.GenericOpenAPIError); ok {
-		return fmt.Errorf(msg+" from %s: %v: %s", apiURL, err, apiErr.Body())
+		return fmt.Errorf(msg+" from %s: %v: %s", apiURL.String(), err, apiErr.Body())
 	}
 	if errURL, ok := err.(*url.Error); ok {
-		return fmt.Errorf(msg+" from %s (url.Error): %s", apiURL, errURL)
+		return fmt.Errorf(msg+" from %s (url.Error): %s", apiURL.String(), errURL)
 	}
 
 	return fmt.Errorf(msg+": %s", err.Error())
 }
 
 // TranslateClientErrorDiag returns client error as type diag.Diagnostics
-func TranslateClientErrorDiag(err error, apiURL, msg string) diag.Diagnostics {
+func TranslateClientErrorDiag(err error, apiURL *url.URL, msg string) diag.Diagnostics {
 	return diag.FromErr(TranslateClientError(err, apiURL, msg))
 }
 

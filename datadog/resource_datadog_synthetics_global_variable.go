@@ -112,7 +112,7 @@ func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schem
 	createdSyntheticsGlobalVariable, httpResponse, err := datadogClientV1.SyntheticsApi.CreateGlobalVariable(authV1, *syntheticsGlobalVariable)
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error creating synthetics global variable")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error creating synthetics global variable")
 	}
 
 	// If the Create callback returns with or without an error without an ID set using SetId,
@@ -136,7 +136,7 @@ func resourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error getting synthetics global variable")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error getting synthetics global variable")
 	}
 
 	return updateSyntheticsGlobalVariableLocalState(d, &syntheticsGlobalVariable)
@@ -150,7 +150,7 @@ func resourceDatadogSyntheticsGlobalVariableUpdate(ctx context.Context, d *schem
 	syntheticsGlobalVariable := buildSyntheticsGlobalVariableStruct(d)
 	if _, httpResponse, err := datadogClientV1.SyntheticsApi.EditGlobalVariable(authV1, d.Id(), *syntheticsGlobalVariable); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
-		utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error updating synthetics global variable")
+		utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error updating synthetics global variable")
 	}
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
@@ -164,7 +164,7 @@ func resourceDatadogSyntheticsGlobalVariableDelete(ctx context.Context, d *schem
 
 	if httpResponse, err := datadogClientV1.SyntheticsApi.DeleteGlobalVariable(authV1, d.Id()); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error deleting synthetics global variable")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error deleting synthetics global variable")
 	}
 
 	// The resource is assumed to be destroyed, and all state is removed.

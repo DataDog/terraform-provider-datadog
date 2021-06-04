@@ -184,7 +184,7 @@ func resourceDatadogServiceLevelObjectiveCustomizeDiff(ctx context.Context, diff
 		for _, v := range attr.(*schema.Set).List() {
 			// Check that each monitor being added to the SLO exists
 			if _, httpResponse, err := datadogClientV1.MonitorsApi.GetMonitor(authV1, int64(v.(int))); err != nil {
-				return utils.TranslateClientError(err, httpResponse.Request.URL.Host, "error finding monitor to add to SLO")
+				return utils.TranslateClientError(err, httpResponse.Request.URL, "error finding monitor to add to SLO")
 			}
 		}
 	}
@@ -333,7 +333,7 @@ func resourceDatadogServiceLevelObjectiveCreate(ctx context.Context, d *schema.R
 	_, slor := buildServiceLevelObjectiveStructs(d)
 	sloResp, httpResponse, err := datadogClientV1.ServiceLevelObjectivesApi.CreateSLO(authV1, *slor)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error creating service level objective")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error creating service level objective")
 	}
 
 	slo := &sloResp.GetData()[0]
@@ -353,7 +353,7 @@ func resourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.Res
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error getting service level objective")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error getting service level objective")
 	}
 
 	return updateSLOStateFromRead(d, sloResp.Data)
@@ -490,7 +490,7 @@ func resourceDatadogServiceLevelObjectiveUpdate(ctx context.Context, d *schema.R
 
 	updatedSLO, httpResponse, err := datadogClientV1.ServiceLevelObjectivesApi.UpdateSLO(authV1, d.Id(), *slo)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error updating service level objective")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error updating service level objective")
 	}
 
 	return updateSLOState(d, &updatedSLO.GetData()[0])
@@ -511,7 +511,7 @@ func resourceDatadogServiceLevelObjectiveDelete(ctx context.Context, d *schema.R
 		_, httpResponse, err = datadogClientV1.ServiceLevelObjectivesApi.DeleteSLO(authV1, d.Id())
 	}
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL.Host, "error deleting service level objective")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error deleting service level objective")
 	}
 	return nil
 

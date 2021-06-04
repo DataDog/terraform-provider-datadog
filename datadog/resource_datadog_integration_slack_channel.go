@@ -110,7 +110,7 @@ func resourceDatadogIntegrationSlackChannelCreate(ctx context.Context, d *schema
 
 	createdChannel, httpresp, err := datadogClient.SlackIntegrationApi.CreateSlackIntegrationChannel(auth, accountName, *ddSlackChannel)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error creating slack channel")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error creating slack channel")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", accountName, ddSlackChannel.GetName()))
@@ -133,7 +133,7 @@ func resourceDatadogIntegrationSlackChannelRead(ctx context.Context, d *schema.R
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error getting slack channel")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error getting slack channel")
 	}
 
 	return updateSlackChannelState(d, &slackChannel)
@@ -155,7 +155,7 @@ func resourceDatadogIntegrationSlackChannelUpdate(ctx context.Context, d *schema
 
 	slackChannel, httpresp, err := datadogClient.SlackIntegrationApi.UpdateSlackIntegrationChannel(auth, accountName, channelName, *ddObject)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error updating slack channel")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error updating slack channel")
 	}
 
 	// Handle case where channel name is updated
@@ -179,7 +179,7 @@ func resourceDatadogIntegrationSlackChannelDelete(ctx context.Context, d *schema
 
 	httpresp, err := datadogClient.SlackIntegrationApi.RemoveSlackIntegrationChannel(auth, accountName, channelName)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL.Host, "error deleting slack channel")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error deleting slack channel")
 	}
 
 	return nil
