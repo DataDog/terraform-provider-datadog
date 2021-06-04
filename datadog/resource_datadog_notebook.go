@@ -11169,7 +11169,7 @@ func buildDatadogNotebook(d *schema.ResourceData) (*datadogV1.NotebookCreateData
 	return result, nil
 }
 
-func resourceDatadogNotebookCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogNotebookCreate(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
@@ -14941,7 +14941,7 @@ func updateNotebookTerraformState(d *schema.ResourceData, resource datadogV1.Not
 	return nil
 }
 
-func resourceDatadogNotebookRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogNotebookRead(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
@@ -24277,7 +24277,7 @@ func buildDatadogNotebookUpdate(d *schema.ResourceData) (*datadogV1.NotebookUpda
 	return result, nil
 }
 
-func resourceDatadogNotebookUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogNotebookUpdate(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
@@ -24309,7 +24309,7 @@ func resourceDatadogNotebookUpdate(ctx context.Context, d *schema.ResourceData, 
 	return updateNotebookTerraformState(d, resource)
 }
 
-func resourceDatadogNotebookDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogNotebookDelete(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV1
 	auth := providerConf.AuthV1
