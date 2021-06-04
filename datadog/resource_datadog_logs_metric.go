@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -180,7 +181,7 @@ func resourceDatadogLogsMetricCreate(ctx context.Context, d *schema.ResourceData
 
 	resultLogsMetricCreateData, err := buildDatadogLogsMetric(d)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "", "error building LogsMetric object")
+		return diag.FromErr(fmt.Errorf("error building LogsMetric object: %w", err))
 	}
 
 	ddObject := datadogV2.NewLogsMetricCreateRequestWithDefaults()
@@ -299,7 +300,7 @@ func resourceDatadogLogsMetricUpdate(ctx context.Context, d *schema.ResourceData
 
 	resultLogsMetricUpdateData, err := buildDatadogLogsMetricUpdate(d)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "", "error building LogsMetric object")
+		return diag.FromErr(fmt.Errorf("error building LogsMetric object: %w", err))
 	}
 
 	ddObject := datadogV2.NewLogsMetricUpdateRequestWithDefaults()

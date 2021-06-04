@@ -74,7 +74,7 @@ func resourceDatadogIntegrationAwsLambdaArnRead(ctx context.Context, d *schema.R
 
 	accountID, lambdaArn, err := utils.AccountAndLambdaArnFromID(d.Id())
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "", fmt.Sprintf("error getting aws account ID and lambda ARN from id: %s", d.Id()))
+		return diag.FromErr(err)
 	}
 
 	logCollections, httpresp, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1)
@@ -104,7 +104,7 @@ func resourceDatadogIntegrationAwsLambdaArnDelete(ctx context.Context, d *schema
 
 	accountID, lambdaArn, err := utils.AccountAndLambdaArnFromID(d.Id())
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "", fmt.Sprintf("error parsing account ID and lamdba ARN from ID: %s", d.Id()))
+		return diag.FromErr(err)
 	}
 
 	attachLambdaArnRequest := datadogV1.NewAWSAccountAndLambdaRequest(accountID, lambdaArn)

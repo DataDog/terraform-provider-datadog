@@ -34,7 +34,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			}
 			metricTypeValidated, err := datadogV2.NewMetricTagConfigurationMetricTypesFromValue(metricType.(string))
 			if err != nil {
-				return utils.TranslateClientError(err, "", "error validating diff")
+				return fmt.Errorf("error validating diff: %w", err)
 			}
 			if includePercentilesOk && *metricTypeValidated != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 				return fmt.Errorf("cannot use include_percentiles with a metric_type of %s, must use metric_type of 'distribution'", metricType)
@@ -92,7 +92,7 @@ func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.Metr
 
 	metricType, err := datadogV2.NewMetricTagConfigurationMetricTypesFromValue(d.Get("metric_type").(string))
 	if err != nil {
-		return nil, utils.TranslateClientError(err, "", "error building MetricTagConfiguration")
+		return nil, fmt.Errorf("error building MetricTagConfiguration: %w", err)
 	}
 	attributes.SetMetricType(*metricType)
 
@@ -151,7 +151,7 @@ func resourceDatadogMetricTagConfigurationCreate(ctx context.Context, d *schema.
 
 	resultMetricTagConfigurationData, err := buildDatadogMetricTagConfiguration(d)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "", "error building MetricTagConfiguration object")
+		return diag.FromErr(fmt.Errorf("error building MetricTagConfiguration object: %s", err.Error()))
 	}
 	ddObject := datadogV2.NewMetricTagConfigurationCreateRequestWithDefaults()
 	ddObject.SetData(*resultMetricTagConfigurationData)
