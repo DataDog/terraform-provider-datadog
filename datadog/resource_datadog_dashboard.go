@@ -79,13 +79,6 @@ func resourceDatadogDashboard() *schema.Resource {
 				Computed:    true,
 				Description: "The URL of the dashboard.",
 			},
-			"rbac_enabled": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-				Default:     nil,
-				Description: "String repr of boolean of whether RBAC is enabled. Defaults to nil. Internal only.",
-			},
 			"is_read_only": {
 				Type:        schema.TypeBool,
 				Optional:    true,
@@ -240,9 +233,6 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 	}
 
 	// Set RBAC role settings
-	if err := d.Set("rbac_enabled", strconv.FormatBool(dashboard.RestrictedRoles != nil)); err != nil {
-		return err
-	}
 	if err := d.Set("is_read_only", dashboard.GetIsReadOnly()); err != nil {
 		return err
 	}
