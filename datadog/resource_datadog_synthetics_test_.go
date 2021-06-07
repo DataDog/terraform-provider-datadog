@@ -772,6 +772,11 @@ func syntheticsConfigVariable() *schema.Schema {
 					Required:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsConfigVariableTypeFromValue),
 				},
+				"id": {
+					Description: "When type = `global`, ID of the global variable to use.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
 			},
 		},
 	}
@@ -996,6 +1001,10 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			variable.SetName(variableMap["name"].(string))
 			variable.SetPattern(variableMap["pattern"].(string))
 			variable.SetExample(variableMap["example"].(string))
+
+			if variableMap["id"] != "" {
+				variable.SetId(variableMap["id"].(string))
+			}
 
 			configVariables = append(configVariables, variable)
 		}
@@ -1897,6 +1906,9 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		}
 		if v, ok := configVariable.GetPatternOk(); ok {
 			localVariable["pattern"] = *v
+		}
+		if v, ok := configVariable.GetIdOk(); ok {
+			localVariable["id"] = *v
 		}
 		localConfigVariables[i] = localVariable
 	}
