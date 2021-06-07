@@ -1,13 +1,14 @@
 package datadog
 
 import (
-	"fmt"
+	"context"
 	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 var indexSchema = map[string]*schema.Schema{
@@ -73,42 +74,42 @@ var exclusionFilterSchema = map[string]*schema.Schema{
 
 func resourceDatadogLogsIndex() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog Logs Index API resource. This can be used to create and manage Datadog logs indexes.",
-		Create:      resourceDatadogLogsIndexCreate,
-		Update:      resourceDatadogLogsIndexUpdate,
-		Read:        resourceDatadogLogsIndexRead,
-		Delete:      resourceDatadogLogsIndexDelete,
+		Description:   "Provides a Datadog Logs Index API resource. This can be used to create and manage Datadog logs indexes.",
+		CreateContext: resourceDatadogLogsIndexCreate,
+		UpdateContext: resourceDatadogLogsIndexUpdate,
+		ReadContext:   resourceDatadogLogsIndexRead,
+		DeleteContext: resourceDatadogLogsIndexDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: indexSchema,
 	}
 }
 
-func resourceDatadogLogsIndexCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsIndexCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	// This is a bit of a hack to ensure we fail fast if an index is about to be created, and
 	// to ensure we provide a useful error message (and don't panic)
 	// Indexes can only be updated, and the id is only set in the state if it was already imported
 	if _, ok := d.GetOk("id"); !ok {
-		return fmt.Errorf("logs index creation is not allowed, please import the index first. index_name: %s", d.Get("name").(string))
+		return diag.Errorf("logs index creation is not allowed, please import the index first. index_name: %s", d.Get("name").(string))
 	}
-	return resourceDatadogLogsIndexUpdate(d, meta)
+	return resourceDatadogLogsIndexUpdate(ctx, d, meta)
 }
 
-func updateLogsIndexState(d *schema.ResourceData, index *datadogV1.LogsIndex) error {
+func updateLogsIndexState(d *schema.ResourceData, index *datadogV1.LogsIndex) diag.Diagnostics {
 	if err := d.Set("name", index.GetName()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("filter", buildTerraformIndexFilter(index.GetFilter())); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("exclusion_filter", buildTerraformExclusionFilters(index.GetExclusionFilters())); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	return nil
 }
 
-func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsIndexRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -119,15 +120,15 @@ func resourceDatadogLogsIndexRead(d *schema.ResourceData, meta interface{}) erro
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error getting logs index")
+		return utils.TranslateClientErrorDiag(err, "error getting logs index")
 	}
 	return updateLogsIndexState(d, &ddIndex)
 }
 
-func resourceDatadogLogsIndexUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsIndexUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	ddIndex, err := buildDatadogIndex(d)
 	if err != nil {
-		return fmt.Errorf("failed to parse resource configuration: %s", err.Error())
+		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -137,15 +138,15 @@ func resourceDatadogLogsIndexUpdate(d *schema.ResourceData, meta interface{}) er
 	updatedIndex, _, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndex(authV1, tfName, *ddIndex)
 	if err != nil {
 		if strings.Contains(err.Error(), "404 Not Found") {
-			return fmt.Errorf("logs index creation is not allowed, index_name: %s", tfName)
+			return diag.Errorf("logs index creation is not allowed, index_name: %s", tfName)
 		}
-		return utils.TranslateClientError(err, "error updating logs index")
+		return utils.TranslateClientErrorDiag(err, "error updating logs index")
 	}
 	d.SetId(tfName)
 	return updateLogsIndexState(d, &updatedIndex)
 }
 
-func resourceDatadogLogsIndexDelete(_ *schema.ResourceData, _ interface{}) error {
+func resourceDatadogLogsIndexDelete(_ context.Context, _ *schema.ResourceData, _ interface{}) diag.Diagnostics {
 	return nil
 }
 

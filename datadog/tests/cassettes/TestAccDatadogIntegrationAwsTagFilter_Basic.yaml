@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"account_id":"995055571029","role_name":"testacc-datadog-integration-role"}
+      {"account_id":"525149979710","account_specific_namespace_rules":{},"excluded_regions":[],"filter_tags":[],"host_tags":[],"role_name":"testacc-datadog-integration-role"}
     form: {}
     headers:
       Accept:
@@ -13,12 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateAWSAccount
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: POST
   response:
-    body: '{"external_id":"553fac5528274961836acbbbcc4de251"}'
+    body: '{"external_id":"250273625e864caca24f62e26271fbbb"}'
     headers:
       Cache-Control:
       - no-cache
@@ -29,199 +28,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Feb 2021 14:24:54 GMT
+      - Thu, 03 Jun 2021 15:55:05 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 15-Feb-2021 14:24:53 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - /L+SFFO+m1pPY+hRCpk5325fvfrNl0KmiquUNJolBN/5hu3HIwflqjZSbJ6NxDFG
-      X-Dd-Version:
-      - "35.3864010"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListAWSAccounts
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/aws
-    method: GET
-  response:
-    body: '{"accounts":[{"role_name":"java-aWSLogsCheckServicesAsyncTest-45249-1612586088","excluded_regions":[],"account_id":"java_+8Abz+j","host_tags":["javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"errors":[],"filter_tags":["dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"995055571029","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]}]}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 08 Feb 2021 14:24:54 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 15-Feb-2021 14:24:54 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - nLnnBNvlCFDECRnZvzDb0z4sAO35G+IMidcAs8vrCKyjvsKWE8Yd9S3n6OjZ1qRN
-      X-Dd-Version:
-      - "35.3864010"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: |
-      {"account_id":"995055571029","namespace":"application_elb","tag_filter_str":"test:filter"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-      Dd-Operation-Id:
-      - CreateAWSTagFilter
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/aws/filtering
-    method: POST
-  response:
-    body: '{}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "2"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 08 Feb 2021 14:24:54 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 15-Feb-2021 14:24:54 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - fIO2C4qGDheGHy4YbS+r3a3CXbh4cbRo7roILOimQyiHGjQdOat0cIpWCkupM1uX
-      X-Dd-Version:
-      - "35.3864010"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListAWSTagFilters
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=995055571029
-    method: GET
-  response:
-    body: '{"filters":[{"tag_filter_str":null,"namespace":"elb"},{"tag_filter_str":"test:filter","namespace":"application_elb"},{"tag_filter_str":null,"namespace":"sqs"},{"tag_filter_str":null,"namespace":"rds"},{"tag_filter_str":null,"namespace":"custom"},{"tag_filter_str":null,"namespace":"network_elb"},{"tag_filter_str":null,"namespace":"lambda"}]}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 08 Feb 2021 14:24:54 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 15-Feb-2021 14:24:54 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
-      X-Dd-Version:
-      - "35.3864010"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListAWSTagFilters
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=995055571029
-    method: GET
-  response:
-    body: '{"filters":[{"tag_filter_str":null,"namespace":"elb"},{"tag_filter_str":"test:filter","namespace":"application_elb"},{"tag_filter_str":null,"namespace":"sqs"},{"tag_filter_str":null,"namespace":"rds"},{"tag_filter_str":null,"namespace":"custom"},{"tag_filter_str":null,"namespace":"network_elb"},{"tag_filter_str":null,"namespace":"lambda"}]}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 08 Feb 2021 14:24:54 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 15-Feb-2021 14:24:54 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -231,7 +40,7 @@ interactions:
       X-Dd-Debug:
       - L3ULR3HwCWYmEqCWGz2Yob3chcH4pjowBacBXkncP7o+/uPqKt9yGEYf/g1AJPzQ
       X-Dd-Version:
-      - "35.3864010"
+      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -246,12 +55,11 @@ interactions:
       Dd-Operation-Id:
       - ListAWSAccounts
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
-    body: '{"accounts":[{"role_name":"java-aWSLogsCheckServicesAsyncTest-45249-1612586088","excluded_regions":[],"account_id":"java_+8Abz+j","host_tags":["javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"errors":[],"filter_tags":["dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"995055571029","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]}]}'
+    body: '{"accounts":[{"role_name":"Different-Role","excluded_regions":["us-east-1","us-west-1"],"account_id":"Test-Go-TestAWSIntegrationCreateConflictErrors-1619690954","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"981015552525","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]},{"role_name":"Java Client Role Name_0","excluded_regions":[],"account_id":"java_6LvV4-0","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"role_name":"Java Client Role Name_4","excluded_regions":[],"account_id":"java_iG9/5-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"role_name":"DatadogAWSAcctRoleNameHippo","excluded_regions":[],"account_id":"123456891013","host_tags":["env:stagingHippo","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":true},"errors":[],"filter_tags":["please:dont_delete"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1622555154","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"whateveeeeeeer","excluded_regions":[],"account_id":"123456789012","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]},{"role_name":"testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"102545453501","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"errors":[],"filter_tags":["key:value"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"525149979710","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -262,12 +70,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Feb 2021 14:24:54 GMT
+      - Thu, 03 Jun 2021 15:55:05 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 15-Feb-2021 14:24:54 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -275,9 +80,54 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
+      - HbtaOKlJ6OCrx9tMXO6ivMTrEM+g0c93HDp08trmOmgdHozC5J+vn10F0H4WPjCU
       X-Dd-Version:
-      - "35.3864010"
+      - "35.4669033"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"account_id":"525149979710","namespace":"application_elb","tag_filter_str":"test:filter"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateAWSTagFilter
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/aws/filtering
+    method: POST
+  response:
+    body: '{}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "2"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jun 2021 15:55:05 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
+      X-Dd-Version:
+      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -292,9 +142,8 @@ interactions:
       Dd-Operation-Id:
       - ListAWSTagFilters
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=995055571029
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=525149979710
     method: GET
   response:
     body: '{"filters":[{"tag_filter_str":null,"namespace":"elb"},{"tag_filter_str":"test:filter","namespace":"application_elb"},{"tag_filter_str":null,"namespace":"sqs"},{"tag_filter_str":null,"namespace":"rds"},{"tag_filter_str":null,"namespace":"custom"},{"tag_filter_str":null,"namespace":"network_elb"},{"tag_filter_str":null,"namespace":"lambda"}]}'
@@ -308,12 +157,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Feb 2021 14:24:54 GMT
+      - Thu, 03 Jun 2021 15:55:05 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 15-Feb-2021 14:24:54 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -321,9 +167,51 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
+      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
       X-Dd-Version:
-      - "35.3864010"
+      - "35.4669033"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListAWSTagFilters
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=525149979710
+    method: GET
+  response:
+    body: '{"filters":[{"tag_filter_str":null,"namespace":"elb"},{"tag_filter_str":"test:filter","namespace":"application_elb"},{"tag_filter_str":null,"namespace":"sqs"},{"tag_filter_str":null,"namespace":"rds"},{"tag_filter_str":null,"namespace":"custom"},{"tag_filter_str":null,"namespace":"network_elb"},{"tag_filter_str":null,"namespace":"lambda"}]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 03 Jun 2021 15:55:05 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
+      X-Dd-Version:
+      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -338,12 +226,11 @@ interactions:
       Dd-Operation-Id:
       - ListAWSAccounts
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
-    body: '{"accounts":[{"role_name":"java-aWSLogsCheckServicesAsyncTest-45249-1612586088","excluded_regions":[],"account_id":"java_+8Abz+j","host_tags":["javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"errors":[],"filter_tags":["dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"995055571029","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]}]}'
+    body: '{"accounts":[{"role_name":"Different-Role","excluded_regions":["us-east-1","us-west-1"],"account_id":"Test-Go-TestAWSIntegrationCreateConflictErrors-1619690954","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"981015552525","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]},{"role_name":"Java Client Role Name_0","excluded_regions":[],"account_id":"java_6LvV4-0","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"role_name":"Java Client Role Name_4","excluded_regions":[],"account_id":"java_iG9/5-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"role_name":"DatadogAWSAcctRoleNameHippo","excluded_regions":[],"account_id":"123456891013","host_tags":["env:stagingHippo","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":true},"errors":[],"filter_tags":["please:dont_delete"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1622555154","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"whateveeeeeeer","excluded_regions":[],"account_id":"123456789012","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]},{"role_name":"testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"102545453501","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"errors":[],"filter_tags":["key:value"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"525149979710","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -354,12 +241,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Feb 2021 14:24:55 GMT
+      - Thu, 03 Jun 2021 15:55:06 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 15-Feb-2021 14:24:55 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -367,9 +251,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - bgHykj7A9bfZx0Y5ZO3swhhp5tGUSNJHqFWR868+qg087CYrDOd5hQslC+noiEtH
+      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
       X-Dd-Version:
-      - "35.3864010"
+      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -384,9 +268,8 @@ interactions:
       Dd-Operation-Id:
       - ListAWSTagFilters
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=995055571029
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=525149979710
     method: GET
   response:
     body: '{"filters":[{"tag_filter_str":null,"namespace":"elb"},{"tag_filter_str":"test:filter","namespace":"application_elb"},{"tag_filter_str":null,"namespace":"sqs"},{"tag_filter_str":null,"namespace":"rds"},{"tag_filter_str":null,"namespace":"custom"},{"tag_filter_str":null,"namespace":"network_elb"},{"tag_filter_str":null,"namespace":"lambda"}]}'
@@ -400,12 +283,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Feb 2021 14:24:55 GMT
+      - Thu, 03 Jun 2021 15:55:06 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 15-Feb-2021 14:24:55 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -415,7 +295,7 @@ interactions:
       X-Dd-Debug:
       - dCmL/3rURV6BPeaqeP3Rxigq41m5CAb17XjrRE42uZ01zpr07HVhbL5/3TWMkvgu
       X-Dd-Version:
-      - "35.3864010"
+      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -423,7 +303,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"account_id":"995055571029","namespace":"application_elb"}
+      {"account_id":"525149979710","namespace":"application_elb"}
     form: {}
     headers:
       Accept:
@@ -433,8 +313,7 @@ interactions:
       Dd-Operation-Id:
       - DeleteAWSTagFilter
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws/filtering
     method: DELETE
   response:
@@ -451,20 +330,17 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Feb 2021 14:24:55 GMT
+      - Thu, 03 Jun 2021 15:55:07 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 15-Feb-2021 14:24:55 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
+      - EFjE6I+AUQmTiNqZcuE1nqoFeAjWD0Xtzy3edDrinkwlU/Wzr/2Dbl5kWk3qLVaQ
       X-Dd-Version:
-      - "35.3864010"
+      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -472,7 +348,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"account_id":"995055571029","role_name":"testacc-datadog-integration-role"}
+      {"account_id":"525149979710","account_specific_namespace_rules":{},"excluded_regions":[],"filter_tags":[],"host_tags":[],"role_name":"testacc-datadog-integration-role"}
     form: {}
     headers:
       Accept:
@@ -482,8 +358,7 @@ interactions:
       Dd-Operation-Id:
       - DeleteAWSAccount
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: DELETE
   response:
@@ -500,20 +375,17 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Feb 2021 14:24:56 GMT
+      - Thu, 03 Jun 2021 15:55:07 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 15-Feb-2021 14:24:55 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
+      - L3ULR3HwCWYmEqCWGz2Yob3chcH4pjowBacBXkncP7o+/uPqKt9yGEYf/g1AJPzQ
       X-Dd-Version:
-      - "35.3864010"
+      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -528,12 +400,11 @@ interactions:
       Dd-Operation-Id:
       - ListAWSTagFilters
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=995055571029
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=525149979710
     method: GET
   response:
-    body: '{"errors": ["AWS account 995055571029 does not exist in integration"]}'
+    body: '{"errors": ["AWS account 525149979710 does not exist in integration"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -546,7 +417,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 08 Feb 2021 14:24:56 GMT
+      - Thu, 03 Jun 2021 15:55:08 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -554,7 +425,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.3864010"
+      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 400 Bad Request

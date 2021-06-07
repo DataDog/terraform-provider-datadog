@@ -10,9 +10,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func testAccDatadogIntegrationAWSLogCollectionConfig(uniq string) string {
@@ -41,9 +41,9 @@ func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkIntegrationAWSLogCollectionDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkIntegrationAWSLogCollectionDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatadogIntegrationAWSLogCollectionConfig(accountID),
@@ -61,9 +61,10 @@ func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
 	})
 }
 
-func checkIntegrationAWSLogCollectionExists(accProvider *schema.Provider) func(*terraform.State) error {
+func checkIntegrationAWSLogCollectionExists(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -90,9 +91,10 @@ func checkIntegrationAWSLogCollectionExistsHelper(ctx context.Context, s *terraf
 	return fmt.Errorf("Unable to find AWS Log Collection in any account")
 }
 
-func checkIntegrationAWSLogCollectionDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func checkIntegrationAWSLogCollectionDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 

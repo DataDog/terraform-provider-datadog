@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"end":1735732799,"message":"tf-TestAccDatadogDowntime_RRule-local-1609425728","monitor_tags":["*"],"recurrence":{"rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1","type":"rrule"},"scope":["RRuleRecurrence"],"start":1735646400,"timezone":"UTC"}
+      {"end":1735732799,"message":"tf-TestAccDatadogDowntime_RRule-local-1615587246","monitor_tags":["*"],"recurrence":{"rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1","type":"rrule"},"scope":["RRuleRecurrence"],"start":1735646400,"timezone":"UTC"}
     form: {}
     headers:
       Accept:
@@ -13,18 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "6636256665855900580"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7743838137791526762"
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/downtime
     method: POST
   response:
-    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1609425728","downtime_type":2,"id":1087028926,"updater_id":null}'
+    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1615587246","downtime_type":2,"id":1176988563,"updater_id":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -35,12 +28,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:54:23 GMT
+      - Fri, 12 Mar 2021 22:14:07 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:54:23 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -48,9 +38,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - IGILlPY3s4a9aUQtJHHVlvsXLPi5u8MQt/Dx/1ZwzrUgiVNBtJEB93e+6VlWNrdA
+      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -65,18 +55,11 @@ interactions:
       Dd-Operation-Id:
       - GetDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4184965790622800793"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7743838137791526762"
-    url: https://api.datadoghq.com/api/v1/downtime/1087028926
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/1176988563
     method: GET
   response:
-    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1609425728","downtime_type":2,"id":1087028926,"updater_id":null}'
+    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1615587246","downtime_type":2,"id":1176988563,"updater_id":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -87,12 +70,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:54:23 GMT
+      - Fri, 12 Mar 2021 22:14:07 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:54:23 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -100,9 +80,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 4/n0qOsNbcCLs0O62LExTPssq0SdRyX2Rk0dgQQIozMoViHF7e4pyB0ZeXOioNEA
+      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -117,18 +97,11 @@ interactions:
       Dd-Operation-Id:
       - GetDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "4813449130356794375"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7743838137791526762"
-    url: https://api.datadoghq.com/api/v1/downtime/1087028926
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/1176988563
     method: GET
   response:
-    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1609425728","downtime_type":2,"id":1087028926,"updater_id":null}'
+    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1615587246","downtime_type":2,"id":1176988563,"updater_id":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -139,12 +112,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:54:24 GMT
+      - Fri, 12 Mar 2021 22:14:08 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:54:24 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -152,113 +122,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - sNqZRJv4/cBfvxvWCdEugoEuJbBVq4bkZ/uRRvyXEc9lrDGBw7yRKeuVLRAm5ziA
+      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
       X-Dd-Version:
-      - "34.3622270"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDowntime
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "5553005955193085934"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7743838137791526762"
-    url: https://api.datadoghq.com/api/v1/downtime/1087028926
-    method: GET
-  response:
-    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1609425728","downtime_type":2,"id":1087028926,"updater_id":null}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 31 Dec 2020 14:54:24 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:54:24 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 8uM7lo6fgdRC0R8G89u29ss3GmR5rKsxJfYvyjSE9oa+oPL40dVup+1mn/0Ku0bY
-      X-Dd-Version:
-      - "35.3622023"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - GetDowntime
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "6565274422531993050"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7743838137791526762"
-    url: https://api.datadoghq.com/api/v1/downtime/1087028926
-    method: GET
-  response:
-    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1609425728","downtime_type":2,"id":1087028926,"updater_id":null}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 31 Dec 2020 14:54:24 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:54:24 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - Rk64tCoF3V07+a4szeABxTtZIJ+mXpZWikk4VsgNuvqwu3MpGXqLHxCVHOt9N39v
-      X-Dd-Version:
-      - "35.3622023"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -273,15 +139,8 @@ interactions:
       Dd-Operation-Id:
       - CancelDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "2182607652129886590"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7743838137791526762"
-    url: https://api.datadoghq.com/api/v1/downtime/1087028926
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/1176988563
     method: DELETE
   response:
     body: ""
@@ -295,22 +154,19 @@ interactions:
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
-      - text/html; charset=utf-8
+      - application/json
       Date:
-      - Thu, 31 Dec 2020 14:54:25 GMT
+      - Fri, 12 Mar 2021 22:14:09 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:54:24 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - TFCg6TPxHCdpQyTTnaGFjBa5vzZnKeyQ4F7e1flYSnImhl2xBoRKXVAV7LhvPUlL
+      - mNzaoDhdDKO7t4QSrAe5X7pHd0bJND187D+vRbwoluXouE2m1UaQQX0RGCvRpLVE
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -325,18 +181,11 @@ interactions:
       Dd-Operation-Id:
       - GetDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.15.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.13+dev (go go1.15.4; os darwin; arch amd64)
-      X-Datadog-Parent-Id:
-      - "1142224746743994361"
-      X-Datadog-Sampling-Priority:
-      - "1"
-      X-Datadog-Trace-Id:
-      - "7743838137791526762"
-    url: https://api.datadoghq.com/api/v1/downtime/1087028926
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/1176988563
     method: GET
   response:
-    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":1609426464,"monitor_id":null,"org_id":321813,"disabled":true,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1609425728","downtime_type":2,"id":1087028926,"updater_id":1445416}'
+    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":1615587249,"monitor_id":null,"org_id":321813,"disabled":true,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1615587246","downtime_type":2,"id":1176988563,"updater_id":1445416}'
     headers:
       Cache-Control:
       - no-cache
@@ -347,12 +196,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 31 Dec 2020 14:54:25 GMT
+      - Fri, 12 Mar 2021 22:14:10 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 07-Jan-2021 14:54:25 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -360,9 +206,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - saoIV/FA/z8H0gcXHP3CQ32hxYowRdGCvx+QRO7UdacLP4hVHOLNCuxXnf6LPRGD
+      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
       X-Dd-Version:
-      - "35.3622023"
+      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

@@ -704,7 +704,6 @@ Optional:
 - **hostmap_definition** (Block List, Max: 1) The definition for a Hostmap widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition))
 - **iframe_definition** (Block List, Max: 1) The definition for an Iframe widget. (see [below for nested schema](#nestedblock--widget--iframe_definition))
 - **image_definition** (Block List, Max: 1) The definition for an Image widget (see [below for nested schema](#nestedblock--widget--image_definition))
-- **layout** (Map of String, Deprecated) The layout of the widget on a 'free' dashboard. **Deprecated.** Define `widget_layout` list with one element instead.
 - **log_stream_definition** (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--log_stream_definition))
 - **manage_status_definition** (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--manage_status_definition))
 - **note_definition** (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--note_definition))
@@ -733,7 +732,6 @@ Required:
 Optional:
 
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -764,7 +762,6 @@ Optional:
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--custom_link))
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--change_definition--request))
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -807,11 +804,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--change_definition--request--apm_query--compute_query"></a>
@@ -834,7 +829,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--change_definition--request--apm_query--group_by--sort_query"></a>
@@ -874,11 +868,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--change_definition--request--log_query--compute_query"></a>
@@ -901,7 +893,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--change_definition--request--log_query--group_by--sort_query"></a>
@@ -955,11 +946,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--change_definition--request--rum_query--compute_query"></a>
@@ -982,7 +971,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--change_definition--request--rum_query--group_by--sort_query"></a>
@@ -1022,11 +1010,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--change_definition--request--security_query--compute_query"></a>
@@ -1049,7 +1035,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--change_definition--request--security_query--group_by--sort_query"></a>
@@ -1096,7 +1081,6 @@ Optional:
 - **group_by** (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **tags** (List of String) List of tags to use in the widget.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -1111,7 +1095,6 @@ Optional:
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--distribution_definition--request))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -1138,11 +1121,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--distribution_definition--request--apm_query--compute_query"></a>
@@ -1165,7 +1146,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--distribution_definition--request--apm_query--group_by--sort_query"></a>
@@ -1205,11 +1185,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--distribution_definition--request--log_query--compute_query"></a>
@@ -1232,7 +1210,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--distribution_definition--request--log_query--group_by--sort_query"></a>
@@ -1286,11 +1263,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--distribution_definition--request--rum_query--compute_query"></a>
@@ -1313,7 +1288,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--distribution_definition--request--rum_query--group_by--sort_query"></a>
@@ -1353,11 +1327,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--distribution_definition--request--security_query--compute_query"></a>
@@ -1380,7 +1352,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--distribution_definition--request--security_query--group_by--sort_query"></a>
@@ -1433,7 +1404,6 @@ Optional:
 - **event_size** (String) The size to use to display an event. One of `s`, `l`
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **tags_execution** (String) The execution method for multi-value filters. Can be either `and` or `or`.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -1450,7 +1420,6 @@ Optional:
 
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **tags_execution** (String) The execution method for multi-value filters. Can be either `and` or `or`.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -1548,11 +1517,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--geomap_definition--request--log_query--compute_query"></a>
@@ -1575,7 +1542,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--geomap_definition--request--log_query--group_by--sort_query"></a>
@@ -1721,11 +1687,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--geomap_definition--request--rum_query--compute_query"></a>
@@ -1748,7 +1712,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--geomap_definition--request--rum_query--group_by--sort_query"></a>
@@ -1823,7 +1786,6 @@ Optional:
 - **hostmap_definition** (Block List, Max: 1) The definition for a Hostmap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition))
 - **iframe_definition** (Block List, Max: 1) The definition for an Iframe widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--iframe_definition))
 - **image_definition** (Block List, Max: 1) The definition for an Image widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--image_definition))
-- **layout** (Map of String, Deprecated) The layout of the widget on a 'free' dashboard. **Deprecated.** Define `widget_layout` list with one element instead.
 - **log_stream_definition** (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition))
 - **manage_status_definition** (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--manage_status_definition))
 - **note_definition** (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--note_definition))
@@ -1852,7 +1814,6 @@ Required:
 Optional:
 
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -1883,7 +1844,6 @@ Optional:
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--custom_link))
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request))
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -1926,11 +1886,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--apm_query--compute_query"></a>
@@ -1953,7 +1911,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--apm_query--group_by--sort_query"></a>
@@ -1993,11 +1950,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--log_query--compute_query"></a>
@@ -2020,7 +1975,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--log_query--group_by--sort_query"></a>
@@ -2074,11 +2028,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--rum_query--compute_query"></a>
@@ -2101,7 +2053,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--rum_query--group_by--sort_query"></a>
@@ -2141,11 +2092,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--security_query--compute_query"></a>
@@ -2168,7 +2117,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--security_query--group_by--sort_query"></a>
@@ -2215,7 +2163,6 @@ Optional:
 - **group_by** (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **tags** (List of String) List of tags to use in the widget.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -2230,7 +2177,6 @@ Optional:
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -2257,11 +2203,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query--compute_query"></a>
@@ -2284,7 +2228,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query--group_by--sort_query"></a>
@@ -2324,11 +2267,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--log_query--compute_query"></a>
@@ -2351,7 +2292,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--log_query--group_by--sort_query"></a>
@@ -2405,11 +2345,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query--compute_query"></a>
@@ -2432,7 +2370,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query--group_by--sort_query"></a>
@@ -2472,11 +2409,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--security_query--compute_query"></a>
@@ -2499,7 +2434,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--security_query--group_by--sort_query"></a>
@@ -2552,7 +2486,6 @@ Optional:
 - **event_size** (String) The size to use to display an event. One of `s`, `l`
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **tags_execution** (String) The execution method for multi-value filters. Can be either `and` or `or`.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -2569,7 +2502,6 @@ Optional:
 
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **tags_execution** (String) The execution method for multi-value filters. Can be either `and` or `or`.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -2667,11 +2599,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--log_query--compute_query"></a>
@@ -2694,7 +2624,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--log_query--group_by--sort_query"></a>
@@ -2840,11 +2769,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--compute_query"></a>
@@ -2867,7 +2794,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--group_by--sort_query"></a>
@@ -2920,7 +2846,6 @@ Optional:
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -2971,11 +2896,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query--compute_query"></a>
@@ -2998,7 +2921,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query--group_by--sort_query"></a>
@@ -3038,11 +2960,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query--compute_query"></a>
@@ -3065,7 +2985,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query--group_by--sort_query"></a>
@@ -3119,11 +3038,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query--compute_query"></a>
@@ -3146,7 +3063,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query--group_by--sort_query"></a>
@@ -3186,11 +3102,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query--compute_query"></a>
@@ -3213,7 +3127,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query--group_by--sort_query"></a>
@@ -3323,11 +3236,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query--compute_query"></a>
@@ -3350,7 +3261,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query--group_by--sort_query"></a>
@@ -3390,11 +3300,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query--compute_query"></a>
@@ -3417,7 +3325,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query--group_by--sort_query"></a>
@@ -3471,11 +3378,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query--compute_query"></a>
@@ -3498,7 +3403,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query--group_by--sort_query"></a>
@@ -3538,11 +3442,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query--compute_query"></a>
@@ -3565,7 +3467,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query--group_by--sort_query"></a>
@@ -3618,11 +3519,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query--compute_query"></a>
@@ -3645,7 +3544,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query--group_by--sort_query"></a>
@@ -3685,11 +3583,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query--compute_query"></a>
@@ -3712,7 +3608,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query--group_by--sort_query"></a>
@@ -3766,11 +3661,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query--compute_query"></a>
@@ -3793,7 +3686,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query--group_by--sort_query"></a>
@@ -3833,11 +3725,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query--compute_query"></a>
@@ -3860,7 +3750,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query--group_by--sort_query"></a>
@@ -3939,13 +3828,11 @@ Optional:
 - **columns** (List of String) Stringified list of columns to use. Example: `["column1","column2","column3"]`.
 - **indexes** (List of String) An array of index names to query in the stream.
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **logset** (String, Deprecated) ID of the logset to use. Deprecated Use `indexes` instead. **Deprecated.** This parameter has been deprecated. Use `indexes` instead.
 - **message_display** (String) One of: ['inline', 'expanded-md', 'expanded-lg']
 - **query** (String) The query to use in the widget.
 - **show_date_column** (Boolean) If the date column should be displayed.
 - **show_message_column** (Boolean) If the message column should be displayed.
 - **sort** (Block List, Max: 1) The facet and order to sort the data based upon. Example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition--sort))
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -3970,12 +3857,10 @@ Required:
 Optional:
 
 - **color_preference** (String) Whether to colorize text or background. One of `text`, `background`.
-- **count** (Number, Deprecated) The number of monitors to display. **Deprecated.** This parameter has been deprecated.
 - **display_format** (String) The display setting to use. One of `counts`, `list`, or `countsAndList`.
 - **hide_zero_counts** (Boolean) Boolean indicating whether to hide empty categories.
 - **show_last_triggered** (Boolean) Boolean indicating whether to show when monitors/groups last triggered.
 - **sort** (String) The method to use to sort monitors. Example: `status,asc`.
-- **start** (Number, Deprecated) The start of the list. Typically 0. **Deprecated.** This parameter has been deprecated.
 - **summary_type** (String) One of: ['monitors', 'groups', 'combined']
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
@@ -4010,7 +3895,6 @@ Optional:
 - **has_search_bar** (String) Controls the display of the search bar. One of `auto`, `always`, `never`.
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request))
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -4054,11 +3938,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query--compute_query"></a>
@@ -4081,7 +3963,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query--group_by--sort_query"></a>
@@ -4171,11 +4052,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--log_query--compute_query"></a>
@@ -4198,7 +4077,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--log_query--group_by--sort_query"></a>
@@ -4252,11 +4130,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query--compute_query"></a>
@@ -4279,7 +4155,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query--group_by--sort_query"></a>
@@ -4319,11 +4194,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--security_query--compute_query"></a>
@@ -4346,7 +4219,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--security_query--group_by--sort_query"></a>
@@ -4391,7 +4263,6 @@ Optional:
 - **precision** (Number) The precision to use when displaying the tile.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request))
 - **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -4432,11 +4303,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query--compute_query"></a>
@@ -4459,7 +4328,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query--group_by--sort_query"></a>
@@ -4540,11 +4408,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--log_query--compute_query"></a>
@@ -4567,7 +4433,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--log_query--group_by--sort_query"></a>
@@ -4727,11 +4592,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query--compute_query"></a>
@@ -4754,7 +4617,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query--group_by--sort_query"></a>
@@ -4794,11 +4656,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--security_query--compute_query"></a>
@@ -4821,7 +4681,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--security_query--group_by--sort_query"></a>
@@ -4863,7 +4722,6 @@ Optional:
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--custom_link))
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List, Max: 1) Nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request))
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -4911,11 +4769,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query--compute_query"></a>
@@ -4938,7 +4794,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query--group_by--sort_query"></a>
@@ -4978,11 +4833,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query--compute_query"></a>
@@ -5005,7 +4858,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query--group_by--sort_query"></a>
@@ -5059,11 +4911,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query--compute_query"></a>
@@ -5086,7 +4936,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query--group_by--sort_query"></a>
@@ -5126,11 +4975,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query--compute_query"></a>
@@ -5153,7 +5000,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query--group_by--sort_query"></a>
@@ -5207,11 +5053,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query--compute_query"></a>
@@ -5234,7 +5078,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query--group_by--sort_query"></a>
@@ -5274,11 +5117,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query--compute_query"></a>
@@ -5301,7 +5142,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query--group_by--sort_query"></a>
@@ -5355,11 +5195,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query--compute_query"></a>
@@ -5382,7 +5220,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query--group_by--sort_query"></a>
@@ -5422,11 +5259,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query--compute_query"></a>
@@ -5449,7 +5284,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query--group_by--sort_query"></a>
@@ -5568,7 +5402,6 @@ Optional:
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request))
 - **right_yaxis** (Block List, Max: 1) Nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--right_yaxis))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -5638,11 +5471,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query--compute_query"></a>
@@ -5665,7 +5496,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query--group_by--sort_query"></a>
@@ -5727,11 +5557,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query--compute_query"></a>
@@ -5754,7 +5582,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query--group_by--sort_query"></a>
@@ -5806,11 +5633,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query--compute_query"></a>
@@ -5833,7 +5658,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query--group_by--sort_query"></a>
@@ -5993,11 +5817,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query--compute_query"></a>
@@ -6020,7 +5842,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query--group_by--sort_query"></a>
@@ -6060,11 +5881,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query--compute_query"></a>
@@ -6087,7 +5906,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query--group_by--sort_query"></a>
@@ -6162,7 +5980,6 @@ Optional:
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--custom_link))
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request))
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -6203,11 +6020,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query--compute_query"></a>
@@ -6230,7 +6045,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query--group_by--sort_query"></a>
@@ -6311,11 +6125,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--log_query--compute_query"></a>
@@ -6338,7 +6150,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--log_query--group_by--sort_query"></a>
@@ -6498,11 +6309,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query--compute_query"></a>
@@ -6525,7 +6334,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query--group_by--sort_query"></a>
@@ -6565,11 +6373,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--security_query--compute_query"></a>
@@ -6592,7 +6398,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--security_query--group_by--sort_query"></a>
@@ -6653,7 +6458,6 @@ Optional:
 - **show_latency** (Boolean) Whether to show the latency metrics or not.
 - **show_resource_list** (Boolean) Whether to show the resource list or not.
 - **size_format** (String) Size of the widget. Available values are: `small`, `medium`, or `large`.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -6687,7 +6491,6 @@ Optional:
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -6738,11 +6541,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--heatmap_definition--request--apm_query--compute_query"></a>
@@ -6765,7 +6566,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--heatmap_definition--request--apm_query--group_by--sort_query"></a>
@@ -6805,11 +6605,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--heatmap_definition--request--log_query--compute_query"></a>
@@ -6832,7 +6630,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--heatmap_definition--request--log_query--group_by--sort_query"></a>
@@ -6886,11 +6683,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--heatmap_definition--request--rum_query--compute_query"></a>
@@ -6913,7 +6708,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--heatmap_definition--request--rum_query--group_by--sort_query"></a>
@@ -6953,11 +6747,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--heatmap_definition--request--security_query--compute_query"></a>
@@ -6980,7 +6772,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--heatmap_definition--request--security_query--group_by--sort_query"></a>
@@ -7090,11 +6881,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--apm_query--compute_query"></a>
@@ -7117,7 +6906,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--apm_query--group_by--sort_query"></a>
@@ -7157,11 +6945,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--log_query--compute_query"></a>
@@ -7184,7 +6970,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--log_query--group_by--sort_query"></a>
@@ -7238,11 +7023,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--rum_query--compute_query"></a>
@@ -7265,7 +7048,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--rum_query--group_by--sort_query"></a>
@@ -7305,11 +7087,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--security_query--compute_query"></a>
@@ -7332,7 +7112,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--security_query--group_by--sort_query"></a>
@@ -7385,11 +7164,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--apm_query--compute_query"></a>
@@ -7412,7 +7189,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--hostmap_definition--request--size--apm_query--group_by--sort_query"></a>
@@ -7452,11 +7228,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--log_query--compute_query"></a>
@@ -7479,7 +7253,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--hostmap_definition--request--size--log_query--group_by--sort_query"></a>
@@ -7533,11 +7306,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--rum_query--compute_query"></a>
@@ -7560,7 +7331,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--hostmap_definition--request--size--rum_query--group_by--sort_query"></a>
@@ -7600,11 +7370,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--security_query--compute_query"></a>
@@ -7627,7 +7395,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--hostmap_definition--request--size--security_query--group_by--sort_query"></a>
@@ -7706,13 +7473,11 @@ Optional:
 - **columns** (List of String) Stringified list of columns to use. Example: `["column1","column2","column3"]`.
 - **indexes** (List of String) An array of index names to query in the stream.
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **logset** (String, Deprecated) ID of the logset to use. Deprecated Use `indexes` instead. **Deprecated.** This parameter has been deprecated. Use `indexes` instead.
 - **message_display** (String) One of: ['inline', 'expanded-md', 'expanded-lg']
 - **query** (String) The query to use in the widget.
 - **show_date_column** (Boolean) If the date column should be displayed.
 - **show_message_column** (Boolean) If the message column should be displayed.
 - **sort** (Block List, Max: 1) The facet and order to sort the data based upon. Example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--log_stream_definition--sort))
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -7737,12 +7502,10 @@ Required:
 Optional:
 
 - **color_preference** (String) Whether to colorize text or background. One of `text`, `background`.
-- **count** (Number, Deprecated) The number of monitors to display. **Deprecated.** This parameter has been deprecated.
 - **display_format** (String) The display setting to use. One of `counts`, `list`, or `countsAndList`.
 - **hide_zero_counts** (Boolean) Boolean indicating whether to hide empty categories.
 - **show_last_triggered** (Boolean) Boolean indicating whether to show when monitors/groups last triggered.
 - **sort** (String) The method to use to sort monitors. Example: `status,asc`.
-- **start** (Number, Deprecated) The start of the list. Typically 0. **Deprecated.** This parameter has been deprecated.
 - **summary_type** (String) One of: ['monitors', 'groups', 'combined']
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
@@ -7777,7 +7540,6 @@ Optional:
 - **has_search_bar** (String) Controls the display of the search bar. One of `auto`, `always`, `never`.
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_table_definition--request))
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -7821,11 +7583,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--query_table_definition--request--apm_query--compute_query"></a>
@@ -7848,7 +7608,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--query_table_definition--request--apm_query--group_by--sort_query"></a>
@@ -7938,11 +7697,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--query_table_definition--request--log_query--compute_query"></a>
@@ -7965,7 +7722,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--query_table_definition--request--log_query--group_by--sort_query"></a>
@@ -8019,11 +7775,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--query_table_definition--request--rum_query--compute_query"></a>
@@ -8046,7 +7800,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--query_table_definition--request--rum_query--group_by--sort_query"></a>
@@ -8086,11 +7839,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--query_table_definition--request--security_query--compute_query"></a>
@@ -8113,7 +7864,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--query_table_definition--request--security_query--group_by--sort_query"></a>
@@ -8158,7 +7908,6 @@ Optional:
 - **precision** (Number) The precision to use when displaying the tile.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_value_definition--request))
 - **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -8199,11 +7948,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--query_value_definition--request--apm_query--compute_query"></a>
@@ -8226,7 +7973,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--query_value_definition--request--apm_query--group_by--sort_query"></a>
@@ -8307,11 +8053,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--query_value_definition--request--log_query--compute_query"></a>
@@ -8334,7 +8078,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--query_value_definition--request--log_query--group_by--sort_query"></a>
@@ -8494,11 +8237,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--query_value_definition--request--rum_query--compute_query"></a>
@@ -8521,7 +8262,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--query_value_definition--request--rum_query--group_by--sort_query"></a>
@@ -8561,11 +8301,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--query_value_definition--request--security_query--compute_query"></a>
@@ -8588,7 +8326,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--query_value_definition--request--security_query--group_by--sort_query"></a>
@@ -8630,7 +8367,6 @@ Optional:
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--custom_link))
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List, Max: 1) Nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request))
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -8678,11 +8414,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--apm_query--compute_query"></a>
@@ -8705,7 +8439,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--apm_query--group_by--sort_query"></a>
@@ -8745,11 +8478,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--log_query--compute_query"></a>
@@ -8772,7 +8503,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--log_query--group_by--sort_query"></a>
@@ -8826,11 +8556,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--rum_query--compute_query"></a>
@@ -8853,7 +8581,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--rum_query--group_by--sort_query"></a>
@@ -8893,11 +8620,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--security_query--compute_query"></a>
@@ -8920,7 +8645,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--security_query--group_by--sort_query"></a>
@@ -8974,11 +8698,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--compute_query"></a>
@@ -9001,7 +8723,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--group_by--sort_query"></a>
@@ -9041,11 +8762,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--log_query--compute_query"></a>
@@ -9068,7 +8787,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--log_query--group_by--sort_query"></a>
@@ -9122,11 +8840,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--compute_query"></a>
@@ -9149,7 +8865,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--group_by--sort_query"></a>
@@ -9189,11 +8904,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--security_query--compute_query"></a>
@@ -9216,7 +8929,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--security_query--group_by--sort_query"></a>
@@ -9335,7 +9047,6 @@ Optional:
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--timeseries_definition--request))
 - **right_yaxis** (Block List, Max: 1) Nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--right_yaxis))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -9405,11 +9116,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--timeseries_definition--request--apm_query--compute_query"></a>
@@ -9432,7 +9141,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--timeseries_definition--request--apm_query--group_by--sort_query"></a>
@@ -9494,11 +9202,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--timeseries_definition--request--log_query--compute_query"></a>
@@ -9521,7 +9227,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--timeseries_definition--request--log_query--group_by--sort_query"></a>
@@ -9573,11 +9278,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--timeseries_definition--request--network_query--compute_query"></a>
@@ -9600,7 +9303,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query--group_by--sort_query))
 
 <a id="nestedblock--widget--timeseries_definition--request--network_query--group_by--sort_query"></a>
@@ -9760,11 +9462,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--timeseries_definition--request--rum_query--compute_query"></a>
@@ -9787,7 +9487,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--timeseries_definition--request--rum_query--group_by--sort_query"></a>
@@ -9827,11 +9526,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--timeseries_definition--request--security_query--compute_query"></a>
@@ -9854,7 +9551,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--timeseries_definition--request--security_query--group_by--sort_query"></a>
@@ -9929,7 +9625,6 @@ Optional:
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--custom_link))
 - **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
@@ -9970,11 +9665,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--toplist_definition--request--apm_query--compute_query"></a>
@@ -9997,7 +9690,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query--group_by--sort_query))
 
 <a id="nestedblock--widget--toplist_definition--request--apm_query--group_by--sort_query"></a>
@@ -10078,11 +9770,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--toplist_definition--request--log_query--compute_query"></a>
@@ -10105,7 +9795,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query--group_by--sort_query))
 
 <a id="nestedblock--widget--toplist_definition--request--log_query--group_by--sort_query"></a>
@@ -10265,11 +9954,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--toplist_definition--request--rum_query--compute_query"></a>
@@ -10292,7 +9979,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query--group_by--sort_query))
 
 <a id="nestedblock--widget--toplist_definition--request--rum_query--group_by--sort_query"></a>
@@ -10332,11 +10018,9 @@ Required:
 
 Optional:
 
-- **compute** (Map of String, Deprecated) One of `compute` or `multi_compute` is required. The map has the keys as below. **Deprecated.** Define `compute_query` list with one element instead.
 - **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query--group_by))
 - **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query--multi_compute))
-- **search** (Map of String, Deprecated) Map defining the search query to use. **Deprecated.** Define `search_query` directly instead.
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--toplist_definition--request--security_query--compute_query"></a>
@@ -10359,7 +10043,6 @@ Optional:
 
 - **facet** (String) Facet name.
 - **limit** (Number) Maximum number of items in the group.
-- **sort** (Map of String, Deprecated) One map is allowed with the keys as below. **Deprecated.** Define `sort_query` list with one element instead.
 - **sort_query** (Block List, Max: 1) List of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query--group_by--sort_query))
 
 <a id="nestedblock--widget--toplist_definition--request--security_query--group_by--sort_query"></a>
@@ -10420,7 +10103,6 @@ Optional:
 - **show_latency** (Boolean) Whether to show the latency metrics or not.
 - **show_resource_list** (Boolean) Whether to show the resource list or not.
 - **size_format** (String) Size of the widget. Available values are: `small`, `medium`, or `large`.
-- **time** (Map of String, Deprecated) Nested block describing the timeframe to use when displaying the widget. The structure of this block is described below. **Deprecated.** Define `live_span` directly in the widget definition instead.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.

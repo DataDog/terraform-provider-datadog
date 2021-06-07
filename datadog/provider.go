@@ -11,16 +11,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var (
@@ -47,7 +47,7 @@ func init() {
 }
 
 // Provider returns the built datadog provider object
-func Provider() terraform.ResourceProvider {
+func Provider() *schema.Provider {
 	utils.DatadogProvider = &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"api_key": {
@@ -114,7 +114,6 @@ func Provider() terraform.ResourceProvider {
 			"datadog_metric_tag_configuration":             resourceDatadogMetricTagConfiguration(),
 			"datadog_monitor":                              resourceDatadogMonitor(),
 			"datadog_role":                                 resourceDatadogRole(),
-			"datadog_screenboard":                          resourceDatadogScreenboard(),
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
@@ -122,7 +121,6 @@ func Provider() terraform.ResourceProvider {
 			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
 			"datadog_synthetics_global_variable":           resourceDatadogSyntheticsGlobalVariable(),
 			"datadog_synthetics_private_location":          resourceDatadogSyntheticsPrivateLocation(),
-			"datadog_timeboard":                            resourceDatadogTimeboard(),
 			"datadog_user":                                 resourceDatadogUser(),
 		},
 
@@ -140,7 +138,7 @@ func Provider() terraform.ResourceProvider {
 			"datadog_synthetics_locations":      dataSourceDatadogSyntheticsLocations(),
 		},
 
-		ConfigureFunc: providerConfigure,
+		ConfigureContextFunc: providerConfigure,
 	}
 
 	return utils.DatadogProvider
@@ -157,14 +155,14 @@ type ProviderConfiguration struct {
 	Now func() time.Time
 }
 
-func providerConfigure(d *schema.ResourceData) (interface{}, error) {
+func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	apiKey := d.Get("api_key").(string)
 	appKey := d.Get("app_key").(string)
 	validate := d.Get("validate").(bool)
 	httpRetryEnabled := d.Get("http_client_retry_enabled").(bool)
 
 	if validate && (apiKey == "" || appKey == "") {
-		return nil, errors.New("api_key and app_key must be set unless validate = false")
+		return nil, diag.FromErr(errors.New("api_key and app_key must be set unless validate = false"))
 	}
 
 	// Initialize the community client
@@ -190,11 +188,11 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		ok, err := communityClient.Validate()
 		if err != nil {
 			log.Printf("[ERROR] Datadog Client validation error: %v", err)
-			return nil, err
+			return nil, diag.FromErr(err)
 		} else if !ok {
 			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
 			log.Printf("[ERROR] Datadog Client validation error: %v", err)
-			return nil, err
+			return nil, diag.FromErr(err)
 		}
 	} else {
 		log.Println("[INFO] Skipping key validation (validate = false)")
@@ -247,10 +245,10 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
-			return nil, fmt.Errorf(`invalid API URL : %v`, parseErr)
+			return nil, diag.Errorf(`invalid API URL : %v`, parseErr)
 		}
 		if parsedAPIURL.Host == "" || parsedAPIURL.Scheme == "" {
-			return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
+			return nil, diag.Errorf(`missing protocol or host : %v`, apiURL)
 		}
 		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
 		authV1 = context.WithValue(authV1, datadogV1.ContextServerIndex, 1)
@@ -306,10 +304,10 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
-			return nil, fmt.Errorf(`invalid API URL : %v`, parseErr)
+			return nil, diag.Errorf(`invalid API URL : %v`, parseErr)
 		}
 		if parsedAPIURL.Host == "" || parsedAPIURL.Scheme == "" {
-			return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
+			return nil, diag.Errorf(`missing protocol or host : %v`, apiURL)
 		}
 		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
 		authV2 = context.WithValue(authV2, datadogV2.ContextServerIndex, 1)

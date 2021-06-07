@@ -200,25 +200,20 @@ resource "datadog_synthetics_test" "test_browser" {
 
 - **api_step** (Block List) Steps for multistep api tests (see [below for nested schema](#nestedblock--api_step))
 - **assertion** (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--assertion))
-- **assertions** (List of Map of String, Deprecated) List of assertions. **Deprecated.** Define `assertion` blocks instead.
 - **browser_step** (Block List) Steps for browser tests. (see [below for nested schema](#nestedblock--browser_step))
 - **browser_variable** (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
 - **config_variable** (Block List) Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--config_variable))
 - **device_ids** (List of String) Array with the different device IDs used to run the test. Allowed enum values: `laptop_large`, `tablet`, `mobile_small` (only available for `browser` tests).
 - **message** (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.
-- **options** (Map of String, Deprecated) **Deprecated.** Define `options_list` blocks instead.
 - **options_list** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
-- **request** (Map of String, Deprecated) The synthetics test request. Required if `type = "api"`. **Deprecated.** Define `request_definition` list with one element instead.
 - **request_basicauth** (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
 - **request_client_certificate** (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
 - **request_definition** (Block List, Max: 1) The synthetics test request. Required if `type = "api"`. (see [below for nested schema](#nestedblock--request_definition))
 - **request_headers** (Map of String) Header name and value map.
 - **request_query** (Map of String) Query arguments name and value map.
 - **set_cookie** (String) Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.
-- **step** (Block List, Deprecated) Steps for browser tests. **Deprecated.** Define `browser_step` blocks instead. (see [below for nested schema](#nestedblock--step))
 - **subtype** (String) When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns`, `icmp` or `multi`. Defaults to `http`.
 - **tags** (List of String) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).
-- **variable** (Block List, Deprecated) Variables used for a browser test steps. Multiple `browser_variable` blocks are allowed with the structure below. **Deprecated.** Define `browser_variable` blocks instead. (see [below for nested schema](#nestedblock--variable))
 
 ### Read-Only
 
@@ -466,7 +461,7 @@ Optional:
 
 Required:
 
-- **tick_every** (Number) How often the test should run (in seconds). Current possible values are `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` plus `60` for API tests or `300` for browser tests.
+- **tick_every** (Number) How often the test should run (in seconds). Current possible values are `30`, `60`, `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` for API tests or `300` for browser tests.
 
 Optional:
 
@@ -555,37 +550,6 @@ Optional:
 - **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.
-
-
-<a id="nestedblock--step"></a>
-### Nested Schema for `step`
-
-Required:
-
-- **name** (String) Name of the step.
-- **params** (String) Parameters for the step as JSON string.
-- **type** (String) Type of the step. Refer to [Datadog documentation](https://docs.datadoghq.com/api/v1/synthetics/#create-a-test) for the complete list of available types.
-
-Optional:
-
-- **allow_failure** (Boolean) Determines if the step should be allowed to fail.
-- **force_element_update** (Boolean) Force update of the "element" parameter for the step
-- **timeout** (Number) Used to override the default timeout of a step.
-
-
-<a id="nestedblock--variable"></a>
-### Nested Schema for `variable`
-
-Required:
-
-- **name** (String) Name of the variable.
-- **type** (String) Type of browser test variable. Allowed enum values: `element`, `email`, `global`, `javascript`, `text`.
-
-Optional:
-
-- **example** (String) Example for the variable.
-- **id** (String) ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.
-- **pattern** (String) Pattern of the variable.
 
 ## Import
 

@@ -1,21 +1,24 @@
 package datadog
 
 import (
+	"context"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogMetricMetadata() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog metric_metadata resource. This can be used to manage a metric's metadata.",
-		Create:      resourceDatadogMetricMetadataCreate,
-		Read:        resourceDatadogMetricMetadataRead,
-		Update:      resourceDatadogMetricMetadataUpdate,
-		Delete:      resourceDatadogMetricMetadataDelete,
+		Description:   "Provides a Datadog metric_metadata resource. This can be used to manage a metric's metadata.",
+		CreateContext: resourceDatadogMetricMetadataCreate,
+		ReadContext:   resourceDatadogMetricMetadataRead,
+		UpdateContext: resourceDatadogMetricMetadataUpdate,
+		DeleteContext: resourceDatadogMetricMetadataDelete,
 		Importer: &schema.ResourceImporter{
-			State: resourceDatadogMetricMetadataImport,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -69,7 +72,7 @@ func buildMetricMetadataStruct(d *schema.ResourceData) (string, *datadogV1.Metri
 	}
 }
 
-func resourceDatadogMetricMetadataCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogMetricMetadataCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -77,7 +80,7 @@ func resourceDatadogMetricMetadataCreate(d *schema.ResourceData, meta interface{
 	id, m := buildMetricMetadataStruct(d)
 	createdMetadata, _, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id, *m)
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating metric metadata")
+		return utils.TranslateClientErrorDiag(err, "error creating metric metadata")
 	}
 
 	d.SetId(id)
@@ -85,30 +88,30 @@ func resourceDatadogMetricMetadataCreate(d *schema.ResourceData, meta interface{
 	return updateMetricMetadataState(d, &createdMetadata)
 }
 
-func updateMetricMetadataState(d *schema.ResourceData, metadata *datadogV1.MetricMetadata) error {
+func updateMetricMetadataState(d *schema.ResourceData, metadata *datadogV1.MetricMetadata) diag.Diagnostics {
 	if err := d.Set("type", metadata.GetType()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("description", metadata.GetDescription()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("short_name", metadata.GetShortName()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("unit", metadata.GetUnit()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("per_unit", metadata.GetPerUnit()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("statsd_interval", metadata.GetStatsdInterval()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	return nil
 }
 
-func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogMetricMetadataRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -121,12 +124,12 @@ func resourceDatadogMetricMetadataRead(d *schema.ResourceData, meta interface{})
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error getting metric metadata")
+		return utils.TranslateClientErrorDiag(err, "error getting metric metadata")
 	}
 	return updateMetricMetadataState(d, &m)
 }
 
-func resourceDatadogMetricMetadataUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogMetricMetadataUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -155,19 +158,12 @@ func resourceDatadogMetricMetadataUpdate(d *schema.ResourceData, meta interface{
 
 	updatedMetadata, _, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id, *m)
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating metric metadata")
+		return utils.TranslateClientErrorDiag(err, "error updating metric metadata")
 	}
 
 	return updateMetricMetadataState(d, &updatedMetadata)
 }
 
-func resourceDatadogMetricMetadataDelete(_ *schema.ResourceData, _ interface{}) error {
+func resourceDatadogMetricMetadataDelete(_ context.Context, _ *schema.ResourceData, _ interface{}) diag.Diagnostics {
 	return nil
-}
-
-func resourceDatadogMetricMetadataImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	if err := resourceDatadogMetricMetadataRead(d, meta); err != nil {
-		return nil, err
-	}
-	return []*schema.ResourceData{d}, nil
 }

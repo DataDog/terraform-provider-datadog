@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 
@@ -8,18 +9,19 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceDatadogMetricTagConfiguration() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog metric tag configuration resource. This can be used to modify tag configurations for metrics.",
-		Create:      resourceDatadogMetricTagConfigurationCreate,
-		Read:        resourceDatadogMetricTagConfigurationRead,
-		Update:      resourceDatadogMetricTagConfigurationUpdate,
-		Delete:      resourceDatadogMetricTagConfigurationDelete,
-		CustomizeDiff: func(diff *schema.ResourceDiff, meta interface{}) error {
+		Description:   "Provides a Datadog metric tag configuration resource. This can be used to modify tag configurations for metrics.",
+		CreateContext: resourceDatadogMetricTagConfigurationCreate,
+		ReadContext:   resourceDatadogMetricTagConfigurationRead,
+		UpdateContext: resourceDatadogMetricTagConfigurationUpdate,
+		DeleteContext: resourceDatadogMetricTagConfigurationDelete,
+		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 			_, includePercentilesOk := diff.GetOkExists("include_percentiles")
 			if !includePercentilesOk {
 				// if there was no change to include_percentiles we don't need special handling
@@ -42,7 +44,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			return nil
 		},
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -54,11 +56,11 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\.\_]*$`), "metric name must be valid"), validation.StringLenBetween(1, 200)),
 			},
 			"metric_type": {
-				Description:  "The metric's type. This field can't be updated after creation. Allowed enum values: gauge,count,distribution.",
-				Type:         schema.TypeString,
-				ForceNew:     true,
-				Required:     true,
-				ValidateFunc: validators.ValidateEnumValue(datadogV2.NewMetricTagConfigurationMetricTypesFromValue),
+				Description:      "The metric's type. This field can't be updated after creation. Allowed enum values: gauge,count,distribution.",
+				Type:             schema.TypeString,
+				ForceNew:         true,
+				Required:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricTagConfigurationMetricTypesFromValue),
 			},
 			"tags": {
 				Description: "A list of tag keys that will be queryable for your metric.",
@@ -144,14 +146,14 @@ func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existingMe
 	return result, nil
 }
 
-func resourceDatadogMetricTagConfigurationCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogMetricTagConfigurationCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV2
 	auth := providerConf.AuthV2
 
 	resultMetricTagConfigurationData, err := buildDatadogMetricTagConfiguration(d)
 	if err != nil {
-		return utils.TranslateClientError(err, "error building MetricTagConfiguration object")
+		return utils.TranslateClientErrorDiag(err, "error building MetricTagConfiguration object")
 	}
 	ddObject := datadogV2.NewMetricTagConfigurationCreateRequestWithDefaults()
 	ddObject.SetData(*resultMetricTagConfigurationData)
@@ -159,22 +161,22 @@ func resourceDatadogMetricTagConfigurationCreate(d *schema.ResourceData, meta in
 
 	response, _, err := datadogClient.MetricsApi.CreateTagConfiguration(auth, metricName, *ddObject)
 	if err != nil {
-		return utils.TranslateClientError(err, "error creating MetricTagConfiguration")
+		return utils.TranslateClientErrorDiag(err, "error creating MetricTagConfiguration")
 	}
 	d.SetId(metricName)
 
 	return updateMetricTagConfigurationState(d, response.Data)
 }
 
-func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfiguration *datadogV2.MetricTagConfiguration) error {
+func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfiguration *datadogV2.MetricTagConfiguration) diag.Diagnostics {
 	if attributes, ok := metricTagConfiguration.GetAttributesOk(); ok {
 		if metricType, ok := attributes.GetMetricTypeOk(); ok {
 			if err := d.Set("metric_type", metricType); err != nil {
-				return err
+				return diag.FromErr(err)
 			}
 			if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 				if err := d.Set("include_percentiles", attributes.GetIncludePercentiles()); err != nil {
-					return err
+					return diag.FromErr(err)
 				}
 			}
 		}
@@ -183,13 +185,13 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 			tags = []string{}
 		}
 		if err := d.Set("tags", tags); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 
 	metricName := metricTagConfiguration.GetId()
 	if err := d.Set("metric_name", metricName); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	d.SetId(metricName)
@@ -198,7 +200,7 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 	return nil
 }
 
-func resourceDatadogMetricTagConfigurationRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogMetricTagConfigurationRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV2
 	auth := providerConf.AuthV2
@@ -211,19 +213,19 @@ func resourceDatadogMetricTagConfigurationRead(d *schema.ResourceData, meta inte
 			return nil
 		}
 		if err != nil {
-			return utils.TranslateClientError(err, "metric tag configuration not found")
+			return utils.TranslateClientErrorDiag(err, "metric tag configuration not found")
 		}
-		return fmt.Errorf("error fetching metric tag configuration by name")
+		return diag.Errorf("error fetching metric tag configuration by name")
 	}
 	if httpresp.StatusCode != 200 {
-		return fmt.Errorf("error fetching metric tag configuration by name, unexpected status code %d", httpresp.StatusCode)
+		return diag.Errorf("error fetching metric tag configuration by name, unexpected status code %d", httpresp.StatusCode)
 	}
 
 	resource := metricTagConfigurationResponse.GetData()
 	return updateMetricTagConfigurationState(d, &resource)
 }
 
-func resourceDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogMetricTagConfigurationUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV2
 	auth := providerConf.AuthV2
@@ -231,20 +233,20 @@ func resourceDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, meta in
 	metricName := d.Id()
 	metricTagConfigurationResponse, httpresp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, metricName)
 	if err != nil {
-		return utils.TranslateClientError(err, "metric not found")
+		return utils.TranslateClientErrorDiag(err, "metric not found")
 	}
 	if httpresp == nil {
-		return fmt.Errorf("error determining if tag configuration for metric exists")
+		return diag.Errorf("error determining if tag configuration for metric exists")
 	}
 	if httpresp != nil && httpresp.StatusCode == 404 {
-		return fmt.Errorf("error updating tag configuration for metric, tag configuration does not exist")
+		return diag.Errorf("error updating tag configuration for metric, tag configuration does not exist")
 	}
 
 	existingMetricType := metricTagConfigurationResponse.GetData().Attributes.GetMetricType()
 
 	resultMetricTagConfigurationUpdateData, err := buildDatadogMetricTagConfigurationUpdate(d, &existingMetricType)
 	if err != nil {
-		return utils.TranslateClientError(err, "error building MetricTagConfiguration object")
+		return utils.TranslateClientErrorDiag(err, "error building MetricTagConfiguration object")
 	}
 
 	ddObject := datadogV2.NewMetricTagConfigurationUpdateRequestWithDefaults()
@@ -252,13 +254,13 @@ func resourceDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, meta in
 
 	response, _, err := datadogClient.MetricsApi.UpdateTagConfiguration(auth, metricName, *ddObject)
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating MetricTagConfiguration")
+		return utils.TranslateClientErrorDiag(err, "error updating MetricTagConfiguration")
 	}
 
 	return updateMetricTagConfigurationState(d, response.Data)
 }
 
-func resourceDatadogMetricTagConfigurationDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogMetricTagConfigurationDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClient := providerConf.DatadogClientV2
 	auth := providerConf.AuthV2
@@ -268,7 +270,7 @@ func resourceDatadogMetricTagConfigurationDelete(d *schema.ResourceData, meta in
 	_, err = datadogClient.MetricsApi.DeleteTagConfiguration(auth, metricName)
 
 	if err != nil {
-		return utils.TranslateClientError(err, "error deleting MetricTagConfiguration")
+		return utils.TranslateClientErrorDiag(err, "error deleting MetricTagConfiguration")
 	}
 
 	return nil

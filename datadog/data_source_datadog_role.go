@@ -1,20 +1,20 @@
 package datadog
 
 import (
-	"fmt"
+	"context"
 	"log"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func dataSourceDatadogRole() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about an existing role for use in other resources.",
-		Read:        dataSourceDatadogRoleRead,
+		ReadContext: dataSourceDatadogRoleRead,
 
 		Schema: map[string]*schema.Schema{
 			"filter": {
@@ -38,7 +38,7 @@ func dataSourceDatadogRole() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogRoleRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogRoleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
@@ -49,7 +49,7 @@ func dataSourceDatadogRoleRead(d *schema.ResourceData, meta interface{}) error {
 
 	res, _, err := datadogClientV2.RolesApi.ListRoles(authV2, *optionalParams)
 	if err != nil {
-		return utils.TranslateClientError(err, "error querying roles")
+		return utils.TranslateClientErrorDiag(err, "error querying roles")
 	}
 	roles := res.GetData()
 	roleIndex := 0
@@ -64,23 +64,23 @@ func dataSourceDatadogRoleRead(d *schema.ResourceData, meta interface{}) error {
 			}
 		}
 		if !exactMatchFound {
-			return fmt.Errorf(
+			return diag.Errorf(
 				"your query returned more than one result and no exact match for name '%s' were found, "+
 					"please try a more specific search criteria",
 				filter,
 			)
 		}
 	} else if len(roles) == 0 {
-		return fmt.Errorf("your query returned no result, please try a less specific search criteria")
+		return diag.Errorf("your query returned no result, please try a less specific search criteria")
 	}
 
 	r := roles[roleIndex]
 	d.SetId(r.GetId())
 	if err := d.Set("name", r.Attributes.GetName()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("user_count", r.Attributes.GetUserCount()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	return nil

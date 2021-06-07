@@ -2,11 +2,10 @@ package test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 const tfSecurityDefaultRuleName = "datadog_security_monitoring_default_rule.acceptance_test"
@@ -16,8 +15,8 @@ func TestAccDatadogSecurityMonitoringDefaultRule_Basic(t *testing.T) {
 	_, accProviders := testAccProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: accProviders,
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringDefaultDatasource(),
@@ -47,12 +46,12 @@ data "datadog_security_monitoring_rules" "bruteforce" {
 }
 
 func testAccCheckDatadogSecurityMonitoringDefaultNoop() string {
-	return fmt.Sprintf(`
+	return `
 data "datadog_security_monitoring_rules" "bruteforce" {
     name_filter = "brute"
 }
 
 resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 }
-`)
+`
 }

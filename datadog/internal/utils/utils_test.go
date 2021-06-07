@@ -117,22 +117,22 @@ func TestConvertResponseByteToMap(t *testing.T) {
 }
 
 func validJSON() string {
-	return fmt.Sprint(`
+	return `
 {
    "test":"value",
    "test_two":{
       "nested_attr":"value"
    }
 }
-`)
+`
 }
 func invalidJSON() string {
-	return fmt.Sprint(`
+	return `
 {
    "test":"value":"value",
    "test_two":{
       "nested_attr":"value"
    }
 }
-`)
+`
 }

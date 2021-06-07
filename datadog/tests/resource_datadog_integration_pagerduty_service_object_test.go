@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 // We're not testing for schedules because Datadog actively verifies it with Pagerduty
@@ -17,9 +17,9 @@ func TestAccDatadogIntegrationPagerdutyServiceObject_Basic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationPagerdutyServiceObjectConfig(serviceName),
@@ -29,8 +29,6 @@ func TestAccDatadogIntegrationPagerdutyServiceObject_Basic(t *testing.T) {
 						"datadog_integration_pagerduty.foo", "subdomain", "testdomain"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "api_token", "*****"),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty.foo", "individual_services", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "schedules.0", "https://ddog.pagerduty.com/schedules/X123VF"),
 					resource.TestCheckResourceAttr(
@@ -67,7 +65,6 @@ func TestAccDatadogIntegrationPagerdutyServiceObject_Basic(t *testing.T) {
 func testAccCheckDatadogIntegrationPagerdutyServiceObjectConfig(uniq string) string {
 	return fmt.Sprintf(`
  resource "datadog_integration_pagerduty" "foo" {
-  individual_services = true
 
   schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
   subdomain = "testdomain"
@@ -92,7 +89,6 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
 func testAccCheckDatadogIntegrationPagerdutyServiceObjectUpdatedConfig(uniq string) string {
 	return fmt.Sprintf(`
  resource "datadog_integration_pagerduty" "foo" {
-  individual_services = true
 
   schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
   subdomain = "testdomain"

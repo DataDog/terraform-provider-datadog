@@ -9,9 +9,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func datadogOrderedDashboardConfig(uniq string) string {
@@ -560,7 +560,7 @@ resource "datadog_dashboard" "free_dashboard" {
 	}
 	widget {
 		log_stream_definition {
-			logset = "19"
+			indexes = ["main"]
 			query = "error"
 			columns = ["core_host", "core_service", "tag_source"]
 			show_date_column = true
@@ -581,13 +581,11 @@ resource "datadog_dashboard" "free_dashboard" {
 	widget {
 		manage_status_definition {
 			color_preference = "text"
-			count = 50
 			display_format = "countsAndList"
 			hide_zero_counts = true
 			query = "type:metric"
 			show_last_triggered = true
 			sort = "status,asc"
-			start = 0
 			summary_type = "monitors"
 			title = "Widget Title"
 			title_size = 16
@@ -1091,7 +1089,7 @@ var datadogFreeDashboardAsserts = []string{
 	"widget.4.widget_layout.0.x = 77",
 	"widget.4.widget_layout.0.y = 7",
 	// Log Stream widget
-	"widget.5.log_stream_definition.0.logset = 19",
+	"widget.5.log_stream_definition.0.indexes.0 = main",
 	"widget.5.log_stream_definition.0.query = error",
 	"widget.5.log_stream_definition.0.columns.# = 3",
 	"widget.5.log_stream_definition.0.columns.0 = core_host",
@@ -1108,13 +1106,11 @@ var datadogFreeDashboardAsserts = []string{
 	"widget.5.widget_layout.0.y = 51",
 	// Manage Status widget
 	"widget.6.manage_status_definition.0.color_preference = text",
-	"widget.6.manage_status_definition.0.count = 50",
 	"widget.6.manage_status_definition.0.display_format = countsAndList",
 	"widget.6.manage_status_definition.0.hide_zero_counts = true",
 	"widget.6.manage_status_definition.0.query = type:metric",
 	"widget.6.manage_status_definition.0.show_last_triggered = true",
 	"widget.6.manage_status_definition.0.sort = status,asc",
-	"widget.6.manage_status_definition.0.start = 0",
 	"widget.6.manage_status_definition.0.summary_type = monitors",
 	"widget.6.manage_status_definition.0.title = Widget Title",
 	"widget.6.manage_status_definition.0.title_align = left",
@@ -1175,9 +1171,9 @@ func TestAccDatadogDashboard_update(t *testing.T) {
 	}
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: datadogOrderedDashboardConfig(dbName),
@@ -1201,9 +1197,9 @@ func TestAccDatadogFreeDashboard(t *testing.T) {
 	}
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: datadogFreeDashboardConfig(dbName),
@@ -1224,9 +1220,9 @@ func TestAccDatadogDashboardLayoutForceNew(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: datadogSimpleFreeDashboardConfig(dbName),
@@ -1251,9 +1247,9 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: datadogOrderedDashboardConfig(dbName),
@@ -1275,9 +1271,10 @@ func TestAccDatadogDashboard_import(t *testing.T) {
 	})
 }
 
-func checkDashboardExists(accProvider *schema.Provider) resource.TestCheckFunc {
+func checkDashboardExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -1290,9 +1287,10 @@ func checkDashboardExists(accProvider *schema.Provider) resource.TestCheckFunc {
 	}
 }
 
-func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc {
+func checkDashboardDestroy(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -1304,7 +1302,7 @@ func checkDashboardDestroy(accProvider *schema.Provider) resource.TestCheckFunc 
 					}
 					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Dashboard %s", err)}
 				}
-				return &utils.RetryableError{Prob: fmt.Sprintf("Dashboard still exists")}
+				return &utils.RetryableError{Prob: "Dashboard still exists"}
 			}
 			return nil
 		})
@@ -1324,9 +1322,9 @@ func testAccDatadogDashboardWidgetUtil(t *testing.T, config string, name string,
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: config,
@@ -1347,9 +1345,9 @@ func testAccDatadogDashboardWidgetUtilImport(t *testing.T, config string, name s
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkDashboardDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: config,
