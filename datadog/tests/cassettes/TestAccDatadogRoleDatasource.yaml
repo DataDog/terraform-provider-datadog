@@ -10,13 +10,11 @@ interactions:
       Dd-Operation-Id:
       - ListRoles
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli ) datadog-api-client-go/1.0.0-beta.15
-        (go go1.15.7; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Standard+Role
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":1,"total_count":3418}},"data":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog
-      Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00","user_count":16},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"}]}}}]}'
+    body: '{"meta":{"page":{"total_filtered_count":1,"total_count":3469}},"data":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00","user_count":20},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301dd-ec5c-11ea-aa9f-97edfb345bc9"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"4628ca54-f923-11ea-adbc-4b2b7f88c5e9"},{"type":"permissions","id":"4ada6e36-f923-11ea-adbc-0788e5c5e3cf"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"55f4b5ec-f923-11ea-adbc-1bfa2334a755"},{"type":"permissions","id":"5c6b88e2-f923-11ea-adbc-abf57d079420"},{"type":"permissions","id":"642eebe6-f923-11ea-adbc-eb617674ea04"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"}]}}}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -27,12 +25,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 15 Feb 2021 13:21:58 GMT
+      - Mon, 15 Mar 2021 18:55:18 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 22-Feb-2021 13:21:58 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -40,9 +35,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
+      - mNzaoDhdDKO7t4QSrAe5X7pHd0bJND187D+vRbwoluXouE2m1UaQQX0RGCvRpLVE
       X-Dd-Version:
-      - "35.3909743"
+      - "35.4100063"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -50,9 +45,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "499"
+      - "488"
       X-Ratelimit-Reset:
-      - "2"
+      - "42"
     status: 200 OK
     code: 200
     duration: ""
@@ -65,13 +60,11 @@ interactions:
       Dd-Operation-Id:
       - ListRoles
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Standard+Role
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":1,"total_count":3423}},"data":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog
-      Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00","user_count":16},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"}]}}}]}'
+    body: '{"meta":{"page":{"total_filtered_count":1,"total_count":3469}},"data":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00","user_count":20},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301dd-ec5c-11ea-aa9f-97edfb345bc9"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"4628ca54-f923-11ea-adbc-4b2b7f88c5e9"},{"type":"permissions","id":"4ada6e36-f923-11ea-adbc-0788e5c5e3cf"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"55f4b5ec-f923-11ea-adbc-1bfa2334a755"},{"type":"permissions","id":"5c6b88e2-f923-11ea-adbc-abf57d079420"},{"type":"permissions","id":"642eebe6-f923-11ea-adbc-eb617674ea04"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"}]}}}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -82,12 +75,109 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 15 Feb 2021 13:21:59 GMT
+      - Mon, 15 Mar 2021 18:55:19 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 22-Feb-2021 13:21:59 GMT;
-        secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - F5gm0Rce1/Abr9/0Fw8HAqWfiz0FdiH8er/AXnN6lOn3L6KyGgbsLCwgPlob1No8
+      X-Dd-Version:
+      - "35.4100063"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "500"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "487"
+      X-Ratelimit-Reset:
+      - "41"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListRoles
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Standard+Role
+    method: GET
+  response:
+    body: '{"meta":{"page":{"total_filtered_count":1,"total_count":3469}},"data":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00","user_count":20},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301dd-ec5c-11ea-aa9f-97edfb345bc9"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"4628ca54-f923-11ea-adbc-4b2b7f88c5e9"},{"type":"permissions","id":"4ada6e36-f923-11ea-adbc-0788e5c5e3cf"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"55f4b5ec-f923-11ea-adbc-1bfa2334a755"},{"type":"permissions","id":"5c6b88e2-f923-11ea-adbc-abf57d079420"},{"type":"permissions","id":"642eebe6-f923-11ea-adbc-eb617674ea04"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"}]}}}]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 15 Mar 2021 18:55:20 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
+      X-Dd-Version:
+      - "35.4100063"
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "500"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "486"
+      X-Ratelimit-Reset:
+      - "41"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListRoles
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Standard+Role
+    method: GET
+  response:
+    body: '{"meta":{"page":{"total_filtered_count":1,"total_count":3469}},"data":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00","user_count":20},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301dd-ec5c-11ea-aa9f-97edfb345bc9"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"4628ca54-f923-11ea-adbc-4b2b7f88c5e9"},{"type":"permissions","id":"4ada6e36-f923-11ea-adbc-0788e5c5e3cf"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"55f4b5ec-f923-11ea-adbc-1bfa2334a755"},{"type":"permissions","id":"5c6b88e2-f923-11ea-adbc-abf57d079420"},{"type":"permissions","id":"642eebe6-f923-11ea-adbc-eb617674ea04"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"}]}}}]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 15 Mar 2021 18:55:20 GMT
+      Pragma:
+      - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -97,7 +187,7 @@ interactions:
       X-Dd-Debug:
       - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
       X-Dd-Version:
-      - "35.3909743"
+      - "35.4100063"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -105,9 +195,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "491"
+      - "485"
       X-Ratelimit-Reset:
-      - "1"
+      - "40"
     status: 200 OK
     code: 200
     duration: ""
@@ -120,13 +210,11 @@ interactions:
       Dd-Operation-Id:
       - ListRoles
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Standard+Role
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":1,"total_count":3423}},"data":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog
-      Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00","user_count":16},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"}]}}}]}'
+    body: '{"meta":{"page":{"total_filtered_count":1,"total_count":3469}},"data":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00","user_count":20},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301dd-ec5c-11ea-aa9f-97edfb345bc9"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"4628ca54-f923-11ea-adbc-4b2b7f88c5e9"},{"type":"permissions","id":"4ada6e36-f923-11ea-adbc-0788e5c5e3cf"},{"type":"permissions","id":"5025ee24-f923-11ea-adbc-576ea241df8d"},{"type":"permissions","id":"55f4b5ec-f923-11ea-adbc-1bfa2334a755"},{"type":"permissions","id":"5c6b88e2-f923-11ea-adbc-abf57d079420"},{"type":"permissions","id":"642eebe6-f923-11ea-adbc-eb617674ea04"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"}]}}}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -137,12 +225,9 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 15 Feb 2021 13:21:59 GMT
+      - Mon, 15 Mar 2021 18:55:20 GMT
       Pragma:
       - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 22-Feb-2021 13:21:59 GMT;
-        secure; HttpOnly
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
@@ -150,9 +235,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
+      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
       X-Dd-Version:
-      - "35.3909743"
+      - "35.4100063"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -160,64 +245,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "482"
+      - "484"
       X-Ratelimit-Reset:
-      - "1"
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListRoles
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk)
-        datadog-api-client-go/1.0.0-beta.15 (go go1.15.7; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Standard+Role
-    method: GET
-  response:
-    body: '{"meta":{"page":{"total_filtered_count":1,"total_count":3423}},"data":[{"type":"roles","id":"94172443-be03-11e9-a77a-373332f69711","attributes":{"name":"Datadog
-      Standard Role","created_at":"2019-08-13T19:50:19.075284+00:00","modified_at":"2019-08-13T19:50:19.075284+00:00","user_count":16},"relationships":{"permissions":{"data":[{"type":"permissions","id":"984d2f00-d3b4-11e8-a200-bb47109e9987"},{"type":"permissions","id":"5e605652-dd12-11e8-9e53-375565b8970e"},{"type":"permissions","id":"62cc036c-dd12-11e8-9e54-db9995643092"},{"type":"permissions","id":"6f66600e-dd12-11e8-9e55-7f30fbb45e73"},{"type":"permissions","id":"811ac4ca-dd12-11e8-9e57-676a7f0beef9"},{"type":"permissions","id":"84aa3ae4-dd12-11e8-9e58-a373a514ccd0"},{"type":"permissions","id":"979df720-aed7-11e9-99c6-a7eb8373165a"},{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"d90f6831-d3d8-11e9-a77a-4fd230ddbc6a"},{"type":"permissions","id":"d90f6832-d3d8-11e9-a77a-bf8a2607f864"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"48ef71ea-d8b1-11e9-a77a-93f408470ad0"},{"type":"permissions","id":"4d87d5f8-d8b1-11e9-a77a-eb9c8350d04f"},{"type":"permissions","id":"1af86ce4-7823-11ea-93dc-d7cad1b1c6cb"},{"type":"permissions","id":"b382b982-8535-11ea-93de-2bf1bdf20798"},{"type":"permissions","id":"7314eb20-aa58-11ea-95e2-6fb6e4a451d5"},{"type":"permissions","id":"7b516476-aa58-11ea-95e2-93718cd56369"},{"type":"permissions","id":"80de1ec0-aa58-11ea-95e2-aff381626d5d"},{"type":"permissions","id":"9ac1d8cc-e707-11ea-aa2d-73d37e989a9d"},{"type":"permissions","id":"46a301da-ec5c-11ea-aa9f-73bedeab67ee"},{"type":"permissions","id":"46a301db-ec5c-11ea-aa9f-2fe72193d60e"},{"type":"permissions","id":"46a301e4-ec5c-11ea-aa9f-87282b3a50cc"},{"type":"permissions","id":"07c3c146-f7f8-11ea-acf6-0bd62b9ae60e"},{"type":"permissions","id":"372896c4-f923-11ea-adbc-4fecd107156d"},{"type":"permissions","id":"6ba32d22-0e1a-11eb-ba44-bf9a5aafaa39"},{"type":"permissions","id":"fcac2ad8-2843-11eb-8315-0fe47949d625"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"43fa188e-2dce-11eb-84c0-835ad1fd6287"},{"type":"permissions","id":"4916eebe-2dce-11eb-84c0-271cb2c672e8"},{"type":"permissions","id":"5cbe5f9c-2dce-11eb-84c0-872d3e9f1076"},{"type":"permissions","id":"61765026-2dce-11eb-84c0-833e230d1b8f"},{"type":"permissions","id":"8106300a-54f7-11eb-8cbc-7781a434a67b"}]}}}]}'
-    headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 15 Feb 2021 13:22:00 GMT
-      Pragma:
-      - no-cache
-      Set-Cookie:
-      - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Mon, 22-Feb-2021 13:21:59 GMT;
-        secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - fIO2C4qGDheGHy4YbS+r3a3CXbh4cbRo7roILOimQyiHGjQdOat0cIpWCkupM1uX
-      X-Dd-Version:
-      - "35.3909743"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "500"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "499"
-      X-Ratelimit-Reset:
-      - "1"
+      - "40"
     status: 200 OK
     code: 200
     duration: ""

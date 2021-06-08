@@ -3,6 +3,7 @@
 package datadog
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -15,26 +16,27 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceDatadogSyntheticsTest() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics test.",
-		Create:      resourceDatadogSyntheticsTestCreate,
-		Read:        resourceDatadogSyntheticsTestRead,
-		Update:      resourceDatadogSyntheticsTestUpdate,
-		Delete:      resourceDatadogSyntheticsTestDelete,
+		Description:   "Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics test.",
+		CreateContext: resourceDatadogSyntheticsTestCreate,
+		ReadContext:   resourceDatadogSyntheticsTestRead,
+		UpdateContext: resourceDatadogSyntheticsTestUpdate,
+		DeleteContext: resourceDatadogSyntheticsTestDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"type": {
-				Description:  "Synthetics test type (`api` or `browser`).",
-				Type:         schema.TypeString,
-				Required:     true,
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
+				Description:      "Synthetics test type (`api` or `browser`).",
+				Type:             schema.TypeString,
+				Required:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
 			},
 			"subtype": {
 				Description: "When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns`, `icmp` or `multi`. Defaults to `http`.",
@@ -47,49 +49,29 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					}
 					return old == new
 				},
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsSubTypeFromValue),
-			},
-			"request": {
-				Description:   "The synthetics test request. Required if `type = \"api\"`.",
-				Deprecated:    "Define `request_definition` list with one element instead.",
-				ConflictsWith: []string{"request_definition"},
-				Type:          schema.TypeMap,
-				Optional:      true,
-				Elem:          syntheticsTestRequest(),
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsSubTypeFromValue),
 			},
 			"request_definition": {
-				Description:   "The synthetics test request. Required if `type = \"api\"`.",
-				ConflictsWith: []string{"request"},
-				Type:          schema.TypeList,
-				MaxItems:      1,
-				Optional:      true,
-				Elem:          syntheticsTestRequest(),
+				Description: "The synthetics test request. Required if `type = \"api\"`.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
+				Elem:        syntheticsTestRequest(),
 			},
 			"request_headers":            syntheticsTestRequestHeaders(),
 			"request_query":              syntheticsTestRequestQuery(),
 			"request_basicauth":          syntheticsTestRequestBasicAuth(),
 			"request_client_certificate": syntheticsTestRequestClientCertificate(),
-			"assertions": {
-				Description:   "List of assertions.",
-				Type:          schema.TypeList,
-				Optional:      true,
-				ConflictsWith: []string{"assertion"},
-				Deprecated:    "Define `assertion` blocks instead.",
-				Elem: &schema.Schema{
-					Type: schema.TypeMap,
-				},
-			},
-			"assertion":        syntheticsAPIAssertion(),
-			"variable":         syntheticsBrowserVariableLegacy(),
-			"browser_variable": syntheticsBrowserVariable(),
-			"config_variable":  syntheticsConfigVariable(),
+			"assertion":                  syntheticsAPIAssertion(),
+			"browser_variable":           syntheticsBrowserVariable(),
+			"config_variable":            syntheticsConfigVariable(),
 			"device_ids": {
 				Description: "Array with the different device IDs used to run the test. Allowed enum values: `laptop_large`, `tablet`, `mobile_small` (only available for `browser` tests).",
 				Type:        schema.TypeList,
 				Optional:    true,
 				Elem: &schema.Schema{
-					Type:         schema.TypeString,
-					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsDeviceIDFromValue),
+					Type:             schema.TypeString,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsDeviceIDFromValue),
 				},
 			},
 			"locations": {
@@ -100,7 +82,6 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"options":      syntheticsTestOptions(),
 			"options_list": syntheticsTestOptionsList(),
 			"name": {
 				Description: "Name of Datadog synthetics test.",
@@ -120,18 +101,17 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"status": {
-				Description:  "Define whether you want to start (`live`) or pause (`paused`) a Synthetic test. Allowed enum values: `live`, `paused`",
-				Type:         schema.TypeString,
-				Required:     true,
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestPauseStatusFromValue),
+				Description:      "Define whether you want to start (`live`) or pause (`paused`) a Synthetic test. Allowed enum values: `live`, `paused`",
+				Type:             schema.TypeString,
+				Required:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestPauseStatusFromValue),
 			},
 			"monitor_id": {
 				Description: "ID of the monitor associated with the Datadog synthetics test.",
 				Type:        schema.TypeInt,
 				Computed:    true,
 			},
-			"step":         syntheticsTestBrowserStep(false),
-			"browser_step": syntheticsTestBrowserStep(true),
+			"browser_step": syntheticsTestBrowserStep(),
 			"api_step":     syntheticsTestAPIStep(),
 			"set_cookie": {
 				Description: "Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.",
@@ -146,10 +126,10 @@ func syntheticsTestRequest() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"method": {
-				Description:  "The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.",
-				Type:         schema.TypeString,
-				Optional:     true,
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewHTTPMethodFromValue),
+				Description:      "The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.",
+				Type:             schema.TypeString,
+				Optional:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewHTTPMethodFromValue),
 			},
 			"url": {
 				Description: "The URL to send the request to.",
@@ -291,17 +271,16 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 
 func syntheticsAPIAssertion() *schema.Schema {
 	return &schema.Schema{
-		Description:   "Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below.",
-		Type:          schema.TypeList,
-		Optional:      true,
-		ConflictsWith: []string{"assertions"},
+		Description: "Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below.",
+		Type:        schema.TypeList,
+		Optional:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"type": {
-					Description:  "Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
-					Type:         schema.TypeString,
-					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
-					Required:     true,
+					Description:      "Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
+					Type:             schema.TypeString,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
+					Required:         true,
 				},
 				"operator": {
 					Description:  "Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
@@ -349,108 +328,11 @@ func syntheticsAPIAssertion() *schema.Schema {
 	}
 }
 
-func syntheticsTestOptions() *schema.Schema {
-	return &schema.Schema{
-		Type:          schema.TypeMap,
-		ConflictsWith: []string{"options_list"},
-		Deprecated:    "Define `options_list` blocks instead.",
-		DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
-			if key == "options.follow_redirects" || key == "options.accept_self_signed" || key == "options.allow_insecure" {
-				// TF nested schemas is limited to string values only
-				// follow_redirects, accept_self_signed and allow_insecure being booleans in Datadog json api
-				// we need a sane way to convert from boolean to string
-				// and from string to boolean
-				oldValue, err1 := strconv.ParseBool(old)
-				newValue, err2 := strconv.ParseBool(new)
-				if err1 != nil || err2 != nil {
-					return false
-				}
-				return oldValue == newValue
-			}
-			return old == new
-		},
-		ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-			followRedirectsRaw, ok := val.(map[string]interface{})["follow_redirects"]
-			if ok {
-				followRedirectsStr := convertToString(followRedirectsRaw)
-				switch followRedirectsStr {
-				case "0", "1":
-					warns = append(warns, fmt.Sprintf("%q.follow_redirects must be either true or false, got: %s (please change 1 => true, 0 => false)", key, followRedirectsStr))
-				case "true", "false":
-					break
-				default:
-					errs = append(errs, fmt.Errorf("%q.follow_redirects must be either true or false, got: %s", key, followRedirectsStr))
-				}
-			}
-			acceptSelfSignedRaw, ok := val.(map[string]interface{})["accept_self_signed"]
-			if ok {
-				acceptSelfSignedStr := convertToString(acceptSelfSignedRaw)
-				switch acceptSelfSignedStr {
-				case "true", "false":
-					break
-				default:
-					errs = append(errs, fmt.Errorf("%q.accept_self_signed must be either true or false, got: %s", key, acceptSelfSignedStr))
-				}
-			}
-			allowInsecureRaw, ok := val.(map[string]interface{})["allow_insecure"]
-			if ok {
-				allowInsecureStr := convertToString(allowInsecureRaw)
-				switch allowInsecureStr {
-				case "true", "false":
-					break
-				default:
-					errs = append(errs, fmt.Errorf("%q.allow_insecure must be either true or false, got: %s", key, allowInsecureStr))
-				}
-			}
-			return
-		},
-		Optional: true,
-		Elem: &schema.Resource{
-			Schema: map[string]*schema.Schema{
-				"follow_redirects": {
-					Type:     schema.TypeBool,
-					Optional: true,
-				},
-				"min_failure_duration": {
-					Type:     schema.TypeInt,
-					Optional: true,
-				},
-				"min_location_failed": {
-					Type:     schema.TypeInt,
-					Optional: true,
-				},
-				"tick_every": {
-					Type:         schema.TypeInt,
-					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
-					Required:     true,
-				},
-				"accept_self_signed": {
-					Type:     schema.TypeBool,
-					Optional: true,
-				},
-				"allow_insecure": {
-					Type:     schema.TypeBool,
-					Optional: true,
-				},
-				"retry_count": {
-					Type:     schema.TypeInt,
-					Optional: true,
-				},
-				"retry_interval": {
-					Type:     schema.TypeInt,
-					Optional: true,
-				},
-			},
-		},
-	}
-}
-
 func syntheticsTestOptionsList() *schema.Schema {
 	return &schema.Schema{
-		Type:          schema.TypeList,
-		Optional:      true,
-		MaxItems:      1,
-		ConflictsWith: []string{"options"},
+		Type:     schema.TypeList,
+		Optional: true,
+		MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"allow_insecure": {
@@ -464,10 +346,10 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:    true,
 				},
 				"tick_every": {
-					Description:  "How often the test should run (in seconds). Current possible values are `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` plus `60` for API tests or `300` for browser tests.",
-					Type:         schema.TypeInt,
-					Required:     true,
-					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
+					Description:      "How often the test should run (in seconds). Current possible values are `30`, `60`, `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` for API tests or `300` for browser tests.",
+					Type:             schema.TypeInt,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
 				},
 				"accept_self_signed": {
 					Description: "For SSL test, whether or not the test should allow self signed certificates.",
@@ -544,11 +426,11 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Required:    true,
 				},
 				"subtype": {
-					Description:  "The subtype of the Synthetic multistep API test step, currently only supporting `http`.",
-					Type:         schema.TypeString,
-					Optional:     true,
-					Default:      "http",
-					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAPIStepSubtypeFromValue),
+					Description:      "The subtype of the Synthetic multistep API test step, currently only supporting `http`.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          "http",
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAPIStepSubtypeFromValue),
 				},
 				"extracted_value": {
 					Description: "Values to parse and save as variables from the response.",
@@ -561,10 +443,10 @@ func syntheticsTestAPIStep() *schema.Schema {
 								Required: true,
 							},
 							"type": {
-								Description:  "Property of the Synthetics Test Response to use for the variable: `http_body` or `http_header`",
-								Type:         schema.TypeString,
-								Required:     true,
-								ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
+								Description:      "Property of the Synthetics Test Response to use for the variable: `http_body` or `http_header`",
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
 							},
 							"field": {
 								Description: "When type is `http_header`, name of the header to use to extract the value.",
@@ -578,10 +460,10 @@ func syntheticsTestAPIStep() *schema.Schema {
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"type": {
-											Description:  "Type of parser for a Synthetics global variable from a synthetics test: `raw`, `json_path`, `regex`",
-											Type:         schema.TypeString,
-											Required:     true,
-											ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue),
+											Description:      "Type of parser for a Synthetics global variable from a synthetics test: `raw`, `json_path`, `regex`",
+											Type:             schema.TypeString,
+											Required:         true,
+											ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue),
 										},
 										"value": {
 											Type:        schema.TypeString,
@@ -621,19 +503,8 @@ func syntheticsTestAPIStep() *schema.Schema {
 	}
 }
 
-func syntheticsTestBrowserStep(detailedParams bool) *schema.Schema {
-	var paramsSchema schema.Schema
-
-	if detailedParams {
-		paramsSchema = syntheticsBrowserStepParams()
-	} else {
-		paramsSchema = schema.Schema{
-			Description: "Parameters for the step as JSON string.",
-			Type:        schema.TypeString,
-			Required:    true,
-		}
-	}
-
+func syntheticsTestBrowserStep() *schema.Schema {
+	paramsSchema := syntheticsBrowserStepParams()
 	browserStepSchema := schema.Schema{
 		Description: "Steps for browser tests.",
 		Type:        schema.TypeList,
@@ -646,10 +517,10 @@ func syntheticsTestBrowserStep(detailedParams bool) *schema.Schema {
 					Required:    true,
 				},
 				"type": {
-					Description:  "Type of the step. Refer to [Datadog documentation](https://docs.datadoghq.com/api/v1/synthetics/#create-a-test) for the complete list of available types.",
-					Type:         schema.TypeString,
-					Required:     true,
-					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsStepTypeFromValue),
+					Description:      "Type of the step. Refer to [Datadog documentation](https://docs.datadoghq.com/api/v1/synthetics/#create-a-test) for the complete list of available types.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsStepTypeFromValue),
 				},
 				"allow_failure": {
 					Description: "Determines if the step should be allowed to fail.",
@@ -671,11 +542,6 @@ func syntheticsTestBrowserStep(detailedParams bool) *schema.Schema {
 		},
 	}
 
-	if detailedParams == false {
-		browserStepSchema.ConflictsWith = []string{"browser_step"}
-		browserStepSchema.Deprecated = "Define `browser_step` blocks instead."
-	}
-
 	return &browserStepSchema
 }
 
@@ -693,10 +559,10 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Optional:    true,
 				},
 				"check": {
-					Description:  "Check type to use for an assertion step.",
-					Type:         schema.TypeString,
-					Optional:     true,
-					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsCheckTypeFromValue),
+					Description:      "Check type to use for an assertion step.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsCheckTypeFromValue),
 				},
 				"click_type": {
 					Description:  `Type of click to use for a "click" step.`,
@@ -822,24 +688,12 @@ func syntheticsBrowserStepParams() schema.Schema {
 	}
 }
 
-func syntheticsBrowserVariableLegacy() *schema.Schema {
-	return &schema.Schema{
-		Type:          schema.TypeList,
-		Description:   "Variables used for a browser test steps. Multiple `browser_variable` blocks are allowed with the structure below.",
-		Optional:      true,
-		ConflictsWith: []string{"browser_variable"},
-		Deprecated:    "Define `browser_variable` blocks instead.",
-		Elem:          syntheticsBrowserVariableElem(),
-	}
-}
-
 func syntheticsBrowserVariable() *schema.Schema {
 	return &schema.Schema{
-		Description:   "Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below.",
-		Type:          schema.TypeList,
-		Optional:      true,
-		ConflictsWith: []string{"variable"},
-		Elem:          syntheticsBrowserVariableElem(),
+		Description: "Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below.",
+		Type:        schema.TypeList,
+		Optional:    true,
+		Elem:        syntheticsBrowserVariableElem(),
 	}
 }
 
@@ -869,10 +723,10 @@ func syntheticsBrowserVariableElem() *schema.Resource {
 				Optional:    true,
 			},
 			"type": {
-				Description:  "Type of browser test variable. Allowed enum values: `element`, `email`, `global`, `javascript`, `text`.",
-				Type:         schema.TypeString,
-				Required:     true,
-				ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
+				Description:      "Type of browser test variable. Allowed enum values: `element`, `email`, `global`, `javascript`, `text`.",
+				Type:             schema.TypeString,
+				Required:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
 			},
 		},
 	}
@@ -903,17 +757,17 @@ func syntheticsConfigVariable() *schema.Schema {
 					Optional:    true,
 				},
 				"type": {
-					Description:  "Type of test configuration variable. Allowed enum values: `text`.",
-					Type:         schema.TypeString,
-					Required:     true,
-					ValidateFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsConfigVariableTypeFromValue),
+					Description:      "Type of test configuration variable. Allowed enum values: `text`.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsConfigVariableTypeFromValue),
 				},
 			},
 		},
 	}
 }
 
-func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -925,7 +779,7 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 		createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateSyntheticsAPITest(authV1, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
-			return utils.TranslateClientError(err, "error creating synthetics API test")
+			return utils.TranslateClientErrorDiag(err, "error creating synthetics API test")
 		}
 
 		// If the Create callback returns with or without an error without an ID set using SetId,
@@ -933,13 +787,13 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 		d.SetId(createdSyntheticsTest.GetPublicId())
 
 		// Return the read function to ensure the state is reflected in the terraform.state file
-		return resourceDatadogSyntheticsTestRead(d, meta)
+		return resourceDatadogSyntheticsTestRead(ctx, d, meta)
 	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
 		createdSyntheticsTest, _, err := datadogClientV1.SyntheticsApi.CreateSyntheticsBrowserTest(authV1, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
-			return utils.TranslateClientError(err, "error creating synthetics browser test")
+			return utils.TranslateClientErrorDiag(err, "error creating synthetics browser test")
 		}
 
 		// If the Create callback returns with or without an error without an ID set using SetId,
@@ -947,13 +801,13 @@ func resourceDatadogSyntheticsTestCreate(d *schema.ResourceData, meta interface{
 		d.SetId(createdSyntheticsTest.GetPublicId())
 
 		// Return the read function to ensure the state is reflected in the terraform.state file
-		return resourceDatadogSyntheticsTestRead(d, meta)
+		return resourceDatadogSyntheticsTestRead(ctx, d, meta)
 	}
 
-	return fmt.Errorf("unrecognized synthetics test type %v", testType)
+	return diag.Errorf("unrecognized synthetics test type %v", testType)
 }
 
-func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -966,6 +820,14 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 
 	// get the generic test to detect if it's an api or browser test
 	syntheticsTest, httpresp, err = datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id())
+	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			// Delete the resource from the local state since it doesn't exist anymore in the actual state
+			d.SetId("")
+			return nil
+		}
+		return utils.TranslateClientErrorDiag(err, "error getting synthetics test")
+	}
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsBrowserTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id())
@@ -979,7 +841,7 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error getting synthetics test")
+		return utils.TranslateClientErrorDiag(err, "error getting synthetics test")
 	}
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
@@ -989,7 +851,7 @@ func resourceDatadogSyntheticsTestRead(d *schema.ResourceData, meta interface{})
 	return updateSyntheticsAPITestLocalState(d, &syntheticsAPITest)
 }
 
-func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -1001,22 +863,22 @@ func resourceDatadogSyntheticsTestUpdate(d *schema.ResourceData, meta interface{
 
 		if _, _, err := datadogClientV1.SyntheticsApi.UpdateAPITest(authV1, d.Id(), *syntheticsTest); err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
-			return utils.TranslateClientError(err, "error updating synthetics API test")
+			return utils.TranslateClientErrorDiag(err, "error updating synthetics API test")
 		}
 	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
 
 		if _, _, err := datadogClientV1.SyntheticsApi.UpdateBrowserTest(authV1, d.Id(), *syntheticsTest); err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
-			return utils.TranslateClientError(err, "error updating synthetics browser test")
+			return utils.TranslateClientErrorDiag(err, "error updating synthetics browser test")
 		}
 	}
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
-	return resourceDatadogSyntheticsTestRead(d, meta)
+	return resourceDatadogSyntheticsTestRead(ctx, d, meta)
 }
 
-func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogSyntheticsTestDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -1024,7 +886,7 @@ func resourceDatadogSyntheticsTestDelete(d *schema.ResourceData, meta interface{
 	syntheticsDeleteTestsPayload := datadogV1.SyntheticsDeleteTestsPayload{PublicIds: &[]string{d.Id()}}
 	if _, _, err := datadogClientV1.SyntheticsApi.DeleteTests(authV1, syntheticsDeleteTestsPayload); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
-		return utils.TranslateClientError(err, "error deleting synthetics test")
+		return utils.TranslateClientErrorDiag(err, "error deleting synthetics test")
 	}
 
 	// The resource is assumed to be destroyed, and all state is removed.
@@ -1060,12 +922,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 
 	k := utils.NewResourceDataKey(d, "")
-	parts := ""
-	if v, ok := k.GetOkWith("request"); ok && v != nil && len(v.(map[string]interface{})) != 0 {
-		parts = "request"
-	} else {
-		parts = "request_definition.0"
-	}
+	parts := "request_definition.0"
 	k.Add(parts)
 
 	request := datadogV1.SyntheticsTestRequest{}
@@ -1079,27 +936,13 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		request.SetBody(attr.(string))
 	}
 	if attr, ok := k.GetOkWith("timeout"); ok {
-		var timeoutInt int
-		// first try to convert to int if we're getting from the new TypeList field
-		timeoutInt, ok = attr.(int)
-		if !ok {
-			// if it's not an int, means we are in the deprecated TypeMap field, so convert from string
-			timeoutInt, _ = strconv.Atoi(attr.(string))
-		}
-		request.SetTimeout(float64(timeoutInt))
+		request.SetTimeout(float64(attr.(int)))
 	}
 	if attr, ok := k.GetOkWith("host"); ok {
 		request.SetHost(attr.(string))
 	}
 	if attr, ok := k.GetOkWith("port"); ok {
-		var portInt int
-		// first try to convert to int if we're getting from the new TypeList field
-		portInt, ok = attr.(int)
-		if !ok {
-			// if it's not an int, means we are in the deprecated TypeMap field, so convert from string
-			portInt, _ = strconv.Atoi(attr.(string))
-		}
-		request.SetPort(int64(portInt))
+		request.SetPort(int64(attr.(int)))
 	}
 	if attr, ok := k.GetOkWith("dns_server"); ok {
 		request.SetDnsServer(attr.(string))
@@ -1127,34 +970,6 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 
 	config.Assertions = []datadogV1.SyntheticsAssertion{}
-
-	// Deprecated path, the assertions field is replaced with assertion
-	if attr, ok := d.GetOk("assertions"); ok && attr != nil {
-		for _, assertion := range attr.([]interface{}) {
-			assertionMap := assertion.(map[string]interface{})
-			if v, ok := assertionMap["type"]; ok {
-				assertionType := v.(string)
-				if v, ok := assertionMap["operator"]; ok {
-					assertionOperator := v.(string)
-					assertionTarget := datadogV1.NewSyntheticsAssertionTarget(datadogV1.SyntheticsAssertionOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
-					if v, ok := assertionMap["property"]; ok {
-						assertionProperty := v.(string)
-						assertionTarget.SetProperty(assertionProperty)
-					}
-					if v, ok := assertionMap["target"]; ok {
-						if isTargetOfTypeInt(assertionTarget.GetType(), assertionTarget.GetOperator()) {
-							assertionTargetInt, _ := strconv.Atoi(v.(string))
-							assertionTarget.SetTarget(assertionTargetInt)
-						} else {
-							assertionTarget.SetTarget(v.(string))
-						}
-					}
-					config.Assertions = append(config.Assertions, datadogV1.SyntheticsAssertionTargetAsSyntheticsAssertion(assertionTarget))
-				}
-			}
-		}
-	}
-
 	if attr, ok := d.GetOk("assertion"); ok && attr != nil {
 		config.Assertions = buildAssertions(attr.([]interface{}))
 	}
@@ -1216,7 +1031,6 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 	options := datadogV1.NewSyntheticsTestOptions()
 
-	// use new options_list first, then fallback to legacy options
 	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
 		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
 			options.SetTickEvery(datadogV1.SyntheticsTickInterval(attr.(int)))
@@ -1260,50 +1074,6 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			}
 
 			options.SetMonitorOptions(optionsMonitorOptions)
-		}
-	} else {
-		if attr, ok := d.GetOk("options.tick_every"); ok {
-			tickEvery, _ := strconv.Atoi(attr.(string))
-			options.SetTickEvery(datadogV1.SyntheticsTickInterval(tickEvery))
-		}
-		if attr, ok := d.GetOk("options.follow_redirects"); ok {
-			// follow_redirects is a string ("true" or "false") in TF state
-			// it used to be "1" and "0" but it does not play well with the API
-			// we support both for retro-compatibility
-			followRedirects, _ := strconv.ParseBool(attr.(string))
-			options.SetFollowRedirects(followRedirects)
-		}
-		if attr, ok := d.GetOk("options.min_failure_duration"); ok {
-			minFailureDuration, _ := strconv.Atoi(attr.(string))
-			options.SetMinFailureDuration(int64(minFailureDuration))
-		}
-		if attr, ok := d.GetOk("options.min_location_failed"); ok {
-			minLocationFailed, _ := strconv.Atoi(attr.(string))
-			options.SetMinLocationFailed(int64(minLocationFailed))
-		}
-		if attr, ok := d.GetOk("options.accept_self_signed"); ok {
-			// for some reason, attr is equal to "1" or "0" in TF 0.11
-			// so ParseBool is required for retro-compatibility
-			acceptSelfSigned, _ := strconv.ParseBool(attr.(string))
-			options.SetAcceptSelfSigned(acceptSelfSigned)
-		}
-		if attr, ok := d.GetOk("options.allow_insecure"); ok {
-			// for some reason, attr is equal to "1" or "0" in TF 0.11
-			// so ParseBool is required for retro-compatibility
-			allowInsecure, _ := strconv.ParseBool(attr.(string))
-			options.SetAllowInsecure(allowInsecure)
-		}
-		if attr, ok := d.GetOk("options.retry_count"); ok {
-			retryCount, _ := strconv.Atoi(attr.(string))
-			retry := datadogV1.SyntheticsTestOptionsRetry{}
-			retry.SetCount(int64(retryCount))
-
-			if retryIntervalRaw, ok := d.GetOk("options.retry_interval"); ok {
-				retryInterval, _ := strconv.Atoi(retryIntervalRaw.(string))
-				retry.SetInterval(float64(retryInterval))
-			}
-
-			options.SetRetry(retry)
 		}
 	}
 
@@ -1378,7 +1148,7 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 			// this is needed for the update function that receives the data from the state
 			// and not from the config. So we get a hash of the certificate and not it's real
 			// value.
-			if isHash := isCertHash(clientCert["content"].(string)); isHash == false {
+			if isHash := isCertHash(clientCert["content"].(string)); !isHash {
 				cert.SetContent(clientCert["content"].(string))
 			}
 		}
@@ -1388,7 +1158,7 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 
 		if clientKey["content"] != "" {
 			// only set the key content if it is not an already hashed string
-			if isHash := isCertHash(clientKey["content"].(string)); isHash == false {
+			if isHash := isCertHash(clientKey["content"].(string)); !isHash {
 				key.SetContent(clientKey["content"].(string))
 			}
 		}
@@ -1475,12 +1245,7 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsBrowserTest {
 	request := datadogV1.SyntheticsTestRequest{}
 	k := utils.NewResourceDataKey(d, "")
-	parts := ""
-	if v, ok := k.GetOkWith("request"); ok && v != nil && len(v.(map[string]interface{})) != 0 {
-		parts = "request"
-	} else {
-		parts = "request_definition.0"
-	}
+	parts := "request_definition.0"
 	k.Add(parts)
 	if attr, ok := k.GetOkWith("method"); ok {
 		request.SetMethod(datadogV1.HTTPMethod(attr.(string)))
@@ -1492,14 +1257,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		request.SetBody(attr.(string))
 	}
 	if attr, ok := k.GetOkWith("timeout"); ok {
-		var timeoutInt int
-		// first try to convert to int if we're getting from the new TypeList field
-		timeoutInt, ok = attr.(int)
-		if !ok {
-			// if it's not an int, means we are in the deprecated TypeMap field, so convert from string
-			timeoutInt, _ = strconv.Atoi(attr.(string))
-		}
-		request.SetTimeout(float64(timeoutInt))
+		request.SetTimeout(float64(attr.(int)))
 	}
 	k.Remove(parts)
 	if attr, ok := d.GetOk("request_query"); ok {
@@ -1560,8 +1318,6 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 	if attr, ok := d.GetOk("browser_variable"); ok && attr != nil {
 		browserVariables = attr.([]interface{})
-	} else if attr, ok := d.GetOk("variable"); ok && attr != nil {
-		browserVariables = attr.([]interface{})
 	}
 
 	for _, variable := range browserVariables {
@@ -1587,7 +1343,6 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 	options := datadogV1.NewSyntheticsTestOptions()
 
-	// use new options_list first, then fallback to legacy options
 	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
 		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
 			options.SetTickEvery(datadogV1.SyntheticsTickInterval(attr.(int)))
@@ -1636,50 +1391,6 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		if attr, ok := d.GetOk("options_list.0.no_screenshot"); ok {
 			options.SetNoScreenshot(attr.(bool))
 		}
-	} else {
-		if attr, ok := d.GetOk("options.tick_every"); ok {
-			tickEvery, _ := strconv.Atoi(attr.(string))
-			options.SetTickEvery(datadogV1.SyntheticsTickInterval(tickEvery))
-		}
-		if attr, ok := d.GetOk("options.follow_redirects"); ok {
-			// follow_redirects is a string ("true" or "false") in TF state
-			// it used to be "1" and "0" but it does not play well with the API
-			// we support both for retro-compatibility
-			followRedirects, _ := strconv.ParseBool(attr.(string))
-			options.SetFollowRedirects(followRedirects)
-		}
-		if attr, ok := d.GetOk("options.min_failure_duration"); ok {
-			minFailureDuration, _ := strconv.Atoi(attr.(string))
-			options.SetMinFailureDuration(int64(minFailureDuration))
-		}
-		if attr, ok := d.GetOk("options.min_location_failed"); ok {
-			minLocationFailed, _ := strconv.Atoi(attr.(string))
-			options.SetMinLocationFailed(int64(minLocationFailed))
-		}
-		if attr, ok := d.GetOk("options.accept_self_signed"); ok {
-			// for some reason, attr is equal to "1" or "0" in TF 0.11
-			// so ParseBool is required for retro-compatibility
-			acceptSelfSigned, _ := strconv.ParseBool(attr.(string))
-			options.SetAcceptSelfSigned(acceptSelfSigned)
-		}
-		if attr, ok := d.GetOk("options.allow_insecure"); ok {
-			// for some reason, attr is equal to "1" or "0" in TF 0.11
-			// so ParseBool is required for retro-compatibility
-			allowInsecure, _ := strconv.ParseBool(attr.(string))
-			options.SetAllowInsecure(allowInsecure)
-		}
-		if attr, ok := d.GetOk("options.retry_count"); ok {
-			retryCount, _ := strconv.Atoi(attr.(string))
-			retry := datadogV1.SyntheticsTestOptionsRetry{}
-			retry.SetCount(int64(retryCount))
-
-			if retryIntervalRaw, ok := d.GetOk("options.retry_interval"); ok {
-				retryInterval, _ := strconv.Atoi(retryIntervalRaw.(string))
-				retry.SetInterval(float64(retryInterval))
-			}
-
-			options.SetRetry(retry)
-		}
 	}
 
 	if attr, ok := d.GetOk("device_ids"); ok {
@@ -1717,27 +1428,6 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	}
 	syntheticsTest.SetTags(tags)
 
-	if attr, ok := d.GetOk("step"); ok {
-		steps := []datadogV1.SyntheticsStep{}
-
-		for _, s := range attr.([]interface{}) {
-			step := datadogV1.SyntheticsStep{}
-			stepMap := s.(map[string]interface{})
-
-			step.SetName(stepMap["name"].(string))
-			step.SetType(datadogV1.SyntheticsStepType(stepMap["type"].(string)))
-			step.SetAllowFailure(stepMap["allow_failure"].(bool))
-			step.SetTimeout(int64(stepMap["timeout"].(int)))
-			params := make(map[string]interface{})
-			utils.GetMetadataFromJSON([]byte(stepMap["params"].(string)), &params)
-			step.SetParams(params)
-
-			steps = append(steps, step)
-		}
-
-		syntheticsTest.SetSteps(steps)
-	}
-
 	if attr, ok := d.GetOk("browser_step"); ok {
 		steps := []datadogV1.SyntheticsStep{}
 
@@ -1772,7 +1462,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	return syntheticsTest
 }
 
-func buildLocalRequest(request datadogV1.SyntheticsTestRequest, useDeprecated bool) map[string]interface{} {
+func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]interface{} {
 	localRequest := make(map[string]interface{})
 	if request.HasBody() {
 		localRequest["body"] = request.GetBody()
@@ -1781,11 +1471,7 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest, useDeprecated bo
 		localRequest["method"] = convertToString(request.GetMethod())
 	}
 	if request.HasTimeout() {
-		if useDeprecated {
-			localRequest["timeout"] = convertToString(request.GetTimeout())
-		} else {
-			localRequest["timeout"] = request.GetTimeout()
-		}
+		localRequest["timeout"] = request.GetTimeout()
 	}
 	if request.HasUrl() {
 		localRequest["url"] = request.GetUrl()
@@ -1794,11 +1480,7 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest, useDeprecated bo
 		localRequest["host"] = request.GetHost()
 	}
 	if request.HasPort() {
-		if useDeprecated {
-			localRequest["port"] = convertToString(request.GetPort())
-		} else {
-			localRequest["port"] = request.GetPort()
-		}
+		localRequest["port"] = request.GetPort()
 	}
 	if request.HasDnsServer() {
 		localRequest["dns_server"] = convertToString(request.GetDnsServer())
@@ -1859,7 +1541,7 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 					} else if vAsFloat, ok := (*v).(float64); ok {
 						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
 					} else {
-						return localAssertions, fmt.Errorf("Unrecognized targetvalue type %v", v)
+						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
 					}
 				}
 				localAssertion["targetjsonpath"] = []map[string]string{localTarget}
@@ -1921,30 +1603,18 @@ func buildLocalExtractedValues(extractedValues []datadogV1.SyntheticsParsingOpti
 	return localExtractedValues
 }
 
-func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsBrowserTest) error {
+func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsBrowserTest) diag.Diagnostics {
 	d.Set("type", syntheticsTest.GetType())
 
 	config := syntheticsTest.GetConfig()
 	actualRequest := config.GetRequest()
-	setDeprecated := false
-	if v, ok := d.GetOk("request"); ok && len(v.(map[string]interface{})) != 0 {
-		setDeprecated = true
-	}
-	localRequest := buildLocalRequest(actualRequest, setDeprecated)
+	localRequest := buildLocalRequest(actualRequest)
 
 	if config.HasSetCookie() {
 		d.Set("set_cookie", config.GetSetCookie())
 	}
-
-	// Set deprecated field if that's what's in the config, new field otherwise
-	if setDeprecated {
-		if err := d.Set("request", localRequest); err != nil {
-			return err
-		}
-	} else {
-		if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
-			return err
-		}
+	if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
+		return diag.FromErr(err)
 	}
 	d.Set("request_headers", actualRequest.Headers)
 	d.Set("request_query", actualRequest.GetQuery())
@@ -1984,15 +1654,8 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	// assertions are required but not used for browser tests
 	localAssertions := make([]map[string]interface{}, 0)
 
-	// If the existing state still uses assertions, keep using that in the state to not generate useless diffs
-	if attr, ok := d.GetOk("assertions"); ok && attr != nil && len(attr.([]interface{})) > 0 {
-		if err := d.Set("assertions", localAssertions); err != nil {
-			return err
-		}
-	} else {
-		if err := d.Set("assertion", localAssertions); err != nil {
-			return err
-		}
+	if err := d.Set("assertion", localAssertions); err != nil {
+		return diag.FromErr(err)
 	}
 
 	actualVariables := config.GetVariables()
@@ -2017,15 +1680,8 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		localBrowserVariables[i] = localVariable
 	}
 
-	// If the existing state still uses variables, keep using that in the state to not generate useless diffs
-	if attr, ok := d.GetOk("variable"); ok && attr != nil && len(attr.([]interface{})) > 0 {
-		if err := d.Set("variable", localBrowserVariables); err != nil {
-			return err
-		}
-	} else {
-		if err := d.Set("browser_variable", localBrowserVariables); err != nil {
-			return err
-		}
+	if err := d.Set("browser_variable", localBrowserVariables); err != nil {
+		return diag.FromErr(err)
 	}
 
 	d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds)
@@ -2084,27 +1740,14 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		localOptionsList["no_screenshot"] = actualOptions.GetNoScreenshot()
 	}
 
-	// If the existing state still uses options, keep using that in the state to not generate useless diffs
-	if attr, ok := d.GetOk("options"); ok && attr != nil && len(attr.(map[string]interface{})) > 0 {
-		if err := d.Set("options", localOption); err != nil {
-			return err
-		}
-	} else {
-		localOptionsLists := make([]map[string]interface{}, 1)
-		localOptionsLists[0] = localOptionsList
-		if err := d.Set("options_list", localOptionsLists); err != nil {
-			return err
-		}
+	localOptionsLists := make([]map[string]interface{}, 1)
+	localOptionsLists[0] = localOptionsList
+	if err := d.Set("options_list", localOptionsLists); err != nil {
+		return diag.FromErr(err)
 	}
 
 	steps := syntheticsTest.GetSteps()
 	var localSteps []map[string]interface{}
-
-	useLegacyStep := false
-
-	if attr, ok := d.GetOk("step"); ok && attr != nil && len(attr.([]interface{})) > 0 {
-		useLegacyStep = true
-	}
 
 	for stepIndex, step := range steps {
 		localStep := make(map[string]interface{})
@@ -2116,36 +1759,25 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 			localStep["allow_failure"] = allowFailure
 		}
 
-		if useLegacyStep {
-			localStep["params"] = convertToString(step.GetParams().(interface{}))
-		} else {
-			localParams := make(map[string]interface{})
-			params := step.GetParams()
-			paramsMap := params.(map[string]interface{})
+		localParams := make(map[string]interface{})
+		params := step.GetParams()
+		paramsMap := params.(map[string]interface{})
 
-			for key, value := range paramsMap {
-				localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
-			}
+		for key, value := range paramsMap {
+			localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
+		}
 
-			localStep["params"] = []interface{}{localParams}
+		localStep["params"] = []interface{}{localParams}
 
-			if forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex)); ok {
-				localStep["force_element_update"] = forceElementUpdate
-			}
+		if forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex)); ok {
+			localStep["force_element_update"] = forceElementUpdate
 		}
 
 		localSteps = append(localSteps, localStep)
 	}
 
-	// If the existing state still uses step, keep using that in the state to not generate useless diffs
-	if useLegacyStep {
-		if err := d.Set("step", localSteps); err != nil {
-			return err
-		}
-	} else {
-		if err := d.Set("browser_step", localSteps); err != nil {
-			return err
-		}
+	if err := d.Set("browser_step", localSteps); err != nil {
+		return diag.FromErr(err)
 	}
 
 	d.Set("name", syntheticsTest.GetName())
@@ -2156,7 +1788,7 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	return nil
 }
 
-func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsAPITest) error {
+func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsAPITest) diag.Diagnostics {
 	d.Set("type", syntheticsTest.GetType())
 	if syntheticsTest.HasSubtype() {
 		d.Set("subtype", syntheticsTest.GetSubtype())
@@ -2164,22 +1796,11 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 	config := syntheticsTest.GetConfig()
 	actualRequest := config.GetRequest()
-	setDeprecated := false
-	if v, ok := d.GetOk("request"); ok && len(v.(map[string]interface{})) != 0 {
-		setDeprecated = true
-	}
-	localRequest := buildLocalRequest(actualRequest, setDeprecated)
+	localRequest := buildLocalRequest(actualRequest)
 
 	if syntheticsTest.GetSubtype() != "multi" {
-		// Set deprecated field if that's what's in the config, new field otherwise
-		if setDeprecated {
-			if err := d.Set("request", localRequest); err != nil {
-				return err
-			}
-		} else {
-			if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
-				return err
-			}
+		if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
+			return diag.FromErr(err)
 		}
 	}
 	d.Set("request_headers", actualRequest.Headers)
@@ -2221,18 +1842,11 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	localAssertions, err := buildLocalAssertions(actualAssertions)
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
-	// If the existing state still uses assertions, keep using that in the state to not generate useless diffs
-	if attr, ok := d.GetOk("assertions"); ok && attr != nil && len(attr.([]interface{})) > 0 {
-		if err := d.Set("assertions", localAssertions); err != nil {
-			return err
-		}
-	} else {
-		if err := d.Set("assertion", localAssertions); err != nil {
-			return err
-		}
+	if err := d.Set("assertion", localAssertions); err != nil {
+		return diag.FromErr(err)
 	}
 
 	configVariables := config.GetConfigVariables()
@@ -2255,7 +1869,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 
 	if err := d.Set("config_variable", localConfigVariables); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if steps, ok := config.GetStepsOk(); ok {
@@ -2268,12 +1882,12 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 			localAssertions, err := buildLocalAssertions(step.GetAssertions())
 			if err != nil {
-				return err
+				return diag.FromErr(err)
 			}
 			localStep["assertion"] = localAssertions
 			localStep["extracted_value"] = buildLocalExtractedValues(step.GetExtractedValues())
 
-			localRequest := buildLocalRequest(step.GetRequest(), false)
+			localRequest := buildLocalRequest(step.GetRequest())
 			localStep["request_definition"] = []map[string]interface{}{localRequest}
 			stepRequest := step.GetRequest()
 			localStep["request_headers"] = stepRequest.GetHeaders()
@@ -2377,17 +1991,10 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
 	}
 
-	// If the existing state still uses options, keep using that in the state to not generate useless diffs
-	if attr, ok := d.GetOk("options"); ok && attr != nil && len(attr.(map[string]interface{})) > 0 {
-		if err := d.Set("options", localOption); err != nil {
-			return err
-		}
-	} else {
-		localOptionsLists := make([]map[string]interface{}, 1)
-		localOptionsLists[0] = localOptionsList
-		if err := d.Set("options_list", localOptionsLists); err != nil {
-			return err
-		}
+	localOptionsLists := make([]map[string]interface{}, 1)
+	localOptionsLists[0] = localOptionsList
+	if err := d.Set("options_list", localOptionsLists); err != nil {
+		return diag.FromErr(err)
 	}
 
 	d.Set("name", syntheticsTest.GetName())

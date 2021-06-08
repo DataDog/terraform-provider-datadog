@@ -9,9 +9,9 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func TestAccDatadogMetricTagConfiguration_Error(t *testing.T) {
@@ -20,9 +20,9 @@ func TestAccDatadogMetricTagConfiguration_Error(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMetricTagConfigurationDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogMetricTagConfigurationIncludePercentilesError(uniqueMetricTagConfig, "count"),
@@ -47,9 +47,10 @@ func testAccCheckDatadogMetricTagConfigurationIncludePercentilesError(uniq strin
     `, uniq, metricType)
 }
 
-func testAccCheckDatadogMetricTagConfigurationDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func testAccCheckDatadogMetricTagConfigurationDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		meta := accProvider.Meta()
+		provider, _ := accProvider()
+		meta := provider.Meta()
 		providerConf := meta.(*datadog.ProviderConfiguration)
 		datadogClient := providerConf.DatadogClientV2
 		auth := providerConf.AuthV2

@@ -1,10 +1,11 @@
 package datadog
 
 import (
-	"fmt"
+	"context"
 
 	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -12,7 +13,7 @@ import (
 func dataSourceDatadogServiceLevelObjective() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about an existing SLO for use in other resources.",
-		Read:        dataSourceDatadogServiceLevelObjectiveRead,
+		ReadContext: dataSourceDatadogServiceLevelObjectiveRead,
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Description: "A SLO ID to limit the search.",
@@ -50,7 +51,7 @@ func dataSourceDatadogServiceLevelObjective() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -71,23 +72,23 @@ func dataSourceDatadogServiceLevelObjectiveRead(d *schema.ResourceData, meta int
 
 	slosResp, _, err := datadogClientV1.ServiceLevelObjectivesApi.ListSLOs(authV1, *reqParams)
 	if err != nil {
-		return utils.TranslateClientError(err, "error querying service level objectives")
+		return utils.TranslateClientErrorDiag(err, "error querying service level objectives")
 	}
 	if len(slosResp.GetData()) > 1 {
-		return fmt.Errorf("your query returned more than one result, please try a more specific search criteria")
+		return diag.Errorf("your query returned more than one result, please try a more specific search criteria")
 	}
 	if len(slosResp.GetData()) == 0 {
-		return fmt.Errorf("your query returned no result, please try a less specific search criteria")
+		return diag.Errorf("your query returned no result, please try a less specific search criteria")
 	}
 
 	slo := slosResp.GetData()[0]
 
 	d.SetId(slo.GetId())
 	if err := d.Set("name", slo.GetName()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("type", slo.GetType()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	return nil

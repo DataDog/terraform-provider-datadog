@@ -7,9 +7,9 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 const tfSecurityRuleName = "datadog_security_monitoring_rule.acceptance_test"
@@ -21,9 +21,9 @@ func TestAccDatadogSecurityMonitoringRule_Basic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName),
@@ -48,9 +48,9 @@ func TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(ruleName),
@@ -71,9 +71,9 @@ func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(ruleName),
@@ -136,7 +136,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitorCreatedCheck(accProvider *schema.Provider, ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorCreatedCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -232,7 +232,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider *schema.Provider, ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -319,7 +319,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitoringEnabledDefaultCheck(accProvider *schema.Provider, ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringEnabledDefaultCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -393,7 +393,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 `, name)
 }
 
-func testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider *schema.Provider, ruleName string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -419,8 +419,9 @@ func testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider *schema.
 	)
 }
 
-func testAccCheckDatadogSecurityMonitoringRuleExists(provider *schema.Provider, rule string) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringRuleExists(accProvider func() (*schema.Provider, error), rule string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
+		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2
@@ -435,8 +436,9 @@ func testAccCheckDatadogSecurityMonitoringRuleExists(provider *schema.Provider, 
 	}
 }
 
-func testAccCheckDatadogSecurityMonitoringRuleDestroy(provider *schema.Provider) resource.TestCheckFunc {
+func testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
+		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		authV2 := providerConf.AuthV2
 		client := providerConf.DatadogClientV2

@@ -1,6 +1,7 @@
 package datadog
 
 import (
+	"context"
 	"fmt"
 	"sort"
 	"strconv"
@@ -9,13 +10,14 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func dataSourceDatadogMonitor() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about an existing monitor for use in other resources.",
-		Read:        dataSourceDatadogMonitorRead,
+		ReadContext: dataSourceDatadogMonitorRead,
 		Schema: map[string]*schema.Schema{
 			"name_filter": {
 				Description: "A monitor name to limit the search.",
@@ -63,45 +65,10 @@ func dataSourceDatadogMonitor() *schema.Resource {
 			},
 
 			// Options
-			"thresholds": {
-				Description: "Alert thresholds of the monitor.",
-				Deprecated:  "Define `monitor_thresholds` list with one element instead.",
-				Type:        schema.TypeMap,
-				Computed:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"ok": {
-							Type:     schema.TypeFloat,
-							Computed: true,
-						},
-						"warning": {
-							Type:     schema.TypeFloat,
-							Computed: true,
-						},
-						"critical": {
-							Type:     schema.TypeFloat,
-							Computed: true,
-						},
-						"unknown": {
-							Type:     schema.TypeFloat,
-							Computed: true,
-						},
-						"warning_recovery": {
-							Type:     schema.TypeFloat,
-							Computed: true,
-						},
-						"critical_recovery": {
-							Type:     schema.TypeFloat,
-							Computed: true,
-						},
-					},
-				},
-			},
 			"monitor_thresholds": {
 				Description: "Alert thresholds of the monitor.",
 				Type:        schema.TypeList,
 				Computed:    true,
-				MaxItems:    1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"ok": {
@@ -125,24 +92,6 @@ func dataSourceDatadogMonitor() *schema.Resource {
 							Computed: true,
 						},
 						"critical_recovery": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-					},
-				},
-			},
-			"threshold_windows": {
-				Description: "Mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. This is only used by anomaly monitors.",
-				Deprecated:  "Define `monitor_threshold_windows` list with one element instead.",
-				Type:        schema.TypeMap,
-				Computed:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"recovery_window": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"trigger_window": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
@@ -152,7 +101,6 @@ func dataSourceDatadogMonitor() *schema.Resource {
 			"monitor_threshold_windows": {
 				Description: "Mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. This is only used by anomaly monitors.",
 				Type:        schema.TypeList,
-				MaxItems:    1,
 				Computed:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -240,7 +188,7 @@ func dataSourceDatadogMonitor() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -258,13 +206,13 @@ func dataSourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) erro
 
 	monitors, _, err := datadogClientV1.MonitorsApi.ListMonitors(authV1, *optionalParams)
 	if err != nil {
-		return utils.TranslateClientError(err, "error querying monitors")
+		return utils.TranslateClientErrorDiag(err, "error querying monitors")
 	}
 	if len(monitors) > 1 {
-		return fmt.Errorf("your query returned more than one result, please try a more specific search criteria")
+		return diag.Errorf("your query returned more than one result, please try a more specific search criteria")
 	}
 	if len(monitors) == 0 {
-		return fmt.Errorf("your query returned no result, please try a less specific search criteria")
+		return diag.Errorf("your query returned no result, please try a less specific search criteria")
 	}
 
 	m := monitors[0]
@@ -301,9 +249,7 @@ func dataSourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) erro
 	}
 
 	var tags []string
-	for _, s := range m.GetTags() {
-		tags = append(tags, s)
-	}
+	tags = append(tags, m.GetTags()...)
 	sort.Strings(tags)
 
 	d.SetId(strconv.FormatInt(m.GetId(), 10))
@@ -312,19 +258,17 @@ func dataSourceDatadogMonitorRead(d *schema.ResourceData, meta interface{}) erro
 	d.Set("query", m.GetQuery())
 	d.Set("type", m.GetType())
 
-	d.Set("thresholds", thresholds)
 	if err := d.Set("monitor_thresholds", []interface{}{thresholds}); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
-	d.Set("threshold_windows", thresholdWindows)
 	if err := d.Set("monitor_threshold_windows", []interface{}{thresholdWindows}); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	d.Set("new_host_delay", m.Options.GetNewHostDelay())
 	d.Set("evaluation_delay", m.Options.GetEvaluationDelay())
 	d.Set("notify_no_data", m.Options.GetNotifyNoData())
-	d.Set("no_data_timeframe", m.Options.NoDataTimeframe)
+	d.Set("no_data_timeframe", m.Options.GetNoDataTimeframe())
 	d.Set("renotify_interval", m.Options.GetRenotifyInterval())
 	d.Set("notify_audit", m.Options.GetNotifyAudit())
 	d.Set("timeout_h", m.Options.GetTimeoutH())

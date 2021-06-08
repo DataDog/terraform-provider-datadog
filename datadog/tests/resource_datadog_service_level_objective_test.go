@@ -10,9 +10,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 // config
@@ -113,9 +113,9 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogServiceLevelObjectiveConfig(sloName),
@@ -148,16 +148,12 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 						"datadog_service_level_objective.foo", "thresholds.2.timeframe", "90d"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.2.target", "99"),
-					// Tags are a TypeSet => use a weird way to access members by their hash
-					// TF TypeSet is internally represented as a map that maps computed hashes
-					// to actual values. Since the hashes are always the same for one value,
-					// this is the way to get them.
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "tags.#", "2"),
-					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "tags.2644851163", "baz"),
-					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "tags.1750285118", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
 				),
 			},
 			{
@@ -193,16 +189,12 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 						"datadog_service_level_objective.foo", "thresholds.2.timeframe", "90d"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.2.target", "99.9"),
-					// Tags are a TypeSet => use a weird way to access members by their hash
-					// TF TypeSet is internally represented as a map that maps computed hashes
-					// to actual values. Since the hashes are always the same for one value,
-					// this is the way to get them.
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "tags.#", "2"),
-					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "tags.2644851163", "baz"),
-					resource.TestCheckResourceAttr(
-						"datadog_service_level_objective.foo", "tags.1750285118", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
 				),
 			},
 		},
@@ -216,9 +208,9 @@ func TestAccDatadogServiceLevelObjective_InvalidMonitor(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogServiceLevelObjectiveInvalidMonitorConfig(sloName),
@@ -230,9 +222,10 @@ func TestAccDatadogServiceLevelObjective_InvalidMonitor(t *testing.T) {
 
 // helpers
 
-func testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 		if err := destroyServiceLevelObjectiveHelper(authV1, s, datadogClientV1); err != nil {
@@ -252,7 +245,7 @@ func destroyServiceLevelObjectiveHelper(ctx context.Context, s *terraform.State,
 					}
 					return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving service level objective %s", err)}
 				}
-				return &utils.RetryableError{Prob: fmt.Sprintf("service Level Objective still exists")}
+				return &utils.RetryableError{Prob: "service Level Objective still exists"}
 			}
 		}
 		return nil
@@ -269,9 +262,10 @@ func existsServiceLevelObjectiveHelper(ctx context.Context, s *terraform.State, 
 	return nil
 }
 
-func testAccCheckDatadogServiceLevelObjectiveExists(accProvider *schema.Provider, n string) resource.TestCheckFunc {
+func testAccCheckDatadogServiceLevelObjectiveExists(accProvider func() (*schema.Provider, error), n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 

@@ -1,23 +1,24 @@
 package datadog
 
 import (
-	"fmt"
+	"context"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDatadogLogsIntegrationPipeline() *schema.Resource {
 	return &schema.Resource{
-		Description: "Provides a Datadog Logs Pipeline API resource to manage the integrations. Integration pipelines are the pipelines that are automatically installed for your organization when sending the logs with specific sources. You don't need to maintain or update these types of pipelines. Keeping them as resources, however, allows you to manage the order of your pipelines by referencing them in your `datadog_logs_pipeline_order` resource. If you don't need the `pipeline_order` feature, this resource declaration can be omitted.",
-		Create:      resourceDatadogLogsIntegrationPipelineCreate,
-		Update:      resourceDatadogLogsIntegrationPipelineUpdate,
-		Read:        resourceDatadogLogsIntegrationPipelineRead,
-		Delete:      resourceDatadogLogsIntegrationPipelineDelete,
+		Description:   "Provides a Datadog Logs Pipeline API resource to manage the integrations. Integration pipelines are the pipelines that are automatically installed for your organization when sending the logs with specific sources. You don't need to maintain or update these types of pipelines. Keeping them as resources, however, allows you to manage the order of your pipelines by referencing them in your `datadog_logs_pipeline_order` resource. If you don't need the `pipeline_order` feature, this resource declaration can be omitted.",
+		CreateContext: resourceDatadogLogsIntegrationPipelineCreate,
+		UpdateContext: resourceDatadogLogsIntegrationPipelineUpdate,
+		ReadContext:   resourceDatadogLogsIntegrationPipelineRead,
+		DeleteContext: resourceDatadogLogsIntegrationPipelineDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"is_enabled": {
@@ -29,18 +30,18 @@ func resourceDatadogLogsIntegrationPipeline() *schema.Resource {
 	}
 }
 
-func resourceDatadogLogsIntegrationPipelineCreate(_ *schema.ResourceData, _ interface{}) error {
-	return fmt.Errorf("cannot create an integration pipeline, please import it first to make changes")
+func resourceDatadogLogsIntegrationPipelineCreate(_ context.Context, _ *schema.ResourceData, _ interface{}) diag.Diagnostics {
+	return diag.Errorf("cannot create an integration pipeline, please import it first to make changes")
 }
 
-func updateLogsIntegrationPipelineState(d *schema.ResourceData, pipeline *datadogV1.LogsPipeline) error {
+func updateLogsIntegrationPipelineState(d *schema.ResourceData, pipeline *datadogV1.LogsPipeline) diag.Diagnostics {
 	if err := d.Set("is_enabled", pipeline.GetIsEnabled()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	return nil
 }
 
-func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsIntegrationPipelineRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -50,7 +51,7 @@ func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta int
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientError(err, "error getting logs integration pipeline")
+		return utils.TranslateClientErrorDiag(err, "error getting logs integration pipeline")
 	}
 	if !ddPipeline.GetIsReadOnly() {
 		d.SetId("")
@@ -59,7 +60,7 @@ func resourceDatadogLogsIntegrationPipelineRead(d *schema.ResourceData, meta int
 	return updateLogsIntegrationPipelineState(d, &ddPipeline)
 }
 
-func resourceDatadogLogsIntegrationPipelineUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceDatadogLogsIntegrationPipelineUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var ddPipeline datadogV1.LogsPipeline
 	ddPipeline.SetIsEnabled(d.Get("is_enabled").(bool))
 	providerConf := meta.(*ProviderConfiguration)
@@ -67,12 +68,12 @@ func resourceDatadogLogsIntegrationPipelineUpdate(d *schema.ResourceData, meta i
 	authV1 := providerConf.AuthV1
 	updatedPipeline, _, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipeline(authV1, d.Id(), ddPipeline)
 	if err != nil {
-		return utils.TranslateClientError(err, "error updating logs integration pipeline")
+		return utils.TranslateClientErrorDiag(err, "error updating logs integration pipeline")
 	}
 	d.SetId(*updatedPipeline.Id)
 	return updateLogsIntegrationPipelineState(d, &updatedPipeline)
 }
 
-func resourceDatadogLogsIntegrationPipelineDelete(_ *schema.ResourceData, _ interface{}) error {
+func resourceDatadogLogsIntegrationPipelineDelete(_ context.Context, _ *schema.ResourceData, _ interface{}) diag.Diagnostics {
 	return nil
 }

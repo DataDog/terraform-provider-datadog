@@ -1,13 +1,15 @@
 package datadog
 
 import (
+	"context"
 	"crypto/sha256"
 	"fmt"
 	"log"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -15,7 +17,7 @@ import (
 func dataSourceDatadogServiceLevelObjectives() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about multiple SLOs for use in other resources.",
-		Read:        dataSourceDatadogServiceLevelObjectivesRead,
+		ReadContext: dataSourceDatadogServiceLevelObjectivesRead,
 		Schema: map[string]*schema.Schema{
 			"ids": {
 				Description: "An array of SLO IDs to limit the search.",
@@ -68,7 +70,7 @@ func dataSourceDatadogServiceLevelObjectives() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogServiceLevelObjectivesRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -102,10 +104,10 @@ func dataSourceDatadogServiceLevelObjectivesRead(d *schema.ResourceData, meta in
 
 	slosResp, _, err := datadogClientV1.ServiceLevelObjectivesApi.ListSLOs(authV1, *reqParams)
 	if err != nil {
-		return utils.TranslateClientError(err, "error querying service level objectives")
+		return utils.TranslateClientErrorDiag(err, "error querying service level objectives")
 	}
 	if len(slosResp.GetData()) == 0 {
-		return fmt.Errorf("your query returned no result, please try a less specific search criteria")
+		return diag.Errorf("your query returned no result, please try a less specific search criteria")
 	}
 
 	slos := make([]map[string]interface{}, 0, len(slosResp.GetData()))
@@ -117,7 +119,7 @@ func dataSourceDatadogServiceLevelObjectivesRead(d *schema.ResourceData, meta in
 		})
 	}
 	if err := d.Set("slos", slos); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	d.SetId(computeSLOsDataSourceID(idsPtr, nameQueryPtr, tagsQueryPtr, metricsQueryPtr))
 
