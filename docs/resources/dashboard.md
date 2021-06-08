@@ -771,10 +771,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--change_definition--request"></a>
@@ -1469,10 +1469,10 @@ Required:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--geomap_definition--request"></a>
@@ -1853,10 +1853,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request"></a>
@@ -2551,10 +2551,10 @@ Required:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request"></a>
@@ -2856,10 +2856,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--event"></a>
@@ -3201,10 +3201,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request"></a>
@@ -3904,10 +3904,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request"></a>
@@ -4272,10 +4272,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request"></a>
@@ -4733,10 +4733,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request"></a>
@@ -5380,10 +5380,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 
@@ -5412,10 +5412,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--event"></a>
@@ -5989,10 +5989,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request"></a>
@@ -6501,10 +6501,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--heatmap_definition--event"></a>
@@ -6846,10 +6846,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--hostmap_definition--request"></a>
@@ -7549,10 +7549,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--query_table_definition--request"></a>
@@ -7917,10 +7917,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--query_value_definition--request"></a>
@@ -8378,10 +8378,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--scatterplot_definition--request"></a>
@@ -9025,10 +9025,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 
@@ -9057,10 +9057,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--timeseries_definition--event"></a>
@@ -9634,10 +9634,10 @@ Optional:
 
 Optional:
 
-- **is_hidden** (Boolean) The flag for toggling context menu link visibility
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
-- **override_label** (String) The label id that refers to a context menu link item
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field
 
 
 <a id="nestedblock--widget--toplist_definition--request"></a>

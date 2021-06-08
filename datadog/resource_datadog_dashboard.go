@@ -5966,7 +5966,7 @@ func getWidgetCustomLinkSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"override_label": {
-			Description: "The label id that refers to a context menu link item.",
+			Description: "The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -5980,7 +5980,7 @@ func buildDatadogWidgetCustomLinks(terraformWidgetCustomLinks *[]interface{}) *[
 		if v, ok := terraformCustomLink["override_label"].(string); ok && len(v) > 0 {
 			datadogWidgetCustomLink.SetOverrideLabel(v)
 		}
-		// if override_label is provided, it would context menu override, thus omit label field
+		// if override_label is provided, the label field will be omitted.
 		if v, ok := terraformCustomLink["label"].(string); ok && len(v) > 0 && !datadogWidgetCustomLink.HasOverrideLabel() {
 			datadogWidgetCustomLink.SetLabel(v)
 		}
