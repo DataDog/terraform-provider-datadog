@@ -29,6 +29,11 @@ resource "datadog_dashboard" "top_list_dashboard" {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
 			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				is_hidden = true
+				override_label = "logs"
+			}
 		}
 	}
 }
@@ -148,9 +153,12 @@ var datadogDashboardTopListAsserts = []string{
 	"widget.0.toplist_definition.0.request.0.conditional_formats.0.value = 15000",
 	"widget.0.toplist_definition.0.title = Avg of system.core.user over account:prod by service,app",
 	"widget.0.toplist_definition.0.request.0.conditional_formats.0.custom_fg_color =",
-	"widget.0.toplist_definition.0.custom_link.# = 1",
+	"widget.0.toplist_definition.0.custom_link.# = 2",
 	"widget.0.toplist_definition.0.custom_link.0.label = Test Custom Link label",
 	"widget.0.toplist_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.0.toplist_definition.0.custom_link.1.override_label = logs",
+	"widget.0.toplist_definition.0.custom_link.1.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.0.toplist_definition.0.custom_link.1.is_hidden = true",
 }
 
 var datadogDashboardTopListFormulaAsserts = []string{
