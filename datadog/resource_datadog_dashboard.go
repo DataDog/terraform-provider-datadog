@@ -5966,7 +5966,7 @@ func getWidgetCustomLinkSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"override_label": {
-			Description: "The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field",
+			Description: "The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
