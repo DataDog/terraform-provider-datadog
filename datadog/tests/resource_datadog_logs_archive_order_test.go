@@ -10,22 +10,22 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func ArchiveOrderConfig() string {
-	return fmt.Sprintf(`
+	return `
 resource "datadog_logs_archive_order" "archives" {
 	archive_ids = []
-}`)
+}`
 }
 
 func ArchiveOrderEmptyConfig() string {
-	return fmt.Sprintf(`
+	return `
 resource "datadog_logs_archive_order" "archives" {
-}`)
+}`
 }
 
 func TestAccDatadogLogsArchiveOrder_basic(t *testing.T) {
@@ -33,9 +33,9 @@ func TestAccDatadogLogsArchiveOrder_basic(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckPipelineDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: ArchiveOrderConfig(),
@@ -56,9 +56,9 @@ func TestAccDatadogLogsArchiveOrder_empty(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckPipelineDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckPipelineDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: ArchiveOrderEmptyConfig(),
@@ -73,9 +73,10 @@ func TestAccDatadogLogsArchiveOrder_empty(t *testing.T) {
 	})
 }
 
-func testAccCheckArchiveOrderExists(accProvider *schema.Provider) resource.TestCheckFunc {
+func testAccCheckArchiveOrderExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV1 := providerConf.AuthV1
 
@@ -97,9 +98,10 @@ func archiveOrderExistsChecker(ctx context.Context, s *terraform.State, datadogC
 	return nil
 }
 
-func testAccCheckArchiveOrderResourceMatch(accProvider *schema.Provider, name string, key string) resource.TestCheckFunc {
+func testAccCheckArchiveOrderResourceMatch(accProvider func() (*schema.Provider, error), name string, key string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV2 := providerConf.DatadogClientV2
 		authV1 := providerConf.AuthV1
 

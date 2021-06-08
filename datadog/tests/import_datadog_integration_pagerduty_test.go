@@ -2,26 +2,23 @@ package test
 
 import (
 	"context"
-	"fmt"
-	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestDatadogIntegrationPagerduty_import(t *testing.T) {
 	resourceName := "datadog_integration_pagerduty.pd"
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	serviceName := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
+	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogIntegrationPagerdutyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogIntegrationPagerdutyConfigImported(serviceName),
+				Config: testAccCheckDatadogIntegrationPagerdutyConfigImported(),
 			},
 			{
 				ResourceName:      resourceName,
@@ -32,24 +29,10 @@ func TestDatadogIntegrationPagerduty_import(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogIntegrationPagerdutyConfigImported(uniq string) string {
-	return fmt.Sprintf(`
-locals {
-	pd_services = {
-		%s = "*****"
-		%s_2 = "*****"
-	}
-}
-
+func testAccCheckDatadogIntegrationPagerdutyConfigImported() string {
+	return `
 resource "datadog_integration_pagerduty" "pd" {
-  dynamic "services" {
-		for_each = local.pd_services
-		content {
-			service_name = services.key
-			service_key = services.value
-		}
-	}
   schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
   subdomain = "testdomain"
-}`, uniq, uniq)
+}`
 }

@@ -10,9 +10,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/terraform"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func testAccCheckDatadogIntegrationAzureConfig(uniq string) string {
@@ -25,15 +25,24 @@ resource "datadog_integration_azure" "an_azure_integration" {
 }`, uniq)
 }
 
+func testAccCheckDatadogIntegrationAzureConfigUpdated(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_integration_azure" "an_azure_integration" {
+  tenant_name   = "%s"
+  client_id     = "testc7f6-1234-5678-9101-3fcbf464test"
+  client_secret = "testingx./Sw*g/Y33t..R1cH+hScMDt"
+}`, uniq)
+}
+
 func TestAccDatadogIntegrationAzure(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	tenantName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: checkIntegrationAzureDestroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkIntegrationAzureDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationAzureConfig(tenantName),
@@ -51,6 +60,24 @@ func TestAccDatadogIntegrationAzure(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_azure.an_azure_integration",
 						"host_filters", "foo:bar,buzz:lightyear"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogIntegrationAzureConfigUpdated(tenantName),
+				Check: resource.ComposeTestCheckFunc(
+					checkIntegrationAzureExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_azure.an_azure_integration",
+						"tenant_name", tenantName),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_azure.an_azure_integration",
+						"client_id", "testc7f6-1234-5678-9101-3fcbf464test"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_azure.an_azure_integration",
+						"client_secret", "testingx./Sw*g/Y33t..R1cH+hScMDt"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_azure.an_azure_integration",
+						"host_filters", ""),
 				),
 			},
 		},
@@ -78,9 +105,10 @@ func checkIntegrationAzureExistsHelper(ctx context.Context, s *terraform.State, 
 	return nil
 }
 
-func checkIntegrationAzureExists(accProvider *schema.Provider) resource.TestCheckFunc {
+func checkIntegrationAzureExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 
@@ -112,9 +140,10 @@ func checkIntegrationAzureDestroyHelper(ctx context.Context, s *terraform.State,
 	return nil
 }
 
-func checkIntegrationAzureDestroy(accProvider *schema.Provider) func(*terraform.State) error {
+func checkIntegrationAzureDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		providerConf := accProvider.Meta().(*datadog.ProviderConfiguration)
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		datadogClientV1 := providerConf.DatadogClientV1
 		authV1 := providerConf.AuthV1
 

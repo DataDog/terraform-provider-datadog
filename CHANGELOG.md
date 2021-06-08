@@ -1,3 +1,76 @@
+## 3.0.0 (May 27, 2021)
+
+IMPROVEMENTS:
+
+-   Upgrade terraform-plugin-sdk to v2. See https://www.terraform.io/docs/extend/guides/v2-upgrade-guide.html for all the internal changes.
+
+NOTES:
+
+-   `datadog_monitor`: Remove the `threshold` deprecated property.
+-   `datadog_monitor`: Remove the `threshold_windows` deprecated property.
+-   `datadog_monitor`: Remove the `silenced` deprecated property.
+-   `datadog_dashboard`: Remove the `layout` deprecated property from widgets.
+-   `datadog_dashboard`: Remove the `time` deprecated property from widgets.
+-   `datadog_dashboard`: Remove the `logset` deprecated property from widgets.
+-   `datadog_dashboard`: Remove the `count` deprecated property from widgets.
+-   `datadog_dashboard`: Remove the `start` deprecated property from widgets.
+-   `datadog_dashboard`: Remove the `compute` deprecated property from widgets.
+-   `datadog_dashboard`: Remove the `search` deprecated property from widgets.
+-   `datadog_integration_pagerduty`: Remove the `services` deprecated property.
+-   `datadog_logs_archive`: Remove the `s3` deprecated property.
+-   `datadog_logs_archive`: Remove the `azure` deprecated property.
+-   `datadog_logs_archive`: Remove the `gcs` deprecated property.
+-   `datadog_screenboard`: Remove the deprecated resource
+-   `datadog_service_level_objective`: Remove the `monitor_search` deprecated property.
+-   `datadog_timeboard`: Remove the deprecated resource.
+-   `datadog_synthetics_test`: Remove the `request` deprecated property.
+-   `datadog_synthetics_test`: Remove the `assertions` deprecated property.
+-   `datadog_synthetics_test`: Remove the `options` deprecated property.
+-   `datadog_synthetics_test`: Remove the `step` deprecated property.
+-   `datadog_synthetics_test`: Remove the `variable` deprecated property.
+-   `datadog_user`: Remove the `handle` deprecated property.
+-   `datadog_user`: Remove the `is_admin` deprecated property.
+-   `datadog_user`: Remove the `access_role` deprecated property.
+-   `datadog_user`: Remove the `role` deprecated property.
+
+## 2.26.1 (May 20, 2021)
+
+BUGFIXES:
+
+-   `datadog_dashboard_json`: Fix `dashboard` attribute retrieval when calling the update method ([#1072](https://github.com/DataDog/terraform-provider-datadog/pull/1072))
+
+## 2.26.0 (May 18, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_logs_custom_pipeline`: Add mutex to logs custom pipeline resource ([#1069](https://github.com/DataDog/terraform-provider-datadog/pull/1069))
+-   `datadog_logs_custom_pipeline`: Use code formatting in description for attribute re-mapper ([#1061](https://github.com/DataDog/terraform-provider-datadog/pull/1061))
+-   `datadog_monitor`: Update monitor critical threshold documentation ([#1055](https://github.com/DataDog/terraform-provider-datadog/pull/1055))
+-   `datadog_monitor`: Retry on 504's when validating monitors ([#1038](https://github.com/DataDog/terraform-provider-datadog/pull/1038))
+-   `datadog_dashboard_json`: Ignore widget IDs for diff on dashboard JSON resource ([#1028](https://github.com/DataDog/terraform-provider-datadog/pull/1028))
+-   `datadog_monitor`: Add monitors datasource for multiple monitors ([#1048](https://github.com/DataDog/terraform-provider-datadog/pull/1048))
+-   `datadog_synthetics_test`: Add support for setCookie, dnsServerPort, allowFailure and isCritical fields for Synthetics tests ([#1052](https://github.com/DataDog/terraform-provider-datadog/pull/1052))
+-   `datadog_dashboard`: Add new properties to group widget, note widget and image widget ([#1044](https://github.com/DataDog/terraform-provider-datadog/pull/1044))
+-   `datadog_synthetics_test`: Add support for icmp tests ([#1030](https://github.com/DataDog/terraform-provider-datadog/pull/1030))
+-   `datadog_dashboard`: Implement formulas and functions for geomap widgets ([#1043](https://github.com/DataDog/terraform-provider-datadog/pull/1043))
+-   `datadog_dashboard`: Formula and Function support for Toplist Widgets in Dashboard resource ([#951](https://github.com/DataDog/terraform-provider-datadog/pull/951))
+-   `datadog_dashboard`: Add reflow_type property for dashboards ([#1017](https://github.com/DataDog/terraform-provider-datadog/pull/1017))
+-   `datadog_dashboard`: Formula and Function support for Query Value Widgets in Dashboard resource ([#953](https://github.com/DataDog/terraform-provider-datadog/pull/953))
+
+FEATURES:
+
+-   `datadog_service_level_objective`: Add SLO data sources ([#931](https://github.com/DataDog/terraform-provider-datadog/pull/931))
+
+BUGFIXES:
+
+-   `datadog_downtime`: Properly mark active/disabled fields as readonly to avoid diffs ([#1034](https://github.com/DataDog/terraform-provider-datadog/pull/1034))
+-   `datadog_integration_aws`: Mark AWS account as non existent if GET returns 400 when AWS integration not installed ([#1047](https://github.com/DataDog/terraform-provider-datadog/pull/1047))
+
+NOTES:
+
+-   Use custom transport for HTTPClient to enable retries on 429 and 5xx http errors ([#1054](https://github.com/DataDog/terraform-provider-datadog/pull/1054))
+-   Update Datadog api go client. See [here](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.0.0-beta.22) for changes.
+
 ## 2.25.0 (April 15, 2021)
 
 IMPROVEMENTS:
@@ -8,7 +81,7 @@ IMPROVEMENTS:
 -   `datadog_synthetics_test`: Add `noSavingResponseBody` and `noScreenshot` fields ([#1012](https://github.com/DataDog/terraform-provider-datadog/pull/1012))
 -   `datadog_logs_metric`: Add `group_by` block to logs_metric example ([#1010](https://github.com/DataDog/terraform-provider-datadog/pull/1010))
 
-FEATURE:
+FEATURES:
 
 -   `datadog_dashboard`: Add support for Formula and Function support for Timeseries Widgets ([#892](https://github.com/DataDog/terraform-provider-datadog/pull/892))
 -   `datadog_synthetics_test`: Add support for `multi` step synthetics API tests ([#1007](https://github.com/DataDog/terraform-provider-datadog/pull/1007))
@@ -34,7 +107,7 @@ IMPROVEMENTS:
 
 -   `datadog_dashboard`: Add `legend_layout` and `legend_columns` to timeseries widget definition ([#992](https://github.com/Datadog/terraform-provider-datadog/pull/992)).
 
-FEATURE:
+FEATURES:
 
 -   `datadog_metric_tag_configuration` Add new resource ([#960](https://github.com/Datadog/terraform-provider-datadog/pull/960)).
 
@@ -44,7 +117,7 @@ IMPROVEMENTS:
 
 -   `datadog_dashboard`: Implement support for Geomap Dashboard Widget ([#954](https://github.com/Datadog/terraform-provider-datadog/pull/954)).
 
-FEATURE:
+FEATURES:
 
 -   `datadog_dashboard_json`: Add new dashboard JSON resource ([#950](https://github.com/Datadog/terraform-provider-datadog/pull/950)).
 
@@ -82,7 +155,7 @@ IMPROVEMENTS:
 -   `datadog_slo_correction`: Improve consistency by using response from POST/PUT requests directly to save state ([#921](https://github.com/Datadog/terraform-provider-datadog/pull/921)).
 -   `datadog_user`: Improve consistency by using response from POST/PUT requests directly to save state ([#927](https://github.com/Datadog/terraform-provider-datadog/pull/927)).
 
-FEATURE:
+FEATURES:
 
 -   `datadog_integration_slack_channel`: Add support for slack channel resource ([#932](https://github.com/Datadog/terraform-provider-datadog/pull/932)).
 

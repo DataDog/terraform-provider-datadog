@@ -1,13 +1,16 @@
 package datadog
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"context"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func dataSourceDatadogSyntheticsLocations() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve Datadog's Synthetics Locations (to be used in Synthetics tests).",
-		Read:        dataSourceDatadogSyntheticsLocationsRead,
+		ReadContext: dataSourceDatadogSyntheticsLocationsRead,
 
 		// Locations are a map of IDs to names
 		Schema: map[string]*schema.Schema{
@@ -20,7 +23,7 @@ func dataSourceDatadogSyntheticsLocations() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogSyntheticsLocationsRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogSyntheticsLocationsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -29,7 +32,7 @@ func dataSourceDatadogSyntheticsLocationsRead(d *schema.ResourceData, meta inter
 	syntheticsLocations, _, err := datadogClientV1.SyntheticsApi.ListLocations(authV1)
 
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	locationsMap := make(map[string]string)

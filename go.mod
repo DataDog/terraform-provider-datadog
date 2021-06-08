@@ -1,20 +1,18 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
-	github.com/DataDog/datadog-api-client-go v1.0.0-beta.20.0.20210429154130-55f70a86d7db
+	github.com/DataDog/datadog-api-client-go v1.0.0-beta.22
 	github.com/DataDog/datadog-go v3.6.0+incompatible // indirect
-	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
+	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/dnaeon/go-vcr v1.0.1
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/google/uuid v1.2.0 // indirect
-	github.com/hashicorp/go-cleanhttp v0.5.1
-	github.com/hashicorp/go-hclog v0.12.0 // indirect
+	github.com/hashicorp/go-cleanhttp v0.5.2
+	github.com/hashicorp/go-cty v1.4.1-0.20200414143053-d3edf31b6320
 	github.com/hashicorp/go-uuid v1.0.2 // indirect
-	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/terraform-plugin-docs v0.4.0
-	github.com/hashicorp/terraform-plugin-sdk v1.15.0
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.6.1
 	github.com/jonboulle/clockwork v0.1.0
-	github.com/kr/pretty v0.2.0
 	github.com/philhofer/fwd v1.0.0 // indirect
 	github.com/zorkian/go-datadog-api v2.30.0+incompatible
 	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect
@@ -22,9 +20,6 @@ require (
 )
 
 go 1.16
-
-// Use custom fork with performance fix in DecoderSpec
-replace github.com/hashicorp/terraform-plugin-sdk v1.15.0 => github.com/therve/terraform-plugin-sdk v1.16.1-0.20210202202613-4d59f03d3b5f
 
 // Use custom fork of tfplugindocs to fix a bug in doc generation https://github.com/DataDog/terraform-provider-datadog/issues/1024
 replace github.com/hashicorp/terraform-plugin-docs v0.4.0 => github.com/zippolyte/terraform-plugin-docs v0.4.1-0.20210422155525-d4f2c7590b53

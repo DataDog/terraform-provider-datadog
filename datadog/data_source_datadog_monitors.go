@@ -1,19 +1,20 @@
 package datadog
 
 import (
-	"fmt"
+	"context"
 	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func dataSourceDatadogMonitors() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to list several existing monitors for use in other resources.",
-		Read:        dataSourceDatadogMonitorsRead,
+		ReadContext: dataSourceDatadogMonitorsRead,
 		Schema: map[string]*schema.Schema{
 			"name_filter": {
 				Description: "A monitor name to limit the search.",
@@ -62,7 +63,7 @@ func dataSourceDatadogMonitors() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) error {
+func dataSourceDatadogMonitorsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -80,10 +81,10 @@ func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) err
 
 	monitors, _, err := datadogClientV1.MonitorsApi.ListMonitors(authV1, *optionalParams)
 	if err != nil {
-		return utils.TranslateClientError(err, "error querying monitors")
+		return utils.TranslateClientErrorDiag(err, "error querying monitors")
 	}
 	if len(monitors) == 0 {
-		return fmt.Errorf("your query returned no result, please try a less specific search criteria")
+		return diag.Errorf("your query returned no result, please try a less specific search criteria")
 	}
 
 	d.SetId(computeMonitorsDatasourceID(d))
@@ -97,7 +98,7 @@ func dataSourceDatadogMonitorsRead(d *schema.ResourceData, meta interface{}) err
 		}
 	}
 	if err := d.Set("monitors", tfMonitors); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	return nil

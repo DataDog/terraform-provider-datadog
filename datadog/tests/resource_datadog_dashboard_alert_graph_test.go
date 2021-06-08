@@ -26,18 +26,6 @@ resource "datadog_dashboard" "alert_graph_dashboard" {
 			live_span = "1h"
 		}
 	}
-	widget {
-		alert_graph_definition {
-			alert_id = "895606"
-			viz_type = "toplist"
-			title = "Widget Title"
-			title_align = "right"
-			title_size = "16"
-			time = {
-				live_span = "1h"
-			}
-		}
-	}
 }
 `
 
@@ -83,14 +71,6 @@ var datadogDashboardAlertGraphAsserts = []string{
 	"widget.1.alert_graph_definition.0.title_align = right",
 	"layout_type = ordered",
 	"widget.0.alert_graph_definition.0.viz_type = timeseries",
-	// Deprecated widget
-	"widget.2.alert_graph_definition.0.time.% = 1",
-	"widget.2.alert_graph_definition.0.title = Widget Title",
-	"widget.2.alert_graph_definition.0.title_size = 16",
-	"widget.2.alert_graph_definition.0.viz_type = toplist",
-	"widget.2.alert_graph_definition.0.time.live_span = 1h",
-	"widget.2.alert_graph_definition.0.alert_id = 895606",
-	"widget.2.alert_graph_definition.0.title_align = right",
 }
 
 func TestAccDatadogDashboardAlertGraph(t *testing.T) {
