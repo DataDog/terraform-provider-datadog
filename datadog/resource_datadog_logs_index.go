@@ -111,10 +111,10 @@ func updateLogsIndexState(d *schema.ResourceData, index *datadogV1.LogsIndex) di
 		return diag.FromErr(err)
 	}
 	if err := d.Set("daily_limit", index.GetDailyLimit()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("retention_days", index.GetNumRetentionDays()); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	if err := d.Set("filter", buildTerraformIndexFilter(index.GetFilter())); err != nil {
 		return diag.FromErr(err)
