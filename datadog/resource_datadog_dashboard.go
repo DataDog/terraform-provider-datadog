@@ -5961,7 +5961,7 @@ func getWidgetCustomLinkSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"is_hidden": {
-			Description: "The flag for toggling context menu link visibility",
+			Description: "The flag for toggling context menu link visibility.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
