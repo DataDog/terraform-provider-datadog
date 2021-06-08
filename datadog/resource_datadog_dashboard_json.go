@@ -3,6 +3,9 @@ package datadog
 import (
 	"context"
 	"errors"
+	"log"
+
+	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -23,6 +26,22 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 		ReadContext:   resourceDatadogDashboardJSONRead,
 		UpdateContext: resourceDatadogDashboardJSONUpdate,
 		DeleteContext: resourceDatadogDashboardJSONDelete,
+		CustomizeDiff: func(_ context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+			oldValue, newValue := diff.GetChange("dashboard_lists")
+			if !oldValue.(*schema.Set).Equal(newValue.(*schema.Set)) {
+				// Only calculate removed when the list change, to no create useless diffs
+				removed := oldValue.(*schema.Set).Difference(newValue.(*schema.Set))
+				if err := diff.SetNew("dashboard_lists_removed", removed); err != nil {
+					return err
+				}
+			} else {
+				if err := diff.Clear("dashboard_lists_removed"); err != nil {
+					return err
+				}
+			}
+
+			return nil
+		},
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -49,6 +68,18 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 				Optional:    true,
 				Computed:    true,
 				Description: "The URL of the dashboard.",
+			},
+			"dashboard_lists": {
+				Type:        schema.TypeSet,
+				Optional:    true,
+				Description: "The list of dashboard lists this dashboard belongs to.",
+				Elem:        &schema.Schema{Type: schema.TypeInt},
+			},
+			"dashboard_lists_removed": {
+				Type:        schema.TypeSet,
+				Computed:    true,
+				Description: "The list of dashboard lists this dashboard should be removed from. Internal only.",
+				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
 		},
 	}
@@ -112,6 +143,12 @@ func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceD
 	}
 	d.SetId(id.(string))
 
+	layoutType, ok := respMap["layout_type"]
+	if !ok {
+		return diag.FromErr(errors.New("error retrieving layout_type from response"))
+	}
+	updateDashboardJSONLists(d, providerConf, id.(string), layoutType.(string))
+
 	return updateDashboardJSONState(d, respMap)
 }
 
@@ -132,6 +169,12 @@ func resourceDatadogDashboardJSONUpdate(ctx context.Context, d *schema.ResourceD
 	if err != nil {
 		return diag.FromErr(err)
 	}
+
+	layoutType, ok := respMap["layout_type"]
+	if !ok {
+		return diag.FromErr(errors.New("error retrieving layout_type from response"))
+	}
+	updateDashboardJSONLists(d, providerConf, id, layoutType.(string))
 
 	return updateDashboardJSONState(d, respMap)
 }
@@ -175,4 +218,39 @@ func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]inter
 		return diag.FromErr(err)
 	}
 	return nil
+}
+
+func updateDashboardJSONLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardID, layoutType string) {
+	dashTypeString := "custom_screenboard"
+	if layoutType == "ordered" {
+		dashTypeString = "custom_timeboard"
+	}
+	dashType := datadogV2.DashboardType(dashTypeString)
+	itemsRequest := []datadogV2.DashboardListItemRequest{*datadogV2.NewDashboardListItemRequest(dashboardID, dashType)}
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
+
+	if v, ok := d.GetOk("dashboard_lists"); ok && v.(*schema.Set).Len() > 0 {
+		items := datadogV2.NewDashboardListAddItemsRequest()
+		items.SetDashboards(itemsRequest)
+
+		for _, id := range v.(*schema.Set).List() {
+			_, _, err := datadogClientV2.DashboardListsApi.CreateDashboardListItems(authV2, int64(id.(int)), *items)
+			if err != nil {
+				log.Printf("[DEBUG] Got error adding to dashboard list %d: %v", id.(int), err)
+			}
+		}
+	}
+
+	if v, ok := d.GetOk("dashboard_lists_removed"); ok && v.(*schema.Set).Len() > 0 {
+		items := datadogV2.NewDashboardListDeleteItemsRequest()
+		items.SetDashboards(itemsRequest)
+
+		for _, id := range v.(*schema.Set).List() {
+			_, _, err := datadogClientV2.DashboardListsApi.DeleteDashboardListItems(authV2, int64(id.(int)), *items)
+			if err != nil {
+				log.Printf("[DEBUG] Got error removing from dashboard list %d: %v", id.(int), err)
+			}
+		}
+	}
 }
