@@ -230,12 +230,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	configV1 := datadogV1.NewConfiguration()
 	configV1.HTTPClient = httpClientV1
 	// Enable unstable operations
-	configV1.SetUnstableOperationEnabled("GetLogsIndex", true)
-	configV1.SetUnstableOperationEnabled("ListLogIndexes", true)
-	configV1.SetUnstableOperationEnabled("UpdateLogsIndex", true)
-	configV1.SetUnstableOperationEnabled("GetLogsIndexOrder", true)
-	configV1.SetUnstableOperationEnabled("UpdateLogsIndexOrder", true)
-
 	configV1.SetUnstableOperationEnabled("CreateSLOCorrection", true)
 	configV1.SetUnstableOperationEnabled("GetSLOCorrection", true)
 	configV1.SetUnstableOperationEnabled("UpdateSLOCorrection", true)
