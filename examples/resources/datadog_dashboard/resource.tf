@@ -588,7 +588,7 @@ resource "datadog_dashboard" "free_dashboard" {
       request {
         query {
           event_query {
-            name = "my-query"
+            name        = "my-query"
             data_source = "logs"
             indexes     = ["days-3"]
             compute {
