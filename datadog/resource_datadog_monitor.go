@@ -369,9 +369,7 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 		}
 	}
 
-	m := datadogV1.NewMonitor()
-	m.SetType(monitorType)
-	m.SetQuery(d.Get("query").(string))
+	m := datadogV1.NewMonitor(d.Get("query").(string), monitorType)
 	m.SetName(d.Get("name").(string))
 	m.SetMessage(d.Get("message").(string))
 	m.SetPriority(int64(d.Get("priority").(int)))
