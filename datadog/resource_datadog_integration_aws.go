@@ -194,8 +194,8 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 	}
 
 	for _, integration := range integrations.GetAccounts() {
-		if (integration.GetAccountId() == accountID && integration.GetRoleName() == roleName && accountID != "") ||
-			(integration.GetAccessKeyId() == accessKeyID && accessKeyID != "") {
+		if (accountID != "" && integration.GetAccountId() == accountID && integration.GetRoleName() == roleName) ||
+			(accessKeyID != "" && integration.GetAccessKeyId() == accessKeyID) {
 			d.Set("account_id", integration.GetAccountId())
 			d.Set("role_name", integration.GetRoleName())
 			d.Set("access_key_id", integration.GetAccessKeyId())
