@@ -275,6 +275,19 @@ func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
 	return result[:12]
 }
 
+// uniqueAWSAccessKeyID takes uniqueEntityName result, hashes it to get a unique string
+// and then returns first 16 characters (numerical only), so that the value can be used
+// as AWS account ID and is still as unique as possible, it changes in CI, but is stable locally
+func uniqueAWSAccessKeyID(ctx context.Context, t *testing.T) string {
+	uniq := uniqueEntityName(ctx, t)
+	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniq)))
+	result := ""
+	for _, r := range hash {
+		result = fmt.Sprintf("%s%s", result, strconv.Itoa(int(r)))
+	}
+	return result[:16]
+}
+
 func removeURLSecrets(u *url.URL) *url.URL {
 	query := u.Query()
 	query.Del("api_key")
