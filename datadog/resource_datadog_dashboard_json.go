@@ -3,11 +3,13 @@ package datadog
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
+	"net/http"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/structure"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -147,7 +149,26 @@ func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceD
 	if !ok {
 		return diag.FromErr(errors.New("error retrieving layout_type from response"))
 	}
-	updateDashboardJSONLists(d, providerConf, id.(string), layoutType.(string))
+
+	var httpResponse *http.Response
+	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		_, httpResponse, err = datadogClientV1.DashboardsApi.GetDashboard(authV1, id.(string))
+		if err != nil {
+			if httpResponse != nil && httpResponse.StatusCode == 404 {
+				return resource.RetryableError(fmt.Errorf("dashboard not created yet"))
+			}
+
+			return resource.NonRetryableError(err)
+		}
+
+		// We only log the error, as failing to update the list shouldn't fail dashboard creation
+		updateDashboardJSONLists(d, providerConf, id.(string), layoutType.(string))
+
+		return nil
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	return updateDashboardJSONState(d, respMap)
 }
