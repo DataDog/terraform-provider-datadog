@@ -243,8 +243,8 @@ func checkIntegrationAWSExistsHelper(ctx context.Context, s *terraform.State, da
 		accountID := r.Primary.Attributes["account_id"]
 		accessKeyID := r.Primary.Attributes["access_key_id"]
 		for _, account := range integrations.GetAccounts() {
-			if (account.GetAccountId() == accountID && accountID != "") ||
-				(account.GetAccessKeyId() == accessKeyID && accessKeyID != "") {
+			if (accountID != "" && account.GetAccountId() == accountID) ||
+				(accessKeyID != "" && account.GetAccessKeyId() == accessKeyID) {
 				return nil
 			}
 		}
@@ -273,8 +273,8 @@ func checkIntegrationAWSDestroyHelper(ctx context.Context, s *terraform.State, d
 		accountID := r.Primary.Attributes["account_id"]
 		accessKeyID := r.Primary.Attributes["access_key_id"]
 		for _, account := range integrations.GetAccounts() {
-			if (account.GetAccountId() == accountID && accountID != "") ||
-				(account.GetAccessKeyId() == accessKeyID && accessKeyID != "") {
+			if (accountID != "" && account.GetAccountId() == accountID) ||
+				(accessKeyID != "" && account.GetAccessKeyId() == accessKeyID) {
 				return fmt.Errorf("The AWS integration still exists for account: accountID=%s", accountID)
 			}
 		}
