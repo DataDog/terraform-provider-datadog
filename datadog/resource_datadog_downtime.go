@@ -122,8 +122,10 @@ func resourceDatadogDowntime() *schema.Resource {
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 					_, startDatePresent := d.GetOk("start_date")
 					now := time.Now().Unix()
+					_, activeChildExists := d.GetOk("active_child_id")
+
 					// If "start_date" is set, ignore diff for "start". If "start" isn't set, ignore diff if start is now or in the past
-					return startDatePresent || (newVal == "0" && oldVal != "0" && int64(d.Get("start").(int)) <= now) || d.Get("active_child_id") != nil
+					return startDatePresent || (newVal == "0" && oldVal != "0" && int64(d.Get("start").(int)) <= now) || activeChildExists
 				},
 				Description: "Specify when this downtime should start",
 			},
@@ -139,7 +141,8 @@ func resourceDatadogDowntime() *schema.Resource {
 				Optional: true,
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 					_, endDatePresent := d.GetOk("end_date")
-					return endDatePresent || d.Get("active_child_id") != nil
+					_, activeChildExists := d.GetOk("active_child_id")
+					return endDatePresent || activeChildExists
 				},
 				Description: "Optionally specify an end date when this downtime should expire",
 			},
