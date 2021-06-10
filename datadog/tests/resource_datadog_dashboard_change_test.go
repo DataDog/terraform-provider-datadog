@@ -75,6 +75,11 @@ resource "datadog_dashboard" "change_dashboard" {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
 			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				is_hidden = true
+				override_label = "logs"
+			}
 		}
 	}
 }
@@ -106,9 +111,12 @@ var datadogDashboardChangeAsserts = []string{
 	"widget.0.change_definition.0.request.0.order_by =",
 	"widget.1.change_definition.0.live_span = 1h",
 	"widget.0.change_definition.0.request.0.compare_to =",
-	"widget.1.change_definition.0.custom_link.# = 1",
+	"widget.1.change_definition.0.custom_link.# = 2",
 	"widget.1.change_definition.0.custom_link.0.label = Test Custom Link label",
 	"widget.1.change_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.1.change_definition.0.custom_link.1.override_label = logs",
+	"widget.1.change_definition.0.custom_link.1.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.1.change_definition.0.custom_link.1.is_hidden = true",
 }
 
 func TestAccDatadogDashboardChange(t *testing.T) {

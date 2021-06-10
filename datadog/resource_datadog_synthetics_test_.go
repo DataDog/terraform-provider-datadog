@@ -346,7 +346,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:    true,
 				},
 				"tick_every": {
-					Description:      "How often the test should run (in seconds). Current possible values are `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` plus `60` for API tests or `300` for browser tests.",
+					Description:      "How often the test should run (in seconds). Current possible values are `30`, `60`, `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` for API tests or `300` for browser tests.",
 					Type:             schema.TypeInt,
 					Required:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
@@ -367,6 +367,11 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:        schema.TypeInt,
 					Optional:    true,
 				},
+				"monitor_name": {
+					Description: "The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
 				"monitor_options": {
 					Type:     schema.TypeList,
 					MaxItems: 1,
@@ -381,6 +386,11 @@ func syntheticsTestOptionsList() *schema.Schema {
 							},
 						},
 					},
+				},
+				"monitor_priority": {
+					Type:         schema.TypeInt,
+					Optional:     true,
+					ValidateFunc: validation.IntBetween(1, 5),
 				},
 				"retry": {
 					Type:     schema.TypeList,
@@ -969,9 +979,10 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		config.SetRequest(request)
 	}
 
-	config.Assertions = []datadogV1.SyntheticsAssertion{}
+	config.Assertions = &[]datadogV1.SyntheticsAssertion{}
 	if attr, ok := d.GetOk("assertion"); ok && attr != nil {
-		config.Assertions = buildAssertions(attr.([]interface{}))
+		assertions := buildAssertions(attr.([]interface{}))
+		config.Assertions = &assertions
 	}
 
 	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
@@ -1074,6 +1085,14 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			}
 
 			options.SetMonitorOptions(optionsMonitorOptions)
+		}
+
+		if monitorName, ok := d.GetOk("options_list.0.monitor_name"); ok {
+			options.SetMonitorName(monitorName.(string))
+		}
+
+		if monitorPriority, ok := d.GetOk("options_list.0.monitor_priority"); ok {
+			options.SetMonitorPriority(int32(monitorPriority.(int)))
 		}
 	}
 
@@ -1390,6 +1409,14 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 		if attr, ok := d.GetOk("options_list.0.no_screenshot"); ok {
 			options.SetNoScreenshot(attr.(bool))
+		}
+
+		if monitorName, ok := d.GetOk("options_list.0.monitor_name"); ok {
+			options.SetMonitorName(monitorName.(string))
+		}
+
+		if monitorPriority, ok := d.GetOk("options_list.0.monitor_priority"); ok {
+			options.SetMonitorPriority(int32(monitorPriority.(int)))
 		}
 	}
 
@@ -1739,6 +1766,12 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	if actualOptions.HasNoScreenshot() {
 		localOptionsList["no_screenshot"] = actualOptions.GetNoScreenshot()
 	}
+	if actualOptions.HasMonitorName() {
+		localOptionsList["monitor_name"] = actualOptions.GetMonitorName()
+	}
+	if actualOptions.HasMonitorPriority() {
+		localOptionsList["monitor_priority"] = actualOptions.GetMonitorPriority()
+	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)
 	localOptionsLists[0] = localOptionsList
@@ -1989,6 +2022,12 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		optionsListMonitorOptions := make(map[string]int64)
 		optionsListMonitorOptions["renotify_interval"] = renotifyInterval
 		localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
+	}
+	if actualOptions.HasMonitorName() {
+		localOptionsList["monitor_name"] = actualOptions.GetMonitorName()
+	}
+	if actualOptions.HasMonitorPriority() {
+		localOptionsList["monitor_priority"] = actualOptions.GetMonitorPriority()
 	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)

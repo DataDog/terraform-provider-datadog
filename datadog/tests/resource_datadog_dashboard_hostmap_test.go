@@ -39,6 +39,11 @@ resource "datadog_dashboard" "hostmap_dashboard" {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
 			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				is_hidden = true
+				override_label = "logs"
+			}
 		}
 	}
 }
@@ -63,9 +68,12 @@ var datadogDashboardHostMapAsserts = []string{
 	"is_read_only = true",
 	"title = {{uniq}}",
 	"widget.0.hostmap_definition.0.group.0 = region",
-	"widget.0.hostmap_definition.0.custom_link.# = 1",
+	"widget.0.hostmap_definition.0.custom_link.# = 2",
 	"widget.0.hostmap_definition.0.custom_link.0.label = Test Custom Link label",
 	"widget.0.hostmap_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.0.hostmap_definition.0.custom_link.1.override_label = logs",
+	"widget.0.hostmap_definition.0.custom_link.1.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.0.hostmap_definition.0.custom_link.1.is_hidden = true",
 }
 
 func TestAccDatadogDashboardHostMap(t *testing.T) {

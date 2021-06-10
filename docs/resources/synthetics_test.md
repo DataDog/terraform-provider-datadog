@@ -461,7 +461,7 @@ Optional:
 
 Required:
 
-- **tick_every** (Number) How often the test should run (in seconds). Current possible values are `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` plus `60` for API tests or `300` for browser tests.
+- **tick_every** (Number) How often the test should run (in seconds). Current possible values are `30`, `60`, `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` for API tests or `300` for browser tests.
 
 Optional:
 
@@ -470,7 +470,9 @@ Optional:
 - **follow_redirects** (Boolean) For API HTTP test, whether or not the test should follow redirects.
 - **min_failure_duration** (Number) Minimum amount of time in failure required to trigger an alert. Default is `0`.
 - **min_location_failed** (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`.
+- **monitor_name** (String) The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.
 - **monitor_options** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--monitor_options))
+- **monitor_priority** (Number)
 - **no_screenshot** (Boolean) Prevents saving screenshots of the steps.
 - **retry** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--retry))
 

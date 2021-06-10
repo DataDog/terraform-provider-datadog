@@ -477,6 +477,10 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.retry.0.count", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.monitor_name", fmt.Sprintf(`%s-monitor`, testName)),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.monitor_priority", "5"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0_list.#", "0"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
@@ -555,9 +559,11 @@ resource "datadog_synthetics_test" "foo" {
 		retry {
 			count = 1
 		}
+		monitor_name = "%[1]s-monitor"
+		monitor_priority = 5
 	}
 
-	name = "%s"
+	name = "%[1]s"
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
 
@@ -1704,6 +1710,10 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.no_screenshot", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_name", fmt.Sprintf(`%s-monitor`, testName)),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_priority", "5"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
@@ -1770,11 +1780,13 @@ resource "datadog_synthetics_test" "bar" {
 		monitor_options {
 			renotify_interval = 100
 		}
+		monitor_name = "%[1]s-monitor"
+		monitor_priority = 5
 
 		no_screenshot = true
 	}
 
-	name = "%s"
+	name = "%[1]s"
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
 

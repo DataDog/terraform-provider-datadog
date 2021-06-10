@@ -52,9 +52,14 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(ctx context.Context, d *schema
 	authV1 := providerConf.AuthV1
 
 	attachLambdaArnRequest := buildDatadogIntegrationAwsLambdaArnStruct(d)
-	_, _, err := datadogClientV1.AWSLogsIntegrationApi.CreateAWSLambdaARN(authV1, *attachLambdaArnRequest)
+	response, httpresp, err := datadogClientV1.AWSLogsIntegrationApi.CreateAWSLambdaARN(authV1, *attachLambdaArnRequest)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, "error attaching Lambda ARN to AWS integration account")
+	}
+
+	res := response.(map[string]interface{})
+	if status, ok := res["status"]; ok && status == "error" {
+		return diag.FromErr(fmt.Errorf("error attaching Lambda ARN to AWS integration account: %s", httpresp.Body))
 	}
 
 	d.SetId(fmt.Sprintf("%s %s", attachLambdaArnRequest.GetAccountId(), attachLambdaArnRequest.GetLambdaArn()))

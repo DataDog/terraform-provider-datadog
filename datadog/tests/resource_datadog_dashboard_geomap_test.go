@@ -47,6 +47,11 @@ resource "datadog_dashboard" "geomap_dashboard" {
 			link = "https://app.datadoghq.com/dashboard/lists"
 			label = "Test Custom Link label"
 		  }
+		  custom_link {
+			link = "https://app.datadoghq.com/dashboard/lists"
+			is_hidden = true
+			override_label = "logs"
+		  }
 		}
 	  }
 	  widget {
@@ -196,9 +201,12 @@ var datadogDashboardGeomapAsserts = []string{
 	"widget.1.geomap_definition.0.style.0.palette = hostmap_blues",
 	"widget.1.geomap_definition.0.style.0.palette_flip = false",
 	"widget.1.geomap_definition.0.view.0.focus = WORLD",
-	"widget.1.geomap_definition.0.custom_link.# = 1",
+	"widget.1.geomap_definition.0.custom_link.# = 2",
 	"widget.1.geomap_definition.0.custom_link.0.label = Test Custom Link label",
 	"widget.1.geomap_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.1.geomap_definition.0.custom_link.1.override_label = logs",
+	"widget.1.geomap_definition.0.custom_link.1.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.1.geomap_definition.0.custom_link.1.is_hidden = true",
 	"widget.2.geomap_definition.0.live_span = 4h",
 	"widget.2.geomap_definition.0.request.0.rum_query.0.compute_query.0.aggregation = count",
 	"widget.2.geomap_definition.0.request.0.rum_query.0.index = *",

@@ -75,6 +75,15 @@ func resourceDatadogMonitor() *schema.Resource {
 				Required:         true,
 				ForceNew:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorTypeFromValue),
+				// Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
+				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+					if (oldVal == "query alert" && newVal == "metric alert") ||
+						(oldVal == "metric alert" && newVal == "query alert") {
+						log.Printf("[DEBUG] Monitor '%s' got a '%s' response for an expected '%s' type. Suppressing change.", d.Get("name"), newVal, oldVal)
+						return true
+					}
+					return newVal == oldVal
+				},
 			},
 			"priority": {
 				Description: "Integer from 1 (high) to 5 (low) indicating alert severity.",
@@ -360,9 +369,7 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 		}
 	}
 
-	m := datadogV1.NewMonitor()
-	m.SetType(monitorType)
-	m.SetQuery(d.Get("query").(string))
+	m := datadogV1.NewMonitor(d.Get("query").(string), monitorType)
 	m.SetName(d.Get("name").(string))
 	m.SetMessage(d.Get("message").(string))
 	m.SetPriority(int64(d.Get("priority").(int)))
