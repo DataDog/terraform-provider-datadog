@@ -429,8 +429,8 @@ resource "datadog_dashboard" "free_dashboard" {
     widget_layout {
       height = 43
       width  = 32
-      x      = 5
-      y      = 5
+      x      = 0
+      y      = 0
     }
   }
 
@@ -444,9 +444,9 @@ resource "datadog_dashboard" "free_dashboard" {
     }
     widget_layout {
       height = 9
-      width  = 65
-      x      = 42
-      y      = 73
+      width  = 66
+      x      = 33
+      y      = 60
     }
   }
 
@@ -454,14 +454,14 @@ resource "datadog_dashboard" "free_dashboard" {
     free_text_definition {
       text       = "free text content"
       color      = "#d00"
-      font_size  = "88"
+      font_size  = "36"
       text_align = "left"
     }
     widget_layout {
       height = 20
-      width  = 30
-      x      = 42
-      y      = 5
+      width  = 34
+      x      = 33
+      y      = 0
     }
   }
 
@@ -472,8 +472,8 @@ resource "datadog_dashboard" "free_dashboard" {
     widget_layout {
       height = 46
       width  = 39
-      x      = 111
-      y      = 8
+      x      = 101
+      y      = 0
     }
   }
 
@@ -486,8 +486,8 @@ resource "datadog_dashboard" "free_dashboard" {
     widget_layout {
       height = 20
       width  = 30
-      x      = 77
-      y      = 7
+      x      = 69
+      y      = 0
     }
   }
 
@@ -507,8 +507,8 @@ resource "datadog_dashboard" "free_dashboard" {
     widget_layout {
       height = 36
       width  = 32
-      x      = 5
-      y      = 51
+      x      = 0
+      y      = 45
     }
   }
 
@@ -528,8 +528,8 @@ resource "datadog_dashboard" "free_dashboard" {
     widget_layout {
       height = 40
       width  = 30
-      x      = 112
-      y      = 55
+      x      = 101
+      y      = 48
     }
   }
 
@@ -553,9 +553,9 @@ resource "datadog_dashboard" "free_dashboard" {
     }
     widget_layout {
       height = 38
-      width  = 67
-      x      = 40
-      y      = 28
+      width  = 66
+      x      = 33
+      y      = 21
     }
   }
 
@@ -591,12 +591,19 @@ resource "datadog_dashboard" "free_dashboard" {
         }
       }
     }
+    widget_layout {
+      height = 16
+      width  = 25
+      x      = 58
+      y      = 83
+    }
   }
   widget {
     timeseries_definition {
       request {
         query {
           event_query {
+            name        = "my-query"
             data_source = "logs"
             indexes     = ["days-3"]
             compute {
@@ -613,6 +620,12 @@ resource "datadog_dashboard" "free_dashboard" {
           }
         }
       }
+    }
+    widget_layout {
+      height = 16
+      width  = 28
+      x      = 29
+      y      = 83
     }
   }
   widget {
@@ -632,6 +645,12 @@ resource "datadog_dashboard" "free_dashboard" {
           }
         }
       }
+    }
+    widget_layout {
+      height = 16
+      width  = 28
+      x      = 0
+      y      = 83
     }
   }
 
