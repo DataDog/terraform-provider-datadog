@@ -453,6 +453,7 @@ Required:
 Optional:
 
 - **example** (String) Example for the variable.
+- **id** (String) When type = `global`, ID of the global variable to use.
 - **pattern** (String) Pattern of the variable.
 
 
