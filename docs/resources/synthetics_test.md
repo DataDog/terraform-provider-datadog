@@ -448,11 +448,12 @@ Optional:
 Required:
 
 - **name** (String) Name of the variable.
-- **type** (String) Type of test configuration variable. Allowed enum values: `text`.
+- **type** (String) Type of test configuration variable. Allowed enum values: `text`, `global`.
 
 Optional:
 
 - **example** (String) Example for the variable.
+- **id** (String) When type = `global`, ID of the global variable to use.
 - **pattern** (String) Pattern of the variable.
 
 

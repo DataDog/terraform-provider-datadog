@@ -405,7 +405,7 @@ func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		CheckDestroy:      testSyntheticsResourceIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMultistepAPITest(ctx, accProvider, t),
 		},
@@ -2636,11 +2636,12 @@ resource "datadog_synthetics_test" "bar" {
 
 func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
+	variableName := getUniqueVariableName(ctx, t)
 
 	return resource.TestStep{
-		Config: createSyntheticsMultistepAPITestConfig(testName),
+		Config: createSyntheticsMultistepAPITestConfig(testName, variableName),
 		Check: resource.ComposeTestCheckFunc(
-			testSyntheticsTestExists(accProvider),
+			testSyntheticsResourceExists(accProvider),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "type", "api"),
 			resource.TestCheckResourceAttr(
@@ -2731,8 +2732,15 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 	}
 }
 
-func createSyntheticsMultistepAPITestConfig(uniq string) string {
+func createSyntheticsMultistepAPITestConfig(testName string, variableName string) string {
 	return fmt.Sprintf(`
+resource "datadog_synthetics_global_variable" "global_variable" {
+	name = "%[2]s"
+	description = "a global variable"
+	tags = ["foo:bar", "baz"]
+	value = "variable-value"
+}
+
 resource "datadog_synthetics_test" "multi" {
        type = "api"
        subtype = "multi"
@@ -2742,10 +2750,17 @@ resource "datadog_synthetics_test" "multi" {
                min_failure_duration = 0
                min_location_failed = 1
        }
-       name = "%s"
+       name = "%[1]s"
        message = "Notify @datadog.user"
        tags = ["multistep"]
        status = "paused"
+
+       config_variable {
+       	   id = datadog_synthetics_global_variable.global_variable.id
+       	   type = "global"
+           name = "VARIABLE_NAME"
+       }
+
        api_step {
                name = "First api step"
                request_definition {
@@ -2793,7 +2808,7 @@ resource "datadog_synthetics_test" "multi" {
                is_critical = false
        }
 }
-`, uniq)
+`, testName, variableName)
 }
 
 func testSyntheticsTestExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
