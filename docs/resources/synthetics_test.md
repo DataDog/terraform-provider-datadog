@@ -448,7 +448,7 @@ Optional:
 Required:
 
 - **name** (String) Name of the variable.
-- **type** (String) Type of test configuration variable. Allowed enum values: `text`.
+- **type** (String) Type of test configuration variable. Allowed enum values: `text`, `global`.
 
 Optional:
 

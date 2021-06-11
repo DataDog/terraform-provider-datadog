@@ -767,7 +767,7 @@ func syntheticsConfigVariable() *schema.Schema {
 					Optional:    true,
 				},
 				"type": {
-					Description:      "Type of test configuration variable. Allowed enum values: `text`.",
+					Description:      "Type of test configuration variable. Allowed enum values: `text`, `global`.",
 					Type:             schema.TypeString,
 					Required:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsConfigVariableTypeFromValue),
