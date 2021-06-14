@@ -33,13 +33,13 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"type": {
-				Description:      "Synthetics test type (`api` or `browser`).",
+				Description:      "Synthetics test type.",
 				Type:             schema.TypeString,
 				Required:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
 			},
 			"subtype": {
-				Description: "When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns`, `icmp` or `multi`. Defaults to `http`.",
+				Description: "The subtype of the Synthetic API test. Defaults to `http`.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
@@ -66,7 +66,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			"browser_variable":           syntheticsBrowserVariable(),
 			"config_variable":            syntheticsConfigVariable(),
 			"device_ids": {
-				Description: "Array with the different device IDs used to run the test. Allowed enum values: `laptop_large`, `tablet`, `mobile_small` (only available for `browser` tests).",
+				Description: "Array with the different device IDs used to run the test (only for `browser` tests).",
 				Type:        schema.TypeList,
 				Optional:    true,
 				Elem: &schema.Schema{
@@ -101,7 +101,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"status": {
-				Description:      "Define whether you want to start (`live`) or pause (`paused`) a Synthetic test. Allowed enum values: `live`, `paused`",
+				Description:      "Define whether you want to start (`live`) or pause (`paused`) a Synthetic test.",
 				Type:             schema.TypeString,
 				Required:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestPauseStatusFromValue),
@@ -126,7 +126,7 @@ func syntheticsTestRequest() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"method": {
-				Description:      "The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.",
+				Description:      "The HTTP method.",
 				Type:             schema.TypeString,
 				Optional:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewHTTPMethodFromValue),
@@ -277,7 +277,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"type": {
-					Description:      "Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
+					Description:      "Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
 					Type:             schema.TypeString,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
 					Required:         true,
@@ -346,7 +346,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:    true,
 				},
 				"tick_every": {
-					Description:      "How often the test should run (in seconds). Current possible values are `30`, `60`, `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` for API tests or `300` for browser tests.",
+					Description:      "How often the test should run (in seconds).",
 					Type:             schema.TypeInt,
 					Required:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
@@ -436,7 +436,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Required:    true,
 				},
 				"subtype": {
-					Description:      "The subtype of the Synthetic multistep API test step, currently only supporting `http`.",
+					Description:      "The subtype of the Synthetic multistep API test step.",
 					Type:             schema.TypeString,
 					Optional:         true,
 					Default:          "http",
@@ -453,7 +453,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 								Required: true,
 							},
 							"type": {
-								Description:      "Property of the Synthetics Test Response to use for the variable: `http_body` or `http_header`",
+								Description:      "Property of the Synthetics Test Response to use for the variable.",
 								Type:             schema.TypeString,
 								Required:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
@@ -470,7 +470,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"type": {
-											Description:      "Type of parser for a Synthetics global variable from a synthetics test: `raw`, `json_path`, `regex`",
+											Description:      "Type of parser for a Synthetics global variable from a synthetics test.",
 											Type:             schema.TypeString,
 											Required:         true,
 											ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue),
@@ -527,7 +527,7 @@ func syntheticsTestBrowserStep() *schema.Schema {
 					Required:    true,
 				},
 				"type": {
-					Description:      "Type of the step. Refer to [Datadog documentation](https://docs.datadoghq.com/api/v1/synthetics/#create-a-test) for the complete list of available types.",
+					Description:      "Type of the step.",
 					Type:             schema.TypeString,
 					Required:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsStepTypeFromValue),
@@ -733,7 +733,7 @@ func syntheticsBrowserVariableElem() *schema.Resource {
 				Optional:    true,
 			},
 			"type": {
-				Description:      "Type of browser test variable. Allowed enum values: `element`, `email`, `global`, `javascript`, `text`.",
+				Description:      "Type of browser test variable.",
 				Type:             schema.TypeString,
 				Required:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
@@ -767,7 +767,7 @@ func syntheticsConfigVariable() *schema.Schema {
 					Optional:    true,
 				},
 				"type": {
-					Description:      "Type of test configuration variable. Allowed enum values: `text`, `global`.",
+					Description:      "Type of test configuration variable.",
 					Type:             schema.TypeString,
 					Required:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsConfigVariableTypeFromValue),
