@@ -50,6 +50,16 @@ func init() {
 			if len(diags) == 1 && diags[0].Summary == "Allowed values" {
 				desc = fmt.Sprintf("%s Valid values are %s.", desc, diags[0].Detail)
 			}
+		} else if s.Elem != nil {
+			defer func() {
+				recover()
+			}()
+			if inner, ok := s.Elem.(*schema.Schema); ok && inner.ValidateDiagFunc != nil {
+				diags := inner.ValidateDiagFunc(validators.EnumChecker{}, cty.Path{})
+				if len(diags) == 1 && diags[0].Summary == "Allowed values" {
+					desc = fmt.Sprintf("%s Valid values are %s.", desc, diags[0].Detail)
+				}
+			}
 		}
 		if s.Deprecated != "" {
 			desc = fmt.Sprintf("%s **Deprecated.** %s", desc, s.Deprecated)

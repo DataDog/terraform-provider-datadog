@@ -18,6 +18,7 @@ func ValidateFloatString(v interface{}, k string) (ws []string, errors []error) 
 	return validation.StringMatch(regexp.MustCompile(`\d*(\.\d*)?`), "value must be a float")(v, k)
 }
 
+// EnumChecker type to get allowed enum values from validate func
 type EnumChecker struct{}
 
 // ValidateEnumValue returns a validate func for an enum value. It takes the constructor with validation for the enum as an argument.
