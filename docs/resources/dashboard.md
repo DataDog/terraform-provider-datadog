@@ -684,7 +684,7 @@ resource "datadog_dashboard" "free_dashboard" {
 
 ### Required
 
-- **layout_type** (String) The layout type of the dashboard, either 'free' or 'ordered'.
+- **layout_type** (String) The layout type of the dashboard, either 'free' or 'ordered'. Valid values are `ordered`, `free`.
 - **title** (String) The title of the dashboard.
 - **widget** (Block List, Min: 1) The list of widgets to display on the dashboard. (see [below for nested schema](#nestedblock--widget))
 
@@ -694,7 +694,7 @@ resource "datadog_dashboard" "free_dashboard" {
 - **description** (String) The description of the dashboard.
 - **is_read_only** (Boolean) Whether this dashboard is read-only.
 - **notify_list** (List of String) The list of handles of users to notify when changes are made to this dashboard.
-- **reflow_type** (String) The reflow type of a new dashboard layout. Set this only when layout type is ‘ordered’. If set to ‘fixed’, the dashboard expect all widgets to have a layout, and if it’s set to ‘auto’, widgets should not have layouts.
+- **reflow_type** (String) The reflow type of a new dashboard layout. Set this only when layout type is ‘ordered’. If set to ‘fixed’, the dashboard expect all widgets to have a layout, and if it’s set to ‘auto’, widgets should not have layouts. Valid values are `auto`, `fixed`.
 - **template_variable** (Block List) The list of template variables for this dashboard. (see [below for nested schema](#nestedblock--template_variable))
 - **template_variable_preset** (Block List) The list of selectable template variable presets for this dashboard. (see [below for nested schema](#nestedblock--template_variable_preset))
 - **url** (String) The URL of the dashboard.
@@ -746,13 +746,13 @@ Read-Only:
 Required:
 
 - **alert_id** (String) The ID of the monitor used by the widget.
-- **viz_type** (String) Type of visualization to use when displaying the widget. Either `timeseries` or `toplist`.
+- **viz_type** (String) Type of visualization to use when displaying the widget. Either `timeseries` or `toplist`. Valid values are `timeseries`, `toplist`.
 
 Optional:
 
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 
@@ -766,9 +766,9 @@ Required:
 Optional:
 
 - **precision** (Number) The precision to use when displaying the value. Use `*` for maximum precision.
-- **text_align** (String) The alignment of the text in the widget.
+- **text_align** (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 - **unit** (String) The unit for the value displayed in the widget.
 
@@ -779,10 +779,10 @@ Optional:
 Optional:
 
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--custom_link))
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--change_definition--request))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--change_definition--custom_link"></a>
@@ -802,12 +802,12 @@ Optional:
 Optional:
 
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query))
-- **change_type** (String) Whether to show absolute or relative change. One of `absolute`, `relative`.
-- **compare_to** (String) Choose from when to compare current data to. One of `hour_before`, `day_before`, `week_before` or `month_before`.
+- **change_type** (String) Whether to show absolute or relative change. One of `absolute`, `relative`. Valid values are `absolute`, `relative`.
+- **compare_to** (String) Choose from when to compare current data to. One of `hour_before`, `day_before`, `week_before` or `month_before`. Valid values are `hour_before`, `day_before`, `week_before`, `month_before`.
 - **increase_good** (Boolean) Boolean indicating whether an increase in the value is good (thus displayed in green) or not (thus displayed in red).
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query))
-- **order_by** (String) One of `change`, `name`, `present` (present value) or `past` (past value).
-- **order_dir** (String) Either `asc` (ascending) or `desc` (descending).
+- **order_by** (String) One of `change`, `name`, `present` (present value) or `past` (past value). Valid values are `change`, `name`, `present`, `past`.
+- **order_dir** (String) Either `asc` (ascending) or `desc` (descending). Valid values are `asc`, `desc`.
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--change_definition--request--process_query))
 - **q** (String) The metric query to use for this widget.
 - **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query))
@@ -856,7 +856,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -920,7 +920,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -998,7 +998,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -1062,7 +1062,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -1092,16 +1092,16 @@ Optional:
 Required:
 
 - **check** (String) The check to use in the widget.
-- **grouping** (String) Either `check` or `cluster`, depending on whether the widget should use a single check or a cluster of checks.
+- **grouping** (String) Either `check` or `cluster`, depending on whether the widget should use a single check or a cluster of checks. Valid values are `check`, `cluster`.
 
 Optional:
 
 - **group** (String) The check group to use in the widget.
 - **group_by** (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **tags** (List of String) List of tags to use in the widget.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 
@@ -1111,11 +1111,11 @@ Optional:
 Optional:
 
 - **legend_size** (String) The size of the legend displayed in the widget.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--distribution_definition--request))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--distribution_definition--request"></a>
@@ -1173,7 +1173,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -1237,7 +1237,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -1315,7 +1315,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -1379,7 +1379,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -1420,11 +1420,11 @@ Required:
 
 Optional:
 
-- **event_size** (String) The size to use to display an event. One of `s`, `l`
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **event_size** (String) The size to use to display an event. One of `s`, `l` Valid values are `s`, `l`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **tags_execution** (String) The execution method for multi-value filters. Can be either `and` or `or`.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 
@@ -1437,10 +1437,10 @@ Required:
 
 Optional:
 
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **tags_execution** (String) The execution method for multi-value filters. Can be either `and` or `or`.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 
@@ -1455,7 +1455,7 @@ Optional:
 
 - **color** (String) The color of the text in the widget.
 - **font_size** (String) The size of the text in the widget.
-- **text_align** (String) The alignment of the text in the widget.
+- **text_align** (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 
 
 <a id="nestedblock--widget--geomap_definition"></a>
@@ -1468,11 +1468,11 @@ Required:
 Optional:
 
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--custom_link))
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--geomap_definition--request))
 - **style** (Block List, Max: 1) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--style))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--geomap_definition--view"></a>
@@ -1523,7 +1523,7 @@ Optional:
 Optional:
 
 - **count** (Number) Number of results to return
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -1569,7 +1569,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -1606,7 +1606,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -1620,7 +1620,7 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -1645,12 +1645,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - **metric** (String) Metric used for sorting group by results.
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -1673,7 +1673,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **data_source** (String) Data source for metrics queries.
 
 
@@ -1682,16 +1682,16 @@ Optional:
 
 Required:
 
-- **data_source** (String) Data source for process queries.
+- **data_source** (String) Data source for process queries. Valid values are `process`, `container`.
 - **metric** (String) Process metric name.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) Number of hits to return.
-- **sort** (String) Direction of sort.
+- **sort** (String) Direction of sort. Valid values are `asc`, `desc`.
 - **tag_filters** (List of String) An array of tags to filter by.
 - **text_filter** (String) Text to use as filter.
 
@@ -1739,7 +1739,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -1777,7 +1777,7 @@ Required:
 
 Required:
 
-- **layout_type** (String) The layout type of the group, only 'ordered' for now.
+- **layout_type** (String) The layout type of the group, only 'ordered' for now. Valid values are `ordered`.
 - **widget** (Block List, Min: 1) The list of widgets in this group. (see [below for nested schema](#nestedblock--widget--group_definition--widget))
 
 Optional:
@@ -1828,13 +1828,13 @@ Read-Only:
 Required:
 
 - **alert_id** (String) The ID of the monitor used by the widget.
-- **viz_type** (String) Type of visualization to use when displaying the widget. Either `timeseries` or `toplist`.
+- **viz_type** (String) Type of visualization to use when displaying the widget. Either `timeseries` or `toplist`. Valid values are `timeseries`, `toplist`.
 
 Optional:
 
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 
@@ -1848,9 +1848,9 @@ Required:
 Optional:
 
 - **precision** (Number) The precision to use when displaying the value. Use `*` for maximum precision.
-- **text_align** (String) The alignment of the text in the widget.
+- **text_align** (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 - **unit** (String) The unit for the value displayed in the widget.
 
@@ -1861,10 +1861,10 @@ Optional:
 Optional:
 
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--custom_link))
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--custom_link"></a>
@@ -1884,12 +1884,12 @@ Optional:
 Optional:
 
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query))
-- **change_type** (String) Whether to show absolute or relative change. One of `absolute`, `relative`.
-- **compare_to** (String) Choose from when to compare current data to. One of `hour_before`, `day_before`, `week_before` or `month_before`.
+- **change_type** (String) Whether to show absolute or relative change. One of `absolute`, `relative`. Valid values are `absolute`, `relative`.
+- **compare_to** (String) Choose from when to compare current data to. One of `hour_before`, `day_before`, `week_before` or `month_before`. Valid values are `hour_before`, `day_before`, `week_before`, `month_before`.
 - **increase_good** (Boolean) Boolean indicating whether an increase in the value is good (thus displayed in green) or not (thus displayed in red).
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query))
-- **order_by** (String) One of `change`, `name`, `present` (present value) or `past` (past value).
-- **order_dir** (String) Either `asc` (ascending) or `desc` (descending).
+- **order_by** (String) One of `change`, `name`, `present` (present value) or `past` (past value). Valid values are `change`, `name`, `present`, `past`.
+- **order_dir** (String) Either `asc` (ascending) or `desc` (descending). Valid values are `asc`, `desc`.
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--process_query))
 - **q** (String) The metric query to use for this widget.
 - **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query))
@@ -1938,7 +1938,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2002,7 +2002,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2080,7 +2080,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2144,7 +2144,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2174,16 +2174,16 @@ Optional:
 Required:
 
 - **check** (String) The check to use in the widget.
-- **grouping** (String) Either `check` or `cluster`, depending on whether the widget should use a single check or a cluster of checks.
+- **grouping** (String) Either `check` or `cluster`, depending on whether the widget should use a single check or a cluster of checks. Valid values are `check`, `cluster`.
 
 Optional:
 
 - **group** (String) The check group to use in the widget.
 - **group_by** (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **tags** (List of String) List of tags to use in the widget.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 
@@ -2193,11 +2193,11 @@ Optional:
 Optional:
 
 - **legend_size** (String) The size of the legend displayed in the widget.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request"></a>
@@ -2255,7 +2255,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2319,7 +2319,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2397,7 +2397,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2461,7 +2461,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2502,11 +2502,11 @@ Required:
 
 Optional:
 
-- **event_size** (String) The size to use to display an event. One of `s`, `l`
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **event_size** (String) The size to use to display an event. One of `s`, `l` Valid values are `s`, `l`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **tags_execution** (String) The execution method for multi-value filters. Can be either `and` or `or`.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 
@@ -2519,10 +2519,10 @@ Required:
 
 Optional:
 
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **tags_execution** (String) The execution method for multi-value filters. Can be either `and` or `or`.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 
@@ -2537,7 +2537,7 @@ Optional:
 
 - **color** (String) The color of the text in the widget.
 - **font_size** (String) The size of the text in the widget.
-- **text_align** (String) The alignment of the text in the widget.
+- **text_align** (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition"></a>
@@ -2550,11 +2550,11 @@ Required:
 Optional:
 
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--custom_link))
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request))
 - **style** (Block List, Max: 1) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--style))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--view"></a>
@@ -2605,7 +2605,7 @@ Optional:
 Optional:
 
 - **count** (Number) Number of results to return
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -2651,7 +2651,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2688,7 +2688,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -2702,7 +2702,7 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -2727,12 +2727,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - **metric** (String) Metric used for sorting group by results.
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -2755,7 +2755,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **data_source** (String) Data source for metrics queries.
 
 
@@ -2764,16 +2764,16 @@ Optional:
 
 Required:
 
-- **data_source** (String) Data source for process queries.
+- **data_source** (String) Data source for process queries. Valid values are `process`, `container`.
 - **metric** (String) Process metric name.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) Number of hits to return.
-- **sort** (String) Direction of sort.
+- **sort** (String) Direction of sort. Valid values are `asc`, `desc`.
 - **tag_filters** (List of String) An array of tags to filter by.
 - **text_filter** (String) Text to use as filter.
 
@@ -2821,7 +2821,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2862,11 +2862,11 @@ Optional:
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--custom_link))
 - **event** (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--event))
 - **legend_size** (String) The size of the legend displayed in the widget.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 - **yaxis** (Block List, Max: 1) Nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--yaxis))
 
@@ -2948,7 +2948,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3012,7 +3012,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3090,7 +3090,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3154,7 +3154,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3207,12 +3207,12 @@ Optional:
 - **group** (List of String) The list of tags to group nodes by.
 - **no_group_hosts** (Boolean) Boolean indicating whether to show ungrouped nodes.
 - **no_metric_hosts** (Boolean) Boolean indicating whether to show nodes with no metrics.
-- **node_type** (String) The type of node used. Either `host` or `container`.
+- **node_type** (String) The type of node used. Either `host` or `container`. Valid values are `host`, `container`.
 - **request** (Block List, Max: 1) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request))
 - **scope** (List of String) The list of tags to filter nodes by.
 - **style** (Block List, Max: 1) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--style))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--custom_link"></a>
@@ -3288,7 +3288,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3352,7 +3352,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3430,7 +3430,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3494,7 +3494,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3571,7 +3571,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3635,7 +3635,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3713,7 +3713,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3777,7 +3777,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3832,11 +3832,11 @@ Optional:
 
 - **has_background** (Boolean) Whether to display a background or not.
 - **has_border** (Boolean) Whether to display a border or not.
-- **horizontal_align** (String) The horizontal alignment for the widget.
-- **margin** (String) The margins to use around the image. Either `sm`, `md`, or `lg`. Note: `small` and `large` values are deprecated.
-- **sizing** (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties and are either: `fill`, `contain`, `cover`, `none` or `scale-down`. Note: `zoom`, `fit` and `center` values are deprecated.
+- **horizontal_align** (String) The horizontal alignment for the widget. Valid values are `center`, `left`, `right`.
+- **margin** (String) The margins to use around the image. Either `sm`, `md`, or `lg`. Note: `small` and `large` values are deprecated. Valid values are `sm`, `md`, `lg`, `small`, `large`.
+- **sizing** (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties and are either: `fill`, `contain`, `cover`, `none` or `scale-down`. Note: `zoom`, `fit` and `center` values are deprecated. Valid values are `fill`, `contain`, `cover`, `none`, `scale-down`, `zoom`, `fit`, `center`.
 - **url_dark_theme** (String) The URL in dark mode to use as a data source for the widget.
-- **vertical_align** (String) The vertical alignment for the widget.
+- **vertical_align** (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
 
 
 <a id="nestedblock--widget--group_definition--widget--log_stream_definition"></a>
@@ -3846,14 +3846,14 @@ Optional:
 
 - **columns** (List of String) Stringified list of columns to use. Example: `["column1","column2","column3"]`.
 - **indexes** (List of String) An array of index names to query in the stream.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **message_display** (String) One of: ['inline', 'expanded-md', 'expanded-lg']
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **message_display** (String) One of: ['inline', 'expanded-md', 'expanded-lg'] Valid values are `inline`, `expanded-md`, `expanded-lg`.
 - **query** (String) The query to use in the widget.
 - **show_date_column** (Boolean) If the date column should be displayed.
 - **show_message_column** (Boolean) If the message column should be displayed.
 - **sort** (Block List, Max: 1) The facet and order to sort the data based upon. Example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition--sort))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--log_stream_definition--sort"></a>
@@ -3862,7 +3862,7 @@ Optional:
 Required:
 
 - **column** (String) Facet path for the column
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -3875,14 +3875,14 @@ Required:
 
 Optional:
 
-- **color_preference** (String) Whether to colorize text or background. One of `text`, `background`.
-- **display_format** (String) The display setting to use. One of `counts`, `list`, or `countsAndList`.
+- **color_preference** (String) Whether to colorize text or background. One of `text`, `background`. Valid values are `background`, `text`.
+- **display_format** (String) The display setting to use. One of `counts`, `list`, or `countsAndList`. Valid values are `counts`, `countsAndList`, `list`.
 - **hide_zero_counts** (Boolean) Boolean indicating whether to hide empty categories.
 - **show_last_triggered** (Boolean) Boolean indicating whether to show when monitors/groups last triggered.
-- **sort** (String) The method to use to sort monitors. Example: `status,asc`.
-- **summary_type** (String) One of: ['monitors', 'groups', 'combined']
+- **sort** (String) The method to use to sort monitors. Example: `status,asc`. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`.
+- **summary_type** (String) One of: ['monitors', 'groups', 'combined'] Valid values are `monitors`, `groups`, `combined`.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 
@@ -3899,10 +3899,10 @@ Optional:
 - **font_size** (String) Size of the text.
 - **has_padding** (Boolean) Whether to add padding or not.
 - **show_tick** (Boolean) Whether to show a tick or not.
-- **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`.
-- **tick_edge** (String) When `tick = true`, string indicating on which side of the widget the tick should be displayed. One of `bottom`, `top`, `left`, `right`.
+- **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
+- **tick_edge** (String) When `tick = true`, string indicating on which side of the widget the tick should be displayed. One of `bottom`, `top`, `left`, `right`. Valid values are `bottom`, `left`, `right`, `top`.
 - **tick_pos** (String) When `tick = true`, string with a percent sign indicating the position of the tick. Example: use `tick_pos = "50%"` for centered alignment.
-- **vertical_align** (String) The vertical alignment for the widget.
+- **vertical_align** (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition"></a>
@@ -3911,11 +3911,11 @@ Optional:
 Optional:
 
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--custom_link))
-- **has_search_bar** (String) Controls the display of the search bar. One of `auto`, `always`, `never`.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **has_search_bar** (String) Controls the display of the search bar. One of `auto`, `always`, `never`. Valid values are `always`, `never`, `auto`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--custom_link"></a>
@@ -3934,7 +3934,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
+- **aggregator** (String) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`. Valid values are `avg`, `last`, `max`, `min`, `sum`.
 - **alias** (String) The alias for the column name. Default is the metric name.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query))
 - **apm_stats_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_stats_query))
@@ -3942,7 +3942,7 @@ Optional:
 - **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--conditional_formats))
 - **limit** (Number) The number of lines to show in the table.
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query))
-- **order** (String) The sort order for the rows. One of `desc` or `asc`.
+- **order** (String) The sort order for the rows. One of `desc` or `asc`. Valid values are `asc`, `desc`.
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--process_query))
 - **q** (String) The metric query to use for this widget.
 - **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query))
@@ -3990,7 +3990,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4020,7 +4020,7 @@ Required:
 - **env** (String) Environment name.
 - **name** (String) Operation name associated with service.
 - **primary_tag** (String) The organization's host group name and value.
-- **row_type** (String) The level of detail for the request.
+- **row_type** (String) The level of detail for the request. Valid values are `service`, `resource`, `span`.
 - **service** (String) Service name.
 
 Optional:
@@ -4038,8 +4038,8 @@ Required:
 Optional:
 
 - **alias** (String) A user-assigned alias for the column.
-- **cell_display_mode** (String) A list of display modes for each table cell.
-- **order** (String) Widget sorting methods.
+- **cell_display_mode** (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -4048,8 +4048,8 @@ Optional:
 
 Required:
 
-- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`.
-- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.
+- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`. Valid values are `>`, `>=`, `<`, `<=`.
+- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - **value** (Number) Value for the comparator.
 
 Optional:
@@ -4104,7 +4104,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4182,7 +4182,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4246,7 +4246,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4278,12 +4278,12 @@ Optional:
 - **autoscale** (Boolean) Boolean indicating whether to automatically scale the tile.
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--custom_link))
 - **custom_unit** (String) The unit for the value displayed in the widget.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **precision** (Number) The precision to use when displaying the tile.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request))
-- **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`.
+- **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--custom_link"></a>
@@ -4302,7 +4302,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
+- **aggregator** (String) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`. Valid values are `avg`, `last`, `max`, `min`, `sum`.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query))
 - **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--conditional_formats))
 - **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula))
@@ -4355,7 +4355,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4382,8 +4382,8 @@ Optional:
 
 Required:
 
-- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`.
-- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.
+- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`. Valid values are `>`, `>=`, `<`, `<=`.
+- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - **value** (Number) Value for the comparator.
 
 Optional:
@@ -4414,7 +4414,7 @@ Optional:
 Optional:
 
 - **count** (Number) Number of results to return
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -4460,7 +4460,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4511,7 +4511,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -4525,7 +4525,7 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -4550,12 +4550,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - **metric** (String) Metric used for sorting group by results.
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -4578,7 +4578,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **data_source** (String) Data source for metrics queries.
 
 
@@ -4587,16 +4587,16 @@ Optional:
 
 Required:
 
-- **data_source** (String) Data source for process queries.
+- **data_source** (String) Data source for process queries. Valid values are `process`, `container`.
 - **metric** (String) Process metric name.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) Number of hits to return.
-- **sort** (String) Direction of sort.
+- **sort** (String) Direction of sort. Valid values are `asc`, `desc`.
 - **tag_filters** (List of String) An array of tags to filter by.
 - **text_filter** (String) Text to use as filter.
 
@@ -4644,7 +4644,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4708,7 +4708,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4739,10 +4739,10 @@ Optional:
 
 - **color_by_groups** (List of String) List of groups used for colors.
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--custom_link))
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List, Max: 1) Nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 - **xaxis** (Block List, Max: 1) Nested block describing the X-Axis Controls. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--xaxis))
 - **yaxis** (Block List, Max: 1) Nested block describing the Y-Axis Controls. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--yaxis))
@@ -4771,7 +4771,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) Aggregator used for the request.
+- **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query))
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--process_query))
@@ -4821,7 +4821,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4885,7 +4885,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4963,7 +4963,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5027,7 +5027,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5055,7 +5055,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) Aggregator used for the request.
+- **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query))
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--process_query))
@@ -5105,7 +5105,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5169,7 +5169,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5247,7 +5247,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5311,7 +5311,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5367,7 +5367,7 @@ Required:
 
 - **slo_id** (String) The ID of the service level objective used by the widget.
 - **time_windows** (List of String) List of time windows to display in the widget. Each value in the list must be one of `7d`, `30d`, `90d`, `week_to_date`, `previous_week`, `month_to_date`, or `previous_month`.
-- **view_mode** (String) View mode for the widget. One of `overall`, `component`, or `both`.
+- **view_mode** (String) View mode for the widget. One of `overall`, `component`, or `both`. Valid values are `overall`, `component`, `both`.
 - **view_type** (String) Type of view to use when displaying the widget. Only `detail` is currently supported.
 
 Optional:
@@ -5375,7 +5375,7 @@ Optional:
 - **global_time_target** (String) The global time target of the widget.
 - **show_error_budget** (Boolean) Whether to show the error budget or not.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 
@@ -5391,7 +5391,7 @@ Optional:
 
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition--custom_link))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--servicemap_definition--custom_link"></a>
@@ -5414,15 +5414,15 @@ Optional:
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--custom_link))
 - **event** (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--event))
 - **legend_columns** (Set of String) A list of columns to display in the legend. List items one of `value`, `avg`, `sum`, `min`, `max`.
-- **legend_layout** (String) The layout of the legend displayed in the widget. One of `auto`, `horizontal`, `vertical`.
+- **legend_layout** (String) The layout of the legend displayed in the widget. One of `auto`, `horizontal`, `vertical`. Valid values are `auto`, `horizontal`, `vertical`.
 - **legend_size** (String) The size of the legend displayed in the widget.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **marker** (Block List) Nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--marker))
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request))
 - **right_yaxis** (Block List, Max: 1) Nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--right_yaxis))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 - **yaxis** (Block List, Max: 1) Nested block describing the Y-Axis Controls. The structure of this block is described below (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--yaxis))
 
@@ -5468,7 +5468,7 @@ Optional:
 Optional:
 
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query))
-- **display_type** (String) How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.
+- **display_type** (String) How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`. Valid values are `area`, `bars`, `line`.
 - **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query))
 - **metadata** (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--metadata))
@@ -5523,7 +5523,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5563,7 +5563,7 @@ Optional:
 Optional:
 
 - **count** (Number) Number of results to return
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -5609,7 +5609,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5685,7 +5685,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5736,7 +5736,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -5750,7 +5750,7 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -5775,12 +5775,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - **metric** (String) Metric used for sorting group by results.
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -5803,7 +5803,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **data_source** (String) Data source for metrics queries.
 
 
@@ -5812,16 +5812,16 @@ Optional:
 
 Required:
 
-- **data_source** (String) Data source for process queries.
+- **data_source** (String) Data source for process queries. Valid values are `process`, `container`.
 - **metric** (String) Process metric name.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) Number of hits to return.
-- **sort** (String) Direction of sort.
+- **sort** (String) Direction of sort. Valid values are `asc`, `desc`.
 - **tag_filters** (List of String) An array of tags to filter by.
 - **text_filter** (String) Text to use as filter.
 
@@ -5869,7 +5869,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5933,7 +5933,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5960,8 +5960,8 @@ Optional:
 
 Optional:
 
-- **line_type** (String) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.
-- **line_width** (String) Width of line displayed. Available values are: `normal`, `thick`, or `thin`.
+- **line_type** (String) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`. Valid values are `dashed`, `dotted`, `solid`.
+- **line_width** (String) Width of line displayed. Available values are: `normal`, `thick`, or `thin`. Valid values are `normal`, `thick`, `thin`.
 - **palette** (String) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
@@ -5997,10 +5997,10 @@ Optional:
 Optional:
 
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--custom_link))
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--custom_link"></a>
@@ -6072,7 +6072,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -6099,8 +6099,8 @@ Optional:
 
 Required:
 
-- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`.
-- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.
+- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`. Valid values are `>`, `>=`, `<`, `<=`.
+- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - **value** (Number) Value for the comparator.
 
 Optional:
@@ -6131,7 +6131,7 @@ Optional:
 Optional:
 
 - **count** (Number) Number of results to return
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -6177,7 +6177,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -6228,7 +6228,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -6242,7 +6242,7 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -6267,12 +6267,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - **metric** (String) Metric used for sorting group by results.
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -6295,7 +6295,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **data_source** (String) Data source for metrics queries.
 
 
@@ -6304,16 +6304,16 @@ Optional:
 
 Required:
 
-- **data_source** (String) Data source for process queries.
+- **data_source** (String) Data source for process queries. Valid values are `process`, `container`.
 - **metric** (String) Process metric name.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) Number of hits to return.
-- **sort** (String) Direction of sort.
+- **sort** (String) Direction of sort. Valid values are `asc`, `desc`.
 - **tag_filters** (List of String) An array of tags to filter by.
 - **text_filter** (String) Text to use as filter.
 
@@ -6361,7 +6361,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -6425,7 +6425,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -6468,17 +6468,17 @@ Required:
 
 Optional:
 
-- **display_format** (String) Number of columns to display. Available values are: `one_column`, `two_column`, or `three_column`.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **display_format** (String) Number of columns to display. Available values are: `one_column`, `two_column`, or `three_column`. Valid values are `one_column`, `two_column`, `three_column`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **show_breakdown** (Boolean) Whether to show the latency breakdown or not.
 - **show_distribution** (Boolean) Whether to show the latency distribution or not.
 - **show_errors** (Boolean) Whether to show the error metrics or not.
 - **show_hits** (Boolean) Whether to show the hits metrics or not
 - **show_latency** (Boolean) Whether to show the latency metrics or not.
 - **show_resource_list** (Boolean) Whether to show the resource list or not.
-- **size_format** (String) Size of the widget. Available values are: `small`, `medium`, or `large`.
+- **size_format** (String) Size of the widget. Available values are: `small`, `medium`, or `large`. Valid values are `small`, `medium`, `large`.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 
@@ -6507,11 +6507,11 @@ Optional:
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--custom_link))
 - **event** (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--event))
 - **legend_size** (String) The size of the legend displayed in the widget.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 - **yaxis** (Block List, Max: 1) Nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--yaxis))
 
@@ -6593,7 +6593,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -6657,7 +6657,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -6735,7 +6735,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -6799,7 +6799,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -6852,12 +6852,12 @@ Optional:
 - **group** (List of String) The list of tags to group nodes by.
 - **no_group_hosts** (Boolean) Boolean indicating whether to show ungrouped nodes.
 - **no_metric_hosts** (Boolean) Boolean indicating whether to show nodes with no metrics.
-- **node_type** (String) The type of node used. Either `host` or `container`.
+- **node_type** (String) The type of node used. Either `host` or `container`. Valid values are `host`, `container`.
 - **request** (Block List, Max: 1) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request))
 - **scope** (List of String) The list of tags to filter nodes by.
 - **style** (Block List, Max: 1) Style of the widget graph. One nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--style))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--hostmap_definition--custom_link"></a>
@@ -6933,7 +6933,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -6997,7 +6997,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7075,7 +7075,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7139,7 +7139,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7216,7 +7216,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7280,7 +7280,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7358,7 +7358,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7422,7 +7422,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7477,11 +7477,11 @@ Optional:
 
 - **has_background** (Boolean) Whether to display a background or not.
 - **has_border** (Boolean) Whether to display a border or not.
-- **horizontal_align** (String) The horizontal alignment for the widget.
-- **margin** (String) The margins to use around the image. Either `sm`, `md`, or `lg`. Note: `small` and `large` values are deprecated.
-- **sizing** (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties and are either: `fill`, `contain`, `cover`, `none` or `scale-down`. Note: `zoom`, `fit` and `center` values are deprecated.
+- **horizontal_align** (String) The horizontal alignment for the widget. Valid values are `center`, `left`, `right`.
+- **margin** (String) The margins to use around the image. Either `sm`, `md`, or `lg`. Note: `small` and `large` values are deprecated. Valid values are `sm`, `md`, `lg`, `small`, `large`.
+- **sizing** (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties and are either: `fill`, `contain`, `cover`, `none` or `scale-down`. Note: `zoom`, `fit` and `center` values are deprecated. Valid values are `fill`, `contain`, `cover`, `none`, `scale-down`, `zoom`, `fit`, `center`.
 - **url_dark_theme** (String) The URL in dark mode to use as a data source for the widget.
-- **vertical_align** (String) The vertical alignment for the widget.
+- **vertical_align** (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
 
 
 <a id="nestedblock--widget--log_stream_definition"></a>
@@ -7491,14 +7491,14 @@ Optional:
 
 - **columns** (List of String) Stringified list of columns to use. Example: `["column1","column2","column3"]`.
 - **indexes** (List of String) An array of index names to query in the stream.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **message_display** (String) One of: ['inline', 'expanded-md', 'expanded-lg']
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **message_display** (String) One of: ['inline', 'expanded-md', 'expanded-lg'] Valid values are `inline`, `expanded-md`, `expanded-lg`.
 - **query** (String) The query to use in the widget.
 - **show_date_column** (Boolean) If the date column should be displayed.
 - **show_message_column** (Boolean) If the message column should be displayed.
 - **sort** (Block List, Max: 1) The facet and order to sort the data based upon. Example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--log_stream_definition--sort))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--log_stream_definition--sort"></a>
@@ -7507,7 +7507,7 @@ Optional:
 Required:
 
 - **column** (String) Facet path for the column
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -7520,14 +7520,14 @@ Required:
 
 Optional:
 
-- **color_preference** (String) Whether to colorize text or background. One of `text`, `background`.
-- **display_format** (String) The display setting to use. One of `counts`, `list`, or `countsAndList`.
+- **color_preference** (String) Whether to colorize text or background. One of `text`, `background`. Valid values are `background`, `text`.
+- **display_format** (String) The display setting to use. One of `counts`, `list`, or `countsAndList`. Valid values are `counts`, `countsAndList`, `list`.
 - **hide_zero_counts** (Boolean) Boolean indicating whether to hide empty categories.
 - **show_last_triggered** (Boolean) Boolean indicating whether to show when monitors/groups last triggered.
-- **sort** (String) The method to use to sort monitors. Example: `status,asc`.
-- **summary_type** (String) One of: ['monitors', 'groups', 'combined']
+- **sort** (String) The method to use to sort monitors. Example: `status,asc`. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`.
+- **summary_type** (String) One of: ['monitors', 'groups', 'combined'] Valid values are `monitors`, `groups`, `combined`.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 
@@ -7544,10 +7544,10 @@ Optional:
 - **font_size** (String) Size of the text.
 - **has_padding** (Boolean) Whether to add padding or not.
 - **show_tick** (Boolean) Whether to show a tick or not.
-- **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`.
-- **tick_edge** (String) When `tick = true`, string indicating on which side of the widget the tick should be displayed. One of `bottom`, `top`, `left`, `right`.
+- **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
+- **tick_edge** (String) When `tick = true`, string indicating on which side of the widget the tick should be displayed. One of `bottom`, `top`, `left`, `right`. Valid values are `bottom`, `left`, `right`, `top`.
 - **tick_pos** (String) When `tick = true`, string with a percent sign indicating the position of the tick. Example: use `tick_pos = "50%"` for centered alignment.
-- **vertical_align** (String) The vertical alignment for the widget.
+- **vertical_align** (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
 
 
 <a id="nestedblock--widget--query_table_definition"></a>
@@ -7556,11 +7556,11 @@ Optional:
 Optional:
 
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--custom_link))
-- **has_search_bar** (String) Controls the display of the search bar. One of `auto`, `always`, `never`.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **has_search_bar** (String) Controls the display of the search bar. One of `auto`, `always`, `never`. Valid values are `always`, `never`, `auto`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_table_definition--request))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--query_table_definition--custom_link"></a>
@@ -7579,7 +7579,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
+- **aggregator** (String) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`. Valid values are `avg`, `last`, `max`, `min`, `sum`.
 - **alias** (String) The alias for the column name. Default is the metric name.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query))
 - **apm_stats_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_stats_query))
@@ -7587,7 +7587,7 @@ Optional:
 - **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--conditional_formats))
 - **limit** (Number) The number of lines to show in the table.
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query))
-- **order** (String) The sort order for the rows. One of `desc` or `asc`.
+- **order** (String) The sort order for the rows. One of `desc` or `asc`. Valid values are `asc`, `desc`.
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--process_query))
 - **q** (String) The metric query to use for this widget.
 - **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query))
@@ -7635,7 +7635,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7665,7 +7665,7 @@ Required:
 - **env** (String) Environment name.
 - **name** (String) Operation name associated with service.
 - **primary_tag** (String) The organization's host group name and value.
-- **row_type** (String) The level of detail for the request.
+- **row_type** (String) The level of detail for the request. Valid values are `service`, `resource`, `span`.
 - **service** (String) Service name.
 
 Optional:
@@ -7683,8 +7683,8 @@ Required:
 Optional:
 
 - **alias** (String) A user-assigned alias for the column.
-- **cell_display_mode** (String) A list of display modes for each table cell.
-- **order** (String) Widget sorting methods.
+- **cell_display_mode** (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -7693,8 +7693,8 @@ Optional:
 
 Required:
 
-- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`.
-- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.
+- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`. Valid values are `>`, `>=`, `<`, `<=`.
+- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - **value** (Number) Value for the comparator.
 
 Optional:
@@ -7749,7 +7749,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7827,7 +7827,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7891,7 +7891,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7923,12 +7923,12 @@ Optional:
 - **autoscale** (Boolean) Boolean indicating whether to automatically scale the tile.
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--custom_link))
 - **custom_unit** (String) The unit for the value displayed in the widget.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **precision** (Number) The precision to use when displaying the tile.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_value_definition--request))
-- **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`.
+- **text_align** (String) The alignment of the widget's text. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--query_value_definition--custom_link"></a>
@@ -7947,7 +7947,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`.
+- **aggregator** (String) The aggregator to use for time aggregation. One of `avg`, `min`, `max`, `sum`, `last`. Valid values are `avg`, `last`, `max`, `min`, `sum`.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query))
 - **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--conditional_formats))
 - **formula** (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula))
@@ -8000,7 +8000,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8027,8 +8027,8 @@ Optional:
 
 Required:
 
-- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`.
-- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.
+- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`. Valid values are `>`, `>=`, `<`, `<=`.
+- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - **value** (Number) Value for the comparator.
 
 Optional:
@@ -8059,7 +8059,7 @@ Optional:
 Optional:
 
 - **count** (Number) Number of results to return
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -8105,7 +8105,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8156,7 +8156,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -8170,7 +8170,7 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -8195,12 +8195,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - **metric** (String) Metric used for sorting group by results.
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -8223,7 +8223,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **data_source** (String) Data source for metrics queries.
 
 
@@ -8232,16 +8232,16 @@ Optional:
 
 Required:
 
-- **data_source** (String) Data source for process queries.
+- **data_source** (String) Data source for process queries. Valid values are `process`, `container`.
 - **metric** (String) Process metric name.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) Number of hits to return.
-- **sort** (String) Direction of sort.
+- **sort** (String) Direction of sort. Valid values are `asc`, `desc`.
 - **tag_filters** (List of String) An array of tags to filter by.
 - **text_filter** (String) Text to use as filter.
 
@@ -8289,7 +8289,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8353,7 +8353,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8384,10 +8384,10 @@ Optional:
 
 - **color_by_groups** (List of String) List of groups used for colors.
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--custom_link))
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List, Max: 1) Nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 - **xaxis** (Block List, Max: 1) Nested block describing the X-Axis Controls. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--xaxis))
 - **yaxis** (Block List, Max: 1) Nested block describing the Y-Axis Controls. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--yaxis))
@@ -8416,7 +8416,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) Aggregator used for the request.
+- **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query))
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--process_query))
@@ -8466,7 +8466,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8530,7 +8530,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8608,7 +8608,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8672,7 +8672,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8700,7 +8700,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) Aggregator used for the request.
+- **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query))
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--process_query))
@@ -8750,7 +8750,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8814,7 +8814,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8892,7 +8892,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8956,7 +8956,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9012,7 +9012,7 @@ Required:
 
 - **slo_id** (String) The ID of the service level objective used by the widget.
 - **time_windows** (List of String) List of time windows to display in the widget. Each value in the list must be one of `7d`, `30d`, `90d`, `week_to_date`, `previous_week`, `month_to_date`, or `previous_month`.
-- **view_mode** (String) View mode for the widget. One of `overall`, `component`, or `both`.
+- **view_mode** (String) View mode for the widget. One of `overall`, `component`, or `both`. Valid values are `overall`, `component`, `both`.
 - **view_type** (String) Type of view to use when displaying the widget. Only `detail` is currently supported.
 
 Optional:
@@ -9020,7 +9020,7 @@ Optional:
 - **global_time_target** (String) The global time target of the widget.
 - **show_error_budget** (Boolean) Whether to show the error budget or not.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 
@@ -9036,7 +9036,7 @@ Optional:
 
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--servicemap_definition--custom_link))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--servicemap_definition--custom_link"></a>
@@ -9059,15 +9059,15 @@ Optional:
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--custom_link))
 - **event** (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--event))
 - **legend_columns** (Set of String) A list of columns to display in the legend. List items one of `value`, `avg`, `sum`, `min`, `max`.
-- **legend_layout** (String) The layout of the legend displayed in the widget. One of `auto`, `horizontal`, `vertical`.
+- **legend_layout** (String) The layout of the legend displayed in the widget. One of `auto`, `horizontal`, `vertical`. Valid values are `auto`, `horizontal`, `vertical`.
 - **legend_size** (String) The size of the legend displayed in the widget.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **marker** (Block List) Nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--timeseries_definition--marker))
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--timeseries_definition--request))
 - **right_yaxis** (Block List, Max: 1) Nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--right_yaxis))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 - **yaxis** (Block List, Max: 1) Nested block describing the Y-Axis Controls. The structure of this block is described below (see [below for nested schema](#nestedblock--widget--timeseries_definition--yaxis))
 
@@ -9113,7 +9113,7 @@ Optional:
 Optional:
 
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
-- **display_type** (String) How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.
+- **display_type** (String) How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`. Valid values are `area`, `bars`, `line`.
 - **formula** (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query))
 - **metadata** (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--metadata))
@@ -9168,7 +9168,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9208,7 +9208,7 @@ Optional:
 Optional:
 
 - **count** (Number) Number of results to return
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -9254,7 +9254,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9330,7 +9330,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9381,7 +9381,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -9395,7 +9395,7 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -9420,12 +9420,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - **metric** (String) Metric used for sorting group by results.
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -9448,7 +9448,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **data_source** (String) Data source for metrics queries.
 
 
@@ -9457,16 +9457,16 @@ Optional:
 
 Required:
 
-- **data_source** (String) Data source for process queries.
+- **data_source** (String) Data source for process queries. Valid values are `process`, `container`.
 - **metric** (String) Process metric name.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) Number of hits to return.
-- **sort** (String) Direction of sort.
+- **sort** (String) Direction of sort. Valid values are `asc`, `desc`.
 - **tag_filters** (List of String) An array of tags to filter by.
 - **text_filter** (String) Text to use as filter.
 
@@ -9514,7 +9514,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9578,7 +9578,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9605,8 +9605,8 @@ Optional:
 
 Optional:
 
-- **line_type** (String) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`.
-- **line_width** (String) Width of line displayed. Available values are: `normal`, `thick`, or `thin`.
+- **line_type** (String) Type of lines displayed. Available values are: `dashed`, `dotted`, or `solid`. Valid values are `dashed`, `dotted`, `solid`.
+- **line_width** (String) Width of line displayed. Available values are: `normal`, `thick`, or `thin`. Valid values are `normal`, `thick`, `thin`.
 - **palette** (String) Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
@@ -9642,10 +9642,10 @@ Optional:
 Optional:
 
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--custom_link))
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 <a id="nestedblock--widget--toplist_definition--custom_link"></a>
@@ -9717,7 +9717,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9744,8 +9744,8 @@ Optional:
 
 Required:
 
-- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`.
-- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`.
+- **comparator** (String) Comparator to use. One of `>`, `>=`, `<`, or `<=`. Valid values are `>`, `>=`, `<`, `<=`.
+- **palette** (String) Color palette to apply. One of `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green` or `black_on_light_red`. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - **value** (Number) Value for the comparator.
 
 Optional:
@@ -9776,7 +9776,7 @@ Optional:
 Optional:
 
 - **count** (Number) Number of results to return
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -9822,7 +9822,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9873,7 +9873,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -9887,7 +9887,7 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -9912,12 +9912,12 @@ Optional:
 
 Required:
 
-- **aggregation** (String) Aggregation methods for event platform queries.
+- **aggregation** (String) Aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - **metric** (String) Metric used for sorting group by results.
-- **order** (String) Direction of sort.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -9940,7 +9940,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **data_source** (String) Data source for metrics queries.
 
 
@@ -9949,16 +9949,16 @@ Optional:
 
 Required:
 
-- **data_source** (String) Data source for process queries.
+- **data_source** (String) Data source for process queries. Valid values are `process`, `container`.
 - **metric** (String) Process metric name.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) Number of hits to return.
-- **sort** (String) Direction of sort.
+- **sort** (String) Direction of sort. Valid values are `asc`, `desc`.
 - **tag_filters** (List of String) An array of tags to filter by.
 - **text_filter** (String) Text to use as filter.
 
@@ -10006,7 +10006,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -10070,7 +10070,7 @@ Optional:
 Required:
 
 - **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -10113,17 +10113,17 @@ Required:
 
 Optional:
 
-- **display_format** (String) Number of columns to display. Available values are: `one_column`, `two_column`, or `three_column`.
-- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **display_format** (String) Number of columns to display. Available values are: `one_column`, `two_column`, or `three_column`. Valid values are `one_column`, `two_column`, `three_column`.
+- **live_span** (String) The timeframe to use when displaying the widget. One of `10m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **show_breakdown** (Boolean) Whether to show the latency breakdown or not.
 - **show_distribution** (Boolean) Whether to show the latency distribution or not.
 - **show_errors** (Boolean) Whether to show the error metrics or not.
 - **show_hits** (Boolean) Whether to show the hits metrics or not
 - **show_latency** (Boolean) Whether to show the latency metrics or not.
 - **show_resource_list** (Boolean) Whether to show the resource list or not.
-- **size_format** (String) Size of the widget. Available values are: `small`, `medium`, or `large`.
+- **size_format** (String) Size of the widget. Available values are: `small`, `medium`, or `large`. Valid values are `small`, `medium`, `large`.
 - **title** (String) The title of the widget.
-- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title. Default is 16.
 
 

@@ -46,7 +46,7 @@ resource "datadog_slo_correction" "example_slo_correction" {
 
 ### Required
 
-- **category** (String) Category the SLO correction belongs to
+- **category** (String) Category the SLO correction belongs to Valid values are `Scheduled Maintenance`, `Outside Business Hours`, `Deployment`, `Other`.
 - **end** (Number) Ending time of the correction in epoch seconds
 - **slo_id** (String) ID of the SLO that this correction will be applied to
 - **start** (Number) Starting time of the correction in epoch seconds

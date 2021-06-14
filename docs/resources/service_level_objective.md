@@ -75,7 +75,7 @@ resource "datadog_service_level_objective" "bar" {
 
 - **name** (String) Name of Datadog service level objective
 - **thresholds** (Block List, Min: 1) A list of thresholds and targets that define the service level objectives from the provided SLIs. (see [below for nested schema](#nestedblock--thresholds))
-- **type** (String) The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object). Available options to choose from are: `metric` and `monitor`.
+- **type** (String) The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object). Available options to choose from are: `metric` and `monitor`. Valid values are `metric`, `monitor`.
 
 ### Optional
 
@@ -97,7 +97,7 @@ resource "datadog_service_level_objective" "bar" {
 Required:
 
 - **target** (Number) The objective's target in`[0,100]`.
-- **timeframe** (String) The time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Available options to choose from are: `7d`, `30d`, `90d`.
+- **timeframe** (String) The time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Available options to choose from are: `7d`, `30d`, `90d`. Valid values are `7d`, `30d`, `90d`.
 
 Optional:
 
