@@ -596,8 +596,6 @@ func testAccPreCheck(t *testing.T) {
 				"See https://docs.datadoghq.com/api/latest/organizations/#list-your-managed-organizations to get it.",
 		)
 	}
-
-	t.Fatalf("ttttteeeeeessssssttttt")
 }
 
 func testCheckResourceAttrs(name string, checkExists resource.TestCheckFunc, assertions []string) []resource.TestCheckFunc {
