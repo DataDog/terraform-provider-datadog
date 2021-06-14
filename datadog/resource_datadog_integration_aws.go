@@ -148,7 +148,7 @@ func resourceDatadogIntegrationAwsCreate(ctx context.Context, d *schema.Resource
 	defer integrationAwsMutex.Unlock()
 
 	iaws := buildDatadogIntegrationAwsStruct(d)
-	response, _, err := datadogClientV1.AWSIntegrationApi.CreateAWSAccount(authV1, *iaws)
+	response, httpresp, err := datadogClientV1.AWSIntegrationApi.CreateAWSAccount(authV1, *iaws)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error creating AWS integration")
@@ -221,12 +221,12 @@ func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.Resource
 	iaws := buildDatadogIntegrationAwsStruct(d)
 
 	if !accountAndRoleNameIDRegex.MatchString(d.Id()) {
-		_, _, err := datadogClientV1.AWSIntegrationApi.UpdateAWSAccount(authV1, *iaws,
+		_, httpresp, err := datadogClientV1.AWSIntegrationApi.UpdateAWSAccount(authV1, *iaws,
 			*datadogV1.NewUpdateAWSAccountOptionalParameters().
 				WithAccessKeyId(d.Id()),
 		)
 		if err != nil {
-			return utils.TranslateClientErrorDiag(err, "error updating AWS integration")
+			return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error updating AWS integration")
 		}
 
 		d.SetId(iaws.GetAccessKeyId())
@@ -239,7 +239,7 @@ func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.Resource
 		return diag.FromErr(err)
 	}
 
-	_, _, err = datadogClientV1.AWSIntegrationApi.UpdateAWSAccount(authV1, *iaws,
+	_, httpresp, err := datadogClientV1.AWSIntegrationApi.UpdateAWSAccount(authV1, *iaws,
 		*datadogV1.NewUpdateAWSAccountOptionalParameters().
 			WithAccountId(existingAccountID).
 			WithRoleName(existingRoleName),
