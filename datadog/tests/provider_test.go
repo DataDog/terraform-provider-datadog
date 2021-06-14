@@ -41,10 +41,10 @@ import (
 
 type clockContextKey string
 
-const DDTestOrg = "fasjyydbcgwwc2uc"
-const TestAPIKeyEnvName = "DD_TEST_CLIENT_API_KEY"
-const TestAPPKeyEnvName = "DD_TEST_CLIENT_APP_KEY"
-const TestOrgEnvName = "DD_TEST_ORG"
+const ddTestOrg = "fasjyydbcgwwc2uc"
+const testAPIKeyEnvName = "DD_TEST_CLIENT_API_KEY"
+const testAPPKeyEnvName = "DD_TEST_CLIENT_APP_KEY"
+const testOrgEnvName = "DD_TEST_ORG"
 
 var isTestOrgC *bool
 
@@ -172,14 +172,14 @@ func isDebug() bool {
 }
 
 func isAPIKeySet() bool {
-	if os.Getenv(TestAPIKeyEnvName) != "" {
+	if os.Getenv(testAPIKeyEnvName) != "" {
 		return true
 	}
 	return false
 }
 
 func isAPPKeySet() bool {
-	if os.Getenv(TestAPPKeyEnvName) != "" {
+	if os.Getenv(testAPPKeyEnvName) != "" {
 		return true
 	}
 	return false
@@ -190,14 +190,14 @@ func isTestOrg() bool {
 		return *isTestOrgC
 	}
 	// If keys belong to test org, then this get will succeed, otherwise it will fail with 400
-	publicID := DDTestOrg
-	if v := os.Getenv(TestOrgEnvName); v != "" {
+	publicID := ddTestOrg
+	if v := os.Getenv(testOrgEnvName); v != "" {
 		publicID = v
 	}
 	client := &http.Client{}
 	req, _ := http.NewRequest("GET", "https://api.datadoghq.com/api/v1/org/"+publicID, nil)
-	req.Header.Add("DD-API-KEY", os.Getenv(TestAPIKeyEnvName))
-	req.Header.Add("DD-APPLICATION-KEY", os.Getenv(TestAPPKeyEnvName))
+	req.Header.Add("DD-API-KEY", os.Getenv(testAPIKeyEnvName))
+	req.Header.Add("DD-APPLICATION-KEY", os.Getenv(testAPPKeyEnvName))
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode != 200 {
 		r := false
@@ -581,7 +581,7 @@ func TestProvider_impl(t *testing.T) {
 
 func testAccPreCheck(t *testing.T) {
 	// Unset all regular env to avoid mistakenly running tests against wrong org
-	for _, v := range append(datadog.AppKeyEnvVars, datadog.ApiKeyEnvVars...) {
+	for _, v := range append(datadog.APPKeyEnvVars, datadog.APIKeyEnvVars...) {
 		_ = os.Unsetenv(v)
 	}
 
@@ -590,10 +590,10 @@ func testAccPreCheck(t *testing.T) {
 	}
 
 	if !isAPIKeySet() {
-		t.Fatalf("%s must be set for acceptance tests", TestAPIKeyEnvName)
+		t.Fatalf("%s must be set for acceptance tests", testAPIKeyEnvName)
 	}
 	if !isAPPKeySet() {
-		t.Fatalf("%s must be set for acceptance tests", TestAPPKeyEnvName)
+		t.Fatalf("%s must be set for acceptance tests", testAPPKeyEnvName)
 	}
 
 	if !isTestOrg() {
@@ -602,15 +602,15 @@ func testAccPreCheck(t *testing.T) {
 				"Tests do all sorts of create/update/delete calls to the organisation, so only run them against a sandbox environment. "+
 				"If you know what you are doing, set the `%s` environment variable to the public ID of your organization. "+
 				"See https://docs.datadoghq.com/api/latest/organizations/#list-your-managed-organizations to get it.",
-			TestOrgEnvName,
+			testOrgEnvName,
 		)
 	}
 
-	if err := os.Setenv(datadog.DDApiKeyEnvName, os.Getenv(TestAPIKeyEnvName)); err != nil {
+	if err := os.Setenv(datadog.DDAPIKeyEnvName, os.Getenv(testAPIKeyEnvName)); err != nil {
 		t.Fatalf("Error setting API key: %v", err)
 	}
 
-	if err := os.Setenv(datadog.DDAppKeyEnvName, os.Getenv(TestAPPKeyEnvName)); err != nil {
+	if err := os.Setenv(datadog.DDAPPKeyEnvName, os.Getenv(testAPPKeyEnvName)); err != nil {
 		t.Fatalf("Error setting API key: %v", err)
 	}
 }

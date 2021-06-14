@@ -46,13 +46,23 @@ func init() {
 	}
 }
 
-const DDAppKeyEnvName = "DD_APP_KEY"
-const DDApiKeyEnvName = "DD_API_KEY"
-const DatadogAppKeyEnvName = "DATADOG_APP_KEY"
-const DatadogApiKeyEnvName = "DATADOG_API_KEY"
+// DDAPPKeyEnvName name of env var for APP key
+const DDAPPKeyEnvName = "DD_APP_KEY"
 
-var AppKeyEnvVars = []string{DDAppKeyEnvName, DatadogAppKeyEnvName}
-var ApiKeyEnvVars = []string{DDApiKeyEnvName, DatadogApiKeyEnvName}
+// DDAPIKeyEnvName name of env var for API key
+const DDAPIKeyEnvName = "DD_API_KEY"
+
+// DatadogAPPKeyEnvName name of env var for APP key
+const DatadogAPPKeyEnvName = "DATADOG_APP_KEY"
+
+// DatadogAPIKeyEnvName name of env var for API key
+const DatadogAPIKeyEnvName = "DATADOG_API_KEY"
+
+// APPKeyEnvVars names of env var for APP key
+var APPKeyEnvVars = []string{DDAPPKeyEnvName, DatadogAPPKeyEnvName}
+
+// APIKeyEnvVars names of env var for API key
+var APIKeyEnvVars = []string{DDAPIKeyEnvName, DatadogAPIKeyEnvName}
 
 // Provider returns the built datadog provider object
 func Provider() *schema.Provider {
@@ -61,13 +71,13 @@ func Provider() *schema.Provider {
 			"api_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				DefaultFunc: schema.MultiEnvDefaultFunc(ApiKeyEnvVars, nil),
+				DefaultFunc: schema.MultiEnvDefaultFunc(APIKeyEnvVars, nil),
 				Description: "(Required unless validate is false) Datadog API key. This can also be set via the DD_API_KEY environment variable.",
 			},
 			"app_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				DefaultFunc: schema.MultiEnvDefaultFunc(AppKeyEnvVars, nil),
+				DefaultFunc: schema.MultiEnvDefaultFunc(APPKeyEnvVars, nil),
 				Description: "(Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.",
 			},
 			"api_url": {
