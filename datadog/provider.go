@@ -14,9 +14,11 @@ import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/go-cleanhttp"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
@@ -39,6 +41,26 @@ func init() {
 		//if s.Default != nil {
 		//	desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
 		//}
+		if s.ValidateDiagFunc != nil {
+			defer func() {
+				recover()
+			}()
+			// Call the validate func with the EnumChecker type. Only supposed to have an effect with enum validate funcs, recover from any panic caused by calling this
+			diags := s.ValidateDiagFunc(validators.EnumChecker{}, cty.Path{})
+			if len(diags) == 1 && diags[0].Summary == "Allowed values" {
+				desc = fmt.Sprintf("%s Valid values are %s.", desc, diags[0].Detail)
+			}
+		} else if s.Elem != nil {
+			defer func() {
+				recover()
+			}()
+			if inner, ok := s.Elem.(*schema.Schema); ok && inner.ValidateDiagFunc != nil {
+				diags := inner.ValidateDiagFunc(validators.EnumChecker{}, cty.Path{})
+				if len(diags) == 1 && diags[0].Summary == "Allowed values" {
+					desc = fmt.Sprintf("%s Valid values are %s.", desc, diags[0].Detail)
+				}
+			}
+		}
 		if s.Deprecated != "" {
 			desc = fmt.Sprintf("%s **Deprecated.** %s", desc, s.Deprecated)
 		}

@@ -55,7 +55,7 @@ resource "datadog_logs_metric" "testing_logs_metric" {
 
 Required:
 
-- **aggregation_type** (String) The type of aggregation to use. This field can't be updated after creation.
+- **aggregation_type** (String) The type of aggregation to use. This field can't be updated after creation. Valid values are `count`, `distribution`.
 
 Optional:
 
