@@ -88,12 +88,11 @@ func resourceDatadogDashboard() *schema.Resource {
 				Description: "Whether this dashboard is read-only.",
 			},
 			"restricted_roles": {
-				// Uncomment when generally available
-				// Description: "Role UUIDs corresponding to users authorized to edit the dashboard.",
 				Type:          schema.TypeSet,
 				Optional:      true,
 				Elem:          &schema.Schema{Type: schema.TypeString},
 				ConflictsWith: []string{"is_read_only"},
+				Description:   "Role UUIDs corresponding to users authorized to edit the dashboard. **This feature is currently in beta.**",
 			},
 			"template_variable": {
 				Type:        schema.TypeList,
