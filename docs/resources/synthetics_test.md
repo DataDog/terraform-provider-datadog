@@ -193,8 +193,8 @@ resource "datadog_synthetics_test" "test_browser" {
 
 - **locations** (Set of String) Array of locations used to run the test. Refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#request) for available locations (e.g. `aws:eu-central-1`).
 - **name** (String) Name of Datadog synthetics test.
-- **status** (String) Define whether you want to start (`live`) or pause (`paused`) a Synthetic test. Allowed enum values: `live`, `paused`
-- **type** (String) Synthetics test type (`api` or `browser`).
+- **status** (String) Define whether you want to start (`live`) or pause (`paused`) a Synthetic test. Valid values are `live`, `paused`.
+- **type** (String) Synthetics test type. Valid values are `api`, `browser`.
 
 ### Optional
 
@@ -203,7 +203,7 @@ resource "datadog_synthetics_test" "test_browser" {
 - **browser_step** (Block List) Steps for browser tests. (see [below for nested schema](#nestedblock--browser_step))
 - **browser_variable** (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
 - **config_variable** (Block List) Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--config_variable))
-- **device_ids** (List of String) Array with the different device IDs used to run the test. Allowed enum values: `laptop_large`, `tablet`, `mobile_small` (only available for `browser` tests).
+- **device_ids** (List of String) Array with the different device IDs used to run the test (only for `browser` tests). Valid values are `laptop_large`, `tablet`, `mobile_small`, `chrome.laptop_large`, `chrome.tablet`, `chrome.mobile_small`, `firefox.laptop_large`, `firefox.tablet`, `firefox.mobile_small`.
 - **message** (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.
 - **options_list** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
 - **request_basicauth** (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
@@ -212,7 +212,7 @@ resource "datadog_synthetics_test" "test_browser" {
 - **request_headers** (Map of String) Header name and value map.
 - **request_query** (Map of String) Query arguments name and value map.
 - **set_cookie** (String) Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.
-- **subtype** (String) When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns`, `icmp` or `multi`. Defaults to `http`.
+- **subtype** (String) The subtype of the Synthetic API test. Defaults to `http`. Valid values are `http`, `ssl`, `tcp`, `dns`, `multi`, `icmp`.
 - **tags** (List of String) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).
 
 ### Read-Only
@@ -238,7 +238,7 @@ Optional:
 - **request_definition** (Block List, Max: 1) The request for the api step. (see [below for nested schema](#nestedblock--api_step--request_definition))
 - **request_headers** (Map of String) Header name and value map.
 - **request_query** (Map of String) Query arguments name and value map.
-- **subtype** (String) The subtype of the Synthetic multistep API test step, currently only supporting `http`.
+- **subtype** (String) The subtype of the Synthetic multistep API test step. Valid values are `http`.
 
 <a id="nestedblock--api_step--assertion"></a>
 ### Nested Schema for `api_step.assertion`
@@ -246,7 +246,7 @@ Optional:
 Required:
 
 - **operator** (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
-- **type** (String) Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
+- **type** (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`.
 
 Optional:
 
@@ -272,7 +272,7 @@ Required:
 
 - **name** (String)
 - **parser** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--api_step--extracted_value--parser))
-- **type** (String) Property of the Synthetics Test Response to use for the variable: `http_body` or `http_header`
+- **type** (String) Property of the Synthetics Test Response to use for the variable. Valid values are `http_body`, `http_header`.
 
 Optional:
 
@@ -283,7 +283,7 @@ Optional:
 
 Required:
 
-- **type** (String) Type of parser for a Synthetics global variable from a synthetics test: `raw`, `json_path`, `regex`
+- **type** (String) Type of parser for a Synthetics global variable from a synthetics test. Valid values are `raw`, `json_path`, `regex`.
 
 Optional:
 
@@ -342,7 +342,7 @@ Optional:
 - **dns_server** (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - **dns_server_port** (Number) DNS server port to use for DNS tests.
 - **host** (String) Host name to perform the test with.
-- **method** (String) The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.
+- **method** (String) The HTTP method. Valid values are `GET`, `POST`, `PATCH`, `PUT`, `DELETE`, `HEAD`, `OPTIONS`.
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
 - **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - **port** (Number) Port to use when performing the test.
@@ -358,7 +358,7 @@ Optional:
 Required:
 
 - **operator** (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
-- **type** (String) Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
+- **type** (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`.
 
 Optional:
 
@@ -384,7 +384,7 @@ Required:
 
 - **name** (String) Name of the step.
 - **params** (Block List, Min: 1, Max: 1) Parameters for the step. (see [below for nested schema](#nestedblock--browser_step--params))
-- **type** (String) Type of the step. Refer to [Datadog documentation](https://docs.datadoghq.com/api/v1/synthetics/#create-a-test) for the complete list of available types.
+- **type** (String) Type of the step. Valid values are `assertCurrentUrl`, `assertElementAttribute`, `assertElementContent`, `assertElementPresent`, `assertEmail`, `assertFileDownload`, `assertFromJavascript`, `assertPageContains`, `assertPageLacks`, `click`, `extractFromJavascript`, `extractVariable`, `goToEmailLink`, `goToUrl`, `goToUrlAndMeasureTti`, `hover`, `playSubTest`, `pressKey`, `refresh`, `runApiTest`, `scroll`, `selectOption`, `typeText`, `uploadFiles`, `wait`.
 
 Optional:
 
@@ -398,7 +398,7 @@ Optional:
 Optional:
 
 - **attribute** (String) Name of the attribute to use for an "assert attribute" step.
-- **check** (String) Check type to use for an assertion step.
+- **check** (String) Check type to use for an assertion step. Valid values are `equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `notStartsWith`, `greater`, `lower`, `greaterEquals`, `lowerEquals`, `matchRegex`, `between`, `isEmpty`, `notIsEmpty`.
 - **click_type** (String) Type of click to use for a "click" step.
 - **code** (String) Javascript code to use for the step.
 - **delay** (Number) Delay between each key stroke for a "type test" step.
@@ -433,7 +433,7 @@ Optional:
 Required:
 
 - **name** (String) Name of the variable.
-- **type** (String) Type of browser test variable. Allowed enum values: `element`, `email`, `global`, `javascript`, `text`.
+- **type** (String) Type of browser test variable. Valid values are `element`, `email`, `global`, `javascript`, `text`.
 
 Optional:
 
@@ -448,11 +448,12 @@ Optional:
 Required:
 
 - **name** (String) Name of the variable.
-- **type** (String) Type of test configuration variable. Allowed enum values: `text`.
+- **type** (String) Type of test configuration variable. Valid values are `global`, `text`.
 
 Optional:
 
 - **example** (String) Example for the variable.
+- **id** (String) When type = `global`, ID of the global variable to use.
 - **pattern** (String) Pattern of the variable.
 
 
@@ -461,7 +462,7 @@ Optional:
 
 Required:
 
-- **tick_every** (Number) How often the test should run (in seconds). Current possible values are `30`, `60`, `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` for API tests or `300` for browser tests.
+- **tick_every** (Number) How often the test should run (in seconds). Valid values are `30`, `60`, `300`, `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800`.
 
 Optional:
 
@@ -470,7 +471,9 @@ Optional:
 - **follow_redirects** (Boolean) For API HTTP test, whether or not the test should follow redirects.
 - **min_failure_duration** (Number) Minimum amount of time in failure required to trigger an alert. Default is `0`.
 - **min_location_failed** (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`.
+- **monitor_name** (String) The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.
 - **monitor_options** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--monitor_options))
+- **monitor_priority** (Number)
 - **no_screenshot** (Boolean) Prevents saving screenshots of the steps.
 - **retry** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--retry))
 
@@ -543,7 +546,7 @@ Optional:
 - **dns_server** (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - **dns_server_port** (Number) DNS server port to use for DNS tests.
 - **host** (String) Host name to perform the test with.
-- **method** (String) The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.
+- **method** (String) The HTTP method. Valid values are `GET`, `POST`, `PATCH`, `PUT`, `DELETE`, `HEAD`, `OPTIONS`.
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
 - **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - **port** (Number) Port to use when performing the test.

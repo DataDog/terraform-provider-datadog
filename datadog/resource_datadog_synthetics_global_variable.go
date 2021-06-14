@@ -71,7 +71,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 							Optional:    true,
 						},
 						"type": {
-							Description:      "Defines the source to use to extract the value. Allowed enum values: `http_body`, `http_header`.",
+							Description:      "Defines the source to use to extract the value.",
 							Type:             schema.TypeString,
 							Required:         true,
 							ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
@@ -83,7 +83,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"type": {
-										Description:      "Type of parser to extract the value. Allowed enum values: `raw`, `json_path`, `regex`",
+										Description:      "Type of parser to extract the value.",
 										Type:             schema.TypeString,
 										Required:         true,
 										ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue),

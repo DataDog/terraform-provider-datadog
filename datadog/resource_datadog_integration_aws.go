@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"regexp"
 	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -14,6 +15,7 @@ import (
 )
 
 var integrationAwsMutex = sync.Mutex{}
+var accountAndRoleNameIDRegex = regexp.MustCompile("[\\d]+:[a-zA-Z]+")
 
 func resourceDatadogIntegrationAws() *schema.Resource {
 	return &schema.Resource{
@@ -28,14 +30,16 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"account_id": {
-				Description: "Your AWS Account ID without dashes.",
-				Type:        schema.TypeString,
-				Required:    true,
+				Description:   "Your AWS Account ID without dashes.",
+				Type:          schema.TypeString,
+				Optional:      true,
+				ConflictsWith: []string{"access_key_id", "secret_access_key"},
 			},
 			"role_name": {
-				Description: "Your Datadog role delegation name.",
-				Type:        schema.TypeString,
-				Required:    true,
+				Description:   "Your Datadog role delegation name.",
+				Type:          schema.TypeString,
+				Optional:      true,
+				ConflictsWith: []string{"access_key_id", "secret_access_key"},
 			},
 			"filter_tags": {
 				Description: "Array of EC2 tags (in the form `key:value`) defines a filter that Datadog uses when collecting metrics from EC2. Wildcards, such as `?` (for single characters) and `*` (for multiple characters) can also be used. Only hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. Host matching a given tag can also be excluded by adding `!` before the tag. e.x. `env:production,instance-type:c1.*,!region:us-east-1`.",
@@ -66,14 +70,38 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 				Type:        schema.TypeString,
 				Computed:    true,
 			},
+			"access_key_id": {
+				Description:   "Your AWS access key ID. Only required if your AWS account is a GovCloud or China account.",
+				Type:          schema.TypeString,
+				ConflictsWith: []string{"account_id", "role_name"},
+				Optional:      true,
+			},
+			"secret_access_key": {
+				Description:   "Your AWS secret access key. Only required if your AWS account is a GovCloud or China account.",
+				Type:          schema.TypeString,
+				Sensitive:     true,
+				ConflictsWith: []string{"account_id", "role_name"},
+				Optional:      true,
+			},
 		},
 	}
 }
 
-func buildDatadogIntegrationAwsStruct(d *schema.ResourceData, accountID string, roleName string) *datadogV1.AWSAccount {
+func buildDatadogIntegrationAwsStruct(d *schema.ResourceData) *datadogV1.AWSAccount {
 	iaws := datadogV1.NewAWSAccount()
-	iaws.SetAccountId(accountID)
-	iaws.SetRoleName(roleName)
+
+	if v, ok := d.GetOk("account_id"); ok {
+		iaws.SetAccountId(v.(string))
+	}
+	if v, ok := d.GetOk("role_name"); ok {
+		iaws.SetRoleName(v.(string))
+	}
+	if v, ok := d.GetOk("access_key_id"); ok {
+		iaws.SetAccessKeyId(v.(string))
+	}
+	if v, ok := d.GetOk("secret_access_key"); ok {
+		iaws.SetSecretAccessKey(v.(string))
+	}
 
 	filterTags := make([]string, 0)
 	if attr, ok := d.GetOk("filter_tags"); ok {
@@ -119,17 +147,21 @@ func resourceDatadogIntegrationAwsCreate(ctx context.Context, d *schema.Resource
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
-	accountID := d.Get("account_id").(string)
-	roleName := d.Get("role_name").(string)
-
-	iaws := buildDatadogIntegrationAwsStruct(d, accountID, roleName)
-	response, httpresp, err := datadogClientV1.AWSIntegrationApi.CreateAWSAccount(authV1, *iaws)
+	iaws := buildDatadogIntegrationAwsStruct(d)
+	response, _, err := datadogClientV1.AWSIntegrationApi.CreateAWSAccount(authV1, *iaws)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error creating AWS integration")
 	}
 
-	d.SetId(fmt.Sprintf("%s:%s", accountID, roleName))
+	if v, ok := d.GetOk("access_key_id"); ok {
+		d.SetId(v.(string))
+	} else {
+		accountID := d.Get("account_id").(string)
+		roleName := d.Get("role_name").(string)
+		d.SetId(fmt.Sprintf("%s:%s", accountID, roleName))
+	}
+
 	d.Set("external_id", response.ExternalId)
 
 	return resourceDatadogIntegrationAwsRead(ctx, d, meta)
@@ -140,9 +172,15 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	accountID, roleName, err := utils.AccountAndRoleFromID(d.Id())
-	if err != nil {
-		return diag.FromErr(err)
+	var accountID, roleName, accessKeyID string
+	var err error
+	if accountAndRoleNameIDRegex.MatchString(d.Id()) {
+		accountID, roleName, err = utils.AccountAndRoleFromID(d.Id())
+		if err != nil {
+			return diag.FromErr(err)
+		}
+	} else {
+		accessKeyID = d.Id()
 	}
 
 	integrations, httpresp, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1)
@@ -156,9 +194,11 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 	}
 
 	for _, integration := range integrations.GetAccounts() {
-		if integration.GetAccountId() == accountID && integration.GetRoleName() == roleName {
+		if (accountID != "" && integration.GetAccountId() == accountID && integration.GetRoleName() == roleName) ||
+			(accessKeyID != "" && integration.GetAccessKeyId() == accessKeyID) {
 			d.Set("account_id", integration.GetAccountId())
 			d.Set("role_name", integration.GetRoleName())
+			d.Set("access_key_id", integration.GetAccessKeyId())
 			d.Set("filter_tags", integration.GetFilterTags())
 			d.Set("host_tags", integration.GetHostTags())
 			d.Set("account_specific_namespace_rules", integration.GetAccountSpecificNamespaceRules())
@@ -178,15 +218,28 @@ func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.Resource
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
+	iaws := buildDatadogIntegrationAwsStruct(d)
+
+	if !accountAndRoleNameIDRegex.MatchString(d.Id()) {
+		_, _, err := datadogClientV1.AWSIntegrationApi.UpdateAWSAccount(authV1, *iaws,
+			*datadogV1.NewUpdateAWSAccountOptionalParameters().
+				WithAccessKeyId(d.Id()),
+		)
+		if err != nil {
+			return utils.TranslateClientErrorDiag(err, "error updating AWS integration")
+		}
+
+		d.SetId(iaws.GetAccessKeyId())
+		return resourceDatadogIntegrationAwsRead(ctx, d, meta)
+
+	}
+
 	existingAccountID, existingRoleName, err := utils.AccountAndRoleFromID(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	newAccountID := d.Get("account_id").(string)
-	newRoleName := d.Get("role_name").(string)
 
-	iaws := buildDatadogIntegrationAwsStruct(d, newAccountID, newRoleName)
-	_, httpresp, err := datadogClientV1.AWSIntegrationApi.UpdateAWSAccount(authV1, *iaws,
+	_, _, err = datadogClientV1.AWSIntegrationApi.UpdateAWSAccount(authV1, *iaws,
 		*datadogV1.NewUpdateAWSAccountOptionalParameters().
 			WithAccountId(existingAccountID).
 			WithRoleName(existingRoleName),
@@ -206,11 +259,7 @@ func resourceDatadogIntegrationAwsDelete(ctx context.Context, d *schema.Resource
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
-	accountID, roleName, err := utils.AccountAndRoleFromID(d.Id())
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	iaws := buildDatadogIntegrationAwsStruct(d, accountID, roleName)
+	iaws := buildDatadogIntegrationAwsStruct(d)
 
 	_, httpresp, err := datadogClientV1.AWSIntegrationApi.DeleteAWSAccount(authV1, *iaws)
 	if err != nil {

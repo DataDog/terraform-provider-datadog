@@ -33,13 +33,13 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"type": {
-				Description:      "Synthetics test type (`api` or `browser`).",
+				Description:      "Synthetics test type.",
 				Type:             schema.TypeString,
 				Required:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
 			},
 			"subtype": {
-				Description: "When `type` is `api`, choose from `http`, `ssl`, `tcp`, `dns`, `icmp` or `multi`. Defaults to `http`.",
+				Description: "The subtype of the Synthetic API test. Defaults to `http`.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
@@ -66,7 +66,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			"browser_variable":           syntheticsBrowserVariable(),
 			"config_variable":            syntheticsConfigVariable(),
 			"device_ids": {
-				Description: "Array with the different device IDs used to run the test. Allowed enum values: `laptop_large`, `tablet`, `mobile_small` (only available for `browser` tests).",
+				Description: "Array with the different device IDs used to run the test (only for `browser` tests).",
 				Type:        schema.TypeList,
 				Optional:    true,
 				Elem: &schema.Schema{
@@ -101,7 +101,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"status": {
-				Description:      "Define whether you want to start (`live`) or pause (`paused`) a Synthetic test. Allowed enum values: `live`, `paused`",
+				Description:      "Define whether you want to start (`live`) or pause (`paused`) a Synthetic test.",
 				Type:             schema.TypeString,
 				Required:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestPauseStatusFromValue),
@@ -126,7 +126,7 @@ func syntheticsTestRequest() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"method": {
-				Description:      "The HTTP method. One of `DELETE`, `GET`, `HEAD`, `OPTIONS`, `PATCH`, `POST`, `PUT`.",
+				Description:      "The HTTP method.",
 				Type:             schema.TypeString,
 				Optional:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewHTTPMethodFromValue),
@@ -277,7 +277,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"type": {
-					Description:      "Type of assertion. Choose from `body`, `header`, `responseTime`, `statusCode`. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
+					Description:      "Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
 					Type:             schema.TypeString,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
 					Required:         true,
@@ -346,7 +346,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:    true,
 				},
 				"tick_every": {
-					Description:      "How often the test should run (in seconds). Current possible values are `30`, `60`, `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800` for API tests or `300` for browser tests.",
+					Description:      "How often the test should run (in seconds).",
 					Type:             schema.TypeInt,
 					Required:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
@@ -367,6 +367,11 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:        schema.TypeInt,
 					Optional:    true,
 				},
+				"monitor_name": {
+					Description: "The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
 				"monitor_options": {
 					Type:     schema.TypeList,
 					MaxItems: 1,
@@ -381,6 +386,11 @@ func syntheticsTestOptionsList() *schema.Schema {
 							},
 						},
 					},
+				},
+				"monitor_priority": {
+					Type:         schema.TypeInt,
+					Optional:     true,
+					ValidateFunc: validation.IntBetween(1, 5),
 				},
 				"retry": {
 					Type:     schema.TypeList,
@@ -426,7 +436,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Required:    true,
 				},
 				"subtype": {
-					Description:      "The subtype of the Synthetic multistep API test step, currently only supporting `http`.",
+					Description:      "The subtype of the Synthetic multistep API test step.",
 					Type:             schema.TypeString,
 					Optional:         true,
 					Default:          "http",
@@ -443,7 +453,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 								Required: true,
 							},
 							"type": {
-								Description:      "Property of the Synthetics Test Response to use for the variable: `http_body` or `http_header`",
+								Description:      "Property of the Synthetics Test Response to use for the variable.",
 								Type:             schema.TypeString,
 								Required:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
@@ -460,7 +470,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"type": {
-											Description:      "Type of parser for a Synthetics global variable from a synthetics test: `raw`, `json_path`, `regex`",
+											Description:      "Type of parser for a Synthetics global variable from a synthetics test.",
 											Type:             schema.TypeString,
 											Required:         true,
 											ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue),
@@ -517,7 +527,7 @@ func syntheticsTestBrowserStep() *schema.Schema {
 					Required:    true,
 				},
 				"type": {
-					Description:      "Type of the step. Refer to [Datadog documentation](https://docs.datadoghq.com/api/v1/synthetics/#create-a-test) for the complete list of available types.",
+					Description:      "Type of the step.",
 					Type:             schema.TypeString,
 					Required:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsStepTypeFromValue),
@@ -723,7 +733,7 @@ func syntheticsBrowserVariableElem() *schema.Resource {
 				Optional:    true,
 			},
 			"type": {
-				Description:      "Type of browser test variable. Allowed enum values: `element`, `email`, `global`, `javascript`, `text`.",
+				Description:      "Type of browser test variable.",
 				Type:             schema.TypeString,
 				Required:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
@@ -757,10 +767,15 @@ func syntheticsConfigVariable() *schema.Schema {
 					Optional:    true,
 				},
 				"type": {
-					Description:      "Type of test configuration variable. Allowed enum values: `text`.",
+					Description:      "Type of test configuration variable.",
 					Type:             schema.TypeString,
 					Required:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsConfigVariableTypeFromValue),
+				},
+				"id": {
+					Description: "When type = `global`, ID of the global variable to use.",
+					Type:        schema.TypeString,
+					Optional:    true,
 				},
 			},
 		},
@@ -969,9 +984,10 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		config.SetRequest(request)
 	}
 
-	config.Assertions = []datadogV1.SyntheticsAssertion{}
+	config.Assertions = &[]datadogV1.SyntheticsAssertion{}
 	if attr, ok := d.GetOk("assertion"); ok && attr != nil {
-		config.Assertions = buildAssertions(attr.([]interface{}))
+		assertions := buildAssertions(attr.([]interface{}))
+		config.Assertions = &assertions
 	}
 
 	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
@@ -985,6 +1001,10 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			variable.SetName(variableMap["name"].(string))
 			variable.SetPattern(variableMap["pattern"].(string))
 			variable.SetExample(variableMap["example"].(string))
+
+			if variableMap["id"] != "" {
+				variable.SetId(variableMap["id"].(string))
+			}
 
 			configVariables = append(configVariables, variable)
 		}
@@ -1074,6 +1094,14 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			}
 
 			options.SetMonitorOptions(optionsMonitorOptions)
+		}
+
+		if monitorName, ok := d.GetOk("options_list.0.monitor_name"); ok {
+			options.SetMonitorName(monitorName.(string))
+		}
+
+		if monitorPriority, ok := d.GetOk("options_list.0.monitor_priority"); ok {
+			options.SetMonitorPriority(int32(monitorPriority.(int)))
 		}
 	}
 
@@ -1390,6 +1418,14 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 		if attr, ok := d.GetOk("options_list.0.no_screenshot"); ok {
 			options.SetNoScreenshot(attr.(bool))
+		}
+
+		if monitorName, ok := d.GetOk("options_list.0.monitor_name"); ok {
+			options.SetMonitorName(monitorName.(string))
+		}
+
+		if monitorPriority, ok := d.GetOk("options_list.0.monitor_priority"); ok {
+			options.SetMonitorPriority(int32(monitorPriority.(int)))
 		}
 	}
 
@@ -1739,6 +1775,12 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	if actualOptions.HasNoScreenshot() {
 		localOptionsList["no_screenshot"] = actualOptions.GetNoScreenshot()
 	}
+	if actualOptions.HasMonitorName() {
+		localOptionsList["monitor_name"] = actualOptions.GetMonitorName()
+	}
+	if actualOptions.HasMonitorPriority() {
+		localOptionsList["monitor_priority"] = actualOptions.GetMonitorPriority()
+	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)
 	localOptionsLists[0] = localOptionsList
@@ -1865,6 +1907,9 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		if v, ok := configVariable.GetPatternOk(); ok {
 			localVariable["pattern"] = *v
 		}
+		if v, ok := configVariable.GetIdOk(); ok {
+			localVariable["id"] = *v
+		}
 		localConfigVariables[i] = localVariable
 	}
 
@@ -1989,6 +2034,12 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		optionsListMonitorOptions := make(map[string]int64)
 		optionsListMonitorOptions["renotify_interval"] = renotifyInterval
 		localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
+	}
+	if actualOptions.HasMonitorName() {
+		localOptionsList["monitor_name"] = actualOptions.GetMonitorName()
+	}
+	if actualOptions.HasMonitorPriority() {
+		localOptionsList["monitor_priority"] = actualOptions.GetMonitorPriority()
 	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)

@@ -129,6 +129,41 @@ func TestAccDatadogDashboardJSONImport(t *testing.T) {
 	})
 }
 
+func TestDatadogDashListInDashboardJSON(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogDashListDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDashListConfigInDashboardJSON(uniqueName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_dashboard_json.timeboard_json", "dashboard_lists.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_dashboard_json.timeboard_json", "dashboard_lists_removed.#", "0"),
+				),
+				// The plan is non empty, because in this case the list is the same file
+				ExpectNonEmptyPlan: true,
+			},
+			{
+				Config: testAccCheckDatadogDashListConfigRemoveFromDashboardJSON(uniqueName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_dashboard_json.timeboard_json", "dashboard_lists.#", "0"),
+					resource.TestCheckResourceAttr(
+						"datadog_dashboard_json.timeboard_json", "dashboard_lists_removed.#", "1"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogDashboardJSONTimeboardJSON(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_dashboard_json" "timeboard_json" {
@@ -619,6 +654,7 @@ resource "datadog_dashboard_json" "timeboard_json" {
 EOF
 }`, uniq)
 }
+
 func testAccCheckDatadogDashboardJSONTimeboardJSONUpdated(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_dashboard_json" "timeboard_json" {
@@ -1800,4 +1836,83 @@ id: hjf-2xf-xc8
 EOF
 ))
 }`, uniq)
+}
+
+func testAccCheckDatadogDashListConfigInDashboardJSON(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard_list" "new_list" {
+	name = "%s"
+}
+
+resource "datadog_dashboard_json" "timeboard_json" {
+   dashboard_lists = ["${datadog_dashboard_list.new_list.id}"]
+   dashboard = <<EOF
+{
+   "author_handle":"removed_handle",
+   "title":"%s",
+   "description":"Created using the Datadog provider in Terraform",
+   "widgets":[
+      {
+         "id":5436370674582587,
+         "definition":{
+            "title":"Widget Title",
+            "type":"alert_value",
+            "alert_id":"895605",
+            "unit":"b",
+            "text_align":"center",
+            "precision":3
+         }
+      }
+   ],
+   "template_variables":[
+      
+   ],
+   "layout_type":"ordered",
+   "is_read_only":true,
+   "notify_list":[
+      
+   ],
+   "id":"5uw-bbj-xec"
+}
+EOF
+}`, uniq, uniq)
+}
+
+func testAccCheckDatadogDashListConfigRemoveFromDashboardJSON(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard_list" "new_list" {
+	name = "%s"
+}
+
+resource "datadog_dashboard_json" "timeboard_json" {
+   dashboard = <<EOF
+{
+   "author_handle":"removed_handle",
+   "title":"%s",
+   "description":"Created using the Datadog provider in Terraform",
+   "widgets":[
+      {
+         "id":5436370674582587,
+         "definition":{
+            "title":"Widget Title",
+            "type":"alert_value",
+            "alert_id":"895605",
+            "unit":"b",
+            "text_align":"center",
+            "precision":3
+         }
+      }
+   ],
+   "template_variables":[
+      
+   ],
+   "layout_type":"ordered",
+   "is_read_only":true,
+   "notify_list":[
+      
+   ],
+   "id":"5uw-bbj-xec"
+}
+EOF
+}`, uniq, uniq)
 }

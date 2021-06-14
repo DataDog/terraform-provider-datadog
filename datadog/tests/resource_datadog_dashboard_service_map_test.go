@@ -20,6 +20,11 @@ resource "datadog_dashboard" "service_map_dashboard" {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
 			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				is_hidden = true
+				override_label = "logs"
+			}
 		}
 		widget_layout {
 			height = 43
@@ -46,9 +51,12 @@ var datadogDashboardServiceMapAsserts = []string{
 	"widget.0.servicemap_definition.0.title = env: prod, datacenter:us1.prod.dog, service: master-db",
 	"widget.0.widget_layout.0.height = 43",
 	"widget.0.servicemap_definition.0.filters.1 = datacenter:us1.prod.dog",
-	"widget.0.servicemap_definition.0.custom_link.# = 1",
+	"widget.0.servicemap_definition.0.custom_link.# = 2",
 	"widget.0.servicemap_definition.0.custom_link.0.label = Test Custom Link label",
 	"widget.0.servicemap_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.0.servicemap_definition.0.custom_link.1.override_label = logs",
+	"widget.0.servicemap_definition.0.custom_link.1.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.0.servicemap_definition.0.custom_link.1.is_hidden = true",
 }
 
 func TestAccDatadogDashboardServiceMap(t *testing.T) {

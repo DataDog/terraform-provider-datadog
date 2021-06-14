@@ -14,9 +14,11 @@ import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/go-cleanhttp"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
@@ -39,12 +41,50 @@ func init() {
 		//if s.Default != nil {
 		//	desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
 		//}
+		if s.ValidateDiagFunc != nil {
+			defer func() {
+				recover()
+			}()
+			// Call the validate func with the EnumChecker type. Only supposed to have an effect with enum validate funcs, recover from any panic caused by calling this
+			diags := s.ValidateDiagFunc(validators.EnumChecker{}, cty.Path{})
+			if len(diags) == 1 && diags[0].Summary == "Allowed values" {
+				desc = fmt.Sprintf("%s Valid values are %s.", desc, diags[0].Detail)
+			}
+		} else if s.Elem != nil {
+			defer func() {
+				recover()
+			}()
+			if inner, ok := s.Elem.(*schema.Schema); ok && inner.ValidateDiagFunc != nil {
+				diags := inner.ValidateDiagFunc(validators.EnumChecker{}, cty.Path{})
+				if len(diags) == 1 && diags[0].Summary == "Allowed values" {
+					desc = fmt.Sprintf("%s Valid values are %s.", desc, diags[0].Detail)
+				}
+			}
+		}
 		if s.Deprecated != "" {
 			desc = fmt.Sprintf("%s **Deprecated.** %s", desc, s.Deprecated)
 		}
 		return strings.TrimSpace(desc)
 	}
 }
+
+// DDAPPKeyEnvName name of env var for APP key
+const DDAPPKeyEnvName = "DD_APP_KEY"
+
+// DDAPIKeyEnvName name of env var for API key
+const DDAPIKeyEnvName = "DD_API_KEY"
+
+// DatadogAPPKeyEnvName name of env var for APP key
+const DatadogAPPKeyEnvName = "DATADOG_APP_KEY"
+
+// DatadogAPIKeyEnvName name of env var for API key
+const DatadogAPIKeyEnvName = "DATADOG_API_KEY"
+
+// APPKeyEnvVars names of env var for APP key
+var APPKeyEnvVars = []string{DDAPPKeyEnvName, DatadogAPPKeyEnvName}
+
+// APIKeyEnvVars names of env var for API key
+var APIKeyEnvVars = []string{DDAPIKeyEnvName, DatadogAPIKeyEnvName}
 
 // Provider returns the built datadog provider object
 func Provider() *schema.Provider {
@@ -53,13 +93,13 @@ func Provider() *schema.Provider {
 			"api_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_API_KEY", "DD_API_KEY"}, nil),
+				DefaultFunc: schema.MultiEnvDefaultFunc(APIKeyEnvVars, nil),
 				Description: "(Required unless validate is false) Datadog API key. This can also be set via the DD_API_KEY environment variable.",
 			},
 			"app_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_APP_KEY", "DD_APP_KEY"}, nil),
+				DefaultFunc: schema.MultiEnvDefaultFunc(APPKeyEnvVars, nil),
 				Description: "(Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.",
 			},
 			"api_url": {
@@ -230,12 +270,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	configV1 := datadogV1.NewConfiguration()
 	configV1.HTTPClient = httpClientV1
 	// Enable unstable operations
-	configV1.SetUnstableOperationEnabled("GetLogsIndex", true)
-	configV1.SetUnstableOperationEnabled("ListLogIndexes", true)
-	configV1.SetUnstableOperationEnabled("UpdateLogsIndex", true)
-	configV1.SetUnstableOperationEnabled("GetLogsIndexOrder", true)
-	configV1.SetUnstableOperationEnabled("UpdateLogsIndexOrder", true)
-
 	configV1.SetUnstableOperationEnabled("CreateSLOCorrection", true)
 	configV1.SetUnstableOperationEnabled("GetSLOCorrection", true)
 	configV1.SetUnstableOperationEnabled("UpdateSLOCorrection", true)

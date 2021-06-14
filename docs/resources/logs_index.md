@@ -16,7 +16,9 @@ Provides a Datadog Logs Index API resource. This can be used to create and manag
 # A sample Datadog logs index resource definition. Note that at this point, it is not possible to create new logs indexes through Terraform, so the name field must match a name of an already existing index. If you want to keep the current state of the index, we suggest importing it (see below).
 
 resource "datadog_logs_index" "sample_index" {
-  name = "your index"
+  name           = "your index"
+  daily_limit    = 200000
+  retention_days = 7
   filter {
     query = "*"
   }
@@ -44,8 +46,10 @@ resource "datadog_logs_index" "sample_index" {
 
 ### Required
 
+- **daily_limit** (String) The number of log events you can send in this index per day before you are rate-limited.
 - **filter** (Block List, Min: 1) Logs filter (see [below for nested schema](#nestedblock--filter))
 - **name** (String) The name of the index.
+- **retention_days** (String) The number of days before logs are deleted from this index.
 
 ### Optional
 

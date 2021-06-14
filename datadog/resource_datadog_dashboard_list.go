@@ -39,7 +39,7 @@ func resourceDatadogDashboardList() *schema.Resource {
 							Type:             schema.TypeString,
 							Required:         true,
 							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewDashboardTypeFromValue),
-							Description:      "The type of this dashboard. Available options are: `custom_timeboard`, `custom_screenboard`, `integration_screenboard`, `integration_timeboard`, and `host_timeboard`",
+							Description:      "The type of this dashboard.",
 						},
 						"dash_id": {
 							Type:        schema.TypeString,

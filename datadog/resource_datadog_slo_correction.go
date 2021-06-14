@@ -13,7 +13,7 @@ import (
 
 func resourceDatadogSloCorrection() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Resource for interacting with the slo_correction API",
+		Description:   "Resource for interacting with the slo_correction API.",
 		CreateContext: resourceDatadogSloCorrectionCreate,
 		ReadContext:   resourceDatadogSloCorrectionRead,
 		UpdateContext: resourceDatadogSloCorrectionUpdate,
@@ -26,7 +26,7 @@ func resourceDatadogSloCorrection() *schema.Resource {
 				Type:             schema.TypeString,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOCorrectionCategoryFromValue),
 				Required:         true,
-				Description:      "Category the SLO correction belongs to",
+				Description:      "Category the SLO correction belongs to.",
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -36,17 +36,17 @@ func resourceDatadogSloCorrection() *schema.Resource {
 			"end": {
 				Type:        schema.TypeInt,
 				Required:    true,
-				Description: "Ending time of the correction in epoch seconds",
+				Description: "Ending time of the correction in epoch seconds.",
 			},
 			"slo_id": {
 				Type:        schema.TypeString,
 				Required:    true,
-				Description: "ID of the SLO that this correction will be applied to",
+				Description: "ID of the SLO that this correction will be applied to.",
 			},
 			"start": {
 				Type:        schema.TypeInt,
 				Required:    true,
-				Description: "Starting time of the correction in epoch seconds",
+				Description: "Starting time of the correction in epoch seconds.",
 			},
 			"timezone": {
 				Type:        schema.TypeString,
