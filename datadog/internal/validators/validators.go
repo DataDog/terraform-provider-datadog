@@ -18,6 +18,8 @@ func ValidateFloatString(v interface{}, k string) (ws []string, errors []error) 
 	return validation.StringMatch(regexp.MustCompile(`\d*(\.\d*)?`), "value must be a float")(v, k)
 }
 
+type EnumChecker struct{}
+
 // ValidateEnumValue returns a validate func for an enum value. It takes the constructor with validation for the enum as an argument.
 // Such a constructor is for instance `datadogV1.NewWidgetLineWidthFromValue`
 func ValidateEnumValue(newEnumFunc interface{}) schema.SchemaValidateDiagFunc {
@@ -28,6 +30,27 @@ func ValidateEnumValue(newEnumFunc interface{}) schema.SchemaValidateDiagFunc {
 
 	return func(val interface{}, path cty.Path) diag.Diagnostics {
 		var diags diag.Diagnostics
+
+		// Hack to return a specific diagnostic containing the allowed enum values and have accurate docs
+		if _, ok := val.(EnumChecker); ok {
+			enum := reflect.New(f.Out(0)).Elem()
+			validValues := enum.MethodByName("GetAllowedValues").Call([]reflect.Value{})[0]
+			msg := ""
+			sep := ", "
+			for i := 0; i < validValues.Len(); i++ {
+				if i == validValues.Len()-1 {
+					sep = ""
+				}
+				msg += fmt.Sprintf("`%v`%s", validValues.Index(i).Interface(), sep)
+			}
+
+			return append(diags, diag.Diagnostic{
+				Severity:      diag.Warning,
+				Summary:       "Allowed values",
+				Detail:        msg,
+				AttributePath: cty.Path{},
+			})
+		}
 
 		arg := reflect.ValueOf(val)
 		outs := reflect.ValueOf(newEnumFunc).Call([]reflect.Value{arg.Convert(argT)})
