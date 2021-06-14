@@ -3,8 +3,11 @@ package datadog
 import (
 	"context"
 	"errors"
+	"fmt"
+	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/structure"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -23,6 +26,22 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 		ReadContext:   resourceDatadogDashboardJSONRead,
 		UpdateContext: resourceDatadogDashboardJSONUpdate,
 		DeleteContext: resourceDatadogDashboardJSONDelete,
+		CustomizeDiff: func(_ context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+			oldValue, newValue := diff.GetChange("dashboard_lists")
+			if !oldValue.(*schema.Set).Equal(newValue.(*schema.Set)) {
+				// Only calculate removed when the list change, to no create useless diffs
+				removed := oldValue.(*schema.Set).Difference(newValue.(*schema.Set))
+				if err := diff.SetNew("dashboard_lists_removed", removed); err != nil {
+					return err
+				}
+			} else {
+				if err := diff.Clear("dashboard_lists_removed"); err != nil {
+					return err
+				}
+			}
+
+			return nil
+		},
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -49,6 +68,18 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 				Optional:    true,
 				Computed:    true,
 				Description: "The URL of the dashboard.",
+			},
+			"dashboard_lists": {
+				Type:        schema.TypeSet,
+				Optional:    true,
+				Description: "The list of dashboard lists this dashboard belongs to.",
+				Elem:        &schema.Schema{Type: schema.TypeInt},
+			},
+			"dashboard_lists_removed": {
+				Type:        schema.TypeSet,
+				Computed:    true,
+				Description: "The list of dashboard lists this dashboard should be removed from. Internal only.",
+				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
 		},
 	}
@@ -112,6 +143,32 @@ func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceD
 	}
 	d.SetId(id.(string))
 
+	layoutType, ok := respMap["layout_type"]
+	if !ok {
+		return diag.FromErr(errors.New("error retrieving layout_type from response"))
+	}
+
+	var httpResponse *http.Response
+	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		_, httpResponse, err = datadogClientV1.DashboardsApi.GetDashboard(authV1, id.(string))
+		if err != nil {
+			if httpResponse != nil && httpResponse.StatusCode == 404 {
+				return resource.RetryableError(fmt.Errorf("dashboard not created yet"))
+			}
+
+			return resource.NonRetryableError(err)
+		}
+
+		// We only log the error, as failing to update the list shouldn't fail dashboard creation
+		// Method imported from dashboard resource
+		updateDashboardLists(d, providerConf, id.(string), layoutType.(string))
+
+		return nil
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
 	return updateDashboardJSONState(d, respMap)
 }
 
@@ -132,6 +189,14 @@ func resourceDatadogDashboardJSONUpdate(ctx context.Context, d *schema.ResourceD
 	if err != nil {
 		return diag.FromErr(err)
 	}
+
+	layoutType, ok := respMap["layout_type"]
+	if !ok {
+		return diag.FromErr(errors.New("error retrieving layout_type from response"))
+	}
+
+	// Method imported from dashboard resource
+	updateDashboardLists(d, providerConf, id, layoutType.(string))
 
 	return updateDashboardJSONState(d, respMap)
 }

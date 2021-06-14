@@ -152,7 +152,7 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 		}
 
 		// We only log the error, as failing to update the list shouldn't fail dashboard creation
-		updateDashboardLists(d, providerConf, *dashboard.Id)
+		updateDashboardLists(d, providerConf, *dashboard.Id, d.Get("layout_type").(string))
 
 		return nil
 	})
@@ -177,14 +177,14 @@ func resourceDatadogDashboardUpdate(ctx context.Context, d *schema.ResourceData,
 		return utils.TranslateClientErrorDiag(err, "error updating dashboard")
 	}
 
-	updateDashboardLists(d, providerConf, *dashboard.Id)
+	updateDashboardLists(d, providerConf, *dashboard.Id, d.Get("layout_type").(string))
 
 	return updateDashboardState(d, &updatedDashboard)
 }
 
-func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardID string) {
+func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfiguration, dashboardID string, layoutType string) {
 	dashTypeString := "custom_screenboard"
-	if d.Get("layout_type").(string) == "ordered" {
+	if layoutType == "ordered" {
 		dashTypeString = "custom_timeboard"
 	}
 	dashType := datadogV2.DashboardType(dashTypeString)
