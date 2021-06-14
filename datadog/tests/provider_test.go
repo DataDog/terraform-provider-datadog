@@ -41,6 +41,10 @@ import (
 
 type clockContextKey string
 
+const DDTestOrg = "fasjyydbcgwwc2uc"
+
+var isTestOrgC *bool
+
 var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_dashboard_test":                         "dashboard",
 	"tests/data_source_datadog_dashboard_list_test":                    "dashboard-lists",
@@ -165,23 +169,41 @@ func isDebug() bool {
 }
 
 func isAPIKeySet() bool {
-	if os.Getenv("DATADOG_API_KEY") != "" {
-		return true
-	}
-	if os.Getenv("DD_API_KEY") != "" {
+	if os.Getenv("DD_TEST_CLIENT_API_KEY") != "" {
 		return true
 	}
 	return false
 }
 
 func isAPPKeySet() bool {
-	if os.Getenv("DATADOG_APP_KEY") != "" {
-		return true
-	}
-	if os.Getenv("DD_APP_KEY") != "" {
+	if os.Getenv("DD_TEST_CLIENT_APP_KEY") != "" {
 		return true
 	}
 	return false
+}
+
+func isTestOrg() bool {
+	if isTestOrgC != nil {
+		return *isTestOrgC
+	}
+	// If keys belong to test org, then this get will succeed, otherwise it will fail with 400
+	publicID := DDTestOrg
+	if v := os.Getenv("DD_TEST_ORG"); v != "" {
+		publicID = v
+	}
+	client := &http.Client{}
+	req, _ := http.NewRequest("GET", "https://api.datadoghq.com/api/v1/org/"+publicID, nil)
+	req.Header.Add("DD-API-KEY", os.Getenv("DD_TEST_CLIENT_API_KEY"))
+	req.Header.Add("DD-APPLICATION-KEY", os.Getenv("DD_TEST_CLIENT_APP_KEY"))
+	resp, err := client.Do(req)
+	if err != nil || resp.StatusCode != 200 {
+		r := false
+		isTestOrgC = &r
+		return r
+	}
+	r := true
+	isTestOrgC = &r
+	return r
 }
 
 // isCIRun returns true if the CI environment variable is set to "true"
@@ -560,11 +582,22 @@ func testAccPreCheck(t *testing.T) {
 	}
 
 	if !isAPIKeySet() {
-		t.Fatal("DD_API_KEY must be set for acceptance tests")
+		t.Fatal("DD_TEST_CLIENT_API_KEY must be set for acceptance tests")
 	}
 	if !isAPPKeySet() {
-		t.Fatal("DD_APP_KEY must be set for acceptance tests")
+		t.Fatal("DD_TEST_CLIENT_APP_KEY must be set for acceptance tests")
 	}
+
+	if !isTestOrg() {
+		t.Fatalf(
+			"The keys you've set potentially belong to a production environment. " +
+				"Tests do all sorts of create/update/delete calls to the organisation, so only run them against a sandbox environment. " +
+				"If you know what you are doing, set the `DD_TEST_ORG` environment variable to the public ID of your organization. " +
+				"See https://docs.datadoghq.com/api/latest/organizations/#list-your-managed-organizations to get it.",
+		)
+	}
+
+	t.Fatalf("ttttteeeeeessssssttttt")
 }
 
 func testCheckResourceAttrs(name string, checkExists resource.TestCheckFunc, assertions []string) []resource.TestCheckFunc {
