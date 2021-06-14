@@ -26,7 +26,7 @@ resource "datadog_integration_aws_tag_filter" "foo" {
 ### Required
 
 - **account_id** (String) Your AWS Account ID without dashes.
-- **namespace** (String) The namespace associated with the tag filter entry. Allowed enum values: 'elb', 'application_elb', 'sqs', 'rds', 'custom', 'network_elb,lambda' Valid values are `elb`, `application_elb`, `sqs`, `rds`, `custom`, `network_elb`, `lambda`.
+- **namespace** (String) The namespace associated with the tag filter entry. Valid values are `elb`, `application_elb`, `sqs`, `rds`, `custom`, `network_elb`, `lambda`.
 - **tag_filter_str** (String) The tag filter string.
 
 ### Read-Only
