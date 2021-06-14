@@ -82,10 +82,11 @@ func resourceDatadogDashboard() *schema.Resource {
 				Description: "The URL of the dashboard.",
 			},
 			"is_read_only": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     false,
-				Description: "Whether this dashboard is read-only.",
+				Type:          schema.TypeBool,
+				Optional:      true,
+				Default:       false,
+				ConflictsWith: []string{"restricted_roles"},
+				Description:   "Whether this dashboard is read-only.",
 			},
 			"restricted_roles": {
 				Type:          schema.TypeSet,
