@@ -78,9 +78,9 @@ func resourceDatadogMetricMetadataCreate(ctx context.Context, d *schema.Resource
 	authV1 := providerConf.AuthV1
 
 	id, m := buildMetricMetadataStruct(d)
-	createdMetadata, _, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id, *m)
+	createdMetadata, httpResponse, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id, *m)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error creating metric metadata")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error creating metric metadata")
 	}
 
 	d.SetId(id)
@@ -124,7 +124,7 @@ func resourceDatadogMetricMetadataRead(ctx context.Context, d *schema.ResourceDa
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, "error getting metric metadata")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error getting metric metadata")
 	}
 	return updateMetricMetadataState(d, &m)
 }
@@ -156,9 +156,9 @@ func resourceDatadogMetricMetadataUpdate(ctx context.Context, d *schema.Resource
 		m.SetStatsdInterval(int64(attr.(int)))
 	}
 
-	updatedMetadata, _, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id, *m)
+	updatedMetadata, httpResponse, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id, *m)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error updating metric metadata")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error updating metric metadata")
 	}
 
 	return updateMetricMetadataState(d, &updatedMetadata)

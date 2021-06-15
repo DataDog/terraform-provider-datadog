@@ -58,9 +58,9 @@ func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.Resource
 		return diag.FromErr(err)
 	}
 
-	integrations, _, err := datadogClientV1.AzureIntegrationApi.ListAzureIntegration(authV1)
+	integrations, httpresp, err := datadogClientV1.AzureIntegrationApi.ListAzureIntegration(authV1)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error listing azure integration")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error listing azure integration")
 	}
 	for _, integration := range integrations {
 		if integration.GetTenantName() == tenantName {
@@ -86,8 +86,8 @@ func resourceDatadogIntegrationAzureCreate(ctx context.Context, d *schema.Resour
 
 	iazure := buildDatadogAzureIntegrationDefinition(d, tenantName, clientID, false)
 
-	if _, _, err := datadogClientV1.AzureIntegrationApi.CreateAzureIntegration(authV1, *iazure); err != nil {
-		return utils.TranslateClientErrorDiag(err, "error creating an Azure integration")
+	if _, httpresp, err := datadogClientV1.AzureIntegrationApi.CreateAzureIntegration(authV1, *iazure); err != nil {
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error creating an Azure integration")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", iazure.GetTenantName(), iazure.GetClientId()))
@@ -107,8 +107,8 @@ func resourceDatadogIntegrationAzureUpdate(ctx context.Context, d *schema.Resour
 
 	iazure := buildDatadogAzureIntegrationDefinition(d, existingTenantName, existingClientID, true)
 
-	if _, _, err := datadogClientV1.AzureIntegrationApi.UpdateAzureIntegration(authV1, *iazure); err != nil {
-		return utils.TranslateClientErrorDiag(err, "error updating an Azure integration")
+	if _, httpresp, err := datadogClientV1.AzureIntegrationApi.UpdateAzureIntegration(authV1, *iazure); err != nil {
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error updating an Azure integration")
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", iazure.GetNewTenantName(), iazure.GetNewClientId()))
@@ -127,8 +127,8 @@ func resourceDatadogIntegrationAzureDelete(ctx context.Context, d *schema.Resour
 	}
 	iazure := buildDatadogAzureIntegrationDefinition(d, tenantName, clientID, false)
 
-	if _, _, err := datadogClientV1.AzureIntegrationApi.DeleteAzureIntegration(authV1, *iazure); err != nil {
-		return utils.TranslateClientErrorDiag(err, "error deleting an Azure integration")
+	if _, httpresp, err := datadogClientV1.AzureIntegrationApi.DeleteAzureIntegration(authV1, *iazure); err != nil {
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error deleting an Azure integration")
 	}
 
 	return nil

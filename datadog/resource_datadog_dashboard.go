@@ -133,9 +133,9 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	dashboard, _, err := datadogClientV1.DashboardsApi.CreateDashboard(authV1, *dashboardPayload)
+	dashboard, httpresp, err := datadogClientV1.DashboardsApi.CreateDashboard(authV1, *dashboardPayload)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error creating dashboard")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error creating dashboard")
 	}
 	d.SetId(*dashboard.Id)
 
@@ -172,9 +172,9 @@ func resourceDatadogDashboardUpdate(ctx context.Context, d *schema.ResourceData,
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	updatedDashboard, _, err := datadogClientV1.DashboardsApi.UpdateDashboard(authV1, id, *dashboard)
+	updatedDashboard, httpresp, err := datadogClientV1.DashboardsApi.UpdateDashboard(authV1, id, *dashboard)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error updating dashboard")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error updating dashboard")
 	}
 
 	updateDashboardLists(d, providerConf, *dashboard.Id, d.Get("layout_type").(string))
@@ -278,7 +278,7 @@ func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, m
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, "error getting dashboard")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error getting dashboard")
 	}
 
 	return updateDashboardState(d, &dashboard)
@@ -289,8 +289,8 @@ func resourceDatadogDashboardDelete(ctx context.Context, d *schema.ResourceData,
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	id := d.Id()
-	if _, _, err := datadogClientV1.DashboardsApi.DeleteDashboard(authV1, id); err != nil {
-		return utils.TranslateClientErrorDiag(err, "error deleting dashboard")
+	if _, httpresp, err := datadogClientV1.DashboardsApi.DeleteDashboard(authV1, id); err != nil {
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error deleting dashboard")
 	}
 	return nil
 }

@@ -6,8 +6,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zorkian/go-datadog-api"
@@ -77,12 +75,12 @@ func resourceDatadogIntegrationPagerdutyCreate(ctx context.Context, d *schema.Re
 	}
 
 	if err := client.CreateIntegrationPD(pd); err != nil {
-		return utils.TranslateClientErrorDiag(err, "error creating PagerDuty integration")
+		return diag.Errorf("error creating PagerDuty integration: %s", err.Error())
 	}
 
 	pdIntegration, err := client.GetIntegrationPD()
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error getting PagerDuty integration")
+		return diag.Errorf("error getting PagerDuty integration: %s", err.Error())
 	}
 
 	d.SetId(pdIntegration.GetSubdomain())
@@ -100,7 +98,7 @@ func resourceDatadogIntegrationPagerdutyRead(ctx context.Context, d *schema.Reso
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, "error getting PagerDuty integration")
+		return diag.Errorf("error getting PagerDuty integration: %s", err.Error())
 	}
 
 	d.Set("subdomain", pd.GetSubdomain())
@@ -122,7 +120,7 @@ func resourceDatadogIntegrationPagerdutyUpdate(ctx context.Context, d *schema.Re
 	}
 
 	if err := client.UpdateIntegrationPD(pd); err != nil {
-		return utils.TranslateClientErrorDiag(err, "error updating PagerDuty integration")
+		return diag.Errorf("error updating PagerDuty integration: %s", err.Error())
 	}
 
 	return resourceDatadogIntegrationPagerdutyRead(ctx, d, meta)
