@@ -165,7 +165,7 @@ func syntheticsTestRequest() *schema.Resource {
 				Description:  "DNS server port to use for DNS tests.",
 				Type:         schema.TypeInt,
 				Optional:     true,
-				ValidateFunc: validation.IntBetween(1, 65535),
+				ValidateFunc: validation.IntAtMost(65535),
 			},
 			"no_saving_response_body": {
 				Description: "Determines whether or not to save the response body.",
