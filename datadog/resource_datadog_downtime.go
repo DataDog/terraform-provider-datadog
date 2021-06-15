@@ -35,6 +35,7 @@ type downtimeOrDowntimeChild interface {
 	GetScope() []string
 	GetActiveChild() datadogV1.DowntimeChild
 	GetActiveChildOk() (*datadogV1.DowntimeChild, bool)
+	GetCanceledOk() (*int64, bool)
 }
 
 // downtimeChild wraps the `datadogV1.DowntimeChild` struct via embedding to implement `downtimeOrDowntimeChild`
@@ -95,6 +96,10 @@ func (d *downtimeChild) GetActiveChildOk() (*datadogV1.DowntimeChild, bool) {
 	return nil, false
 }
 
+func (d *downtimeChild) GetCanceledOk() (*int64, bool) {
+	return d.child.GetCanceledOk()
+}
+
 func resourceDatadogDowntime() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.",
@@ -122,10 +127,9 @@ func resourceDatadogDowntime() *schema.Resource {
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 					_, startDatePresent := d.GetOk("start_date")
 					now := time.Now().Unix()
-					_, activeChildExists := d.GetOk("active_child_id")
 
 					// If "start_date" is set, ignore diff for "start". If "start" isn't set, ignore diff if start is now or in the past
-					return startDatePresent || (newVal == "0" && oldVal != "0" && int64(d.Get("start").(int)) <= now) || activeChildExists
+					return startDatePresent || (newVal == "0" && oldVal != "0" && int64(d.Get("start").(int)) <= now)
 				},
 				Description: "Specify when this downtime should start",
 			},
@@ -141,8 +145,7 @@ func resourceDatadogDowntime() *schema.Resource {
 				Optional: true,
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 					_, endDatePresent := d.GetOk("end_date")
-					_, activeChildExists := d.GetOk("active_child_id")
-					return endDatePresent || activeChildExists
+					return endDatePresent
 				},
 				Description: "Optionally specify an end date when this downtime should expire",
 			},
@@ -280,12 +283,6 @@ func getDowntimeBoundaryTimestamp(d *schema.ResourceData, dateAttr, tsAttr strin
 // * `configTs` - desired value (from TF configuration) of the boundary
 // * `updating` - `true` if this call is from Update method of the downtime resource, `false` if from Create
 func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, configTs int64, updating bool) (apply bool) {
-	// We don't want to apply the start/end boundaries for recurring child downtimes, as doing so will lead to 400s for:
-	//   Scheduled downtime start cannot be in the past.
-	if _, ok := d.GetOk("active_child_id"); ok {
-		return apply
-	}
-
 	if tsFrom == "" {
 		// if the boundary was not specified in the config, don't apply it
 		return apply
@@ -410,7 +407,7 @@ func resourceDatadogDowntimeCreate(ctx context.Context, d *schema.ResourceData, 
 
 	d.SetId(strconv.Itoa(int(dt.GetId())))
 
-	return updateDowntimeState(d, &dt)
+	return updateDowntimeState(d, &dt, true)
 }
 
 func resourceDatadogDowntimeRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -432,23 +429,28 @@ func resourceDatadogDowntimeRead(ctx context.Context, d *schema.ResourceData, me
 		return utils.TranslateClientErrorDiag(err, "error getting downtime")
 	}
 
-	if canceled, ok := dt.GetCanceledOk(); ok && canceled != nil {
-		d.SetId("")
-		return nil
-	}
-
 	// Hack for recurring downtimes, compare the downtime definition in state with the most recent recurring child
 	// downtime definition returned by the API. Fields which change on each subsequent reschedule will not be compared
 	// (i.e., start and end), but will be mutated if the terraform resource definition changes (since we update the active
 	// child downtime we keep a reference to in the terraform state).
 	if activeChild, ok := dt.GetActiveChildOk(); ok && activeChild != nil {
-		return updateDowntimeState(d, &downtimeChild{activeChild})
+		child := &downtimeChild{activeChild}
+		if canceled, ok := child.GetCanceledOk(); ok && canceled != nil {
+			d.SetId("")
+			return nil
+		}
+
+		return updateDowntimeState(d, child, false)
 	}
 
-	return updateDowntimeState(d, &dt)
+	if canceled, ok := dt.GetCanceledOk(); ok && canceled != nil {
+		d.SetId("")
+		return nil
+	}
+	return updateDowntimeState(d, &dt, true)
 }
 
-func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild) diag.Diagnostics {
+func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild, updateBounds bool) diag.Diagnostics {
 	log.Printf("[DEBUG] downtime: %v", dt)
 
 	if err := d.Set("active", dt.GetActive()); err != nil {
@@ -508,15 +510,18 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild) dia
 		}
 	}
 
-	// Don't set the `start`, `end` stored in terraform if the downtime is the child definition.
-	switch dt.(type) {
-	case *datadogV1.Downtime:
+	// Don't set the `start`, `end` stored in terraform unless in specific cases for recurring downtimes.
+	if updateBounds {
 		if err := d.Set("start", dt.GetStart()); err != nil {
 			return diag.FromErr(err)
 		}
 		if err := d.Set("end", dt.GetEnd()); err != nil {
 			return diag.FromErr(err)
 		}
+	}
+
+	switch dt.(type) {
+	case *datadogV1.Downtime:
 		if attr, ok := dt.GetActiveChildOk(); ok {
 			if err := d.Set("active_child_id", attr.GetId()); err != nil {
 				return diag.FromErr(err)
@@ -558,11 +563,12 @@ func resourceDatadogDowntimeUpdate(ctx context.Context, d *schema.ResourceData, 
 
 	// Handle the case when a downtime is replaced. Don't set it if the `active_child_id` is set as we want to maintain
 	// a reference to the original parent downtime ID.
-	if _, ok := d.GetOk("active_child_id"); !ok {
+	_, ok := d.GetOk("active_child_id")
+	if !ok {
 		d.SetId(strconv.FormatInt(dt.GetId(), 10))
 	}
 
-	return updateDowntimeState(d, &updatedDowntime)
+	return updateDowntimeState(d, &updatedDowntime, !ok)
 }
 
 func resourceDatadogDowntimeDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
