@@ -41,6 +41,13 @@ import (
 
 type clockContextKey string
 
+const ddTestOrg = "fasjyydbcgwwc2uc"
+const testAPIKeyEnvName = "DD_TEST_CLIENT_API_KEY"
+const testAPPKeyEnvName = "DD_TEST_CLIENT_APP_KEY"
+const testOrgEnvName = "DD_TEST_ORG"
+
+var isTestOrgC *bool
+
 var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_dashboard_test":                         "dashboard",
 	"tests/data_source_datadog_dashboard_list_test":                    "dashboard-lists",
@@ -165,23 +172,41 @@ func isDebug() bool {
 }
 
 func isAPIKeySet() bool {
-	if os.Getenv("DATADOG_API_KEY") != "" {
-		return true
-	}
-	if os.Getenv("DD_API_KEY") != "" {
+	if os.Getenv(testAPIKeyEnvName) != "" {
 		return true
 	}
 	return false
 }
 
 func isAPPKeySet() bool {
-	if os.Getenv("DATADOG_APP_KEY") != "" {
-		return true
-	}
-	if os.Getenv("DD_APP_KEY") != "" {
+	if os.Getenv(testAPPKeyEnvName) != "" {
 		return true
 	}
 	return false
+}
+
+func isTestOrg() bool {
+	if isTestOrgC != nil {
+		return *isTestOrgC
+	}
+	// If keys belong to test org, then this get will succeed, otherwise it will fail with 400
+	publicID := ddTestOrg
+	if v := os.Getenv(testOrgEnvName); v != "" {
+		publicID = v
+	}
+	client := &http.Client{}
+	req, _ := http.NewRequest("GET", "https://api.datadoghq.com/api/v1/org/"+publicID, nil)
+	req.Header.Add("DD-API-KEY", os.Getenv(testAPIKeyEnvName))
+	req.Header.Add("DD-APPLICATION-KEY", os.Getenv(testAPPKeyEnvName))
+	resp, err := client.Do(req)
+	if err != nil || resp.StatusCode != 200 {
+		r := false
+		isTestOrgC = &r
+		return r
+	}
+	r := true
+	isTestOrgC = &r
+	return r
 }
 
 // isCIRun returns true if the CI environment variable is set to "true"
@@ -273,6 +298,19 @@ func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
 		result = fmt.Sprintf("%s%s", result, strconv.Itoa(int(r)))
 	}
 	return result[:12]
+}
+
+// uniqueAWSAccessKeyID takes uniqueEntityName result, hashes it to get a unique string
+// and then returns first 16 characters (numerical only), so that the value can be used
+// as AWS account ID and is still as unique as possible, it changes in CI, but is stable locally
+func uniqueAWSAccessKeyID(ctx context.Context, t *testing.T) string {
+	uniq := uniqueEntityName(ctx, t)
+	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniq)))
+	result := ""
+	for _, r := range hash {
+		result = fmt.Sprintf("%s%s", result, strconv.Itoa(int(r)))
+	}
+	return result[:16]
 }
 
 func removeURLSecrets(u *url.URL) *url.URL {
@@ -542,15 +580,38 @@ func TestProvider_impl(t *testing.T) {
 }
 
 func testAccPreCheck(t *testing.T) {
+	// Unset all regular env to avoid mistakenly running tests against wrong org
+	for _, v := range append(datadog.APPKeyEnvVars, datadog.APIKeyEnvVars...) {
+		_ = os.Unsetenv(v)
+	}
+
 	if isReplaying() {
 		return
 	}
 
 	if !isAPIKeySet() {
-		t.Fatal("DD_API_KEY must be set for acceptance tests")
+		t.Fatalf("%s must be set for acceptance tests", testAPIKeyEnvName)
 	}
 	if !isAPPKeySet() {
-		t.Fatal("DD_APP_KEY must be set for acceptance tests")
+		t.Fatalf("%s must be set for acceptance tests", testAPPKeyEnvName)
+	}
+
+	if !isTestOrg() {
+		t.Fatalf(
+			"The keys you've set potentially belong to a production environment. "+
+				"Tests do all sorts of create/update/delete calls to the organisation, so only run them against a sandbox environment. "+
+				"If you know what you are doing, set the `%s` environment variable to the public ID of your organization. "+
+				"See https://docs.datadoghq.com/api/latest/organizations/#list-your-managed-organizations to get it.",
+			testOrgEnvName,
+		)
+	}
+
+	if err := os.Setenv(datadog.DDAPIKeyEnvName, os.Getenv(testAPIKeyEnvName)); err != nil {
+		t.Fatalf("Error setting API key: %v", err)
+	}
+
+	if err := os.Setenv(datadog.DDAPPKeyEnvName, os.Getenv(testAPPKeyEnvName)); err != nil {
+		t.Fatalf("Error setting API key: %v", err)
 	}
 }
 

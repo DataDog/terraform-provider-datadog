@@ -102,9 +102,9 @@ func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.
 		reqParams.WithMetricsQuery(metricsQuery)
 	}
 
-	slosResp, _, err := datadogClientV1.ServiceLevelObjectivesApi.ListSLOs(authV1, *reqParams)
+	slosResp, httpresp, err := datadogClientV1.ServiceLevelObjectivesApi.ListSLOs(authV1, *reqParams)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error querying service level objectives")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error querying service level objectives")
 	}
 	if len(slosResp.GetData()) == 0 {
 		return diag.Errorf("your query returned no result, please try a less specific search criteria")

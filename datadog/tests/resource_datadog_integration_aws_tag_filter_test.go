@@ -71,7 +71,7 @@ func testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider func() (*schem
 		for _, filter := range *filters {
 			if filter.GetNamespace() == namespace {
 				if len(filter.GetTagFilterStr()) == 0 {
-					return utils.TranslateClientError(nil, fmt.Sprintf("tag_filter_str is empty for resource %s", namespace))
+					return fmt.Errorf("tag_filter_str is empty for resource %s", namespace)
 				}
 				return nil
 			}
@@ -99,7 +99,7 @@ func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider func() (*sche
 		for _, filter := range *filters {
 			if filter.GetNamespace() == namespace {
 				if len(filter.GetTagFilterStr()) != 0 {
-					return utils.TranslateClientError(nil, fmt.Sprintf("tag_filter_str is not empty for namespace %s", namespace))
+					return fmt.Errorf("tag_filter_str is not empty for namespace %s", namespace)
 				}
 				return nil
 			}

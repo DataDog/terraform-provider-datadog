@@ -95,9 +95,9 @@ func resourceDatadogLogsArchiveCreate(ctx context.Context, d *schema.ResourceDat
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	createdArchive, _, err := datadogClientV2.LogsArchivesApi.CreateLogsArchive(authV2, *ddArchive)
+	createdArchive, httpResponse, err := datadogClientV2.LogsArchivesApi.CreateLogsArchive(authV2, *ddArchive)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "failed to create logs archive using Datadog API")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "failed to create logs archive using Datadog API")
 	}
 	d.SetId(*createdArchive.GetData().Id)
 	return updateLogsArchiveState(d, &createdArchive)
@@ -142,7 +142,7 @@ func resourceDatadogLogsArchiveRead(ctx context.Context, d *schema.ResourceData,
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, "failed to get logs archive using Datadog API")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "failed to get logs archive using Datadog API")
 	}
 	return updateLogsArchiveState(d, &ddArchive)
 }
@@ -156,9 +156,9 @@ func resourceDatadogLogsArchiveUpdate(ctx context.Context, d *schema.ResourceDat
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	updatedArchive, _, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchive(authV2, d.Id(), *ddArchive)
+	updatedArchive, httpResponse, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchive(authV2, d.Id(), *ddArchive)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error updating logs archive")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error updating logs archive")
 	}
 	return updateLogsArchiveState(d, &updatedArchive)
 }
@@ -173,7 +173,7 @@ func resourceDatadogLogsArchiveDelete(ctx context.Context, d *schema.ResourceDat
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, "error deleting logs archive")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error deleting logs archive")
 	}
 	return nil
 }

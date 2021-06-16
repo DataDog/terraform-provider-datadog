@@ -44,8 +44,8 @@ jobs:
                 CI: "true"
                 DD_AGENT_HOST: datadog-agent
                 DD_PROFILER_API_KEY: $(ddAPIKey)
-                DD_API_KEY: $(datadogAPIKey)
-                DD_APP_KEY: $(datadogAPPKey)
+                DD_TEST_CLIENT_API_KEY: $(datadogAPIKey)
+                DD_TEST_CLIENT_APP_KEY: $(datadogAPPKey)
                 DD_ENV: prod
                 DD_SERVICE: terraform-provider-datadog
                 DD_VERSION: $(Build.SourceVersion)

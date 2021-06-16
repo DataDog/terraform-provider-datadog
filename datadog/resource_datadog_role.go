@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"reflect"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -71,9 +72,9 @@ func GetRolePermissionSchema() *schema.Resource {
 func getValidPermissions(ctx context.Context, client *datadog.APIClient) (map[string]string, error) {
 	// Get a list of all permissions, to ignore restricted perms
 	if validPermissions == nil {
-		res, _, err := client.RolesApi.ListPermissions(ctx)
+		res, httpResponse, err := client.RolesApi.ListPermissions(ctx)
 		if err != nil {
-			return nil, utils.TranslateClientError(err, "error listing permissions")
+			return nil, utils.TranslateClientError(err, httpResponse.Request.URL, "error listing permissions")
 		}
 		permsList := res.GetData()
 		permsNameToID := make(map[string]string, len(permsList))
@@ -117,9 +118,9 @@ func resourceDatadogRoleCreate(ctx context.Context, d *schema.ResourceData, meta
 	auth := meta.(*ProviderConfiguration).AuthV2
 
 	roleReq := buildRoleCreateRequest(d)
-	resp, _, err := client.RolesApi.CreateRole(auth, roleReq)
+	resp, httpResponse, err := client.RolesApi.CreateRole(auth, roleReq)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error creating role")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error creating role")
 	}
 	roleData := resp.GetData()
 	d.SetId(roleData.GetId())
@@ -204,7 +205,7 @@ func resourceDatadogRoleRead(ctx context.Context, d *schema.ResourceData, meta i
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, "error getting role")
+		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error getting role")
 	}
 	roleData := resp.GetData()
 	return updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, client)
@@ -216,9 +217,9 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 
 	if d.HasChange("name") {
 		roleReq := buildRoleUpdateRequest(d)
-		resp, _, err := client.RolesApi.UpdateRole(auth, d.Id(), roleReq)
+		resp, httpResponse, err := client.RolesApi.UpdateRole(auth, d.Id(), roleReq)
 		if err != nil {
-			return utils.TranslateClientErrorDiag(err, "error updating role")
+			return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error updating role")
 		}
 		roleData := resp.GetData()
 		if err := updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, client); err != nil {
@@ -234,6 +235,7 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 		var (
 			permsResponse datadog.PermissionsResponse
 			err           error
+			httpResponse  *http.Response
 		)
 		for _, permI := range permsToRemove.List() {
 			perm := permI.(map[string]interface{})
@@ -241,9 +243,9 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 			permRelationData := datadog.NewRelationshipToPermissionDataWithDefaults()
 			permRelationData.SetId(perm["id"].(string))
 			permRelation.SetData(*permRelationData)
-			permsResponse, _, err = client.RolesApi.RemovePermissionFromRole(auth, d.Id(), *permRelation)
+			permsResponse, httpResponse, err = client.RolesApi.RemovePermissionFromRole(auth, d.Id(), *permRelation)
 			if err != nil {
-				return utils.TranslateClientErrorDiag(err, "error removing permission from role")
+				return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error removing permission from role")
 			}
 
 		}
@@ -253,9 +255,9 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 			permRelationData := datadog.NewRelationshipToPermissionDataWithDefaults()
 			permRelationData.SetId(perm["id"].(string))
 			permRelation.SetData(*permRelationData)
-			permsResponse, _, err = client.RolesApi.AddPermissionToRole(auth, d.Id(), *permRelation)
+			permsResponse, httpResponse, err = client.RolesApi.AddPermissionToRole(auth, d.Id(), *permRelation)
 			if err != nil {
-				return utils.TranslateClientErrorDiag(err, "error adding permission to role")
+				return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error adding permission to role")
 			}
 		}
 		// Only need to update once all the permissions have been added/revoked, with the last call response
@@ -271,9 +273,9 @@ func resourceDatadogRoleDelete(ctx context.Context, d *schema.ResourceData, meta
 	client := meta.(*ProviderConfiguration).DatadogClientV2
 	auth := meta.(*ProviderConfiguration).AuthV2
 
-	_, err := client.RolesApi.DeleteRole(auth, d.Id())
+	httpResponse, err := client.RolesApi.DeleteRole(auth, d.Id())
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, "error deleting role")
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error deleting role")
 	}
 
 	return nil
