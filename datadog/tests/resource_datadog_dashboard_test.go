@@ -1279,7 +1279,7 @@ func checkDashboardExists(accProvider func() (*schema.Provider, error)) resource
 		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "datadog_dashboard" {
+			if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_json" {
 				continue
 			}
 			if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID); err != nil {
@@ -1299,7 +1299,7 @@ func checkDashboardDestroy(accProvider func() (*schema.Provider, error)) resourc
 
 		err := utils.Retry(2, 10, func() error {
 			for _, r := range s.RootModule().Resources {
-				if r.Type != "datadog_dashboard" {
+				if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_json" {
 					continue
 				}
 				if _, httpResp, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID); err != nil {
