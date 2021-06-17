@@ -250,7 +250,6 @@ func resourceDatadogDowntime() *schema.Resource {
 			"active_child_id": {
 				Type:        schema.TypeInt,
 				Computed:    true,
-				Optional:    true,
 				Description: "The id corresponding to the downtime object definition of the active child for the original parent recurring downtime. This field will only exist on recurring downtimes.",
 			},
 		},

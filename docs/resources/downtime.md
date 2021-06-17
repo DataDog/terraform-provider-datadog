@@ -50,7 +50,6 @@ resource "datadog_downtime" "foo" {
 
 ### Optional
 
-- **active_child_id** (Number) The id corresponding to the downtime object definition of the active child for the original parent recurring downtime. This field will only exist on recurring downtimes.
 - **end** (Number) Optionally specify an end date when this downtime should expire
 - **end_date** (String) String representing date and time to end the downtime in RFC3339 format.
 - **message** (String) An optional message to provide when creating the downtime, can include notification handles
@@ -64,6 +63,7 @@ resource "datadog_downtime" "foo" {
 ### Read-Only
 
 - **active** (Boolean) When true indicates this downtime is being actively applied
+- **active_child_id** (Number) The id corresponding to the downtime object definition of the active child for the original parent recurring downtime. This field will only exist on recurring downtimes.
 - **disabled** (Boolean) When true indicates this downtime is not being applied
 - **id** (String) The ID of this resource.
 
