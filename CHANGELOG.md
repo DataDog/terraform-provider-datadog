@@ -3,7 +3,7 @@
 IMPROVEMENTS:
 
 -   `datadog_logs_index`: Adding missing retention_days and daily_limit parameters. ([#1083](https://github.com/DataDog/terraform-provider-datadog/pull/1083)) Thanks [@DimitryVlasenko](https://github.com/DimitryVlasenko)
--   `datadog_dashboard`: Change Dashboard WidgetCustomLink properties. ([#1062](https://github.com/DataDog/terraform-provider-datadog/pull/1062))
+-   `datadog_dashboard`: Add support for WidgetCustomLink `is_hidden` and `override_label` properties. ([#1062](https://github.com/DataDog/terraform-provider-datadog/pull/1062))
 -   `datadog_synthetics_test`: Add support for monitor name and priority. ([#1104](https://github.com/DataDog/terraform-provider-datadog/pull/1104))
 -   `datadog_integration_aws`: Add support for access_key_id and secret_access_key. ([#1101](https://github.com/DataDog/terraform-provider-datadog/pull/1101)).
 -   `datadog_dashboard`: Update dashboard examples. ([#1105](https://github.com/DataDog/terraform-provider-datadog/pull/1105))
