@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"reflect"
 	"strconv"
@@ -20,6 +21,85 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+type downtimeOrDowntimeChild interface {
+	GetId() int64
+	GetActive() bool
+	GetDisabled() bool
+	GetMessage() string
+	GetMonitorIdOk() (*int64, bool)
+	GetTimezone() string
+	GetRecurrenceOk() (*datadogV1.DowntimeRecurrence, bool)
+	GetMonitorTags() []string
+	GetStart() int64
+	GetEnd() int64
+	GetScope() []string
+	GetActiveChild() datadogV1.DowntimeChild
+	GetActiveChildOk() (*datadogV1.DowntimeChild, bool)
+	GetCanceledOk() (*int64, bool)
+}
+
+// downtimeChild wraps the `datadogV1.DowntimeChild` struct via embedding to implement `downtimeOrDowntimeChild`
+// interface missing the `GetActiveChild`, `GetActiveChildOk` methods.
+type downtimeChild struct {
+	child *datadogV1.DowntimeChild
+}
+
+func (d *downtimeChild) GetId() int64 {
+	return d.child.GetId()
+}
+
+func (d *downtimeChild) GetActive() bool {
+	return d.child.GetActive()
+}
+
+func (d *downtimeChild) GetDisabled() bool {
+	return d.child.GetDisabled()
+}
+
+func (d *downtimeChild) GetMessage() string {
+	return d.child.GetMessage()
+}
+
+func (d *downtimeChild) GetMonitorIdOk() (*int64, bool) {
+	return d.child.GetMonitorIdOk()
+}
+
+func (d *downtimeChild) GetTimezone() string {
+	return d.child.GetTimezone()
+}
+
+func (d *downtimeChild) GetRecurrenceOk() (*datadogV1.DowntimeRecurrence, bool) {
+	return d.child.GetRecurrenceOk()
+}
+
+func (d *downtimeChild) GetMonitorTags() []string {
+	return d.child.GetMonitorTags()
+}
+
+func (d *downtimeChild) GetStart() int64 {
+	return d.child.GetStart()
+}
+
+func (d *downtimeChild) GetEnd() int64 {
+	return d.child.GetEnd()
+}
+
+func (d *downtimeChild) GetScope() []string {
+	return d.child.GetScope()
+}
+
+func (d *downtimeChild) GetActiveChild() datadogV1.DowntimeChild {
+	return datadogV1.DowntimeChild{}
+}
+
+func (d *downtimeChild) GetActiveChildOk() (*datadogV1.DowntimeChild, bool) {
+	return nil, false
+}
+
+func (d *downtimeChild) GetCanceledOk() (*int64, bool) {
+	return d.child.GetCanceledOk()
+}
+
 func resourceDatadogDowntime() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.",
@@ -30,7 +110,6 @@ func resourceDatadogDowntime() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-
 		Schema: map[string]*schema.Schema{
 			"active": {
 				Type:        schema.TypeBool,
@@ -48,6 +127,7 @@ func resourceDatadogDowntime() *schema.Resource {
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 					_, startDatePresent := d.GetOk("start_date")
 					now := time.Now().Unix()
+
 					// If "start_date" is set, ignore diff for "start". If "start" isn't set, ignore diff if start is now or in the past
 					return startDatePresent || (newVal == "0" && oldVal != "0" && int64(d.Get("start").(int)) <= now)
 				},
@@ -167,6 +247,11 @@ func resourceDatadogDowntime() *schema.Resource {
 				ConflictsWith: []string{"monitor_id"},
 				Elem:          &schema.Schema{Type: schema.TypeString},
 			},
+			"active_child_id": {
+				Type:        schema.TypeInt,
+				Computed:    true,
+				Description: "The id corresponding to the downtime object definition of the active child for the original parent recurring downtime. This field will only exist on recurring downtimes.",
+			},
 		},
 	}
 }
@@ -227,8 +312,9 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, client *da
 	var dt datadogV1.Downtime
 	var currentStart = *datadogV1.PtrInt64(0)
 	var currentEnd = *datadogV1.PtrInt64(0)
+
 	if updating {
-		id, err := strconv.ParseInt(d.Id(), 10, 64)
+		id, err := getID(d)
 		if err != nil {
 			return nil, err
 		}
@@ -320,7 +406,7 @@ func resourceDatadogDowntimeCreate(ctx context.Context, d *schema.ResourceData, 
 
 	d.SetId(strconv.Itoa(int(dt.GetId())))
 
-	return updateDowntimeState(d, &dt)
+	return updateDowntimeState(d, &dt, true)
 }
 
 func resourceDatadogDowntimeRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -342,24 +428,34 @@ func resourceDatadogDowntimeRead(ctx context.Context, d *schema.ResourceData, me
 		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error getting downtime")
 	}
 
+	// Hack for recurring downtimes, compare the downtime definition in state with the most recent recurring child
+	// downtime definition returned by the API. Fields which change on each subsequent reschedule will not be compared
+	// (i.e., start and end), but will be mutated if the terraform resource definition changes (since we update the active
+	// child downtime we keep a reference to in the terraform state).
+	if activeChild, ok := dt.GetActiveChildOk(); ok && activeChild != nil {
+		child := &downtimeChild{activeChild}
+		if canceled, ok := child.GetCanceledOk(); ok && canceled != nil {
+			d.SetId("")
+			return nil
+		}
+
+		return updateDowntimeState(d, child, false)
+	}
+
 	if canceled, ok := dt.GetCanceledOk(); ok && canceled != nil {
 		d.SetId("")
 		return nil
 	}
-
-	return updateDowntimeState(d, &dt)
+	return updateDowntimeState(d, &dt, true)
 }
 
-func updateDowntimeState(d *schema.ResourceData, dt *datadogV1.Downtime) diag.Diagnostics {
+func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild, updateBounds bool) diag.Diagnostics {
 	log.Printf("[DEBUG] downtime: %v", dt)
 
 	if err := d.Set("active", dt.GetActive()); err != nil {
 		return diag.FromErr(err)
 	}
 	if err := d.Set("disabled", dt.GetDisabled()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("end", dt.GetEnd()); err != nil {
 		return diag.FromErr(err)
 	}
 	if err := d.Set("message", dt.GetMessage()); err != nil {
@@ -403,7 +499,7 @@ func updateDowntimeState(d *schema.ResourceData, dt *datadogV1.Downtime) diag.Di
 			return diag.FromErr(err)
 		}
 	}
-	if err := d.Set("scope", dt.Scope); err != nil {
+	if err := d.Set("scope", dt.GetScope()); err != nil {
 		return diag.FromErr(err)
 	}
 	// See the comment for monitor_tags in the schema definition above
@@ -412,8 +508,30 @@ func updateDowntimeState(d *schema.ResourceData, dt *datadogV1.Downtime) diag.Di
 			return diag.FromErr(err)
 		}
 	}
-	if err := d.Set("start", dt.GetStart()); err != nil {
-		return diag.FromErr(err)
+
+	// Don't set the `start`, `end` stored in terraform unless in specific cases for recurring downtimes.
+	if updateBounds {
+		if err := d.Set("start", dt.GetStart()); err != nil {
+			return diag.FromErr(err)
+		}
+		if err := d.Set("end", dt.GetEnd()); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	switch dt.(type) {
+	case *datadogV1.Downtime:
+		if attr, ok := dt.GetActiveChildOk(); ok {
+			if err := d.Set("active_child_id", attr.GetId()); err != nil {
+				return diag.FromErr(err)
+			}
+		}
+	case *downtimeChild:
+		if err := d.Set("active_child_id", dt.GetId()); err != nil {
+			return diag.FromErr(err)
+		}
+	default:
+		return diag.FromErr(fmt.Errorf("unsupported interface passed into updateDowntimeState"))
 	}
 	return nil
 }
@@ -427,10 +545,12 @@ func resourceDatadogDowntimeUpdate(ctx context.Context, d *schema.ResourceData, 
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	id, err := strconv.ParseInt(d.Id(), 10, 64)
+
+	id, err := getID(d)
 	if err != nil {
 		return diag.FromErr(err)
 	}
+
 	// above downtimeStruct returns nil if downtime is not set. Hence, if we are handling the cases where downtime
 	// is replaced, the ID of the downtime will be set to 0.
 	dt.SetId(id)
@@ -439,10 +559,15 @@ func resourceDatadogDowntimeUpdate(ctx context.Context, d *schema.ResourceData, 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error updating downtime")
 	}
-	// handle the case when a downtime is replaced
-	d.SetId(strconv.FormatInt(dt.GetId(), 10))
 
-	return updateDowntimeState(d, &updatedDowntime)
+	// Handle the case when a downtime is replaced. Don't set it if the `active_child_id` is set as we want to maintain
+	// a reference to the original parent downtime ID.
+	_, ok := d.GetOk("active_child_id")
+	if !ok {
+		d.SetId(strconv.FormatInt(dt.GetId(), 10))
+	}
+
+	return updateDowntimeState(d, &updatedDowntime, !ok)
 }
 
 func resourceDatadogDowntimeDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -450,7 +575,7 @@ func resourceDatadogDowntimeDelete(ctx context.Context, d *schema.ResourceData, 
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	id, err := strconv.ParseInt(d.Id(), 10, 64)
+	id, err := getID(d)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -460,4 +585,16 @@ func resourceDatadogDowntimeDelete(ctx context.Context, d *schema.ResourceData, 
 	}
 
 	return nil
+}
+
+func getID(d *schema.ResourceData) (int64, error) {
+	id, err := strconv.ParseInt(d.Id(), 10, 64)
+	if err != nil {
+		return 0, err
+	}
+
+	if activeChildID, ok := d.GetOk("active_child_id"); ok {
+		id = int64(activeChildID.(int))
+	}
+	return id, nil
 }

@@ -63,6 +63,7 @@ resource "datadog_downtime" "foo" {
 ### Read-Only
 
 - **active** (Boolean) When true indicates this downtime is being actively applied
+- **active_child_id** (Number) The id corresponding to the downtime object definition of the active child for the original parent recurring downtime. This field will only exist on recurring downtimes.
 - **disabled** (Boolean) When true indicates this downtime is not being applied
 - **id** (String) The ID of this resource.
 
