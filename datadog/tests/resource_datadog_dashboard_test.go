@@ -1279,6 +1279,9 @@ func checkDashboardExists(accProvider func() (*schema.Provider, error)) resource
 		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
+			if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_json" {
+				continue
+			}
 			if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID); err != nil {
 				return fmt.Errorf("received an error retrieving dashboard1 %s", err)
 			}
@@ -1296,6 +1299,9 @@ func checkDashboardDestroy(accProvider func() (*schema.Provider, error)) resourc
 
 		err := utils.Retry(2, 10, func() error {
 			for _, r := range s.RootModule().Resources {
+				if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_json" {
+					continue
+				}
 				if _, httpResp, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID); err != nil {
 					if httpResp != nil && httpResp.StatusCode == 404 {
 						return nil
@@ -1356,6 +1362,230 @@ func testAccDatadogDashboardWidgetUtilImport(t *testing.T, config string, name s
 				ResourceName:      name,
 				ImportState:       true,
 				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func datadogOpenDashboardConfig(uniqueDashboardName string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard" "rbac_dashboard" {
+	title            = "%s"
+	description      = "Created using the Datadog provider in Terraform"
+	layout_type      = "ordered"
+	widget {
+		note_definition {
+			content = "note text"
+		}
+	}
+}`, uniqueDashboardName)
+}
+
+var datadogOpenDashboardAsserts = []string{
+	"is_read_only = false",
+	"restricted_roles.# = 0",
+}
+
+func datadogAdminDashboardConfig(uniqueDashboardName string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard" "rbac_dashboard" {
+	title            = "%s"
+	description      = "Created using the Datadog provider in Terraform"
+	layout_type      = "ordered"
+	widget {
+		note_definition {
+			content = "note text"
+		}
+	}
+	is_read_only     = true
+}`, uniqueDashboardName)
+}
+
+var datadogAdminDashboardAsserts = []string{
+	"is_read_only = true",
+}
+
+func datadogRbacDashboardConfig(uniqueDashboardName string, uniqueRoleName string) string {
+	return fmt.Sprintf(`
+resource "datadog_role" "rbac_role" {
+	name = "%s"
+}
+
+resource "datadog_dashboard" "rbac_dashboard" {
+	title            = "%s"
+	description      = "Created using the Datadog provider in Terraform"
+	layout_type      = "ordered"
+	widget {
+		note_definition {
+			content = "note text"
+		}
+	}
+	restricted_roles = ["${datadog_role.rbac_role.id}"]
+}`, uniqueRoleName, uniqueDashboardName)
+}
+
+var datadogRbacDashboardAsserts = []string{
+	"restricted_roles.# = 1",
+}
+
+func TestAccDatadogDashboardRbac_createOpen(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	boardName := uniqueEntityName(ctx, t)
+	asserts := datadogOpenDashboardAsserts
+	accProvider := testAccProvider(t, accProviders)
+	checks := testCheckResourceAttrs("datadog_dashboard.rbac_dashboard", checkDashboardExists(accProvider), asserts)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: datadogOpenDashboardConfig(boardName),
+				Check:  resource.ComposeTestCheckFunc(checks...),
+			},
+		},
+	})
+}
+
+func TestAccDatadogDashboardRbac_createAdmin(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	boardName := uniqueEntityName(ctx, t)
+	asserts := datadogAdminDashboardAsserts
+	accProvider := testAccProvider(t, accProviders)
+	checks := testCheckResourceAttrs("datadog_dashboard.rbac_dashboard", checkDashboardExists(accProvider), asserts)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: datadogAdminDashboardConfig(boardName),
+				Check:  resource.ComposeTestCheckFunc(checks...),
+			},
+		},
+	})
+}
+
+func TestAccDatadogDashboardRbac_createRbac(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	boardName := uniqueEntityName(ctx, t)
+	roleName := uniqueEntityName(ctx, t)
+	asserts := datadogRbacDashboardAsserts
+	accProvider := testAccProvider(t, accProviders)
+	checks := testCheckResourceAttrs("datadog_dashboard.rbac_dashboard", checkDashboardExists(accProvider), asserts)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: datadogRbacDashboardConfig(boardName, roleName),
+				Check:  resource.ComposeTestCheckFunc(checks...),
+			},
+		},
+	})
+}
+
+func TestAccDatadogDashboardRbac_updateToAdmin(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	boardName := uniqueEntityName(ctx, t)
+	asserts := datadogAdminDashboardAsserts
+	accProvider := testAccProvider(t, accProviders)
+	checks := testCheckResourceAttrs("datadog_dashboard.rbac_dashboard", checkDashboardExists(accProvider), asserts)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: datadogOpenDashboardConfig(boardName),
+			},
+			{
+				Config: datadogAdminDashboardConfig(boardName),
+				Check:  resource.ComposeTestCheckFunc(checks...),
+			},
+		},
+	})
+}
+
+func TestAccDatadogDashboardRbac_updateToRbac(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	boardName := uniqueEntityName(ctx, t)
+	roleName := uniqueEntityName(ctx, t)
+	asserts := datadogRbacDashboardAsserts
+	accProvider := testAccProvider(t, accProviders)
+	checks := testCheckResourceAttrs("datadog_dashboard.rbac_dashboard", checkDashboardExists(accProvider), asserts)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: datadogOpenDashboardConfig(boardName),
+			},
+			{
+				Config: datadogRbacDashboardConfig(boardName, roleName),
+				Check:  resource.ComposeTestCheckFunc(checks...),
+			},
+		},
+	})
+}
+
+func TestAccDatadogDashboardRbac_updateToOpen(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	boardName := uniqueEntityName(ctx, t)
+	roleName := uniqueEntityName(ctx, t)
+	asserts := datadogOpenDashboardAsserts
+	accProvider := testAccProvider(t, accProviders)
+	checks := testCheckResourceAttrs("datadog_dashboard.rbac_dashboard", checkDashboardExists(accProvider), asserts)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: datadogAdminDashboardConfig(boardName),
+			},
+			{
+				Config: datadogOpenDashboardConfig(boardName),
+				Check:  resource.ComposeTestCheckFunc(checks...),
+			},
+			{
+				Config: datadogRbacDashboardConfig(boardName, roleName),
+			},
+			{
+				Config: datadogOpenDashboardConfig(boardName),
+				Check:  resource.ComposeTestCheckFunc(checks...),
+			},
+		},
+	})
+}
+
+func TestAccDatadogDashboardRbac_adminToRbac(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	boardName := uniqueEntityName(ctx, t)
+	roleName := uniqueEntityName(ctx, t)
+	asserts := datadogRbacDashboardAsserts
+	accProvider := testAccProvider(t, accProviders)
+	checks := testCheckResourceAttrs("datadog_dashboard.rbac_dashboard", checkDashboardExists(accProvider), asserts)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: datadogAdminDashboardConfig(boardName),
+			},
+			{
+				Config: datadogRbacDashboardConfig(boardName, roleName),
+				Check:  resource.ComposeTestCheckFunc(checks...),
 			},
 		},
 	})
