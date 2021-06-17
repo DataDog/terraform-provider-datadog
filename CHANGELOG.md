@@ -1,3 +1,29 @@
+## 3.1.0 (June 17, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_logs_index`: Adding missing retention_days and daily_limit parameters. ([#1083](https://github.com/DataDog/terraform-provider-datadog/pull/1083)) Thanks [@DimitryVlasenko](https://github.com/DimitryVlasenko)
+-   `datadog_dashboard`: Add support for WidgetCustomLink `is_hidden` and `override_label` properties. ([#1062](https://github.com/DataDog/terraform-provider-datadog/pull/1062))
+-   `datadog_synthetics_test`: Add support for monitor name and priority. ([#1104](https://github.com/DataDog/terraform-provider-datadog/pull/1104))
+-   `datadog_integration_aws`: Add support for access_key_id and secret_access_key. ([#1101](https://github.com/DataDog/terraform-provider-datadog/pull/1101)).
+-   `datadog_dashboard`: Update dashboard examples. ([#1105](https://github.com/DataDog/terraform-provider-datadog/pull/1105))
+-   `datadog_synthetics_test`: Add support for global variables in config variables. ([#1106](https://github.com/DataDog/terraform-provider-datadog/pull/1106))
+-   `datadog_dashboard_json`: Add dashboard list support. ([#1102](https://github.com/DataDog/terraform-provider-datadog/pull/1102))
+-   `datadog_downtime`: Properly handle recurring downtimes definitions. ([#1092](https://github.com/DataDog/terraform-provider-datadog/pull/1092))
+-   `datadog_dashboard`: Dashboard RBAC roles. ([#1109](https://github.com/DataDog/terraform-provider-datadog/pull/1109))
+
+BUGFIXES:
+
+-   `datadog_integration_aws`: Properly catch error response from AWS Logs integration. ([#1095](https://github.com/DataDog/terraform-provider-datadog/pull/1095))
+-   `datadog_integration_aws`: Handle empty parameters in AWS and Azure integrations. ([#1096](https://github.com/DataDog/terraform-provider-datadog/pull/1096)).
+-   `datadog_integration_azure`: Handle empty parameters in AWS and Azure integrations. ([#1096](https://github.com/DataDog/terraform-provider-datadog/pull/1096)).
+-   `datadog_monitor`: Re-introduce monitor type diff suppression for query/metric alerts. ([#1099](https://github.com/DataDog/terraform-provider-datadog/pull/1099))
+-   `datadog_synthetics_test`: Allow zero value for dns_server_port. ([#1087](https://github.com/DataDog/terraform-provider-datadog/pull/1087))
+
+NOTES:
+
+-   Update Datadog api go client. See [here](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.1.0) for changes.
+
 ## 3.0.0 (May 27, 2021)
 
 IMPROVEMENTS:
