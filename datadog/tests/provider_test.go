@@ -66,6 +66,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/import_datadog_monitor_test":                                "monitors",
 	"tests/import_datadog_user_test":                                   "users",
 	"tests/provider_test":                                              "terraform",
+	"tests/resource_datadog_api_key_test":                              "api_keys",
 	"tests/resource_datadog_dashboard_alert_graph_test":                "dashboards",
 	"tests/resource_datadog_dashboard_alert_value_test":                "dashboards",
 	"tests/resource_datadog_dashboard_change_test":                     "dashboards",
