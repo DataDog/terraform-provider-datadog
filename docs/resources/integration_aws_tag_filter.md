@@ -3,12 +3,12 @@
 page_title: "datadog_integration_aws_tag_filter Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog AWS tag filter resource. This can be used to create and manage Datadog AWS tag filters - US site’s endpoint only
+  Provides a Datadog AWS tag filter resource. This can be used to create and manage Datadog AWS tag filters.
 ---
 
 # datadog_integration_aws_tag_filter (Resource)
 
-Provides a Datadog AWS tag filter resource. This can be used to create and manage Datadog AWS tag filters - US site’s endpoint only
+Provides a Datadog AWS tag filter resource. This can be used to create and manage Datadog AWS tag filters.
 
 ## Example Usage
 

@@ -14,7 +14,7 @@ import (
 
 func resourceDatadogIntegrationAwsTagFilter() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog AWS tag filter resource. This can be used to create and manage Datadog AWS tag filters - US site’s endpoint only",
+		Description:   "Provides a Datadog AWS tag filter resource. This can be used to create and manage Datadog AWS tag filters.",
 		CreateContext: resourceDatadogIntegrationAwsTagFilterCreate,
 		UpdateContext: resourceDatadogIntegrationAwsTagFilterUpdate,
 		ReadContext:   resourceDatadogIntegrationAwsTagFilterRead,
