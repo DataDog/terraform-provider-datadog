@@ -46,10 +46,10 @@ resource "datadog_logs_index" "sample_index" {
 
 ### Required
 
-- **daily_limit** (String) The number of log events you can send in this index per day before you are rate-limited.
+- **daily_limit** (Number) The number of log events you can send in this index per day before you are rate-limited.
 - **filter** (Block List, Min: 1) Logs filter (see [below for nested schema](#nestedblock--filter))
 - **name** (String) The name of the index.
-- **retention_days** (String) The number of days before logs are deleted from this index.
+- **retention_days** (Number) The number of days before logs are deleted from this index.
 
 ### Optional
 
