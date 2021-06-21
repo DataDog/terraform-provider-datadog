@@ -20,7 +20,7 @@ var indexSchema = map[string]*schema.Schema{
 	"daily_limit": {
 		Description: "The number of log events you can send in this index per day before you are rate-limited.",
 		Type:        schema.TypeInt,
-		Required:    true,
+		Optional:    true,
 	},
 	"retention_days": {
 		Description: "The number of days before logs are deleted from this index.",
