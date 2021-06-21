@@ -138,7 +138,6 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 								},
 							},
 						},
-
 					},
 				},
 			},
@@ -225,7 +224,7 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 
 	if v, ok := d.GetOk("options"); ok {
 		tfOptionsList := v.([]interface{})
-		payloadOptions := buildCreatePayloadOptions(tfOptionsList)
+		payloadOptions := buildPayloadOptions(tfOptionsList)
 		payload.Options = *payloadOptions
 	}
 
@@ -272,14 +271,10 @@ func buildCreatePayloadCases(d *schema.ResourceData) []datadogV2.SecurityMonitor
 	return payloadCases
 }
 
-func buildCreatePayloadOptions(tfOptionsList []interface{}) *datadogV2.SecurityMonitoringRuleOptions {
+func buildPayloadOptions(tfOptionsList []interface{}) *datadogV2.SecurityMonitoringRuleOptions {
 	payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
-	var tfOptions map[string]interface{}
-	if tfOptionsList[0] == nil {
-		tfOptions = make(map[string]interface{})
-	} else {
-		tfOptions = tfOptionsList[0].(map[string]interface{})
-	}
+	tfOptions := extractMapFromInterface(tfOptionsList)
+
 	if v, ok := tfOptions["detection_method"]; ok {
 		detectionMethod := datadogV2.SecurityMonitoringRuleDetectionMethod(v.(string))
 		payloadOptions.DetectionMethod = &detectionMethod
@@ -299,21 +294,16 @@ func buildCreatePayloadOptions(tfOptionsList []interface{}) *datadogV2.SecurityM
 
 	if v, ok := tfOptions["new_value_options"]; ok {
 		tfNewValueOptionsList := v.([]interface{})
-		payloadNewValueOptions := buildCreatePayloadNewValueOptions(tfNewValueOptionsList)
+		payloadNewValueOptions := buildPayloadNewValueOptions(tfNewValueOptionsList)
 		payloadOptions.NewValueOptions = payloadNewValueOptions
 	}
 
 	return payloadOptions
 }
 
-func buildCreatePayloadNewValueOptions(tfOptionsList []interface{}) *datadogV2.SecurityMonitoringRuleNewValueOptions {
+func buildPayloadNewValueOptions(tfOptionsList []interface{}) *datadogV2.SecurityMonitoringRuleNewValueOptions {
 	payloadNewValueRulesOptions := datadogV2.NewSecurityMonitoringRuleNewValueOptions()
-	var tfOptions map[string]interface{}
-	if tfOptionsList[0] == nil {
-		tfOptions = make(map[string]interface{})
-	} else {
-		tfOptions = tfOptionsList[0].(map[string]interface{})
-	}
+	tfOptions := extractMapFromInterface(tfOptionsList)
 	if v, ok := tfOptions["learning_duration"]; ok {
 		learningDuration := datadogV2.SecurityMonitoringRuleNewValueOptionsLearningDuration(v.(int))
 		payloadNewValueRulesOptions.LearningDuration = &learningDuration
@@ -325,6 +315,15 @@ func buildCreatePayloadNewValueOptions(tfOptionsList []interface{}) *datadogV2.S
 	return payloadNewValueRulesOptions
 }
 
+func extractMapFromInterface(tfOptionsList []interface{}) map[string]interface{} {
+	var tfOptions map[string]interface{}
+	if len(tfOptionsList) == 0 || tfOptionsList[0] == nil {
+		tfOptions = make(map[string]interface{})
+	} else {
+		tfOptions = tfOptionsList[0].(map[string]interface{})
+	}
+	return tfOptions
+}
 
 func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonitoringRuleQueryCreate {
 	tfQueries := d.Get("query").([]interface{})
@@ -518,22 +517,7 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 	}
 
 	if v, ok := d.GetOk("options"); ok {
-		payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
-		tfOptions := v.([]interface{})
-		options := tfOptions[0].(map[string]interface{})
-		if v, ok := options["evaluation_window"]; ok {
-			evaluationWindow := datadogV2.SecurityMonitoringRuleEvaluationWindow(v.(int))
-			payloadOptions.EvaluationWindow = &evaluationWindow
-		}
-		if v, ok := options["keep_alive"]; ok {
-			keepAlive := datadogV2.SecurityMonitoringRuleKeepAlive(v.(int))
-			payloadOptions.KeepAlive = &keepAlive
-		}
-		if v, ok := options["max_signal_duration"]; ok {
-			maxSignalDuration := datadogV2.SecurityMonitoringRuleMaxSignalDuration(v.(int))
-			payloadOptions.MaxSignalDuration = &maxSignalDuration
-		}
-		payload.Options = payloadOptions
+		payload.Options = buildPayloadOptions(v.([]interface{}))
 	}
 
 	if v, ok := d.GetOk("query"); ok {
