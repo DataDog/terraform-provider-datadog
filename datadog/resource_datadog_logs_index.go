@@ -25,7 +25,7 @@ var indexSchema = map[string]*schema.Schema{
 	"retention_days": {
 		Description: "The number of days before logs are deleted from this index.",
 		Type:        schema.TypeInt,
-		Required:    true,
+		Optional:    true,
 	},
 	"filter": {
 		Description: "Logs filter",
