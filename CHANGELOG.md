@@ -2,7 +2,7 @@
 
 IMPROVEMENTS:
 
--   `datadog_logs_index`: Remove US only constraint from docs. ([#1118](https://github.com/DataDog/terraform-provider-datadog/pull/1118))
+-   `datadog_integration_aws_tag_filter`: Remove US only constraint from docs. ([#1118](https://github.com/DataDog/terraform-provider-datadog/pull/1118))
 
 BUGFIXES:
 
