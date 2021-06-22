@@ -1,3 +1,13 @@
+## 3.1.1 (June 22, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_integration_aws_tag_filter`: Remove US only constraint from docs. ([#1118](https://github.com/DataDog/terraform-provider-datadog/pull/1118))
+
+BUGFIXES:
+
+-   `datadog_logs_index`: Fix retention_days and daily_limit attributes. ([#1118](https://github.com/DataDog/terraform-provider-datadog/pull/1118))
+
 ## 3.1.0 (June 17, 2021)
 
 IMPROVEMENTS:
