@@ -160,6 +160,13 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				Type:        schema.TypeBool,
 				Computed:    true,
 			},
+			"restricted_roles": {
+				// Uncomment when generally available
+				// Description: "A list of role identifiers to associate with the monitor. Cannot be used with `locked`.",
+				Type:     schema.TypeSet,
+				Computed: true,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+			},
 			"include_tags": {
 				Description: "Whether or not notifications from the monitor automatically inserts its triggering tags into the title.",
 				Type:        schema.TypeBool,
@@ -252,6 +259,10 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	tags = append(tags, m.GetTags()...)
 	sort.Strings(tags)
 
+	var restricted_roles []string
+	restricted_roles = append(restricted_roles, m.GetRestrictedRoles()...)
+	sort.Strings(restricted_roles)
+
 	d.SetId(strconv.FormatInt(m.GetId(), 10))
 	d.Set("name", m.GetName())
 	d.Set("message", m.GetMessage())
@@ -277,6 +288,7 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	d.Set("tags", tags)
 	d.Set("require_full_window", m.Options.GetRequireFullWindow()) // TODO Is this one of those options that we neeed to check?
 	d.Set("locked", m.Options.GetLocked())
+	d.Set("restricted_roles", restricted_roles)
 	d.Set("groupby_simple_monitor", m.Options.GetGroupbySimpleMonitor())
 
 	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {

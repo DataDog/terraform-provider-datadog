@@ -389,10 +389,9 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 			roles = append(roles, r.(string))
 		}
 		sort.Strings(roles)
-		// don't pass an empty array, it's not accepted
-		m.SetRestrictedRoles(roles)
-		u.SetRestrictedRoles(roles)
 	}
+	m.SetRestrictedRoles(roles)
+	u.SetRestrictedRoles(roles)
 
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
