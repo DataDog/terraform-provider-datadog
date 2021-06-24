@@ -1,3 +1,9 @@
+## 3.1.2 (June 24, 2021)
+
+BUGFIXES:
+
+-   `datadog_integration_aws`: Handle all characters for AWS Role Name. ([#1122](https://github.com/DataDog/terraform-provider-datadog/pull/1122))
+
 ## 3.1.1 (June 22, 2021)
 
 IMPROVEMENTS:
