@@ -277,7 +277,9 @@ func buildPayloadOptions(tfOptionsList []interface{}) *datadogV2.SecurityMonitor
 
 	if v, ok := tfOptions["detection_method"]; ok {
 		detectionMethod := datadogV2.SecurityMonitoringRuleDetectionMethod(v.(string))
-		payloadOptions.DetectionMethod = &detectionMethod
+		if detectionMethod.IsValid() {
+			payloadOptions.DetectionMethod = &detectionMethod
+		}
 	}
 	if v, ok := tfOptions["evaluation_window"]; ok {
 		evaluationWindow := datadogV2.SecurityMonitoringRuleEvaluationWindow(v.(int))
@@ -294,25 +296,29 @@ func buildPayloadOptions(tfOptionsList []interface{}) *datadogV2.SecurityMonitor
 
 	if v, ok := tfOptions["new_value_options"]; ok {
 		tfNewValueOptionsList := v.([]interface{})
-		payloadNewValueOptions := buildPayloadNewValueOptions(tfNewValueOptionsList)
-		payloadOptions.NewValueOptions = payloadNewValueOptions
+		if payloadNewValueOptions, ok := buildPayloadNewValueOptions(tfNewValueOptionsList); ok {
+			payloadOptions.NewValueOptions = payloadNewValueOptions
+		}
 	}
 
 	return payloadOptions
 }
 
-func buildPayloadNewValueOptions(tfOptionsList []interface{}) *datadogV2.SecurityMonitoringRuleNewValueOptions {
+func buildPayloadNewValueOptions(tfOptionsList []interface{}) (*datadogV2.SecurityMonitoringRuleNewValueOptions, bool) {
 	payloadNewValueRulesOptions := datadogV2.NewSecurityMonitoringRuleNewValueOptions()
 	tfOptions := extractMapFromInterface(tfOptionsList)
+	hasPayload := false
 	if v, ok := tfOptions["learning_duration"]; ok {
+		hasPayload = true
 		learningDuration := datadogV2.SecurityMonitoringRuleNewValueOptionsLearningDuration(v.(int))
 		payloadNewValueRulesOptions.LearningDuration = &learningDuration
 	}
 	if v, ok := tfOptions["forget_after"]; ok {
+		hasPayload = true
 		forgetAfter := datadogV2.SecurityMonitoringRuleNewValueOptionsForgetAfter(v.(int))
 		payloadNewValueRulesOptions.ForgetAfter = &forgetAfter
 	}
-	return payloadNewValueRulesOptions
+	return payloadNewValueRulesOptions, hasPayload
 }
 
 func extractMapFromInterface(tfOptionsList []interface{}) map[string]interface{} {
