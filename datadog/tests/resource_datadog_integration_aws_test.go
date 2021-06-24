@@ -17,7 +17,7 @@ func testAccDatadogIntegrationAWSConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_aws" "account" {
   	account_id                       = "%s"
-  	role_name                        = "testacc-datadog-integration-role"
+	role_name                        = "1234@testacc-datadog-integration-role"
 }`, uniq)
 }
 
@@ -25,7 +25,7 @@ func testAccDatadogIntegrationAWSUpdateConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_aws" "account" {
   	account_id                       = "%s"
-  	role_name                        = "testacc-datadog-integration-role"
+	role_name                        = "1234@testacc-datadog-integration-role"
 	filter_tags                      = ["key:value"]
   	host_tags                        = ["key:value", "key2:value2"]
   	account_specific_namespace_rules = {
@@ -55,7 +55,7 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 						"account_id", accountID),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
-						"role_name", "testacc-datadog-integration-role"),
+						"role_name", "1234@testacc-datadog-integration-role"),
 				),
 			}, {
 				Config: testAccDatadogIntegrationAWSUpdateConfig(accountID),
@@ -66,7 +66,7 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 						"account_id", accountID),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
-						"role_name", "testacc-datadog-integration-role"),
+						"role_name", "1234@testacc-datadog-integration-role"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"filter_tags.0", "key:value"),
@@ -99,7 +99,7 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 						"account_id", accountID),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
-						"role_name", "testacc-datadog-integration-role"),
+						"role_name", "1234@testacc-datadog-integration-role"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"excluded_regions.#", "0"),

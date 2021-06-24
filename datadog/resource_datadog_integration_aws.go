@@ -15,7 +15,7 @@ import (
 )
 
 var integrationAwsMutex = sync.Mutex{}
-var accountAndRoleNameIDRegex = regexp.MustCompile("[\\d]+:[a-zA-Z]+")
+var accountAndRoleNameIDRegex = regexp.MustCompile("[\\d]+:.*")
 
 func resourceDatadogIntegrationAws() *schema.Resource {
 	return &schema.Resource{
