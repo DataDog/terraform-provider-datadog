@@ -195,11 +195,9 @@ func buildDatadogIndex(d *schema.ResourceData) (*datadogV1.LogsIndexUpdateReques
 	if v, ok := d.GetOk("daily_limit"); ok {
 		ddIndex.SetDailyLimit(int64(v.(int)))
 	}
-
 	if v, ok := d.GetOk("disable_daily_limit"); ok {
 		ddIndex.SetDisableDailyLimit(v.(bool))
 	}
-
 	if v, ok := d.GetOk("retention_days"); ok {
 		ddIndex.SetNumRetentionDays(int64(v.(int)))
 	}
