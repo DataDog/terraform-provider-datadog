@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"log"
 	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -9,6 +10,7 @@ import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 var indexSchema = map[string]*schema.Schema{
@@ -17,12 +19,25 @@ var indexSchema = map[string]*schema.Schema{
 		Type:        schema.TypeString,
 		Required:    true,
 	},
-	"daily_limit": {
-		Description: "The number of log events you can send in this index per day before you are rate-limited.",
-		Type:        schema.TypeInt,
+	"disable_daily_limit": {
+		Description: "If true, sets the daily_limit value to null and the index is not limited on a daily basis (any specified daily_limit value in the request is ignored). If false or omitted, the index's current daily_limit is maintained.",
+		Type:        schema.TypeBool,
 		Optional:    true,
 		Computed:    true,
 	},
+	"daily_limit": {
+		Description:  "The number of log events you can send in this index per day before you are rate-limited.",
+		Type:         schema.TypeInt,
+		Optional:     true,
+		ValidateFunc: validation.IntAtLeast(1),
+		DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+			// Ignore diff if disable_daily_limit is set to true
+			if v, ok := d.GetOk("disable_daily_limit"); ok && v.(bool) {
+				log.Printf("[DEBUG] Ignoring daily_limit change because disable_daily_limit is set to true on index %s.", d.Get("name"))
+				return true
+			}
+			return false
+		}},
 	"retention_days": {
 		Description: "The number of days before logs are deleted from this index.",
 		Type:        schema.TypeInt,
@@ -112,6 +127,9 @@ func updateLogsIndexState(d *schema.ResourceData, index *datadogV1.LogsIndex) di
 	if err := d.Set("name", index.GetName()); err != nil {
 		return diag.FromErr(err)
 	}
+	if err := d.Set("disable_daily_limit", !index.HasDailyLimit()); err != nil {
+		return diag.FromErr(err)
+	}
 	if err := d.Set("daily_limit", index.GetDailyLimit()); err != nil {
 		return diag.FromErr(err)
 	}
@@ -176,6 +194,10 @@ func buildDatadogIndex(d *schema.ResourceData) (*datadogV1.LogsIndexUpdateReques
 
 	if v, ok := d.GetOk("daily_limit"); ok {
 		ddIndex.SetDailyLimit(int64(v.(int)))
+	}
+
+	if v, ok := d.GetOk("disable_daily_limit"); ok {
+		ddIndex.SetDisableDailyLimit(v.(bool))
 	}
 
 	if v, ok := d.GetOk("retention_days"); ok {
