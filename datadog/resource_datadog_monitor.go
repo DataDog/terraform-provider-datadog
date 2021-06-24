@@ -505,11 +505,6 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return diag.FromErr(err)
 	}
 
-	// This helper function is defined in `resource_datadog_dashboard`
-	restrictedRoles := buildTerraformRestrictedRoles(m.RestrictedRoles)
-	if err := d.Set("restricted_roles", restrictedRoles); err != nil {
-		return diag.FromErr(err)
-	}
 	if len(thresholds) > 0 {
 		if err := d.Set("monitor_thresholds", []interface{}{thresholds}); err != nil {
 			return diag.FromErr(err)
@@ -561,6 +556,11 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("locked", m.Options.GetLocked()); err != nil {
 		return diag.FromErr(err)
 	}
+	// // This helper function is defined in `resource_datadog_dashboard`
+	// restrictedRoles := buildTerraformRestrictedRoles(m.RestrictedRoles)
+	// if err := d.Set("restricted_roles", restrictedRoles); err != nil {
+	// 	return diag.FromErr(err)
+	// }
 
 	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {
 		if err := d.Set("enable_logs_sample", m.Options.GetEnableLogsSample()); err != nil {
