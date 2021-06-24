@@ -21,6 +21,7 @@ var indexSchema = map[string]*schema.Schema{
 		Description: "The number of log events you can send in this index per day before you are rate-limited.",
 		Type:        schema.TypeInt,
 		Optional:    true,
+		Computed:    true,
 	},
 	"retention_days": {
 		Description: "The number of days before logs are deleted from this index.",
@@ -171,6 +172,14 @@ func buildDatadogIndex(d *schema.ResourceData) (*datadogV1.LogsIndexUpdateReques
 	var ddIndex datadogV1.LogsIndexUpdateRequest
 	if tfFilter := d.Get("filter").([]interface{}); len(tfFilter) > 0 {
 		ddIndex.SetFilter(*buildDatadogIndexFilter(tfFilter[0].(map[string]interface{})))
+	}
+
+	if v, ok := d.GetOk("daily_limit"); ok {
+		ddIndex.SetDailyLimit(int64(v.(int)))
+	}
+
+	if v, ok := d.GetOk("retention_days"); ok {
+		ddIndex.SetNumRetentionDays(int64(v.(int)))
 	}
 
 	ddIndex.ExclusionFilters = buildDatadogExclusionFilters(d.Get("exclusion_filter").([]interface{}))
