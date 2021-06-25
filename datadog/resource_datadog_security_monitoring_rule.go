@@ -92,8 +92,8 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						Type:             schema.TypeString,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleDetectionMethodFromValue),
 						Optional:         true,
-						Description:      "The detection method.",
-						Default: 		  "threshold",
+						Description:	  "The detection method.",
+						Default:		  "threshold",
 					},
 
 					"evaluation_window": {
