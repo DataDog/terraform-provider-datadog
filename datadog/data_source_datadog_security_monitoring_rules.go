@@ -196,20 +196,7 @@ func buildSecurityMonitoringTfRule(rule datadogV2.SecurityMonitoringRuleResponse
 	tfRule["message"] = rule.GetMessage()
 	tfRule["name"] = rule.GetName()
 
-	tfOptions := make(map[string]interface{})
-	options := rule.GetOptions()
-	tfOptions["evaluation_window"] = int(options.GetEvaluationWindow())
-	tfOptions["keep_alive"] = int(options.GetKeepAlive())
-	tfOptions["max_signal_duration"] = int(options.GetMaxSignalDuration())
-	tfOptions["detection_method"] = string(options.GetDetectionMethod())
-
-	if newValueOptions, ok:= options.GetNewValueOptionsOk(); ok{
-		tfNewValueOptions := make(map[string]interface{})
-		tfNewValueOptions["forget_after"] = int(newValueOptions.GetForgetAfter())
-		tfNewValueOptions["learning_duration"] = int(newValueOptions.GetLearningDuration())
-		tfOptions["new_value_options"] = []map[string]interface{}{tfNewValueOptions}
-	}
-
+	tfOptions := extractTfOptions(rule.GetOptions())
 	tfRule["options"] = []map[string]interface{}{tfOptions}
 
 	tfQueries := make([]map[string]interface{}, len(rule.GetQueries()))
