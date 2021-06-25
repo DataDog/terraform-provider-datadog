@@ -422,6 +422,7 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 	d.Set("message", ruleResponse.GetMessage())
 	d.Set("name", ruleResponse.GetName())
 
+	// TODO: potentially deduplicate this
 	options := make(map[string]interface{})
 	getOptions := ruleResponse.GetOptions()
 	if evaluationWindow, ok := getOptions.GetEvaluationWindowOk(); ok {
@@ -433,6 +434,16 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 	if maxSignalDuration, ok := getOptions.GetMaxSignalDurationOk(); ok {
 		options["max_signal_duration"] = *maxSignalDuration
 	}
+	if detectionMethod, ok := getOptions.GetDetectionMethodOk(); ok {
+		options["detection_method"] = *detectionMethod
+	}
+	if newValueOptions, ok:= getOptions.GetNewValueOptionsOk(); ok{
+		tfNewValueOptions := make(map[string]interface{})
+		tfNewValueOptions["forget_after"] = int(newValueOptions.GetForgetAfter())
+		tfNewValueOptions["learning_duration"] = int(newValueOptions.GetLearningDuration())
+		options["new_value_options"] = []map[string]interface{}{tfNewValueOptions}
+	}
+
 	d.Set("options", []map[string]interface{}{options})
 
 	ruleQueries := make([]map[string]interface{}, len(ruleResponse.GetQueries()))

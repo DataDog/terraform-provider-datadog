@@ -205,9 +205,9 @@ func buildSecurityMonitoringTfRule(rule datadogV2.SecurityMonitoringRuleResponse
 
 	if newValueOptions, ok:= options.GetNewValueOptionsOk(); ok{
 		tfNewValueOptions := make(map[string]interface{})
-		tfNewValueOptions["forget_after"] = int(newValueOptions.GetForgetAfter());
-		tfNewValueOptions["learning_duration"] = int(newValueOptions.GetLearningDuration());
-		tfOptions["new_value_options"] = []map[string]interface{}{tfNewValueOptions};
+		tfNewValueOptions["forget_after"] = int(newValueOptions.GetForgetAfter())
+		tfNewValueOptions["learning_duration"] = int(newValueOptions.GetLearningDuration())
+		tfOptions["new_value_options"] = []map[string]interface{}{tfNewValueOptions}
 	}
 
 	tfRule["options"] = []map[string]interface{}{tfOptions}
