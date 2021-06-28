@@ -369,7 +369,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigUpdatedWithAttrsRemoved(monitorNameUpdated),
+				Config: testAccCheckDatadogMonitorConfigUpdatedWithPriorityRemoved(monitorNameUpdated),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -749,6 +749,15 @@ func TestAccDatadogMonitor_RestrictedRoles(t *testing.T) {
 						"datadog_monitor.foo", "restricted_roles.#", "1"),
 				),
 			},
+			{
+				Config: testAccCheckDatadogMonitorConfigRestrictedRolesRemoved(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckNoResourceAttr(
+						"datadog_monitor.foo", "restricted_roles"),
+				),
+			},
 		},
 	})
 }
@@ -930,7 +939,7 @@ resource "datadog_monitor" "foo" {
 }`, uniq)
 }
 
-func testAccCheckDatadogMonitorConfigUpdatedWithAttrsRemoved(uniq string) string {
+func testAccCheckDatadogMonitorConfigUpdatedWithPriorityRemoved(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
   name = "%s"
@@ -1190,6 +1199,20 @@ resource "datadog_monitor" "foo" {
 
   restricted_roles = ["${datadog_role.foo.id}"]
 }`, uniq, uniq)
+}
+
+func testAccCheckDatadogMonitorConfigRestrictedRolesRemoved(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "query alert"
+  message = "some message Notify: @hipchat-channel"
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+  monitor_thresholds {
+	critical = "2.0"
+  }
+}`, uniq)
 }
 
 func destroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
