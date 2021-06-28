@@ -200,6 +200,28 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Description: "Tags for generated signals.",
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
+
+		"filters": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Additional queries to filter matched events before they are processed.",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"query": {
+						Type:             schema.TypeString,
+						Required:         true,
+						Description:      "Query for selecting logs to apply the filtering action.",
+					},
+					"action": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "The type of filtering action.",
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringFilterActionFromValue),
+					},
+				},
+			},
+		},
+
 	}
 }
 
@@ -246,6 +268,11 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 			tags[i] = value.(string)
 		}
 		payload.Tags = &tags
+	}
+
+	if v, ok :=  d.GetOk("filters"); ok {
+		tfFilterList := v.([]interface{})
+		payload.SetFilters(buildPayloadFilters(tfFilterList))
 	}
 
 	return payload, nil
@@ -385,6 +412,24 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 	return payloadQueries
 }
 
+func buildPayloadFilters(tfFilters []interface{}) []datadogV2.SecurityMonitoringFilter {
+	payloadFilters := make([]datadogV2.SecurityMonitoringFilter, len(tfFilters))
+	for idx, tfFilter := range tfFilters {
+		filter := tfFilter.(map[string]interface{})
+		payloadFilter := datadogV2.SecurityMonitoringFilter{}
+
+		if v, ok := filter["action"]; ok {
+			action := datadogV2.SecurityMonitoringFilterAction(v.(string))
+			payloadFilter.SetAction(action)
+		}
+
+		payloadFilter.SetQuery(filter["query"].(string))
+
+		payloadFilters[idx] = payloadFilter
+	}
+	return payloadFilters
+}
+
 func resourceDatadogSecurityMonitoringRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
@@ -461,6 +506,30 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 		ruleQueries[idx] = ruleQuery
 	}
 	d.Set("query", ruleQueries)
+
+	d.Set("tags", ruleResponse.GetTags())
+
+	if _, ok:= ruleResponse.GetFiltersOk(); ok{
+		filters := extractFiltersFromRuleResponse(ruleResponse)
+		d.Set("filters", filters)
+	}
+
+}
+
+func extractFiltersFromRuleResponse(ruleResponse datadogV2.SecurityMonitoringRuleResponse) []interface{} {
+	filters := make([]interface{}, len(ruleResponse.GetFilters()))
+	for idx, responseFilter := range ruleResponse.GetFilters() {
+		filter := make(map[string]interface{})
+		if query, ok := responseFilter.GetQueryOk(); ok {
+			filter["query"] = *query
+		}
+		if action, ok := responseFilter.GetActionOk(); ok {
+			filter["action"] = *action
+		}
+
+		filters[idx] = filter
+	}
+	return filters
 }
 
 func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[string]interface{} {
@@ -605,6 +674,11 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 			tags[i] = value.(string)
 		}
 		payload.Tags = &tags
+	}
+
+	if v, ok:= d.GetOk("filters"); ok {
+		tfFilters := v.([]interface{})
+		payload.SetFilters(buildPayloadFilters(tfFilters))
 	}
 
 	return payload
