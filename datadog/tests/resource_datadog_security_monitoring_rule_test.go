@@ -105,7 +105,7 @@ func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
 				ResourceName:            tfSecurityRuleName,
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"enabled"},
+				ImportStateVerifyIgnore: []string{"enabled","has_extended_title"},
 				Check:                   testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
 			},
 		},
