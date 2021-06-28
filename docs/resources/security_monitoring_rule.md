@@ -17,6 +17,8 @@ resource "datadog_security_monitoring_rule" "myrule" {
 
   message = "The rule has triggered."
   enabled = true
+  has_extended_title = true
+
 
   query {
     name            = "errors"
@@ -61,6 +63,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 ### Optional
 
 - **enabled** (Boolean, Optional) Whether the rule is enabled.
+- **has_extended_title** (Boolean, Optional) Whether the notifications include the triggering group-by values in their title.
 - **id** (String, Optional) The ID of this resource.
 - **options** (Block List, Max: 1) Options on rules. (see [below for nested schema](#nestedblock--options))
 - **tags** (List of String, Optional) Tags for generated signals.
