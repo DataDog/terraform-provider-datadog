@@ -64,7 +64,6 @@ func TestAccDatadogSecurityMonitoringRule_NewValueRule(t *testing.T) {
 	})
 }
 
-
 func TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
