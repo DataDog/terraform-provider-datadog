@@ -88,6 +88,14 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
+					"detection_method": {
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleDetectionMethodFromValue),
+						Optional:         true,
+						Description:	  "The detection method.",
+						Default:		  "threshold",
+					},
+
 					"evaluation_window": {
 						Type:             schema.TypeInt,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleEvaluationWindowFromValue),
@@ -107,6 +115,30 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleMaxSignalDurationFromValue),
 						Required:         true,
 						Description:      "A signal will “close” regardless of the query being matched once the time exceeds the maximum duration. This time is calculated from the first seen timestamp.",
+					},
+
+					"new_value_options": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						MaxItems:    1,
+						Description: "New value rules specific options.",
+
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"learning_duration": {
+									Type:             schema.TypeInt,
+									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleNewValueOptionsLearningDurationFromValue),
+									Required:         true,
+									Description:      "The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned.",
+								},
+								"forget_after": {
+									Type:             schema.TypeInt,
+									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleNewValueOptionsForgetAfterFromValue),
+									Required:         true,
+									Description:      "The duration in days after which a learned value is forgotten.",
+								},
+							},
+						},
 					},
 				},
 			},
@@ -193,7 +225,7 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 
 	if v, ok := d.GetOk("options"); ok {
 		tfOptionsList := v.([]interface{})
-		payloadOptions := buildCreatePayloadOptions(tfOptionsList)
+		payloadOptions := buildPayloadOptions(tfOptionsList)
 		payload.Options = *payloadOptions
 	}
 
@@ -240,13 +272,13 @@ func buildCreatePayloadCases(d *schema.ResourceData) []datadogV2.SecurityMonitor
 	return payloadCases
 }
 
-func buildCreatePayloadOptions(tfOptionsList []interface{}) *datadogV2.SecurityMonitoringRuleOptions {
+func buildPayloadOptions(tfOptionsList []interface{}) *datadogV2.SecurityMonitoringRuleOptions {
 	payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
-	var tfOptions map[string]interface{}
-	if tfOptionsList[0] == nil {
-		tfOptions = make(map[string]interface{})
-	} else {
-		tfOptions = tfOptionsList[0].(map[string]interface{})
+	tfOptions := extractMapFromInterface(tfOptionsList)
+
+	if v, ok := tfOptions["detection_method"]; ok {
+		detectionMethod := datadogV2.SecurityMonitoringRuleDetectionMethod(v.(string))
+		payloadOptions.DetectionMethod = &detectionMethod
 	}
 	if v, ok := tfOptions["evaluation_window"]; ok {
 		evaluationWindow := datadogV2.SecurityMonitoringRuleEvaluationWindow(v.(int))
@@ -260,7 +292,42 @@ func buildCreatePayloadOptions(tfOptionsList []interface{}) *datadogV2.SecurityM
 		maxSignalDuration := datadogV2.SecurityMonitoringRuleMaxSignalDuration(v.(int))
 		payloadOptions.MaxSignalDuration = &maxSignalDuration
 	}
+
+	if v, ok := tfOptions["new_value_options"]; ok {
+		tfNewValueOptionsList := v.([]interface{})
+		if payloadNewValueOptions, ok := buildPayloadNewValueOptions(tfNewValueOptionsList); ok {
+			payloadOptions.NewValueOptions = payloadNewValueOptions
+		}
+	}
+
 	return payloadOptions
+}
+
+func buildPayloadNewValueOptions(tfOptionsList []interface{}) (*datadogV2.SecurityMonitoringRuleNewValueOptions, bool) {
+	payloadNewValueRulesOptions := datadogV2.NewSecurityMonitoringRuleNewValueOptions()
+	tfOptions := extractMapFromInterface(tfOptionsList)
+	hasPayload := false
+	if v, ok := tfOptions["learning_duration"]; ok {
+		hasPayload = true
+		learningDuration := datadogV2.SecurityMonitoringRuleNewValueOptionsLearningDuration(v.(int))
+		payloadNewValueRulesOptions.LearningDuration = &learningDuration
+	}
+	if v, ok := tfOptions["forget_after"]; ok {
+		hasPayload = true
+		forgetAfter := datadogV2.SecurityMonitoringRuleNewValueOptionsForgetAfter(v.(int))
+		payloadNewValueRulesOptions.ForgetAfter = &forgetAfter
+	}
+	return payloadNewValueRulesOptions, hasPayload
+}
+
+func extractMapFromInterface(tfOptionsList []interface{}) map[string]interface{} {
+	var tfOptions map[string]interface{}
+	if len(tfOptionsList) == 0 || tfOptionsList[0] == nil {
+		tfOptions = make(map[string]interface{})
+	} else {
+		tfOptions = tfOptionsList[0].(map[string]interface{})
+	}
+	return tfOptions
 }
 
 func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonitoringRuleQueryCreate {
@@ -354,17 +421,8 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 	d.Set("message", ruleResponse.GetMessage())
 	d.Set("name", ruleResponse.GetName())
 
-	options := make(map[string]interface{})
-	getOptions := ruleResponse.GetOptions()
-	if evaluationWindow, ok := getOptions.GetEvaluationWindowOk(); ok {
-		options["evaluation_window"] = *evaluationWindow
-	}
-	if keepAlive, ok := getOptions.GetKeepAliveOk(); ok {
-		options["keep_alive"] = *keepAlive
-	}
-	if maxSignalDuration, ok := getOptions.GetMaxSignalDurationOk(); ok {
-		options["max_signal_duration"] = *maxSignalDuration
-	}
+	options := extractTfOptions(ruleResponse.GetOptions())
+
 	d.Set("options", []map[string]interface{}{options})
 
 	ruleQueries := make([]map[string]interface{}, len(ruleResponse.GetQueries()))
@@ -393,6 +451,29 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 		ruleQueries[idx] = ruleQuery
 	}
 	d.Set("query", ruleQueries)
+}
+
+func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[string]interface{} {
+	tfOptions := make(map[string]interface{})
+	if evaluationWindow, ok := options.GetEvaluationWindowOk(); ok {
+		tfOptions["evaluation_window"] = *evaluationWindow
+	}
+	if keepAlive, ok := options.GetKeepAliveOk(); ok {
+		tfOptions["keep_alive"] = *keepAlive
+	}
+	if maxSignalDuration, ok := options.GetMaxSignalDurationOk(); ok {
+		tfOptions["max_signal_duration"] = *maxSignalDuration
+	}
+	if detectionMethod, ok := options.GetDetectionMethodOk(); ok {
+		tfOptions["detection_method"] = *detectionMethod
+	}
+	if newValueOptions, ok := options.GetNewValueOptionsOk(); ok {
+		tfNewValueOptions := make(map[string]interface{})
+		tfNewValueOptions["forget_after"] = int(newValueOptions.GetForgetAfter())
+		tfNewValueOptions["learning_duration"] = int(newValueOptions.GetLearningDuration())
+		tfOptions["new_value_options"] = []map[string]interface{}{tfNewValueOptions}
+	}
+	return tfOptions
 }
 
 func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -455,22 +536,7 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 	}
 
 	if v, ok := d.GetOk("options"); ok {
-		payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
-		tfOptions := v.([]interface{})
-		options := tfOptions[0].(map[string]interface{})
-		if v, ok := options["evaluation_window"]; ok {
-			evaluationWindow := datadogV2.SecurityMonitoringRuleEvaluationWindow(v.(int))
-			payloadOptions.EvaluationWindow = &evaluationWindow
-		}
-		if v, ok := options["keep_alive"]; ok {
-			keepAlive := datadogV2.SecurityMonitoringRuleKeepAlive(v.(int))
-			payloadOptions.KeepAlive = &keepAlive
-		}
-		if v, ok := options["max_signal_duration"]; ok {
-			maxSignalDuration := datadogV2.SecurityMonitoringRuleMaxSignalDuration(v.(int))
-			payloadOptions.MaxSignalDuration = &maxSignalDuration
-		}
-		payload.Options = payloadOptions
+		payload.Options = buildPayloadOptions(v.([]interface{}))
 	}
 
 	if v, ok := d.GetOk("query"); ok {

@@ -41,6 +41,30 @@ func TestAccDatadogSecurityMonitoringRule_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringRule_NewValueRule(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigNewValueRule(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitorCreatedCheckNewValueRule(accProvider, ruleName),
+			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfigNewValueRule(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRule(accProvider, ruleName),
+			},
+		},
+	})
+}
+
+
 func TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -192,6 +216,85 @@ func testAccCheckDatadogSecurityMonitorCreatedCheck(accProvider func() (*schema.
 	)
 }
 
+func testAccCheckDatadogSecurityMonitoringCreatedConfigNewValueRule(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "acceptance rule triggered"
+    enabled = false
+
+    query {
+        name = "first"
+        query = "does not really match much"
+        aggregation = "new_value"
+		metric = "@value"
+        group_by_fields = ["host"]
+    }
+
+    case {
+        name = ""
+        status = "high"
+        notifications = ["@user"]
+    }
+
+    options {
+		detection_method = "new_value"
+        evaluation_window = 300
+        keep_alive = 600
+        max_signal_duration = 900
+		new_value_options {
+			forget_after = 7
+			learning_duration = 1
+		}
+    }
+
+    tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitorCreatedCheckNewValueRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "acceptance rule triggered"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "enabled", "false"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.name", "first"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.query", "does not really match much"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.aggregation", "new_value"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.group_by_fields.0", "host"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.name", ""),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.status", "high"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.notifications.0", "@user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.evaluation_window", "300"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.detection_method", "new_value"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.forget_after", "7"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.learning_duration", "1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.0", "i:tomato"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.1", "u:tomato"),
+	)
+}
+
 func testAccCheckDatadogSecurityMonitoringUpdatedConfig(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_rule" "acceptance_test" {
@@ -273,6 +376,88 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider func() (*schem
 			tfSecurityRuleName, "options.0.keep_alive", "300"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.max_signal_duration", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.0", "u:tomato"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.1", "i:tomato"),
+	)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdatedConfigNewValueRule(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s - updated"
+    message = "acceptance rule triggered (updated)"
+    enabled = true
+
+    query {
+        name = "first_updated"
+        query = "does not really match much (updated)"
+        aggregation = "new_value"
+        group_by_fields = ["service"]
+        metric = "@network.bytes_read"
+    }
+
+    case {
+        name = "high case (updated)"
+        status = "medium"
+        condition = ""
+        notifications = ["@user"]
+    }
+
+     options {
+		detection_method = "new_value"
+        evaluation_window = 300
+        keep_alive = 600
+        max_signal_duration = 900
+		new_value_options {
+			forget_after = 1
+			learning_duration = 0
+		}
+    }
+
+    tags = ["u:tomato", "i:tomato"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName+" - updated"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "acceptance rule triggered (updated)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "enabled", "true"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.name", "first_updated"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.query", "does not really match much (updated)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.aggregation", "new_value"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.metric", "@network.bytes_read"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.name", "high case (updated)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.status", "medium"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.notifications.0", "@user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.evaluation_window", "300"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.detection_method", "new_value"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.forget_after", "1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.learning_duration", "0"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "tags.0", "u:tomato"),
 		resource.TestCheckResourceAttr(

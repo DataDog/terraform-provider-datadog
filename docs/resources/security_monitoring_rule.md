@@ -39,6 +39,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
   }
 
   options {
+    detection_method    = "threshold"
     evaluation_window   = 300
     keep_alive          = 600
     max_signal_duration = 900
@@ -102,6 +103,19 @@ Required:
 - **evaluation_window** (Number, Required) A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time.
 - **keep_alive** (Number, Required) Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window.
 - **max_signal_duration** (Number, Required) A signal will “close” regardless of the query being matched once the time exceeds the maximum duration. This time is calculated from the first seen timestamp.
+
+Optional:
+
+- **detection_method** (String, Optional) The detection method. Default to `threshold`.
+- **new_value_options** (Block List, Max: 1) Specific options for `new_value` detection method. (see [below for nested schema](#nestedblock--new-value-options))
+
+<a id="nestedblock--options"></a>
+### Nested Schema for `new_value_options`
+
+Required:
+
+- **forget_after** (Number, Required) The duration in days after which a learned value is forgotten.
+- **learning_duration** (Number, Required) The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned.
 
 ## Import
 

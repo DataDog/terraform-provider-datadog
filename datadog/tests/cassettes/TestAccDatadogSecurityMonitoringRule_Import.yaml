@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1615587153","options":{"evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"","query":"does not really match much"}]}
+      {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1624624848","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"","query":"does not really match much"}]}
     form: {}
     headers:
       Accept:
@@ -13,11 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateSecurityMonitoringRule
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 1.0.0) datadog-api-client-go/1.1.0 (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules
     method: POST
   response:
-    body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1615587155328,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"gsg-xjl-ts9","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1615587153"}'
+    body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1624624852048,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"0gm-0u1-a1n","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1624624848"}'
     headers:
       Cache-Control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 12 Mar 2021 22:12:35 GMT
+      - Fri, 25 Jun 2021 12:40:52 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -40,11 +40,19 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
+      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
       X-Dd-Version:
-      - "35.4088130"
+      - "35.4832146"
       X-Frame-Options:
       - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "596"
+      X-Ratelimit-Reset:
+      - "9"
     status: 200 OK
     code: 200
     duration: ""
@@ -57,11 +65,11 @@ interactions:
       Dd-Operation-Id:
       - GetSecurityMonitoringRule
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gsg-xjl-ts9
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 1.0.0) datadog-api-client-go/1.1.0 (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0gm-0u1-a1n
     method: GET
   response:
-    body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1615587155328,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"gsg-xjl-ts9","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1615587153"}'
+    body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1624624852048,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"0gm-0u1-a1n","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1624624848"}'
     headers:
       Cache-Control:
       - no-cache
@@ -74,7 +82,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 12 Mar 2021 22:12:36 GMT
+      - Fri, 25 Jun 2021 12:40:53 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -84,11 +92,19 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - bgHykj7A9bfZx0Y5ZO3swhhp5tGUSNJHqFWR868+qg087CYrDOd5hQslC+noiEtH
+      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
       X-Dd-Version:
-      - "35.4088130"
+      - "35.4832146"
       X-Frame-Options:
       - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "592"
+      X-Ratelimit-Reset:
+      - "7"
     status: 200 OK
     code: 200
     duration: ""
@@ -101,11 +117,11 @@ interactions:
       Dd-Operation-Id:
       - GetSecurityMonitoringRule
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gsg-xjl-ts9
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 1.0.0) datadog-api-client-go/1.1.0 (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0gm-0u1-a1n
     method: GET
   response:
-    body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1615587155328,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much","trackType":"logs"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"gsg-xjl-ts9","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1615587153"}'
+    body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1624624852048,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"0gm-0u1-a1n","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1624624848"}'
     headers:
       Cache-Control:
       - no-cache
@@ -118,7 +134,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 12 Mar 2021 22:12:37 GMT
+      - Fri, 25 Jun 2021 12:40:54 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -128,11 +144,19 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - twvpGlmuom5y6A0pjGtXzTf554cmwJgTcCZ71fK4H/RDi+v5ehBK0zQiRcTJQG5C
+      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
       X-Dd-Version:
-      - "35.4088130"
+      - "35.4832146"
       X-Frame-Options:
       - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "588"
+      X-Ratelimit-Reset:
+      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -145,8 +169,8 @@ interactions:
       Dd-Operation-Id:
       - DeleteSecurityMonitoringRule
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gsg-xjl-ts9
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 1.0.0) datadog-api-client-go/1.1.0 (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0gm-0u1-a1n
     method: DELETE
   response:
     body: ""
@@ -158,11 +182,11 @@ interactions:
       Content-Disposition:
       - inline
       Content-Length:
-      - "2"
+      - "0"
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Date:
-      - Fri, 12 Mar 2021 22:12:38 GMT
+      - Fri, 25 Jun 2021 12:40:55 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -170,11 +194,19 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Debug:
-      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
+      - dCmL/3rURV6BPeaqeP3Rxigq41m5CAb17XjrRE42uZ01zpr07HVhbL5/3TWMkvgu
       X-Dd-Version:
-      - "35.4088130"
+      - "35.4832146"
       X-Frame-Options:
       - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "584"
+      X-Ratelimit-Reset:
+      - "5"
     status: 204 No Content
     code: 204
     duration: ""
@@ -187,11 +219,11 @@ interactions:
       Dd-Operation-Id:
       - GetSecurityMonitoringRule
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gsg-xjl-ts9
+      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 1.0.0) datadog-api-client-go/1.1.0 (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0gm-0u1-a1n
     method: GET
   response:
-    body: '{"errors":["Threat detection rule not found: gsg-xjl-ts9"]}'
+    body: '{"errors":["Threat detection rule not found: 0gm-0u1-a1n"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -202,7 +234,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:12:38 GMT
+      - Fri, 25 Jun 2021 12:40:56 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -212,9 +244,17 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Dd-Version:
-      - "35.4088130"
+      - "35.4832146"
       X-Frame-Options:
       - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "582"
+      X-Ratelimit-Reset:
+      - "4"
     status: 404 Not Found
     code: 404
     duration: ""
