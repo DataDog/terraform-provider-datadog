@@ -201,7 +201,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 
-		"filters": {
+		"filter": {
 			Type:        schema.TypeList,
 			Optional:    true,
 			Description: "Additional queries to filter matched events before they are processed.",
@@ -270,7 +270,7 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 		payload.Tags = &tags
 	}
 
-	if v, ok :=  d.GetOk("filters"); ok {
+	if v, ok :=  d.GetOk("filter"); ok {
 		tfFilterList := v.([]interface{})
 		payload.SetFilters(buildPayloadFilters(tfFilterList))
 	}
@@ -507,11 +507,9 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 	}
 	d.Set("query", ruleQueries)
 
-	d.Set("tags", ruleResponse.GetTags())
-
 	if _, ok:= ruleResponse.GetFiltersOk(); ok{
 		filters := extractFiltersFromRuleResponse(ruleResponse)
-		d.Set("filters", filters)
+		d.Set("filter", filters)
 	}
 
 }
@@ -676,7 +674,7 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 		payload.Tags = &tags
 	}
 
-	if v, ok:= d.GetOk("filters"); ok {
+	if v, ok:= d.GetOk("filter"); ok {
 		tfFilters := v.([]interface{})
 		payload.SetFilters(buildPayloadFilters(tfFilters))
 	}
