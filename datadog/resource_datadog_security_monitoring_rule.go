@@ -278,9 +278,7 @@ func buildPayloadOptions(tfOptionsList []interface{}) *datadogV2.SecurityMonitor
 
 	if v, ok := tfOptions["detection_method"]; ok {
 		detectionMethod := datadogV2.SecurityMonitoringRuleDetectionMethod(v.(string))
-		if detectionMethod.IsValid() {
-			payloadOptions.DetectionMethod = &detectionMethod
-		}
+		payloadOptions.DetectionMethod = &detectionMethod
 	}
 	if v, ok := tfOptions["evaluation_window"]; ok {
 		evaluationWindow := datadogV2.SecurityMonitoringRuleEvaluationWindow(v.(int))
