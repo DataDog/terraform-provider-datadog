@@ -346,10 +346,10 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:    true,
 				},
 				"tick_every": {
-					Description:      "How often the test should run (in seconds).",
-					Type:             schema.TypeInt,
-					Required:         true,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTickIntervalFromValue),
+					Description:  "How often the test should run (in seconds).",
+					Type:         schema.TypeInt,
+					Required:     true,
+					ValidateFunc: validation.IntBetween(30, 604800),
 				},
 				"accept_self_signed": {
 					Description: "For SSL test, whether or not the test should allow self signed certificates.",
@@ -1053,7 +1053,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
 		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
-			options.SetTickEvery(datadogV1.SyntheticsTickInterval(attr.(int)))
+			options.SetTickEvery(int64(attr.(int)))
 		}
 		if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
 			options.SetAcceptSelfSigned(attr.(bool))
@@ -1373,7 +1373,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
 		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
-			options.SetTickEvery(datadogV1.SyntheticsTickInterval(attr.(int)))
+			options.SetTickEvery(int64(attr.(int)))
 		}
 		if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
 			options.SetAcceptSelfSigned(attr.(bool))

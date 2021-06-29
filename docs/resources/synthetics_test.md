@@ -462,7 +462,7 @@ Optional:
 
 Required:
 
-- **tick_every** (Number) How often the test should run (in seconds). Valid values are `30`, `60`, `300`, `900`, `1800`, `3600`, `21600`, `43200`, `86400`, `604800`.
+- **tick_every** (Number) How often the test should run (in seconds).
 
 Optional:
 
