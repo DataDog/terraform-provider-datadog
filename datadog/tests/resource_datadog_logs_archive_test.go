@@ -32,7 +32,7 @@ resource "datadog_logs_archive" "my_azure_archive" {
     container 		= "my-container"
     tenant_id 		= "%s"
     client_id       = "testc7f6-1234-5678-9101-3fcbf464test"
-    storage_account = "storageAccount"
+    storage_account = "storageaccount"
     path            = "/path/blou"
   }
 }
@@ -65,7 +65,7 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "azure_archive.0.tenant_id", tenantName),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_archive.my_azure_archive", "azure_archive.0.storage_account", "storageAccount"),
+						"datadog_logs_archive.my_azure_archive", "azure_archive.0.storage_account", "storageaccount"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "azure_archive.0.path", "/path/blou"),
 					resource.TestCheckResourceAttr(
