@@ -13,7 +13,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/meta"
-
 	"github.com/terraform-providers/terraform-provider-datadog/version"
 )
 
@@ -21,7 +20,7 @@ import (
 var DatadogProvider *schema.Provider
 
 // TranslateClientError turns an error into a message
-func TranslateClientError(err error, apiURL *url.URL, msg string) error {
+func TranslateClientError(err error, msg string) error {
 	if msg == "" {
 		msg = "an error occurred"
 	}
