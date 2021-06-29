@@ -105,7 +105,7 @@ func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
 				ResourceName:            tfSecurityRuleName,
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"enabled"},
+				ImportStateVerifyIgnore: []string{"enabled","has_extended_title"},
 				Check:                   testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
 			},
 		},
@@ -118,6 +118,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s"
     message = "acceptance rule triggered"
     enabled = false
+    has_extended_title = true
 
     query {
         name = "first"
@@ -168,6 +169,8 @@ func testAccCheckDatadogSecurityMonitorCreatedCheck(accProvider func() (*schema.
 			tfSecurityRuleName, "message", "acceptance rule triggered"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "enabled", "false"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "has_extended_title", "true"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.name", "first"),
 		resource.TestCheckResourceAttr(
@@ -300,6 +303,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s - updated"
     message = "acceptance rule triggered (updated)"
     enabled = true
+    has_extended_title = false
 
     query {
         name = "first_updated"
@@ -343,6 +347,8 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider func() (*schem
 			tfSecurityRuleName, "message", "acceptance rule triggered (updated)"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "enabled", "true"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "has_extended_title", "false"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.name", "first_updated"),
 		resource.TestCheckResourceAttr(
