@@ -2,6 +2,8 @@
 
 EXIT_CODE=0
 
+set -eo pipefail
+
 # Check goimports
 echo "==> Checking that code complies with goimports requirements..."
 goimports_files=$(goimports -format-only -d -l `find . -name '*.go' | grep -v vendor`)
