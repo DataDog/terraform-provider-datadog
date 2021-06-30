@@ -418,10 +418,8 @@ func buildPayloadFilters(tfFilters []interface{}) []datadogV2.SecurityMonitoring
 		filter := tfFilter.(map[string]interface{})
 		payloadFilter := datadogV2.SecurityMonitoringFilter{}
 
-		if v, ok := filter["action"]; ok {
-			action := datadogV2.SecurityMonitoringFilterAction(v.(string))
-			payloadFilter.SetAction(action)
-		}
+		action := datadogV2.SecurityMonitoringFilterAction(filter["action"].(string))
+		payloadFilter.SetAction(action)
 
 		payloadFilter.SetQuery(filter["query"].(string))
 
