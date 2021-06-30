@@ -49,9 +49,9 @@ func dataSourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData,
 		dashResponse, httpresp, err := datadogClientV1.DashboardsApi.ListDashboards(authV1)
 		if err != nil {
 			if httpresp != nil && (httpresp.StatusCode == 504 || httpresp.StatusCode == 502) {
-				return resource.RetryableError(utils.TranslateClientError(err, httpresp.Request.URL, "error querying dashboard, retrying"))
+				return resource.RetryableError(utils.TranslateClientError(err, httpresp, "error querying dashboard, retrying"))
 			}
-			return resource.NonRetryableError(utils.TranslateClientError(err, httpresp.Request.URL, "error querying dashboard"))
+			return resource.NonRetryableError(utils.TranslateClientError(err, httpresp, "error querying dashboard"))
 		}
 
 		searchedName := d.Get("name")

@@ -147,7 +147,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *
 			return diag.FromErr(errors.New("default rule does not exist"))
 		}
 
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error fetching default rule")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error fetching default rule")
 	}
 
 	if !response.GetIsDefault() {
@@ -162,7 +162,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *
 
 	if shouldUpdate {
 		if _, httpResponse, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, ruleID, *ruleUpdate); err != nil {
-			return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error updating security monitoring rule on resource creation")
+			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating security monitoring rule on resource creation")
 		}
 	}
 

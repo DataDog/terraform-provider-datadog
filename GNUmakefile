@@ -68,6 +68,7 @@ update-go-client:
 
 get-test-deps:
 	gotestsum --version || (cd `mktemp -d`; GO111MODULE=off GOFLAGS='' go get -u gotest.tools/gotestsum; cd -)
+	which goimports || (cd `mktemp -d`; GO111MODULE=off GOFLAGS='' go get -u golang.org/x/tools/cmd/goimports; cd -)
 
 license-check:
 	@sh -c "'$(CURDIR)/scripts/license-check.sh'"

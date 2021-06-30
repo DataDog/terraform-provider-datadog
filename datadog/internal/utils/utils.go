@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 	"strings"
 
@@ -21,30 +22,34 @@ import (
 var DatadogProvider *schema.Provider
 
 // TranslateClientError turns an error into a message
-func TranslateClientError(err error, apiURL *url.URL, msg string) error {
+func TranslateClientError(err error, httpresp *http.Response, msg string) error {
 	if msg == "" {
 		msg = "an error occurred"
 	}
 
+	if httpresp != nil && httpresp.Request != nil {
+		msg = fmt.Sprintf("%s from %s", msg, httpresp.Request.URL.String())
+	}
+
 	if apiErr, ok := err.(CustomRequestAPIError); ok {
-		return fmt.Errorf(msg+" from %s: %v: %s", apiURL.String(), err, apiErr.Body())
+		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
 	}
 	if apiErr, ok := err.(datadogV1.GenericOpenAPIError); ok {
-		return fmt.Errorf(msg+" from %s: %v: %s", apiURL.String(), err, apiErr.Body())
+		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
 	}
 	if apiErr, ok := err.(datadogV2.GenericOpenAPIError); ok {
-		return fmt.Errorf(msg+" from %s: %v: %s", apiURL.String(), err, apiErr.Body())
+		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
 	}
 	if errURL, ok := err.(*url.Error); ok {
-		return fmt.Errorf(msg+" from %s (url.Error): %s", apiURL.String(), errURL)
+		return fmt.Errorf(msg+" (url.Error): %s", errURL)
 	}
 
 	return fmt.Errorf(msg+": %s", err.Error())
 }
 
 // TranslateClientErrorDiag returns client error as type diag.Diagnostics
-func TranslateClientErrorDiag(err error, apiURL *url.URL, msg string) diag.Diagnostics {
-	return diag.FromErr(TranslateClientError(err, apiURL, msg))
+func TranslateClientErrorDiag(err error, httpresp *http.Response, msg string) diag.Diagnostics {
+	return diag.FromErr(TranslateClientError(err, httpresp, msg))
 }
 
 // GetUserAgent augments the default user agent with provider details
