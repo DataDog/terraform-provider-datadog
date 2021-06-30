@@ -208,20 +208,19 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"query": {
-						Type:             schema.TypeString,
-						Required:         true,
-						Description:      "Query for selecting logs to apply the filtering action.",
-					},
-					"action": {
 						Type:        schema.TypeString,
 						Required:    true,
-						Description: "The type of filtering action.",
+						Description: "Query for selecting logs to apply the filtering action.",
+					},
+					"action": {
+						Type:             schema.TypeString,
+						Required:         true,
+						Description:      "The type of filtering action.",
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringFilterActionFromValue),
 					},
 				},
 			},
 		},
-
 	}
 }
 
@@ -270,7 +269,7 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 		payload.Tags = &tags
 	}
 
-	if v, ok :=  d.GetOk("filter"); ok {
+	if v, ok := d.GetOk("filter"); ok {
 		tfFilterList := v.([]interface{})
 		payload.SetFilters(buildPayloadFilters(tfFilterList))
 	}
@@ -505,7 +504,7 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 	}
 	d.Set("query", ruleQueries)
 
-	if _, ok:= ruleResponse.GetFiltersOk(); ok{
+	if _, ok := ruleResponse.GetFiltersOk(); ok {
 		filters := extractFiltersFromRuleResponse(ruleResponse)
 		d.Set("filter", filters)
 	}
@@ -672,7 +671,7 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 		payload.Tags = &tags
 	}
 
-	if v, ok:= d.GetOk("filter"); ok {
+	if v, ok := d.GetOk("filter"); ok {
 		tfFilters := v.([]interface{})
 		payload.SetFilters(buildPayloadFilters(tfFilters))
 	}
