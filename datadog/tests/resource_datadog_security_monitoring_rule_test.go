@@ -102,11 +102,10 @@ func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
 				Config: testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(ruleName),
 			},
 			{
-				ResourceName:            tfSecurityRuleName,
-				ImportState:             true,
-				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"enabled"},
-				Check:                   testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
+				ResourceName:      tfSecurityRuleName,
+				ImportState:       true,
+				ImportStateVerify: true,
+				Check:             testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
 			},
 		},
 	})

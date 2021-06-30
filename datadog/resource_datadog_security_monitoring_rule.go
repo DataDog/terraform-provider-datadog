@@ -429,6 +429,7 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 	d.Set("message", ruleResponse.GetMessage())
 	d.Set("name", ruleResponse.GetName())
 	d.Set("has_extended_title", ruleResponse.GetHasExtendedTitle())
+	d.Set("enabled", ruleResponse.GetIsEnabled())
 
 	options := extractTfOptions(ruleResponse.GetOptions())
 
