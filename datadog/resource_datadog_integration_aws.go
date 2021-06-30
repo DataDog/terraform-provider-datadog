@@ -151,7 +151,7 @@ func resourceDatadogIntegrationAwsCreate(ctx context.Context, d *schema.Resource
 	response, httpresp, err := datadogClientV1.AWSIntegrationApi.CreateAWSAccount(authV1, *iaws)
 
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error creating AWS integration")
+		return utils.TranslateClientErrorDiag(err, httpresp, "error creating AWS integration")
 	}
 
 	if v, ok := d.GetOk("access_key_id"); ok {
@@ -190,7 +190,7 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error getting AWS integration")
+		return utils.TranslateClientErrorDiag(err, httpresp, "error getting AWS integration")
 	}
 
 	for _, integration := range integrations.GetAccounts() {
@@ -226,7 +226,7 @@ func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.Resource
 				WithAccessKeyId(d.Id()),
 		)
 		if err != nil {
-			return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error updating AWS integration")
+			return utils.TranslateClientErrorDiag(err, httpresp, "error updating AWS integration")
 		}
 
 		d.SetId(iaws.GetAccessKeyId())
@@ -246,7 +246,7 @@ func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.Resource
 	)
 
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error updating AWS integration")
+		return utils.TranslateClientErrorDiag(err, httpresp, "error updating AWS integration")
 	}
 	d.SetId(fmt.Sprintf("%s:%s", iaws.GetAccountId(), iaws.GetRoleName()))
 	return resourceDatadogIntegrationAwsRead(ctx, d, meta)
@@ -263,7 +263,7 @@ func resourceDatadogIntegrationAwsDelete(ctx context.Context, d *schema.Resource
 
 	_, httpresp, err := datadogClientV1.AWSIntegrationApi.DeleteAWSAccount(authV1, *iaws)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error deleting AWS integration")
+		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting AWS integration")
 	}
 
 	return nil

@@ -132,7 +132,7 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 	createResponse, httpresp, err := datadogClientV2.UsersApi.CreateUser(authV2, *userRequest)
 	if err != nil {
 		if httpresp == nil || httpresp.StatusCode != 409 {
-			return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error creating user")
+			return utils.TranslateClientErrorDiag(err, httpresp, "error creating user")
 		}
 		email := d.Get("email").(string)
 		log.Printf("[INFO] Updating existing Datadog user %s", email)
@@ -140,7 +140,7 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 		listResponse, _, err := datadogClientV2.UsersApi.ListUsers(authV2,
 			*datadogV2.NewListUsersOptionalParameters().WithFilter(email))
 		if err != nil {
-			return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error searching user")
+			return utils.TranslateClientErrorDiag(err, httpresp, "error searching user")
 		}
 		responseData := listResponse.GetData()
 		if len(responseData) != 1 {
@@ -151,7 +151,7 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 
 		updatedUser, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, userID, *userRequest)
 		if err != nil {
-			return utils.TranslateClientErrorDiag(err, httpresp.Request.URL, "error updating user")
+			return utils.TranslateClientErrorDiag(err, httpresp, "error updating user")
 		}
 		if err := updateUserStateV2(d, &updatedUser); err != nil {
 			return err
@@ -195,7 +195,7 @@ func sendUserInvitation(userID string, d *schema.ResourceData, meta interface{})
 
 	res, httpResponse, err := datadogClientV2.UsersApi.SendInvitations(authV2, body)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error sending user invitation")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error sending user invitation")
 	}
 	if err := d.Set("user_invitation_id", res.GetData()[0].GetId()); err != nil {
 		return diag.FromErr(err)
@@ -242,7 +242,7 @@ func resourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta i
 			d.SetId("")
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error getting user")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting user")
 	}
 	return updateUserStateV2(d, &userResponse)
 }
@@ -265,7 +265,7 @@ func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta
 			userRelation.SetData(*userRelationData)
 			_, httpResponse, err := datadogClientV2.RolesApi.RemoveUserFromRole(authV2, role, *userRelation)
 			if err != nil {
-				return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error removing user from role")
+				return utils.TranslateClientErrorDiag(err, httpResponse, "error removing user from role")
 			}
 		}
 		for _, roleI := range rolesToAdd.List() {
@@ -276,7 +276,7 @@ func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta
 			roleRelation.SetData(*roleRelationData)
 			_, httpResponse, err := datadogClientV2.RolesApi.AddUserToRole(authV2, role, *roleRelation)
 			if err != nil {
-				return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error adding user to role")
+				return utils.TranslateClientErrorDiag(err, httpResponse, "error adding user to role")
 			}
 		}
 	}
@@ -284,7 +284,7 @@ func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta
 	userRequest := buildDatadogUserV2UpdateStruct(d, d.Id())
 	updatedUser, httpResponse, err := datadogClientV2.UsersApi.UpdateUser(authV2, d.Id(), *userRequest)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error updating user")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating user")
 	}
 	// Update state once after we do the UpdateUser operation. At this point, the roles have already been changed
 	// so the updated list is available in the update response.
@@ -299,7 +299,7 @@ func resourceDatadogUserDelete(ctx context.Context, d *schema.ResourceData, meta
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error disabling user")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error disabling user")
 	}
 
 	return nil
