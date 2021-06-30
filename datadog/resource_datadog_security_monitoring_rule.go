@@ -87,7 +87,6 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Description: "Whether the notifications include the triggering group-by values in their title.",
 		},
 
-
 		"options": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -231,7 +230,6 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 	payload.Message = d.Get("message").(string)
 	payload.Name = d.Get("name").(string)
 	payload.SetHasExtendedTitle(d.Get("has_extended_title").(bool))
-
 
 	if v, ok := d.GetOk("options"); ok {
 		tfOptionsList := v.([]interface{})
@@ -430,6 +428,7 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 	d.Set("case", ruleCases)
 	d.Set("message", ruleResponse.GetMessage())
 	d.Set("name", ruleResponse.GetName())
+	d.Set("has_extended_title", ruleResponse.GetHasExtendedTitle())
 
 	options := extractTfOptions(ruleResponse.GetOptions())
 

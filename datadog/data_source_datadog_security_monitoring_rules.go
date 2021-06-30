@@ -197,7 +197,6 @@ func buildSecurityMonitoringTfRule(rule datadogV2.SecurityMonitoringRuleResponse
 	tfRule["name"] = rule.GetName()
 	tfRule["has_extended_title"] = rule.GetHasExtendedTitle()
 
-
 	tfOptions := extractTfOptions(rule.GetOptions())
 	tfRule["options"] = []map[string]interface{}{tfOptions}
 
