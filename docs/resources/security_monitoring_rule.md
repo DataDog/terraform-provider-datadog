@@ -66,7 +66,9 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - **has_extended_title** (Boolean, Optional) Whether the notifications include the triggering group-by values in their title.
 - **id** (String, Optional) The ID of this resource.
 - **options** (Block List, Max: 1) Options on rules. (see [below for nested schema](#nestedblock--options))
+- **filter** (Block List, Optional) Additional queries to filter matched events before they are processed. (see [below for nested schema](#nestedblock--filter))
 - **tags** (List of String, Optional) Tags for generated signals.
+
 
 <a id="nestedblock--case"></a>
 ### Nested Schema for `case`
@@ -96,6 +98,14 @@ Optional:
 - **group_by_fields** (List of String, Optional) Fields to group by.
 - **metric** (String, Optional) The target field to aggregate over when using the sum or max aggregations.
 - **name** (String, Optional) Name of the query.
+
+<a id="nestedblock--filter"></a>
+### Nested Schema for `filter`
+
+Required:
+
+- **query** (String, Required) Query to run on logs.
+- **action** (String, Required) The type of filtering action (require or suppress).
 
 
 <a id="nestedblock--options"></a>

@@ -227,6 +227,9 @@ func buildSecurityMonitoringTfRule(rule datadogV2.SecurityMonitoringRuleResponse
 		tfRule["tags"] = *tags
 	}
 
+	filters := extractFiltersFromRuleResponse(rule)
+	tfRule["filter"] = filters
+
 	return tfRule
 }
 
