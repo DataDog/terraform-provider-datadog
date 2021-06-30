@@ -53,7 +53,7 @@ func resourceDatadogLogsArchiveOrderCreate(ctx context.Context, d *schema.Resour
 			d.SetId("archiveOrderID")
 			return resourceDatadogLogsArchiveOrderRead(ctx, d, meta)
 		}
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error creating logs archive order")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating logs archive order")
 	}
 	d.SetId("archiveOrderID")
 	return updateLogsArchiveOrderState(d, &order)
@@ -65,7 +65,7 @@ func resourceDatadogLogsArchiveOrderRead(ctx context.Context, d *schema.Resource
 	authV2 := providerConf.AuthV2
 	order, httpResponse, err := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error getting logs archive order")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs archive order")
 	}
 
 	return updateLogsArchiveOrderState(d, &order)
@@ -93,13 +93,13 @@ func resourceDatadogLogsArchiveOrderUpdate(ctx context.Context, d *schema.Resour
 		if httpResponse != nil && httpResponse.StatusCode == 422 {
 			ddArchiveOrder, _, getErr := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2)
 			if getErr != nil {
-				return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error getting logs archive order")
+				return utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs archive order")
 			}
 			return diag.Errorf("cannot map archives to existing ones\n existing archives: %s\n archive to be updated: %s",
 				ddArchiveOrder.Data.Attributes.ArchiveIds,
 				ddArchiveList.Data.Attributes.GetArchiveIds())
 		}
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error updating logs archive order")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs archive order")
 	}
 	d.SetId("archiveOrderID")
 	return updateLogsArchiveOrderState(d, &updatedOrder)
