@@ -389,9 +389,11 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 			roles = append(roles, r.(string))
 		}
 		sort.Strings(roles)
-		// don't pass an empty array, it's not accepted
 		m.SetRestrictedRoles(roles)
 		u.SetRestrictedRoles(roles)
+	} else {
+		m.SetRestrictedRoles(nil)
+		u.SetRestrictedRoles(nil)
 	}
 
 	tags := make([]string, 0)
@@ -486,10 +488,6 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		}
 	}
 
-	var tags []string
-	tags = append(tags, m.GetTags()...)
-	sort.Strings(tags)
-
 	log.Printf("[DEBUG] monitor: %+v", m)
 	if err := d.Set("name", m.GetName()); err != nil {
 		return diag.FromErr(err)
@@ -506,9 +504,7 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("priority", m.GetPriority()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("restricted_roles", m.GetRestrictedRoles()); err != nil {
-		return diag.FromErr(err)
-	}
+
 	if len(thresholds) > 0 {
 		if err := d.Set("monitor_thresholds", []interface{}{thresholds}); err != nil {
 			return diag.FromErr(err)
@@ -547,6 +543,10 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("include_tags", m.Options.GetIncludeTags()); err != nil {
 		return diag.FromErr(err)
 	}
+
+	var tags []string
+	tags = append(tags, m.GetTags()...)
+	sort.Strings(tags)
 	if err := d.Set("tags", tags); err != nil {
 		return diag.FromErr(err)
 	}
@@ -554,6 +554,11 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return diag.FromErr(err)
 	}
 	if err := d.Set("locked", m.Options.GetLocked()); err != nil {
+		return diag.FromErr(err)
+	}
+	// This helper function is defined in `resource_datadog_dashboard`
+	restrictedRoles := buildTerraformRestrictedRoles(m.RestrictedRoles)
+	if err := d.Set("restricted_roles", restrictedRoles); err != nil {
 		return diag.FromErr(err)
 	}
 

@@ -48,6 +48,7 @@ data "datadog_monitor" "test" {
 - **query** (String) Query of the monitor.
 - **renotify_interval** (Number) The number of minutes after the last notification before the monitor re-notifies on the current status.
 - **require_full_window** (Boolean) Whether or not the monitor needs a full window of data before it is evaluated.
+- **restricted_roles** (Set of String)
 - **tags** (Set of String) List of tags associated with the monitor.
 - **timeout_h** (Number) Number of hours of the monitor not reporting data before it automatically resolves from a triggered state.
 - **type** (String) Type of the monitor.
