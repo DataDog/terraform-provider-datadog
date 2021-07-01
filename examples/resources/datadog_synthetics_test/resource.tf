@@ -87,6 +87,12 @@ resource "datadog_synthetics_test" "test_tcp" {
   tags    = ["foo:bar", "foo", "env:test"]
 
   status = "live"
+
+  config_variable {
+    type = "global"
+    name = "MY_GLOBAL_VAR"
+    id   = "76636cd1-82e2-4aeb-9cfe-51366a8198a2"
+  }
 }
 
 
@@ -149,21 +155,21 @@ resource "datadog_synthetics_test" "test_browser" {
     })
   }
 
-  variable {
+  browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"
     pattern = "{{numeric(3)}}"
     example = "597"
   }
 
-  variable {
+  browser_variable {
     type    = "email"
     name    = "MY_EMAIL_VAR"
     pattern = "jd8-afe-ydv.{{ numeric(10) }}@synthetics.dtdg.co"
     example = "jd8-afe-ydv.4546132139@synthetics.dtdg.co"
   }
 
-  variable {
+  browser_variable {
     type = "global"
     name = "MY_GLOBAL_VAR"
     id   = "76636cd1-82e2-4aeb-9cfe-51366a8198a2"
