@@ -13,15 +13,16 @@ Resource for interacting with the Datadog Slack channel API
 ## Example Usage
 
 ```terraform
-resource "datadog_integration_slack_channel" "slack_channel" {
+resource "datadog_integration_slack_channel" "test_channel" {
+  account_name = "foo"
+  channel_name = "#test_channel"
+
   display {
     message  = true
     notified = false
     snapshot = false
     tags     = true
   }
-  channel_name = "#test_channel"
-  account_name = "foo"
 }
 ```
 
@@ -48,4 +49,11 @@ Optional:
 - **snapshot** (Boolean) Show the alert event's snapshot image.
 - **tags** (Boolean) Show the scopes on which the monitor alerted.
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+# Slack channel integrations can be imported using their account_name and channel_name separated with a colon (`:`).
+terraform import datadog_integration_slack_channel.test_channel "foo:#test_channel"
+```
