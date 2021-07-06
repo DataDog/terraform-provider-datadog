@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"errors"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 	_ "gopkg.in/warnings.v0"
 
@@ -10,6 +11,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+const securityFilterType = "sec_type"
 
 func resourceDatadogSecurityMonitoringFilter() *schema.Resource {
 	return &schema.Resource{
@@ -38,7 +41,7 @@ func resourceDatadogSecurityMonitoringFilter() *schema.Resource {
 				Required:    true,
 				Description: "Whether the security filter is enabled.",
 			},
-			"exclusion_filters": {
+			"exclusion_filter": {
 				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "Exclusion filters to exclude some logs from the security filter.",
@@ -59,10 +62,10 @@ func resourceDatadogSecurityMonitoringFilter() *schema.Resource {
 			},
 
 			"filtered_data_type": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "The filtered data type.",
-				Default: "logs",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Description:      "The filtered data type.",
+				Default:          "logs",
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityFilterFilteredDataTypeFromValue),
 			},
 		},
@@ -70,7 +73,22 @@ func resourceDatadogSecurityMonitoringFilter() *schema.Resource {
 }
 
 func resourceDatadogSecurityMonitoringFilterCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return diag.FromErr(errors.New("error"))
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
+
+	filterCreate := buildSecMonFilterCreatePayload(d)
+
+	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.CreateSecurityFilter(authV2, *filterCreate)
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error creating security monitoring filter")
+	}
+
+	// store the resource id
+	data := response.GetData()
+	d.SetId(data.GetId())
+
+	return nil
 }
 
 func resourceDatadogSecurityMonitoringFilterRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -101,13 +119,57 @@ func resourceDatadogSecurityMonitoringFilterRead(ctx context.Context, d *schema.
 }
 
 func resourceDatadogSecurityMonitoringFilterUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return diag.FromErr(errors.New("error"))
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
+
+	filterId := d.Id()
+
+	response, diagnostics, failed := fetchFilterFromApi(datadogClientV2, authV2, filterId)
+	if failed {
+		return diagnostics
+	}
+
+	filterUpdate := buildSecMonFilterUpdatePayload(response, d)
+
+	if _, httpResponse, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityFilter(authV2, filterId, *filterUpdate); err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error updating security monitoring filter")
+	}
+
+	return nil
+}
+
+func fetchFilterFromApi(datadogClientV2 *datadogV2.APIClient, authV2 context.Context, filterId string) (datadogV2.SecurityFilterResponse, diag.Diagnostics, bool) {
+	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.GetSecurityFilter(authV2, filterId)
+
+	if err != nil {
+		if httpResponse != nil && httpResponse.StatusCode == 404 {
+			return datadogV2.SecurityFilterResponse{}, diag.FromErr(errors.New("default rule does not exist")), true
+		}
+
+		return datadogV2.SecurityFilterResponse{}, utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error fetching filter"), true
+	}
+	return response, nil, false
 }
 
 func resourceDatadogSecurityMonitoringFilterDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return diag.FromErr(errors.New("error"))
-}
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
 
+	filterId := d.Id()
+
+	_, diagnostics, failed := fetchFilterFromApi(datadogClientV2, authV2, filterId)
+	if failed {
+		return diagnostics
+	}
+
+	if httpResponse, err := datadogClientV2.SecurityMonitoringApi.DeleteSecurityFilter(authV2, filterId); err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error deleting security monitoring filter")
+	}
+
+	return nil
+}
 
 func updateResourceDataFilterFromResponse(d *schema.ResourceData, filterResponse datadogV2.SecurityFilterResponse) {
 	data := filterResponse.GetData()
@@ -126,6 +188,65 @@ func updateResourceDataFilterFromResponse(d *schema.ResourceData, filterResponse
 			exclusionFilterTF["query"] = exclusionFilter.GetQuery()
 			exclusionFiltersTF[idx] = exclusionFilterTF
 		}
-		d.Set("exclusion_filters", exclusionFiltersTF)
+		d.Set("exclusion_filter", exclusionFiltersTF)
 	}
+}
+
+func buildSecMonFilterUpdatePayload(currentState datadogV2.SecurityFilterResponse, d *schema.ResourceData) *datadogV2.SecurityFilterUpdateRequest {
+	payload := datadogV2.SecurityFilterUpdateRequest{}
+	payload.Data.Type = securityFilterType
+	// set the version from current state
+	data := currentState.GetData()
+	attributes := data.GetAttributes()
+	version := attributes.GetVersion()
+	payload.Data.Attributes.SetVersion(version)
+
+	isEnabled, name, filteredDataType, query, filters := extractFilterAttributedFromResource(d)
+
+	payload.Data.Attributes.SetIsEnabled(isEnabled)
+	payload.Data.Attributes.SetName(name)
+	payload.Data.Attributes.SetFilteredDataType(filteredDataType)
+	payload.Data.Attributes.SetQuery(query)
+	payload.Data.Attributes.SetExclusionFilters(filters)
+
+	return &payload
+}
+
+func buildSecMonFilterCreatePayload(d *schema.ResourceData) *datadogV2.SecurityFilterCreateRequest {
+	payload := datadogV2.SecurityFilterCreateRequest{}
+	payload.Data.Type = securityFilterType
+
+
+	isEnabled, name, filteredDataType, query, filters := extractFilterAttributedFromResource(d)
+
+	payload.Data.Attributes.SetIsEnabled(isEnabled)
+	payload.Data.Attributes.SetName(name)
+	payload.Data.Attributes.SetFilteredDataType(filteredDataType)
+	payload.Data.Attributes.SetQuery(query)
+	payload.Data.Attributes.SetExclusionFilters(filters)
+
+	return &payload
+}
+
+
+func extractFilterAttributedFromResource(d *schema.ResourceData) (bool, string, datadogV2.SecurityFilterFilteredDataType, string, []datadogV2.SecurityFilterExclusionFilter) {
+	isEnabled := d.Get("enabled").(bool)
+	name := d.Get("name").(string)
+	filteredDataType := d.Get("filtered_data_type").(datadogV2.SecurityFilterFilteredDataType)
+	query := d.Get("query").(string)
+
+	var filters []datadogV2.SecurityFilterExclusionFilter
+	if v, ok := d.GetOk("exclusion_filter"); ok {
+		tfFilters := v.([]interface{})
+
+		filters = make([]datadogV2.SecurityFilterExclusionFilter, len(tfFilters))
+		for i, tfFiler := range tfFilters {
+			filter := tfFiler.(map[string]interface{})
+			filters[i].SetName(filter["name"].(string))
+			filters[i].SetQuery(filter["query"].(string))
+		}
+	} else {
+		filters = make([]datadogV2.SecurityFilterExclusionFilter, 0)
+	}
+	return isEnabled, name, filteredDataType, query, filters
 }
