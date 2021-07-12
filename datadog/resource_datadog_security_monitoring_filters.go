@@ -3,9 +3,11 @@ package datadog
 import (
 	"context"
 	"errors"
+
+	_ "gopkg.in/warnings.v0"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
-	_ "gopkg.in/warnings.v0"
 
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -216,7 +218,6 @@ func buildSecMonFilterCreatePayload(d *schema.ResourceData) *datadogV2.SecurityF
 	payload := datadogV2.SecurityFilterCreateRequest{}
 	payload.Data.Type = securityFilterType
 
-
 	isEnabled, name, filteredDataType, query, filters := extractFilterAttributedFromResource(d)
 
 	payload.Data.Attributes.SetIsEnabled(isEnabled)
@@ -227,7 +228,6 @@ func buildSecMonFilterCreatePayload(d *schema.ResourceData) *datadogV2.SecurityF
 
 	return &payload
 }
-
 
 func extractFilterAttributedFromResource(d *schema.ResourceData) (bool, string, datadogV2.SecurityFilterFilteredDataType, string, []datadogV2.SecurityFilterExclusionFilter) {
 	isEnabled := d.Get("is_enabled").(bool)

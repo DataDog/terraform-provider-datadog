@@ -117,7 +117,6 @@ func testAccCheckDatadogSecurityMonitorFilterUpdatedCheck(accProvider func() (*s
 	)
 }
 
-
 func testAccCheckDatadogSecurityMonitoringFilterExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
