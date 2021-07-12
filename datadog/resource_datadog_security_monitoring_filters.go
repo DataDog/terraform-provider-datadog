@@ -83,7 +83,7 @@ func resourceDatadogSecurityMonitoringFilterCreate(ctx context.Context, d *schem
 
 	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.CreateSecurityFilter(authV2, *filterCreate)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error creating security monitoring filter")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating security monitoring filter")
 	}
 
 	// store the resource id
@@ -135,7 +135,7 @@ func resourceDatadogSecurityMonitoringFilterUpdate(ctx context.Context, d *schem
 	filterUpdate := buildSecMonFilterUpdatePayload(response, d)
 
 	if _, httpResponse, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityFilter(authV2, filterId, *filterUpdate); err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error updating security monitoring filter")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating security monitoring filter")
 	}
 
 	return nil
@@ -149,7 +149,7 @@ func fetchFilterFromApi(datadogClientV2 *datadogV2.APIClient, authV2 context.Con
 			return datadogV2.SecurityFilterResponse{}, diag.FromErr(errors.New("default rule does not exist")), true
 		}
 
-		return datadogV2.SecurityFilterResponse{}, utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error fetching filter"), true
+		return datadogV2.SecurityFilterResponse{}, utils.TranslateClientErrorDiag(err, httpResponse, "error fetching filter"), true
 	}
 	return response, nil, false
 }
@@ -167,7 +167,7 @@ func resourceDatadogSecurityMonitoringFilterDelete(ctx context.Context, d *schem
 	}
 
 	if httpResponse, err := datadogClientV2.SecurityMonitoringApi.DeleteSecurityFilter(authV2, filterId); err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse.Request.URL, "error deleting security monitoring filter")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting security monitoring filter")
 	}
 
 	return nil
