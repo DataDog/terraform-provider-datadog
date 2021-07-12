@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-const securityFilterType = "sec_type"
+const securityFilterType = "security_filters"
 
 func resourceDatadogSecurityMonitoringFilter() *schema.Resource {
 	return &schema.Resource{
@@ -53,7 +53,7 @@ func resourceDatadogSecurityMonitoringFilter() *schema.Resource {
 							Description: "Exclusion filter name.",
 						},
 						"query": {
-							Type:        schema.TypeList,
+							Type:        schema.TypeString,
 							Required:    true,
 							Description: "Exclusion filter query. Logs that match this query are excluded from the security filter.",
 						},
@@ -230,9 +230,10 @@ func buildSecMonFilterCreatePayload(d *schema.ResourceData) *datadogV2.SecurityF
 
 
 func extractFilterAttributedFromResource(d *schema.ResourceData) (bool, string, datadogV2.SecurityFilterFilteredDataType, string, []datadogV2.SecurityFilterExclusionFilter) {
-	isEnabled := d.Get("enabled").(bool)
+	isEnabled := d.Get("is_enabled").(bool)
 	name := d.Get("name").(string)
-	filteredDataType := d.Get("filtered_data_type").(datadogV2.SecurityFilterFilteredDataType)
+	filteredDataTypeString := d.Get("filtered_data_type").(string)
+	filteredDataType := datadogV2.SecurityFilterFilteredDataType(filteredDataTypeString)
 	query := d.Get("query").(string)
 
 	var filters []datadogV2.SecurityFilterExclusionFilter
