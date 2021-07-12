@@ -987,12 +987,18 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataK
 
 	// Build layout
 	if v, ok := datadogWidget.GetLayoutOk(); ok {
-		terraformWidget["widget_layout"] = []map[string]int64{{
+		widgetLayout := map[string]interface{}{
 			"x":      (*v).GetX(),
 			"y":      (*v).GetY(),
 			"height": (*v).GetHeight(),
 			"width":  (*v).GetWidth(),
-		}}
+		}
+		if value, ok := (*v).GetIsColumnBreakOk(); ok {
+			widgetLayout["is_column_break"] = value
+		}
+		terraformWidget["widget_layout"] = [](map[string]interface{}){
+			widgetLayout,
+		}
 	}
 	terraformWidget["id"] = datadogWidget.GetId()
 
@@ -1136,7 +1142,7 @@ func buildDatadogWidgetLayout(terraformLayout map[string]interface{}) *datadogV1
 	datadogLayout.SetY(int64(terraformLayout["y"].(int)))
 	datadogLayout.SetHeight(int64(terraformLayout["height"].(int)))
 	datadogLayout.SetWidth(int64(terraformLayout["width"].(int)))
-	if value, ok := terraformLayout["is_column_break"].(bool); ok {
+	if value, ok := terraformLayout["is_column_break"].(bool); ok && value {
 		datadogLayout.SetIsColumnBreak(value)
 	}
 	return datadogLayout
