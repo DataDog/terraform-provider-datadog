@@ -1590,3 +1590,132 @@ func TestAccDatadogDashboardRbac_adminToRbac(t *testing.T) {
 		},
 	})
 }
+
+func datadogMultiSizeLayoutFixedDashboardConfig(uniqueDashboardName string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard" "msl_fixed_dashboard" {
+	title            = "%s"
+	description      = "Created using the Datadog provider in Terraform"
+	layout_type      = "ordered"
+	reflow_type      = "fixed"
+	widget {
+		note_definition {
+			content = "note 1"
+		}
+		widget_layout {
+			width  = 6
+			height = 2
+			x      = 3
+			y      = 0
+		}  
+	}
+	widget {
+		note_definition {
+			content = "note 2"
+		}
+		widget_layout {
+			width  = 6
+			height = 2
+			x      = 3
+			y      = 2
+			is_column_break = true
+		}
+	}
+}`, uniqueDashboardName)
+}
+
+var datadogMslFixedDashboardAsserts = []string{
+	// Dashboard metadata
+	"description = Created using the Datadog provider in Terraform",
+	"layout_type = ordered",
+	"reflow_type = fixed",
+	"widget.# = 2",
+	// First note layout
+	"widget.0.note_definition.0.content = note 1",
+	"widget.0.widget_layout.0.width = 6",
+	"widget.0.widget_layout.0.height = 2",
+	"widget.0.widget_layout.0.x = 3",
+	"widget.0.widget_layout.0.y = 0",
+	"widget.0.widget_layout.0.is_column_break = false",
+	// Second note layout
+	"widget.1.note_definition.0.content = note 2",
+	"widget.1.widget_layout.0.width = 6",
+	"widget.1.widget_layout.0.height = 2",
+	"widget.1.widget_layout.0.x = 3",
+	"widget.1.widget_layout.0.y = 2",
+	"widget.1.widget_layout.0.is_column_break = true",
+}
+
+func datadogMultiSizeLayoutAutoDashboardConfig(uniqueDashboardName string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard" "msl_auto_dashboard" {
+	title            = "%s"
+	description      = "Created using the Datadog provider in Terraform"
+	layout_type      = "ordered"
+	reflow_type      = "auto"
+	widget {
+		note_definition {
+			content = "note 1"
+		}
+	}
+	widget {
+		note_definition {
+			content = "note 2"
+		}
+	}
+}`, uniqueDashboardName)
+}
+
+var datadogMslAutoDashboardAsserts = []string{
+	// Dashboard metadata
+	"description = Created using the Datadog provider in Terraform",
+	"layout_type = ordered",
+	"reflow_type = auto",
+	"widget.# = 2",
+	// First note layout
+	"widget.0.note_definition.0.content = note 1",
+	"widget.0.widget_layout.# = 0",
+	// Second note layout
+	"widget.1.note_definition.0.content = note 2",
+	"widget.1.widget_layout.# = 0",
+}
+
+func TestAccDatadogDashboardMultiSizeLayout_createFixed(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	boardName := uniqueEntityName(ctx, t)
+	asserts := datadogMslFixedDashboardAsserts
+	accProvider := testAccProvider(t, accProviders)
+	checks := testCheckResourceAttrs("datadog_dashboard.msl_fixed_dashboard", checkDashboardExists(accProvider), asserts)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: datadogMultiSizeLayoutFixedDashboardConfig(boardName),
+				Check:  resource.ComposeTestCheckFunc(checks...),
+			},
+		},
+	})
+}
+
+func TestAccDatadogDashboardMultiSizeLayout_createAuto(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	boardName := uniqueEntityName(ctx, t)
+	asserts := datadogMslAutoDashboardAsserts
+	accProvider := testAccProvider(t, accProviders)
+	checks := testCheckResourceAttrs("datadog_dashboard.msl_auto_dashboard", checkDashboardExists(accProvider), asserts)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: datadogMultiSizeLayoutAutoDashboardConfig(boardName),
+				Check:  resource.ComposeTestCheckFunc(checks...),
+			},
+		},
+	})
+}
