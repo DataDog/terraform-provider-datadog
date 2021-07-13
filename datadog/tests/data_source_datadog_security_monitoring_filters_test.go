@@ -48,10 +48,7 @@ func securityMonitoringCheckFilterCount(accProvider func() (*schema.Provider, er
 	}
 }
 
-
-
 func securityMonitoringFilterCount(state *terraform.State, responseCount int) error {
-	// TODO rename here
 	resourceAttributes := state.RootModule().Resources[tfSecurityFiltersSource].Primary.Attributes
 	filtersIdsCount, _ := strconv.Atoi(resourceAttributes["filters_ids.#"])
 	filtersCount, _ := strconv.Atoi(resourceAttributes["filters.#"])
