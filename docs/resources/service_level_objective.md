@@ -97,7 +97,7 @@ resource "datadog_service_level_objective" "bar" {
 Required:
 
 - **target** (Number) The objective's target in`[0,100]`.
-- **timeframe** (String) The time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Valid values are `7d`, `30d`, `90d`.
+- **timeframe** (String) The time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Valid values are `7d`, `30d`, `90d`, `custom`.
 
 Optional:
 
