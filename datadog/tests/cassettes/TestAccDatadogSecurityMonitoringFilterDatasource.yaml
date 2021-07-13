@@ -1,0 +1,291 @@
+---
+version: 1
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListSecurityFilters
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters
+    method: GET
+  response:
+    body: '{"data":[{"attributes":{"is_enabled":true,"name":"all ingested logs","filtered_data_type":"logs","exclusion_filters":[],"version":1,"query":"*","is_builtin":true},"type":"security_filters","id":"bc0-fow-e4j"},{"attributes":{"is_enabled":true,"name":"Custom security filter","filtered_data_type":"logs","exclusion_filters":[{"query":"source:staging","name":"Exclude staging"}],"version":1,"query":"service:api","is_builtin":false},"type":"security_filters","id":"qhn-iuy-4oc"},{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626096168","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"acceptance rule triggered","is_builtin":false},"type":"security_filters","id":"7no-kjl-tnb"},{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilterDatasource-local-1626104534","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"ayayay query","is_builtin":false},"type":"security_filters","id":"smf-png-gzf"}]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 13 Jul 2021 10:45:36 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "596"
+      X-Ratelimit-Reset:
+      - "25"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListSecurityFilters
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters
+    method: GET
+  response:
+    body: '{"data":[{"attributes":{"is_enabled":true,"name":"all ingested logs","filtered_data_type":"logs","exclusion_filters":[],"version":1,"query":"*","is_builtin":true},"type":"security_filters","id":"bc0-fow-e4j"},{"attributes":{"is_enabled":true,"name":"Custom security filter","filtered_data_type":"logs","exclusion_filters":[{"query":"source:staging","name":"Exclude staging"}],"version":1,"query":"service:api","is_builtin":false},"type":"security_filters","id":"qhn-iuy-4oc"},{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626096168","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"acceptance rule triggered","is_builtin":false},"type":"security_filters","id":"7no-kjl-tnb"},{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilterDatasource-local-1626104534","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"ayayay query","is_builtin":false},"type":"security_filters","id":"smf-png-gzf"}]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 13 Jul 2021 10:45:36 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "595"
+      X-Ratelimit-Reset:
+      - "24"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListSecurityFilters
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters
+    method: GET
+  response:
+    body: '{"data":[{"attributes":{"is_enabled":true,"name":"all ingested logs","filtered_data_type":"logs","exclusion_filters":[],"version":1,"query":"*","is_builtin":true},"type":"security_filters","id":"bc0-fow-e4j"},{"attributes":{"is_enabled":true,"name":"Custom security filter","filtered_data_type":"logs","exclusion_filters":[{"query":"source:staging","name":"Exclude staging"}],"version":1,"query":"service:api","is_builtin":false},"type":"security_filters","id":"qhn-iuy-4oc"},{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626096168","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"acceptance rule triggered","is_builtin":false},"type":"security_filters","id":"7no-kjl-tnb"},{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilterDatasource-local-1626104534","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"ayayay query","is_builtin":false},"type":"security_filters","id":"smf-png-gzf"}]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 13 Jul 2021 10:45:37 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "594"
+      X-Ratelimit-Reset:
+      - "23"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListSecurityFilters
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters
+    method: GET
+  response:
+    body: '{"data":[{"attributes":{"is_enabled":true,"name":"all ingested logs","filtered_data_type":"logs","exclusion_filters":[],"version":1,"query":"*","is_builtin":true},"type":"security_filters","id":"bc0-fow-e4j"},{"attributes":{"is_enabled":true,"name":"Custom security filter","filtered_data_type":"logs","exclusion_filters":[{"query":"source:staging","name":"Exclude staging"}],"version":1,"query":"service:api","is_builtin":false},"type":"security_filters","id":"qhn-iuy-4oc"},{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626096168","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"acceptance rule triggered","is_builtin":false},"type":"security_filters","id":"7no-kjl-tnb"},{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilterDatasource-local-1626104534","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"ayayay query","is_builtin":false},"type":"security_filters","id":"smf-png-gzf"}]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 13 Jul 2021 10:45:37 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "593"
+      X-Ratelimit-Reset:
+      - "23"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListSecurityFilters
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters
+    method: GET
+  response:
+    body: '{"data":[{"attributes":{"is_enabled":true,"name":"all ingested logs","filtered_data_type":"logs","exclusion_filters":[],"version":1,"query":"*","is_builtin":true},"type":"security_filters","id":"bc0-fow-e4j"},{"attributes":{"is_enabled":true,"name":"Custom security filter","filtered_data_type":"logs","exclusion_filters":[{"query":"source:staging","name":"Exclude staging"}],"version":1,"query":"service:api","is_builtin":false},"type":"security_filters","id":"qhn-iuy-4oc"},{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626096168","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"acceptance rule triggered","is_builtin":false},"type":"security_filters","id":"7no-kjl-tnb"},{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilterDatasource-local-1626104534","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"ayayay query","is_builtin":false},"type":"security_filters","id":"smf-png-gzf"}]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 13 Jul 2021 10:45:37 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "592"
+      X-Ratelimit-Reset:
+      - "23"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListSecurityFilters
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters
+    method: GET
+  response:
+    body: '{"data":[{"attributes":{"is_enabled":true,"name":"all ingested logs","filtered_data_type":"logs","exclusion_filters":[],"version":1,"query":"*","is_builtin":true},"type":"security_filters","id":"bc0-fow-e4j"},{"attributes":{"is_enabled":true,"name":"Custom security filter","filtered_data_type":"logs","exclusion_filters":[{"query":"source:staging","name":"Exclude staging"}],"version":1,"query":"service:api","is_builtin":false},"type":"security_filters","id":"qhn-iuy-4oc"},{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626096168","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"acceptance rule triggered","is_builtin":false},"type":"security_filters","id":"7no-kjl-tnb"},{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilterDatasource-local-1626104534","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"ayayay query","is_builtin":false},"type":"security_filters","id":"smf-png-gzf"}]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 13 Jul 2021 10:45:38 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "591"
+      X-Ratelimit-Reset:
+      - "22"
+    status: 200 OK
+    code: 200
+    duration: ""

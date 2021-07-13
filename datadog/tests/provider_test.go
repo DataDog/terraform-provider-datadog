@@ -57,6 +57,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_permissions_test":                       "permissions",
 	"tests/data_source_datadog_role_test":                              "roles",
 	"tests/data_source_datadog_security_monitoring_rules_test":         "security-monitoring",
+	"tests/data_source_datadog_security_monitoring_filters_test":         "security-monitoring",
 	"tests/data_source_datadog_service_level_objective_test":           "service-level-objectives",
 	"tests/data_source_datadog_service_level_objectives_test":          "service-level-objectives",
 	"tests/data_source_datadog_synthetics_locations_test":              "synthetics",

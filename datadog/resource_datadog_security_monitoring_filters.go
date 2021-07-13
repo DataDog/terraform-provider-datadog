@@ -27,49 +27,53 @@ func resourceDatadogSecurityMonitoringFilter() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The name of the security filter.",
-			},
-			"query": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The query of the security filter.",
-			},
-			"is_enabled": {
-				Type:        schema.TypeBool,
-				Required:    true,
-				Description: "Whether the security filter is enabled.",
-			},
-			"exclusion_filter": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Description: "Exclusion filters to exclude some logs from the security filter.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"name": {
-							Type:        schema.TypeString,
-							Required:    true,
-							Description: "Exclusion filter name.",
-						},
-						"query": {
-							Type:        schema.TypeString,
-							Required:    true,
-							Description: "Exclusion filter query. Logs that match this query are excluded from the security filter.",
-						},
+		Schema: securityMonitoringFilterSchema(),
+	}
+}
+
+func securityMonitoringFilterSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"name": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The name of the security filter.",
+		},
+		"query": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The query of the security filter.",
+		},
+		"is_enabled": {
+			Type:        schema.TypeBool,
+			Required:    true,
+			Description: "Whether the security filter is enabled.",
+		},
+		"exclusion_filter": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Exclusion filters to exclude some logs from the security filter.",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"name": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "Exclusion filter name.",
+					},
+					"query": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "Exclusion filter query. Logs that match this query are excluded from the security filter.",
 					},
 				},
 			},
+		},
 
-			"filtered_data_type": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Description:      "The filtered data type.",
-				Default:          "logs",
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityFilterFilteredDataTypeFromValue),
-			},
+		"filtered_data_type": {
+			Type:             schema.TypeString,
+			Optional:         true,
+			Description:      "The filtered data type.",
+			Default:          "logs",
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityFilterFilteredDataTypeFromValue),
 		},
 	}
 }
@@ -181,17 +185,22 @@ func updateResourceDataFilterFromResponse(d *schema.ResourceData, filterResponse
 	d.Set("is_enabled", attributes.GetIsEnabled())
 	d.Set("filtered_data_type", attributes.GetFilteredDataType())
 
-	if exclusionFilters, ok := attributes.GetExclusionFiltersOk(); ok {
-		exclusionFiltersTF := make([]map[string]interface{}, len(*exclusionFilters))
-		for idx := range attributes.GetExclusionFilters() {
-			exclusionFilterTF := make(map[string]interface{})
-			exclusionFilter := attributes.GetExclusionFilters()[idx]
-			exclusionFilterTF["name"] = exclusionFilter.GetName()
-			exclusionFilterTF["query"] = exclusionFilter.GetQuery()
-			exclusionFiltersTF[idx] = exclusionFilterTF
-		}
+	if _, ok := attributes.GetExclusionFiltersOk(); ok {
+		exclusionFiltersTF := extractExclusionFiltersTF(attributes)
 		d.Set("exclusion_filter", exclusionFiltersTF)
 	}
+}
+
+func extractExclusionFiltersTF(attributes datadogV2.SecurityFilterAttributes) []map[string]interface{} {
+	exclusionFiltersTF := make([]map[string]interface{}, len(attributes.GetExclusionFilters()))
+	for idx := range attributes.GetExclusionFilters() {
+		exclusionFilterTF := make(map[string]interface{})
+		exclusionFilter := attributes.GetExclusionFilters()[idx]
+		exclusionFilterTF["name"] = exclusionFilter.GetName()
+		exclusionFilterTF["query"] = exclusionFilter.GetQuery()
+		exclusionFiltersTF[idx] = exclusionFilterTF
+	}
+	return exclusionFiltersTF
 }
 
 func buildSecMonFilterUpdatePayload(currentState datadogV2.SecurityFilterResponse, d *schema.ResourceData) *datadogV2.SecurityFilterUpdateRequest {
