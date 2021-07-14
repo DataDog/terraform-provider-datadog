@@ -129,6 +129,7 @@ func Provider() *schema.Provider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
+			"datadog_api_key":                              resourceDatadogApiKey(),
 			"datadog_dashboard":                            resourceDatadogDashboard(),
 			"datadog_dashboard_json":                       resourceDatadogDashboardJSON(),
 			"datadog_dashboard_list":                       resourceDatadogDashboardList(),
