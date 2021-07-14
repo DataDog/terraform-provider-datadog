@@ -1,3 +1,27 @@
+## 3.2.0 (July 14, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_security_monitoring`: Introduce the detections methods and the new value rules options ([#1116](https://github.com/DataDog/terraform-provider-datadog/pull/1116))
+-   `datadog_integration_slack_channel`: Add Slack import example ([#1128](https://github.com/DataDog/terraform-provider-datadog/pull/1128))
+-   `datadog_synthetics_test`: Add custom message with a warning on synthetics test resource ([#1133](https://github.com/DataDog/terraform-provider-datadog/pull/1133))
+-   `datadog_monitor`: Allow un-setting `restricted_roles` on a monitor resource and add `restricted_roles` to the monitor data source ([#1121](https://github.com/DataDog/terraform-provider-datadog/pull/1121))
+-   `datadog_security_monitoring_rules`: Add support for suppress and require filters for the rules resources ([#1131](https://github.com/DataDog/terraform-provider-datadog/pull/1131))
+-   `datadog_security_monitoring_rules`: Add support for `has_extended_title` property ([#1130](https://github.com/DataDog/terraform-provider-datadog/pull/1130))
+
+BUGFIXES:
+
+-   `datadog_dashboard`: Fix `is_column_break` issues ([#1140](https://github.com/DataDog/terraform-provider-datadog/pull/1140))
+-   `datadog_integration_aws_log_collection` and `datadog_integration_aws_tag_filter`: Fixed Terraform examples ([#1127](https://github.com/DataDog/terraform-provider-datadog/pull/1127))
+-   `datadog_synthetics_test`: Update `tick_every` property to use int ([#1119](https://github.com/DataDog/terraform-provider-datadog/pull/1119))
+-   `datadog_logs_index`: Fix logs_index update method ([#1126](https://github.com/DataDog/terraform-provider-datadog/pull/1126)
+-   `provider`: Fix segfault in `translateclienterror` if `httpresp` is nil ([#1135](https://github.com/DataDog/terraform-provider-datadog/pull/1135))
+
+NOTES:
+
+-   Update Datadog client to [v1.2.0](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.2.0) ([#1143](https://github.com/DataDog/terraform-provider-datadog/pull/1143))
+-   Update Terraform plugin SDK to v2.7.0 ([#1132](https://github.com/DataDog/terraform-provider-datadog/pull/1132))
+
 ## 3.1.2 (June 24, 2021)
 
 BUGFIXES:
