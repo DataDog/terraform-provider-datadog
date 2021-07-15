@@ -3507,6 +3507,7 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 		"process_query":  getProcessQuerySchema(),
 		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"audit_query":    getApmLogNetworkRumSecurityQuerySchema(),
 		// "query" and "formula" go together
 		"query":   getFormulaQuerySchema(),
 		"formula": getFormulaSchema(),
@@ -3550,6 +3551,9 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
 			securityQuery := v[0].(map[string]interface{})
 			datadogQueryValueRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
+		} else if v, ok := terraformRequest["audit_query"].([]interface{}); ok && len(v) > 0 {
+			auditQuery := v[0].(map[string]interface{})
+			datadogQueryValueRequest.AuditQuery = buildDatadogApmOrLogQuery(auditQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
 			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
 			for i, q := range v {
@@ -3610,6 +3614,10 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.security_query.0", i))
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogQuest.GetAuditQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.audit_query.0", i)))
+			k.Remove(fmt.Sprintf("%d.audit_query.0", i))
+			terraformRequest["audit_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(*v)
 		}
@@ -5082,6 +5090,7 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 		"network_query":  getApmLogNetworkRumSecurityQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"audit_query":    getApmLogNetworkRumSecurityQuerySchema(),
 		// "query" and "formula" go together
 		"query":   getFormulaQuerySchema(),
 		"formula": getFormulaSchema(),
@@ -5312,6 +5321,9 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogTimeseriesRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		} else if v, ok := terraformRequest["audit_query"].([]interface{}); ok && len(v) > 0 {
+			processQuery := v[0].(map[string]interface{})
+			datadogTimeseriesRequest.AuditQuery = buildDatadogApmOrLogQuery(auditQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
 			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
 			for i, q := range v {
@@ -5396,6 +5408,9 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.security_query.0", i))
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetAuditQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.audit_query.0", i)))
+			terraformRequest["audit_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(*v)
 		}
@@ -5535,6 +5550,7 @@ func getToplistRequestSchema() map[string]*schema.Schema {
 		"process_query":  getProcessQuerySchema(),
 		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"audit_query":    getApmLogNetworkRumSecurityQuerySchema(),
 		// "query" and "formula" go together
 		"query":   getFormulaQuerySchema(),
 		"formula": getFormulaSchema(),
@@ -5581,6 +5597,9 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
 			securityQuery := v[0].(map[string]interface{})
 			datadogToplistRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
+		} else if v, ok := terraformRequest["audit_query"].([]interface{}); ok && len(v) > 0 {
+			auditQuery := v[0].(map[string]interface{})
+			datadogToplistRequest.AuditQuery = buildDatadogApmOrLogQuery(auditQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
 			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
 			for i, q := range v {
@@ -5641,6 +5660,10 @@ func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWi
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.security_query.0", i))
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetAuditQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.audit_query.0", i)))
+			k.Remove(fmt.Sprintf("%d.audit_query.0", i))
+			terraformRequest["audit_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(*v)
 		}
