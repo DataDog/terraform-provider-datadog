@@ -359,6 +359,7 @@ Optional:
 
 Optional:
 
+- **allow_insecure** (Boolean) Allows loading insecure content for an HTTP test.
 - **body** (String) The request body.
 - **dns_server** (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - **dns_server_port** (Number) DNS server port to use for DNS tests.
