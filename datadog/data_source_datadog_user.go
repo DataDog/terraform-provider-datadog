@@ -15,7 +15,7 @@ func dataSourceDatadogUser() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"filter": {
-				Description: "email",
+				Description: "Filter all users by the given string.",
 				Type:        schema.TypeString,
 				Required:    true,
 			},
@@ -40,7 +40,7 @@ func dataSourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 	authV2 := providerConf.AuthV2
 	pageNumber := int64(0)
 	filter := d.Get("filter").(string)
-	founded := false
+	found := false
 
 	req := datadogClientV2.UsersApi.ListUsers(authV2).PageSize(20).PageNumber(pageNumber).Filter(filter)
 	res, _, err := req.Execute()
@@ -73,7 +73,7 @@ func dataSourceDatadogUserRead(d *schema.ResourceData, meta interface{}) error {
 		pageNumber++
 	}
 	if !founded {
-		return fmt.Errorf("didn't found any user mathing this email")
+		return fmt.Errorf("didn't find any user matching filter string  \"%s\"",)
 	}
 	return nil
 }
