@@ -2,8 +2,6 @@ package datadog
 
 import (
 	"context"
-	"errors"
-
 	_ "gopkg.in/warnings.v0"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -32,6 +30,11 @@ func resourceDatadogSecurityMonitoringFilter() *schema.Resource {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "The name of the security filter.",
+			},
+			"version":{
+				Type:        schema.TypeInt,
+				Description: "The version of the security filter.",
+				Computed: true,
 			},
 			"query": {
 				Type:        schema.TypeString,
@@ -86,9 +89,8 @@ func resourceDatadogSecurityMonitoringFilterCreate(ctx context.Context, d *schem
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating security monitoring filter")
 	}
 
-	// store the resource id
-	data := response.GetData()
-	d.SetId(data.GetId())
+	// update the resource
+	updateResourceDataFilterFromResponse(d, response)
 
 	return nil
 }
@@ -105,7 +107,7 @@ func resourceDatadogSecurityMonitoringFilterRead(ctx context.Context, d *schema.
 			d.SetId("")
 			return nil
 		}
-		return diag.FromErr(err)
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error fetching security filter")
 	}
 
 	updateResourceDataFilterFromResponse(d, filterResponse)
@@ -127,12 +129,7 @@ func resourceDatadogSecurityMonitoringFilterUpdate(ctx context.Context, d *schem
 
 	filterId := d.Id()
 
-	response, diagnostics, failed := fetchFilterFromApi(datadogClientV2, authV2, filterId)
-	if failed {
-		return diagnostics
-	}
-
-	filterUpdate := buildSecMonFilterUpdatePayload(response, d)
+	filterUpdate := buildSecMonFilterUpdatePayload(d)
 
 	if _, httpResponse, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityFilter(authV2, filterId, *filterUpdate); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating security monitoring filter")
@@ -141,30 +138,12 @@ func resourceDatadogSecurityMonitoringFilterUpdate(ctx context.Context, d *schem
 	return nil
 }
 
-func fetchFilterFromApi(datadogClientV2 *datadogV2.APIClient, authV2 context.Context, filterId string) (datadogV2.SecurityFilterResponse, diag.Diagnostics, bool) {
-	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.GetSecurityFilter(authV2, filterId)
-
-	if err != nil {
-		if httpResponse != nil && httpResponse.StatusCode == 404 {
-			return datadogV2.SecurityFilterResponse{}, diag.FromErr(errors.New("default rule does not exist")), true
-		}
-
-		return datadogV2.SecurityFilterResponse{}, utils.TranslateClientErrorDiag(err, httpResponse, "error fetching filter"), true
-	}
-	return response, nil, false
-}
-
 func resourceDatadogSecurityMonitoringFilterDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
 	filterId := d.Id()
-
-	_, diagnostics, failed := fetchFilterFromApi(datadogClientV2, authV2, filterId)
-	if failed {
-		return diagnostics
-	}
 
 	if httpResponse, err := datadogClientV2.SecurityMonitoringApi.DeleteSecurityFilter(authV2, filterId); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting security monitoring filter")
@@ -175,7 +154,13 @@ func resourceDatadogSecurityMonitoringFilterDelete(ctx context.Context, d *schem
 
 func updateResourceDataFilterFromResponse(d *schema.ResourceData, filterResponse datadogV2.SecurityFilterResponse) {
 	data := filterResponse.GetData()
+	d.SetId(data.GetId())
+
 	attributes := data.GetAttributes()
+
+	// computed version attribute
+	d.Set("version", attributes.GetVersion())
+
 	d.Set("name", attributes.GetName())
 	d.Set("query", attributes.GetQuery())
 	d.Set("is_enabled", attributes.GetIsEnabled())
@@ -194,14 +179,11 @@ func updateResourceDataFilterFromResponse(d *schema.ResourceData, filterResponse
 	}
 }
 
-func buildSecMonFilterUpdatePayload(currentState datadogV2.SecurityFilterResponse, d *schema.ResourceData) *datadogV2.SecurityFilterUpdateRequest {
+func buildSecMonFilterUpdatePayload(d *schema.ResourceData) *datadogV2.SecurityFilterUpdateRequest {
 	payload := datadogV2.SecurityFilterUpdateRequest{}
 	payload.Data.Type = securityFilterType
 	// set the version from current state
-	data := currentState.GetData()
-	attributes := data.GetAttributes()
-	version := attributes.GetVersion()
-	payload.Data.Attributes.SetVersion(version)
+	payload.Data.Attributes.SetVersion(int32(d.Get("version").(int)))
 
 	isEnabled, name, filteredDataType, query, filters := extractFilterAttributedFromResource(d)
 

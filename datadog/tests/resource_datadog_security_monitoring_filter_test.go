@@ -67,6 +67,8 @@ func testAccCheckDatadogSecurityMonitorFilterCreatedCheck(accProvider func() (*s
 		resource.TestCheckResourceAttr(
 			tfSecurityFilterName, "is_enabled", "true"),
 		resource.TestCheckResourceAttr(
+			tfSecurityFilterName, "exclusion_filter.#", "2"),
+		resource.TestCheckResourceAttr(
 			tfSecurityFilterName, "exclusion_filter.0.name", "first"),
 		resource.TestCheckResourceAttr(
 			tfSecurityFilterName, "exclusion_filter.0.query", "does not really match much"),
@@ -106,6 +108,8 @@ func testAccCheckDatadogSecurityMonitorFilterUpdatedCheck(accProvider func() (*s
 			tfSecurityFilterName, "query", "new query"),
 		resource.TestCheckResourceAttr(
 			tfSecurityFilterName, "is_enabled", "false"),
+		resource.TestCheckResourceAttr(
+			tfSecurityFilterName, "exclusion_filter.#", "2"),
 		resource.TestCheckResourceAttr(
 			tfSecurityFilterName, "exclusion_filter.0.name", "first"),
 		resource.TestCheckResourceAttr(
