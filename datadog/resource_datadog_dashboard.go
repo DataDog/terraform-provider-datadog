@@ -5410,6 +5410,7 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetAuditQueryOk(); ok {
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.audit_query.0", i)))
+			k.Remove(fmt.Sprintf("%d.audit_query.0", i))
 			terraformRequest["audit_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(*v)
