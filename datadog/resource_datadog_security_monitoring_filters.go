@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+
 	_ "gopkg.in/warnings.v0"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -31,10 +32,10 @@ func resourceDatadogSecurityMonitoringFilter() *schema.Resource {
 				Required:    true,
 				Description: "The name of the security filter.",
 			},
-			"version":{
+			"version": {
 				Type:        schema.TypeInt,
 				Description: "The version of the security filter.",
-				Computed: true,
+				Computed:    true,
 			},
 			"query": {
 				Type:        schema.TypeString,

@@ -48,6 +48,7 @@ resource "datadog_security_monitoring_filter" "my_filter" {
 ### Read-Only
 
 - **id** (String) The ID of this resource.
+- **version** (Number) The version of the security filter.
 
 <a id="nestedblock--exclusion_filter"></a>
 ### Nested Schema for `exclusion_filter`
