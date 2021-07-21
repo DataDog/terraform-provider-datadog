@@ -177,29 +177,29 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				on_right_yaxis = "true"
 			}
 			request {
-				style {
-					line_width = "normal"
-					palette = "green"
-					line_type = "solid"
-				}
-				audit_query {
-					index = "*"
-					search_query = ""
-					group_by {
-						facet = "@metadata.api_key.id"
-						sort_query {
-							aggregation = "count"
-							order = "desc"
-						}
-						limit = "10"
-					}
-					compute_query {
-						aggregation = "count"
-					}
-				}
-				display_type = "line"
-				on_right_yaxis = "true"
-			}
+                style {
+                    line_width = "normal"
+                    palette = "green"
+                    line_type = "solid"
+                }
+                audit_query {
+                    index = "*"
+                    search_query = ""
+                    group_by {
+                        facet = "@metadata.api_key.id"
+                        sort_query {
+                            aggregation = "count"
+                            order = "desc"
+                        }
+                        limit = "10"
+                    }
+                    compute_query {
+                        aggregation = "count"
+                    }
+                }
+                display_type = "line"
+                on_right_yaxis = "true"
+            }
 			custom_link {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
@@ -547,7 +547,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.marker.1.label = y=400000",
 	"widget.0.timeseries_definition.0.marker.1.display_type = warning dashed",
 	"widget.0.timeseries_definition.0.marker.1.value = y=400000",
-	"widget.0.timeseries_definition.0.request.# = 6",
+	"widget.0.timeseries_definition.0.request.# = 7",
 	"widget.0.timeseries_definition.0.request.0.style.0.line_width = thin",
 	"widget.0.timeseries_definition.0.request.0.style.0.line_type = solid",
 	"widget.0.timeseries_definition.0.request.0.process_query.# = 0",
