@@ -10,14 +10,14 @@ interactions:
       Dd-Operation-Id:
       - GetIPRanges
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
     body: |
       {
-          "version": 39,
-          "modified": "2021-02-24-00-00-00",
+          "version": 40,
+          "modified": "2021-04-02-17-00-00",
           "agents": {
               "prefixes_ipv4": [
                   "3.228.26.0/25",
@@ -26,6 +26,7 @@ interactions:
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
                   "2600:1f18:63f7:b900::/56"
               ]
           },
@@ -35,20 +36,25 @@ interactions:
                   "3.228.27.128/26",
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "apm": {
               "prefixes_ipv4": [
                   "3.226.246.128/25",
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "global": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
                   "2600:1f18:63f7:b900::/56"
               ]
           },
@@ -251,21 +257,26 @@ interactions:
                   "54.89.25.194/32",
                   "54.89.40.158/32"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
+                  "2600:1f18:63f7:b900::/56"
+              ]
           },
           "orchestrator": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
-                  "2600:1f18:63f7:b900::/56"
+                  "2600:1f18:24e6:b900::/56"
               ]
           },
           "process": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "synthetics": {
               "prefixes_ipv4": [
@@ -409,27 +420,27 @@ interactions:
       }
     headers:
       Age:
-      - "38"
+      - "119"
       Connection:
       - keep-alive
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:10:55 GMT
+      - Thu, 22 Jul 2021 18:51:37 GMT
       Etag:
-      - W/"29cc59547e36a7ca6b49473b0d1ff4d8"
+      - W/"ecb4ed42838b56fe91b86d372e2f1b0e"
       Last-Modified:
-      - Thu, 25 Feb 2021 17:42:52 GMT
+      - Fri, 02 Apr 2021 15:14:33 GMT
       Server:
       - AmazonS3
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 9ef00004ef0e93efae76c75d3a2df1b4.cloudfront.net (CloudFront)
+      - 1.1 233fdf58f872ee4c13da2719cf945c9c.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - GLxhQvAi3b4PyNK0Rwav_CXSrMIor5JTMeo8KN-jYQ8Q0ZUm0mmjaA==
+      - 6oPmoirNjr2fmfX9l8bZ0fyLIca9t8sTSouMCNdM68veO2KELVNzAA==
       X-Amz-Cf-Pop:
-      - EWR53-C3
+      - EWR52-C3
       X-Cache:
       - Hit from cloudfront
     status: 200 OK
@@ -444,14 +455,14 @@ interactions:
       Dd-Operation-Id:
       - GetIPRanges
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
     body: |
       {
-          "version": 39,
-          "modified": "2021-02-24-00-00-00",
+          "version": 40,
+          "modified": "2021-04-02-17-00-00",
           "agents": {
               "prefixes_ipv4": [
                   "3.228.26.0/25",
@@ -460,6 +471,7 @@ interactions:
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
                   "2600:1f18:63f7:b900::/56"
               ]
           },
@@ -469,20 +481,25 @@ interactions:
                   "3.228.27.128/26",
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "apm": {
               "prefixes_ipv4": [
                   "3.226.246.128/25",
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "global": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
                   "2600:1f18:63f7:b900::/56"
               ]
           },
@@ -685,21 +702,26 @@ interactions:
                   "54.89.25.194/32",
                   "54.89.40.158/32"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
+                  "2600:1f18:63f7:b900::/56"
+              ]
           },
           "orchestrator": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
-                  "2600:1f18:63f7:b900::/56"
+                  "2600:1f18:24e6:b900::/56"
               ]
           },
           "process": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "synthetics": {
               "prefixes_ipv4": [
@@ -847,23 +869,23 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:33 GMT
+      - Thu, 22 Jul 2021 18:53:37 GMT
       Etag:
-      - W/"29cc59547e36a7ca6b49473b0d1ff4d8"
+      - W/"ecb4ed42838b56fe91b86d372e2f1b0e"
       Last-Modified:
-      - Thu, 25 Feb 2021 17:42:52 GMT
+      - Fri, 02 Apr 2021 15:14:33 GMT
       Server:
       - AmazonS3
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 9ef00004ef0e93efae76c75d3a2df1b4.cloudfront.net (CloudFront)
+      - 1.1 233fdf58f872ee4c13da2719cf945c9c.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - Rvyrm7qLaIS0nj7dcEL442J3Q_TMYc8L1qA0bVTwL5s-wOJf-xpw5w==
+      - uxDELrxmzu9F0AXAmCJQP_JlJZGtTMjRfURSBFPyUEQGdNhp7gOaPg==
       X-Amz-Cf-Pop:
-      - EWR53-C3
+      - EWR52-C3
       X-Cache:
-      - RefreshHit from cloudfront
+      - Miss from cloudfront
     status: 200 OK
     code: 200
     duration: ""
@@ -874,7 +896,7 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/slack
     method: POST
   response:
@@ -887,15 +909,11 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Fri, 12 Mar 2021 22:11:33 GMT
+      - Thu, 22 Jul 2021 18:53:36 GMT
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -910,14 +928,14 @@ interactions:
       Dd-Operation-Id:
       - GetIPRanges
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
     body: |
       {
-          "version": 39,
-          "modified": "2021-02-24-00-00-00",
+          "version": 40,
+          "modified": "2021-04-02-17-00-00",
           "agents": {
               "prefixes_ipv4": [
                   "3.228.26.0/25",
@@ -926,6 +944,7 @@ interactions:
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
                   "2600:1f18:63f7:b900::/56"
               ]
           },
@@ -935,20 +954,25 @@ interactions:
                   "3.228.27.128/26",
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "apm": {
               "prefixes_ipv4": [
                   "3.226.246.128/25",
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "global": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
                   "2600:1f18:63f7:b900::/56"
               ]
           },
@@ -1151,21 +1175,26 @@ interactions:
                   "54.89.25.194/32",
                   "54.89.40.158/32"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
+                  "2600:1f18:63f7:b900::/56"
+              ]
           },
           "orchestrator": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
-                  "2600:1f18:63f7:b900::/56"
+                  "2600:1f18:24e6:b900::/56"
               ]
           },
           "process": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "synthetics": {
               "prefixes_ipv4": [
@@ -1308,28 +1337,26 @@ interactions:
           }
       }
     headers:
-      Age:
-      - "1"
       Connection:
       - keep-alive
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:33 GMT
+      - Thu, 22 Jul 2021 18:53:37 GMT
       Etag:
-      - W/"29cc59547e36a7ca6b49473b0d1ff4d8"
+      - W/"ecb4ed42838b56fe91b86d372e2f1b0e"
       Last-Modified:
-      - Thu, 25 Feb 2021 17:42:52 GMT
+      - Fri, 02 Apr 2021 15:14:33 GMT
       Server:
       - AmazonS3
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 9ef00004ef0e93efae76c75d3a2df1b4.cloudfront.net (CloudFront)
+      - 1.1 233fdf58f872ee4c13da2719cf945c9c.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - MMDnY-6nulFliKLnRV78iPkHMwEWfZpLYZdaEcoCYyk0S_Lbo1obhA==
+      - rmphGJfd614jPF4pcZfoH0kI3c2T1ztolUooArNJnbNJWqTZ114Qrw==
       X-Amz-Cf-Pop:
-      - EWR53-C3
+      - EWR52-C3
       X-Cache:
       - Hit from cloudfront
     status: 200 OK
@@ -1344,14 +1371,14 @@ interactions:
       Dd-Operation-Id:
       - GetIPRanges
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
     body: |
       {
-          "version": 39,
-          "modified": "2021-02-24-00-00-00",
+          "version": 40,
+          "modified": "2021-04-02-17-00-00",
           "agents": {
               "prefixes_ipv4": [
                   "3.228.26.0/25",
@@ -1360,6 +1387,7 @@ interactions:
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
                   "2600:1f18:63f7:b900::/56"
               ]
           },
@@ -1369,20 +1397,25 @@ interactions:
                   "3.228.27.128/26",
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "apm": {
               "prefixes_ipv4": [
                   "3.226.246.128/25",
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "global": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
                   "2600:1f18:63f7:b900::/56"
               ]
           },
@@ -1585,21 +1618,26 @@ interactions:
                   "54.89.25.194/32",
                   "54.89.40.158/32"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
+                  "2600:1f18:63f7:b900::/56"
+              ]
           },
           "orchestrator": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
-                  "2600:1f18:63f7:b900::/56"
+                  "2600:1f18:24e6:b900::/56"
               ]
           },
           "process": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "synthetics": {
               "prefixes_ipv4": [
@@ -1749,21 +1787,21 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:33 GMT
+      - Thu, 22 Jul 2021 18:53:37 GMT
       Etag:
-      - W/"29cc59547e36a7ca6b49473b0d1ff4d8"
+      - W/"ecb4ed42838b56fe91b86d372e2f1b0e"
       Last-Modified:
-      - Thu, 25 Feb 2021 17:42:52 GMT
+      - Fri, 02 Apr 2021 15:14:33 GMT
       Server:
       - AmazonS3
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 9ef00004ef0e93efae76c75d3a2df1b4.cloudfront.net (CloudFront)
+      - 1.1 233fdf58f872ee4c13da2719cf945c9c.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - JUOE2bQJBxGb2DbW8lPSFNj3dZ8PCZf3cQ7gNGSS7Fa57fs1w3fMTA==
+      - -ho_gM_AAmdh8URE2IvLHALupwW3q6WYuPcWw2CU6-IiFI7d1q7bjg==
       X-Amz-Cf-Pop:
-      - EWR53-C3
+      - EWR52-C3
       X-Cache:
       - Hit from cloudfront
     status: 200 OK
@@ -1778,14 +1816,14 @@ interactions:
       Dd-Operation-Id:
       - GetIPRanges
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
     body: |
       {
-          "version": 39,
-          "modified": "2021-02-24-00-00-00",
+          "version": 40,
+          "modified": "2021-04-02-17-00-00",
           "agents": {
               "prefixes_ipv4": [
                   "3.228.26.0/25",
@@ -1794,6 +1832,7 @@ interactions:
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
                   "2600:1f18:63f7:b900::/56"
               ]
           },
@@ -1803,20 +1842,25 @@ interactions:
                   "3.228.27.128/26",
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "apm": {
               "prefixes_ipv4": [
                   "3.226.246.128/25",
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "global": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
                   "2600:1f18:63f7:b900::/56"
               ]
           },
@@ -2019,21 +2063,26 @@ interactions:
                   "54.89.25.194/32",
                   "54.89.40.158/32"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56",
+                  "2600:1f18:63f7:b900::/56"
+              ]
           },
           "orchestrator": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
               "prefixes_ipv6": [
-                  "2600:1f18:63f7:b900::/56"
+                  "2600:1f18:24e6:b900::/56"
               ]
           },
           "process": {
               "prefixes_ipv4": [
                   "3.233.144.0/20"
               ],
-              "prefixes_ipv6": []
+              "prefixes_ipv6": [
+                  "2600:1f18:24e6:b900::/56"
+              ]
           },
           "synthetics": {
               "prefixes_ipv4": [
@@ -2183,21 +2232,21 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:33 GMT
+      - Thu, 22 Jul 2021 18:53:37 GMT
       Etag:
-      - W/"29cc59547e36a7ca6b49473b0d1ff4d8"
+      - W/"ecb4ed42838b56fe91b86d372e2f1b0e"
       Last-Modified:
-      - Thu, 25 Feb 2021 17:42:52 GMT
+      - Fri, 02 Apr 2021 15:14:33 GMT
       Server:
       - AmazonS3
       Vary:
       - Accept-Encoding
       Via:
-      - 1.1 9ef00004ef0e93efae76c75d3a2df1b4.cloudfront.net (CloudFront)
+      - 1.1 233fdf58f872ee4c13da2719cf945c9c.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - -meD07A5VGlp-4VPGSr5amtmPmD0UwKUiHsfbTx2ZU6drsganEP5Zg==
+      - ZumZmUa5sjHURb6GdlcfTVfyxnOMRkY9ZnYgkE_9ip8vi-EtnRGVGg==
       X-Amz-Cf-Pop:
-      - EWR53-C3
+      - EWR52-C3
       X-Cache:
       - Hit from cloudfront
     status: 200 OK
@@ -2205,7 +2254,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"display":{"message":true,"notified":true,"snapshot":true,"tags":true},"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092"}
+      {"display":{"message":true,"notified":true,"snapshot":true,"tags":true},"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015"}
     form: {}
     headers:
       Accept:
@@ -2215,11 +2264,11 @@ interactions:
       Dd-Operation-Id:
       - CreateSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels
     method: POST
   response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
     headers:
       Cache-Control:
       - no-cache
@@ -2232,17 +2281,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:34 GMT
+      - Thu, 22 Jul 2021 18:53:38 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - dCmL/3rURV6BPeaqeP3Rxigq41m5CAb17XjrRE42uZ01zpr07HVhbL5/3TWMkvgu
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 201 Created
@@ -2257,11 +2302,11 @@ interactions:
       Dd-Operation-Id:
       - GetSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015
     method: GET
   response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
     headers:
       Cache-Control:
       - no-cache
@@ -2272,7 +2317,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:34 GMT
+      - Thu, 22 Jul 2021 18:53:38 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -2281,10 +2326,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - dCmL/3rURV6BPeaqeP3Rxigq41m5CAb17XjrRE42uZ01zpr07HVhbL5/3TWMkvgu
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -2299,11 +2340,11 @@ interactions:
       Dd-Operation-Id:
       - GetSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015
     method: GET
   response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
     headers:
       Cache-Control:
       - no-cache
@@ -2314,7 +2355,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:34 GMT
+      - Thu, 22 Jul 2021 18:53:39 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -2323,10 +2364,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - SY1h8ScsWq+kYmtbh63ltMLFAZsQjqfrgvdfAoRX+9TzT1sgMBRYaFRwfWWRRe9a
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -2341,11 +2378,11 @@ interactions:
       Dd-Operation-Id:
       - GetSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015
     method: GET
   response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
     headers:
       Cache-Control:
       - no-cache
@@ -2356,7 +2393,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:35 GMT
+      - Thu, 22 Jul 2021 18:53:39 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -2365,10 +2402,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - F5gm0Rce1/Abr9/0Fw8HAqWfiz0FdiH8er/AXnN6lOn3L6KyGgbsLCwgPlob1No8
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -2376,7 +2409,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"display":{"message":false,"notified":false,"snapshot":false,"tags":false},"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092"}
+      {"display":{"message":false,"notified":false,"snapshot":false,"tags":false},"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015"}
     form: {}
     headers:
       Accept:
@@ -2386,11 +2419,11 @@ interactions:
       Dd-Operation-Id:
       - UpdateSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015
     method: PATCH
   response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
     headers:
       Cache-Control:
       - no-cache
@@ -2401,7 +2434,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:35 GMT
+      - Thu, 22 Jul 2021 18:53:40 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -2410,10 +2443,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - twvpGlmuom5y6A0pjGtXzTf554cmwJgTcCZ71fK4H/RDi+v5ehBK0zQiRcTJQG5C
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -2428,11 +2457,11 @@ interactions:
       Dd-Operation-Id:
       - GetSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015
     method: GET
   response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
     headers:
       Cache-Control:
       - no-cache
@@ -2443,7 +2472,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:36 GMT
+      - Thu, 22 Jul 2021 18:53:40 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -2452,10 +2481,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - bgHykj7A9bfZx0Y5ZO3swhhp5tGUSNJHqFWR868+qg087CYrDOd5hQslC+noiEtH
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -2470,11 +2495,11 @@ interactions:
       Dd-Operation-Id:
       - GetSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015
     method: GET
   response:
-    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
+    body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
     headers:
       Cache-Control:
       - no-cache
@@ -2485,7 +2510,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:36 GMT
+      - Thu, 22 Jul 2021 18:53:41 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -2494,10 +2519,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -2512,8 +2533,8 @@ interactions:
       Dd-Operation-Id:
       - RemoveSlackIntegrationChannel
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1626980015
     method: DELETE
   response:
     body: ""
@@ -2523,21 +2544,17 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - "4"
+      - "0"
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Date:
-      - Fri, 12 Mar 2021 22:11:37 GMT
+      - Thu, 22 Jul 2021 18:53:41 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - mNzaoDhdDKO7t4QSrAe5X7pHd0bJND187D+vRbwoluXouE2m1UaQQX0RGCvRpLVE
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content

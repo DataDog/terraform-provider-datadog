@@ -8,7 +8,7 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: PUT
   response:
@@ -21,15 +21,11 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Tue, 16 Mar 2021 20:29:38 GMT
+      - Thu, 22 Jul 2021 18:53:32 GMT
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -40,11 +36,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1624371754","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -55,7 +51,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:38 GMT
+      - Thu, 22 Jul 2021 18:53:33 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -64,10 +60,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - Um4CoU685QqAscnxhS5BD+goWu2yX1Jd4zCfGzSsEvPPIm1qURZaF8dlLl/OEY4I
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -78,11 +70,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1624371754","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -93,7 +85,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:39 GMT
+      - Thu, 22 Jul 2021 18:53:33 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -102,10 +94,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - L3ULR3HwCWYmEqCWGz2Yob3chcH4pjowBacBXkncP7o+/uPqKt9yGEYf/g1AJPzQ
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -116,11 +104,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1624371754","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -131,7 +119,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:39 GMT
+      - Thu, 22 Jul 2021 18:53:33 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -140,10 +128,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -154,11 +138,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1624371754","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -169,7 +153,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:40 GMT
+      - Thu, 22 Jul 2021 18:53:34 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -178,10 +162,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1624537622","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1626980125","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
@@ -13,7 +13,7 @@ interactions:
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.0) datadog-api-client-go/1.1.0 (go go1.15.11; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -30,15 +30,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Jun 2021 12:27:12 GMT
+      - Thu, 22 Jul 2021 18:55:26 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4822458"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -46,7 +44,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1624537622","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1626980125","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
@@ -56,7 +54,7 @@ interactions:
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.0) datadog-api-client-go/1.1.0 (go go1.15.11; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -73,15 +71,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Jun 2021 12:27:14 GMT
+      - Thu, 22 Jul 2021 18:55:26 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4822458"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -89,7 +85,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1624537622","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1626980125","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
@@ -99,7 +95,7 @@ interactions:
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.0) datadog-api-client-go/1.1.0 (go go1.15.11; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -116,15 +112,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Jun 2021 12:27:17 GMT
+      - Thu, 22 Jul 2021 18:55:27 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4822458"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -132,7 +126,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1624537622","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1626980125","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
@@ -142,11 +136,11 @@ interactions:
       Dd-Operation-Id:
       - CreateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.0) datadog-api-client-go/1.1.0 (go go1.15.11; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor
     method: POST
   response:
-    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","message":"some message Notify: @hipchat-channel","id":39702971,"multi":true,"name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1624537622","created":"2021-06-24T12:27:17.975172+00:00","created_at":1624537637000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-06-24T12:27:17.975172+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"metric alert","options":{"notify_audit":false,"locked":false,"silenced":{},"include_tags":true,"thresholds":{"critical":2.0,"warning":1.0},"require_full_window":true,"new_host_delay":300,"notify_no_data":false,"escalation_message":"the situation has escalated @pagerduty"}}'
+    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","message":"some message Notify: @hipchat-channel","id":42109601,"multi":true,"name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1626980125","created":"2021-07-22T18:55:27.383072+00:00","created_at":1626980127000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-07-22T18:55:27.383072+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"metric alert","options":{"notify_audit":false,"silenced":{},"include_tags":true,"thresholds":{"critical":2.0,"warning":1.0},"require_full_window":true,"new_host_delay":300,"notify_no_data":false,"escalation_message":"the situation has escalated @pagerduty"}}'
     headers:
       Cache-Control:
       - no-cache
@@ -157,7 +151,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Jun 2021 12:27:18 GMT
+      - Thu, 22 Jul 2021 18:55:27 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -166,8 +160,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4822458"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -183,7 +175,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"end":1624552022,"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1624537622","monitor_id":39702971,"monitor_tags":null,"scope":["*"],"start":1624548422,"timezone":"UTC"}
+      {"end":1626994525,"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1626980125","monitor_id":42109601,"monitor_tags":null,"scope":["*"],"start":1626990925,"timezone":"UTC"}
     form: {}
     headers:
       Accept:
@@ -193,11 +185,11 @@ interactions:
       Dd-Operation-Id:
       - CreateDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.0) datadog-api-client-go/1.1.0 (go go1.15.11; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/downtime
     method: POST
   response:
-    body: '{"recurrence":null,"end":1624552022,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":39702971,"created":1624537638,"org_id":321813,"modified":1624537638,"disabled":false,"start":1624548422,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1624537622","downtime_type":0,"id":1322311805,"updater_id":null}'
+    body: '{"recurrence":null,"end":1626994525,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":42109601,"created":1626980127,"org_id":321813,"modified":1626980127,"disabled":false,"start":1626990925,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1626980125","downtime_type":0,"id":1364888508,"updater_id":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -208,7 +200,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Jun 2021 12:27:28 GMT
+      - Thu, 22 Jul 2021 18:55:27 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -217,8 +209,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4822458"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -233,11 +223,11 @@ interactions:
       Dd-Operation-Id:
       - GetDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.0) datadog-api-client-go/1.1.0 (go go1.15.11; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/downtime/1322311805
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/1364888508
     method: GET
   response:
-    body: '{"recurrence":null,"end":1624552022,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":39702971,"created":1624537638,"org_id":321813,"modified":1624537638,"disabled":false,"start":1624548422,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1624537622","downtime_type":0,"id":1322311805,"updater_id":null}'
+    body: '{"recurrence":null,"end":1626994525,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":42109601,"created":1626980127,"org_id":321813,"modified":1626980127,"disabled":false,"start":1626990925,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1626980125","downtime_type":0,"id":1364888508,"updater_id":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -248,7 +238,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Jun 2021 12:27:30 GMT
+      - Thu, 22 Jul 2021 18:55:28 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -257,8 +247,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4822458"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -266,7 +254,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1624537622","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1626980125","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
@@ -276,7 +264,7 @@ interactions:
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.0) datadog-api-client-go/1.1.0 (go go1.15.11; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -293,15 +281,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Jun 2021 12:27:31 GMT
+      - Thu, 22 Jul 2021 18:55:28 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4822458"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -316,11 +302,11 @@ interactions:
       Dd-Operation-Id:
       - GetMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.0) datadog-api-client-go/1.1.0 (go go1.15.11; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/monitor/39702971
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/monitor/42109601
     method: GET
   response:
-    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","message":"some message Notify: @hipchat-channel","id":39702971,"multi":true,"name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1624537622","created":"2021-06-24T12:27:17.975172+00:00","created_at":1624537637000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-06-24T12:27:17.975172+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"metric alert","options":{"notify_audit":false,"locked":false,"silenced":{"*":1624552022},"include_tags":true,"thresholds":{"critical":2.0,"warning":1.0},"require_full_window":true,"new_host_delay":300,"notify_no_data":false,"escalation_message":"the situation has escalated @pagerduty"}}'
+    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","message":"some message Notify: @hipchat-channel","id":42109601,"multi":true,"name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1626980125","created":"2021-07-22T18:55:27.383072+00:00","created_at":1626980127000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-07-22T18:55:27.383072+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"metric alert","options":{"notify_audit":false,"silenced":{"*":1626994525},"include_tags":true,"thresholds":{"critical":2.0,"warning":1.0},"require_full_window":true,"new_host_delay":300,"notify_no_data":false,"escalation_message":"the situation has escalated @pagerduty"}}'
     headers:
       Cache-Control:
       - no-cache
@@ -331,7 +317,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Jun 2021 12:27:35 GMT
+      - Thu, 22 Jul 2021 18:55:29 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -340,8 +326,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4822458"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -349,15 +333,15 @@ interactions:
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "2999"
+      - "2998"
       X-Ratelimit-Reset:
-      - "5"
+      - "1"
     status: 200 OK
     code: 200
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1624537622","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1626980125","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
@@ -367,7 +351,7 @@ interactions:
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.0) datadog-api-client-go/1.1.0 (go go1.15.11; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -384,15 +368,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Jun 2021 12:27:35 GMT
+      - Thu, 22 Jul 2021 18:55:29 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4822458"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -407,11 +389,11 @@ interactions:
       Dd-Operation-Id:
       - GetDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.0) datadog-api-client-go/1.1.0 (go go1.15.11; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/downtime/1322311805
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/1364888508
     method: GET
   response:
-    body: '{"recurrence":null,"end":1624552022,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":39702971,"created":1624537638,"org_id":321813,"modified":1624537638,"disabled":false,"start":1624548422,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1624537622","downtime_type":0,"id":1322311805,"updater_id":null}'
+    body: '{"recurrence":null,"end":1626994525,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":42109601,"created":1626980127,"org_id":321813,"modified":1626980127,"disabled":false,"start":1626990925,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1626980125","downtime_type":0,"id":1364888508,"updater_id":null}'
     headers:
       Cache-Control:
       - no-cache
@@ -422,7 +404,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Jun 2021 12:27:35 GMT
+      - Thu, 22 Jul 2021 18:55:29 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -431,8 +413,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4822458"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -440,7 +420,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1624537622","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1626980125","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
@@ -450,7 +430,7 @@ interactions:
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.0) datadog-api-client-go/1.1.0 (go go1.15.11; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -467,15 +447,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Jun 2021 12:27:37 GMT
+      - Thu, 22 Jul 2021 18:55:30 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4822458"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -490,8 +468,8 @@ interactions:
       Dd-Operation-Id:
       - CancelDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.0) datadog-api-client-go/1.1.0 (go go1.15.11; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/downtime/1322311805
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/1364888508
     method: DELETE
   response:
     body: ""
@@ -507,15 +485,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Jun 2021 12:27:46 GMT
+      - Thu, 22 Jul 2021 18:55:32 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4822458"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -530,11 +506,11 @@ interactions:
       Dd-Operation-Id:
       - DeleteMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.0) datadog-api-client-go/1.1.0 (go go1.15.11; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/monitor/39702971
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/monitor/42109601
     method: DELETE
   response:
-    body: '{"deleted_monitor_id":39702971}'
+    body: '{"deleted_monitor_id":42109601}'
     headers:
       Cache-Control:
       - no-cache
@@ -545,7 +521,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Jun 2021 12:27:46 GMT
+      - Thu, 22 Jul 2021 18:55:32 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -554,8 +530,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4822458"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -570,11 +544,11 @@ interactions:
       Dd-Operation-Id:
       - GetDowntime
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.0) datadog-api-client-go/1.1.0 (go go1.15.11; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/downtime/1322311805
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/downtime/1364888508
     method: GET
   response:
-    body: '{"recurrence":null,"end":1624552022,"monitor_tags":["*"],"child_id":null,"canceled":1624537664,"monitor_id":39702971,"created":1624537638,"org_id":321813,"modified":1624537664,"disabled":true,"start":1624548422,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1624537622","downtime_type":0,"id":1322311805,"updater_id":1445416}'
+    body: '{"recurrence":null,"end":1626994525,"monitor_tags":["*"],"child_id":null,"canceled":1626980130,"monitor_id":42109601,"created":1626980127,"org_id":321813,"modified":1626980130,"disabled":true,"start":1626990925,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1626980125","downtime_type":0,"id":1364888508,"updater_id":1445416}'
     headers:
       Cache-Control:
       - no-cache
@@ -585,7 +559,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 24 Jun 2021 12:27:46 GMT
+      - Thu, 22 Jul 2021 18:55:32 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -594,8 +568,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4822458"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

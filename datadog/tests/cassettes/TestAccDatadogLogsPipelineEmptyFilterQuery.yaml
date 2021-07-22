@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"filter":{"query":""},"is_enabled":true,"name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1615587119","processors":[{"is_enabled":true,"name":"","sources":["redis.severity"],"type":"status-remapper"}]}
+      {"filter":{"query":""},"is_enabled":true,"name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1626980049","processors":[{"is_enabled":true,"name":"","sources":["redis.severity"],"type":"status-remapper"}]}
     form: {}
     headers:
       Accept:
@@ -13,11 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateLogsPipeline
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines
     method: POST
   response:
-    body: '{"id":"Ui5aAYcPTr6nMzP2PB6VOg","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1615587119","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"}]}'
+    body: '{"id":"mPyVU1ufQ0mqQ5jIO5GQcw","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1626980049","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 12 Mar 2021 22:12:00 GMT
+      - Thu, 22 Jul 2021 18:54:10 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -39,20 +39,16 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "300"
+      - "30"
       X-Ratelimit-Period:
-      - "300"
+      - "10"
       X-Ratelimit-Remaining:
-      - "288"
+      - "29"
       X-Ratelimit-Reset:
-      - "180"
+      - "10"
     status: 200 OK
     code: 200
     duration: ""
@@ -65,11 +61,11 @@ interactions:
       Dd-Operation-Id:
       - GetLogsPipeline
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Ui5aAYcPTr6nMzP2PB6VOg
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/mPyVU1ufQ0mqQ5jIO5GQcw
     method: GET
   response:
-    body: '{"id":"Ui5aAYcPTr6nMzP2PB6VOg","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1615587119","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"}]}'
+    body: '{"id":"mPyVU1ufQ0mqQ5jIO5GQcw","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1626980049","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -82,7 +78,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 12 Mar 2021 22:12:00 GMT
+      - Thu, 22 Jul 2021 18:54:10 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -91,20 +87,16 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - /L+SFFO+m1pPY+hRCpk5325fvfrNl0KmiquUNJolBN/5hu3HIwflqjZSbJ6NxDFG
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "5000"
+      - "30"
       X-Ratelimit-Period:
-      - "3600"
+      - "10"
       X-Ratelimit-Remaining:
-      - "4959"
+      - "29"
       X-Ratelimit-Reset:
-      - "2880"
+      - "10"
     status: 200 OK
     code: 200
     duration: ""
@@ -117,11 +109,11 @@ interactions:
       Dd-Operation-Id:
       - GetLogsPipeline
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Ui5aAYcPTr6nMzP2PB6VOg
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/mPyVU1ufQ0mqQ5jIO5GQcw
     method: GET
   response:
-    body: '{"id":"Ui5aAYcPTr6nMzP2PB6VOg","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1615587119","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"}]}'
+    body: '{"id":"mPyVU1ufQ0mqQ5jIO5GQcw","type":"pipeline","name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1626980049","is_enabled":true,"is_read_only":false,"filter":{"query":""},"processors":[{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -134,7 +126,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 12 Mar 2021 22:12:01 GMT
+      - Thu, 22 Jul 2021 18:54:11 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -143,20 +135,16 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "5000"
+      - "30"
       X-Ratelimit-Period:
-      - "3600"
+      - "10"
       X-Ratelimit-Remaining:
-      - "4958"
+      - "28"
       X-Ratelimit-Reset:
-      - "2879"
+      - "9"
     status: 200 OK
     code: 200
     duration: ""
@@ -169,8 +157,8 @@ interactions:
       Dd-Operation-Id:
       - DeleteLogsPipeline
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Ui5aAYcPTr6nMzP2PB6VOg
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/mPyVU1ufQ0mqQ5jIO5GQcw
     method: DELETE
   response:
     body: '{}'
@@ -188,27 +176,23 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Fri, 12 Mar 2021 22:12:01 GMT
+      - Thu, 22 Jul 2021 18:54:11 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "300"
+      - "30"
       X-Ratelimit-Period:
-      - "300"
+      - "10"
       X-Ratelimit-Remaining:
-      - "287"
+      - "28"
       X-Ratelimit-Reset:
-      - "179"
+      - "9"
     status: 200 OK
     code: 200
     duration: ""
@@ -221,8 +205,8 @@ interactions:
       Dd-Operation-Id:
       - GetLogsPipeline
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/Ui5aAYcPTr6nMzP2PB6VOg
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/logs/config/pipelines/mPyVU1ufQ0mqQ5jIO5GQcw
     method: GET
   response:
     body: '{"error":{"code":"InvalidArgument","message":"Non existing pipeline"}}'
@@ -238,25 +222,23 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:12:01 GMT
+      - Thu, 22 Jul 2021 18:54:12 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "5000"
+      - "30"
       X-Ratelimit-Period:
-      - "3600"
+      - "10"
       X-Ratelimit-Remaining:
-      - "4957"
+      - "27"
       X-Ratelimit-Reset:
-      - "2879"
+      - "8"
     status: 400 Bad Request
     code: 400
     duration: ""

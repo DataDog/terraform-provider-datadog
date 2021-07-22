@@ -13,7 +13,7 @@ interactions:
       Dd-Operation-Id:
       - UpdateLogsArchiveOrder
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archive-order
     method: PUT
   response:
@@ -30,25 +30,23 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:40 GMT
+      - Thu, 22 Jul 2021 18:53:49 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "300"
+      - "30"
       X-Ratelimit-Period:
-      - "300"
+      - "10"
       X-Ratelimit-Remaining:
-      - "298"
+      - "28"
       X-Ratelimit-Reset:
-      - "200"
+      - "1"
     status: 422 Unprocessable Entity
     code: 422
     duration: ""
@@ -61,7 +59,7 @@ interactions:
       Dd-Operation-Id:
       - GetLogsArchiveOrder
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archive-order
     method: GET
   response:
@@ -76,7 +74,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:40 GMT
+      - Thu, 22 Jul 2021 18:53:49 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -85,20 +83,16 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - /L+SFFO+m1pPY+hRCpk5325fvfrNl0KmiquUNJolBN/5hu3HIwflqjZSbJ6NxDFG
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "5000"
+      - "30"
       X-Ratelimit-Period:
-      - "3600"
+      - "10"
       X-Ratelimit-Remaining:
-      - "4977"
+      - "25"
       X-Ratelimit-Reset:
-      - "2900"
+      - "1"
     status: 200 OK
     code: 200
     duration: ""
@@ -111,7 +105,7 @@ interactions:
       Dd-Operation-Id:
       - GetLogsArchiveOrder
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archive-order
     method: GET
   response:
@@ -126,7 +120,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:40 GMT
+      - Thu, 22 Jul 2021 18:53:49 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -135,20 +129,16 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - tpRCH6w417YjBovRJ8VmtuXmNONVYiRp2c8d2AxjPdGBn8PCtgG4vAztrx3qUZAN
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "5000"
+      - "30"
       X-Ratelimit-Period:
-      - "3600"
+      - "10"
       X-Ratelimit-Remaining:
-      - "4976"
+      - "24"
       X-Ratelimit-Reset:
-      - "2900"
+      - "1"
     status: 200 OK
     code: 200
     duration: ""
@@ -161,7 +151,7 @@ interactions:
       Dd-Operation-Id:
       - GetLogsArchiveOrder
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archive-order
     method: GET
   response:
@@ -176,7 +166,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:40 GMT
+      - Thu, 22 Jul 2021 18:53:49 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -185,20 +175,16 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - SY1h8ScsWq+kYmtbh63ltMLFAZsQjqfrgvdfAoRX+9TzT1sgMBRYaFRwfWWRRe9a
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "5000"
+      - "30"
       X-Ratelimit-Period:
-      - "3600"
+      - "10"
       X-Ratelimit-Remaining:
-      - "4975"
+      - "23"
       X-Ratelimit-Reset:
-      - "2900"
+      - "1"
     status: 200 OK
     code: 200
     duration: ""
@@ -211,7 +197,7 @@ interactions:
       Dd-Operation-Id:
       - GetLogsArchiveOrder
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archive-order
     method: GET
   response:
@@ -226,7 +212,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:11:40 GMT
+      - Thu, 22 Jul 2021 18:53:50 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -235,20 +221,16 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - fIO2C4qGDheGHy4YbS+r3a3CXbh4cbRo7roILOimQyiHGjQdOat0cIpWCkupM1uX
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
-      - "5000"
+      - "30"
       X-Ratelimit-Period:
-      - "3600"
+      - "10"
       X-Ratelimit-Remaining:
-      - "4974"
+      - "29"
       X-Ratelimit-Reset:
-      - "2900"
+      - "10"
     status: 200 OK
     code: 200
     duration: ""

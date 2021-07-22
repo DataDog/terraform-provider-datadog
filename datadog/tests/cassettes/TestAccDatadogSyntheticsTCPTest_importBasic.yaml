@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1618930402","options":{"min_location_failed":1,"tick_every":60},"status":"paused","subtype":"tcp","tags":["foo:bar","baz"],"type":"api"}
+      {"config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1626980093","options":{"min_location_failed":1,"tick_every":60},"status":"paused","subtype":"tcp","tags":["foo:bar","baz"],"type":"api"}
     form: {}
     headers:
       Accept:
@@ -13,11 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateSyntheticsAPITest
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api
     method: POST
   response:
-    body: '{"status":"paused","public_id":"evu-47d-bp4","tags":["foo:bar","baz"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1618930402","monitor_id":34157595,"type":"api","created_at":"2021-04-20T14:53:23.447723+00:00","modified_at":"2021-04-20T14:53:23.447723+00:00","subtype":"tcp","config":{"request":{"host":"agent-intake.logs.datadoghq.com","port":443},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"8hm-553-xn9","tags":["foo:bar","baz"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1626980093","monitor_id":42109573,"type":"api","created_at":"2021-07-22T18:54:55.299583+00:00","modified_at":"2021-07-22T18:54:55.299583+00:00","subtype":"tcp","config":{"request":{"host":"agent-intake.logs.datadoghq.com","port":443},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -28,7 +28,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:53:23 GMT
+      - Thu, 22 Jul 2021 18:54:55 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -37,10 +37,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - B1nwy/pPNqX+q4pQT22cdp1QCexE35IF8qwSHy0Nf7IW0Y881qtn4tXN1lpmzaKc
-      X-Dd-Version:
-      - "35.4351688"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -48,9 +44,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "110"
+      - "97"
       X-Ratelimit-Reset:
-      - "37"
+      - "5"
     status: 200 OK
     code: 200
     duration: ""
@@ -63,11 +59,11 @@ interactions:
       Dd-Operation-Id:
       - GetTest
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/evu-47d-bp4
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/8hm-553-xn9
     method: GET
   response:
-    body: '{"status":"paused","public_id":"evu-47d-bp4","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1618930402","monitor_id":34157595,"type":"api","subtype":"tcp","config":{"request":{"host":"agent-intake.logs.datadoghq.com","port":443},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"8hm-553-xn9","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1626980093","monitor_id":42109573,"type":"api","subtype":"tcp","config":{"request":{"host":"agent-intake.logs.datadoghq.com","port":443},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -78,7 +74,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:53:23 GMT
+      - Thu, 22 Jul 2021 18:54:55 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -87,10 +83,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
-      X-Dd-Version:
-      - "35.4351688"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -98,9 +90,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "933"
+      - "825"
       X-Ratelimit-Reset:
-      - "37"
+      - "5"
     status: 200 OK
     code: 200
     duration: ""
@@ -113,11 +105,11 @@ interactions:
       Dd-Operation-Id:
       - GetAPITest
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/evu-47d-bp4
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/8hm-553-xn9
     method: GET
   response:
-    body: '{"status":"paused","public_id":"evu-47d-bp4","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1618930402","monitor_id":34157595,"type":"api","subtype":"tcp","config":{"request":{"host":"agent-intake.logs.datadoghq.com","port":443},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"8hm-553-xn9","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1626980093","monitor_id":42109573,"type":"api","subtype":"tcp","config":{"request":{"host":"agent-intake.logs.datadoghq.com","port":443},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -128,7 +120,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:53:23 GMT
+      - Thu, 22 Jul 2021 18:54:55 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -137,10 +129,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - mNzaoDhdDKO7t4QSrAe5X7pHd0bJND187D+vRbwoluXouE2m1UaQQX0RGCvRpLVE
-      X-Dd-Version:
-      - "35.4351688"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -148,9 +136,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "932"
+      - "823"
       X-Ratelimit-Reset:
-      - "37"
+      - "5"
     status: 200 OK
     code: 200
     duration: ""
@@ -163,11 +151,11 @@ interactions:
       Dd-Operation-Id:
       - GetTest
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/evu-47d-bp4
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/8hm-553-xn9
     method: GET
   response:
-    body: '{"status":"paused","public_id":"evu-47d-bp4","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1618930402","monitor_id":34157595,"type":"api","subtype":"tcp","config":{"request":{"host":"agent-intake.logs.datadoghq.com","port":443},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"8hm-553-xn9","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1626980093","monitor_id":42109573,"type":"api","subtype":"tcp","config":{"request":{"host":"agent-intake.logs.datadoghq.com","port":443},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -178,7 +166,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:53:24 GMT
+      - Thu, 22 Jul 2021 18:54:57 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -187,10 +175,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - vdJ3/nHEY1ioXQ6pQrBVvsQK1s4yyc+wufBMPSoXql71qZVuP/xMdtNo6DafhOAk
-      X-Dd-Version:
-      - "35.4351688"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -198,9 +182,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "919"
+      - "813"
       X-Ratelimit-Reset:
-      - "36"
+      - "4"
     status: 200 OK
     code: 200
     duration: ""
@@ -213,11 +197,11 @@ interactions:
       Dd-Operation-Id:
       - GetAPITest
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/evu-47d-bp4
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/8hm-553-xn9
     method: GET
   response:
-    body: '{"status":"paused","public_id":"evu-47d-bp4","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1618930402","monitor_id":34157595,"type":"api","subtype":"tcp","config":{"request":{"host":"agent-intake.logs.datadoghq.com","port":443},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"8hm-553-xn9","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1626980093","monitor_id":42109573,"type":"api","subtype":"tcp","config":{"request":{"host":"agent-intake.logs.datadoghq.com","port":443},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -228,7 +212,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:53:25 GMT
+      - Thu, 22 Jul 2021 18:54:57 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -237,10 +221,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
-      X-Dd-Version:
-      - "35.4351688"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -248,9 +228,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "917"
+      - "810"
       X-Ratelimit-Reset:
-      - "35"
+      - "3"
     status: 200 OK
     code: 200
     duration: ""
@@ -263,11 +243,11 @@ interactions:
       Dd-Operation-Id:
       - GetTest
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/evu-47d-bp4
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/8hm-553-xn9
     method: GET
   response:
-    body: '{"status":"paused","public_id":"evu-47d-bp4","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1618930402","monitor_id":34157595,"type":"api","subtype":"tcp","config":{"request":{"host":"agent-intake.logs.datadoghq.com","port":443},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"8hm-553-xn9","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1626980093","monitor_id":42109573,"type":"api","subtype":"tcp","config":{"request":{"host":"agent-intake.logs.datadoghq.com","port":443},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -278,7 +258,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:53:26 GMT
+      - Thu, 22 Jul 2021 18:54:58 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -287,10 +267,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - B1nwy/pPNqX+q4pQT22cdp1QCexE35IF8qwSHy0Nf7IW0Y881qtn4tXN1lpmzaKc
-      X-Dd-Version:
-      - "35.4351688"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -298,9 +274,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "910"
+      - "801"
       X-Ratelimit-Reset:
-      - "34"
+      - "2"
     status: 200 OK
     code: 200
     duration: ""
@@ -313,11 +289,11 @@ interactions:
       Dd-Operation-Id:
       - GetAPITest
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/evu-47d-bp4
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/8hm-553-xn9
     method: GET
   response:
-    body: '{"status":"paused","public_id":"evu-47d-bp4","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1618930402","monitor_id":34157595,"type":"api","subtype":"tcp","config":{"request":{"host":"agent-intake.logs.datadoghq.com","port":443},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"8hm-553-xn9","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTCPTest_importBasic-local-1626980093","monitor_id":42109573,"type":"api","subtype":"tcp","config":{"request":{"host":"agent-intake.logs.datadoghq.com","port":443},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Cache-Control:
       - no-cache
@@ -328,7 +304,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:53:26 GMT
+      - Thu, 22 Jul 2021 18:54:59 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -337,10 +313,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
-      X-Dd-Version:
-      - "35.4351688"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -348,15 +320,15 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "907"
+      - "797"
       X-Ratelimit-Reset:
-      - "34"
+      - "1"
     status: 200 OK
     code: 200
     duration: ""
 - request:
     body: |
-      {"public_ids":["evu-47d-bp4"]}
+      {"public_ids":["8hm-553-xn9"]}
     form: {}
     headers:
       Accept:
@@ -366,11 +338,11 @@ interactions:
       Dd-Operation-Id:
       - DeleteTests
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
     method: POST
   response:
-    body: '{"deleted_tests":[{"deleted_at":"2021-04-20T14:53:27.518953+00:00","public_id":"evu-47d-bp4"}]}'
+    body: '{"deleted_tests":[{"deleted_at":"2021-07-22T18:54:59.956921+00:00","public_id":"8hm-553-xn9"}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -381,7 +353,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:53:27 GMT
+      - Thu, 22 Jul 2021 18:55:00 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -390,10 +362,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - B1nwy/pPNqX+q4pQT22cdp1QCexE35IF8qwSHy0Nf7IW0Y881qtn4tXN1lpmzaKc
-      X-Dd-Version:
-      - "35.4351688"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -401,9 +369,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "111"
+      - "98"
       X-Ratelimit-Reset:
-      - "33"
+      - "1"
     status: 200 OK
     code: 200
     duration: ""
@@ -416,8 +384,8 @@ interactions:
       Dd-Operation-Id:
       - GetTest
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.19 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/evu-47d-bp4
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/8hm-553-xn9
     method: GET
   response:
     body: '{"errors": ["Synthetics test not found"]}'
@@ -431,7 +399,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 20 Apr 2021 14:53:27 GMT
+      - Thu, 22 Jul 2021 18:55:00 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -440,8 +408,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4351688"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -449,9 +415,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "897"
+      - "998"
       X-Ratelimit-Reset:
-      - "33"
+      - "60"
     status: 404 Not Found
     code: 404
     duration: ""

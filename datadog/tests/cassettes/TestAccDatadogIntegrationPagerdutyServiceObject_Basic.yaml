@@ -8,7 +8,7 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: PUT
   response:
@@ -21,15 +21,11 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Tue, 16 Mar 2021 20:29:25 GMT
+      - Thu, 22 Jul 2021 18:53:21 GMT
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -40,11 +36,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1624371754","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -55,7 +51,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:26 GMT
+      - Thu, 22 Jul 2021 18:53:22 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -64,10 +60,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - l4HFlaRP3QwYSqoGKhzbYfv7zgkK63HIRR7YkyVYZspq0lGjjTBwoK8V/alf+XYt
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -78,11 +70,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1624371754","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -93,7 +85,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:26 GMT
+      - Thu, 22 Jul 2021 18:53:22 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -102,10 +94,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -113,7 +101,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"service_key":"9876543210123456789","service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo"}
+      {"service_key":"54321098765432109876","service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar"}
     form: {}
     headers:
       Accept:
@@ -123,11 +111,11 @@ interactions:
       Dd-Operation-Id:
       - CreatePagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services
     method: POST
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar"}'
     headers:
       Cache-Control:
       - no-cache
@@ -140,17 +128,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:27 GMT
+      - Thu, 22 Jul 2021 18:53:23 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 201 Created
@@ -165,11 +149,11 @@ interactions:
       Dd-Operation-Id:
       - GetPagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar
     method: GET
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar"}'
     headers:
       Cache-Control:
       - no-cache
@@ -180,7 +164,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:27 GMT
+      - Thu, 22 Jul 2021 18:53:23 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -189,10 +173,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - SY1h8ScsWq+kYmtbh63ltMLFAZsQjqfrgvdfAoRX+9TzT1sgMBRYaFRwfWWRRe9a
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -200,7 +180,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"service_key":"54321098765432109876","service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar"}
+      {"service_key":"9876543210123456789","service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo"}
     form: {}
     headers:
       Accept:
@@ -210,11 +190,11 @@ interactions:
       Dd-Operation-Id:
       - CreatePagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services
     method: POST
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo"}'
     headers:
       Cache-Control:
       - no-cache
@@ -227,17 +207,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:28 GMT
+      - Thu, 22 Jul 2021 18:53:23 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - vdJ3/nHEY1ioXQ6pQrBVvsQK1s4yyc+wufBMPSoXql71qZVuP/xMdtNo6DafhOAk
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 201 Created
@@ -252,11 +228,11 @@ interactions:
       Dd-Operation-Id:
       - GetPagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo
     method: GET
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo"}'
     headers:
       Cache-Control:
       - no-cache
@@ -267,7 +243,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:28 GMT
+      - Thu, 22 Jul 2021 18:53:23 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -276,10 +252,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -290,11 +262,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1624371754","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -305,7 +277,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:29 GMT
+      - Thu, 22 Jul 2021 18:53:24 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -314,10 +286,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - gYZcaADwbKcv7Hm19HJx6WsLoKuOijDWAt2viPeCfWqUgyKY+9e1xZdmMJeXV3YV
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -328,11 +296,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1624371754","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -343,7 +311,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:29 GMT
+      - Thu, 22 Jul 2021 18:53:24 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -352,10 +320,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -370,11 +334,11 @@ interactions:
       Dd-Operation-Id:
       - GetPagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar
     method: GET
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar"}'
     headers:
       Cache-Control:
       - no-cache
@@ -385,7 +349,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:29 GMT
+      - Thu, 22 Jul 2021 18:53:24 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -394,10 +358,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - B1nwy/pPNqX+q4pQT22cdp1QCexE35IF8qwSHy0Nf7IW0Y881qtn4tXN1lpmzaKc
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -412,11 +372,11 @@ interactions:
       Dd-Operation-Id:
       - GetPagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo
     method: GET
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo"}'
     headers:
       Cache-Control:
       - no-cache
@@ -427,7 +387,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:29 GMT
+      - Thu, 22 Jul 2021 18:53:24 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -436,10 +396,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -450,11 +406,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1624371754","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -465,7 +421,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:30 GMT
+      - Thu, 22 Jul 2021 18:53:25 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -474,10 +430,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -492,11 +444,11 @@ interactions:
       Dd-Operation-Id:
       - GetPagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar
     method: GET
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar"}'
     headers:
       Cache-Control:
       - no-cache
@@ -507,7 +459,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:30 GMT
+      - Thu, 22 Jul 2021 18:53:25 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -516,10 +468,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -534,11 +482,11 @@ interactions:
       Dd-Operation-Id:
       - GetPagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo
     method: GET
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo"}'
     headers:
       Cache-Control:
       - no-cache
@@ -549,7 +497,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:30 GMT
+      - Thu, 22 Jul 2021 18:53:25 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -558,10 +506,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -576,34 +520,30 @@ interactions:
       Dd-Operation-Id:
       - DeletePagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo
     method: DELETE
   response:
-    body: "null"
+    body: '{}'
     headers:
       Cache-Control:
       - no-cache
       Connection:
       - keep-alive
       Content-Length:
-      - "4"
+      - "2"
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:31 GMT
+      - Thu, 22 Jul 2021 18:53:26 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - SY1h8ScsWq+kYmtbh63ltMLFAZsQjqfrgvdfAoRX+9TzT1sgMBRYaFRwfWWRRe9a
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -618,34 +558,30 @@ interactions:
       Dd-Operation-Id:
       - DeletePagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar
     method: DELETE
   response:
-    body: "null"
+    body: '{}'
     headers:
       Cache-Control:
       - no-cache
       Connection:
       - keep-alive
       Content-Length:
-      - "4"
+      - "2"
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:31 GMT
+      - Thu, 22 Jul 2021 18:53:26 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - tpRCH6w417YjBovRJ8VmtuXmNONVYiRp2c8d2AxjPdGBn8PCtgG4vAztrx3qUZAN
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -653,7 +589,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"service_key":"9876543210123456789_2","service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2"}
+      {"service_key":"9876543210123456789_2","service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2"}
     form: {}
     headers:
       Accept:
@@ -663,11 +599,11 @@ interactions:
       Dd-Operation-Id:
       - CreatePagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services
     method: POST
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2"}'
     headers:
       Cache-Control:
       - no-cache
@@ -680,17 +616,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:32 GMT
+      - Thu, 22 Jul 2021 18:53:26 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - gYZcaADwbKcv7Hm19HJx6WsLoKuOijDWAt2viPeCfWqUgyKY+9e1xZdmMJeXV3YV
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 201 Created
@@ -705,11 +637,11 @@ interactions:
       Dd-Operation-Id:
       - GetPagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2
     method: GET
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2"}'
     headers:
       Cache-Control:
       - no-cache
@@ -720,7 +652,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:32 GMT
+      - Thu, 22 Jul 2021 18:53:26 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -729,10 +661,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - nLnnBNvlCFDECRnZvzDb0z4sAO35G+IMidcAs8vrCKyjvsKWE8Yd9S3n6OjZ1qRN
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -740,7 +668,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"service_key":"54321098765432109876_2","service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2"}
+      {"service_key":"54321098765432109876_2","service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2"}
     form: {}
     headers:
       Accept:
@@ -750,11 +678,11 @@ interactions:
       Dd-Operation-Id:
       - CreatePagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services
     method: POST
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2"}'
     headers:
       Cache-Control:
       - no-cache
@@ -767,17 +695,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:32 GMT
+      - Thu, 22 Jul 2021 18:53:26 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 201 Created
@@ -792,11 +716,11 @@ interactions:
       Dd-Operation-Id:
       - GetPagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2
     method: GET
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2"}'
     headers:
       Cache-Control:
       - no-cache
@@ -807,7 +731,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:32 GMT
+      - Thu, 22 Jul 2021 18:53:26 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -816,10 +740,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - 25u1gDlL724DHllbjFT4BhOLorBTilh+aah2uWAUEjFC/+rjczJdiyWrV/HwLwe/
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -830,11 +750,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1624371754","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -845,7 +765,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:33 GMT
+      - Thu, 22 Jul 2021 18:53:27 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -854,10 +774,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -872,11 +788,11 @@ interactions:
       Dd-Operation-Id:
       - GetPagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2
     method: GET
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2"}'
     headers:
       Cache-Control:
       - no-cache
@@ -887,7 +803,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:33 GMT
+      - Thu, 22 Jul 2021 18:53:27 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -896,10 +812,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -914,11 +826,11 @@ interactions:
       Dd-Operation-Id:
       - GetPagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2
     method: GET
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2"}'
     headers:
       Cache-Control:
       - no-cache
@@ -929,7 +841,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:33 GMT
+      - Thu, 22 Jul 2021 18:53:27 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -938,10 +850,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - L3ULR3HwCWYmEqCWGz2Yob3chcH4pjowBacBXkncP7o+/uPqKt9yGEYf/g1AJPzQ
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -952,11 +860,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: '{"services":[{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1624371754","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -967,7 +875,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:34 GMT
+      - Thu, 22 Jul 2021 18:53:28 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -976,10 +884,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -994,11 +898,11 @@ interactions:
       Dd-Operation-Id:
       - GetPagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2
     method: GET
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2"}'
     headers:
       Cache-Control:
       - no-cache
@@ -1009,7 +913,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:34 GMT
+      - Thu, 22 Jul 2021 18:53:28 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -1018,10 +922,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - tpRCH6w417YjBovRJ8VmtuXmNONVYiRp2c8d2AxjPdGBn8PCtgG4vAztrx3qUZAN
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1036,11 +936,11 @@ interactions:
       Dd-Operation-Id:
       - GetPagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2
     method: GET
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2"}'
     headers:
       Cache-Control:
       - no-cache
@@ -1051,7 +951,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:34 GMT
+      - Thu, 22 Jul 2021 18:53:28 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -1060,10 +960,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - SY1h8ScsWq+kYmtbh63ltMLFAZsQjqfrgvdfAoRX+9TzT1sgMBRYaFRwfWWRRe9a
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1076,7 +972,7 @@ interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: PUT
   response:
@@ -1089,15 +985,11 @@ interactions:
       Content-Type:
       - text/plain
       Date:
-      - Tue, 16 Mar 2021 20:29:34 GMT
+      - Thu, 22 Jul 2021 18:53:29 GMT
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - B1nwy/pPNqX+q4pQT22cdp1QCexE35IF8qwSHy0Nf7IW0Y881qtn4tXN1lpmzaKc
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -1108,11 +1000,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain2","api_token":"*****"}'
+    body: '{"services":[{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1624371754","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain2","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -1123,7 +1015,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:35 GMT
+      - Thu, 22 Jul 2021 18:53:29 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -1132,10 +1024,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - nLnnBNvlCFDECRnZvzDb0z4sAO35G+IMidcAs8vrCKyjvsKWE8Yd9S3n6OjZ1qRN
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1146,11 +1034,11 @@ interactions:
     form: {}
     headers:
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain2","api_token":"*****"}'
+    body: '{"services":[{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1624371754","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2","service_key":"*****"}],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain2","api_token":"*****"}'
     headers:
       Cache-Control:
       - no-cache
@@ -1161,7 +1049,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:36 GMT
+      - Thu, 22 Jul 2021 18:53:30 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -1170,10 +1058,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - gYZcaADwbKcv7Hm19HJx6WsLoKuOijDWAt2viPeCfWqUgyKY+9e1xZdmMJeXV3YV
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1188,11 +1072,11 @@ interactions:
       Dd-Operation-Id:
       - GetPagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2
     method: GET
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2"}'
     headers:
       Cache-Control:
       - no-cache
@@ -1203,7 +1087,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:36 GMT
+      - Thu, 22 Jul 2021 18:53:30 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -1212,10 +1096,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - /L+SFFO+m1pPY+hRCpk5325fvfrNl0KmiquUNJolBN/5hu3HIwflqjZSbJ6NxDFG
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1230,11 +1110,11 @@ interactions:
       Dd-Operation-Id:
       - GetPagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2
     method: GET
   response:
-    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2"}'
+    body: '{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2"}'
     headers:
       Cache-Control:
       - no-cache
@@ -1245,7 +1125,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:36 GMT
+      - Thu, 22 Jul 2021 18:53:30 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -1254,10 +1134,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1272,34 +1148,30 @@ interactions:
       Dd-Operation-Id:
       - DeletePagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_bar_2
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_foo_2
     method: DELETE
   response:
-    body: "null"
+    body: '{}'
     headers:
       Cache-Control:
       - no-cache
       Connection:
       - keep-alive
       Content-Length:
-      - "4"
+      - "2"
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:37 GMT
+      - Thu, 22 Jul 2021 18:53:31 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - twvpGlmuom5y6A0pjGtXzTf554cmwJgTcCZ71fK4H/RDi+v5ehBK0zQiRcTJQG5C
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -1314,34 +1186,30 @@ interactions:
       Dd-Operation-Id:
       - DeletePagerDutyIntegrationService
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1615926563_foo_2
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/pagerduty/configuration/services/tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_local_1626980000_bar_2
     method: DELETE
   response:
-    body: "null"
+    body: '{}'
     headers:
       Cache-Control:
       - no-cache
       Connection:
       - keep-alive
       Content-Length:
-      - "4"
+      - "2"
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:29:37 GMT
+      - Thu, 22 Jul 2021 18:53:31 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - PhosSd3Ch1B6B0DXI71steKUi7XhPDttnPiIP1NdXTw0VJNWpoUnYyBmODS5ne3q
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

@@ -13,11 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.6) datadog-api-client-go/1.1.1+dev (go go1.16.2; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"m3u-hyj-bun","title":"Acceptance Test Log Stream Widget Dashboard","url":"/dashboard/m3u-hyj-bun/acceptance-test-log-stream-widget-dashboard","created_at":"2021-07-12T09:27:00.318409+00:00","modified_at":"2021-07-12T09:27:00.318409+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log Stream","title_align":"right","message_display":"expanded-md","indexes":["main"],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5625107141940327}],"layout_type":"free"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"6z7-pbq-5ji","title":"Acceptance Test Log Stream Widget Dashboard","url":"/dashboard/6z7-pbq-5ji/acceptance-test-log-stream-widget-dashboard","created_at":"2021-07-22T18:57:16.324454+00:00","modified_at":"2021-07-22T18:57:16.324454+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log Stream","title_align":"right","message_display":"expanded-md","indexes":["main"],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":2069232639071004}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -28,7 +28,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 12 Jul 2021 09:27:02 GMT
+      - Thu, 22 Jul 2021 18:57:18 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -51,11 +51,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.6) datadog-api-client-go/1.1.1+dev (go go1.16.2; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/m3u-hyj-bun
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/6z7-pbq-5ji
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"m3u-hyj-bun","title":"Acceptance Test Log Stream Widget Dashboard","url":"/dashboard/m3u-hyj-bun/acceptance-test-log-stream-widget-dashboard","created_at":"2021-07-12T09:27:00.318409+00:00","modified_at":"2021-07-12T09:27:00.318409+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log Stream","title_align":"right","message_display":"expanded-md","indexes":["main"],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5625107141940327}],"layout_type":"free"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"6z7-pbq-5ji","title":"Acceptance Test Log Stream Widget Dashboard","url":"/dashboard/6z7-pbq-5ji/acceptance-test-log-stream-widget-dashboard","created_at":"2021-07-22T18:57:16.324454+00:00","modified_at":"2021-07-22T18:57:16.324454+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log Stream","title_align":"right","message_display":"expanded-md","indexes":["main"],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":2069232639071004}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -66,7 +66,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 12 Jul 2021 09:27:02 GMT
+      - Thu, 22 Jul 2021 18:57:18 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -89,11 +89,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.6) datadog-api-client-go/1.1.1+dev (go go1.16.2; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/m3u-hyj-bun
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/6z7-pbq-5ji
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"m3u-hyj-bun","title":"Acceptance Test Log Stream Widget Dashboard","url":"/dashboard/m3u-hyj-bun/acceptance-test-log-stream-widget-dashboard","created_at":"2021-07-12T09:27:00.318409+00:00","modified_at":"2021-07-12T09:27:00.318409+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log Stream","title_align":"right","message_display":"expanded-md","indexes":["main"],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5625107141940327}],"layout_type":"free"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"6z7-pbq-5ji","title":"Acceptance Test Log Stream Widget Dashboard","url":"/dashboard/6z7-pbq-5ji/acceptance-test-log-stream-widget-dashboard","created_at":"2021-07-22T18:57:16.324454+00:00","modified_at":"2021-07-22T18:57:16.324454+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log Stream","title_align":"right","message_display":"expanded-md","indexes":["main"],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":2069232639071004}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -104,7 +104,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 12 Jul 2021 09:27:03 GMT
+      - Thu, 22 Jul 2021 18:57:19 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -127,11 +127,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.6) datadog-api-client-go/1.1.1+dev (go go1.16.2; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/m3u-hyj-bun
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/6z7-pbq-5ji
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"m3u-hyj-bun","title":"Acceptance Test Log Stream Widget Dashboard","url":"/dashboard/m3u-hyj-bun/acceptance-test-log-stream-widget-dashboard","created_at":"2021-07-12T09:27:00.318409+00:00","modified_at":"2021-07-12T09:27:00.318409+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log Stream","title_align":"right","message_display":"expanded-md","indexes":["main"],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5625107141940327}],"layout_type":"free"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"6z7-pbq-5ji","title":"Acceptance Test Log Stream Widget Dashboard","url":"/dashboard/6z7-pbq-5ji/acceptance-test-log-stream-widget-dashboard","created_at":"2021-07-22T18:57:16.324454+00:00","modified_at":"2021-07-22T18:57:16.324454+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"title_size":"16","title":"Log Stream","title_align":"right","message_display":"expanded-md","indexes":["main"],"columns":["core_host","core_service"],"time":{"live_span":"1d"},"query":"status:error env:prod","type":"log_stream","show_date_column":true},"layout":{"y":5,"width":32,"x":5,"height":43},"id":2069232639071004}],"layout_type":"free"}'
     headers:
       Cache-Control:
       - no-cache
@@ -142,7 +142,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 12 Jul 2021 09:27:03 GMT
+      - Thu, 22 Jul 2021 18:57:21 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -165,11 +165,11 @@ interactions:
       Dd-Operation-Id:
       - DeleteDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.6) datadog-api-client-go/1.1.1+dev (go go1.16.2; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/m3u-hyj-bun
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/6z7-pbq-5ji
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"m3u-hyj-bun"}'
+    body: '{"deleted_dashboard_id":"6z7-pbq-5ji"}'
     headers:
       Cache-Control:
       - no-cache
@@ -180,7 +180,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 12 Jul 2021 09:27:05 GMT
+      - Thu, 22 Jul 2021 18:57:24 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -203,11 +203,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.6) datadog-api-client-go/1.1.1+dev (go go1.16.2; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/m3u-hyj-bun
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/6z7-pbq-5ji
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID m3u-hyj-bun not found"]}'
+    body: '{"errors": ["Dashboard with ID 6z7-pbq-5ji not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -218,7 +218,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 12 Jul 2021 09:27:05 GMT
+      - Thu, 22 Jul 2021 18:57:24 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:

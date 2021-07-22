@@ -13,7 +13,7 @@ interactions:
       Dd-Operation-Id:
       - UpdateMetricMetadata
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: PUT
   response:
@@ -28,7 +28,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:12:04 GMT
+      - Thu, 22 Jul 2021 18:54:15 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -37,10 +37,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - E+1VETRHejJtZU2J4RKwTITCVJud3d6AfD2N6ITXOWwbuRBfIAeHdqJVTyTstMc7
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -50,18 +46,18 @@ interactions:
       X-Ratelimit-Remaining:
       - "1998"
       X-Ratelimit-Reset:
-      - "56"
+      - "45"
     status: 200 OK
     code: 200
     duration: ""
 - request:
-    body: '{"series":[{"metric":"foo","points":[[1615587123,1]]}]}'
+    body: '{"series":[{"metric":"foo","points":[[1626980054,1]]}]}'
     form: {}
     headers:
       Content-Type:
       - application/json
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/go-datadog-api (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/series
     method: POST
   response:
@@ -76,7 +72,7 @@ interactions:
       Content-Type:
       - text/json
       Date:
-      - Fri, 12 Mar 2021 22:12:04 GMT
+      - Thu, 22 Jul 2021 18:54:15 GMT
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
@@ -95,7 +91,7 @@ interactions:
       Dd-Operation-Id:
       - GetMetricMetadata
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
@@ -110,7 +106,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:12:04 GMT
+      - Thu, 22 Jul 2021 18:54:15 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -119,10 +115,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - Slfd7EQ+iaUr68gMF4Wevg1YeynmFd00Ip8u0r10nxghAjG3Z4J7Vily2m11tJTZ
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -137,7 +129,7 @@ interactions:
       Dd-Operation-Id:
       - GetMetricMetadata
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
@@ -152,7 +144,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:12:05 GMT
+      - Thu, 22 Jul 2021 18:54:15 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -161,10 +153,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - Wc/Ep2sab8gerQUoP4aNzYJ/CkbJ9cGZXKf0AQoXNQakZH0hTqKwiThRHWgaxUCj
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -179,7 +167,7 @@ interactions:
       Dd-Operation-Id:
       - GetMetricMetadata
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
@@ -194,7 +182,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:12:05 GMT
+      - Thu, 22 Jul 2021 18:54:16 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -203,10 +191,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - GaBrMp9hG62dX6k8YEI10yL1utZ779uo3r2arahiBdRifYlH17HMqEEnAT7O3yNi
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -224,7 +208,7 @@ interactions:
       Dd-Operation-Id:
       - UpdateMetricMetadata
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: PUT
   response:
@@ -239,7 +223,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:12:06 GMT
+      - Thu, 22 Jul 2021 18:54:16 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -248,10 +232,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - 3j0u2GTfQFgb2EI58bre0n8B3mGgD5fDMymGtXFH6VojGXuCGLuQFPAl8Vx6fpNK
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -261,7 +241,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "1997"
       X-Ratelimit-Reset:
-      - "54"
+      - "44"
     status: 200 OK
     code: 200
     duration: ""
@@ -274,7 +254,7 @@ interactions:
       Dd-Operation-Id:
       - GetMetricMetadata
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
@@ -289,7 +269,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:12:06 GMT
+      - Thu, 22 Jul 2021 18:54:17 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -298,10 +278,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - ap4u79DStmmUaZZKftsKVSCatJwzXQobFKbE6QNwYRTAqaaJhfQIZxiNyELpTVRT
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -316,7 +292,7 @@ interactions:
       Dd-Operation-Id:
       - GetMetricMetadata
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
@@ -331,7 +307,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:12:06 GMT
+      - Thu, 22 Jul 2021 18:54:18 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -340,10 +316,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - 3D9FJIDKlXJbOW5I4xmTHke7dEGyl6YmfhwBbIfTKq1A+ePdmIVops+3OhJ98ybm
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

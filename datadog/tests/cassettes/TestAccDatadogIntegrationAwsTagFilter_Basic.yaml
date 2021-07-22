@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"account_id":"525149979710","account_specific_namespace_rules":{},"excluded_regions":[],"filter_tags":[],"host_tags":[],"role_name":"testacc-datadog-integration-role"}
+      {"account_id":"565198534810","account_specific_namespace_rules":{},"excluded_regions":[],"filter_tags":[],"host_tags":[],"role_name":"testacc-datadog-integration-role"}
     form: {}
     headers:
       Accept:
@@ -13,11 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateAWSAccount
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: POST
   response:
-    body: '{"external_id":"250273625e864caca24f62e26271fbbb"}'
+    body: '{"external_id":"7a843670b7864c369a26735af72a6154"}'
     headers:
       Cache-Control:
       - no-cache
@@ -28,7 +28,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 03 Jun 2021 15:55:05 GMT
+      - Thu, 22 Jul 2021 18:55:03 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -37,10 +37,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - L3ULR3HwCWYmEqCWGz2Yob3chcH4pjowBacBXkncP7o+/uPqKt9yGEYf/g1AJPzQ
-      X-Dd-Version:
-      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -55,11 +51,11 @@ interactions:
       Dd-Operation-Id:
       - ListAWSAccounts
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
-    body: '{"accounts":[{"role_name":"Different-Role","excluded_regions":["us-east-1","us-west-1"],"account_id":"Test-Go-TestAWSIntegrationCreateConflictErrors-1619690954","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"981015552525","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]},{"role_name":"Java Client Role Name_0","excluded_regions":[],"account_id":"java_6LvV4-0","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"role_name":"Java Client Role Name_4","excluded_regions":[],"account_id":"java_iG9/5-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"role_name":"DatadogAWSAcctRoleNameHippo","excluded_regions":[],"account_id":"123456891013","host_tags":["env:stagingHippo","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":true},"errors":[],"filter_tags":["please:dont_delete"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1622555154","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"whateveeeeeeer","excluded_regions":[],"account_id":"123456789012","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]},{"role_name":"testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"102545453501","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"errors":[],"filter_tags":["key:value"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"525149979710","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]}]}'
+    body: '{"accounts":[{"role_name":"Different-Role","excluded_regions":["us-east-1","us-west-1"],"account_id":"Test-Go-TestAWSIntegrationCreateConflictErrors-1619690954","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"981015552525","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]},{"role_name":"Java Client Role Name_0","excluded_regions":[],"account_id":"java_6LvV4-0","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"role_name":"Java Client Role Name_4","excluded_regions":[],"account_id":"java_iG9/5-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"role_name":"DatadogAWSAcctRoleNameHippo","excluded_regions":[],"account_id":"123456891013","host_tags":["env:stagingHippo","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":true},"errors":[],"filter_tags":["please:dont_delete"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1622555154","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"102545453501","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"errors":[],"filter_tags":["key:value"]},{"role_name":"Different-Role","excluded_regions":["us-east-1","us-west-1"],"account_id":"Test-Go-TestAWSIntegrationCreateConflictErrors-1623053350","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1623163482","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"java-aWSLogsAddListEnableAndDeleteTest-local-1623163493","excluded_regions":[],"account_id":"java_vHsITVn","host_tags":["javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"errors":[],"filter_tags":["dontCollect:java","dontCollect:java"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":["us-east-1","us-west-1"],"account_id":"Test-Go-TestDisableAWSAcct-1624371729","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"DatadogAWSAcctRoleNameHippo","excluded_regions":[],"account_id":"123456891017","host_tags":["env:stagingHippo","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":true},"errors":[],"filter_tags":["please:dont_delete"]},{"role_name":"java-aWSLogsCheckLambdaAsyncTest-local-1624897653","excluded_regions":[],"account_id":"java_W5rb8hO","host_tags":["javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"errors":[],"filter_tags":["dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java"]},{"role_name":"java-updateAWSAccountTest-local-1624898133","excluded_regions":[],"account_id":"java_ln+BovG","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1624898494","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"java-aWSLogsCheckLambdaAsyncTest-local-1625043197","excluded_regions":[],"account_id":"java_YEexRWz","host_tags":["javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"errors":[],"filter_tags":["dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":["us-east-1","us-west-1"],"account_id":"Test-Go-TestCreateAWSAccount-1626188164","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"java-aWSLogsAddListEnableAndDeleteTest-local-1626188331","excluded_regions":[],"account_id":"java_QK0dR2k","host_tags":["javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"errors":[],"filter_tags":["dontCollect:java","dontCollect:java"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestListAndDeleteAWSLogs-1626188364","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1626254857","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"4853491029710048"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"9710250981015499"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"9951102505110254"},{"role_name":"Java Client Role Name_3","excluded_regions":[],"account_id":"java_+JPnX-3","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"role_name":"Java Client Role Name_4","excluded_regions":[],"account_id":"java_+JPnX-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"5654574910255985"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"5355534857504810"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"9850525210053575"},{"errors":[],"excluded_regions":["us-east-1","us-west-2"],"filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"access_key_id":"5753501015410153"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"4899519855101985"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"5555575010254494"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"5052521005210248"},{"errors":[],"excluded_regions":["us-east-1","us-west-2"],"filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"access_key_id":"5153102495551989"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"5451511025753102"},{"errors":[],"excluded_regions":["us-east-1","us-west-2"],"filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"access_key_id":"5498515450102499"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"9810049101102101"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"1015048575610057"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"5550524998100505"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"9850511009810110"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"5053495752495610"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"9799565148501025"},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"565198534810","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -70,7 +66,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 03 Jun 2021 15:55:05 GMT
+      - Thu, 22 Jul 2021 18:55:03 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -79,10 +75,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - HbtaOKlJ6OCrx9tMXO6ivMTrEM+g0c93HDp08trmOmgdHozC5J+vn10F0H4WPjCU
-      X-Dd-Version:
-      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -90,7 +82,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"account_id":"525149979710","namespace":"application_elb","tag_filter_str":"test:filter"}
+      {"account_id":"565198534810","namespace":"application_elb","tag_filter_str":"test:filter"}
     form: {}
     headers:
       Accept:
@@ -100,7 +92,7 @@ interactions:
       Dd-Operation-Id:
       - CreateAWSTagFilter
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws/filtering
     method: POST
   response:
@@ -117,17 +109,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 03 Jun 2021 15:55:05 GMT
+      - Thu, 22 Jul 2021 18:55:03 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
-      X-Dd-Version:
-      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -142,8 +130,8 @@ interactions:
       Dd-Operation-Id:
       - ListAWSTagFilters
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=525149979710
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=565198534810
     method: GET
   response:
     body: '{"filters":[{"tag_filter_str":null,"namespace":"elb"},{"tag_filter_str":"test:filter","namespace":"application_elb"},{"tag_filter_str":null,"namespace":"sqs"},{"tag_filter_str":null,"namespace":"rds"},{"tag_filter_str":null,"namespace":"custom"},{"tag_filter_str":null,"namespace":"network_elb"},{"tag_filter_str":null,"namespace":"lambda"}]}'
@@ -157,7 +145,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 03 Jun 2021 15:55:05 GMT
+      - Thu, 22 Jul 2021 18:55:03 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -166,10 +154,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
-      X-Dd-Version:
-      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -184,8 +168,8 @@ interactions:
       Dd-Operation-Id:
       - ListAWSTagFilters
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=525149979710
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=565198534810
     method: GET
   response:
     body: '{"filters":[{"tag_filter_str":null,"namespace":"elb"},{"tag_filter_str":"test:filter","namespace":"application_elb"},{"tag_filter_str":null,"namespace":"sqs"},{"tag_filter_str":null,"namespace":"rds"},{"tag_filter_str":null,"namespace":"custom"},{"tag_filter_str":null,"namespace":"network_elb"},{"tag_filter_str":null,"namespace":"lambda"}]}'
@@ -199,7 +183,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 03 Jun 2021 15:55:05 GMT
+      - Thu, 22 Jul 2021 18:55:03 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -208,10 +192,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - LcgNasIYBRkNppmD6mCKE9J6iv0eEjosuuHR5V5zw2fWbR54i39C8dhdK8zDq/40
-      X-Dd-Version:
-      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -226,11 +206,11 @@ interactions:
       Dd-Operation-Id:
       - ListAWSAccounts
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
-    body: '{"accounts":[{"role_name":"Different-Role","excluded_regions":["us-east-1","us-west-1"],"account_id":"Test-Go-TestAWSIntegrationCreateConflictErrors-1619690954","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"981015552525","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]},{"role_name":"Java Client Role Name_0","excluded_regions":[],"account_id":"java_6LvV4-0","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"role_name":"Java Client Role Name_4","excluded_regions":[],"account_id":"java_iG9/5-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"role_name":"DatadogAWSAcctRoleNameHippo","excluded_regions":[],"account_id":"123456891013","host_tags":["env:stagingHippo","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":true},"errors":[],"filter_tags":["please:dont_delete"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1622555154","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"whateveeeeeeer","excluded_regions":[],"account_id":"123456789012","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]},{"role_name":"testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"102545453501","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"errors":[],"filter_tags":["key:value"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"525149979710","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]}]}'
+    body: '{"accounts":[{"role_name":"Different-Role","excluded_regions":["us-east-1","us-west-1"],"account_id":"Test-Go-TestAWSIntegrationCreateConflictErrors-1619690954","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"981015552525","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]},{"role_name":"Java Client Role Name_0","excluded_regions":[],"account_id":"java_6LvV4-0","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"role_name":"Java Client Role Name_4","excluded_regions":[],"account_id":"java_iG9/5-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"role_name":"DatadogAWSAcctRoleNameHippo","excluded_regions":[],"account_id":"123456891013","host_tags":["env:stagingHippo","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":true},"errors":[],"filter_tags":["please:dont_delete"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1622555154","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"102545453501","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"errors":[],"filter_tags":["key:value"]},{"role_name":"Different-Role","excluded_regions":["us-east-1","us-west-1"],"account_id":"Test-Go-TestAWSIntegrationCreateConflictErrors-1623053350","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1623163482","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"java-aWSLogsAddListEnableAndDeleteTest-local-1623163493","excluded_regions":[],"account_id":"java_vHsITVn","host_tags":["javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"errors":[],"filter_tags":["dontCollect:java","dontCollect:java"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":["us-east-1","us-west-1"],"account_id":"Test-Go-TestDisableAWSAcct-1624371729","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"DatadogAWSAcctRoleNameHippo","excluded_regions":[],"account_id":"123456891017","host_tags":["env:stagingHippo","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":true},"errors":[],"filter_tags":["please:dont_delete"]},{"role_name":"java-aWSLogsCheckLambdaAsyncTest-local-1624897653","excluded_regions":[],"account_id":"java_W5rb8hO","host_tags":["javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"errors":[],"filter_tags":["dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java"]},{"role_name":"java-updateAWSAccountTest-local-1624898133","excluded_regions":[],"account_id":"java_ln+BovG","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1624898494","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"java-aWSLogsCheckLambdaAsyncTest-local-1625043197","excluded_regions":[],"account_id":"java_YEexRWz","host_tags":["javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"errors":[],"filter_tags":["dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java","dontCollect:java"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":["us-east-1","us-west-1"],"account_id":"Test-Go-TestCreateAWSAccount-1626188164","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"java-aWSLogsAddListEnableAndDeleteTest-local-1626188331","excluded_regions":[],"account_id":"java_QK0dR2k","host_tags":["javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"errors":[],"filter_tags":["dontCollect:java","dontCollect:java"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestListAndDeleteAWSLogs-1626188364","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1626254857","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"errors":[],"filter_tags":["testTag","test:Tag2"]},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"4853491029710048"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"9710250981015499"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"9951102505110254"},{"role_name":"Java Client Role Name_3","excluded_regions":[],"account_id":"java_+JPnX-3","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"role_name":"Java Client Role Name_4","excluded_regions":[],"account_id":"java_+JPnX-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"errors":[],"filter_tags":["dontCollect:java"]},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"5654574910255985"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"5355534857504810"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"9850525210053575"},{"errors":[],"excluded_regions":["us-east-1","us-west-2"],"filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"access_key_id":"5753501015410153"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"4899519855101985"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"5555575010254494"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"5052521005210248"},{"errors":[],"excluded_regions":["us-east-1","us-west-2"],"filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"access_key_id":"5153102495551989"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"5451511025753102"},{"errors":[],"excluded_regions":["us-east-1","us-west-2"],"filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"access_key_id":"5498515450102499"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"9810049101102101"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"1015048575610057"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"5550524998100505"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"9850511009810110"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"5053495752495610"},{"errors":[],"excluded_regions":[],"filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"access_key_id":"9799565148501025"},{"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"565198534810","host_tags":[],"account_specific_namespace_rules":{},"errors":[],"filter_tags":[]}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -241,7 +221,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 03 Jun 2021 15:55:06 GMT
+      - Thu, 22 Jul 2021 18:55:05 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -250,10 +230,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
-      X-Dd-Version:
-      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -268,8 +244,8 @@ interactions:
       Dd-Operation-Id:
       - ListAWSTagFilters
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=525149979710
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=565198534810
     method: GET
   response:
     body: '{"filters":[{"tag_filter_str":null,"namespace":"elb"},{"tag_filter_str":"test:filter","namespace":"application_elb"},{"tag_filter_str":null,"namespace":"sqs"},{"tag_filter_str":null,"namespace":"rds"},{"tag_filter_str":null,"namespace":"custom"},{"tag_filter_str":null,"namespace":"network_elb"},{"tag_filter_str":null,"namespace":"lambda"}]}'
@@ -283,7 +259,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 03 Jun 2021 15:55:06 GMT
+      - Thu, 22 Jul 2021 18:55:05 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -292,10 +268,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - dCmL/3rURV6BPeaqeP3Rxigq41m5CAb17XjrRE42uZ01zpr07HVhbL5/3TWMkvgu
-      X-Dd-Version:
-      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -303,7 +275,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"account_id":"525149979710","namespace":"application_elb"}
+      {"account_id":"565198534810","namespace":"application_elb"}
     form: {}
     headers:
       Accept:
@@ -313,7 +285,7 @@ interactions:
       Dd-Operation-Id:
       - DeleteAWSTagFilter
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws/filtering
     method: DELETE
   response:
@@ -330,17 +302,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 03 Jun 2021 15:55:07 GMT
+      - Thu, 22 Jul 2021 18:55:06 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - EFjE6I+AUQmTiNqZcuE1nqoFeAjWD0Xtzy3edDrinkwlU/Wzr/2Dbl5kWk3qLVaQ
-      X-Dd-Version:
-      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -348,7 +316,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"account_id":"525149979710","account_specific_namespace_rules":{},"excluded_regions":[],"filter_tags":[],"host_tags":[],"role_name":"testacc-datadog-integration-role"}
+      {"account_id":"565198534810","role_name":"testacc-datadog-integration-role"}
     form: {}
     headers:
       Accept:
@@ -358,7 +326,7 @@ interactions:
       Dd-Operation-Id:
       - DeleteAWSAccount
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: DELETE
   response:
@@ -375,17 +343,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 03 Jun 2021 15:55:07 GMT
+      - Thu, 22 Jul 2021 18:55:07 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - L3ULR3HwCWYmEqCWGz2Yob3chcH4pjowBacBXkncP7o+/uPqKt9yGEYf/g1AJPzQ
-      X-Dd-Version:
-      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -400,11 +364,11 @@ interactions:
       Dd-Operation-Id:
       - ListAWSTagFilters
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22 (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=525149979710
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=565198534810
     method: GET
   response:
-    body: '{"errors": ["AWS account 525149979710 does not exist in integration"]}'
+    body: '{"errors": ["AWS account 565198534810 does not exist in integration"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -417,15 +381,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 03 Jun 2021 15:55:08 GMT
+      - Thu, 22 Jul 2021 18:55:07 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4669033"
       X-Frame-Options:
       - SAMEORIGIN
     status: 400 Bad Request

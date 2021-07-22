@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardDistribution_import-local-1615587207","widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardDistribution_import-local-1626980231","widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"}}]}
     form: {}
     headers:
       Accept:
@@ -13,11 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"qpy-gqu-jng","title":"tf-TestAccDatadogDashboardDistribution_import-local-1615587207","url":"/dashboard/qpy-gqu-jng/tf-testaccdatadogdashboarddistributionimport-local-1615587207","created_at":"2021-03-12T22:13:29.816259+00:00","modified_at":"2021-03-12T22:13:29.816259+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"distribution","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}]},"id":2970169297330679}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"zt7-gpj-a73","title":"tf-TestAccDatadogDashboardDistribution_import-local-1626980231","url":"/dashboard/zt7-gpj-a73/tf-testaccdatadogdashboarddistributionimport-local-1626980231","created_at":"2021-07-22T18:57:14.526184+00:00","modified_at":"2021-07-22T18:57:14.526184+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"distribution","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}]},"id":4973640378516288}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -28,7 +28,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:13:32 GMT
+      - Thu, 22 Jul 2021 18:57:18 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -37,10 +37,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - 5gfwVh/5HZ+AnGd/Di93w3NEWC6KMHT9KzmHEiRJmNdOjBtAsbOcgVFyqEChw71h
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -55,11 +51,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/qpy-gqu-jng
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/zt7-gpj-a73
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"qpy-gqu-jng","title":"tf-TestAccDatadogDashboardDistribution_import-local-1615587207","url":"/dashboard/qpy-gqu-jng/tf-testaccdatadogdashboarddistributionimport-local-1615587207","created_at":"2021-03-12T22:13:29.816259+00:00","modified_at":"2021-03-12T22:13:29.816259+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"distribution","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}]},"id":2970169297330679}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"zt7-gpj-a73","title":"tf-TestAccDatadogDashboardDistribution_import-local-1626980231","url":"/dashboard/zt7-gpj-a73/tf-testaccdatadogdashboarddistributionimport-local-1626980231","created_at":"2021-07-22T18:57:14.526184+00:00","modified_at":"2021-07-22T18:57:14.526184+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"distribution","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}]},"id":4973640378516288}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -70,7 +66,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:13:32 GMT
+      - Thu, 22 Jul 2021 18:57:18 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -79,10 +75,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - /L+SFFO+m1pPY+hRCpk5325fvfrNl0KmiquUNJolBN/5hu3HIwflqjZSbJ6NxDFG
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -97,11 +89,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/qpy-gqu-jng
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/zt7-gpj-a73
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"qpy-gqu-jng","title":"tf-TestAccDatadogDashboardDistribution_import-local-1615587207","url":"/dashboard/qpy-gqu-jng/tf-testaccdatadogdashboarddistributionimport-local-1615587207","created_at":"2021-03-12T22:13:29.816259+00:00","modified_at":"2021-03-12T22:13:29.816259+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"distribution","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}]},"id":2970169297330679}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"zt7-gpj-a73","title":"tf-TestAccDatadogDashboardDistribution_import-local-1626980231","url":"/dashboard/zt7-gpj-a73/tf-testaccdatadogdashboarddistributionimport-local-1626980231","created_at":"2021-07-22T18:57:14.526184+00:00","modified_at":"2021-07-22T18:57:14.526184+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"distribution","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}]},"id":4973640378516288}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -112,7 +104,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:13:34 GMT
+      - Thu, 22 Jul 2021 18:57:20 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -121,10 +113,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - Wjq53IVIwnB4SiR238oOYgHFMq/ZYP0LQ/Dv8C2fFLBwTje/dWJHu6pI6vIOK1zG
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -139,11 +127,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/qpy-gqu-jng
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/zt7-gpj-a73
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"qpy-gqu-jng","title":"tf-TestAccDatadogDashboardDistribution_import-local-1615587207","url":"/dashboard/qpy-gqu-jng/tf-testaccdatadogdashboarddistributionimport-local-1615587207","created_at":"2021-03-12T22:13:29.816259+00:00","modified_at":"2021-03-12T22:13:29.816259+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"distribution","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}]},"id":2970169297330679}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"zt7-gpj-a73","title":"tf-TestAccDatadogDashboardDistribution_import-local-1626980231","url":"/dashboard/zt7-gpj-a73/tf-testaccdatadogdashboarddistributionimport-local-1626980231","created_at":"2021-07-22T18:57:14.526184+00:00","modified_at":"2021-07-22T18:57:14.526184+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"distribution","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}]},"id":4973640378516288}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -154,7 +142,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:13:36 GMT
+      - Thu, 22 Jul 2021 18:57:23 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -163,10 +151,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - 25u1gDlL724DHllbjFT4BhOLorBTilh+aah2uWAUEjFC/+rjczJdiyWrV/HwLwe/
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -181,11 +165,11 @@ interactions:
       Dd-Operation-Id:
       - DeleteDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/qpy-gqu-jng
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/zt7-gpj-a73
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"qpy-gqu-jng"}'
+    body: '{"deleted_dashboard_id":"zt7-gpj-a73"}'
     headers:
       Cache-Control:
       - no-cache
@@ -196,7 +180,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:13:38 GMT
+      - Thu, 22 Jul 2021 18:57:24 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -205,10 +189,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - JpIJLwIH2nFlZOC+u71rq7aAOL43MLZN3MUsL+gpYHdZz5QLUOG8Jysf8kVK6tPU
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -223,11 +203,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/qpy-gqu-jng
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/zt7-gpj-a73
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID qpy-gqu-jng not found"]}'
+    body: '{"errors": ["Dashboard with ID zt7-gpj-a73 not found"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -238,7 +218,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Mar 2021 22:13:38 GMT
+      - Thu, 22 Jul 2021 18:57:25 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -247,8 +227,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4088130"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found

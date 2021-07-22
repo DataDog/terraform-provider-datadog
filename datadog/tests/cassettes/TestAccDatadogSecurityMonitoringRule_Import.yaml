@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1624891765","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"","query":"does not really match much"}]}
+      {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1626980193","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"","query":"does not really match much"}]}
     form: {}
     headers:
       Accept:
@@ -13,11 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateSecurityMonitoringRule
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 1.0.0) datadog-api-client-go/1.1.0 (go go1.16.5; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules
     method: POST
   response:
-    body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1624891770478,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"pzb-eag-xdc","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1624891765"}'
+    body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1626980195235,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"c7l-tg1-zvh","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1626980193"}'
     headers:
       Cache-Control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Mon, 28 Jun 2021 14:49:30 GMT
+      - Thu, 22 Jul 2021 18:56:35 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -39,10 +39,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - Um4CoU685QqAscnxhS5BD+goWu2yX1Jd4zCfGzSsEvPPIm1qURZaF8dlLl/OEY4I
-      X-Dd-Version:
-      - "35.4846182"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -50,9 +46,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "597"
+      - "544"
       X-Ratelimit-Reset:
-      - "30"
+      - "25"
     status: 200 OK
     code: 200
     duration: ""
@@ -65,11 +61,11 @@ interactions:
       Dd-Operation-Id:
       - GetSecurityMonitoringRule
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 1.0.0) datadog-api-client-go/1.1.0 (go go1.16.5; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pzb-eag-xdc
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/c7l-tg1-zvh
     method: GET
   response:
-    body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1624891770478,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"pzb-eag-xdc","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1624891765"}'
+    body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1626980195235,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"c7l-tg1-zvh","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1626980193"}'
     headers:
       Cache-Control:
       - no-cache
@@ -82,7 +78,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Mon, 28 Jun 2021 14:49:31 GMT
+      - Thu, 22 Jul 2021 18:56:36 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -91,10 +87,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - /L+SFFO+m1pPY+hRCpk5325fvfrNl0KmiquUNJolBN/5hu3HIwflqjZSbJ6NxDFG
-      X-Dd-Version:
-      - "35.4846182"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -102,9 +94,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "592"
+      - "543"
       X-Ratelimit-Reset:
-      - "29"
+      - "24"
     status: 200 OK
     code: 200
     duration: ""
@@ -117,11 +109,11 @@ interactions:
       Dd-Operation-Id:
       - GetSecurityMonitoringRule
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 1.0.0) datadog-api-client-go/1.1.0 (go go1.16.5; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pzb-eag-xdc
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/c7l-tg1-zvh
     method: GET
   response:
-    body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1624891770478,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"pzb-eag-xdc","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1624891765"}'
+    body: '{"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1626980195235,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"c7l-tg1-zvh","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1626980193"}'
     headers:
       Cache-Control:
       - no-cache
@@ -134,7 +126,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Mon, 28 Jun 2021 14:49:32 GMT
+      - Thu, 22 Jul 2021 18:56:38 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -143,10 +135,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - l4HFlaRP3QwYSqoGKhzbYfv7zgkK63HIRR7YkyVYZspq0lGjjTBwoK8V/alf+XYt
-      X-Dd-Version:
-      - "35.4846182"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -154,9 +142,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "588"
+      - "542"
       X-Ratelimit-Reset:
-      - "28"
+      - "22"
     status: 200 OK
     code: 200
     duration: ""
@@ -169,8 +157,8 @@ interactions:
       Dd-Operation-Id:
       - DeleteSecurityMonitoringRule
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 1.0.0) datadog-api-client-go/1.1.0 (go go1.16.5; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pzb-eag-xdc
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/c7l-tg1-zvh
     method: DELETE
   response:
     body: ""
@@ -186,17 +174,13 @@ interactions:
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Date:
-      - Mon, 28 Jun 2021 14:49:33 GMT
+      - Thu, 22 Jul 2021 18:56:39 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - fIO2C4qGDheGHy4YbS+r3a3CXbh4cbRo7roILOimQyiHGjQdOat0cIpWCkupM1uX
-      X-Dd-Version:
-      - "35.4846182"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -204,9 +188,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "584"
+      - "541"
       X-Ratelimit-Reset:
-      - "27"
+      - "21"
     status: 204 No Content
     code: 204
     duration: ""
@@ -219,11 +203,11 @@ interactions:
       Dd-Operation-Id:
       - GetSecurityMonitoringRule
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 1.0.0) datadog-api-client-go/1.1.0 (go go1.16.5; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pzb-eag-xdc
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/c7l-tg1-zvh
     method: GET
   response:
-    body: '{"errors":["Threat detection rule not found: pzb-eag-xdc"]}'
+    body: '{"errors":["Threat detection rule not found: c7l-tg1-zvh"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -234,7 +218,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 28 Jun 2021 14:49:34 GMT
+      - Thu, 22 Jul 2021 18:56:39 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -243,8 +227,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4846182"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -252,9 +234,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "582"
+      - "540"
       X-Ratelimit-Reset:
-      - "27"
+      - "21"
     status: 404 Not Found
     code: 404
     duration: ""

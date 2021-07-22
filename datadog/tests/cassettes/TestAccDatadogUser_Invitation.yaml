@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"data":{"attributes":{"email":"tf-testaccdatadoguser_invitation-local-1615926497@example.com","name":"Test User"},"relationships":{"roles":{"data":[]}},"type":"users"}}
+      {"data":{"attributes":{"email":"tf-testaccdatadoguser_invitation-local-1626980068@example.com","name":"Test User"},"relationships":{"roles":{"data":[]}},"type":"users"}}
     form: {}
     headers:
       Accept:
@@ -13,34 +13,30 @@ interactions:
       Dd-Operation-Id:
       - CreateUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/users
     method: POST
   response:
-    body: '{"data":{"type":"users","id":"2510db3a-8696-11eb-9814-da7ad0900002","attributes":{"name":"Test User","handle":"tf-testaccdatadoguser_invitation-local-1615926497@example.com","created_at":"2021-03-16T20:28:18.998838+00:00","email":"tf-testaccdatadoguser_invitation-local-1615926497@example.com","icon":"https://secure.gravatar.com/avatar/280ada90f23e115bcefd53a36f05aa00?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"3f184224-eb1e-11eb-b233-da7ad0900002","attributes":{"name":"Test User","handle":"tf-testaccdatadoguser_invitation-local-1626980068@example.com","created_at":"2021-07-22T18:54:30.501390+00:00","modified_at":"2021-07-22T18:54:30.827054+00:00","email":"tf-testaccdatadoguser_invitation-local-1626980068@example.com","icon":"https://secure.gravatar.com/avatar/dc7a832c91eca2a45f875c250834d870?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
       Connection:
       - keep-alive
       Content-Length:
-      - "616"
+      - "665"
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:28:19 GMT
+      - Thu, 22 Jul 2021 18:54:30 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - gYZcaADwbKcv7Hm19HJx6WsLoKuOijDWAt2viPeCfWqUgyKY+9e1xZdmMJeXV3YV
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 201 Created
@@ -48,7 +44,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":[{"relationships":{"user":{"data":{"id":"2510db3a-8696-11eb-9814-da7ad0900002","type":"users"}}},"type":"user_invitations"}]}
+      {"data":[{"relationships":{"user":{"data":{"id":"3f184224-eb1e-11eb-b233-da7ad0900002","type":"users"}}},"type":"user_invitations"}]}
     form: {}
     headers:
       Accept:
@@ -58,11 +54,11 @@ interactions:
       Dd-Operation-Id:
       - SendInvitations
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/user_invitations
     method: POST
   response:
-    body: '{"data":[{"type":"user_invitations","id":"253af2ee-8696-11eb-9814-da7ad0900002","attributes":{"uuid":"253af2ee-8696-11eb-9814-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2021-03-16T20:28:19.276667+00:00","expires_at":"2021-03-18T20:28:19.171959+00:00"},"relationships":{"user":{"data":{"type":"users","id":"2510db3a-8696-11eb-9814-da7ad0900002"}}}}]}'
+    body: '{"data":[{"type":"user_invitations","id":"3f769eb4-eb1e-11eb-b233-da7ad0900002","attributes":{"uuid":"3f769eb4-eb1e-11eb-b233-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2021-07-22T18:54:31.121042+00:00","expires_at":"2021-07-24T18:54:30.995336+00:00"},"relationships":{"user":{"data":{"type":"users","id":"3f184224-eb1e-11eb-b233-da7ad0900002"}}}}]}'
     headers:
       Cache-Control:
       - no-cache
@@ -75,17 +71,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:28:19 GMT
+      - Thu, 22 Jul 2021 18:54:31 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 201 Created
@@ -100,11 +92,11 @@ interactions:
       Dd-Operation-Id:
       - GetUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/users/2510db3a-8696-11eb-9814-da7ad0900002
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/users/3f184224-eb1e-11eb-b233-da7ad0900002
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"2510db3a-8696-11eb-9814-da7ad0900002","attributes":{"name":"Test User","handle":"tf-testaccdatadoguser_invitation-local-1615926497@example.com","created_at":"2021-03-16T20:28:18.998838+00:00","email":"tf-testaccdatadoguser_invitation-local-1615926497@example.com","icon":"https://secure.gravatar.com/avatar/280ada90f23e115bcefd53a36f05aa00?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"3f184224-eb1e-11eb-b233-da7ad0900002","attributes":{"name":"Test User","handle":"tf-testaccdatadoguser_invitation-local-1626980068@example.com","created_at":"2021-07-22T18:54:30.501390+00:00","modified_at":"2021-07-22T18:54:30.827054+00:00","email":"tf-testaccdatadoguser_invitation-local-1626980068@example.com","icon":"https://secure.gravatar.com/avatar/dc7a832c91eca2a45f875c250834d870?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -115,7 +107,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:28:19 GMT
+      - Thu, 22 Jul 2021 18:54:31 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -124,10 +116,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - dCmL/3rURV6BPeaqeP3Rxigq41m5CAb17XjrRE42uZ01zpr07HVhbL5/3TWMkvgu
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -142,11 +130,11 @@ interactions:
       Dd-Operation-Id:
       - GetUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/users/2510db3a-8696-11eb-9814-da7ad0900002
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/users/3f184224-eb1e-11eb-b233-da7ad0900002
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"2510db3a-8696-11eb-9814-da7ad0900002","attributes":{"name":"Test User","handle":"tf-testaccdatadoguser_invitation-local-1615926497@example.com","created_at":"2021-03-16T20:28:18.998838+00:00","email":"tf-testaccdatadoguser_invitation-local-1615926497@example.com","icon":"https://secure.gravatar.com/avatar/280ada90f23e115bcefd53a36f05aa00?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"3f184224-eb1e-11eb-b233-da7ad0900002","attributes":{"name":"Test User","handle":"tf-testaccdatadoguser_invitation-local-1626980068@example.com","created_at":"2021-07-22T18:54:30.501390+00:00","modified_at":"2021-07-22T18:54:30.827054+00:00","email":"tf-testaccdatadoguser_invitation-local-1626980068@example.com","icon":"https://secure.gravatar.com/avatar/dc7a832c91eca2a45f875c250834d870?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -157,7 +145,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:28:20 GMT
+      - Thu, 22 Jul 2021 18:54:32 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -166,10 +154,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - F5gm0Rce1/Abr9/0Fw8HAqWfiz0FdiH8er/AXnN6lOn3L6KyGgbsLCwgPlob1No8
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -184,8 +168,8 @@ interactions:
       Dd-Operation-Id:
       - DisableUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/users/2510db3a-8696-11eb-9814-da7ad0900002
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/users/3f184224-eb1e-11eb-b233-da7ad0900002
     method: DELETE
   response:
     body: ""
@@ -201,17 +185,13 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:28:21 GMT
+      - Thu, 22 Jul 2021 18:54:34 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - L3ULR3HwCWYmEqCWGz2Yob3chcH4pjowBacBXkncP7o+/uPqKt9yGEYf/g1AJPzQ
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 204 No Content
@@ -226,11 +206,11 @@ interactions:
       Dd-Operation-Id:
       - GetUser
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/users/2510db3a-8696-11eb-9814-da7ad0900002
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/users/3f184224-eb1e-11eb-b233-da7ad0900002
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"2510db3a-8696-11eb-9814-da7ad0900002","attributes":{"name":"Test User","handle":"tf-testaccdatadoguser_invitation-local-1615926497@example.com","created_at":"2021-03-16T20:28:18.998838+00:00","email":"tf-testaccdatadoguser_invitation-local-1615926497@example.com","icon":"https://secure.gravatar.com/avatar/280ada90f23e115bcefd53a36f05aa00?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"data":{"type":"users","id":"3f184224-eb1e-11eb-b233-da7ad0900002","attributes":{"name":"Test User","handle":"tf-testaccdatadoguser_invitation-local-1626980068@example.com","created_at":"2021-07-22T18:54:30.501390+00:00","modified_at":"2021-07-22T18:54:34.305929+00:00","email":"tf-testaccdatadoguser_invitation-local-1626980068@example.com","icon":"https://secure.gravatar.com/avatar/dc7a832c91eca2a45f875c250834d870?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
       Cache-Control:
       - no-cache
@@ -241,7 +221,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 16 Mar 2021 20:28:21 GMT
+      - Thu, 22 Jul 2021 18:54:34 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -250,10 +230,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - dPySkcOzIZtKyMKDAAzuysY3gNGGj6RtYogGuSb76E8mPvoqzREyRp6lPYm91hQU
-      X-Dd-Version:
-      - "35.4109396"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1623693817","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1626980108","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"}}]}
     form: {}
     headers:
       Accept:
@@ -13,11 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22+dev (go go1.16.3; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":false,"id":"fbs-z32-aim","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1623693817","url":"/dashboard/fbs-z32-aim/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1623693817","created_at":"2021-06-14T18:03:48.821066+00:00","modified_at":"2021-06-14T18:03:48.821066+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":6998000017285958}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":false,"id":"red-uhj-k8p","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1626980108","url":"/dashboard/red-uhj-k8p/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1626980108","created_at":"2021-07-22T18:55:11.552143+00:00","modified_at":"2021-07-22T18:55:11.552143+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":6644891101647344}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -28,7 +28,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 14 Jun 2021 18:03:48 GMT
+      - Thu, 22 Jul 2021 18:55:11 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -37,10 +37,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - /L+SFFO+m1pPY+hRCpk5325fvfrNl0KmiquUNJolBN/5hu3HIwflqjZSbJ6NxDFG
-      X-Dd-Version:
-      - "35.4745775"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -55,11 +51,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22+dev (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fbs-z32-aim
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/red-uhj-k8p
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":false,"id":"fbs-z32-aim","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1623693817","url":"/dashboard/fbs-z32-aim/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1623693817","created_at":"2021-06-14T18:03:48.821066+00:00","modified_at":"2021-06-14T18:03:48.821066+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":6998000017285958}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":false,"id":"red-uhj-k8p","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1626980108","url":"/dashboard/red-uhj-k8p/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1626980108","created_at":"2021-07-22T18:55:11.552143+00:00","modified_at":"2021-07-22T18:55:11.552143+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":6644891101647344}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -70,7 +66,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 14 Jun 2021 18:03:48 GMT
+      - Thu, 22 Jul 2021 18:55:11 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -79,10 +75,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - tpRCH6w417YjBovRJ8VmtuXmNONVYiRp2c8d2AxjPdGBn8PCtgG4vAztrx3qUZAN
-      X-Dd-Version:
-      - "35.4745775"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -97,11 +89,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22+dev (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fbs-z32-aim
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/red-uhj-k8p
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":false,"id":"fbs-z32-aim","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1623693817","url":"/dashboard/fbs-z32-aim/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1623693817","created_at":"2021-06-14T18:03:48.821066+00:00","modified_at":"2021-06-14T18:03:48.821066+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":6998000017285958}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":false,"id":"red-uhj-k8p","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1626980108","url":"/dashboard/red-uhj-k8p/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1626980108","created_at":"2021-07-22T18:55:11.552143+00:00","modified_at":"2021-07-22T18:55:11.552143+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":6644891101647344}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -112,7 +104,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 14 Jun 2021 18:03:54 GMT
+      - Thu, 22 Jul 2021 18:55:13 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -121,10 +113,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - S1wfaMZOKGT/IoMw6fqAwAwGWo2vQ44sjF3YzuETnQfxZO2T5eJbs0aX3UKb9Dwu
-      X-Dd-Version:
-      - "35.4745775"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -139,11 +127,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22+dev (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fbs-z32-aim
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/red-uhj-k8p
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":false,"id":"fbs-z32-aim","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1623693817","url":"/dashboard/fbs-z32-aim/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1623693817","created_at":"2021-06-14T18:03:48.821066+00:00","modified_at":"2021-06-14T18:03:48.821066+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":6998000017285958}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":false,"id":"red-uhj-k8p","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1626980108","url":"/dashboard/red-uhj-k8p/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1626980108","created_at":"2021-07-22T18:55:11.552143+00:00","modified_at":"2021-07-22T18:55:11.552143+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":6644891101647344}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -154,7 +142,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 14 Jun 2021 18:04:01 GMT
+      - Thu, 22 Jul 2021 18:55:15 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -163,10 +151,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - twvpGlmuom5y6A0pjGtXzTf554cmwJgTcCZ71fK4H/RDi+v5ehBK0zQiRcTJQG5C
-      X-Dd-Version:
-      - "35.4745775"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -174,7 +158,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"fbs-z32-aim","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1623693817","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"red-uhj-k8p","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1626980108","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"}}]}
     form: {}
     headers:
       Accept:
@@ -184,11 +168,11 @@ interactions:
       Dd-Operation-Id:
       - UpdateDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22+dev (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fbs-z32-aim
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/red-uhj-k8p
     method: PUT
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"fbs-z32-aim","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1623693817","url":"/dashboard/fbs-z32-aim/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1623693817","created_at":"2021-06-14T18:03:48.821066+00:00","modified_at":"2021-06-14T18:04:06.733798+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":2966569421805106}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"red-uhj-k8p","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1626980108","url":"/dashboard/red-uhj-k8p/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1626980108","created_at":"2021-07-22T18:55:11.552143+00:00","modified_at":"2021-07-22T18:55:18.592825+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":582520302711392}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -199,7 +183,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 14 Jun 2021 18:04:08 GMT
+      - Thu, 22 Jul 2021 18:55:21 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -208,10 +192,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - 2328yjLSqI4XmR1pVqrPRR/SFcQsbafjEpPmZx7/3PfxUK1nJQQsX+wrMelyVyj+
-      X-Dd-Version:
-      - "35.4745775"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -226,11 +206,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22+dev (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fbs-z32-aim
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/red-uhj-k8p
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"fbs-z32-aim","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1623693817","url":"/dashboard/fbs-z32-aim/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1623693817","created_at":"2021-06-14T18:03:48.821066+00:00","modified_at":"2021-06-14T18:04:06.733798+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":2966569421805106}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"red-uhj-k8p","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1626980108","url":"/dashboard/red-uhj-k8p/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1626980108","created_at":"2021-07-22T18:55:11.552143+00:00","modified_at":"2021-07-22T18:55:18.592825+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":582520302711392}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -241,7 +221,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 14 Jun 2021 18:04:10 GMT
+      - Thu, 22 Jul 2021 18:55:21 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -250,10 +230,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - fIO2C4qGDheGHy4YbS+r3a3CXbh4cbRo7roILOimQyiHGjQdOat0cIpWCkupM1uX
-      X-Dd-Version:
-      - "35.4745775"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -268,11 +244,11 @@ interactions:
       Dd-Operation-Id:
       - GetDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22+dev (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fbs-z32-aim
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/red-uhj-k8p
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"fbs-z32-aim","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1623693817","url":"/dashboard/fbs-z32-aim/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1623693817","created_at":"2021-06-14T18:03:48.821066+00:00","modified_at":"2021-06-14T18:04:06.733798+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":2966569421805106}],"layout_type":"ordered"}'
+    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"red-uhj-k8p","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1626980108","url":"/dashboard/red-uhj-k8p/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1626980108","created_at":"2021-07-22T18:55:11.552143+00:00","modified_at":"2021-07-22T18:55:18.592825+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":582520302711392}],"layout_type":"ordered"}'
     headers:
       Cache-Control:
       - no-cache
@@ -283,7 +259,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 14 Jun 2021 18:04:15 GMT
+      - Thu, 22 Jul 2021 18:55:23 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -292,10 +268,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - nLnnBNvlCFDECRnZvzDb0z4sAO35G+IMidcAs8vrCKyjvsKWE8Yd9S3n6OjZ1qRN
-      X-Dd-Version:
-      - "35.4745775"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -310,11 +282,11 @@ interactions:
       Dd-Operation-Id:
       - DeleteDashboard
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.6.1; terraform-cli 0.15.4) datadog-api-client-go/1.0.0-beta.22+dev (go go1.16.3; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/dashboard/fbs-z32-aim
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/dashboard/red-uhj-k8p
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"fbs-z32-aim"}'
+    body: '{"deleted_dashboard_id":"red-uhj-k8p"}'
     headers:
       Cache-Control:
       - no-cache
@@ -325,7 +297,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 14 Jun 2021 18:04:22 GMT
+      - Thu, 22 Jul 2021 18:55:26 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -334,10 +306,6 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Debug:
-      - fIO2C4qGDheGHy4YbS+r3a3CXbh4cbRo7roILOimQyiHGjQdOat0cIpWCkupM1uX
-      X-Dd-Version:
-      - "35.4745775"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
