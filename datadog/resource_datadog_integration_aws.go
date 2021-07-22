@@ -260,8 +260,18 @@ func resourceDatadogIntegrationAwsDelete(ctx context.Context, d *schema.Resource
 	defer integrationAwsMutex.Unlock()
 
 	iaws := buildDatadogIntegrationAwsStruct(d)
+	deleteRequest := datadogV1.NewAWSAccountDeleteRequest()
+	if v, ok := iaws.GetAccountIdOk(); ok {
+		deleteRequest.SetAccountId(*v)
+	}
+	if v, ok := iaws.GetRoleNameOk(); ok {
+		deleteRequest.SetRoleName(*v)
+	}
+	if v, ok := iaws.GetAccessKeyIdOk(); ok {
+		deleteRequest.SetAccessKeyId(*v)
+	}
 
-	_, httpresp, err := datadogClientV1.AWSIntegrationApi.DeleteAWSAccount(authV1, *iaws)
+	_, httpresp, err := datadogClientV1.AWSIntegrationApi.DeleteAWSAccount(authV1, *deleteRequest)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting AWS integration")
 	}
