@@ -277,6 +277,24 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				}
 				display_type = "bars"
 			}
+			request {
+                audit_query {
+                    index = "*"
+                    search_query = ""
+                    group_by {
+                        facet = "@metadata.api_key.id"
+                        sort_query {
+                            aggregation = "count"
+                            order = "desc"
+                        }
+                        limit = "10"
+                    }
+                    compute_query {
+                        aggregation = "count"
+                    }
+                }
+                display_type = "line"
+            }
 			marker {
 				display_type = "error dashed"
 				label = " z=6 "
@@ -946,6 +964,14 @@ var datadogOrderedDashboardAsserts = []string{
 	"widget.10.timeseries_definition.0.request.5.rum_query.0.search_query = status:info",
 	"widget.10.timeseries_definition.0.request.5.rum_query.0.group_by.0.facet = service",
 	"widget.10.timeseries_definition.0.request.5.display_type = bars",
+	"widget.10.timeseries_definition.0.request.6.audit_query.0.index = *",
+	"widget.10.timeseries_definition.0.request.6.audit_query.0.compute_query.0.aggregation = count",
+	"widget.10.timeseries_definition.0.request.6.audit_query.0.search_query =",
+	"widget.10.timeseries_definition.0.request.6.audit_query.0.group_by.0.facet = @metadata.api_key.id",
+	"widget.10.timeseries_definition.0.request.6.audit_query.0.group_by.0.sort_query.0.aggregation = count",
+	"widget.10.timeseries_definition.0.request.6.audit_query.0.group_by.0.sort_query.0.order = desc",
+	"widget.10.timeseries_definition.0.request.6.audit_query.0.group_by.0.limit = 10",
+	"widget.10.timeseries_definition.0.request.6.display_type = line",
 	"widget.10.timeseries_definition.0.marker.# = 2",
 	"widget.10.timeseries_definition.0.marker.0.display_type = error dashed",
 	"widget.10.timeseries_definition.0.marker.0.label =  z=6 ",
