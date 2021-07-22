@@ -860,6 +860,16 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getGeomapDefinitionSchema(),
 			},
 		},
+		,
+		"list_stream_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a List Stream widget.",
+			Elem: &schema.Resource{
+				Schema: getListStreamDefinitionSchema(),
+			},
+		},
 	}
 }
 
@@ -4463,6 +4473,138 @@ func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition datadogV1.S
 	}
 	if globalTimeTarget, ok := datadogDefinition.GetGlobalTimeTargetOk(); ok {
 		terraformDefinition["global_time_target"] = globalTimeTarget
+	}
+	return terraformDefinition
+}
+
+//
+// List Stream Widget Definition helpers
+//
+
+func getListStreamDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"request": {
+			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below.",
+			Type:     schema.TypeList,
+			Optional: false,
+			MaxItems: 1,
+			Elem: &schema.Resource{
+				Schema: getListStreamRequestSchema(),
+			},
+		},
+		"title": {
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"title_size": {
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"title_align": {
+			Description:      "The alignment of the widget's title.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
+		},
+		"live_span": getWidgetLiveSpanSchema(),
+	}
+}
+
+func getListStreamRequestSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"columns": {
+			Description: "Widget columns.",
+			Type:     schema.TypeList,
+			Optional: false,
+			MaxItems: 1,
+			Elem: &schema.Resource{
+				"width": {
+					Description: "Widget column width.",
+					Type:        schema.TypeString,
+					Optional:    false,
+				},
+				"field": {
+					Description: "Widget column field.",
+					Type:        schema.TypeString,
+					Optional:    false,
+				},
+			}
+		},
+		"response_format": {
+			Description: "Widget response format.",
+			Type:        schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewListStreamResponseFormatFromValue),
+			Optional:    false,
+		},
+		"query":   				 {
+			Description: "Updated list stream widget.",
+			Type:        schema.TypeList,
+			Computed:    true,
+			Optional:    false,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"data_source": {
+						Description: "Source from which to query items to display in the stream.",
+						Type:        schema.TypeInt,
+						Computed:    true,
+						Optional:    false,
+					},
+					"query_string": {
+						Description: "Widget query.",
+						Type:        schema.TypeString,
+						Computed:    true,
+						Optional:    false,
+					},
+					"indexes": {
+						Description: "List of indexes.",
+						Type:        schema.TypeList,
+						Optional:    true,
+						Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+			},
+		},
+}
+
+func buildDatadogListStreamDefinition(terraformDefinition map[string]interface{}) *datadogV1.EventStreamWidgetDefinition {
+	datadogDefinition := datadogV1.NewListStreamWidgetDefinitionWithDefaults()
+	// Required params
+	datadogDefinition.SetRequests(terraformDefinition["requests"].(string))
+	// Optional params
+	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitle(v)
+	}
+	if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleSize(v)
+	}
+	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
+	}
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+		datadogDefinition.Time = &datadogV1.WidgetTime{
+			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+		}
+	}
+	return datadogDefinition
+}
+
+func buildTerraformListStreamDefinition(datadogDefinition datadogV1.EventStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+	terraformDefinition := map[string]interface{}{}
+	// Required params
+	terraformDefinition["requests"] = datadogDefinition.Requests
+	// Optional params
+	if datadogDefinition.Title != nil {
+		terraformDefinition["title"] = *datadogDefinition.Title
+	}
+	if datadogDefinition.TitleSize != nil {
+		terraformDefinition["title_size"] = *datadogDefinition.TitleSize
+	}
+	if datadogDefinition.TitleAlign != nil {
+		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
+	}
+	if v, ok := datadogDefinition.GetTimeOk(); ok {
+		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	return terraformDefinition
 }
