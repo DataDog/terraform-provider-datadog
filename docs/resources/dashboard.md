@@ -1607,7 +1607,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -2689,7 +2689,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -4512,7 +4512,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -5737,7 +5737,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -6229,7 +6229,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -8157,7 +8157,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -9382,7 +9382,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
@@ -9874,7 +9874,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) Compute options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--compute))
-- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`.
+- **data_source** (String) Data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) Name of query for use in formulas.
 
 Optional:
