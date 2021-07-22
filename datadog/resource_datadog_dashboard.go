@@ -860,7 +860,6 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getGeomapDefinitionSchema(),
 			},
 		},
-		,
 		"list_stream_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -4485,9 +4484,9 @@ func getListStreamDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
 			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below.",
-			Type:     schema.TypeList,
-			Optional: false,
-			MaxItems: 1,
+			Type:        schema.TypeList,
+			Optional:    false,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: getListStreamRequestSchema(),
 			},
@@ -4516,9 +4515,9 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"columns": {
 			Description: "Widget columns.",
-			Type:     schema.TypeList,
-			Optional: false,
-			MaxItems: 1,
+			Type:        schema.TypeList,
+			Optional:    false,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				"width": {
 					Description: "Widget column width.",
@@ -4530,15 +4529,15 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 					Type:        schema.TypeString,
 					Optional:    false,
 				},
-			}
+			},
 		},
 		"response_format": {
-			Description: "Widget response format.",
-			Type:        schema.TypeString,
+			Description:      "Widget response format.",
+			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewListStreamResponseFormatFromValue),
-			Optional:    false,
+			Optional:         false,
 		},
-		"query":   				 {
+		"query": {
 			Description: "Updated list stream widget.",
 			Type:        schema.TypeList,
 			Computed:    true,
@@ -4562,9 +4561,11 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem:        &schema.Schema{Type: schema.TypeString},
+					},
 				},
 			},
 		},
+	}
 }
 
 func buildDatadogListStreamDefinition(terraformDefinition map[string]interface{}) *datadogV1.EventStreamWidgetDefinition {
