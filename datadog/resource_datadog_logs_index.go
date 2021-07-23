@@ -114,13 +114,23 @@ func resourceDatadogLogsIndex() *schema.Resource {
 }
 
 func resourceDatadogLogsIndexCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	// This is a bit of a hack to ensure we fail fast if an index is about to be created, and
-	// to ensure we provide a useful error message (and don't panic)
-	// Indexes can only be updated, and the id is only set in the state if it was already imported
-	if _, ok := d.GetOk("id"); !ok {
-		return diag.Errorf("logs index creation is not allowed, please import the index first. index_name: %s", d.Get("name").(string))
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV1 := providerConf.DatadogClientV1
+	authV1 := providerConf.AuthV1
+
+	ddIndex, err := buildDatadogCreateIndexRequest(d)
+	if err != nil {
+		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	return resourceDatadogLogsIndexUpdate(ctx, d, meta)
+
+	resp, httpResponse, err := datadogClientV1.LogsIndexesApi.CreateLogsIndex(authV1, *ddIndex)
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating logs index")
+	}
+
+	d.SetId(ddIndex.GetName())
+
+	return updateLogsIndexState(d, &resp)
 }
 
 func updateLogsIndexState(d *schema.ResourceData, index *datadogV1.LogsIndex) diag.Diagnostics {
@@ -162,7 +172,7 @@ func resourceDatadogLogsIndexRead(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceDatadogLogsIndexUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	ddIndex, err := buildDatadogIndex(d)
+	ddIndex, err := buildDatadogIndexUpdateRequest(d)
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
@@ -186,7 +196,7 @@ func resourceDatadogLogsIndexDelete(_ context.Context, _ *schema.ResourceData, _
 	return nil
 }
 
-func buildDatadogIndex(d *schema.ResourceData) (*datadogV1.LogsIndexUpdateRequest, error) {
+func buildDatadogIndexUpdateRequest(d *schema.ResourceData) (*datadogV1.LogsIndexUpdateRequest, error) {
 	var ddIndex datadogV1.LogsIndexUpdateRequest
 	if tfFilter := d.Get("filter").([]interface{}); len(tfFilter) > 0 {
 		ddIndex.SetFilter(*buildDatadogIndexFilter(tfFilter[0].(map[string]interface{})))
@@ -197,6 +207,25 @@ func buildDatadogIndex(d *schema.ResourceData) (*datadogV1.LogsIndexUpdateReques
 	}
 	if v, ok := d.GetOk("disable_daily_limit"); ok {
 		ddIndex.SetDisableDailyLimit(v.(bool))
+	}
+	if v, ok := d.GetOk("retention_days"); ok {
+		ddIndex.SetNumRetentionDays(int64(v.(int)))
+	}
+
+	ddIndex.ExclusionFilters = buildDatadogExclusionFilters(d.Get("exclusion_filter").([]interface{}))
+	return &ddIndex, nil
+}
+
+func buildDatadogCreateIndexRequest(d *schema.ResourceData) (*datadogV1.LogsIndex, error) {
+	var ddIndex datadogV1.LogsIndex
+
+	ddIndex.SetName(d.Get("name").(string))
+
+	if tfFilter := d.Get("filter").([]interface{}); len(tfFilter) > 0 {
+		ddIndex.SetFilter(*buildDatadogIndexFilter(tfFilter[0].(map[string]interface{})))
+	}
+	if v, ok := d.GetOk("daily_limit"); ok {
+		ddIndex.SetDailyLimit(int64(v.(int)))
 	}
 	if v, ok := d.GetOk("retention_days"); ok {
 		ddIndex.SetNumRetentionDays(int64(v.(int)))
