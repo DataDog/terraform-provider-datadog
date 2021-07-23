@@ -278,23 +278,23 @@ resource "datadog_dashboard" "ordered_dashboard" {
 				display_type = "bars"
 			}
 			request {
-                audit_query {
-                    index = "*"
-                    search_query = ""
-                    group_by {
-                        facet = "@metadata.api_key.id"
-                        sort_query {
-                            aggregation = "count"
-                            order = "desc"
-                        }
-                        limit = "10"
-                    }
-                    compute_query {
-                        aggregation = "count"
-                    }
-                }
-                display_type = "line"
-            }
+				audit_query {
+					index = "*"
+					search_query = ""
+					group_by {
+						facet = "@metadata.api_key.id"
+						sort_query {
+							aggregation = "count"
+							order = "desc"
+						}
+						limit = "10"
+					}
+					compute_query {
+						aggregation = "count"
+					}
+				}
+				display_type = "line"
+			}
 			marker {
 				display_type = "error dashed"
 				label = " z=6 "
