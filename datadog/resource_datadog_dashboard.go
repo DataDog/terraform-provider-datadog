@@ -6226,14 +6226,14 @@ func getApmLogNetworkRumSecurityAuditQuerySchema() *schema.Schema {
 					Required:    true,
 				},
 				"compute_query": {
-					Description: "One of `compute_query` or `multi_compute` is required. The map has the keys as below.",
+					Description: "`compute_query` or `multi_compute` is required. The map has the keys as below.",
 					Type:        schema.TypeList,
 					MaxItems:    1,
 					Optional:    true,
 					Elem:        getComputeSchema(),
 				},
 				"multi_compute": {
-					Description: "One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below.",
+					Description: "`compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below.",
 					Type:        schema.TypeList,
 					Optional:    true,
 					Elem:        getComputeSchema(),
