@@ -4388,9 +4388,9 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query--compute_query))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query--group_by))
-- **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query--multi_compute))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query--multi_compute))
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query--compute_query"></a>
@@ -5621,9 +5621,9 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--compute_query))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--group_by))
-- **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--multi_compute))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--multi_compute))
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--compute_query"></a>
@@ -6235,9 +6235,9 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query--compute_query))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query--group_by))
-- **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query--multi_compute))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query--multi_compute))
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query--compute_query"></a>
@@ -8228,9 +8228,9 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query--compute_query))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query--group_by))
-- **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query--multi_compute))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query--multi_compute))
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--query_value_definition--request--audit_query--compute_query"></a>
@@ -9461,9 +9461,9 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query--compute_query))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query--group_by))
-- **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query--multi_compute))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query--multi_compute))
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--timeseries_definition--request--audit_query--compute_query"></a>
@@ -10075,9 +10075,9 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) One of `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query--compute_query))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map has the keys as below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query--compute_query))
 - **group_by** (Block List) Multiple `group_by` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query--group_by))
-- **multi_compute** (Block List) One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query--multi_compute))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query--multi_compute))
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--toplist_definition--request--audit_query--compute_query"></a>
