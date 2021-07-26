@@ -801,8 +801,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		// the resource is assumed to not be created, and no state is saved.
 		d.SetId(createdSyntheticsTest.GetPublicId())
 
-		// Return the read function to ensure the state is reflected in the terraform.state file
-		return resourceDatadogSyntheticsTestRead(ctx, d, meta)
+		return updateSyntheticsAPITestLocalState(d, &createdSyntheticsTest)
 	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
 		createdSyntheticsTest, httpResponse, err := datadogClientV1.SyntheticsApi.CreateSyntheticsBrowserTest(authV1, *syntheticsTest)
@@ -815,8 +814,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		// the resource is assumed to not be created, and no state is saved.
 		d.SetId(createdSyntheticsTest.GetPublicId())
 
-		// Return the read function to ensure the state is reflected in the terraform.state file
-		return resourceDatadogSyntheticsTestRead(ctx, d, meta)
+		return updateSyntheticsBrowserTestLocalState(d, &createdSyntheticsTest)
 	}
 
 	return diag.Errorf("unrecognized synthetics test type %v", testType)
@@ -875,22 +873,23 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 
 	if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
 		syntheticsTest := buildSyntheticsAPITestStruct(d)
-
-		if _, httpResponse, err := datadogClientV1.SyntheticsApi.UpdateAPITest(authV1, d.Id(), *syntheticsTest); err != nil {
+		updatedTest, httpResponse, err := datadogClientV1.SyntheticsApi.UpdateAPITest(authV1, d.Id(), *syntheticsTest)
+		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics API test")
 		}
+		return updateSyntheticsAPITestLocalState(d, &updatedTest)
 	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
-
-		if _, httpResponse, err := datadogClientV1.SyntheticsApi.UpdateBrowserTest(authV1, d.Id(), *syntheticsTest); err != nil {
+		updatedTest, httpResponse, err := datadogClientV1.SyntheticsApi.UpdateBrowserTest(authV1, d.Id(), *syntheticsTest)
+		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics browser test")
 		}
+		return updateSyntheticsBrowserTestLocalState(d, &updatedTest)
 	}
 
-	// Return the read function to ensure the state is reflected in the terraform.state file
-	return resourceDatadogSyntheticsTestRead(ctx, d, meta)
+	return diag.Errorf("unrecognized synthetics test type %v", testType)
 }
 
 func resourceDatadogSyntheticsTestDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -1640,25 +1639,35 @@ func buildLocalExtractedValues(extractedValues []datadogV1.SyntheticsParsingOpti
 }
 
 func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsBrowserTest) diag.Diagnostics {
-	d.Set("type", syntheticsTest.GetType())
+	if err := d.Set("type", syntheticsTest.GetType()); err != nil {
+		return diag.FromErr(err)
+	}
 
 	config := syntheticsTest.GetConfig()
 	actualRequest := config.GetRequest()
 	localRequest := buildLocalRequest(actualRequest)
 
 	if config.HasSetCookie() {
-		d.Set("set_cookie", config.GetSetCookie())
+		if err := d.Set("set_cookie", config.GetSetCookie()); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
 		return diag.FromErr(err)
 	}
-	d.Set("request_headers", actualRequest.Headers)
-	d.Set("request_query", actualRequest.GetQuery())
+	if err := d.Set("request_headers", actualRequest.Headers); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("request_query", actualRequest.GetQuery()); err != nil {
+		return diag.FromErr(err)
+	}
 	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok {
 		localAuth := make(map[string]string)
 		localAuth["username"] = basicAuth.Username
 		localAuth["password"] = basicAuth.Password
-		d.Set("request_basicauth", []map[string]string{localAuth})
+		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	if clientCertificate, ok := actualRequest.GetCertificateOk(); ok {
@@ -1684,7 +1693,9 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 			localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
 		}
 
-		d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate})
+		if err := d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate}); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	// assertions are required but not used for browser tests
@@ -1720,9 +1731,13 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		return diag.FromErr(err)
 	}
 
-	d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds)
+	if err := d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds); err != nil {
+		return diag.FromErr(err)
+	}
 
-	d.Set("locations", syntheticsTest.Locations)
+	if err := d.Set("locations", syntheticsTest.Locations); err != nil {
+		return diag.FromErr(err)
+	}
 
 	actualOptions := syntheticsTest.GetOptions()
 	localOptionsList := make(map[string]interface{})
@@ -1822,18 +1837,32 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		return diag.FromErr(err)
 	}
 
-	d.Set("name", syntheticsTest.GetName())
-	d.Set("message", syntheticsTest.GetMessage())
-	d.Set("status", syntheticsTest.GetStatus())
-	d.Set("tags", syntheticsTest.Tags)
-	d.Set("monitor_id", syntheticsTest.MonitorId)
+	if err := d.Set("name", syntheticsTest.GetName()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("message", syntheticsTest.GetMessage()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("status", syntheticsTest.GetStatus()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("tags", syntheticsTest.Tags); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("monitor_id", syntheticsTest.MonitorId); err != nil {
+		return diag.FromErr(err)
+	}
 	return nil
 }
 
 func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsAPITest) diag.Diagnostics {
-	d.Set("type", syntheticsTest.GetType())
+	if err := d.Set("type", syntheticsTest.GetType()); err != nil {
+		return diag.FromErr(err)
+	}
 	if syntheticsTest.HasSubtype() {
-		d.Set("subtype", syntheticsTest.GetSubtype())
+		if err := d.Set("subtype", syntheticsTest.GetSubtype()); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	config := syntheticsTest.GetConfig()
@@ -1845,13 +1874,19 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			return diag.FromErr(err)
 		}
 	}
-	d.Set("request_headers", actualRequest.Headers)
-	d.Set("request_query", actualRequest.GetQuery())
+	if err := d.Set("request_headers", actualRequest.Headers); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("request_query", actualRequest.GetQuery()); err != nil {
+		return diag.FromErr(err)
+	}
 	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok {
 		localAuth := make(map[string]string)
 		localAuth["username"] = basicAuth.Username
 		localAuth["password"] = basicAuth.Password
-		d.Set("request_basicauth", []map[string]string{localAuth})
+		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	if clientCertificate, ok := actualRequest.GetCertificateOk(); ok {
@@ -1877,7 +1912,9 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
 		}
 
-		d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate})
+		if err := d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate}); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	actualAssertions := config.GetAssertions()
@@ -1980,12 +2017,18 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			localSteps[i] = localStep
 		}
 
-		d.Set("api_step", localSteps)
+		if err := d.Set("api_step", localSteps); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
-	d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds)
+	if err := d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds); err != nil {
+		return diag.FromErr(err)
+	}
 
-	d.Set("locations", syntheticsTest.Locations)
+	if err := d.Set("locations", syntheticsTest.Locations); err != nil {
+		return diag.FromErr(err)
+	}
 
 	actualOptions := syntheticsTest.GetOptions()
 	localOptionsList := make(map[string]interface{})
@@ -2048,11 +2091,21 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		return diag.FromErr(err)
 	}
 
-	d.Set("name", syntheticsTest.GetName())
-	d.Set("message", syntheticsTest.GetMessage())
-	d.Set("status", syntheticsTest.GetStatus())
-	d.Set("tags", syntheticsTest.Tags)
-	d.Set("monitor_id", syntheticsTest.MonitorId)
+	if err := d.Set("name", syntheticsTest.GetName()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("message", syntheticsTest.GetMessage()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("status", syntheticsTest.GetStatus()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("tags", syntheticsTest.Tags); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("monitor_id", syntheticsTest.MonitorId); err != nil {
+		return diag.FromErr(err)
+	}
 	return nil
 }
 
