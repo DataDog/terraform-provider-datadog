@@ -3,27 +3,47 @@ package test
 import (
 	"context"
 	"fmt"
+	"log"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func TestAccDatadogLogsIndex_Basic(t *testing.T) {
-	_, accProviders := testAccProviders(context.Background(), t)
+	if !isReplaying() {
+		// Skip in non replaying mode, since we can't delete indexes, plus the API takes a while to be consistent
+		log.Println("Skipping logs indexes tests in non replaying mode")
+		return
+	}
+
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "_", "-"))
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config:             testAccCheckDatadogCreateLogsIndexConfig(),
-				ExpectNonEmptyPlan: true,
-				Check:              resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "name", "main"),
+				Config: testAccCheckDatadogCreateLogsIndexConfig(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					sleep(),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "name", uniq),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "daily_limit", "200000"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "disable_daily_limit", "false"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "retention_days", "15"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "filter.#", "1"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "filter.0.query", "non-existent-query"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "exclusion_filter.#", "0"),
+				),
 			},
 			{
-				Config: testAccCheckDatadogUpdateLogsIndexConfig(),
+				Config: testAccCheckDatadogUpdateLogsIndexConfig(uniq),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "name", "main"),
+					sleep(),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "name", uniq),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "daily_limit", "20000"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "disable_daily_limit", "false"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "retention_days", "15"),
@@ -35,10 +55,11 @@ func TestAccDatadogLogsIndex_Basic(t *testing.T) {
 				),
 			},
 			{
-				Config:                    testAccCheckDatadogUpdateLogsIndexDisableDailyLimitConfig(),
+				Config:                    testAccCheckDatadogUpdateLogsIndexDisableDailyLimitConfig(uniq),
 				PreventPostDestroyRefresh: true,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "name", "main"),
+					sleep(),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "name", uniq),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "disable_daily_limit", "true"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "retention_days", "15"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "exclusion_filter.#", "0"),
@@ -48,23 +69,33 @@ func TestAccDatadogLogsIndex_Basic(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogCreateLogsIndexConfig() string {
+func sleep() resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		if isReplaying() {
+			return nil
+		}
+		time.Sleep(10 * time.Second)
+		return nil
+	}
+}
+
+func testAccCheckDatadogCreateLogsIndexConfig(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_logs_index" "sample_index" {
-  name           = "main"
+  name           = "%s"
   daily_limit    = 200000
   retention_days = 15
   filter {
     query = "non-existent-query"
   }
 }
-`)
+`, name)
 }
 
-func testAccCheckDatadogUpdateLogsIndexConfig() string {
+func testAccCheckDatadogUpdateLogsIndexConfig(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_logs_index" "sample_index" {
-  name                   = "main"
+  name                   = "%s"
   daily_limit            = 20000
   disable_daily_limit    = false
   retention_days         = 15
@@ -80,13 +111,13 @@ resource "datadog_logs_index" "sample_index" {
     }
   }
 }
-`)
+`, name)
 }
 
-func testAccCheckDatadogUpdateLogsIndexDisableDailyLimitConfig() string {
+func testAccCheckDatadogUpdateLogsIndexDisableDailyLimitConfig(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_logs_index" "sample_index" {
-  name                   = "main"
+  name                   = "%s"
   daily_limit            = 20000
   disable_daily_limit    = true
   retention_days         = 15
@@ -94,5 +125,5 @@ resource "datadog_logs_index" "sample_index" {
     query                = "test:query"
   }
 }
-`)
+`, name)
 }

@@ -3,7 +3,6 @@ package datadog
 import (
 	"context"
 	"log"
-	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -175,12 +174,8 @@ func resourceDatadogLogsIndexUpdate(ctx context.Context, d *schema.ResourceData,
 	tfName := d.Get("name").(string)
 	updatedIndex, httpResponse, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndex(authV1, tfName, *ddIndex)
 	if err != nil {
-		if strings.Contains(err.Error(), "404 Not Found") {
-			return diag.Errorf("logs index creation is not allowed, index_name: %s", tfName)
-		}
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs index")
 	}
-	d.SetId(tfName)
 	return updateLogsIndexState(d, &updatedIndex)
 }
 

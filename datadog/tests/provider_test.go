@@ -125,10 +125,6 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_user_test":                                 "users",
 }
 
-var mockedEndpoints = map[string]map[string]string{
-	"/api/v1/logs/config/indexes": {http.MethodPost: "fixtures/create-log-indexes.json"},
-}
-
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;
 // it then matches the file defining this function against testFiles2EndpointTags to figure out
 // the tag value to set on span
@@ -545,35 +541,6 @@ func testAccProvidersWithHTTPClient(ctx context.Context, t *testing.T, httpClien
 	}
 }
 
-type customFixtureTransport struct {
-	defaultTransport http.RoundTripper
-}
-
-func (t *customFixtureTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	if v, ok := mockedEndpoints[req.URL.Path]; ok {
-		if path, ok := v[req.Method]; ok {
-			fixturePath, _ := filepath.Abs(path)
-			data, _ := ioutil.ReadFile(fixturePath)
-			headers := http.Header{}
-			headers.Add("Content-Type", "application/json")
-			return &http.Response{
-				StatusCode: 200,
-				Body:       ioutil.NopCloser(bytes.NewBufferString(string(data))),
-				Request:    req,
-				Header:     headers,
-			}, nil
-		}
-	}
-	return t.defaultTransport.RoundTrip(req)
-}
-
-func newFixtureTransport(t http.RoundTripper) *customFixtureTransport {
-	ct := customFixtureTransport{
-		defaultTransport: t,
-	}
-	return &ct
-}
-
 func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[string]func() (*schema.Provider, error)) {
 	ctx = testSpan(ctx, t)
 	rec := initRecorder(t)
@@ -581,7 +548,6 @@ func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[s
 	c := cleanhttp.DefaultClient()
 	loggingTransport := logging.NewTransport("Datadog", rec)
 	c.Transport = transport.NewCustomTransport(loggingTransport, transport.CustomTransportOptions{})
-	c.Transport = newFixtureTransport(c.Transport)
 	p := testAccProvidersWithHTTPClient(ctx, t, c)
 	t.Cleanup(func() {
 		rec.Stop()
