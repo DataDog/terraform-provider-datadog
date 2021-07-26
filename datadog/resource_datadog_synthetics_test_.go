@@ -801,7 +801,6 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		// the resource is assumed to not be created, and no state is saved.
 		d.SetId(createdSyntheticsTest.GetPublicId())
 
-		// Return the read function to ensure the state is reflected in the terraform.state file
 		return updateSyntheticsAPITestLocalState(d, &createdSyntheticsTest)
 	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
@@ -815,7 +814,6 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		// the resource is assumed to not be created, and no state is saved.
 		d.SetId(createdSyntheticsTest.GetPublicId())
 
-		// Return the read function to ensure the state is reflected in the terraform.state file
 		return updateSyntheticsBrowserTestLocalState(d, &createdSyntheticsTest)
 	}
 
