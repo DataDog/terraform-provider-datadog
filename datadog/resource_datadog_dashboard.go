@@ -3834,7 +3834,7 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 				}
 			}
 			datadogQueryTableRequest.SetQueries(queries)
-			// Geomap requests for formulas and functions always has a response format of "scalar"
+			// Query Table requests for formulas and functions always has a response format of "scalar"
 			datadogQueryTableRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
 		}
 
