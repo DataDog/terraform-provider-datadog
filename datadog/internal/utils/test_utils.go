@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
 	"time"
 )
 
@@ -21,6 +22,10 @@ func Retry(interval time.Duration, count int, call func() error) error {
 			return nil
 		} else if errors.Is(err, retryErrorType) {
 			log.Print(err.Error())
+			if os.Getenv("RECORD") == "false" {
+				// Skip sleep in replay mode to go faster
+				continue
+			}
 			time.Sleep(interval)
 		} else if errors.Is(err, fatalErrorType) {
 			log.Print(err.Error())
