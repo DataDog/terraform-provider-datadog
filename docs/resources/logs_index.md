@@ -3,17 +3,18 @@
 page_title: "datadog_logs_index Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Logs Index API resource. This can be used to create and manage Datadog logs indexes.
+  Provides a Datadog Logs Index API resource. This can be used to create and manage Datadog logs indexes.Note: It is not possible to delete logs indexes through Terraform, so an index remains in your account after the resource is removed from your terraform config. Reach out to support to delete a logs index.
 ---
 
 # datadog_logs_index (Resource)
 
-Provides a Datadog Logs Index API resource. This can be used to create and manage Datadog logs indexes.
+Provides a Datadog Logs Index API resource. This can be used to create and manage Datadog logs indexes.  
+**Note:** It is not possible to delete logs indexes through Terraform, so an index remains in your account after the resource is removed from your terraform config. Reach out to support to delete a logs index.
 
 ## Example Usage
 
 ```terraform
-# A sample Datadog logs index resource definition. Note that at this point, it is not possible to create new logs indexes through Terraform, so the name field must match a name of an already existing index. If you want to keep the current state of the index, we suggest importing it (see below).
+# A sample Datadog logs index resource definition.
 
 resource "datadog_logs_index" "sample_index" {
   name           = "your index"

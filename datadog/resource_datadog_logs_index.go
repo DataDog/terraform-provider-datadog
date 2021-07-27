@@ -100,7 +100,7 @@ var exclusionFilterSchema = map[string]*schema.Schema{
 
 func resourceDatadogLogsIndex() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog Logs Index API resource. This can be used to create and manage Datadog logs indexes.",
+		Description:   "Provides a Datadog Logs Index API resource. This can be used to create and manage Datadog logs indexes.  \n**Note:** It is not possible to delete logs indexes through Terraform, so an index remains in your account after the resource is removed from your terraform config. Reach out to support to delete a logs index.",
 		CreateContext: resourceDatadogLogsIndexCreate,
 		UpdateContext: resourceDatadogLogsIndexUpdate,
 		ReadContext:   resourceDatadogLogsIndexRead,
