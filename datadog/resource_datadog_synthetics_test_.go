@@ -908,7 +908,14 @@ func resourceDatadogSyntheticsTestDelete(ctx context.Context, d *schema.Resource
 }
 
 func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertionOperator datadogV1.SyntheticsAssertionOperator) bool {
-	for _, intTargetAssertionType := range []datadogV1.SyntheticsAssertionType{datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME, datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE, datadogV1.SYNTHETICSASSERTIONTYPE_LATENCY} {
+	for _, intTargetAssertionType := range []datadogV1.SyntheticsAssertionType{
+		datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME,
+		datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE,
+		datadogV1.SYNTHETICSASSERTIONTYPE_LATENCY,
+		datadogV1.SYNTHETICSASSERTIONTYPE_PACKET_LOSS_PERCENTAGE,
+		datadogV1.SYNTHETICSASSERTIONTYPE_PACKETS_RECEIVED,
+		datadogV1.SYNTHETICSASSERTIONTYPE_NETWORK_HOP,
+	} {
 		if assertionType == intTargetAssertionType {
 			return true
 		}
