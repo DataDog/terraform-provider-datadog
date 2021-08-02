@@ -335,11 +335,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 		MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"allow_insecure": {
-					Description: "Allows loading insecure content for an HTTP test.",
-					Type:        schema.TypeBool,
-					Optional:    true,
-				},
+				"allow_insecure": syntheticsAllowInsecureOption(),
 				"follow_redirects": {
 					Description: "For API HTTP test, whether or not the test should follow redirects.",
 					Type:        schema.TypeBool,
@@ -424,6 +420,9 @@ func syntheticsTestOptionsList() *schema.Schema {
 }
 
 func syntheticsTestAPIStep() *schema.Schema {
+	requestElemSchema := syntheticsTestRequest()
+	requestElemSchema.Schema["allow_insecure"] = syntheticsAllowInsecureOption()
+
 	return &schema.Schema{
 		Description: "Steps for multistep api tests",
 		Type:        schema.TypeList,
@@ -491,7 +490,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Type:        schema.TypeList,
 					MaxItems:    1,
 					Optional:    true,
-					Elem:        syntheticsTestRequest(),
+					Elem:        requestElemSchema,
 				},
 				"request_headers":            syntheticsTestRequestHeaders(),
 				"request_query":              syntheticsTestRequestQuery(),
@@ -782,6 +781,14 @@ func syntheticsConfigVariable() *schema.Schema {
 	}
 }
 
+func syntheticsAllowInsecureOption() *schema.Schema {
+	return &schema.Schema{
+		Description: "Allows loading insecure content for an HTTP test.",
+		Type:        schema.TypeBool,
+		Optional:    true,
+	}
+}
+
 func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -1041,6 +1048,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			request.SetUrl(requestMap["url"].(string))
 			request.SetBody(requestMap["body"].(string))
 			request.SetTimeout(float64(requestMap["timeout"].(int)))
+			request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
 
 			request = completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}))
 
@@ -1976,9 +1984,10 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			localStep["assertion"] = localAssertions
 			localStep["extracted_value"] = buildLocalExtractedValues(step.GetExtractedValues())
 
-			localRequest := buildLocalRequest(step.GetRequest())
-			localStep["request_definition"] = []map[string]interface{}{localRequest}
 			stepRequest := step.GetRequest()
+			localRequest := buildLocalRequest(stepRequest)
+			localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
+			localStep["request_definition"] = []map[string]interface{}{localRequest}
 			localStep["request_headers"] = stepRequest.GetHeaders()
 			localStep["request_query"] = stepRequest.GetQuery()
 
