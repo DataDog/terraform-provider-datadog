@@ -122,6 +122,59 @@ resource "datadog_synthetics_test" "test_dns" {
 }
 
 
+# Example Usage (Synthetics Multistep API test)
+# Create a new Datadog Synthetics Multistep API test
+resource "datadog_synthetics_test" "test" {
+  name      = "Multistep API test"
+  type      = "api"
+  subtype   = "multi"
+  status    = "live"
+  locations = ["aws:eu-central-1"]
+
+  api_step {
+    name    = "An API test on example.org"
+    subtype = "http"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    request_definition {
+      method = "GET"
+      url    = "https://example.org"
+    }
+
+    request_headers = {
+      Content-Type   = "application/json"
+      Authentication = "Token: 1234566789"
+    }
+  }
+
+  api_step {
+    name    = "An API test on example.org"
+    subtype = "http"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    request_definition {
+      method = "GET"
+      url    = "http://example.org"
+    }
+  }
+
+  options_list {
+    tick_every         = 900
+    accept_self_signed = true
+  }
+}
+
+
 # Example Usage (Synthetics Browser test)
 # Support for Synthetics Browser test steps is limited (see below)
 # Create a new Datadog Synthetics Browser test starting on https://www.example.org
