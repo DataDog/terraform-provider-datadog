@@ -135,6 +135,29 @@ resource "datadog_dashboard" "log_stream_dashboard_logset" {
 			y = 5
 		}
 	}
+
+	widget {
+		log_stream_definition {
+			title = "Log stream no index, no columns"
+			title_align = "right"
+			title_size = "16"
+			show_message_column = "true"
+			message_display = "expanded-md"
+			query = "status:error env:prod"
+			show_date_column = "true"
+			live_span = "1d"
+			sort {
+				column = "time"
+				order = "desc"
+			}
+		}
+		widget_layout {
+			height = 43
+			width = 32
+			x = 5
+			y = 5
+		}
+	}
 }
 `
 
@@ -160,6 +183,22 @@ var datadogDashboardLogStreamLogSetAsserts = []string{
 	"widget.0.log_stream_definition.0.sort.0.column = time",
 	"widget.0.log_stream_definition.0.title = Log Stream",
 	"widget.0.log_stream_definition.0.sort.0.order = desc",
+	"widget.1.log_stream_definition.0.query = status:error env:prod",
+	"widget.1.log_stream_definition.0.title_align = right",
+	"widget.1.log_stream_definition.0.show_date_column = true",
+	"widget.1.log_stream_definition.0.columns.# = 0",
+	"widget.1.log_stream_definition.0.show_message_column = true",
+	"widget.1.log_stream_definition.0.live_span = 1d",
+	"widget.1.widget_layout.0.width = 32",
+	"widget.1.widget_layout.0.x = 5",
+	"widget.1.log_stream_definition.0.message_display = expanded-md",
+	"widget.1.widget_layout.0.height = 43",
+	"widget.1.log_stream_definition.0.title_size = 16",
+	"widget.1.log_stream_definition.0.indexes.# = 0",
+	"widget.1.widget_layout.0.y = 5",
+	"widget.1.log_stream_definition.0.sort.0.column = time",
+	"widget.1.log_stream_definition.0.title = Log stream no index, no columns",
+	"widget.1.log_stream_definition.0.sort.0.order = desc",
 }
 
 func TestAccDatadogDashboardLogStreamLogSet(t *testing.T) {
