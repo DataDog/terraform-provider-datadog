@@ -2998,16 +2998,15 @@ func buildDatadogLogStreamDefinition(terraformDefinition map[string]interface{})
 		datadogIndexes[i] = index.(string)
 	}
 	datadogDefinition.SetIndexes(datadogIndexes)
+	terraformColumns := terraformDefinition["columns"].([]interface{})
+	datadogColumns := make([]string, len(terraformColumns))
+	for i, column := range terraformColumns {
+		datadogColumns[i] = column.(string)
+	}
+	datadogDefinition.SetColumns(datadogColumns)
 	// Optional params
 	if v, ok := terraformDefinition["query"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetQuery(v)
-	}
-	if terraformColumns, ok := terraformDefinition["columns"].([]interface{}); ok && len(terraformColumns) > 0 {
-		datadogColumns := make([]string, len(terraformColumns))
-		for i, column := range terraformColumns {
-			datadogColumns[i] = column.(string)
-		}
-		datadogDefinition.SetColumns(datadogColumns)
 	}
 	if v, ok := terraformDefinition["show_date_column"].(bool); ok {
 		datadogDefinition.SetShowDateColumn(v)
