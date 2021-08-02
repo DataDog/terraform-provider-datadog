@@ -114,19 +114,19 @@ func resourceDatadogDashboard() *schema.Resource {
 			"notify_list": {
 				Type:        schema.TypeList,
 				Optional:    true,
-				Description: "The list of handles of users to notify when changes are made to this dashboard.",
+				Description: "The list of handles for the users to notify when changes are made to this dashboard.",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"dashboard_lists": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "The list of dashboard lists this dashboard belongs to.",
+				Description: "A list of dashboard lists this dashboard belongs to.",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
 			"dashboard_lists_removed": {
 				Type:        schema.TypeSet,
 				Computed:    true,
-				Description: "The list of dashboard lists this dashboard should be removed from. Internal only.",
+				Description: "A list of dashboard lists this dashboard should be removed from. Internal only.",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
 		},
@@ -371,7 +371,7 @@ func getTemplateVariableSchema() map[string]*schema.Schema {
 		"prefix": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "The tag prefix associated with the variable. Only tags with this prefix will appear in the variable dropdown.",
+			Description: "The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.",
 		},
 		"default": {
 			Type:        schema.TypeString,
@@ -634,7 +634,7 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
-			Description: "The definition for a Change  widget.",
+			Description: "The definition for a Change widget.",
 			Elem: &schema.Resource{
 				Schema: getChangeDefinitionSchema(),
 			},
@@ -1109,12 +1109,12 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataK
 func getWidgetLayoutSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"x": {
-			Description: "The position of the widget on the x (horizontal) axis. Should be greater or equal to 0.",
+			Description: "The position of the widget on the x (horizontal) axis. Should be greater than or equal to 0.",
 			Type:        schema.TypeInt,
 			Required:    true,
 		},
 		"y": {
-			Description: "The position of the widget on the y (vertical) axis. Should be greater or equal to 0.",
+			Description: "The position of the widget on the y (vertical) axis. Should be greater than or equal to 0.",
 			Type:        schema.TypeInt,
 			Required:    true,
 		},
@@ -1176,12 +1176,12 @@ func getGroupDefinitionSchema() map[string]*schema.Schema {
 		"background_color": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "Background color of the group title. One of `vivid_blue`, `vivid_purple`, `vivid_pink`, `vivid_orange`, `vivid_yellow`, `vivid_green`, `blue`, `purple`, `pink`, `orange`, `yellow`, `green`, `gray` or `white`",
+			Description: "The background color of the group title, options: `vivid_blue`, `vivid_purple`, `vivid_pink`, `vivid_orange`, `vivid_yellow`, `vivid_green`, `blue`, `purple`, `pink`, `orange`, `yellow`, `green`, `gray` or `white`",
 		},
 		"banner_img": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "URL of image to display as a banner for the group.",
+			Description: "The image URL to display as a banner for the group.",
 		},
 		"show_title": {
 			Type:        schema.TypeBool,
@@ -1274,7 +1274,7 @@ func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -1365,7 +1365,7 @@ func getAlertValueDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -1437,7 +1437,7 @@ func buildTerraformAlertValueDefinition(datadogDefinition datadogV1.AlertValueWi
 func getChangeDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
+			Description: "A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -1450,7 +1450,7 @@ func getChangeDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -1462,7 +1462,7 @@ func getChangeDefinitionSchema() map[string]*schema.Schema {
 		},
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
-			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -1524,10 +1524,10 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
 		// Settings specific to Change requests
 		"change_type": {
@@ -1543,7 +1543,7 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 			Optional:         true,
 		},
 		"increase_good": {
-			Description: "Boolean indicating whether an increase in the value is good (thus displayed in green) or not (thus displayed in red).",
+			Description: "A Boolean indicating whether an increase in the value is good (displayed in green) or not (displayed in red).",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
@@ -1560,7 +1560,7 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 			Optional:         true,
 		},
 		"show_present": {
-			Description: "If set to `true`, displays current value.",
+			Description: "If set to `true`, displays the current value.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
@@ -1671,7 +1671,7 @@ func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidge
 func getDistributionDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple request blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
+			Description: "A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -1684,7 +1684,7 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -1768,14 +1768,14 @@ func getDistributionRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
 		// Settings specific to Distribution requests
 		"style": {
-			Description: "Style of the widget graph. One nested block is allowed with the structure below.",
+			Description: "The style of the widget graph. One nested block is allowed using the structure below.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -1877,7 +1877,7 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -1889,7 +1889,7 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 		},
 		"live_span": getWidgetLiveSpanSchema(),
 		"tags_execution": {
-			Description: "The execution method for multi-value filters. Can be either `and` or `or`.",
+			Description: "The execution method for multi-value filters, options: `and` or `or`.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -1967,7 +1967,7 @@ func getEventTimelineDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -1979,7 +1979,7 @@ func getEventTimelineDefinitionSchema() map[string]*schema.Schema {
 		},
 		"live_span": getWidgetLiveSpanSchema(),
 		"tags_execution": {
-			Description: "The execution method for multi-value filters. Can be either `and` or `or`.",
+			Description: "The execution method for multi-value filters, options: `and` or `or`.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -2064,7 +2064,7 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		"tags": {
-			Description: "List of tags to use in the widget.",
+			Description: "A list of tags to use in the widget.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem:        &schema.Schema{Type: schema.TypeString},
@@ -2075,7 +2075,7 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -2238,7 +2238,7 @@ func buildTerraformFreeTextDefinition(datadogDefinition datadogV1.FreeTextWidget
 func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
+			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -2246,7 +2246,7 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"yaxis": {
-			Description: "Nested block describing the Y-Axis Controls. The structure of this block is described below.",
+			Description: "A nested block describing the Y-Axis Controls. The structure of this block is described below.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -2260,7 +2260,7 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -2271,7 +2271,7 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			Optional:         true,
 		},
 		"event": {
-			Description: "The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below.",
+			Description: "The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -2291,7 +2291,7 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 		},
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
-			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -2381,14 +2381,14 @@ func getHeatmapRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
 		// Settings specific to Heatmap requests
 		"style": {
-			Description: "Style of the widget graph. One nested block is allowed with the structure below.",
+			Description: "The style of the widget graph. One nested block is allowed using the structure below.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -2473,7 +2473,7 @@ func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWi
 func getHostmapDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below.",
+			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
@@ -2481,7 +2481,7 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"fill": {
-						Description: "The query used to fill the map. Exactly one nested block is allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
+						Description: "The query used to fill the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem: &schema.Resource{
@@ -2489,7 +2489,7 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 						},
 					},
 					"size": {
-						Description: "The query used to size the map. Exactly one nested block is allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
+						Description: "The query used to size the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem: &schema.Resource{
@@ -2506,12 +2506,12 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			Optional:         true,
 		},
 		"no_metric_hosts": {
-			Description: "Boolean indicating whether to show nodes with no metrics.",
+			Description: "A Boolean indicating whether to show nodes with no metrics.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
 		"no_group_hosts": {
-			Description: "Boolean indicating whether to show ungrouped nodes.",
+			Description: "A Boolean indicating whether to show ungrouped nodes.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
@@ -2528,29 +2528,29 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		"style": {
-			Description: "Style of the widget graph. One nested block is allowed with the structure below.",
+			Description: "The style of the widget graph. One nested block is allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"palette": {
-						Description: "Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.",
+						Description: "A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.",
 						Type:        schema.TypeString,
 						Optional:    true,
 					},
 					"palette_flip": {
-						Description: "Boolean indicating whether to flip the palette tones.",
+						Description: "A Boolean indicating whether to flip the palette tones.",
 						Type:        schema.TypeBool,
 						Optional:    true,
 					},
 					"fill_min": {
-						Description: "Min value to use to color the map.",
+						Description: "The min value to use to color the map.",
 						Type:        schema.TypeString,
 						Optional:    true,
 					},
 					"fill_max": {
-						Description: "Max value to use to color the map.",
+						Description: "The max value to use to color the map.",
 						Type:        schema.TypeString,
 						Optional:    true,
 					},
@@ -2563,7 +2563,7 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -2574,7 +2574,7 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			Optional:         true,
 		},
 		"custom_link": {
-			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -2706,11 +2706,11 @@ func getHostmapRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement at least one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
-		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
 	}
 }
 func buildDatadogHostmapRequest(terraformRequest map[string]interface{}) *datadogV1.HostMapRequest {
@@ -2923,7 +2923,7 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"columns": {
-			Description: "Stringified list of columns to use. Example: `[\"column1\",\"column2\",\"column3\"]`.",
+			Description: "Stringified list of columns to use, for example: `[\"column1\",\"column2\",\"column3\"]`.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem:        &schema.Schema{Type: schema.TypeString},
@@ -2941,11 +2941,11 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 		"message_display": {
 			Type:             schema.TypeString,
 			Optional:         true,
-			Description:      "Amount of log lines to display.",
+			Description:      "The number of log lines to display.",
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMessageDisplayFromValue),
 		},
 		"sort": {
-			Description: "The facet and order to sort the data based upon. Example: `{\"column\": \"time\", \"order\": \"desc\"}`.",
+			Description: "The facet and order to sort the data, for example: `{\"column\": \"time\", \"order\": \"desc\"}`.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -2959,7 +2959,7 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -2976,7 +2976,7 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 func getWidgetFieldSortSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"column": {
-			Description: "Facet path for the column",
+			Description: "The facet path for the column",
 			Type:        schema.TypeString,
 			Required:    true,
 		},
@@ -3120,11 +3120,11 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 		"summary_type": {
 			Type:             schema.TypeString,
 			Optional:         true,
-			Description:      "Which summary type should be used.",
+			Description:      "The summary type to use.",
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSummaryTypeFromValue),
 		},
 		"sort": {
-			Description:      "The method to use to sort monitors.",
+			Description:      "The method to sort the monitors.",
 			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetMonitorSummarySortFromValue),
 			Optional:         true,
@@ -3142,12 +3142,12 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Optional:         true,
 		},
 		"hide_zero_counts": {
-			Description: "Boolean indicating whether to hide empty categories.",
+			Description: "A Boolean indicating whether to hide empty categories.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
 		"show_last_triggered": {
-			Description: "Boolean indicating whether to show when monitors/groups last triggered.",
+			Description: "A Boolean indicating whether to show when monitors/groups last triggered.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
@@ -3157,7 +3157,7 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -3247,18 +3247,18 @@ func buildTerraformManageStatusDefinition(datadogDefinition datadogV1.MonitorSum
 func getNoteDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"content": {
-			Description:  "Content of the note.",
+			Description:  "The content of the note.",
 			Type:         schema.TypeString,
 			Required:     true,
 			ValidateFunc: validation.StringIsNotEmpty,
 		},
 		"background_color": {
-			Description: "Background color of the note.",
+			Description: "The background color of the note.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 		"font_size": {
-			Description: "Size of the text.",
+			Description: "The size of the text.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -3286,12 +3286,12 @@ func getNoteDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"tick_pos": {
-			Description: "When `tick = true`, string with a percent sign indicating the position of the tick. Example: use `tick_pos = \"50%\"` for centered alignment.",
+			Description: "When `tick = true`, a string with a percent sign indicating the position of the tick, for example: `tick_pos = \"50%\"` is centered alignment.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 		"tick_edge": {
-			Description:      "When `tick = true`, string indicating on which side of the widget the tick should be displayed.",
+			Description:      "When `tick = true`, a string indicating on which side of the widget the tick should be displayed.",
 			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTickEdgeFromValue),
 			Optional:         true,
@@ -3370,7 +3370,7 @@ func buildTerraformNoteDefinition(datadogDefinition datadogV1.NoteWidgetDefiniti
 func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block).",
+			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -3378,7 +3378,7 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"autoscale": {
-			Description: "Boolean indicating whether to automatically scale the tile.",
+			Description: "A Boolean indicating whether to automatically scale the tile.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
@@ -3404,7 +3404,7 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -3416,7 +3416,7 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 		},
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
-			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -3502,17 +3502,18 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
-		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"audit_query":    getApmLogNetworkRumSecurityAuditQuerySchema(),
 		// "query" and "formula" go together
 		"query":   getFormulaQuerySchema(),
 		"formula": getFormulaSchema(),
 		// Settings specific to QueryValue requests
 		"conditional_formats": {
-			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below.",
+			Description: "Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -3550,6 +3551,9 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
 			securityQuery := v[0].(map[string]interface{})
 			datadogQueryValueRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
+		} else if v, ok := terraformRequest["audit_query"].([]interface{}); ok && len(v) > 0 {
+			auditQuery := v[0].(map[string]interface{})
+			datadogQueryValueRequest.AuditQuery = buildDatadogApmOrLogQuery(auditQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
 			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
 			for i, q := range v {
@@ -3610,6 +3614,10 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.security_query.0", i))
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetAuditQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.audit_query.0", i)))
+			k.Remove(fmt.Sprintf("%d.audit_query.0", i))
+			terraformRequest["audit_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(*v)
 		}
@@ -3637,7 +3645,7 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block).",
+			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -3650,7 +3658,7 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -3662,7 +3670,7 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 		},
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
-			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -3736,15 +3744,15 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":               getMetricQuerySchema(),
-		"apm_query":       getApmLogNetworkRumSecurityQuerySchema(),
-		"log_query":       getApmLogNetworkRumSecurityQuerySchema(),
+		"apm_query":       getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"log_query":       getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"process_query":   getProcessQuerySchema(),
-		"rum_query":       getApmLogNetworkRumSecurityQuerySchema(),
-		"security_query":  getApmLogNetworkRumSecurityQuerySchema(),
+		"rum_query":       getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"security_query":  getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"apm_stats_query": getApmStatsQuerySchema(),
 		// Settings specific to QueryTable requests
 		"conditional_formats": {
-			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below.",
+			Description: "Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -3752,7 +3760,7 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"alias": {
-			Description: "The alias for the column name. Default is the metric name.",
+			Description: "The alias for the column name (defaults to metric name).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -3905,7 +3913,7 @@ func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.Tab
 func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed with the structure below.",
+			Description: "A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
@@ -3913,7 +3921,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"x": {
-						Description: "The query used for the X-Axis. Exactly one nested block is allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block).",
+						Description: "The query used for the X-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block).",
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem: &schema.Resource{
@@ -3921,7 +3929,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 						},
 					},
 					"y": {
-						Description: "The query used for the Y-Axis. Exactly one nested block is allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block).",
+						Description: "The query used for the Y-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block).",
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem: &schema.Resource{
@@ -3932,7 +3940,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"xaxis": {
-			Description: "Nested block describing the X-Axis Controls. Exactly one nested block is allowed with the structure below.",
+			Description: "A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -3941,7 +3949,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"yaxis": {
-			Description: "Nested block describing the Y-Axis Controls. Exactly one nested block is allowed with the structure below.",
+			Description: "A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -3961,7 +3969,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -3973,7 +3981,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 		},
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
-			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4091,11 +4099,11 @@ func getScatterplotRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
-		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
 		// Settings specific to Scatterplot requests
 		"aggregator": {
 			Description:      "Aggregator used for the request.",
@@ -4171,7 +4179,7 @@ func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadogV1.Scatt
 func getServiceMapDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"service": {
-			Description: "The ID of the service you want to map.",
+			Description: "The ID of the service to map.",
 			Type:        schema.TypeString,
 			Required:    true,
 		},
@@ -4187,7 +4195,7 @@ func getServiceMapDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -4198,7 +4206,7 @@ func getServiceMapDefinitionSchema() map[string]*schema.Schema {
 			Optional:         true,
 		},
 		"custom_link": {
-			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4269,7 +4277,7 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -4280,7 +4288,7 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 			Optional:         true,
 		},
 		"view_type": {
-			Description: "Type of view to use when displaying the widget. Only `detail` is currently supported.",
+			Description: "The type of view to use when displaying the widget. Only `detail` is supported.",
 			Type:        schema.TypeString,
 			Required:    true,
 		},
@@ -4295,13 +4303,13 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"view_mode": {
-			Description:      "View mode for the widget.",
+			Description:      "The view mode for the widget.",
 			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetViewModeFromValue),
 			Required:         true,
 		},
 		"time_windows": {
-			Description: "List of time windows to display in the widget.",
+			Description: "A list of time windows to display in the widget.",
 			Type:        schema.TypeList,
 			Required:    true,
 			Elem: &schema.Schema{
@@ -4398,7 +4406,7 @@ func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition datadogV1.S
 func getGeomapDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block).",
+			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4406,7 +4414,7 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"style": {
-			Description: "Style of the widget graph. One nested block is allowed with the structure below.",
+			Description: "The style of the widget graph. One nested block is allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
@@ -4418,7 +4426,7 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 						Required:    true,
 					},
 					"palette_flip": {
-						Description: "Boolean indicating whether to flip the palette tones.",
+						Description: "A Boolean indicating whether to flip the palette tones.",
 						Type:        schema.TypeBool,
 						Required:    true,
 					},
@@ -4433,7 +4441,7 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"focus": {
-						Description: "The 2-letter ISO code of a country to focus the map on. Or `WORLD`.",
+						Description: "The two-letter ISO code of a country to focus the map on (or `WORLD`).",
 						Type:        schema.TypeString,
 						Required:    true,
 					},
@@ -4446,7 +4454,7 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -4458,7 +4466,7 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 		},
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
-			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4472,8 +4480,8 @@ func getGeomapRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":         getMetricQuerySchema(),
-		"log_query": getApmLogNetworkRumSecurityQuerySchema(),
-		"rum_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"log_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"rum_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
 		// "query" and "formula" go together
 		"query":   getFormulaQuerySchema(),
 		"formula": getFormulaSchema(),
@@ -4605,7 +4613,7 @@ func buildTerraformGeomapRequests(datadogGeomapRequests *[]datadogV1.GeomapWidge
 func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block).",
+			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4613,7 +4621,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"marker": {
-			Description: "Nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block.",
+			Description: "A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4621,7 +4629,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"event": {
-			Description: "The definition of the event to overlay on the graph. Multiple `event` blocks are allowed with the structure below.",
+			Description: "The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4629,7 +4637,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"yaxis": {
-			Description: "Nested block describing the Y-Axis Controls. The structure of this block is described below",
+			Description: "A nested block describing the Y-Axis Controls. The structure of this block is described below",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -4638,7 +4646,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"right_yaxis": {
-			Description: "Nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below.",
+			Description: "A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -4652,7 +4660,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -4690,7 +4698,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 		},
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
-			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4821,26 +4829,26 @@ func getFormulaSchema() *schema.Schema {
 				"formula_expression": {
 					Type:        schema.TypeString,
 					Required:    true,
-					Description: "String expression built from queries, formulas and functions.",
+					Description: "A string expression built from queries, formulas, and functions.",
 				},
 				"limit": {
 					Type:        schema.TypeList,
 					Optional:    true,
-					Description: "Options for limiting results returned.",
+					Description: "The options for limiting results returned.",
 					MaxItems:    1,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"count": {
 								Type:        schema.TypeInt,
 								Optional:    true,
-								Description: "Number of results to return",
+								Description: "The number of results to return",
 							},
 							"order": {
 								Type:             schema.TypeString,
 								Optional:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
 								Default:          "desc",
-								Description:      "Direction of sort.",
+								Description:      "The direction of the sort.",
 							},
 						},
 					},
@@ -4848,7 +4856,7 @@ func getFormulaSchema() *schema.Schema {
 				"alias": {
 					Type:        schema.TypeString,
 					Optional:    true,
-					Description: "Expression alias.",
+					Description: "An expression alias.",
 				},
 			},
 		},
@@ -4872,12 +4880,12 @@ func getFormulaQuerySchema() *schema.Schema {
 								Type:        schema.TypeString,
 								Optional:    true,
 								Default:     "metrics",
-								Description: "Data source for metrics queries.",
+								Description: "The data source for metrics queries.",
 							},
 							"query": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "Metrics query definition.",
+								Description: "The metrics query definition.",
 							},
 							"aggregator": {
 								Type:             schema.TypeString,
@@ -4888,7 +4896,7 @@ func getFormulaQuerySchema() *schema.Schema {
 							"name": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "Name of the query for use in formulas.",
+								Description: "The name of the query for use in formulas.",
 							},
 						},
 					},
@@ -4904,20 +4912,20 @@ func getFormulaQuerySchema() *schema.Schema {
 								Type:             schema.TypeString,
 								Required:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventsDataSourceFromValue),
-								Description:      "Data source for event platform-based queries.",
+								Description:      "The data source for event platform-based queries.",
 							},
 							"search": {
 								Type:        schema.TypeList,
 								Optional:    true,
 								MaxItems:    1,
-								Description: "Search options.",
+								Description: "The search options.",
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"query": {
 											Type:         schema.TypeString,
 											ValidateFunc: validation.StringIsNotEmpty,
 											Required:     true,
-											Description:  "Events search string.",
+											Description:  "The events search string.",
 										},
 									},
 								},
@@ -4931,14 +4939,14 @@ func getFormulaQuerySchema() *schema.Schema {
 							"compute": {
 								Type:        schema.TypeList,
 								Required:    true,
-								Description: "Compute options.",
+								Description: "The compute options.",
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"aggregation": {
 											Type:             schema.TypeString,
 											Required:         true,
 											ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventAggregationFromValue),
-											Description:      "Aggregation methods for event platform queries.",
+											Description:      "The aggregation methods for event platform queries.",
 										},
 										"interval": {
 											Type:        schema.TypeInt,
@@ -4948,7 +4956,7 @@ func getFormulaQuerySchema() *schema.Schema {
 										"metric": {
 											Type:        schema.TypeString,
 											Optional:    true,
-											Description: "Measurable attribute to compute.",
+											Description: "The measurable attribute to compute.",
 										},
 									},
 								},
@@ -4962,30 +4970,30 @@ func getFormulaQuerySchema() *schema.Schema {
 										"facet": {
 											Type:        schema.TypeString,
 											Required:    true,
-											Description: "Event facet.",
+											Description: "The event facet.",
 										},
 										"limit": {
 											Type:        schema.TypeInt,
 											Optional:    true,
-											Description: "Number of groups to return.",
+											Description: "The number of groups to return.",
 										},
 										"sort": {
 											Type:        schema.TypeList,
 											Optional:    true,
 											MaxItems:    1,
-											Description: "Options for sorting group by results.",
+											Description: "The options for sorting group by results.",
 											Elem: &schema.Resource{
 												Schema: map[string]*schema.Schema{
 													"aggregation": {
 														Type:             schema.TypeString,
 														Required:         true,
 														ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventAggregationFromValue),
-														Description:      "Aggregation methods for event platform queries.",
+														Description:      "The aggregation methods for the event platform queries.",
 													},
 													"metric": {
 														Type:        schema.TypeString,
 														Optional:    true,
-														Description: "Metric used for sorting group by results.",
+														Description: "The metric used for sorting group by results.",
 													},
 													"order": {
 														Type:             schema.TypeString,
@@ -5002,7 +5010,7 @@ func getFormulaQuerySchema() *schema.Schema {
 							"name": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "Name of query for use in formulas.",
+								Description: "The name of query for use in formulas.",
 							},
 						},
 					},
@@ -5011,24 +5019,24 @@ func getFormulaQuerySchema() *schema.Schema {
 					Type:        schema.TypeList,
 					Optional:    true,
 					MaxItems:    1,
-					Description: "Process query using formulas and functions.",
+					Description: "The process query using formulas and functions.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"data_source": {
 								Type:             schema.TypeString,
 								Required:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionProcessQueryDataSourceFromValue),
-								Description:      "Data source for process queries.",
+								Description:      "The data source for process queries.",
 							},
 							"metric": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "Process metric name.",
+								Description: "The process metric name.",
 							},
 							"text_filter": {
 								Type:        schema.TypeString,
 								Optional:    true,
-								Description: "Text to use as filter.",
+								Description: "The text to use as a filter.",
 							},
 							"tag_filters": {
 								Type:        schema.TypeList,
@@ -5039,13 +5047,13 @@ func getFormulaQuerySchema() *schema.Schema {
 							"limit": {
 								Type:        schema.TypeInt,
 								Optional:    true,
-								Description: "Number of hits to return.",
+								Description: "The number of hits to return.",
 							},
 							"sort": {
 								Type:             schema.TypeString,
 								Optional:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
-								Description:      "Direction of sort.",
+								Description:      "The direction of the sort.",
 								Default:          "desc",
 							},
 							"aggregator": {
@@ -5062,7 +5070,7 @@ func getFormulaQuerySchema() *schema.Schema {
 							"name": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "Name of query for use in formulas.",
+								Description: "The name of query for use in formulas.",
 							},
 						},
 					},
@@ -5076,36 +5084,37 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"network_query":  getApmLogNetworkRumSecurityQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"network_query":  getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
-		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"audit_query":    getApmLogNetworkRumSecurityAuditQuerySchema(),
 		// "query" and "formula" go together
 		"query":   getFormulaQuerySchema(),
 		"formula": getFormulaSchema(),
 		// Settings specific to Timeseries requests
 		"style": {
-			Description: "Style of the widget graph. Exactly one `style` block is allowed with the structure below.",
+			Description: "The style of the widget graph. Exactly one `style` block is allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"palette": {
-						Description: "Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.",
+						Description: "A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.",
 						Type:        schema.TypeString,
 						Optional:    true,
 					},
 					"line_type": {
-						Description:      "Type of lines displayed.",
+						Description:      "The type of lines displayed.",
 						Type:             schema.TypeString,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLineTypeFromValue),
 						Optional:         true,
 					},
 					"line_width": {
-						Description:      "Width of line displayed.",
+						Description:      "The width of line displayed.",
 						Type:             schema.TypeString,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLineWidthFromValue),
 						Optional:         true,
@@ -5114,18 +5123,18 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"metadata": {
-			Description: "Used to define expression aliases. Multiple `metadata` blocks are allowed with the structure below.",
+			Description: "Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"expression": {
-						Description: "Expression name.",
+						Description: "The expression name.",
 						Type:        schema.TypeString,
 						Required:    true,
 					},
 					"alias_name": {
-						Description: "Expression alias.",
+						Description: "The expression alias.",
 						Type:        schema.TypeString,
 						Optional:    true,
 					},
@@ -5133,13 +5142,13 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"display_type": {
-			Description:      "How the marker lines will look.",
+			Description:      "How to display the marker lines.",
 			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetDisplayTypeFromValue),
 			Optional:         true,
 		},
 		"on_right_yaxis": {
-			Description: "Boolean indicating whether the request will use the right or left Y-Axis.",
+			Description: "A Boolean indicating whether the request uses the right or left Y-Axis.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
@@ -5312,6 +5321,9 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogTimeseriesRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		} else if v, ok := terraformRequest["audit_query"].([]interface{}); ok && len(v) > 0 {
+			auditQuery := v[0].(map[string]interface{})
+			datadogTimeseriesRequest.AuditQuery = buildDatadogApmOrLogQuery(auditQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
 			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
 			for i, q := range v {
@@ -5396,6 +5408,10 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.security_query.0", i))
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetAuditQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.audit_query.0", i)))
+			k.Remove(fmt.Sprintf("%d.audit_query.0", i))
+			terraformRequest["audit_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(*v)
 		}
@@ -5443,7 +5459,7 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 func getToplistDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
-			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block).",
+			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -5456,7 +5472,7 @@ func getToplistDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -5468,7 +5484,7 @@ func getToplistDefinitionSchema() map[string]*schema.Schema {
 		},
 		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
-			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
+			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -5530,17 +5546,18 @@ func getToplistRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"log_query":      getApmLogNetworkRumSecurityQuerySchema(),
+		"apm_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"log_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
-		"rum_query":      getApmLogNetworkRumSecurityQuerySchema(),
-		"security_query": getApmLogNetworkRumSecurityQuerySchema(),
+		"rum_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"audit_query":    getApmLogNetworkRumSecurityAuditQuerySchema(),
 		// "query" and "formula" go together
 		"query":   getFormulaQuerySchema(),
 		"formula": getFormulaSchema(),
 		// Settings specific to Toplist requests
 		"conditional_formats": {
-			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed with the structure below.",
+			Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -5548,7 +5565,7 @@ func getToplistRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"style": {
-			Description: "Define request widget style.",
+			Description: "Define request for the widget's style.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
@@ -5581,6 +5598,9 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
 			securityQuery := v[0].(map[string]interface{})
 			datadogToplistRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
+		} else if v, ok := terraformRequest["audit_query"].([]interface{}); ok && len(v) > 0 {
+			auditQuery := v[0].(map[string]interface{})
+			datadogToplistRequest.AuditQuery = buildDatadogApmOrLogQuery(auditQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
 			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
 			for i, q := range v {
@@ -5641,6 +5661,10 @@ func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWi
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.security_query.0", i))
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetAuditQueryOk(); ok {
+			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.audit_query.0", i)))
+			k.Remove(fmt.Sprintf("%d.audit_query.0", i))
+			terraformRequest["audit_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(*v)
 		}
@@ -5714,13 +5738,13 @@ func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"size_format": {
-			Description:      "Size of the widget.",
+			Description:      "The size of the widget.",
 			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSizeFormatFromValue),
 			Optional:         true,
 		},
 		"display_format": {
-			Description:      "Number of columns to display.",
+			Description:      "The number of columns to display.",
 			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetServiceSummaryDisplayFormatFromValue),
 			Optional:         true,
@@ -5731,7 +5755,7 @@ func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"title_size": {
-			Description: "The size of the widget's title. Default is 16.",
+			Description: "The size of the widget's title (defaults to 16).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -5883,29 +5907,29 @@ func buildTerraformTraceServiceDefinition(datadogDefinition datadogV1.ServiceSum
 func getWidgetConditionalFormatSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"comparator": {
-			Description:      "Comparator to use.",
+			Description:      "The comparator to use.",
 			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetComparatorFromValue),
 			Required:         true,
 		},
 		"value": {
-			Description: "Value for the comparator.",
+			Description: "A value for the comparator.",
 			Type:        schema.TypeFloat,
 			Required:    true,
 		},
 		"palette": {
-			Description:      "Color palette to apply.",
+			Description:      "The color palette to apply.",
 			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetPaletteFromValue),
 			Required:         true,
 		},
 		"custom_bg_color": {
-			Description: "Color palette to apply to the background, same values available as palette.",
+			Description: "The color palette to apply to the background, same values available as palette.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 		"custom_fg_color": {
-			Description: "Color palette to apply to the foreground, same values available as palette.",
+			Description: "The color palette to apply to the foreground, same values available as palette.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -5925,7 +5949,7 @@ func getWidgetConditionalFormatSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"metric": {
-			Description: "Metric from the request to correlate this conditional format with.",
+			Description: "The metric from the request to correlate with this conditional format.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -6014,7 +6038,7 @@ func getWidgetCustomLinkSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"override_label": {
-			Description: "The label id that refers to a context menu link item. When override_label is provided, the client request will omit the label field.",
+			Description: "The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -6123,12 +6147,12 @@ func getWidgetLiveSpanSchema() *schema.Schema {
 func getWidgetMarkerSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"value": {
-			Description: "Mathematical expression describing the marker. Examples: `y > 1`, `-5 < y < 0`, `y = 19`.",
+			Description: "A mathematical expression describing the marker, for example: `y > 1`, `-5 < y < 0`, `y = 19`.",
 			Type:        schema.TypeString,
 			Required:    true,
 		},
 		"display_type": {
-			Description: "How the marker lines will look. Possible values are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.",
+			Description: "How the marker lines are displayed, options are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -6187,8 +6211,8 @@ func getMetricQuerySchema() *schema.Schema {
 	}
 }
 
-// APM, Log, Network or RUM Query
-func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
+// APM, Log, Network, RUM or Audit Query
+func getApmLogNetworkRumSecurityAuditQuerySchema() *schema.Schema {
 	return &schema.Schema{
 		Description: "The query to use for this widget.",
 		Type:        schema.TypeList,
@@ -6197,19 +6221,19 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"index": {
-					Description: "Name of the index to query.",
+					Description: "The name of the index to query.",
 					Type:        schema.TypeString,
 					Required:    true,
 				},
 				"compute_query": {
-					Description: "One of `compute_query` or `multi_compute` is required. The map has the keys as below.",
+					Description: "`compute_query` or `multi_compute` is required. The map keys are listed below.",
 					Type:        schema.TypeList,
 					MaxItems:    1,
 					Optional:    true,
 					Elem:        getComputeSchema(),
 				},
 				"multi_compute": {
-					Description: "One of `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed with the structure below.",
+					Description: "`compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below.",
 					Type:        schema.TypeList,
 					Optional:    true,
 					Elem:        getComputeSchema(),
@@ -6220,23 +6244,23 @@ func getApmLogNetworkRumSecurityQuerySchema() *schema.Schema {
 					Optional:    true,
 				},
 				"group_by": {
-					Description: "Multiple `group_by` blocks are allowed with the structure below.",
+					Description: "Multiple `group_by` blocks are allowed using the structure below.",
 					Type:        schema.TypeList,
 					Optional:    true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"facet": {
-								Description: "Facet name.",
+								Description: "The facet name.",
 								Type:        schema.TypeString,
 								Optional:    true,
 							},
 							"limit": {
-								Description: "Maximum number of items in the group.",
+								Description: "The maximum number of items in the group.",
 								Type:        schema.TypeInt,
 								Optional:    true,
 							},
 							"sort_query": {
-								Description: "List of exactly one element describing the sort query to use.",
+								Description: "A list of exactly one element describing the sort query to use.",
 								Type:        schema.TypeList,
 								MaxItems:    1,
 								Optional:    true,
@@ -6265,7 +6289,7 @@ func getQueryGroupBySortSchema() *schema.Resource {
 				Required:         true,
 			},
 			"facet": {
-				Description: "Facet name.",
+				Description: "The facet name.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
@@ -6282,12 +6306,12 @@ func getComputeSchema() *schema.Resource {
 				Required:    true,
 			},
 			"facet": {
-				Description: "Facet name.",
+				Description: "The facet name.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
 			"interval": {
-				Description: "Define a time interval in seconds.",
+				Description: "Define the time interval in seconds.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 			},
@@ -6630,13 +6654,13 @@ func getProcessQuerySchema() *schema.Schema {
 					Optional:    true,
 				},
 				"filter_by": {
-					Description: "List of processes.",
+					Description: "A list of processes.",
 					Type:        schema.TypeList,
 					Optional:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
 				"limit": {
-					Description: "Max number of items in the filter list.",
+					Description: "The max number of items in the filter list.",
 					Type:        schema.TypeInt,
 					Optional:    true,
 				},
@@ -6699,17 +6723,17 @@ func getApmStatsQuerySchema() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"service": {
-					Description: "Service name.",
+					Description: "The service name.",
 					Type:        schema.TypeString,
 					Required:    true,
 				},
 				"name": {
-					Description: "Operation name associated with service.",
+					Description: "The operation name associated with the service.",
 					Type:        schema.TypeString,
 					Required:    true,
 				},
 				"env": {
-					Description: "Environment name.",
+					Description: "The environment name.",
 					Type:        schema.TypeString,
 					Required:    true,
 				},
@@ -6725,7 +6749,7 @@ func getApmStatsQuerySchema() *schema.Schema {
 					Required:         true,
 				},
 				"resource": {
-					Description: "Resource name.",
+					Description: "The resource name.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -6736,7 +6760,7 @@ func getApmStatsQuerySchema() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"name": {
-								Description: "Column name.",
+								Description: "The column name.",
 								Type:        schema.TypeString,
 								Required:    true,
 							},
@@ -6873,7 +6897,7 @@ func getWidgetAxisSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"scale": {
-			Description: "Specifies the scale type. One of `linear`, `log`, `pow`, `sqrt`.",
+			Description: "Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -6940,7 +6964,7 @@ func buildTerraformWidgetAxis(datadogWidgetAxis datadogV1.WidgetAxis) map[string
 func getWidgetRequestStyle() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"palette": {
-			Description: "Color palette to apply to the widget. The available options are available here: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.",
+			Description: "A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},

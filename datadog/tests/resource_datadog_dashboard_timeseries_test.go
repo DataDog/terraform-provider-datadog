@@ -176,6 +176,30 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				display_type = "area"
 				on_right_yaxis = "true"
 			}
+			request {
+				style {
+					line_width = "normal"
+					palette = "green"
+					line_type = "solid"
+				}
+				audit_query {
+					index = "*"
+					search_query = ""
+					group_by {
+						facet = "@metadata.api_key.id"
+						sort_query {
+							aggregation = "count"
+							order = "desc"
+						}
+						limit = "10"
+					}
+					compute_query {
+						aggregation = "count"
+					}
+				}
+				display_type = "line"
+				on_right_yaxis = "true"
+			}
 			custom_link {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
@@ -364,6 +388,30 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 				display_type = "area"
 				on_right_yaxis = "true"
 			}
+			request {
+				style {
+					line_width = "normal"
+					palette = "green"
+					line_type = "solid"
+				}
+				audit_query {
+					index = "*"
+					search_query = ""
+					group_by {
+						facet = "@metadata.api_key.id"
+						sort_query {
+							aggregation = "count"
+							order = "desc"
+						}
+						limit = "10"
+					}
+					compute_query {
+						aggregation = "count"
+					}
+				}
+				display_type = "line"
+				on_right_yaxis = "true"
+			}
 			custom_link {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
@@ -499,7 +547,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.marker.1.label = y=400000",
 	"widget.0.timeseries_definition.0.marker.1.display_type = warning dashed",
 	"widget.0.timeseries_definition.0.marker.1.value = y=400000",
-	"widget.0.timeseries_definition.0.request.# = 6",
+	"widget.0.timeseries_definition.0.request.# = 7",
 	"widget.0.timeseries_definition.0.request.0.style.0.line_width = thin",
 	"widget.0.timeseries_definition.0.request.0.style.0.line_type = solid",
 	"widget.0.timeseries_definition.0.request.0.process_query.# = 0",
@@ -612,6 +660,18 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.request.5.rum_query.0.group_by.0.sort_query.0.order = desc",
 	"widget.0.timeseries_definition.0.request.5.rum_query.0.search_query =",
 	"widget.0.timeseries_definition.0.request.5.on_right_yaxis = true",
+	"widget.0.timeseries_definition.0.request.6.audit_query.0.index = *",
+	"widget.0.timeseries_definition.0.request.6.audit_query.0.compute_query.0.aggregation = count",
+	"widget.0.timeseries_definition.0.request.6.audit_query.0.search_query =",
+	"widget.0.timeseries_definition.0.request.6.audit_query.0.group_by.0.facet = @metadata.api_key.id",
+	"widget.0.timeseries_definition.0.request.6.audit_query.0.group_by.0.sort_query.0.aggregation = count",
+	"widget.0.timeseries_definition.0.request.6.audit_query.0.group_by.0.sort_query.0.order = desc",
+	"widget.0.timeseries_definition.0.request.6.audit_query.0.group_by.0.limit = 10",
+	"widget.0.timeseries_definition.0.request.6.display_type = line",
+	"widget.0.timeseries_definition.0.request.6.on_right_yaxis = true",
+	"widget.0.timeseries_definition.0.request.6.style.0.palette = green",
+	"widget.0.timeseries_definition.0.request.6.style.0.line_width = normal",
+	"widget.0.timeseries_definition.0.request.6.style.0.line_type = solid",
 	"widget.0.timeseries_definition.0.legend_layout = horizontal",
 	"widget.0.timeseries_definition.0.legend_columns.# = 3",
 	"widget.0.timeseries_definition.0.legend_columns.TypeSet = value",
