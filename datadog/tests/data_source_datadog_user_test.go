@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
 func TestAccDatadogUserDatasourceExactMatch(t *testing.T) {
@@ -16,16 +16,12 @@ func TestAccDatadogUserDatasourceExactMatch(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		Providers:    accProviders,
-		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: CreateTestAccDatasourceUserConfig(username),
-				Check:  resource.TestCheckResourceAttr("datadog_user.foo", "email", "username")
-			},
-			{
-				Config: testAccDatasourceUserConfig(username)
+				Config: testAccDatasourceUserConfig(username),
 				Check:  resource.TestCheckResourceAttr("data.datadog_user.test", "email", username),
 			},
 		},
@@ -37,8 +33,8 @@ func TestAccDatadogUserDatasourceError(t *testing.T) {
 	_, accProviders := testAccProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:  func() { testAccPreCheck(t) },
-		Providers: accProviders,
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceUserConfig("doesntexists@example.com"),
@@ -52,13 +48,11 @@ func testAccDatasourceUserConfig(uniq string) string {
 	return fmt.Sprintf(`
 	data "datadog_user" "test" {
 	  filter = "%s"
-	}`, uniq)
-}
-
-func CreateTestAccDatasourceUserConfig(uniq string) string {
-	return fmt.Sprintf(`
-  resource "datadog_user" "foo" {
+	  depends_on = [
+	    datadog_user.foo
+	  ]
+	}
+	resource "datadog_user" "foo" {
     email = "%s"
-  }`, uniq)
-
+    }`, uniq)
 }
