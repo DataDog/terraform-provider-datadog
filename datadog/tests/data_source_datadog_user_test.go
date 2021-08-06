@@ -20,12 +20,12 @@ func TestAccDatadogUserDatasourceExactMatch(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: CreateTestAccDatasourceUserConfig("test@example.com"),
-				Check:  resource.TestCheckResourceAttr("datadog_user.foo", "email", "test@example.com"),
+				Config: CreateTestAccDatasourceUserConfig(username),
+				Check:  resource.TestCheckResourceAttr("datadog_user.foo", "email", "username")
 			},
 			{
-				Config: testAccDatasourceUserConfig("test@example.com"),
-				Check:  resource.TestCheckResourceAttrSet("data.datadog_user.test", "id"),
+				Config: testAccDatasourceUserConfig(username)
+				Check:  resource.TestCheckResourceAttr("data.datadog_user.test", "email", username),
 			},
 		},
 	})
