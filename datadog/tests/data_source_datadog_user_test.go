@@ -11,7 +11,8 @@ import (
 
 func TestAccDatadogUserDatasourceExactMatch(t *testing.T) {
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
