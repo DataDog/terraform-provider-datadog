@@ -10,76 +10,30 @@ interactions:
       Dd-Operation-Id:
       - ListUsers
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.16.2; os darwin; arch amd64)
-    url: https://api.datadoghq.eu/api/v2/users?filter=doesntexists%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=20
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/users?filter=doesntexist01b0bb82-2000-4113-bb6b-e34b48ef37ff%40example.com%27
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":0,"total_count":2}},"data":[]}'
+    body: '{"meta":{"page":{"total_filtered_count":0,"total_count":9426}},"data":[]}'
     headers:
-      Alt-Svc:
-      - clear
       Cache-Control:
       - no-cache
+      Connection:
+      - keep-alive
       Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.eu/csp-report
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
       Date:
-      - Mon, 12 Apr 2021 12:58:59 GMT
+      - Fri, 06 Aug 2021 15:00:10 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       Vary:
       - Accept-Encoding
-      Via:
-      - 1.1 google
       X-Content-Type-Options:
       - nosniff
-      X-Dd-Version:
-      - "35.4288583"
-      X-Frame-Options:
-      - SAMEORIGIN
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Dd-Operation-Id:
-      - ListUsers
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 1.16.0; terraform-cli 0.12.7-sdk) datadog-api-client-go/1.0.0-beta.19+dev (go go1.16.2; os darwin; arch amd64)
-    url: https://api.datadoghq.eu/api/v2/users?filter=doesntexists%40example.com&page%5Bnumber%5D=0&page%5Bsize%5D=20
-    method: GET
-  response:
-    body: '{"meta":{"page":{"total_filtered_count":0,"total_count":2}},"data":[]}'
-    headers:
-      Alt-Svc:
-      - clear
-      Cache-Control:
-      - no-cache
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.eu/csp-report
-      Content-Type:
-      - application/json
-      Date:
-      - Mon, 12 Apr 2021 12:58:59 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      Via:
-      - 1.1 google
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Version:
-      - "35.4288583"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK

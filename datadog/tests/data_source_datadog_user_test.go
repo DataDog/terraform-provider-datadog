@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -37,8 +38,8 @@ func TestAccDatadogUserDatasourceError(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config:      testAccDatasourceUserConfig("doesntexists@example.com"),
-				ExpectError: regexp.MustCompile("didn't found any user mathing this email"),
+				Config:      testAccDatasourceUserError(),
+				ExpectError: regexp.MustCompile("didn't find any user matching"),
 			},
 		},
 	})
@@ -54,5 +55,13 @@ func testAccDatasourceUserConfig(uniq string) string {
 	}
 	resource "datadog_user" "foo" {
     email = "%s"
-    }`, uniq)
+    }`, uniq, uniq)
+}
+
+func testAccDatasourceUserError() string {
+	return `	
+	data "datadog_user" "test" {
+		filter = "doesntexist01b0bb82-2000-4113-bb6b-e34b48ef37ff@example.com'"
+	}
+`
 }
