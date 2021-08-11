@@ -242,8 +242,8 @@ func TestAccDatadogUser_ReEnableRoleUpdate(t *testing.T) {
 				),
 			},
 			{
-				// Destroy the user resource
-				Config: testAccCheckDatadogUserConfigRoleUpdate1UserDisabled(),
+				// Destroy the user resource by passing data source resource only
+				Config: roleDatasources,
 			},
 			{
 				Config: testAccCheckDatadogUserConfigRoleUpdate2(username),
@@ -339,11 +339,6 @@ data "datadog_role" "st_role" {
 data "datadog_role" "adm_role" {
   filter = "Datadog Admin Role"
 }`
-
-func testAccCheckDatadogUserConfigRoleUpdate1UserDisabled() string {
-	return fmt.Sprintf(`%s
-`, roleDatasources)
-}
 
 func testAccCheckDatadogUserConfigRoleUpdate1(uniq string) string {
 	return fmt.Sprintf(`%s
