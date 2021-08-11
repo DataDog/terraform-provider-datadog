@@ -218,6 +218,49 @@ func TestAccDatadogUser_UpdateRole(t *testing.T) {
 	})
 }
 
+func TestAccDatadogUser_ReEnableRoleUpdate(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogUserConfigRoleUpdate1(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "2"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.st_role"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.ro_role"),
+				),
+			},
+			{
+				// Destroy the user resource
+				Config: testAccCheckDatadogUserConfigRoleUpdate1UserDisabled(),
+			},
+			{
+				Config: testAccCheckDatadogUserConfigRoleUpdate2(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "2"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.st_role"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.adm_role"),
+				),
+			},
+		},
+	})
+}
+
 func testCheckUserHasRole(username string, roleSource string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rootModule := s.RootModule()
@@ -296,6 +339,11 @@ data "datadog_role" "st_role" {
 data "datadog_role" "adm_role" {
   filter = "Datadog Admin Role"
 }`
+
+func testAccCheckDatadogUserConfigRoleUpdate1UserDisabled() string {
+	return fmt.Sprintf(`%s
+`, roleDatasources)
+}
 
 func testAccCheckDatadogUserConfigRoleUpdate1(uniq string) string {
 	return fmt.Sprintf(`%s
