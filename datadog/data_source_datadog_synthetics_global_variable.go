@@ -5,6 +5,7 @@ import (
 	"regexp"
 
 	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"

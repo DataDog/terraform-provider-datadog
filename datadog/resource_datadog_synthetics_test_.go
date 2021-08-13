@@ -752,7 +752,6 @@ func syntheticsConfigVariable() *schema.Schema {
 					Description: "Example for the variable.",
 					Type:        schema.TypeString,
 					Optional:    true,
-					Default:     "",
 				},
 				"name": {
 					Description:  "Name of the variable.",
@@ -1010,10 +1009,13 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			variableMap := v.(map[string]interface{})
 			variable := datadogV1.SyntheticsConfigVariable{}
 
-			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
 			variable.SetName(variableMap["name"].(string))
-			variable.SetPattern(variableMap["pattern"].(string))
-			variable.SetExample(variableMap["example"].(string))
+			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
+
+			if variable.GetType() != "global" {
+				variable.SetPattern(variableMap["pattern"].(string))
+				variable.SetExample(variableMap["example"].(string))
+			}
 
 			if variableMap["id"] != "" {
 				variable.SetId(variableMap["id"].(string))
@@ -1953,11 +1955,14 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		if v, ok := configVariable.GetNameOk(); ok {
 			localVariable["name"] = *v
 		}
-		if v, ok := configVariable.GetExampleOk(); ok {
-			localVariable["example"] = *v
-		}
-		if v, ok := configVariable.GetPatternOk(); ok {
-			localVariable["pattern"] = *v
+
+		if configVariable.GetType() != "global" {
+			if v, ok := configVariable.GetExampleOk(); ok {
+				localVariable["example"] = *v
+			}
+			if v, ok := configVariable.GetPatternOk(); ok {
+				localVariable["pattern"] = *v
+			}
 		}
 		if v, ok := configVariable.GetIdOk(); ok {
 			localVariable["id"] = *v
