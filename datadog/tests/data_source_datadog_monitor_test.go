@@ -55,7 +55,9 @@ func checkDatasourceAttrs(accProvider func() (*schema.Provider, error), uniq str
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "notify_no_data", "false"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "new_host_delay", "600"),
+			"data.datadog_monitor.foo", "new_group_delay", "500"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_monitor.foo", "new_host_delay", "300"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "evaluation_delay", "700"),
 		resource.TestCheckResourceAttr(
@@ -123,7 +125,7 @@ resource "datadog_monitor" "foo" {
 
   notify_audit = false
   timeout_h = 60
-  new_host_delay = 600
+  new_group_delay = 500
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
@@ -162,7 +164,7 @@ resource "datadog_monitor" "foo" {
 
   notify_audit = false
   timeout_h = 60
-  new_host_delay = 600
+  new_group_delay = 500
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
