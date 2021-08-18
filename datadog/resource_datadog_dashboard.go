@@ -4570,7 +4570,7 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 	}
 }
 
-func buildDatadogListStreamDefinition(terraformDefinition map[string]interface{}) *datadogV1.EventStreamWidgetDefinition {
+func buildDatadogListStreamDefinition(terraformDefinition map[string]interface{}) *datadogV1.ListStreamWidgetDefinition {
 	datadogDefinition := datadogV1.NewListStreamWidgetDefinitionWithDefaults()
 	// Required params
 	datadogDefinition.SetRequests(terraformDefinition["requests"].(string))
@@ -4592,7 +4592,7 @@ func buildDatadogListStreamDefinition(terraformDefinition map[string]interface{}
 	return datadogDefinition
 }
 
-func buildTerraformListStreamDefinition(datadogDefinition datadogV1.EventStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformListStreamDefinition(datadogDefinition datadogV1.ListStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["requests"] = datadogDefinition.Requests
