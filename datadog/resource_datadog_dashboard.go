@@ -4519,15 +4519,18 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 			Optional:    false,
 			MaxItems:    1,
 			Elem: &schema.Resource{
-				"width": {
-					Description: "Widget column width.",
-					Type:        schema.TypeString,
-					Optional:    false,
-				},
-				"field": {
-					Description: "Widget column field.",
-					Type:        schema.TypeString,
-					Optional:    false,
+				Schema: map[string]*schema.Schema{
+					"width": {
+						Description: "Widget column width.",
+						Type:        schema.TypeString,
+						Optional:    false,
+					},
+					"field": {
+						Description: "Widget column field.",
+						Type:        schema.TypeString,
+						Optional:    false,
+						},
+					},
 				},
 			},
 		},
