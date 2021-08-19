@@ -14,16 +14,23 @@ Provides a Datadog synthetics test resource. This can be used to create and mana
 #### *Warning*
 Starting from version 3.1.0+, the direct usage of global variables in the configuration is deprecated, in favor of
 local variables of type `global`. As an example, if you were previously using `{{ GLOBAL_VAR }}` directly in your
-configuration, you now need to add a `configVariable` of type `global` and whose `id` must be the `id` 
+configuration, you now need to add a `config_variable` of type `global` and whose `id` must be the `id` 
 of the global variable `GLOBAL_VAR` (you can find it in Synthetics UI) and whose name can be chosen freely. 
 In practice, it means going from (simplified configuration):
 ```
 url = https://{{ GLOBAL_VAR }}
 ```
-to
+to:
+```
+config_variable = {
+  name = "LOCAL_VAR"
+  id = GLOBAL_VAR.id
+  type = "global"
+}
+```
+and in your `request_definition`:
 ```
 url = https://{{ LOCAL_VAR }}
-configVariable = {name: "LOCAL_VAR", id: GLOBAL_VAR.id, type: "global"}
 ```
 
 ## Example Usage
