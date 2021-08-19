@@ -99,6 +99,12 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 					},
 				},
 			},
+			"restricted_roles": {
+				Description: "A list of role identifiers to associate with the Synthetics global variable",
+				Type:        schema.TypeSet,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -219,6 +225,14 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 		}
 	}
 
+	if restrictedRolesSet, ok := d.GetOk("restricted_roles"); ok {
+		restrictedRoles := buildDatadogRestrictedRoles(restrictedRolesSet.(*schema.Set))
+		attributes := datadogV1.SyntheticsGlobalVariableAttributes{
+			RestrictedRoles: restrictedRoles,
+		}
+		syntheticsGlobalVariable.SetAttributes(attributes)
+	}
+
 	return syntheticsGlobalVariable
 }
 
@@ -262,6 +276,13 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 		localParseTestOptions["parser"] = []map[string]string{localParser}
 
 		d.Set("parse_test_options", []map[string]interface{}{localParseTestOptions})
+	}
+
+	if syntheticsGlobalVariable.HasAttributes() {
+		attributes := syntheticsGlobalVariable.GetAttributes()
+		variableRestrictedRoles := attributes.GetRestrictedRoles()
+		restrictedRoles := buildTerraformRestrictedRoles(&variableRestrictedRoles)
+		d.Set("restricted_roles", restrictedRoles)
 	}
 
 	return nil
