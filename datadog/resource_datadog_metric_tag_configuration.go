@@ -23,8 +23,9 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 		DeleteContext: resourceDatadogMetricTagConfigurationDelete,
 		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 			_, includePercentilesOk := diff.GetOkExists("include_percentiles")
-			if !includePercentilesOk {
-				// if there was no change to include_percentiles we don't need special handling
+			_, aggregationsOk := diff.GetOkExists("aggregations")
+			if !includePercentilesOk && !aggregationsOk {
+				// if there was no change to include_percentiles nor aggregations we don't need special handling
 				return nil
 			}
 			metricType, ok := diff.GetOkExists("metric_type")
@@ -38,6 +39,9 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			}
 			if includePercentilesOk && *metricTypeValidated != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 				return fmt.Errorf("cannot use include_percentiles with a metric_type of %s, must use metric_type of 'distribution'", metricType)
+			}
+			if aggregationsOk && *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+				return fmt.Errorf("cannot use aggregations with a metric_type of %s, must use metric_type of 'count','rate', or 'gauge'", metricType)
 			}
 			return nil
 		},
@@ -74,6 +78,15 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
+			"aggregations": {
+				Description: "A list of custom aggregation combinations for a count, rate, or gauge metric. Defaults to time sum & space sum for count and rate metrics, and time avg & space avg for gauge metrics. Can only be applied to metrics that have a `metric_type` of `count`, `rate`, or `gauge`.",
+				Type:        schema.TypeSet,
+				Elem: &schema.Schema{
+					// TODO[efraese] add proper type here, no extra validation needed as the type is an enum
+					Type: datadogV2.MetricCustomAggregation,
+				},
+				Optional: true,
+			},
 		},
 	}
 }
@@ -109,6 +122,28 @@ func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.Metr
 			attributes.IncludePercentiles = nil
 		}
 	}
+
+	aggregations, aggregationsFieldSet := d.GetOk("aggregations")
+	if aggregationsFieldSet {
+		if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+			return nil, fmt.Errorf("aggregations field not allowed with metric_type: %s, only with metric_type of count, rate, or gauge", *metricType)
+		}
+		attributes.SetAggregations(aggregations.(datadogV2.MetricCustomAggregations))
+	} else {
+		// if the aggregations field is not set either set it to the default value if metric type is not a distribution
+		// or remove the aggregations field from the payload otherwise
+		if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+			attributes.IncludePercentiles = nil
+		} else {
+			if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_GAUGE {
+				// TODO[efraese] create a new MetricCustomAggregations object with one element that is the avg/avg combo
+				attributes.SetAggregations()
+			} else {
+				// TODO[efraese] create a new MetricCustomAggregations object with one element that is the sum/sum combo
+				attributes.SetAggregations()
+			}
+		}
+	}
 	result.SetAttributes(*attributes)
 
 	return result, nil
@@ -137,6 +172,28 @@ func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existingMe
 		// if the include_percentiles field is not set and the metric is not a distribution, we need to remove the include_percentiles field from the payload
 		if *existingMetricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 			attributes.IncludePercentiles = nil
+		}
+	}
+
+	aggregations, aggregationsFieldSet := d.GetOk("aggregations")
+	if aggregationsFieldSet {
+		if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+			return nil, fmt.Errorf("aggregations field not allowed with metric_type: %s, only with metric_type of count, rate, or gauge", *metricType)
+		}
+		attributes.SetAggregations(aggregations.(datadogV2.MetricCustomAggregations))
+	} else {
+		// if the aggregations field is not set either set it to the default value if metric type is not a distribution
+		// or remove the aggregations field from the payload otherwise
+		if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+			attributes.IncludePercentiles = nil
+		} else {
+			if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_GAUGE {
+				// TODO[efraese] create a new MetricCustomAggregations object with one element that is the avg/avg combo
+				attributes.SetAggregations()
+			} else {
+				// TODO[efraese] create a new MetricCustomAggregations object with one element that is the sum/sum combo
+				attributes.SetAggregations()
+			}
 		}
 	}
 
@@ -174,6 +231,10 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 			}
 			if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 				if err := d.Set("include_percentiles", attributes.GetIncludePercentiles()); err != nil {
+					return diag.FromErr(err)
+				}
+			} else {
+				if err := d.Set("aggregations", attributes.GetAggregations()); err != nil {
 					return diag.FromErr(err)
 				}
 			}

@@ -32,6 +32,10 @@ func TestAccDatadogMetricTagConfiguration_Error(t *testing.T) {
 				Config:      testAccCheckDatadogMetricTagConfigurationIncludePercentilesError(uniqueMetricTagConfig, "gauge"),
 				ExpectError: regexp.MustCompile("cannot use include_percentiles with a metric_type of gauge*"),
 			},
+			{
+				Config:      testAccCheckDatadogMetricTagConfigurationIncludePercentilesError(uniqueMetricTagConfig, "distribution"),
+				ExpectError: regexp.MustCompile("cannot use aggregations with a metric_type of distribution*"),
+			}
 		},
 	})
 }
@@ -43,6 +47,17 @@ func testAccCheckDatadogMetricTagConfigurationIncludePercentilesError(uniq strin
 			metric_type = "%s"
 			tags = ["sport"]
 			include_percentiles = false
+        }
+    `, uniq, metricType)
+}
+
+func testAccCheckDatadogMetricTagConfigurationAggregationsError(uniq string, metricType string) string {
+	return fmt.Sprintf(`
+        resource "datadog_metric_tag_configuration" "testing_metric_tag_config_aggregations" {
+			metric_name = "%s"
+			metric_type = "%s"
+			tags = ["sport"]
+			aggregations = [{"time": "sum", "space": "sum"}, {"time": "avg", "space": "avg"}]
         }
     `, uniq, metricType)
 }
