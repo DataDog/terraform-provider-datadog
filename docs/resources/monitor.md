@@ -63,6 +63,7 @@ Email notifications can be sent to specific users by using the same `@username` 
 For example, if the value is set to `300` (5min), the `timeframe` is set to `last_5m` and the time is 7:00, the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor will always have data during evaluation.
 - **force_delete** (Boolean) A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).
 - **groupby_simple_monitor** (Boolean) Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.
+- **id** (String) The ID of this resource.
 - **include_tags** (Boolean) A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`.
 - **locked** (Boolean) A boolean indicating whether changes to to this monitor should be restricted to the creator or admins. Defaults to `false`.
 - **monitor_threshold_windows** (Block List, Max: 1) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors. (see [below for nested schema](#nestedblock--monitor_threshold_windows))
@@ -82,10 +83,6 @@ We highly recommend you set this to `false` for sparse metrics, otherwise some e
 - **tags** (Set of String) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
 - **timeout_h** (Number) The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state.
 - **validate** (Boolean) If set to `false`, skip the validation call done during plan.
-
-### Read-Only
-
-- **id** (String) The ID of this resource.
 
 <a id="nestedblock--monitor_threshold_windows"></a>
 ### Nested Schema for `monitor_threshold_windows`

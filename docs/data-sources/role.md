@@ -25,9 +25,12 @@ data "datadog_role" "test" {
 
 - **filter** (String) A string on which to filter the roles.
 
-### Read-Only
+### Optional
 
 - **id** (String) The ID of this resource.
+
+### Read-Only
+
 - **name** (String) Name of the role.
 - **user_count** (Number) Number of users assigned to this role.
 

@@ -50,10 +50,7 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
 ### Optional
 
 - **api_token** (String, Sensitive) Your PagerDuty API token.
-- **schedules** (List of String) Array of your schedule URLs.
-
-### Read-Only
-
 - **id** (String) The ID of this resource.
+- **schedules** (List of String) Array of your schedule URLs.
 
 

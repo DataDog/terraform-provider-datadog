@@ -692,6 +692,7 @@ resource "datadog_dashboard" "free_dashboard" {
 
 - **dashboard_lists** (Set of Number) A list of dashboard lists this dashboard belongs to.
 - **description** (String) The description of the dashboard.
+- **id** (String) The ID of this resource.
 - **is_read_only** (Boolean) Whether this dashboard is read-only.
 - **notify_list** (List of String) The list of handles for the users to notify when changes are made to this dashboard.
 - **reflow_type** (String) The reflow type of a new dashboard layout. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts. Valid values are `auto`, `fixed`.
@@ -703,7 +704,6 @@ resource "datadog_dashboard" "free_dashboard" {
 ### Read-Only
 
 - **dashboard_lists_removed** (Set of Number) A list of dashboard lists this dashboard should be removed from. Internal only.
-- **id** (String) The ID of this resource.
 
 <a id="nestedblock--widget"></a>
 ### Nested Schema for `widget`
@@ -816,7 +816,7 @@ Optional:
 - **show_present** (Boolean) If set to `true`, displays the current value.
 
 <a id="nestedblock--widget--change_definition--request--apm_query"></a>
-### Nested Schema for `widget.change_definition.request.apm_query`
+### Nested Schema for `widget.change_definition.request.show_present`
 
 Required:
 
@@ -824,13 +824,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--change_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.change_definition.request.apm_query.compute_query`
+<a id="nestedblock--widget--change_definition--request--show_present--compute_query"></a>
+### Nested Schema for `widget.change_definition.request.show_present.compute_query`
 
 Required:
 
@@ -842,17 +842,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--change_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.change_definition.request.apm_query.group_by`
+<a id="nestedblock--widget--change_definition--request--show_present--group_by"></a>
+### Nested Schema for `widget.change_definition.request.show_present.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by--sort_query))
 
-<a id="nestedblock--widget--change_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.change_definition.request.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--change_definition--request--show_present--group_by--sort_query"></a>
+### Nested Schema for `widget.change_definition.request.show_present.group_by.sort_query`
 
 Required:
 
@@ -865,8 +865,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--change_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.change_definition.request.apm_query.multi_compute`
+<a id="nestedblock--widget--change_definition--request--show_present--multi_compute"></a>
+### Nested Schema for `widget.change_definition.request.show_present.multi_compute`
 
 Required:
 
@@ -880,7 +880,7 @@ Optional:
 
 
 <a id="nestedblock--widget--change_definition--request--log_query"></a>
-### Nested Schema for `widget.change_definition.request.log_query`
+### Nested Schema for `widget.change_definition.request.show_present`
 
 Required:
 
@@ -888,13 +888,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--change_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.change_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--change_definition--request--show_present--compute_query"></a>
+### Nested Schema for `widget.change_definition.request.show_present.compute_query`
 
 Required:
 
@@ -906,17 +906,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--change_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.change_definition.request.log_query.group_by`
+<a id="nestedblock--widget--change_definition--request--show_present--group_by"></a>
+### Nested Schema for `widget.change_definition.request.show_present.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by--sort_query))
 
-<a id="nestedblock--widget--change_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.change_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--change_definition--request--show_present--group_by--sort_query"></a>
+### Nested Schema for `widget.change_definition.request.show_present.group_by.sort_query`
 
 Required:
 
@@ -929,8 +929,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--change_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.change_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--change_definition--request--show_present--multi_compute"></a>
+### Nested Schema for `widget.change_definition.request.show_present.multi_compute`
 
 Required:
 
@@ -944,7 +944,7 @@ Optional:
 
 
 <a id="nestedblock--widget--change_definition--request--process_query"></a>
-### Nested Schema for `widget.change_definition.request.process_query`
+### Nested Schema for `widget.change_definition.request.show_present`
 
 Required:
 
@@ -958,7 +958,7 @@ Optional:
 
 
 <a id="nestedblock--widget--change_definition--request--rum_query"></a>
-### Nested Schema for `widget.change_definition.request.rum_query`
+### Nested Schema for `widget.change_definition.request.show_present`
 
 Required:
 
@@ -966,13 +966,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--change_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.change_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--change_definition--request--show_present--compute_query"></a>
+### Nested Schema for `widget.change_definition.request.show_present.compute_query`
 
 Required:
 
@@ -984,17 +984,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--change_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.change_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--change_definition--request--show_present--group_by"></a>
+### Nested Schema for `widget.change_definition.request.show_present.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by--sort_query))
 
-<a id="nestedblock--widget--change_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.change_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--change_definition--request--show_present--group_by--sort_query"></a>
+### Nested Schema for `widget.change_definition.request.show_present.group_by.sort_query`
 
 Required:
 
@@ -1007,8 +1007,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--change_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.change_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--change_definition--request--show_present--multi_compute"></a>
+### Nested Schema for `widget.change_definition.request.show_present.multi_compute`
 
 Required:
 
@@ -1022,7 +1022,7 @@ Optional:
 
 
 <a id="nestedblock--widget--change_definition--request--security_query"></a>
-### Nested Schema for `widget.change_definition.request.security_query`
+### Nested Schema for `widget.change_definition.request.show_present`
 
 Required:
 
@@ -1030,13 +1030,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--change_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.change_definition.request.security_query.compute_query`
+<a id="nestedblock--widget--change_definition--request--show_present--compute_query"></a>
+### Nested Schema for `widget.change_definition.request.show_present.compute_query`
 
 Required:
 
@@ -1048,17 +1048,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--change_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.change_definition.request.security_query.group_by`
+<a id="nestedblock--widget--change_definition--request--show_present--group_by"></a>
+### Nested Schema for `widget.change_definition.request.show_present.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--show_present--group_by--sort_query))
 
-<a id="nestedblock--widget--change_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.change_definition.request.security_query.group_by.sort_query`
+<a id="nestedblock--widget--change_definition--request--show_present--group_by--sort_query"></a>
+### Nested Schema for `widget.change_definition.request.show_present.group_by.sort_query`
 
 Required:
 
@@ -1071,8 +1071,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--change_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.change_definition.request.security_query.multi_compute`
+<a id="nestedblock--widget--change_definition--request--show_present--multi_compute"></a>
+### Nested Schema for `widget.change_definition.request.show_present.multi_compute`
 
 Required:
 
@@ -1133,7 +1133,7 @@ Optional:
 - **style** (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style))
 
 <a id="nestedblock--widget--distribution_definition--request--apm_query"></a>
-### Nested Schema for `widget.distribution_definition.request.apm_query`
+### Nested Schema for `widget.distribution_definition.request.style`
 
 Required:
 
@@ -1141,13 +1141,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--distribution_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.distribution_definition.request.apm_query.compute_query`
+<a id="nestedblock--widget--distribution_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.distribution_definition.request.style.compute_query`
 
 Required:
 
@@ -1159,17 +1159,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--distribution_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.distribution_definition.request.apm_query.group_by`
+<a id="nestedblock--widget--distribution_definition--request--style--group_by"></a>
+### Nested Schema for `widget.distribution_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--distribution_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.distribution_definition.request.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--distribution_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.distribution_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -1182,8 +1182,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--distribution_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.distribution_definition.request.apm_query.multi_compute`
+<a id="nestedblock--widget--distribution_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.distribution_definition.request.style.multi_compute`
 
 Required:
 
@@ -1197,7 +1197,7 @@ Optional:
 
 
 <a id="nestedblock--widget--distribution_definition--request--log_query"></a>
-### Nested Schema for `widget.distribution_definition.request.log_query`
+### Nested Schema for `widget.distribution_definition.request.style`
 
 Required:
 
@@ -1205,13 +1205,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--distribution_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.distribution_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--distribution_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.distribution_definition.request.style.compute_query`
 
 Required:
 
@@ -1223,17 +1223,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--distribution_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.distribution_definition.request.log_query.group_by`
+<a id="nestedblock--widget--distribution_definition--request--style--group_by"></a>
+### Nested Schema for `widget.distribution_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--distribution_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.distribution_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--distribution_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.distribution_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -1246,8 +1246,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--distribution_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.distribution_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--distribution_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.distribution_definition.request.style.multi_compute`
 
 Required:
 
@@ -1261,7 +1261,7 @@ Optional:
 
 
 <a id="nestedblock--widget--distribution_definition--request--process_query"></a>
-### Nested Schema for `widget.distribution_definition.request.process_query`
+### Nested Schema for `widget.distribution_definition.request.style`
 
 Required:
 
@@ -1275,7 +1275,7 @@ Optional:
 
 
 <a id="nestedblock--widget--distribution_definition--request--rum_query"></a>
-### Nested Schema for `widget.distribution_definition.request.rum_query`
+### Nested Schema for `widget.distribution_definition.request.style`
 
 Required:
 
@@ -1283,13 +1283,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--distribution_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.distribution_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--distribution_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.distribution_definition.request.style.compute_query`
 
 Required:
 
@@ -1301,17 +1301,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--distribution_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.distribution_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--distribution_definition--request--style--group_by"></a>
+### Nested Schema for `widget.distribution_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--distribution_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.distribution_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--distribution_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.distribution_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -1324,8 +1324,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--distribution_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.distribution_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--distribution_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.distribution_definition.request.style.multi_compute`
 
 Required:
 
@@ -1339,7 +1339,7 @@ Optional:
 
 
 <a id="nestedblock--widget--distribution_definition--request--security_query"></a>
-### Nested Schema for `widget.distribution_definition.request.security_query`
+### Nested Schema for `widget.distribution_definition.request.style`
 
 Required:
 
@@ -1347,13 +1347,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--distribution_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.distribution_definition.request.security_query.compute_query`
+<a id="nestedblock--widget--distribution_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.distribution_definition.request.style.compute_query`
 
 Required:
 
@@ -1365,17 +1365,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--distribution_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.distribution_definition.request.security_query.group_by`
+<a id="nestedblock--widget--distribution_definition--request--style--group_by"></a>
+### Nested Schema for `widget.distribution_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--distribution_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.distribution_definition.request.security_query.group_by.sort_query`
+<a id="nestedblock--widget--distribution_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.distribution_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -1388,8 +1388,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--distribution_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.distribution_definition.request.security_query.multi_compute`
+<a id="nestedblock--widget--distribution_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.distribution_definition.request.style.multi_compute`
 
 Required:
 
@@ -1507,7 +1507,7 @@ Optional:
 - **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query))
 
 <a id="nestedblock--widget--geomap_definition--request--formula"></a>
-### Nested Schema for `widget.geomap_definition.request.formula`
+### Nested Schema for `widget.geomap_definition.request.rum_query`
 
 Required:
 
@@ -1516,10 +1516,10 @@ Required:
 Optional:
 
 - **alias** (String) An expression alias.
-- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--limit))
+- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--limit))
 
-<a id="nestedblock--widget--geomap_definition--request--formula--limit"></a>
-### Nested Schema for `widget.geomap_definition.request.formula.limit`
+<a id="nestedblock--widget--geomap_definition--request--rum_query--limit"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.limit`
 
 Optional:
 
@@ -1529,7 +1529,7 @@ Optional:
 
 
 <a id="nestedblock--widget--geomap_definition--request--log_query"></a>
-### Nested Schema for `widget.geomap_definition.request.log_query`
+### Nested Schema for `widget.geomap_definition.request.rum_query`
 
 Required:
 
@@ -1537,13 +1537,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--geomap_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.geomap_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--geomap_definition--request--rum_query--compute_query"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.compute_query`
 
 Required:
 
@@ -1555,17 +1555,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--geomap_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.geomap_definition.request.log_query.group_by`
+<a id="nestedblock--widget--geomap_definition--request--rum_query--group_by"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--group_by--sort_query))
 
-<a id="nestedblock--widget--geomap_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.geomap_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--geomap_definition--request--rum_query--group_by--sort_query"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.group_by.sort_query`
 
 Required:
 
@@ -1578,8 +1578,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--geomap_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.geomap_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--geomap_definition--request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.multi_compute`
 
 Required:
 
@@ -1593,31 +1593,31 @@ Optional:
 
 
 <a id="nestedblock--widget--geomap_definition--request--query"></a>
-### Nested Schema for `widget.geomap_definition.request.query`
+### Nested Schema for `widget.geomap_definition.request.rum_query`
 
 Optional:
 
-- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query))
-- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--metric_query))
-- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--process_query))
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--metric_query))
+- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--process_query))
 
-<a id="nestedblock--widget--geomap_definition--request--query--event_query"></a>
-### Nested Schema for `widget.geomap_definition.request.query.event_query`
+<a id="nestedblock--widget--geomap_definition--request--rum_query--event_query"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.event_query`
 
 Required:
 
-- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--compute))
+- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--event_query--compute))
 - **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
 
-- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--group_by))
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--event_query--group_by))
 - **indexes** (List of String) An array of index names to query in the stream.
-- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--search))
+- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--event_query--search))
 
-<a id="nestedblock--widget--geomap_definition--request--query--event_query--compute"></a>
-### Nested Schema for `widget.geomap_definition.request.query.event_query.compute`
+<a id="nestedblock--widget--geomap_definition--request--rum_query--event_query--compute"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.event_query.search`
 
 Required:
 
@@ -1629,8 +1629,8 @@ Optional:
 - **metric** (String) The measurable attribute to compute.
 
 
-<a id="nestedblock--widget--geomap_definition--request--query--event_query--group_by"></a>
-### Nested Schema for `widget.geomap_definition.request.query.event_query.group_by`
+<a id="nestedblock--widget--geomap_definition--request--rum_query--event_query--group_by"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.event_query.search`
 
 Required:
 
@@ -1639,10 +1639,10 @@ Required:
 Optional:
 
 - **limit** (Number) The number of groups to return.
-- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--group_by--sort))
+- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query--event_query--search--sort))
 
-<a id="nestedblock--widget--geomap_definition--request--query--event_query--group_by--sort"></a>
-### Nested Schema for `widget.geomap_definition.request.query.event_query.group_by.sort`
+<a id="nestedblock--widget--geomap_definition--request--rum_query--event_query--search--sort"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.event_query.search.sort`
 
 Required:
 
@@ -1655,8 +1655,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--geomap_definition--request--query--event_query--search"></a>
-### Nested Schema for `widget.geomap_definition.request.query.event_query.search`
+<a id="nestedblock--widget--geomap_definition--request--rum_query--event_query--search"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.event_query.search`
 
 Required:
 
@@ -1664,8 +1664,8 @@ Required:
 
 
 
-<a id="nestedblock--widget--geomap_definition--request--query--metric_query"></a>
-### Nested Schema for `widget.geomap_definition.request.query.metric_query`
+<a id="nestedblock--widget--geomap_definition--request--rum_query--metric_query"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.metric_query`
 
 Required:
 
@@ -1678,8 +1678,8 @@ Optional:
 - **data_source** (String) The data source for metrics queries.
 
 
-<a id="nestedblock--widget--geomap_definition--request--query--process_query"></a>
-### Nested Schema for `widget.geomap_definition.request.query.process_query`
+<a id="nestedblock--widget--geomap_definition--request--rum_query--process_query"></a>
+### Nested Schema for `widget.geomap_definition.request.rum_query.process_query`
 
 Required:
 
@@ -1824,7 +1824,7 @@ Read-Only:
 - **id** (Number) The ID of the widget.
 
 <a id="nestedblock--widget--group_definition--widget--alert_graph_definition"></a>
-### Nested Schema for `widget.group_definition.widget.alert_graph_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
@@ -1840,7 +1840,7 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--alert_value_definition"></a>
-### Nested Schema for `widget.group_definition.widget.alert_value_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
@@ -1857,19 +1857,19 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Optional:
 
-- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--custom_link))
+- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--custom_link))
 - **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request))
+- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request))
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--custom_link"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.custom_link`
+<a id="nestedblock--widget--group_definition--widget--id--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.id.custom_link`
 
 Optional:
 
@@ -1879,26 +1879,26 @@ Optional:
 - **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
 
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request`
+<a id="nestedblock--widget--group_definition--widget--id--request"></a>
+### Nested Schema for `widget.group_definition.widget.id.request`
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--apm_query))
 - **change_type** (String) Whether to show absolute or relative change. Valid values are `absolute`, `relative`.
 - **compare_to** (String) Choose from when to compare current data to. Valid values are `hour_before`, `day_before`, `week_before`, `month_before`.
 - **increase_good** (Boolean) A Boolean indicating whether an increase in the value is good (displayed in green) or not (displayed in red).
-- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--log_query))
 - **order_by** (String) What to order by. Valid values are `change`, `name`, `present`, `past`.
 - **order_dir** (String) Widget sorting method. Valid values are `asc`, `desc`.
-- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--process_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--process_query))
 - **q** (String) The metric query to use for this widget.
-- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--security_query))
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query))
 - **show_present** (Boolean) If set to `true`, displays the current value.
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--apm_query"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.apm_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--apm_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present`
 
 Required:
 
@@ -1906,13 +1906,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.apm_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query`
 
 Required:
 
@@ -1924,17 +1924,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.apm_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query.sort_query`
 
 Required:
 
@@ -1947,8 +1947,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.apm_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query`
 
 Required:
 
@@ -1961,8 +1961,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--log_query"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.log_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present`
 
 Required:
 
@@ -1970,13 +1970,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query`
 
 Required:
 
@@ -1988,17 +1988,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.log_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query.sort_query`
 
 Required:
 
@@ -2011,8 +2011,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query`
 
 Required:
 
@@ -2025,8 +2025,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present`
 
 Required:
 
@@ -2039,8 +2039,8 @@ Optional:
 - **search_by** (String) Your chosen search term.
 
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--rum_query"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.rum_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present`
 
 Required:
 
@@ -2048,13 +2048,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query`
 
 Required:
 
@@ -2066,17 +2066,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query.sort_query`
 
 Required:
 
@@ -2089,8 +2089,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query`
 
 Required:
 
@@ -2103,8 +2103,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--security_query"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.security_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present`
 
 Required:
 
@@ -2112,13 +2112,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.security_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query`
 
 Required:
 
@@ -2130,17 +2130,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.security_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--show_present--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.security_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query.sort_query`
 
 Required:
 
@@ -2153,8 +2153,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--change_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.change_definition.request.security_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--show_present--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.show_present.search_query`
 
 Required:
 
@@ -2170,7 +2170,7 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--check_status_definition"></a>
-### Nested Schema for `widget.group_definition.widget.check_status_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
@@ -2189,33 +2189,33 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Optional:
 
 - **legend_size** (String) The size of the legend displayed in the widget.
 - **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request))
+- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request`
+<a id="nestedblock--widget--group_definition--widget--id--request"></a>
+### Nested Schema for `widget.group_definition.widget.id.request`
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query))
-- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query))
-- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--process_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--process_query))
 - **q** (String) The metric query to use for this widget.
-- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--security_query))
-- **style** (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--style))
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query))
+- **style** (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style))
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.apm_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--apm_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -2223,13 +2223,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.apm_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -2241,17 +2241,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.apm_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -2264,8 +2264,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.apm_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -2278,8 +2278,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--log_query"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.log_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -2287,13 +2287,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -2305,17 +2305,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.log_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -2328,8 +2328,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -2342,8 +2342,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -2356,8 +2356,8 @@ Optional:
 - **search_by** (String) Your chosen search term.
 
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.rum_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -2365,13 +2365,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -2383,17 +2383,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -2406,8 +2406,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -2420,8 +2420,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--security_query"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.security_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -2429,13 +2429,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.security_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -2447,17 +2447,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.security_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.security_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -2470,8 +2470,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.security_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -2484,8 +2484,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--style"></a>
-### Nested Schema for `widget.group_definition.widget.distribution_definition.request.style`
+<a id="nestedblock--widget--group_definition--widget--id--request--style"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Optional:
 
@@ -2495,7 +2495,7 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--event_stream_definition"></a>
-### Nested Schema for `widget.group_definition.widget.event_stream_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
@@ -2512,7 +2512,7 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--event_timeline_definition"></a>
-### Nested Schema for `widget.group_definition.widget.event_timeline_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
@@ -2528,7 +2528,7 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--free_text_definition"></a>
-### Nested Schema for `widget.group_definition.widget.free_text_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
@@ -2542,32 +2542,32 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
-- **view** (Block List, Min: 1, Max: 1) The view of the world that the map should render. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--view))
+- **view** (Block List, Min: 1, Max: 1) The view of the world that the map should render. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--view))
 
 Optional:
 
-- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--custom_link))
+- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--custom_link))
 - **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request))
-- **style** (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--style))
+- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request))
+- **style** (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--style))
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--view"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.view`
+<a id="nestedblock--widget--group_definition--widget--id--view"></a>
+### Nested Schema for `widget.group_definition.widget.id.view`
 
 Required:
 
 - **focus** (String) The two-letter ISO code of a country to focus the map on (or `WORLD`).
 
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--custom_link"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.custom_link`
+<a id="nestedblock--widget--group_definition--widget--id--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.id.custom_link`
 
 Optional:
 
@@ -2577,19 +2577,19 @@ Optional:
 - **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
 
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request`
+<a id="nestedblock--widget--group_definition--widget--id--request"></a>
+### Nested Schema for `widget.group_definition.widget.id.request`
 
 Optional:
 
-- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula))
-- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query))
+- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--formula))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--log_query))
 - **q** (String) The metric query to use for this widget.
-- **query** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query))
-- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query))
+- **query** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--query))
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query))
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.formula`
+<a id="nestedblock--widget--group_definition--widget--id--request--formula"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query`
 
 Required:
 
@@ -2598,10 +2598,10 @@ Required:
 Optional:
 
 - **alias** (String) An expression alias.
-- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula--limit))
+- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--limit))
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula--limit"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.formula.limit`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--limit"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.limit`
 
 Optional:
 
@@ -2610,8 +2610,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--log_query"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.log_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query`
 
 Required:
 
@@ -2619,13 +2619,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query`
 
 Required:
 
@@ -2637,17 +2637,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.log_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query.sort_query`
 
 Required:
 
@@ -2660,8 +2660,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query`
 
 Required:
 
@@ -2674,32 +2674,32 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query`
+<a id="nestedblock--widget--group_definition--widget--id--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query`
 
 Optional:
 
-- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query))
-- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--metric_query))
-- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--process_query))
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--metric_query))
+- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--process_query))
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.event_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.process_query`
 
 Required:
 
-- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--compute))
+- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--process_query--compute))
 - **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
 
-- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--group_by))
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--process_query--group_by))
 - **indexes** (List of String) An array of index names to query in the stream.
-- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--search))
+- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--process_query--search))
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--compute"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.event_query.compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--process_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.process_query.search`
 
 Required:
 
@@ -2711,8 +2711,8 @@ Optional:
 - **metric** (String) The measurable attribute to compute.
 
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.event_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--process_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.process_query.search`
 
 Required:
 
@@ -2721,10 +2721,10 @@ Required:
 Optional:
 
 - **limit** (Number) The number of groups to return.
-- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--group_by--sort))
+- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--process_query--search--sort))
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--group_by--sort"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.event_query.group_by.sort`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--process_query--search--sort"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.process_query.search.sort`
 
 Required:
 
@@ -2737,8 +2737,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--search"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.event_query.search`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--process_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.process_query.search`
 
 Required:
 
@@ -2746,8 +2746,8 @@ Required:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--metric_query"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.metric_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.process_query`
 
 Required:
 
@@ -2760,8 +2760,8 @@ Optional:
 - **data_source** (String) The data source for metrics queries.
 
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.process_query`
 
 Required:
 
@@ -2780,8 +2780,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.rum_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query`
 
 Required:
 
@@ -2789,13 +2789,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query`
 
 Required:
 
@@ -2807,17 +2807,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query.sort_query`
 
 Required:
 
@@ -2830,8 +2830,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.rum_query.search_query`
 
 Required:
 
@@ -2845,8 +2845,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--geomap_definition--style"></a>
-### Nested Schema for `widget.group_definition.widget.geomap_definition.style`
+<a id="nestedblock--widget--group_definition--widget--id--style"></a>
+### Nested Schema for `widget.group_definition.widget.id.style`
 
 Required:
 
@@ -2856,23 +2856,23 @@ Required:
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Optional:
 
-- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--custom_link))
-- **event** (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--event))
+- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--custom_link))
+- **event** (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--event))
 - **legend_size** (String) The size of the legend displayed in the widget.
 - **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request))
+- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
-- **yaxis** (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--yaxis))
+- **yaxis** (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--yaxis))
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--custom_link"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.custom_link`
+<a id="nestedblock--widget--group_definition--widget--id--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.id.custom_link`
 
 Optional:
 
@@ -2882,8 +2882,8 @@ Optional:
 - **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--event"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.event`
+<a id="nestedblock--widget--group_definition--widget--id--event"></a>
+### Nested Schema for `widget.group_definition.widget.id.event`
 
 Required:
 
@@ -2894,21 +2894,21 @@ Optional:
 - **tags_execution** (String) The execution method for multi-value filters.
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request`
+<a id="nestedblock--widget--group_definition--widget--id--request"></a>
+### Nested Schema for `widget.group_definition.widget.id.request`
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query))
-- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query))
-- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--process_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--process_query))
 - **q** (String) The metric query to use for this widget.
-- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query))
-- **style** (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--style))
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query))
+- **style** (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style))
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.apm_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--apm_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -2916,13 +2916,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.apm_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -2934,17 +2934,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.apm_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -2957,8 +2957,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.apm_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -2971,8 +2971,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.log_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -2980,13 +2980,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -2998,17 +2998,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.log_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -3021,8 +3021,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -3035,8 +3035,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -3049,8 +3049,8 @@ Optional:
 - **search_by** (String) Your chosen search term.
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.rum_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -3058,13 +3058,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -3076,17 +3076,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -3099,8 +3099,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -3113,8 +3113,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.security_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -3122,13 +3122,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.security_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -3140,17 +3140,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.security_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.security_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -3163,8 +3163,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.security_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -3177,8 +3177,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--style"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.style`
+<a id="nestedblock--widget--group_definition--widget--id--request--style"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Optional:
 
@@ -3186,8 +3186,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--yaxis"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.yaxis`
+<a id="nestedblock--widget--group_definition--widget--id--yaxis"></a>
+### Nested Schema for `widget.group_definition.widget.id.yaxis`
 
 Optional:
 
@@ -3200,24 +3200,24 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Optional:
 
-- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--custom_link))
+- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--custom_link))
 - **group** (List of String) The list of tags to group nodes by.
 - **no_group_hosts** (Boolean) A Boolean indicating whether to show ungrouped nodes.
 - **no_metric_hosts** (Boolean) A Boolean indicating whether to show nodes with no metrics.
 - **node_type** (String) The type of node used. Valid values are `host`, `container`.
-- **request** (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request))
+- **request** (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request))
 - **scope** (List of String) The list of tags to filter nodes by.
-- **style** (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--style))
+- **style** (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--style))
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--custom_link"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.custom_link`
+<a id="nestedblock--widget--group_definition--widget--id--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.id.custom_link`
 
 Optional:
 
@@ -3227,28 +3227,28 @@ Optional:
 - **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request`
+<a id="nestedblock--widget--group_definition--widget--id--request"></a>
+### Nested Schema for `widget.group_definition.widget.id.request`
 
 Optional:
 
-- **fill** (Block List) The query used to fill the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill))
-- **size** (Block List) The query used to size the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size))
+- **fill** (Block List) The query used to fill the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--fill))
+- **size** (Block List) The query used to size the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size))
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill`
+<a id="nestedblock--widget--group_definition--widget--id--request--fill"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size`
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query))
-- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query))
-- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--process_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--process_query))
 - **q** (String) The metric query to use for this widget.
-- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query))
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query))
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.apm_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--apm_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query`
 
 Required:
 
@@ -3256,13 +3256,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.apm_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3274,17 +3274,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.apm_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query.sort_query`
 
 Required:
 
@@ -3297,8 +3297,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.apm_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3311,8 +3311,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.log_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query`
 
 Required:
 
@@ -3320,13 +3320,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.log_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3338,17 +3338,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.log_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.log_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query.sort_query`
 
 Required:
 
@@ -3361,8 +3361,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.log_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3375,8 +3375,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query`
 
 Required:
 
@@ -3389,8 +3389,8 @@ Optional:
 - **search_by** (String) Your chosen search term.
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.rum_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query`
 
 Required:
 
@@ -3398,13 +3398,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.rum_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3416,17 +3416,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.rum_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query.sort_query`
 
 Required:
 
@@ -3439,8 +3439,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.rum_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3453,8 +3453,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.security_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query`
 
 Required:
 
@@ -3462,13 +3462,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.security_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3480,17 +3480,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.security_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.security_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query.sort_query`
 
 Required:
 
@@ -3503,8 +3503,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.security_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3518,20 +3518,20 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size`
+<a id="nestedblock--widget--group_definition--widget--id--request--size"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size`
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query))
-- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query))
-- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--process_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--process_query))
 - **q** (String) The metric query to use for this widget.
-- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query))
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query))
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.apm_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--apm_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query`
 
 Required:
 
@@ -3539,13 +3539,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.apm_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3557,17 +3557,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.apm_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query.sort_query`
 
 Required:
 
@@ -3580,8 +3580,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.apm_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3594,8 +3594,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.log_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query`
 
 Required:
 
@@ -3603,13 +3603,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.log_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3621,17 +3621,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.log_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.log_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query.sort_query`
 
 Required:
 
@@ -3644,8 +3644,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.log_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3658,8 +3658,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query`
 
 Required:
 
@@ -3672,8 +3672,8 @@ Optional:
 - **search_by** (String) Your chosen search term.
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.rum_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query`
 
 Required:
 
@@ -3681,13 +3681,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.rum_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3699,17 +3699,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.rum_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query.sort_query`
 
 Required:
 
@@ -3722,8 +3722,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.rum_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3736,8 +3736,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.security_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query`
 
 Required:
 
@@ -3745,13 +3745,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.security_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3763,17 +3763,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.security_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.security_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query.sort_query`
 
 Required:
 
@@ -3786,8 +3786,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.security_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--size--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.size.security_query.search_query`
 
 Required:
 
@@ -3802,8 +3802,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--hostmap_definition--style"></a>
-### Nested Schema for `widget.group_definition.widget.hostmap_definition.style`
+<a id="nestedblock--widget--group_definition--widget--id--style"></a>
+### Nested Schema for `widget.group_definition.widget.id.style`
 
 Optional:
 
@@ -3815,7 +3815,7 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--iframe_definition"></a>
-### Nested Schema for `widget.group_definition.widget.iframe_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
@@ -3823,7 +3823,7 @@ Required:
 
 
 <a id="nestedblock--widget--group_definition--widget--image_definition"></a>
-### Nested Schema for `widget.group_definition.widget.image_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
@@ -3841,7 +3841,7 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--log_stream_definition"></a>
-### Nested Schema for `widget.group_definition.widget.log_stream_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Optional:
 
@@ -3852,13 +3852,13 @@ Optional:
 - **query** (String) The query to use in the widget.
 - **show_date_column** (Boolean) If the date column should be displayed.
 - **show_message_column** (Boolean) If the message column should be displayed.
-- **sort** (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition--sort))
+- **sort** (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--sort))
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
 
-<a id="nestedblock--widget--group_definition--widget--log_stream_definition--sort"></a>
-### Nested Schema for `widget.group_definition.widget.log_stream_definition.sort`
+<a id="nestedblock--widget--group_definition--widget--id--sort"></a>
+### Nested Schema for `widget.group_definition.widget.id.sort`
 
 Required:
 
@@ -3868,7 +3868,7 @@ Required:
 
 
 <a id="nestedblock--widget--group_definition--widget--manage_status_definition"></a>
-### Nested Schema for `widget.group_definition.widget.manage_status_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
@@ -3888,7 +3888,7 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--note_definition"></a>
-### Nested Schema for `widget.group_definition.widget.note_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
@@ -3907,20 +3907,20 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Optional:
 
-- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--custom_link))
+- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--custom_link))
 - **has_search_bar** (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
 - **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request))
+- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request))
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--custom_link"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.custom_link`
+<a id="nestedblock--widget--group_definition--widget--id--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.id.custom_link`
 
 Optional:
 
@@ -3930,27 +3930,27 @@ Optional:
 - **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request`
+<a id="nestedblock--widget--group_definition--widget--id--request"></a>
+### Nested Schema for `widget.group_definition.widget.id.request`
 
 Optional:
 
 - **aggregator** (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`.
 - **alias** (String) The alias for the column name (defaults to metric name).
-- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query))
-- **apm_stats_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_stats_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--apm_query))
+- **apm_stats_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--apm_stats_query))
 - **cell_display_mode** (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`.
-- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--conditional_formats))
+- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--conditional_formats))
 - **limit** (Number) The number of lines to show in the table.
-- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--log_query))
 - **order** (String) The sort order for the rows. Valid values are `asc`, `desc`.
-- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--process_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--process_query))
 - **q** (String) The metric query to use for this widget.
-- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--security_query))
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query))
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.apm_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--apm_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -3958,13 +3958,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.apm_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -3976,17 +3976,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.apm_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query.sort_query`
 
 Required:
 
@@ -3999,8 +3999,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.apm_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4013,8 +4013,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--apm_stats_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.apm_stats_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--apm_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -4026,11 +4026,11 @@ Required:
 
 Optional:
 
-- **columns** (Block List) Column properties used by the front end for display. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_stats_query--columns))
+- **columns** (Block List) Column properties used by the front end for display. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--columns))
 - **resource** (String) The resource name.
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--apm_stats_query--columns"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.apm_stats_query.columns`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--columns"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.resource`
 
 Required:
 
@@ -4044,8 +4044,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--conditional_formats"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.conditional_formats`
+<a id="nestedblock--widget--group_definition--widget--id--request--conditional_formats"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -4063,8 +4063,8 @@ Optional:
 - **timeframe** (String) Defines the displayed timeframe.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--log_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.log_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -4072,13 +4072,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4090,17 +4090,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.log_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query.sort_query`
 
 Required:
 
@@ -4113,8 +4113,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4127,8 +4127,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -4141,8 +4141,8 @@ Optional:
 - **search_by** (String) Your chosen search term.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.rum_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -4150,13 +4150,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4168,17 +4168,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query.sort_query`
 
 Required:
 
@@ -4191,8 +4191,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4205,8 +4205,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--security_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.security_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -4214,13 +4214,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.security_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4232,17 +4232,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.security_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.security_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query.sort_query`
 
 Required:
 
@@ -4255,8 +4255,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.query_table_definition.request.security_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4272,23 +4272,23 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Optional:
 
 - **autoscale** (Boolean) A Boolean indicating whether to automatically scale the tile.
-- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--custom_link))
+- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--custom_link))
 - **custom_unit** (String) The unit for the value displayed in the widget.
 - **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **precision** (Number) The precision to use when displaying the tile.
-- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request))
+- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request))
 - **text_align** (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--custom_link"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.custom_link`
+<a id="nestedblock--widget--group_definition--widget--id--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.id.custom_link`
 
 Optional:
 
@@ -4298,25 +4298,25 @@ Optional:
 - **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request`
+<a id="nestedblock--widget--group_definition--widget--id--request"></a>
+### Nested Schema for `widget.group_definition.widget.id.request`
 
 Optional:
 
 - **aggregator** (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`.
-- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query))
-- **audit_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query))
-- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--conditional_formats))
-- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula))
-- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query))
-- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--process_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--apm_query))
+- **audit_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--audit_query))
+- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--conditional_formats))
+- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--formula))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--process_query))
 - **q** (String) The metric query to use for this widget.
-- **query** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query))
-- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--security_query))
+- **query** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--query))
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query))
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.apm_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--apm_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -4324,13 +4324,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.apm_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4342,17 +4342,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.apm_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query.sort_query`
 
 Required:
 
@@ -4365,8 +4365,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.apm_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4379,8 +4379,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.audit_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--audit_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -4388,13 +4388,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.audit_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4406,17 +4406,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.audit_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.audit_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query.sort_query`
 
 Required:
 
@@ -4429,8 +4429,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.audit_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4443,8 +4443,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--conditional_formats"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.conditional_formats`
+<a id="nestedblock--widget--group_definition--widget--id--request--conditional_formats"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -4462,8 +4462,8 @@ Optional:
 - **timeframe** (String) Defines the displayed timeframe.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--formula"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.formula`
+<a id="nestedblock--widget--group_definition--widget--id--request--formula"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -4472,10 +4472,10 @@ Required:
 Optional:
 
 - **alias** (String) An expression alias.
-- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula--limit))
+- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--limit))
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--formula--limit"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.formula.limit`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--limit"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.limit`
 
 Optional:
 
@@ -4484,8 +4484,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--log_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.log_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -4493,13 +4493,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4511,17 +4511,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.log_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query.sort_query`
 
 Required:
 
@@ -4534,8 +4534,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4548,8 +4548,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -4562,32 +4562,32 @@ Optional:
 - **search_by** (String) Your chosen search term.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query`
+<a id="nestedblock--widget--group_definition--widget--id--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Optional:
 
-- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query))
-- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--metric_query))
-- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--process_query))
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--metric_query))
+- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--process_query))
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.event_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.process_query`
 
 Required:
 
-- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--compute))
+- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--process_query--compute))
 - **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
 
-- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--group_by))
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--process_query--group_by))
 - **indexes** (List of String) An array of index names to query in the stream.
-- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--search))
+- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--process_query--search))
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--compute"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.event_query.compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--process_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.process_query.search`
 
 Required:
 
@@ -4599,8 +4599,8 @@ Optional:
 - **metric** (String) The measurable attribute to compute.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.event_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--process_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.process_query.search`
 
 Required:
 
@@ -4609,10 +4609,10 @@ Required:
 Optional:
 
 - **limit** (Number) The number of groups to return.
-- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--group_by--sort))
+- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--process_query--search--sort))
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--group_by--sort"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.event_query.group_by.sort`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--process_query--search--sort"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.process_query.search.sort`
 
 Required:
 
@@ -4625,8 +4625,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--search"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.event_query.search`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--process_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.process_query.search`
 
 Required:
 
@@ -4634,8 +4634,8 @@ Required:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--metric_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.metric_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.process_query`
 
 Required:
 
@@ -4648,8 +4648,8 @@ Optional:
 - **data_source** (String) The data source for metrics queries.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.process_query`
 
 Required:
 
@@ -4668,8 +4668,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.rum_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -4677,13 +4677,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4695,17 +4695,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query.sort_query`
 
 Required:
 
@@ -4718,8 +4718,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4732,8 +4732,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--security_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.security_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query`
 
 Required:
 
@@ -4741,13 +4741,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.security_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4759,17 +4759,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.security_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.security_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query.sort_query`
 
 Required:
 
@@ -4782,8 +4782,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.query_value_definition.request.security_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.security_query.search_query`
 
 Required:
 
@@ -4799,22 +4799,22 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Optional:
 
 - **color_by_groups** (List of String) List of groups used for colors.
-- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--custom_link))
+- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--custom_link))
 - **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **request** (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request))
+- **request** (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request))
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
-- **xaxis** (Block List, Max: 1) A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--xaxis))
-- **yaxis** (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--yaxis))
+- **xaxis** (Block List, Max: 1) A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--xaxis))
+- **yaxis** (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--yaxis))
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--custom_link"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.custom_link`
+<a id="nestedblock--widget--group_definition--widget--id--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.id.custom_link`
 
 Optional:
 
@@ -4824,29 +4824,29 @@ Optional:
 - **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request`
+<a id="nestedblock--widget--group_definition--widget--id--request"></a>
+### Nested Schema for `widget.group_definition.widget.id.request`
 
 Optional:
 
-- **x** (Block List) The query used for the X-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x))
-- **y** (Block List) The query used for the Y-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y))
+- **x** (Block List) The query used for the X-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--x))
+- **y** (Block List) The query used for the Y-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y))
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x`
+<a id="nestedblock--widget--group_definition--widget--id--request--x"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y`
 
 Optional:
 
 - **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`.
-- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query))
-- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query))
-- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--process_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--process_query))
 - **q** (String) The metric query to use for this widget.
-- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query))
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query))
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.apm_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--apm_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query`
 
 Required:
 
@@ -4854,13 +4854,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.apm_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -4872,17 +4872,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.apm_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query.sort_query`
 
 Required:
 
@@ -4895,8 +4895,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.apm_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -4909,8 +4909,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.log_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query`
 
 Required:
 
@@ -4918,13 +4918,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.log_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -4936,17 +4936,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.log_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.log_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query.sort_query`
 
 Required:
 
@@ -4959,8 +4959,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.log_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -4973,8 +4973,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query`
 
 Required:
 
@@ -4987,8 +4987,8 @@ Optional:
 - **search_by** (String) Your chosen search term.
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.rum_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query`
 
 Required:
 
@@ -4996,13 +4996,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.rum_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -5014,17 +5014,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.rum_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query.sort_query`
 
 Required:
 
@@ -5037,8 +5037,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.rum_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -5051,8 +5051,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.security_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query`
 
 Required:
 
@@ -5060,13 +5060,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.security_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -5078,17 +5078,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.security_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.security_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query.sort_query`
 
 Required:
 
@@ -5101,8 +5101,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.security_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -5116,21 +5116,21 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y`
+<a id="nestedblock--widget--group_definition--widget--id--request--y"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y`
 
 Optional:
 
 - **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`.
-- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query))
-- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query))
-- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--process_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--process_query))
 - **q** (String) The metric query to use for this widget.
-- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query))
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query))
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.apm_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--apm_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query`
 
 Required:
 
@@ -5138,13 +5138,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.apm_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -5156,17 +5156,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.apm_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query.sort_query`
 
 Required:
 
@@ -5179,8 +5179,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.apm_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -5193,8 +5193,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.log_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query`
 
 Required:
 
@@ -5202,13 +5202,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.log_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -5220,17 +5220,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.log_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.log_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query.sort_query`
 
 Required:
 
@@ -5243,8 +5243,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.log_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -5257,8 +5257,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query`
 
 Required:
 
@@ -5271,8 +5271,8 @@ Optional:
 - **search_by** (String) Your chosen search term.
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.rum_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query`
 
 Required:
 
@@ -5280,13 +5280,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.rum_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -5298,17 +5298,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.rum_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query.sort_query`
 
 Required:
 
@@ -5321,8 +5321,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.rum_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -5335,8 +5335,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.security_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query`
 
 Required:
 
@@ -5344,13 +5344,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.security_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -5362,17 +5362,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.security_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.security_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query.sort_query`
 
 Required:
 
@@ -5385,8 +5385,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.security_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--y--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.y.security_query.search_query`
 
 Required:
 
@@ -5401,8 +5401,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--xaxis"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.xaxis`
+<a id="nestedblock--widget--group_definition--widget--id--xaxis"></a>
+### Nested Schema for `widget.group_definition.widget.id.xaxis`
 
 Optional:
 
@@ -5413,8 +5413,8 @@ Optional:
 - **scale** (String) Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.
 
 
-<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--yaxis"></a>
-### Nested Schema for `widget.group_definition.widget.scatterplot_definition.yaxis`
+<a id="nestedblock--widget--group_definition--widget--id--yaxis"></a>
+### Nested Schema for `widget.group_definition.widget.id.yaxis`
 
 Optional:
 
@@ -5427,7 +5427,7 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--service_level_objective_definition"></a>
-### Nested Schema for `widget.group_definition.widget.service_level_objective_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
@@ -5446,7 +5446,7 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--servicemap_definition"></a>
-### Nested Schema for `widget.group_definition.widget.servicemap_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
@@ -5455,13 +5455,13 @@ Required:
 
 Optional:
 
-- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition--custom_link))
+- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--custom_link))
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
 
-<a id="nestedblock--widget--group_definition--widget--servicemap_definition--custom_link"></a>
-### Nested Schema for `widget.group_definition.widget.servicemap_definition.custom_link`
+<a id="nestedblock--widget--group_definition--widget--id--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.id.custom_link`
 
 Optional:
 
@@ -5473,27 +5473,27 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Optional:
 
-- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--custom_link))
-- **event** (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--event))
+- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--custom_link))
+- **event** (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--event))
 - **legend_columns** (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - **legend_layout** (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - **legend_size** (String) The size of the legend displayed in the widget.
 - **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **marker** (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--marker))
-- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request))
-- **right_yaxis** (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--right_yaxis))
+- **marker** (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--marker))
+- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request))
+- **right_yaxis** (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--right_yaxis))
 - **show_legend** (Boolean) Whether or not to show the legend on this widget.
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
-- **yaxis** (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--yaxis))
+- **yaxis** (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--yaxis))
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--custom_link"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.custom_link`
+<a id="nestedblock--widget--group_definition--widget--id--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.id.custom_link`
 
 Optional:
 
@@ -5503,8 +5503,8 @@ Optional:
 - **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--event"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.event`
+<a id="nestedblock--widget--group_definition--widget--id--event"></a>
+### Nested Schema for `widget.group_definition.widget.id.event`
 
 Required:
 
@@ -5515,8 +5515,8 @@ Optional:
 - **tags_execution** (String) The execution method for multi-value filters.
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--marker"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.marker`
+<a id="nestedblock--widget--group_definition--widget--id--marker"></a>
+### Nested Schema for `widget.group_definition.widget.id.marker`
 
 Required:
 
@@ -5528,28 +5528,28 @@ Optional:
 - **label** (String) A label for the line or range.
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request`
+<a id="nestedblock--widget--group_definition--widget--id--request"></a>
+### Nested Schema for `widget.group_definition.widget.id.request`
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query))
-- **audit_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--apm_query))
+- **audit_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--audit_query))
 - **display_type** (String) How to display the marker lines. Valid values are `area`, `bars`, `line`.
-- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula))
-- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query))
-- **metadata** (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--metadata))
-- **network_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query))
+- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--formula))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--log_query))
+- **metadata** (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--metadata))
+- **network_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--network_query))
 - **on_right_yaxis** (Boolean) A Boolean indicating whether the request uses the right or left Y-Axis.
-- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--process_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--process_query))
 - **q** (String) The metric query to use for this widget.
-- **query** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query))
-- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query))
-- **style** (Block List, Max: 1) The style of the widget graph. Exactly one `style` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--style))
+- **query** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--query))
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query))
+- **style** (Block List, Max: 1) The style of the widget graph. Exactly one `style` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style))
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.apm_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--apm_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -5557,13 +5557,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.apm_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -5575,17 +5575,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.apm_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -5598,8 +5598,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.apm_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -5612,8 +5612,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.audit_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--audit_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -5621,13 +5621,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.audit_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -5639,17 +5639,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.audit_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.audit_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -5662,8 +5662,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.audit_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -5676,8 +5676,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--formula"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.formula`
+<a id="nestedblock--widget--group_definition--widget--id--request--formula"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -5686,10 +5686,10 @@ Required:
 Optional:
 
 - **alias** (String) An expression alias.
-- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--limit))
+- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--limit))
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--limit"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.formula.limit`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--limit"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.limit`
 
 Optional:
 
@@ -5698,8 +5698,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.log_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -5707,13 +5707,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -5725,17 +5725,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.log_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -5748,8 +5748,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -5762,8 +5762,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--metadata"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.metadata`
+<a id="nestedblock--widget--group_definition--widget--id--request--metadata"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -5774,8 +5774,8 @@ Optional:
 - **alias_name** (String) The expression alias.
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.network_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--network_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -5783,13 +5783,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.network_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -5801,17 +5801,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.network_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.network_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -5824,8 +5824,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.network_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -5838,8 +5838,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -5852,32 +5852,32 @@ Optional:
 - **search_by** (String) Your chosen search term.
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query`
+<a id="nestedblock--widget--group_definition--widget--id--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Optional:
 
-- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query))
-- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--metric_query))
-- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--process_query))
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--metric_query))
+- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query))
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.event_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query`
 
 Required:
 
-- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--compute))
+- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--compute))
 - **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
 
-- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--group_by))
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--group_by))
 - **indexes** (List of String) An array of index names to query in the stream.
-- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--search))
+- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--search))
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--compute"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.event_query.compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query.search`
 
 Required:
 
@@ -5889,8 +5889,8 @@ Optional:
 - **metric** (String) The measurable attribute to compute.
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.event_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query.search`
 
 Required:
 
@@ -5899,10 +5899,10 @@ Required:
 Optional:
 
 - **limit** (Number) The number of groups to return.
-- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--group_by--sort))
+- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--search--sort))
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--group_by--sort"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.event_query.group_by.sort`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query--search--sort"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query.search.sort`
 
 Required:
 
@@ -5915,8 +5915,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--search"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.event_query.search`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query.search`
 
 Required:
 
@@ -5924,8 +5924,8 @@ Required:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--metric_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.metric_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query`
 
 Required:
 
@@ -5938,8 +5938,8 @@ Optional:
 - **data_source** (String) The data source for metrics queries.
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query`
 
 Required:
 
@@ -5958,8 +5958,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.rum_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -5967,13 +5967,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -5985,17 +5985,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -6008,8 +6008,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -6022,8 +6022,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.security_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -6031,13 +6031,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.security_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -6049,17 +6049,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.security_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.security_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -6072,8 +6072,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.security_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -6086,8 +6086,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--style"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.style`
+<a id="nestedblock--widget--group_definition--widget--id--request--style"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Optional:
 
@@ -6097,8 +6097,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--right_yaxis"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.right_yaxis`
+<a id="nestedblock--widget--group_definition--widget--id--right_yaxis"></a>
+### Nested Schema for `widget.group_definition.widget.id.right_yaxis`
 
 Optional:
 
@@ -6109,8 +6109,8 @@ Optional:
 - **scale** (String) Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.
 
 
-<a id="nestedblock--widget--group_definition--widget--timeseries_definition--yaxis"></a>
-### Nested Schema for `widget.group_definition.widget.timeseries_definition.yaxis`
+<a id="nestedblock--widget--group_definition--widget--id--yaxis"></a>
+### Nested Schema for `widget.group_definition.widget.id.yaxis`
 
 Optional:
 
@@ -6123,19 +6123,19 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Optional:
 
-- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--custom_link))
+- **custom_link** (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--custom_link))
 - **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
-- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request))
+- **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request))
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--custom_link"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.custom_link`
+<a id="nestedblock--widget--group_definition--widget--id--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.id.custom_link`
 
 Optional:
 
@@ -6145,25 +6145,25 @@ Optional:
 - **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request`
+<a id="nestedblock--widget--group_definition--widget--id--request"></a>
+### Nested Schema for `widget.group_definition.widget.id.request`
 
 Optional:
 
-- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query))
-- **audit_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query))
-- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--conditional_formats))
-- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula))
-- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query))
-- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--process_query))
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--apm_query))
+- **audit_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--audit_query))
+- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--conditional_formats))
+- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--formula))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--process_query))
 - **q** (String) The metric query to use for this widget.
-- **query** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query))
-- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query))
-- **style** (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--style))
+- **query** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--query))
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--security_query))
+- **style** (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style))
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.apm_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--apm_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -6171,13 +6171,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.apm_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -6189,17 +6189,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.apm_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -6212,8 +6212,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.apm_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -6226,8 +6226,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.audit_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--audit_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -6235,13 +6235,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.audit_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -6253,17 +6253,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.audit_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.audit_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -6276,8 +6276,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.audit_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -6290,8 +6290,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--conditional_formats"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.conditional_formats`
+<a id="nestedblock--widget--group_definition--widget--id--request--conditional_formats"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -6309,8 +6309,8 @@ Optional:
 - **timeframe** (String) Defines the displayed timeframe.
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--formula"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.formula`
+<a id="nestedblock--widget--group_definition--widget--id--request--formula"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -6319,10 +6319,10 @@ Required:
 Optional:
 
 - **alias** (String) An expression alias.
-- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula--limit))
+- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--limit))
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--formula--limit"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.formula.limit`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--limit"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.limit`
 
 Optional:
 
@@ -6331,8 +6331,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--log_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.log_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -6340,13 +6340,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -6358,17 +6358,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.log_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -6381,8 +6381,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -6395,8 +6395,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -6409,32 +6409,32 @@ Optional:
 - **search_by** (String) Your chosen search term.
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query`
+<a id="nestedblock--widget--group_definition--widget--id--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Optional:
 
-- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query))
-- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--metric_query))
-- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--process_query))
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--metric_query))
+- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query))
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.event_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query`
 
 Required:
 
-- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--compute))
+- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--compute))
 - **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
 
-- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--group_by))
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--group_by))
 - **indexes** (List of String) An array of index names to query in the stream.
-- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--search))
+- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--search))
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--compute"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.event_query.compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query.search`
 
 Required:
 
@@ -6446,8 +6446,8 @@ Optional:
 - **metric** (String) The measurable attribute to compute.
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.event_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query.search`
 
 Required:
 
@@ -6456,10 +6456,10 @@ Required:
 Optional:
 
 - **limit** (Number) The number of groups to return.
-- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--group_by--sort))
+- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--process_query--search--sort))
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--group_by--sort"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.event_query.group_by.sort`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query--search--sort"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query.search.sort`
 
 Required:
 
@@ -6472,8 +6472,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--search"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.event_query.search`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query.search`
 
 Required:
 
@@ -6481,8 +6481,8 @@ Required:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--metric_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.metric_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query`
 
 Required:
 
@@ -6495,8 +6495,8 @@ Optional:
 - **data_source** (String) The data source for metrics queries.
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.process_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.process_query`
 
 Required:
 
@@ -6515,8 +6515,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.rum_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -6524,13 +6524,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -6542,17 +6542,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -6565,8 +6565,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -6579,8 +6579,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--security_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.security_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--security_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Required:
 
@@ -6588,13 +6588,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.security_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -6606,17 +6606,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.security_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.security_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--search_query--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query.sort_query`
 
 Required:
 
@@ -6629,8 +6629,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.security_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--id--request--style--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style.search_query`
 
 Required:
 
@@ -6643,8 +6643,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--style"></a>
-### Nested Schema for `widget.group_definition.widget.toplist_definition.request.style`
+<a id="nestedblock--widget--group_definition--widget--id--request--style"></a>
+### Nested Schema for `widget.group_definition.widget.id.request.style`
 
 Optional:
 
@@ -6654,7 +6654,7 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition"></a>
-### Nested Schema for `widget.group_definition.widget.trace_service_definition`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
@@ -6679,7 +6679,7 @@ Optional:
 
 
 <a id="nestedblock--widget--group_definition--widget--widget_layout"></a>
-### Nested Schema for `widget.group_definition.widget.widget_layout`
+### Nested Schema for `widget.group_definition.widget.id`
 
 Required:
 
@@ -6748,7 +6748,7 @@ Optional:
 - **style** (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style))
 
 <a id="nestedblock--widget--heatmap_definition--request--apm_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.apm_query`
+### Nested Schema for `widget.heatmap_definition.request.style`
 
 Required:
 
@@ -6756,13 +6756,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--heatmap_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.apm_query.compute_query`
+<a id="nestedblock--widget--heatmap_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.compute_query`
 
 Required:
 
@@ -6774,17 +6774,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--heatmap_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.heatmap_definition.request.apm_query.group_by`
+<a id="nestedblock--widget--heatmap_definition--request--style--group_by"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--heatmap_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--heatmap_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -6797,8 +6797,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--heatmap_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.heatmap_definition.request.apm_query.multi_compute`
+<a id="nestedblock--widget--heatmap_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.multi_compute`
 
 Required:
 
@@ -6812,7 +6812,7 @@ Optional:
 
 
 <a id="nestedblock--widget--heatmap_definition--request--log_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.log_query`
+### Nested Schema for `widget.heatmap_definition.request.style`
 
 Required:
 
@@ -6820,13 +6820,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--heatmap_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--heatmap_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.compute_query`
 
 Required:
 
@@ -6838,17 +6838,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--heatmap_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.heatmap_definition.request.log_query.group_by`
+<a id="nestedblock--widget--heatmap_definition--request--style--group_by"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--heatmap_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--heatmap_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -6861,8 +6861,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--heatmap_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.heatmap_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--heatmap_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.multi_compute`
 
 Required:
 
@@ -6876,7 +6876,7 @@ Optional:
 
 
 <a id="nestedblock--widget--heatmap_definition--request--process_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.process_query`
+### Nested Schema for `widget.heatmap_definition.request.style`
 
 Required:
 
@@ -6890,7 +6890,7 @@ Optional:
 
 
 <a id="nestedblock--widget--heatmap_definition--request--rum_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.rum_query`
+### Nested Schema for `widget.heatmap_definition.request.style`
 
 Required:
 
@@ -6898,13 +6898,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--heatmap_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--heatmap_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.compute_query`
 
 Required:
 
@@ -6916,17 +6916,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--heatmap_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.heatmap_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--heatmap_definition--request--style--group_by"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--heatmap_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--heatmap_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -6939,8 +6939,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--heatmap_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.heatmap_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--heatmap_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.multi_compute`
 
 Required:
 
@@ -6954,7 +6954,7 @@ Optional:
 
 
 <a id="nestedblock--widget--heatmap_definition--request--security_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.security_query`
+### Nested Schema for `widget.heatmap_definition.request.style`
 
 Required:
 
@@ -6962,13 +6962,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--heatmap_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.security_query.compute_query`
+<a id="nestedblock--widget--heatmap_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.compute_query`
 
 Required:
 
@@ -6980,17 +6980,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--heatmap_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.heatmap_definition.request.security_query.group_by`
+<a id="nestedblock--widget--heatmap_definition--request--style--group_by"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--heatmap_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.security_query.group_by.sort_query`
+<a id="nestedblock--widget--heatmap_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -7003,8 +7003,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--heatmap_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.heatmap_definition.request.security_query.multi_compute`
+<a id="nestedblock--widget--heatmap_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.heatmap_definition.request.style.multi_compute`
 
 Required:
 
@@ -7076,289 +7076,6 @@ Optional:
 - **size** (Block List) The query used to size the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size))
 
 <a id="nestedblock--widget--hostmap_definition--request--fill"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill`
-
-Optional:
-
-- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--apm_query))
-- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--log_query))
-- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--process_query))
-- **q** (String) The metric query to use for this widget.
-- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--security_query))
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--apm_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.apm_query`
-
-Required:
-
-- **index** (String) The name of the index to query.
-
-Optional:
-
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--apm_query--multi_compute))
-- **search_query** (String) The search query to use.
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--apm_query--compute_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.apm_query.compute_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--apm_query--group_by"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.apm_query.group_by`
-
-Optional:
-
-- **facet** (String) The facet name.
-- **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--apm_query--group_by--sort_query))
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.apm_query.group_by.sort_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
-
-Optional:
-
-- **facet** (String) The facet name.
-
-
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--apm_query--multi_compute"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.apm_query.multi_compute`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--log_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.log_query`
-
-Required:
-
-- **index** (String) The name of the index to query.
-
-Optional:
-
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--log_query--multi_compute))
-- **search_query** (String) The search query to use.
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--log_query--compute_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.log_query.compute_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--log_query--group_by"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.log_query.group_by`
-
-Optional:
-
-- **facet** (String) The facet name.
-- **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--log_query--group_by--sort_query))
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.log_query.group_by.sort_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
-
-Optional:
-
-- **facet** (String) The facet name.
-
-
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--log_query--multi_compute"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.log_query.multi_compute`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--process_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.process_query`
-
-Required:
-
-- **metric** (String) Your chosen metric.
-
-Optional:
-
-- **filter_by** (List of String) A list of processes.
-- **limit** (Number) The max number of items in the filter list.
-- **search_by** (String) Your chosen search term.
-
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--rum_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.rum_query`
-
-Required:
-
-- **index** (String) The name of the index to query.
-
-Optional:
-
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--rum_query--multi_compute))
-- **search_query** (String) The search query to use.
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--rum_query--compute_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.rum_query.compute_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--rum_query--group_by"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.rum_query.group_by`
-
-Optional:
-
-- **facet** (String) The facet name.
-- **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--rum_query--group_by--sort_query))
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.rum_query.group_by.sort_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
-
-Optional:
-
-- **facet** (String) The facet name.
-
-
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--rum_query--multi_compute"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.rum_query.multi_compute`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--security_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.security_query`
-
-Required:
-
-- **index** (String) The name of the index to query.
-
-Optional:
-
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--security_query--multi_compute))
-- **search_query** (String) The search query to use.
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--security_query--compute_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.security_query.compute_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--security_query--group_by"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.security_query.group_by`
-
-Optional:
-
-- **facet** (String) The facet name.
-- **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--security_query--group_by--sort_query))
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.security_query.group_by.sort_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
-
-Optional:
-
-- **facet** (String) The facet name.
-
-
-
-<a id="nestedblock--widget--hostmap_definition--request--fill--security_query--multi_compute"></a>
-### Nested Schema for `widget.hostmap_definition.request.fill.security_query.multi_compute`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-
-
-<a id="nestedblock--widget--hostmap_definition--request--size"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size`
 
 Optional:
@@ -7385,7 +7102,7 @@ Optional:
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--apm_query--compute_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.apm_query.compute_query`
+### Nested Schema for `widget.hostmap_definition.request.size.apm_query.search_query`
 
 Required:
 
@@ -7398,16 +7115,16 @@ Optional:
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--apm_query--group_by"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.apm_query.group_by`
+### Nested Schema for `widget.hostmap_definition.request.size.apm_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--search_query--sort_query))
 
-<a id="nestedblock--widget--hostmap_definition--request--size--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--hostmap_definition--request--size--apm_query--search_query--sort_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.apm_query.search_query.sort_query`
 
 Required:
 
@@ -7421,7 +7138,7 @@ Optional:
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--apm_query--multi_compute"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.apm_query.multi_compute`
+### Nested Schema for `widget.hostmap_definition.request.size.apm_query.search_query`
 
 Required:
 
@@ -7449,7 +7166,7 @@ Optional:
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--log_query--compute_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.log_query.compute_query`
+### Nested Schema for `widget.hostmap_definition.request.size.log_query.search_query`
 
 Required:
 
@@ -7462,16 +7179,16 @@ Optional:
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--log_query--group_by"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.log_query.group_by`
+### Nested Schema for `widget.hostmap_definition.request.size.log_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--search_query--sort_query))
 
-<a id="nestedblock--widget--hostmap_definition--request--size--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.log_query.group_by.sort_query`
+<a id="nestedblock--widget--hostmap_definition--request--size--log_query--search_query--sort_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.log_query.search_query.sort_query`
 
 Required:
 
@@ -7485,7 +7202,7 @@ Optional:
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--log_query--multi_compute"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.log_query.multi_compute`
+### Nested Schema for `widget.hostmap_definition.request.size.log_query.search_query`
 
 Required:
 
@@ -7527,7 +7244,7 @@ Optional:
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--rum_query--compute_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.rum_query.compute_query`
+### Nested Schema for `widget.hostmap_definition.request.size.rum_query.search_query`
 
 Required:
 
@@ -7540,16 +7257,16 @@ Optional:
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--rum_query--group_by"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.rum_query.group_by`
+### Nested Schema for `widget.hostmap_definition.request.size.rum_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--search_query--sort_query))
 
-<a id="nestedblock--widget--hostmap_definition--request--size--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--hostmap_definition--request--size--rum_query--search_query--sort_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.rum_query.search_query.sort_query`
 
 Required:
 
@@ -7563,7 +7280,7 @@ Optional:
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--rum_query--multi_compute"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.rum_query.multi_compute`
+### Nested Schema for `widget.hostmap_definition.request.size.rum_query.search_query`
 
 Required:
 
@@ -7591,7 +7308,7 @@ Optional:
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--hostmap_definition--request--size--security_query--compute_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.security_query.compute_query`
+### Nested Schema for `widget.hostmap_definition.request.size.security_query.search_query`
 
 Required:
 
@@ -7604,16 +7321,16 @@ Optional:
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--security_query--group_by"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.security_query.group_by`
+### Nested Schema for `widget.hostmap_definition.request.size.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--hostmap_definition--request--size--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.security_query.group_by.sort_query`
+<a id="nestedblock--widget--hostmap_definition--request--size--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.security_query.search_query.sort_query`
 
 Required:
 
@@ -7627,7 +7344,290 @@ Optional:
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--security_query--multi_compute"></a>
-### Nested Schema for `widget.hostmap_definition.request.size.security_query.multi_compute`
+### Nested Schema for `widget.hostmap_definition.request.size.security_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size"></a>
+### Nested Schema for `widget.hostmap_definition.request.size`
+
+Optional:
+
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query))
+
+<a id="nestedblock--widget--hostmap_definition--request--size--apm_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.apm_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--hostmap_definition--request--size--apm_query--compute_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.apm_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size--apm_query--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.apm_query.search_query`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query--search_query--sort_query))
+
+<a id="nestedblock--widget--hostmap_definition--request--size--apm_query--search_query--sort_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.apm_query.search_query.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size--apm_query--multi_compute"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.apm_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size--log_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.log_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--hostmap_definition--request--size--log_query--compute_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.log_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size--log_query--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.log_query.search_query`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query--search_query--sort_query))
+
+<a id="nestedblock--widget--hostmap_definition--request--size--log_query--search_query--sort_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.log_query.search_query.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size--log_query--multi_compute"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.log_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size--process_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.process_query`
+
+Required:
+
+- **metric** (String) Your chosen metric.
+
+Optional:
+
+- **filter_by** (List of String) A list of processes.
+- **limit** (Number) The max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size--rum_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.rum_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--hostmap_definition--request--size--rum_query--compute_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.rum_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size--rum_query--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.rum_query.search_query`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query--search_query--sort_query))
+
+<a id="nestedblock--widget--hostmap_definition--request--size--rum_query--search_query--sort_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.rum_query.search_query.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size--rum_query--multi_compute"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.rum_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size--security_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.security_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--hostmap_definition--request--size--security_query--compute_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.security_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size--security_query--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.security_query.search_query`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query--search_query--sort_query))
+
+<a id="nestedblock--widget--hostmap_definition--request--size--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.security_query.search_query.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size--security_query--multi_compute"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.security_query.search_query`
 
 Required:
 
@@ -7790,7 +7790,7 @@ Optional:
 - **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query))
 
 <a id="nestedblock--widget--query_table_definition--request--apm_query"></a>
-### Nested Schema for `widget.query_table_definition.request.apm_query`
+### Nested Schema for `widget.query_table_definition.request.security_query`
 
 Required:
 
@@ -7798,13 +7798,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--query_table_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.query_table_definition.request.apm_query.compute_query`
+<a id="nestedblock--widget--query_table_definition--request--security_query--compute_query"></a>
+### Nested Schema for `widget.query_table_definition.request.security_query.compute_query`
 
 Required:
 
@@ -7816,17 +7816,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--query_table_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.query_table_definition.request.apm_query.group_by`
+<a id="nestedblock--widget--query_table_definition--request--security_query--group_by"></a>
+### Nested Schema for `widget.query_table_definition.request.security_query.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by--sort_query))
 
-<a id="nestedblock--widget--query_table_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.query_table_definition.request.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--query_table_definition--request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.query_table_definition.request.security_query.group_by.sort_query`
 
 Required:
 
@@ -7839,8 +7839,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--query_table_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.query_table_definition.request.apm_query.multi_compute`
+<a id="nestedblock--widget--query_table_definition--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.query_table_definition.request.security_query.multi_compute`
 
 Required:
 
@@ -7854,7 +7854,7 @@ Optional:
 
 
 <a id="nestedblock--widget--query_table_definition--request--apm_stats_query"></a>
-### Nested Schema for `widget.query_table_definition.request.apm_stats_query`
+### Nested Schema for `widget.query_table_definition.request.security_query`
 
 Required:
 
@@ -7866,11 +7866,11 @@ Required:
 
 Optional:
 
-- **columns** (Block List) Column properties used by the front end for display. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_stats_query--columns))
+- **columns** (Block List) Column properties used by the front end for display. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--columns))
 - **resource** (String) The resource name.
 
-<a id="nestedblock--widget--query_table_definition--request--apm_stats_query--columns"></a>
-### Nested Schema for `widget.query_table_definition.request.apm_stats_query.columns`
+<a id="nestedblock--widget--query_table_definition--request--security_query--columns"></a>
+### Nested Schema for `widget.query_table_definition.request.security_query.columns`
 
 Required:
 
@@ -7885,7 +7885,7 @@ Optional:
 
 
 <a id="nestedblock--widget--query_table_definition--request--conditional_formats"></a>
-### Nested Schema for `widget.query_table_definition.request.conditional_formats`
+### Nested Schema for `widget.query_table_definition.request.security_query`
 
 Required:
 
@@ -7904,7 +7904,7 @@ Optional:
 
 
 <a id="nestedblock--widget--query_table_definition--request--log_query"></a>
-### Nested Schema for `widget.query_table_definition.request.log_query`
+### Nested Schema for `widget.query_table_definition.request.security_query`
 
 Required:
 
@@ -7912,13 +7912,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--query_table_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.query_table_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--query_table_definition--request--security_query--compute_query"></a>
+### Nested Schema for `widget.query_table_definition.request.security_query.compute_query`
 
 Required:
 
@@ -7930,17 +7930,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--query_table_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.query_table_definition.request.log_query.group_by`
+<a id="nestedblock--widget--query_table_definition--request--security_query--group_by"></a>
+### Nested Schema for `widget.query_table_definition.request.security_query.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by--sort_query))
 
-<a id="nestedblock--widget--query_table_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.query_table_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--query_table_definition--request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.query_table_definition.request.security_query.group_by.sort_query`
 
 Required:
 
@@ -7953,8 +7953,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--query_table_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.query_table_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--query_table_definition--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.query_table_definition.request.security_query.multi_compute`
 
 Required:
 
@@ -7968,7 +7968,7 @@ Optional:
 
 
 <a id="nestedblock--widget--query_table_definition--request--process_query"></a>
-### Nested Schema for `widget.query_table_definition.request.process_query`
+### Nested Schema for `widget.query_table_definition.request.security_query`
 
 Required:
 
@@ -7982,7 +7982,7 @@ Optional:
 
 
 <a id="nestedblock--widget--query_table_definition--request--rum_query"></a>
-### Nested Schema for `widget.query_table_definition.request.rum_query`
+### Nested Schema for `widget.query_table_definition.request.security_query`
 
 Required:
 
@@ -7990,13 +7990,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--query_table_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.query_table_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--query_table_definition--request--security_query--compute_query"></a>
+### Nested Schema for `widget.query_table_definition.request.security_query.compute_query`
 
 Required:
 
@@ -8008,17 +8008,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--query_table_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.query_table_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--query_table_definition--request--security_query--group_by"></a>
+### Nested Schema for `widget.query_table_definition.request.security_query.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query--group_by--sort_query))
 
-<a id="nestedblock--widget--query_table_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.query_table_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--query_table_definition--request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.query_table_definition.request.security_query.group_by.sort_query`
 
 Required:
 
@@ -8031,8 +8031,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--query_table_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.query_table_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--query_table_definition--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.query_table_definition.request.security_query.multi_compute`
 
 Required:
 
@@ -8156,7 +8156,7 @@ Optional:
 - **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query))
 
 <a id="nestedblock--widget--query_value_definition--request--apm_query"></a>
-### Nested Schema for `widget.query_value_definition.request.apm_query`
+### Nested Schema for `widget.query_value_definition.request.security_query`
 
 Required:
 
@@ -8164,13 +8164,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--query_value_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.query_value_definition.request.apm_query.compute_query`
+<a id="nestedblock--widget--query_value_definition--request--security_query--compute_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.compute_query`
 
 Required:
 
@@ -8182,17 +8182,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--query_value_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.query_value_definition.request.apm_query.group_by`
+<a id="nestedblock--widget--query_value_definition--request--security_query--group_by"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by--sort_query))
 
-<a id="nestedblock--widget--query_value_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.query_value_definition.request.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--query_value_definition--request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.group_by.sort_query`
 
 Required:
 
@@ -8205,8 +8205,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--query_value_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.query_value_definition.request.apm_query.multi_compute`
+<a id="nestedblock--widget--query_value_definition--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.multi_compute`
 
 Required:
 
@@ -8220,7 +8220,7 @@ Optional:
 
 
 <a id="nestedblock--widget--query_value_definition--request--audit_query"></a>
-### Nested Schema for `widget.query_value_definition.request.audit_query`
+### Nested Schema for `widget.query_value_definition.request.security_query`
 
 Required:
 
@@ -8228,13 +8228,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--query_value_definition--request--audit_query--compute_query"></a>
-### Nested Schema for `widget.query_value_definition.request.audit_query.compute_query`
+<a id="nestedblock--widget--query_value_definition--request--security_query--compute_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.compute_query`
 
 Required:
 
@@ -8246,17 +8246,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--query_value_definition--request--audit_query--group_by"></a>
-### Nested Schema for `widget.query_value_definition.request.audit_query.group_by`
+<a id="nestedblock--widget--query_value_definition--request--security_query--group_by"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by--sort_query))
 
-<a id="nestedblock--widget--query_value_definition--request--audit_query--group_by--sort_query"></a>
-### Nested Schema for `widget.query_value_definition.request.audit_query.group_by.sort_query`
+<a id="nestedblock--widget--query_value_definition--request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.group_by.sort_query`
 
 Required:
 
@@ -8269,8 +8269,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--query_value_definition--request--audit_query--multi_compute"></a>
-### Nested Schema for `widget.query_value_definition.request.audit_query.multi_compute`
+<a id="nestedblock--widget--query_value_definition--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.multi_compute`
 
 Required:
 
@@ -8284,7 +8284,7 @@ Optional:
 
 
 <a id="nestedblock--widget--query_value_definition--request--conditional_formats"></a>
-### Nested Schema for `widget.query_value_definition.request.conditional_formats`
+### Nested Schema for `widget.query_value_definition.request.security_query`
 
 Required:
 
@@ -8303,7 +8303,7 @@ Optional:
 
 
 <a id="nestedblock--widget--query_value_definition--request--formula"></a>
-### Nested Schema for `widget.query_value_definition.request.formula`
+### Nested Schema for `widget.query_value_definition.request.security_query`
 
 Required:
 
@@ -8312,10 +8312,10 @@ Required:
 Optional:
 
 - **alias** (String) An expression alias.
-- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--limit))
+- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--limit))
 
-<a id="nestedblock--widget--query_value_definition--request--formula--limit"></a>
-### Nested Schema for `widget.query_value_definition.request.formula.limit`
+<a id="nestedblock--widget--query_value_definition--request--security_query--limit"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.limit`
 
 Optional:
 
@@ -8325,7 +8325,7 @@ Optional:
 
 
 <a id="nestedblock--widget--query_value_definition--request--log_query"></a>
-### Nested Schema for `widget.query_value_definition.request.log_query`
+### Nested Schema for `widget.query_value_definition.request.security_query`
 
 Required:
 
@@ -8333,13 +8333,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--query_value_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.query_value_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--query_value_definition--request--security_query--compute_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.compute_query`
 
 Required:
 
@@ -8351,17 +8351,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--query_value_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.query_value_definition.request.log_query.group_by`
+<a id="nestedblock--widget--query_value_definition--request--security_query--group_by"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by--sort_query))
 
-<a id="nestedblock--widget--query_value_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.query_value_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--query_value_definition--request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.group_by.sort_query`
 
 Required:
 
@@ -8374,8 +8374,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--query_value_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.query_value_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--query_value_definition--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.multi_compute`
 
 Required:
 
@@ -8389,7 +8389,7 @@ Optional:
 
 
 <a id="nestedblock--widget--query_value_definition--request--process_query"></a>
-### Nested Schema for `widget.query_value_definition.request.process_query`
+### Nested Schema for `widget.query_value_definition.request.security_query`
 
 Required:
 
@@ -8403,31 +8403,31 @@ Optional:
 
 
 <a id="nestedblock--widget--query_value_definition--request--query"></a>
-### Nested Schema for `widget.query_value_definition.request.query`
+### Nested Schema for `widget.query_value_definition.request.security_query`
 
 Optional:
 
-- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query))
-- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--metric_query))
-- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--process_query))
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--metric_query))
+- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--process_query))
 
-<a id="nestedblock--widget--query_value_definition--request--query--event_query"></a>
-### Nested Schema for `widget.query_value_definition.request.query.event_query`
+<a id="nestedblock--widget--query_value_definition--request--security_query--event_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.event_query`
 
 Required:
 
-- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--compute))
+- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--event_query--compute))
 - **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
 
-- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--group_by))
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--event_query--group_by))
 - **indexes** (List of String) An array of index names to query in the stream.
-- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--search))
+- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--event_query--search))
 
-<a id="nestedblock--widget--query_value_definition--request--query--event_query--compute"></a>
-### Nested Schema for `widget.query_value_definition.request.query.event_query.compute`
+<a id="nestedblock--widget--query_value_definition--request--security_query--event_query--compute"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.event_query.search`
 
 Required:
 
@@ -8439,8 +8439,8 @@ Optional:
 - **metric** (String) The measurable attribute to compute.
 
 
-<a id="nestedblock--widget--query_value_definition--request--query--event_query--group_by"></a>
-### Nested Schema for `widget.query_value_definition.request.query.event_query.group_by`
+<a id="nestedblock--widget--query_value_definition--request--security_query--event_query--group_by"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.event_query.search`
 
 Required:
 
@@ -8449,10 +8449,10 @@ Required:
 Optional:
 
 - **limit** (Number) The number of groups to return.
-- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--group_by--sort))
+- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--event_query--search--sort))
 
-<a id="nestedblock--widget--query_value_definition--request--query--event_query--group_by--sort"></a>
-### Nested Schema for `widget.query_value_definition.request.query.event_query.group_by.sort`
+<a id="nestedblock--widget--query_value_definition--request--security_query--event_query--search--sort"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.event_query.search.sort`
 
 Required:
 
@@ -8465,8 +8465,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--query_value_definition--request--query--event_query--search"></a>
-### Nested Schema for `widget.query_value_definition.request.query.event_query.search`
+<a id="nestedblock--widget--query_value_definition--request--security_query--event_query--search"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.event_query.search`
 
 Required:
 
@@ -8474,8 +8474,8 @@ Required:
 
 
 
-<a id="nestedblock--widget--query_value_definition--request--query--metric_query"></a>
-### Nested Schema for `widget.query_value_definition.request.query.metric_query`
+<a id="nestedblock--widget--query_value_definition--request--security_query--metric_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.metric_query`
 
 Required:
 
@@ -8488,8 +8488,8 @@ Optional:
 - **data_source** (String) The data source for metrics queries.
 
 
-<a id="nestedblock--widget--query_value_definition--request--query--process_query"></a>
-### Nested Schema for `widget.query_value_definition.request.query.process_query`
+<a id="nestedblock--widget--query_value_definition--request--security_query--process_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.process_query`
 
 Required:
 
@@ -8509,7 +8509,7 @@ Optional:
 
 
 <a id="nestedblock--widget--query_value_definition--request--rum_query"></a>
-### Nested Schema for `widget.query_value_definition.request.rum_query`
+### Nested Schema for `widget.query_value_definition.request.security_query`
 
 Required:
 
@@ -8517,13 +8517,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--query_value_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.query_value_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--query_value_definition--request--security_query--compute_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.compute_query`
 
 Required:
 
@@ -8535,17 +8535,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--query_value_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.query_value_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--query_value_definition--request--security_query--group_by"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by--sort_query))
 
-<a id="nestedblock--widget--query_value_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.query_value_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--query_value_definition--request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.group_by.sort_query`
 
 Required:
 
@@ -8558,8 +8558,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--query_value_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.query_value_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--query_value_definition--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.multi_compute`
 
 Required:
 
@@ -8673,290 +8673,6 @@ Optional:
 - **y** (Block List) The query used for the Y-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y))
 
 <a id="nestedblock--widget--scatterplot_definition--request--x"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x`
-
-Optional:
-
-- **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`.
-- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query))
-- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query))
-- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--process_query))
-- **q** (String) The metric query to use for this widget.
-- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--rum_query))
-- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--security_query))
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--apm_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.apm_query`
-
-Required:
-
-- **index** (String) The name of the index to query.
-
-Optional:
-
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query--multi_compute))
-- **search_query** (String) The search query to use.
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--apm_query--compute_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.apm_query.compute_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--apm_query--group_by"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.apm_query.group_by`
-
-Optional:
-
-- **facet** (String) The facet name.
-- **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query--group_by--sort_query))
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.apm_query.group_by.sort_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
-
-Optional:
-
-- **facet** (String) The facet name.
-
-
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--apm_query--multi_compute"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.apm_query.multi_compute`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--log_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.log_query`
-
-Required:
-
-- **index** (String) The name of the index to query.
-
-Optional:
-
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query--multi_compute))
-- **search_query** (String) The search query to use.
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--log_query--compute_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.log_query.compute_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--log_query--group_by"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.log_query.group_by`
-
-Optional:
-
-- **facet** (String) The facet name.
-- **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query--group_by--sort_query))
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.log_query.group_by.sort_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
-
-Optional:
-
-- **facet** (String) The facet name.
-
-
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--log_query--multi_compute"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.log_query.multi_compute`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--process_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.process_query`
-
-Required:
-
-- **metric** (String) Your chosen metric.
-
-Optional:
-
-- **filter_by** (List of String) A list of processes.
-- **limit** (Number) The max number of items in the filter list.
-- **search_by** (String) Your chosen search term.
-
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--rum_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.rum_query`
-
-Required:
-
-- **index** (String) The name of the index to query.
-
-Optional:
-
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--rum_query--multi_compute))
-- **search_query** (String) The search query to use.
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--rum_query--compute_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.rum_query.compute_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--rum_query--group_by"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.rum_query.group_by`
-
-Optional:
-
-- **facet** (String) The facet name.
-- **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--rum_query--group_by--sort_query))
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.rum_query.group_by.sort_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
-
-Optional:
-
-- **facet** (String) The facet name.
-
-
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--rum_query--multi_compute"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.rum_query.multi_compute`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--security_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.security_query`
-
-Required:
-
-- **index** (String) The name of the index to query.
-
-Optional:
-
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--security_query--multi_compute))
-- **search_query** (String) The search query to use.
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--security_query--compute_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.security_query.compute_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--security_query--group_by"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.security_query.group_by`
-
-Optional:
-
-- **facet** (String) The facet name.
-- **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--security_query--group_by--sort_query))
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.security_query.group_by.sort_query`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
-
-Optional:
-
-- **facet** (String) The facet name.
-
-
-
-<a id="nestedblock--widget--scatterplot_definition--request--x--security_query--multi_compute"></a>
-### Nested Schema for `widget.scatterplot_definition.request.x.security_query.multi_compute`
-
-Required:
-
-- **aggregation** (String) The aggregation method.
-
-Optional:
-
-- **facet** (String) The facet name.
-- **interval** (Number) Define the time interval in seconds.
-
-
-
-
-<a id="nestedblock--widget--scatterplot_definition--request--y"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y`
 
 Optional:
@@ -8984,7 +8700,7 @@ Optional:
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--compute_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.apm_query.compute_query`
+### Nested Schema for `widget.scatterplot_definition.request.y.apm_query.search_query`
 
 Required:
 
@@ -8997,16 +8713,16 @@ Optional:
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--group_by"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.apm_query.group_by`
+### Nested Schema for `widget.scatterplot_definition.request.y.apm_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--search_query--sort_query))
 
-<a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--search_query--sort_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.apm_query.search_query.sort_query`
 
 Required:
 
@@ -9020,7 +8736,7 @@ Optional:
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--multi_compute"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.apm_query.multi_compute`
+### Nested Schema for `widget.scatterplot_definition.request.y.apm_query.search_query`
 
 Required:
 
@@ -9048,7 +8764,7 @@ Optional:
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--log_query--compute_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.log_query.compute_query`
+### Nested Schema for `widget.scatterplot_definition.request.y.log_query.search_query`
 
 Required:
 
@@ -9061,16 +8777,16 @@ Optional:
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--log_query--group_by"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.log_query.group_by`
+### Nested Schema for `widget.scatterplot_definition.request.y.log_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--search_query--sort_query))
 
-<a id="nestedblock--widget--scatterplot_definition--request--y--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.log_query.group_by.sort_query`
+<a id="nestedblock--widget--scatterplot_definition--request--y--log_query--search_query--sort_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.log_query.search_query.sort_query`
 
 Required:
 
@@ -9084,7 +8800,7 @@ Optional:
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--log_query--multi_compute"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.log_query.multi_compute`
+### Nested Schema for `widget.scatterplot_definition.request.y.log_query.search_query`
 
 Required:
 
@@ -9126,7 +8842,7 @@ Optional:
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--compute_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.rum_query.compute_query`
+### Nested Schema for `widget.scatterplot_definition.request.y.rum_query.search_query`
 
 Required:
 
@@ -9139,16 +8855,16 @@ Optional:
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--group_by"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.rum_query.group_by`
+### Nested Schema for `widget.scatterplot_definition.request.y.rum_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--search_query--sort_query))
 
-<a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--search_query--sort_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.rum_query.search_query.sort_query`
 
 Required:
 
@@ -9162,7 +8878,7 @@ Optional:
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--multi_compute"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.rum_query.multi_compute`
+### Nested Schema for `widget.scatterplot_definition.request.y.rum_query.search_query`
 
 Required:
 
@@ -9190,7 +8906,7 @@ Optional:
 - **search_query** (String) The search query to use.
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--security_query--compute_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.security_query.compute_query`
+### Nested Schema for `widget.scatterplot_definition.request.y.security_query.search_query`
 
 Required:
 
@@ -9203,16 +8919,16 @@ Optional:
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--security_query--group_by"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.security_query.group_by`
+### Nested Schema for `widget.scatterplot_definition.request.y.security_query.search_query`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--search_query--sort_query))
 
-<a id="nestedblock--widget--scatterplot_definition--request--y--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.security_query.group_by.sort_query`
+<a id="nestedblock--widget--scatterplot_definition--request--y--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.security_query.search_query.sort_query`
 
 Required:
 
@@ -9226,7 +8942,291 @@ Optional:
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--security_query--multi_compute"></a>
-### Nested Schema for `widget.scatterplot_definition.request.y.security_query.multi_compute`
+### Nested Schema for `widget.scatterplot_definition.request.y.security_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y`
+
+Optional:
+
+- **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`.
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--process_query))
+- **q** (String) The metric query to use for this widget.
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query))
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--apm_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.apm_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--compute_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.apm_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--group_by"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.apm_query.search_query`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query--search_query--sort_query))
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--search_query--sort_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.apm_query.search_query.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--apm_query--multi_compute"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.apm_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--log_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.log_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--log_query--compute_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.log_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--log_query--group_by"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.log_query.search_query`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query--search_query--sort_query))
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--log_query--search_query--sort_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.log_query.search_query.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--log_query--multi_compute"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.log_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--process_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.process_query`
+
+Required:
+
+- **metric** (String) Your chosen metric.
+
+Optional:
+
+- **filter_by** (List of String) A list of processes.
+- **limit** (Number) The max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--rum_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.rum_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--compute_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.rum_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--group_by"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.rum_query.search_query`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query--search_query--sort_query))
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--search_query--sort_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.rum_query.search_query.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--rum_query--multi_compute"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.rum_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--security_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.security_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--security_query--compute_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.security_query.search_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--security_query--group_by"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.security_query.search_query`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query--search_query--sort_query))
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--security_query--search_query--sort_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.security_query.search_query.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--security_query--multi_compute"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.security_query.search_query`
 
 Required:
 
@@ -9389,7 +9389,7 @@ Optional:
 - **style** (Block List, Max: 1) The style of the widget graph. Exactly one `style` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style))
 
 <a id="nestedblock--widget--timeseries_definition--request--apm_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.apm_query`
+### Nested Schema for `widget.timeseries_definition.request.style`
 
 Required:
 
@@ -9397,13 +9397,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--timeseries_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.apm_query.compute_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.compute_query`
 
 Required:
 
@@ -9415,17 +9415,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--timeseries_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.timeseries_definition.request.apm_query.group_by`
+<a id="nestedblock--widget--timeseries_definition--request--style--group_by"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--timeseries_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -9438,8 +9438,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--timeseries_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.timeseries_definition.request.apm_query.multi_compute`
+<a id="nestedblock--widget--timeseries_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.multi_compute`
 
 Required:
 
@@ -9453,7 +9453,7 @@ Optional:
 
 
 <a id="nestedblock--widget--timeseries_definition--request--audit_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.audit_query`
+### Nested Schema for `widget.timeseries_definition.request.style`
 
 Required:
 
@@ -9461,13 +9461,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--timeseries_definition--request--audit_query--compute_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.audit_query.compute_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.compute_query`
 
 Required:
 
@@ -9479,17 +9479,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--timeseries_definition--request--audit_query--group_by"></a>
-### Nested Schema for `widget.timeseries_definition.request.audit_query.group_by`
+<a id="nestedblock--widget--timeseries_definition--request--style--group_by"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--timeseries_definition--request--audit_query--group_by--sort_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.audit_query.group_by.sort_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -9502,8 +9502,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--timeseries_definition--request--audit_query--multi_compute"></a>
-### Nested Schema for `widget.timeseries_definition.request.audit_query.multi_compute`
+<a id="nestedblock--widget--timeseries_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.multi_compute`
 
 Required:
 
@@ -9517,7 +9517,7 @@ Optional:
 
 
 <a id="nestedblock--widget--timeseries_definition--request--formula"></a>
-### Nested Schema for `widget.timeseries_definition.request.formula`
+### Nested Schema for `widget.timeseries_definition.request.style`
 
 Required:
 
@@ -9526,10 +9526,10 @@ Required:
 Optional:
 
 - **alias** (String) An expression alias.
-- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--limit))
+- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--limit))
 
-<a id="nestedblock--widget--timeseries_definition--request--formula--limit"></a>
-### Nested Schema for `widget.timeseries_definition.request.formula.limit`
+<a id="nestedblock--widget--timeseries_definition--request--style--limit"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.limit`
 
 Optional:
 
@@ -9539,7 +9539,7 @@ Optional:
 
 
 <a id="nestedblock--widget--timeseries_definition--request--log_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.log_query`
+### Nested Schema for `widget.timeseries_definition.request.style`
 
 Required:
 
@@ -9547,13 +9547,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--timeseries_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.compute_query`
 
 Required:
 
@@ -9565,17 +9565,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--timeseries_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.timeseries_definition.request.log_query.group_by`
+<a id="nestedblock--widget--timeseries_definition--request--style--group_by"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--timeseries_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -9588,8 +9588,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--timeseries_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.timeseries_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--timeseries_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.multi_compute`
 
 Required:
 
@@ -9603,7 +9603,7 @@ Optional:
 
 
 <a id="nestedblock--widget--timeseries_definition--request--metadata"></a>
-### Nested Schema for `widget.timeseries_definition.request.metadata`
+### Nested Schema for `widget.timeseries_definition.request.style`
 
 Required:
 
@@ -9615,7 +9615,7 @@ Optional:
 
 
 <a id="nestedblock--widget--timeseries_definition--request--network_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.network_query`
+### Nested Schema for `widget.timeseries_definition.request.style`
 
 Required:
 
@@ -9623,13 +9623,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--timeseries_definition--request--network_query--compute_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.network_query.compute_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.compute_query`
 
 Required:
 
@@ -9641,17 +9641,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--timeseries_definition--request--network_query--group_by"></a>
-### Nested Schema for `widget.timeseries_definition.request.network_query.group_by`
+<a id="nestedblock--widget--timeseries_definition--request--style--group_by"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--timeseries_definition--request--network_query--group_by--sort_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.network_query.group_by.sort_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -9664,8 +9664,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--timeseries_definition--request--network_query--multi_compute"></a>
-### Nested Schema for `widget.timeseries_definition.request.network_query.multi_compute`
+<a id="nestedblock--widget--timeseries_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.multi_compute`
 
 Required:
 
@@ -9679,7 +9679,7 @@ Optional:
 
 
 <a id="nestedblock--widget--timeseries_definition--request--process_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.process_query`
+### Nested Schema for `widget.timeseries_definition.request.style`
 
 Required:
 
@@ -9693,31 +9693,31 @@ Optional:
 
 
 <a id="nestedblock--widget--timeseries_definition--request--query"></a>
-### Nested Schema for `widget.timeseries_definition.request.query`
+### Nested Schema for `widget.timeseries_definition.request.style`
 
 Optional:
 
-- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query))
-- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--metric_query))
-- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--process_query))
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--metric_query))
+- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--process_query))
 
-<a id="nestedblock--widget--timeseries_definition--request--query--event_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.query.event_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--event_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.event_query`
 
 Required:
 
-- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--compute))
+- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--compute))
 - **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
 
-- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--group_by))
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--group_by))
 - **indexes** (List of String) An array of index names to query in the stream.
-- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--search))
+- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--search))
 
-<a id="nestedblock--widget--timeseries_definition--request--query--event_query--compute"></a>
-### Nested Schema for `widget.timeseries_definition.request.query.event_query.compute`
+<a id="nestedblock--widget--timeseries_definition--request--style--event_query--compute"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.event_query.search`
 
 Required:
 
@@ -9729,8 +9729,8 @@ Optional:
 - **metric** (String) The measurable attribute to compute.
 
 
-<a id="nestedblock--widget--timeseries_definition--request--query--event_query--group_by"></a>
-### Nested Schema for `widget.timeseries_definition.request.query.event_query.group_by`
+<a id="nestedblock--widget--timeseries_definition--request--style--event_query--group_by"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.event_query.search`
 
 Required:
 
@@ -9739,10 +9739,10 @@ Required:
 Optional:
 
 - **limit** (Number) The number of groups to return.
-- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--group_by--sort))
+- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--event_query--search--sort))
 
-<a id="nestedblock--widget--timeseries_definition--request--query--event_query--group_by--sort"></a>
-### Nested Schema for `widget.timeseries_definition.request.query.event_query.group_by.sort`
+<a id="nestedblock--widget--timeseries_definition--request--style--event_query--search--sort"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.event_query.search.sort`
 
 Required:
 
@@ -9755,8 +9755,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--timeseries_definition--request--query--event_query--search"></a>
-### Nested Schema for `widget.timeseries_definition.request.query.event_query.search`
+<a id="nestedblock--widget--timeseries_definition--request--style--event_query--search"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.event_query.search`
 
 Required:
 
@@ -9764,8 +9764,8 @@ Required:
 
 
 
-<a id="nestedblock--widget--timeseries_definition--request--query--metric_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.query.metric_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--metric_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.metric_query`
 
 Required:
 
@@ -9778,8 +9778,8 @@ Optional:
 - **data_source** (String) The data source for metrics queries.
 
 
-<a id="nestedblock--widget--timeseries_definition--request--query--process_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.query.process_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--process_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.process_query`
 
 Required:
 
@@ -9799,7 +9799,7 @@ Optional:
 
 
 <a id="nestedblock--widget--timeseries_definition--request--rum_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.rum_query`
+### Nested Schema for `widget.timeseries_definition.request.style`
 
 Required:
 
@@ -9807,13 +9807,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--timeseries_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.compute_query`
 
 Required:
 
@@ -9825,17 +9825,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--timeseries_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.timeseries_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--timeseries_definition--request--style--group_by"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--timeseries_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -9848,8 +9848,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--timeseries_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.timeseries_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--timeseries_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.multi_compute`
 
 Required:
 
@@ -9863,7 +9863,7 @@ Optional:
 
 
 <a id="nestedblock--widget--timeseries_definition--request--security_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.security_query`
+### Nested Schema for `widget.timeseries_definition.request.style`
 
 Required:
 
@@ -9871,13 +9871,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--timeseries_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.security_query.compute_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.compute_query`
 
 Required:
 
@@ -9889,17 +9889,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--timeseries_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.timeseries_definition.request.security_query.group_by`
+<a id="nestedblock--widget--timeseries_definition--request--style--group_by"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--timeseries_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.timeseries_definition.request.security_query.group_by.sort_query`
+<a id="nestedblock--widget--timeseries_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -9912,8 +9912,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--timeseries_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.timeseries_definition.request.security_query.multi_compute`
+<a id="nestedblock--widget--timeseries_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.timeseries_definition.request.style.multi_compute`
 
 Required:
 
@@ -10003,7 +10003,7 @@ Optional:
 - **style** (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style))
 
 <a id="nestedblock--widget--toplist_definition--request--apm_query"></a>
-### Nested Schema for `widget.toplist_definition.request.apm_query`
+### Nested Schema for `widget.toplist_definition.request.style`
 
 Required:
 
@@ -10011,13 +10011,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--toplist_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.toplist_definition.request.apm_query.compute_query`
+<a id="nestedblock--widget--toplist_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.toplist_definition.request.style.compute_query`
 
 Required:
 
@@ -10029,17 +10029,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--toplist_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.toplist_definition.request.apm_query.group_by`
+<a id="nestedblock--widget--toplist_definition--request--style--group_by"></a>
+### Nested Schema for `widget.toplist_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--toplist_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.toplist_definition.request.apm_query.group_by.sort_query`
+<a id="nestedblock--widget--toplist_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.toplist_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -10052,8 +10052,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--toplist_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.toplist_definition.request.apm_query.multi_compute`
+<a id="nestedblock--widget--toplist_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.toplist_definition.request.style.multi_compute`
 
 Required:
 
@@ -10067,7 +10067,7 @@ Optional:
 
 
 <a id="nestedblock--widget--toplist_definition--request--audit_query"></a>
-### Nested Schema for `widget.toplist_definition.request.audit_query`
+### Nested Schema for `widget.toplist_definition.request.style`
 
 Required:
 
@@ -10075,13 +10075,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--toplist_definition--request--audit_query--compute_query"></a>
-### Nested Schema for `widget.toplist_definition.request.audit_query.compute_query`
+<a id="nestedblock--widget--toplist_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.toplist_definition.request.style.compute_query`
 
 Required:
 
@@ -10093,17 +10093,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--toplist_definition--request--audit_query--group_by"></a>
-### Nested Schema for `widget.toplist_definition.request.audit_query.group_by`
+<a id="nestedblock--widget--toplist_definition--request--style--group_by"></a>
+### Nested Schema for `widget.toplist_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--toplist_definition--request--audit_query--group_by--sort_query"></a>
-### Nested Schema for `widget.toplist_definition.request.audit_query.group_by.sort_query`
+<a id="nestedblock--widget--toplist_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.toplist_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -10116,8 +10116,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--toplist_definition--request--audit_query--multi_compute"></a>
-### Nested Schema for `widget.toplist_definition.request.audit_query.multi_compute`
+<a id="nestedblock--widget--toplist_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.toplist_definition.request.style.multi_compute`
 
 Required:
 
@@ -10131,7 +10131,7 @@ Optional:
 
 
 <a id="nestedblock--widget--toplist_definition--request--conditional_formats"></a>
-### Nested Schema for `widget.toplist_definition.request.conditional_formats`
+### Nested Schema for `widget.toplist_definition.request.style`
 
 Required:
 
@@ -10150,7 +10150,7 @@ Optional:
 
 
 <a id="nestedblock--widget--toplist_definition--request--formula"></a>
-### Nested Schema for `widget.toplist_definition.request.formula`
+### Nested Schema for `widget.toplist_definition.request.style`
 
 Required:
 
@@ -10159,10 +10159,10 @@ Required:
 Optional:
 
 - **alias** (String) An expression alias.
-- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--limit))
+- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--limit))
 
-<a id="nestedblock--widget--toplist_definition--request--formula--limit"></a>
-### Nested Schema for `widget.toplist_definition.request.formula.limit`
+<a id="nestedblock--widget--toplist_definition--request--style--limit"></a>
+### Nested Schema for `widget.toplist_definition.request.style.limit`
 
 Optional:
 
@@ -10172,7 +10172,7 @@ Optional:
 
 
 <a id="nestedblock--widget--toplist_definition--request--log_query"></a>
-### Nested Schema for `widget.toplist_definition.request.log_query`
+### Nested Schema for `widget.toplist_definition.request.style`
 
 Required:
 
@@ -10180,13 +10180,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--toplist_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.toplist_definition.request.log_query.compute_query`
+<a id="nestedblock--widget--toplist_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.toplist_definition.request.style.compute_query`
 
 Required:
 
@@ -10198,17 +10198,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--toplist_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.toplist_definition.request.log_query.group_by`
+<a id="nestedblock--widget--toplist_definition--request--style--group_by"></a>
+### Nested Schema for `widget.toplist_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--toplist_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.toplist_definition.request.log_query.group_by.sort_query`
+<a id="nestedblock--widget--toplist_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.toplist_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -10221,8 +10221,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--toplist_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.toplist_definition.request.log_query.multi_compute`
+<a id="nestedblock--widget--toplist_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.toplist_definition.request.style.multi_compute`
 
 Required:
 
@@ -10236,7 +10236,7 @@ Optional:
 
 
 <a id="nestedblock--widget--toplist_definition--request--process_query"></a>
-### Nested Schema for `widget.toplist_definition.request.process_query`
+### Nested Schema for `widget.toplist_definition.request.style`
 
 Required:
 
@@ -10250,31 +10250,31 @@ Optional:
 
 
 <a id="nestedblock--widget--toplist_definition--request--query"></a>
-### Nested Schema for `widget.toplist_definition.request.query`
+### Nested Schema for `widget.toplist_definition.request.style`
 
 Optional:
 
-- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query))
-- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--metric_query))
-- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--process_query))
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--metric_query))
+- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--process_query))
 
-<a id="nestedblock--widget--toplist_definition--request--query--event_query"></a>
-### Nested Schema for `widget.toplist_definition.request.query.event_query`
+<a id="nestedblock--widget--toplist_definition--request--style--event_query"></a>
+### Nested Schema for `widget.toplist_definition.request.style.event_query`
 
 Required:
 
-- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--compute))
+- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--event_query--compute))
 - **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
 
-- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--group_by))
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--event_query--group_by))
 - **indexes** (List of String) An array of index names to query in the stream.
-- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--search))
+- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--event_query--search))
 
-<a id="nestedblock--widget--toplist_definition--request--query--event_query--compute"></a>
-### Nested Schema for `widget.toplist_definition.request.query.event_query.compute`
+<a id="nestedblock--widget--toplist_definition--request--style--event_query--compute"></a>
+### Nested Schema for `widget.toplist_definition.request.style.event_query.search`
 
 Required:
 
@@ -10286,8 +10286,8 @@ Optional:
 - **metric** (String) The measurable attribute to compute.
 
 
-<a id="nestedblock--widget--toplist_definition--request--query--event_query--group_by"></a>
-### Nested Schema for `widget.toplist_definition.request.query.event_query.group_by`
+<a id="nestedblock--widget--toplist_definition--request--style--event_query--group_by"></a>
+### Nested Schema for `widget.toplist_definition.request.style.event_query.search`
 
 Required:
 
@@ -10296,10 +10296,10 @@ Required:
 Optional:
 
 - **limit** (Number) The number of groups to return.
-- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--group_by--sort))
+- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--event_query--search--sort))
 
-<a id="nestedblock--widget--toplist_definition--request--query--event_query--group_by--sort"></a>
-### Nested Schema for `widget.toplist_definition.request.query.event_query.group_by.sort`
+<a id="nestedblock--widget--toplist_definition--request--style--event_query--search--sort"></a>
+### Nested Schema for `widget.toplist_definition.request.style.event_query.search.sort`
 
 Required:
 
@@ -10312,8 +10312,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--toplist_definition--request--query--event_query--search"></a>
-### Nested Schema for `widget.toplist_definition.request.query.event_query.search`
+<a id="nestedblock--widget--toplist_definition--request--style--event_query--search"></a>
+### Nested Schema for `widget.toplist_definition.request.style.event_query.search`
 
 Required:
 
@@ -10321,8 +10321,8 @@ Required:
 
 
 
-<a id="nestedblock--widget--toplist_definition--request--query--metric_query"></a>
-### Nested Schema for `widget.toplist_definition.request.query.metric_query`
+<a id="nestedblock--widget--toplist_definition--request--style--metric_query"></a>
+### Nested Schema for `widget.toplist_definition.request.style.metric_query`
 
 Required:
 
@@ -10335,8 +10335,8 @@ Optional:
 - **data_source** (String) The data source for metrics queries.
 
 
-<a id="nestedblock--widget--toplist_definition--request--query--process_query"></a>
-### Nested Schema for `widget.toplist_definition.request.query.process_query`
+<a id="nestedblock--widget--toplist_definition--request--style--process_query"></a>
+### Nested Schema for `widget.toplist_definition.request.style.process_query`
 
 Required:
 
@@ -10356,7 +10356,7 @@ Optional:
 
 
 <a id="nestedblock--widget--toplist_definition--request--rum_query"></a>
-### Nested Schema for `widget.toplist_definition.request.rum_query`
+### Nested Schema for `widget.toplist_definition.request.style`
 
 Required:
 
@@ -10364,13 +10364,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--toplist_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.toplist_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--toplist_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.toplist_definition.request.style.compute_query`
 
 Required:
 
@@ -10382,17 +10382,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--toplist_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.toplist_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--toplist_definition--request--style--group_by"></a>
+### Nested Schema for `widget.toplist_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--toplist_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.toplist_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--toplist_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.toplist_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -10405,8 +10405,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--toplist_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.toplist_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--toplist_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.toplist_definition.request.style.multi_compute`
 
 Required:
 
@@ -10420,7 +10420,7 @@ Optional:
 
 
 <a id="nestedblock--widget--toplist_definition--request--security_query"></a>
-### Nested Schema for `widget.toplist_definition.request.security_query`
+### Nested Schema for `widget.toplist_definition.request.style`
 
 Required:
 
@@ -10428,13 +10428,13 @@ Required:
 
 Optional:
 
-- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query--compute_query))
-- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query--group_by))
-- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query--multi_compute))
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--multi_compute))
 - **search_query** (String) The search query to use.
 
-<a id="nestedblock--widget--toplist_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.toplist_definition.request.security_query.compute_query`
+<a id="nestedblock--widget--toplist_definition--request--style--compute_query"></a>
+### Nested Schema for `widget.toplist_definition.request.style.compute_query`
 
 Required:
 
@@ -10446,17 +10446,17 @@ Optional:
 - **interval** (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--toplist_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.toplist_definition.request.security_query.group_by`
+<a id="nestedblock--widget--toplist_definition--request--style--group_by"></a>
+### Nested Schema for `widget.toplist_definition.request.style.group_by`
 
 Optional:
 
 - **facet** (String) The facet name.
 - **limit** (Number) The maximum number of items in the group.
-- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query--group_by--sort_query))
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style--group_by--sort_query))
 
-<a id="nestedblock--widget--toplist_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.toplist_definition.request.security_query.group_by.sort_query`
+<a id="nestedblock--widget--toplist_definition--request--style--group_by--sort_query"></a>
+### Nested Schema for `widget.toplist_definition.request.style.group_by.sort_query`
 
 Required:
 
@@ -10469,8 +10469,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--toplist_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.toplist_definition.request.security_query.multi_compute`
+<a id="nestedblock--widget--toplist_definition--request--style--multi_compute"></a>
+### Nested Schema for `widget.toplist_definition.request.style.multi_compute`
 
 Required:
 
