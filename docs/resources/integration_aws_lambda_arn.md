@@ -31,7 +31,7 @@ resource "datadog_integration_aws_lambda_arn" "main_collector" {
 - **account_id** (String) Your AWS Account ID without dashes.
 - **lambda_arn** (String) The ARN of the Datadog forwarder Lambda.
 
-### Read-Only
+### Optional
 
 - **id** (String) The ID of this resource.
 

@@ -40,10 +40,7 @@ resource "datadog_metric_tag_configuration" "example_count_metric" {
 
 ### Optional
 
-- **include_percentiles** (Boolean) Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a metric_type of distribution.
-
-### Read-Only
-
 - **id** (String) The ID of this resource.
+- **include_percentiles** (Boolean) Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a metric_type of distribution.
 
 
