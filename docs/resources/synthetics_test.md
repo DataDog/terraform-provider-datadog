@@ -24,7 +24,7 @@ to:
 ```
 config_variable = {
   name = "LOCAL_VAR"
-  id = GLOBAL_VAR.id
+  id = datadog_synthetics_global_variable.name_of_your_variable.id
   type = "global"
 }
 ```
