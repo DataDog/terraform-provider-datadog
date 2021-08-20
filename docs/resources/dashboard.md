@@ -1607,7 +1607,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--compute))
-- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
@@ -1674,7 +1674,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **data_source** (String) The data source for metrics queries.
 
 
@@ -1689,7 +1689,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) The number of hits to return.
 - **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
@@ -2689,7 +2689,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--compute))
-- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
@@ -2756,7 +2756,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **data_source** (String) The data source for metrics queries.
 
 
@@ -2771,7 +2771,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) The number of hits to return.
 - **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
@@ -3935,7 +3935,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`.
+- **aggregator** (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - **alias** (String) The alias for the column name (defaults to metric name).
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query))
 - **apm_stats_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_stats_query))
@@ -4303,7 +4303,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`.
+- **aggregator** (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query))
 - **audit_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query))
 - **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--conditional_formats))
@@ -4577,7 +4577,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--compute))
-- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
@@ -4644,7 +4644,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **data_source** (String) The data source for metrics queries.
 
 
@@ -4659,7 +4659,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) The number of hits to return.
 - **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
@@ -4837,7 +4837,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`.
+- **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query))
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--process_query))
@@ -5121,7 +5121,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`.
+- **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query))
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--process_query))
@@ -5867,7 +5867,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--compute))
-- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
@@ -5934,7 +5934,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **data_source** (String) The data source for metrics queries.
 
 
@@ -5949,7 +5949,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) The number of hits to return.
 - **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
@@ -6424,7 +6424,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--compute))
-- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
@@ -6491,7 +6491,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **data_source** (String) The data source for metrics queries.
 
 
@@ -6506,7 +6506,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) The number of hits to return.
 - **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
@@ -7775,7 +7775,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`.
+- **aggregator** (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - **alias** (String) The alias for the column name (defaults to metric name).
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query))
 - **apm_stats_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_stats_query))
@@ -8143,7 +8143,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`.
+- **aggregator** (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query))
 - **audit_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query))
 - **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--conditional_formats))
@@ -8417,7 +8417,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--compute))
-- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
@@ -8484,7 +8484,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **data_source** (String) The data source for metrics queries.
 
 
@@ -8499,7 +8499,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) The number of hits to return.
 - **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
@@ -8677,7 +8677,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`.
+- **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query))
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--process_query))
@@ -8961,7 +8961,7 @@ Optional:
 
 Optional:
 
-- **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`.
+- **aggregator** (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query))
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--process_query))
@@ -9707,7 +9707,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--compute))
-- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
@@ -9774,7 +9774,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **data_source** (String) The data source for metrics queries.
 
 
@@ -9789,7 +9789,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) The number of hits to return.
 - **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
@@ -10264,7 +10264,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--compute))
-- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
@@ -10331,7 +10331,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **data_source** (String) The data source for metrics queries.
 
 
@@ -10346,7 +10346,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) The number of hits to return.
 - **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
