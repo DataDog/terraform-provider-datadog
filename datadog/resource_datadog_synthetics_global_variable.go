@@ -48,7 +48,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 				Sensitive:   true,
 			},
 			"secure": {
-				Description: "If set to true, the value of the global variable will be hidden. Defaults to `false`.",
+				Description: "If set to true, the value of the global variable is hidden. Defaults to `false`.",
 				Default:     false,
 				Type:        schema.TypeBool,
 				Optional:    true,
@@ -100,7 +100,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 				},
 			},
 			"restricted_roles": {
-				Description: "A list of role identifiers to associate with the Synthetics global variable",
+				Description: "A list of role identifiers to associate with the Synthetics global variable.",
 				Type:        schema.TypeSet,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 				Optional:    true,
