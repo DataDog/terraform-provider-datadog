@@ -67,7 +67,12 @@ For example, if the value is set to `300` (5min), the `timeframe` is set to `las
 - **locked** (Boolean) A boolean indicating whether changes to to this monitor should be restricted to the creator or admins. Defaults to `false`.
 - **monitor_threshold_windows** (Block List, Max: 1) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors. (see [below for nested schema](#nestedblock--monitor_threshold_windows))
 - **monitor_thresholds** (Block List, Max: 1) Alert thresholds of the monitor. (see [below for nested schema](#nestedblock--monitor_thresholds))
-- **new_host_delay** (Number) Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non negative integer. Defaults to `300`.
+- **new_group_delay** (Number) Time (in seconds) to skip evaluations for new groups.
+
+`new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.
+
+To disable group delay for monitors grouped by host, `new_host_delay` must be set to zero due to the default value of `300` for that field (`new_group_delay` defaults to zero, so setting it to zero is not required).
+- **new_host_delay** (Number, Deprecated) Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. Defaults to `300` (this default will be removed in a major version release and `new_host_delay` will be removed entirely in a subsequent major version release). **Deprecated.** Prefer using new_group_delay (except when setting `new_host_delay` to zero).
 - **no_data_timeframe** (Number) The number of minutes before a monitor will notify when data stops reporting. Provider defaults to 10 minutes.
 
 We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.
