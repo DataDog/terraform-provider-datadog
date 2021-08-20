@@ -244,7 +244,7 @@ resource "datadog_synthetics_test" "test_browser" {
     name = "Check current url"
     type = "assertCurrentUrl"
     params {
-      check = "contains",
+      check = "contains"
       value = "datadoghq"
     }
   }
