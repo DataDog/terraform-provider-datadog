@@ -56,7 +56,6 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_ip_ranges_test":                         "ip-ranges",
 	"tests/data_source_datadog_monitor_test":                           "monitors",
 	"tests/data_source_datadog_monitors_test":                          "monitors",
-	"tests/data_source_datadog_organization_settings_test":             "organization",
 	"tests/data_source_datadog_permissions_test":                       "permissions",
 	"tests/data_source_datadog_role_test":                              "roles",
 	"tests/data_source_datadog_user_test":                              "users",
