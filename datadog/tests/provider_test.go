@@ -49,6 +49,8 @@ const testOrgEnvName = "DD_TEST_ORG"
 var isTestOrgC *bool
 
 var testFiles2EndpointTags = map[string]string{
+	"tests/data_source_datadog_api_key_test":                           "api_keys",
+	"tests/data_source_datadog_application_key_test":                   "application_keys",
 	"tests/data_source_datadog_dashboard_test":                         "dashboard",
 	"tests/data_source_datadog_dashboard_list_test":                    "dashboard-lists",
 	"tests/data_source_datadog_ip_ranges_test":                         "ip-ranges",
@@ -69,6 +71,9 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/import_datadog_monitor_test":                                "monitors",
 	"tests/import_datadog_user_test":                                   "users",
 	"tests/provider_test":                                              "terraform",
+	"tests/resource_datadog_api_key_test":                              "api_keys",
+	"tests/resource_datadog_application_key_test":                      "application_keys",
+	"tests/resource_datadog_child_organization_test":                   "organization",
 	"tests/resource_datadog_dashboard_alert_graph_test":                "dashboards",
 	"tests/resource_datadog_dashboard_alert_value_test":                "dashboards",
 	"tests/resource_datadog_dashboard_change_test":                     "dashboards",
@@ -114,6 +119,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_metric_metadata_test":                      "metrics",
 	"tests/resource_datadog_metric_tag_configuration_test":             "metrics",
 	"tests/resource_datadog_monitor_test":                              "monitors",
+	"tests/resource_datadog_organization_settings_test":                "organization",
 	"tests/resource_datadog_role_test":                                 "roles",
 	"tests/resource_datadog_screenboard_test":                          "dashboards",
 	"tests/resource_datadog_security_monitoring_default_rule_test":     "security-monitoring",
