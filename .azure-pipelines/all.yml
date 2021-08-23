@@ -33,12 +33,12 @@ jobs:
       pool:
           vmImage: "Ubuntu-20.04"
       container:
-          image: golang:latest
+          image: golang:1.16
       services:
           datadog-agent: datadog-agent
       steps:
-          - script: make testall
-            displayName: Run all tests
+          - script: make testacc
+            displayName: Run integration tests
             env:
                 RECORD: "none"
                 CI: "true"

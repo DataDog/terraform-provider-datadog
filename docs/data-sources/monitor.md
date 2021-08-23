@@ -41,6 +41,7 @@ data "datadog_monitor" "test" {
 - **monitor_threshold_windows** (List of Object) Mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m`. This is only used by anomaly monitors. (see [below for nested schema](#nestedatt--monitor_threshold_windows))
 - **monitor_thresholds** (List of Object) Alert thresholds of the monitor. (see [below for nested schema](#nestedatt--monitor_thresholds))
 - **name** (String) Name of the monitor
+- **new_group_delay** (Number) Time (in seconds) to skip evaluations for new groups.
 - **new_host_delay** (Number) Time (in seconds) allowing a host to boot and applications to fully start before starting the evaluation of monitor results.
 - **no_data_timeframe** (Number) The number of minutes before the monitor notifies when data stops reporting.
 - **notify_audit** (Boolean) Whether or not tagged users are notified on changes to the monitor.
