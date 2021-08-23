@@ -128,6 +128,32 @@ func TestAccDatadogOrganizationSettings_Update(t *testing.T) {
 	})
 }
 
+func TestDatadogOrganizationSettings_import(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
+	t.Parallel()
+	resourceName := "datadog_organization_settings.foo"
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueEntity := uniqueEntityName(ctx, t)
+	organizationName := fmt.Sprint(uniqueEntity[len(uniqueEntity)-30:])
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogOrganizationSettingsConfig_Required(organizationName),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func TestAccDatadogOrganizationSettings_IncorrectName(t *testing.T) {
 	if !isReplaying() {
 		t.Skip("This test only supports replaying")

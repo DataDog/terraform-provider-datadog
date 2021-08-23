@@ -49,6 +49,33 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 	})
 }
 
+func TestDatadogApplicationKey_import(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+	t.Parallel()
+	resourceName := "datadog_application_key.foo"
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	applicationKeyName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogApplicationKeyDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogApplicationKeyConfigRequired(applicationKeyName),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogApplicationKeyConfigRequired(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_application_key" "foo" {
