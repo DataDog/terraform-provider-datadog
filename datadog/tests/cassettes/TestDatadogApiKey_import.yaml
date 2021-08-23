@@ -1,0 +1,196 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"name":"tf-TestDatadogApiKey_import-local-1627995076"},"type":"api_keys"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateAPIKey
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/api_keys
+    method: POST
+  response:
+    body: '{"data":{"type":"api_keys","attributes":{"created_at":"2021-08-03T12:51:18.626465+00:00","key":"c2c89bcbfdb338d52266f6b28ccf5bd1","last4":"5bd1","modified_at":"2021-08-03T12:51:18.626465+00:00","name":"tf-TestDatadogApiKey_import-local-1627995076"},"relationships":{"created_by":{"data":{"type":"users","id":"c99138fe-558a-11eb-8cf2-37ba6acf8928"}},"modified_by":{"data":{"type":"users","id":"c99138fe-558a-11eb-8cf2-37ba6acf8928"}}},"id":"3dd7f0b8-864d-55e2-940c-0dd1d2a59634"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "479"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 03 Aug 2021 12:51:18 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetAPIKey
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/api_keys/3dd7f0b8-864d-55e2-940c-0dd1d2a59634
+    method: GET
+  response:
+    body: '{"data":{"type":"api_keys","attributes":{"created_at":"2021-08-03T12:51:18.626465+00:00","key":"c2c89bcbfdb338d52266f6b28ccf5bd1","last4":"5bd1","modified_at":"2021-08-03T12:51:18.626465+00:00","name":"tf-TestDatadogApiKey_import-local-1627995076"},"relationships":{"created_by":{"data":{"type":"users","id":"c99138fe-558a-11eb-8cf2-37ba6acf8928"}},"modified_by":{"data":{"type":"users","id":"c99138fe-558a-11eb-8cf2-37ba6acf8928"}}},"id":"3dd7f0b8-864d-55e2-940c-0dd1d2a59634"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 03 Aug 2021 12:51:19 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetAPIKey
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/api_keys/3dd7f0b8-864d-55e2-940c-0dd1d2a59634
+    method: GET
+  response:
+    body: '{"data":{"type":"api_keys","attributes":{"created_at":"2021-08-03T12:51:18.626465+00:00","key":"c2c89bcbfdb338d52266f6b28ccf5bd1","last4":"5bd1","modified_at":"2021-08-03T12:51:18.626465+00:00","name":"tf-TestDatadogApiKey_import-local-1627995076"},"relationships":{"created_by":{"data":{"type":"users","id":"c99138fe-558a-11eb-8cf2-37ba6acf8928"}},"modified_by":{"data":{"type":"users","id":"c99138fe-558a-11eb-8cf2-37ba6acf8928"}}},"id":"3dd7f0b8-864d-55e2-940c-0dd1d2a59634"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 03 Aug 2021 12:51:20 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - DeleteAPIKey
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/api_keys/3dd7f0b8-864d-55e2-940c-0dd1d2a59634
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "0"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 03 Aug 2021 12:51:20 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetUser
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/users/3dd7f0b8-864d-55e2-940c-0dd1d2a59634
+    method: GET
+  response:
+    body: '{"errors": ["user not found"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 03 Aug 2021 12:51:21 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 404 Not Found
+    code: 404
+    duration: ""
