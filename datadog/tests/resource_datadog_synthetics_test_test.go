@@ -1743,6 +1743,14 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 				"datadog_synthetics_test.bar", "browser_variable.0.pattern", "{{numeric(3)}}"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_variable.0.example", "597"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.type", "text"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.name", "VARIABLE_NAME"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.pattern", "{{numeric(3)}}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.example", "123"),
 		),
 	}
 }
@@ -1806,6 +1814,13 @@ resource "datadog_synthetics_test" "bar" {
 		name = "MY_PATTERN_VAR"
 		pattern = "{{numeric(3)}}"
 		example = "597"
+	}
+
+	config_variable {
+		type = "text"
+		name = "VARIABLE_NAME"
+		pattern = "{{numeric(3)}}"
+		example = "123"
 	}
 }`, uniq)
 }
