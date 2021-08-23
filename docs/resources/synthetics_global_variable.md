@@ -34,7 +34,8 @@ resource "datadog_synthetics_global_variable" "test_variable" {
 - **description** (String) Description of the global variable.
 - **parse_test_id** (String) Id of the Synthetics test to use for a variable from test.
 - **parse_test_options** (Block List, Max: 1) ID of the Synthetics test to use a source of the global variable value. (see [below for nested schema](#nestedblock--parse_test_options))
-- **secure** (Boolean) Sets the variable as secure. Defaults to `false`.
+- **restricted_roles** (Set of String) A list of role identifiers to associate with the Synthetics global variable.
+- **secure** (Boolean) If set to true, the value of the global variable is hidden. Defaults to `false`.
 - **tags** (List of String) A list of tags to associate with your synthetics global variable.
 
 ### Read-Only
@@ -58,7 +59,7 @@ Optional:
 
 Required:
 
-- **type** (String) Type of parser to extract the value. Valid values are `raw`, `json_path`, `regex`.
+- **type** (String) Type of parser to extract the value. Valid values are `raw`, `json_path`, `regex`, `x_path`.
 
 Optional:
 

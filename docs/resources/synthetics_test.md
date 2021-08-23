@@ -368,7 +368,7 @@ Optional:
 
 Required:
 
-- **type** (String) Type of parser for a Synthetics global variable from a synthetics test. Valid values are `raw`, `json_path`, `regex`.
+- **type** (String) Type of parser for a Synthetics global variable from a synthetics test. Valid values are `raw`, `json_path`, `regex`, `x_path`.
 
 Optional:
 
