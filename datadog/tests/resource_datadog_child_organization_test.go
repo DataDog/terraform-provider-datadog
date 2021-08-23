@@ -10,6 +10,9 @@ import (
 )
 
 func TestAccDatadogChildOrganization_Create(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueEntity := uniqueEntityName(ctx, t)
@@ -45,6 +48,9 @@ func TestAccDatadogChildOrganization_Create(t *testing.T) {
 }
 
 func TestAccDatadogChildOrganization_IncorrectName(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	organizationName := uniqueEntityName(ctx, t) + "qwertyuiopasdfghjklzxcvbnm0123456" // 32 characters

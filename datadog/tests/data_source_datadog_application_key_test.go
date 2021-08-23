@@ -10,6 +10,9 @@ import (
 )
 
 func TestAccDatadogApplicationKeyDatasource_matchId(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
 	_, accProviders := testAccProviders(context.Background(), t)
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	applicationKeyName := uniqueEntityName(ctx, t)
@@ -34,6 +37,9 @@ func TestAccDatadogApplicationKeyDatasource_matchId(t *testing.T) {
 }
 
 func TestAccDatadogApplicationKeyDatasource_matchName(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
 	_, accProviders := testAccProviders(context.Background(), t)
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	applicationKeyName := uniqueEntityName(ctx, t)
@@ -58,6 +64,9 @@ func TestAccDatadogApplicationKeyDatasource_matchName(t *testing.T) {
 }
 
 func TestAccDatadogApplicationKeyDatasource_matchIdError(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -75,6 +84,9 @@ func TestAccDatadogApplicationKeyDatasource_matchIdError(t *testing.T) {
 }
 
 func TestAccDatadogApplicationKeyDatasource_matchNameError(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
 	_, accProviders := testAccProviders(context.Background(), t)
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	applicationKeyName := uniqueEntityName(ctx, t)
@@ -94,6 +106,9 @@ func TestAccDatadogApplicationKeyDatasource_matchNameError(t *testing.T) {
 }
 
 func TestAccDatadogApplicationKeyDatasource_missingParametersError(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
