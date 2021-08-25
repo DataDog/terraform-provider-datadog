@@ -873,13 +873,13 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	}
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
-		if err := utils.CheckForUnparsed(syntheticsAPITest); err != nil {
+		if err := utils.CheckForUnparsed(syntheticsBrowserTest); err != nil {
 			return diag.FromErr(err)
 		}
 		return updateSyntheticsBrowserTestLocalState(d, &syntheticsBrowserTest)
 	}
 
-	if err := utils.CheckForUnparsed(syntheticsBrowserTest); err != nil {
+	if err := utils.CheckForUnparsed(syntheticsAPITest); err != nil {
 		return diag.FromErr(err)
 	}
 	return updateSyntheticsAPITestLocalState(d, &syntheticsAPITest)
