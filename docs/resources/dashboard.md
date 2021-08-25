@@ -4243,7 +4243,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--compute))
-- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
@@ -4310,7 +4310,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **data_source** (String) The data source for metrics queries.
 
 
@@ -4325,7 +4325,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) The number of hits to return.
 - **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
@@ -8297,7 +8297,7 @@ Optional:
 Required:
 
 - **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query--compute))
-- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`.
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
 - **name** (String) The name of query for use in formulas.
 
 Optional:
@@ -8364,7 +8364,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **data_source** (String) The data source for metrics queries.
 
 
@@ -8379,7 +8379,7 @@ Required:
 
 Optional:
 
-- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`.
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
 - **limit** (Number) The number of hits to return.
 - **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
