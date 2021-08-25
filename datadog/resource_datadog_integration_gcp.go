@@ -118,6 +118,9 @@ func resourceDatadogIntegrationGcpRead(ctx context.Context, d *schema.ResourceDa
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting GCP integration")
 	}
+	if err := utils.CheckForUnparsed(integrations); err != nil {
+		return diag.FromErr(err)
+	}
 	for _, integration := range integrations {
 		if integration.GetProjectId() == projectID {
 			d.Set("project_id", integration.GetProjectId())

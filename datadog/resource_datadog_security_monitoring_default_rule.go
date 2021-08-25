@@ -93,6 +93,9 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 	if err != nil {
 		return diag.FromErr(err)
 	}
+	if err := utils.CheckForUnparsed(ruleResponse); err != nil {
+		return diag.FromErr(err)
+	}
 
 	d.Set("enabled", *ruleResponse.IsEnabled)
 
@@ -148,6 +151,9 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *
 		}
 
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error fetching default rule")
+	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
 	}
 
 	if !response.GetIsDefault() {

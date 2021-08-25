@@ -74,6 +74,9 @@ func dataSourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.R
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying service level objectives")
 	}
+	if err := utils.CheckForUnparsed(slosResp); err != nil {
+		return diag.FromErr(err)
+	}
 	if len(slosResp.GetData()) > 1 {
 		return diag.Errorf("your query returned more than one result, please try a more specific search criteria")
 	}

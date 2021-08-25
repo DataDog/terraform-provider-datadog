@@ -93,6 +93,9 @@ func resourceDatadogSecurityMonitoringFilterCreate(ctx context.Context, d *schem
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating security monitoring filter")
 	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
+	}
 
 	// update the resource
 	updateResourceDataFilterFromResponse(d, response)
@@ -113,6 +116,9 @@ func resourceDatadogSecurityMonitoringFilterRead(ctx context.Context, d *schema.
 			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error fetching security filter")
+	}
+	if err := utils.CheckForUnparsed(filterResponse); err != nil {
+		return diag.FromErr(err)
 	}
 
 	updateResourceDataFilterFromResponse(d, filterResponse)

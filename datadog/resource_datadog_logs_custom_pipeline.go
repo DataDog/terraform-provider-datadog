@@ -375,6 +375,9 @@ func resourceDatadogLogsPipelineCreate(ctx context.Context, d *schema.ResourceDa
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "failed to create logs pipeline using Datadog API")
 	}
+	if err := utils.CheckForUnparsed(createdPipeline); err != nil {
+		return diag.FromErr(err)
+	}
 	d.SetId(*createdPipeline.Id)
 	return updateLogsCustomPipelineState(d, &createdPipeline)
 }
@@ -412,6 +415,9 @@ func resourceDatadogLogsPipelineRead(ctx context.Context, d *schema.ResourceData
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "failed to get logs pipeline using Datadog API")
 	}
+	if err := utils.CheckForUnparsed(ddPipeline); err != nil {
+		return diag.FromErr(err)
+	}
 	return updateLogsCustomPipelineState(d, &ddPipeline)
 }
 
@@ -430,6 +436,9 @@ func resourceDatadogLogsPipelineUpdate(ctx context.Context, d *schema.ResourceDa
 	updatedPipeline, httpResponse, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipeline(authV1, d.Id(), *ddPipeline)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs pipeline")
+	}
+	if err := utils.CheckForUnparsed(updatedPipeline); err != nil {
+		return diag.FromErr(err)
 	}
 	return updateLogsCustomPipelineState(d, &updatedPipeline)
 }

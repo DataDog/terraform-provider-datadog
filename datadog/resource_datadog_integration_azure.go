@@ -62,6 +62,9 @@ func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.Resource
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error listing azure integration")
 	}
+	if err := utils.CheckForUnparsed(integrations); err != nil {
+		return diag.FromErr(err)
+	}
 	for _, integration := range integrations {
 		if integration.GetTenantName() == tenantName {
 			d.Set("tenant_name", integration.GetTenantName())

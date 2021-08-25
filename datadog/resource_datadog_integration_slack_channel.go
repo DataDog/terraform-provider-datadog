@@ -112,6 +112,9 @@ func resourceDatadogIntegrationSlackChannelCreate(ctx context.Context, d *schema
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating slack channel")
 	}
+	if err := utils.CheckForUnparsed(createdChannel); err != nil {
+		return diag.FromErr(err)
+	}
 
 	d.SetId(fmt.Sprintf("%s:%s", accountName, ddSlackChannel.GetName()))
 	return updateSlackChannelState(d, &createdChannel)
@@ -135,6 +138,9 @@ func resourceDatadogIntegrationSlackChannelRead(ctx context.Context, d *schema.R
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting slack channel")
 	}
+	if err := utils.CheckForUnparsed(slackChannel); err != nil {
+		return diag.FromErr(err)
+	}
 
 	return updateSlackChannelState(d, &slackChannel)
 }
@@ -156,6 +162,9 @@ func resourceDatadogIntegrationSlackChannelUpdate(ctx context.Context, d *schema
 	slackChannel, httpresp, err := datadogClient.SlackIntegrationApi.UpdateSlackIntegrationChannel(auth, accountName, channelName, *ddObject)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating slack channel")
+	}
+	if err := utils.CheckForUnparsed(slackChannel); err != nil {
+		return diag.FromErr(err)
 	}
 
 	// Handle case where channel name is updated

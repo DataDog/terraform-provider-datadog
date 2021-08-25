@@ -122,6 +122,9 @@ func resourceDatadogRoleCreate(ctx context.Context, d *schema.ResourceData, meta
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating role")
 	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		return diag.FromErr(err)
+	}
 	roleData := resp.GetData()
 	d.SetId(roleData.GetId())
 
@@ -207,6 +210,9 @@ func resourceDatadogRoleRead(ctx context.Context, d *schema.ResourceData, meta i
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting role")
 	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		return diag.FromErr(err)
+	}
 	roleData := resp.GetData()
 	return updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, client)
 }
@@ -220,6 +226,9 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 		resp, httpResponse, err := client.RolesApi.UpdateRole(auth, d.Id(), roleReq)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating role")
+		}
+		if err := utils.CheckForUnparsed(resp); err != nil {
+			return diag.FromErr(err)
 		}
 		roleData := resp.GetData()
 		if err := updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, client); err != nil {
@@ -247,6 +256,9 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 			if err != nil {
 				return utils.TranslateClientErrorDiag(err, httpResponse, "error removing permission from role")
 			}
+			if err := utils.CheckForUnparsed(permsResponse); err != nil {
+				return diag.FromErr(err)
+			}
 
 		}
 		for _, permI := range permsToAdd.List() {
@@ -258,6 +270,9 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 			permsResponse, httpResponse, err = client.RolesApi.AddPermissionToRole(auth, d.Id(), *permRelation)
 			if err != nil {
 				return utils.TranslateClientErrorDiag(err, httpResponse, "error adding permission to role")
+			}
+			if err := utils.CheckForUnparsed(permsResponse); err != nil {
+				return diag.FromErr(err)
 			}
 		}
 		// Only need to update once all the permissions have been added/revoked, with the last call response

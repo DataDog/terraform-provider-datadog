@@ -99,6 +99,9 @@ func resourceDatadogLogsArchiveCreate(ctx context.Context, d *schema.ResourceDat
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "failed to create logs archive using Datadog API")
 	}
+	if err := utils.CheckForUnparsed(createdArchive); err != nil {
+		return diag.FromErr(err)
+	}
 	d.SetId(*createdArchive.GetData().Id)
 	return updateLogsArchiveState(d, &createdArchive)
 }
@@ -144,6 +147,9 @@ func resourceDatadogLogsArchiveRead(ctx context.Context, d *schema.ResourceData,
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "failed to get logs archive using Datadog API")
 	}
+	if err := utils.CheckForUnparsed(ddArchive); err != nil {
+		return diag.FromErr(err)
+	}
 	return updateLogsArchiveState(d, &ddArchive)
 }
 
@@ -159,6 +165,9 @@ func resourceDatadogLogsArchiveUpdate(ctx context.Context, d *schema.ResourceDat
 	updatedArchive, httpResponse, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchive(authV2, d.Id(), *ddArchive)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs archive")
+	}
+	if err := utils.CheckForUnparsed(updatedArchive); err != nil {
+		return diag.FromErr(err)
 	}
 	return updateLogsArchiveState(d, &updatedArchive)
 }

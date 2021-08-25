@@ -60,6 +60,9 @@ func resourceDatadogLogsIndexOrderUpdate(ctx context.Context, d *schema.Resource
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs index list")
 	}
+	if err := utils.CheckForUnparsed(updatedOrder); err != nil {
+		return diag.FromErr(err)
+	}
 	d.SetId(tfID)
 	return updateLogsIndexOrderState(d, &updatedOrder)
 }
@@ -78,6 +81,9 @@ func resourceDatadogLogsIndexOrderRead(ctx context.Context, d *schema.ResourceDa
 	ddIndexList, httpResponse, err := client.LogsIndexesApi.GetLogsIndexOrder(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs index list")
+	}
+	if err := utils.CheckForUnparsed(ddIndexList); err != nil {
+		return diag.FromErr(err)
 	}
 	return updateLogsIndexOrderState(d, &ddIndexList)
 }

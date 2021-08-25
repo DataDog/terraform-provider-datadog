@@ -53,6 +53,9 @@ func dataSourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData,
 			}
 			return resource.NonRetryableError(utils.TranslateClientError(err, httpresp, "error querying dashboard"))
 		}
+		if err := utils.CheckForUnparsed(dashResponse); err != nil {
+			return resource.NonRetryableError(err)
+		}
 
 		searchedName := d.Get("name")
 		var foundDashes []datadogV1.DashboardSummaryDefinition
