@@ -48,12 +48,11 @@ func dataSourceDatadogSecurityFiltersRead(ctx context.Context, d *schema.Resourc
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error listing filters")
 	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
+	}
 
 	for _, filter := range response.GetData() {
-		if err := utils.CheckForUnparsed(filter); err != nil {
-			return diag.FromErr(err)
-		}
-
 		// get filter id
 		filterIds = append(filterIds, filter.GetId())
 
