@@ -68,6 +68,9 @@ func resourceDatadogDashboardListCreate(ctx context.Context, d *schema.ResourceD
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating dashboard list")
 	}
+	if err := utils.CheckForUnparsed(dashboardList); err != nil {
+		return diag.FromErr(err)
+	}
 	id := dashboardList.GetId()
 	d.SetId(strconv.Itoa(int(id)))
 
@@ -113,6 +116,9 @@ func resourceDatadogDashboardListUpdate(ctx context.Context, d *schema.ResourceD
 	completeDashListV2, httpresp, err := datadogClientV2.DashboardListsApi.GetDashboardListItems(authV2, id)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting dashboard list item")
+	}
+	if err := utils.CheckForUnparsed(completeDashListV2); err != nil {
+		return diag.FromErr(err)
 	}
 	completeDashListDeleteV2, err := buildDatadogDashboardListDeleteItemsV2(completeDashListV2)
 	if err != nil {
@@ -160,6 +166,9 @@ func resourceDatadogDashboardListRead(ctx context.Context, d *schema.ResourceDat
 	completeItemListV2, _, err := datadogClientV2.DashboardListsApi.GetDashboardListItems(authV2, id)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting dashboard list item")
+	}
+	if err := utils.CheckForUnparsed(completeItemListV2); err != nil {
+		return diag.FromErr(err)
 	}
 	dashItemListV2, err := buildTerraformDashboardListItemsV2(completeItemListV2)
 	if err != nil {

@@ -802,6 +802,9 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 			// Note that Id won't be set, so no state will be saved.
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics API test")
 		}
+		if err := utils.CheckForUnparsed(createdSyntheticsTest); err != nil {
+			return diag.FromErr(err)
+		}
 
 		// If the Create callback returns with or without an error without an ID set using SetId,
 		// the resource is assumed to not be created, and no state is saved.
@@ -814,6 +817,9 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics browser test")
+		}
+		if err := utils.CheckForUnparsed(createdSyntheticsTest); err != nil {
+			return diag.FromErr(err)
 		}
 
 		// If the Create callback returns with or without an error without an ID set using SetId,
@@ -847,6 +853,9 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetics test")
 	}
+	if err := utils.CheckForUnparsed(syntheticsTest); err != nil {
+		return diag.FromErr(err)
+	}
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsBrowserTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id())
@@ -864,9 +873,15 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	}
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
+		if err := utils.CheckForUnparsed(syntheticsAPITest); err != nil {
+			return diag.FromErr(err)
+		}
 		return updateSyntheticsBrowserTestLocalState(d, &syntheticsBrowserTest)
 	}
 
+	if err := utils.CheckForUnparsed(syntheticsBrowserTest); err != nil {
+		return diag.FromErr(err)
+	}
 	return updateSyntheticsAPITestLocalState(d, &syntheticsAPITest)
 }
 
@@ -884,6 +899,9 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 			// If the Update callback returns with or without an error, the full state is saved.
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics API test")
 		}
+		if err := utils.CheckForUnparsed(updatedTest); err != nil {
+			return diag.FromErr(err)
+		}
 		return updateSyntheticsAPITestLocalState(d, &updatedTest)
 	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
@@ -891,6 +909,9 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics browser test")
+		}
+		if err := utils.CheckForUnparsed(updatedTest); err != nil {
+			return diag.FromErr(err)
 		}
 		return updateSyntheticsBrowserTestLocalState(d, &updatedTest)
 	}

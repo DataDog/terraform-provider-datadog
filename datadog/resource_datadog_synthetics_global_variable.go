@@ -120,6 +120,9 @@ func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schem
 		// Note that Id won't be set, so no state will be saved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics global variable")
 	}
+	if err := utils.CheckForUnparsed(createdSyntheticsGlobalVariable); err != nil {
+		return diag.FromErr(err)
+	}
 
 	// If the Create callback returns with or without an error without an ID set using SetId,
 	// the resource is assumed to not be created, and no state is saved.
@@ -143,6 +146,9 @@ func resourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.
 			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetics global variable")
+	}
+	if err := utils.CheckForUnparsed(syntheticsGlobalVariable); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return updateSyntheticsGlobalVariableLocalState(d, &syntheticsGlobalVariable)

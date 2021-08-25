@@ -50,6 +50,10 @@ func dataSourceDatadogSecurityFiltersRead(ctx context.Context, d *schema.Resourc
 	}
 
 	for _, filter := range response.GetData() {
+		if err := utils.CheckForUnparsed(filter); err != nil {
+			return diag.FromErr(err)
+		}
+
 		// get filter id
 		filterIds = append(filterIds, filter.GetId())
 

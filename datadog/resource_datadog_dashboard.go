@@ -145,6 +145,9 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating dashboard")
 	}
+	if err := utils.CheckForUnparsed(dashboard); err != nil {
+		return diag.FromErr(err)
+	}
 	d.SetId(*dashboard.Id)
 
 	var getDashboard datadogV1.Dashboard
@@ -156,6 +159,9 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 				return resource.RetryableError(fmt.Errorf("dashboard not created yet"))
 			}
 
+			return resource.NonRetryableError(err)
+		}
+		if err := utils.CheckForUnparsed(getDashboard); err != nil {
 			return resource.NonRetryableError(err)
 		}
 
@@ -183,6 +189,9 @@ func resourceDatadogDashboardUpdate(ctx context.Context, d *schema.ResourceData,
 	updatedDashboard, httpresp, err := datadogClientV1.DashboardsApi.UpdateDashboard(authV1, id, *dashboard)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating dashboard")
+	}
+	if err := utils.CheckForUnparsed(updatedDashboard); err != nil {
+		return diag.FromErr(err)
 	}
 
 	updateDashboardLists(d, providerConf, *dashboard.Id, d.Get("layout_type").(string))
@@ -293,6 +302,9 @@ func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, m
 			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting dashboard")
+	}
+	if err := utils.CheckForUnparsed(dashboard); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return updateDashboardState(d, &dashboard)

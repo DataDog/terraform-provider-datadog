@@ -118,6 +118,10 @@ func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema
 		}
 
 		for _, rule := range response.GetData() {
+			if err := utils.CheckForUnparsed(rule); err != nil {
+				return diag.FromErr(err)
+			}
+
 			if !matchesSecMonRuleFilters(rule, nameFilter, defaultFilter, tagFilter) {
 				continue
 			}

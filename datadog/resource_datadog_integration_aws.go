@@ -149,9 +149,11 @@ func resourceDatadogIntegrationAwsCreate(ctx context.Context, d *schema.Resource
 
 	iaws := buildDatadogIntegrationAwsStruct(d)
 	response, httpresp, err := datadogClientV1.AWSIntegrationApi.CreateAWSAccount(authV1, *iaws)
-
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating AWS integration")
+	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
 	}
 
 	if v, ok := d.GetOk("access_key_id"); ok {
@@ -191,6 +193,9 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting AWS integration")
+	}
+	if err := utils.CheckForUnparsed(integrations); err != nil {
+		return diag.FromErr(err)
 	}
 
 	for _, integration := range integrations.GetAccounts() {

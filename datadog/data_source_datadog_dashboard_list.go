@@ -38,6 +38,9 @@ func dataSourceDatadogDashboardListRead(ctx context.Context, d *schema.ResourceD
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying dashboard lists")
 	}
+	if err := utils.CheckForUnparsed(listResponse); err != nil {
+		return diag.FromErr(err)
+	}
 
 	searchedName := d.Get("name")
 	var foundList *datadogV1.DashboardList

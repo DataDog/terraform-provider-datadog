@@ -403,6 +403,9 @@ func resourceDatadogDowntimeCreate(ctx context.Context, d *schema.ResourceData, 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating downtime")
 	}
+	if err := utils.CheckForUnparsed(dt); err != nil {
+		return diag.FromErr(err)
+	}
 
 	d.SetId(strconv.Itoa(int(dt.GetId())))
 
@@ -426,6 +429,9 @@ func resourceDatadogDowntimeRead(ctx context.Context, d *schema.ResourceData, me
 			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting downtime")
+	}
+	if err := utils.CheckForUnparsed(dt); err != nil {
+		return diag.FromErr(err)
 	}
 
 	// Hack for recurring downtimes, compare the downtime definition in state with the most recent recurring child
@@ -558,6 +564,9 @@ func resourceDatadogDowntimeUpdate(ctx context.Context, d *schema.ResourceData, 
 	updatedDowntime, httpresp, err := datadogClientV1.DowntimesApi.UpdateDowntime(authV1, id, *dt)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating downtime")
+	}
+	if err := utils.CheckForUnparsed(updatedDowntime); err != nil {
+		return diag.FromErr(err)
 	}
 
 	// Handle the case when a downtime is replaced. Don't set it if the `active_child_id` is set as we want to maintain

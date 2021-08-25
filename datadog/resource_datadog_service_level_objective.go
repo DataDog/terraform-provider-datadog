@@ -335,6 +335,9 @@ func resourceDatadogServiceLevelObjectiveCreate(ctx context.Context, d *schema.R
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating service level objective")
 	}
+	if err := utils.CheckForUnparsed(sloResp); err != nil {
+		return diag.FromErr(err)
+	}
 
 	slo := &sloResp.GetData()[0]
 	d.SetId(slo.GetId())
@@ -354,6 +357,9 @@ func resourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.Res
 			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting service level objective")
+	}
+	if err := utils.CheckForUnparsed(sloResp); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return updateSLOStateFromRead(d, sloResp.Data)
@@ -491,6 +497,9 @@ func resourceDatadogServiceLevelObjectiveUpdate(ctx context.Context, d *schema.R
 	updatedSLO, httpResponse, err := datadogClientV1.ServiceLevelObjectivesApi.UpdateSLO(authV1, d.Id(), *slo)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating service level objective")
+	}
+	if err := utils.CheckForUnparsed(updatedSLO); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return updateSLOState(d, &updatedSLO.GetData()[0])

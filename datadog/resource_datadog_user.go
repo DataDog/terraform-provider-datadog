@@ -142,6 +142,9 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpresp, "error searching user")
 		}
+		if err := utils.CheckForUnparsed(listResponse); err != nil {
+			return diag.FromErr(err)
+		}
 		responseData := listResponse.GetData()
 		if len(responseData) != 1 {
 			return diag.Errorf("could not find single user with email %s", email)
@@ -153,11 +156,17 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpresp, "error updating user")
 		}
+		if err := utils.CheckForUnparsed(updatedUser); err != nil {
+			return diag.FromErr(err)
+		}
 		if err := updateUserStateV2(d, &updatedUser); err != nil {
 			return err
 		}
 		updated = true
 	} else {
+		if err := utils.CheckForUnparsed(createResponse); err != nil {
+			return diag.FromErr(err)
+		}
 		userData := createResponse.GetData()
 		userID = userData.GetId()
 	}
@@ -196,6 +205,9 @@ func sendUserInvitation(userID string, d *schema.ResourceData, meta interface{})
 	res, httpResponse, err := datadogClientV2.UsersApi.SendInvitations(authV2, body)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error sending user invitation")
+	}
+	if err := utils.CheckForUnparsed(res); err != nil {
+		return diag.FromErr(err)
 	}
 	if err := d.Set("user_invitation_id", res.GetData()[0].GetId()); err != nil {
 		return diag.FromErr(err)
@@ -244,6 +256,9 @@ func resourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta i
 		}
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting user")
 	}
+	if err := utils.CheckForUnparsed(userResponse); err != nil {
+		return diag.FromErr(err)
+	}
 	return updateUserStateV2(d, &userResponse)
 }
 func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -285,6 +300,9 @@ func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta
 	updatedUser, httpResponse, err := datadogClientV2.UsersApi.UpdateUser(authV2, d.Id(), *userRequest)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating user")
+	}
+	if err := utils.CheckForUnparsed(updatedUser); err != nil {
+		return diag.FromErr(err)
 	}
 	// Update state once after we do the UpdateUser operation. At this point, the roles have already been changed
 	// so the updated list is available in the update response.

@@ -91,6 +91,9 @@ func resourceDatadogIntegrationPagerdutySORead(ctx context.Context, d *schema.Re
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting PagerDuty integration service")
 	}
+	if err := utils.CheckForUnparsed(so); err != nil {
+		return diag.FromErr(err)
+	}
 
 	d.Set("service_name", so.GetServiceName())
 	// Only update service_key if not set on d - the API endpoints never return
