@@ -8,7 +8,6 @@ IMPROVEMENTS:
 -   `datadog_synthetics_test`: Add support for `allow_insecure` option in multistep requests ([#1145](https://github.com/DataDog/terraform-provider-datadog/pull/1145))
 -   `datadog_synthetics_test`: Add `multistep` API test example ([#1164](https://github.com/DataDog/terraform-provider-datadog/pull/1164))
 -   `datadog_synthetics_test`: Do not set useless fields for Synthetics local global variables ([#1175](https://github.com/DataDog/terraform-provider-datadog/pull/1175))
--   `datadog_synthetics_test`: Update synthetics docs for global variable + browser test ([#1181](https://github.com/DataDog/terraform-provider-datadog/pull/1181))
 -   `datadog_monitor`: Add `new_group_delay` monitor option ([#1176](https://github.com/DataDog/terraform-provider-datadog/pull/1176))
 -   `datadog_synthetics_test`: Add support for restricted roles for global variables ([#1178](https://github.com/DataDog/terraform-provider-datadog/pull/1178))
 -   `datadog_dashboard`: Implement formulas and functions support for query table widgets ([#1158](https://github.com/DataDog/terraform-provider-datadog/pull/1158))
@@ -24,16 +23,17 @@ FEATURES:
 -   `datadog_application_key`: Add datadog application key resource ([#1184](https://github.com/DataDog/terraform-provider-datadog/pull/1184)) Thanks [@bartoszj-bcg](https://github.com/bartoszj-bcg)
 -   `datadog_application_key`: Add datadog application key datasource ([#1184](https://github.com/DataDog/terraform-provider-datadog/pull/1184)) Thanks [@bartoszj-bcg](https://github.com/bartoszj-bcg)
 -   `datadog_child_organization`: Add datadog child organization resource ([#1184](https://github.com/DataDog/terraform-provider-datadog/pull/1184)) Thanks [@bartoszj-bcg](https://github.com/bartoszj-bcg)
+-   `datadog_organization_settings`: Add datadog organization settings resource ([#1184](https://github.com/DataDog/terraform-provider-datadog/pull/1184)) Thanks [@bartoszj-bcg](https://github.com/bartoszj-bcg)
 
 BUGFIXES:
 
 -   `datadog_synthetics_test`: Fix missing integer type assertion targets ([#1161](https://github.com/DataDog/terraform-provider-datadog/pull/1161))
 -   `datadog_dashboard`: Always set columns attribute when creating log stream widget ([#1163](https://github.com/DataDog/terraform-provider-datadog/pull/1163))
--   `datadog_dashboard_json`: Use custom SendRequest method to get a dashboard([#1167](https://github.com/DataDog/terraform-provider-datadog/pull/1167))
+-   `datadog_dashboard_json`: Use custom SendRequest method to get a dashboard ([#1167](https://github.com/DataDog/terraform-provider-datadog/pull/1167))
 
 NOTES:
 
--
+-   Update Datadog client to [v1.3.0](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.3.0)
 
 ## 3.2.0 (July 14, 2021)
 
