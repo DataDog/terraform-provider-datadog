@@ -161,6 +161,9 @@ func resourceDatadogMetricTagConfigurationCreate(ctx context.Context, d *schema.
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating MetricTagConfiguration")
 	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
+	}
 	d.SetId(metricName)
 
 	return updateMetricTagConfigurationState(d, response.Data)
@@ -218,6 +221,9 @@ func resourceDatadogMetricTagConfigurationRead(ctx context.Context, d *schema.Re
 	if httpresp.StatusCode != 200 {
 		return diag.Errorf("error fetching metric tag configuration by name, unexpected status code %d", httpresp.StatusCode)
 	}
+	if err := utils.CheckForUnparsed(metricTagConfigurationResponse); err != nil {
+		return diag.FromErr(err)
+	}
 
 	resource := metricTagConfigurationResponse.GetData()
 	return updateMetricTagConfigurationState(d, &resource)
@@ -239,6 +245,9 @@ func resourceDatadogMetricTagConfigurationUpdate(ctx context.Context, d *schema.
 	if httpresp != nil && httpresp.StatusCode == 404 {
 		return diag.Errorf("error updating tag configuration for metric, tag configuration does not exist")
 	}
+	if err := utils.CheckForUnparsed(metricTagConfigurationResponse); err != nil {
+		return diag.FromErr(err)
+	}
 
 	existingMetricType := metricTagConfigurationResponse.GetData().Attributes.GetMetricType()
 
@@ -253,6 +262,9 @@ func resourceDatadogMetricTagConfigurationUpdate(ctx context.Context, d *schema.
 	response, _, err := datadogClient.MetricsApi.UpdateTagConfiguration(auth, metricName, *ddObject)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating MetricTagConfiguration")
+	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return updateMetricTagConfigurationState(d, response.Data)

@@ -469,6 +469,9 @@ func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating monitor")
 	}
+	if err := utils.CheckForUnparsed(m); err != nil {
+		return diag.FromErr(err)
+	}
 	mCreatedID := strconv.FormatInt(mCreated.GetId(), 10)
 	d.SetId(mCreatedID)
 
@@ -622,6 +625,9 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 			}
 			return resource.NonRetryableError(utils.TranslateClientError(err, httpresp, "error getting monitor"))
 		}
+		if err := utils.CheckForUnparsed(m); err != nil {
+			return resource.NonRetryableError(err)
+		}
 		return nil
 	}); err != nil {
 		return diag.FromErr(err)
@@ -650,6 +656,9 @@ func resourceDatadogMonitorUpdate(ctx context.Context, d *schema.ResourceData, m
 	monitorResp, httpresp, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i, *m)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating monitor")
+	}
+	if err := utils.CheckForUnparsed(monitorResp); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return updateMonitorState(d, meta, &monitorResp)

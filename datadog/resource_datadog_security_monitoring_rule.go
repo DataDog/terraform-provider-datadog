@@ -237,6 +237,9 @@ func resourceDatadogSecurityMonitoringRuleCreate(ctx context.Context, d *schema.
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating security monitoring rule")
 	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
+	}
 
 	d.SetId(response.GetId())
 
@@ -441,6 +444,9 @@ func resourceDatadogSecurityMonitoringRuleRead(ctx context.Context, d *schema.Re
 		}
 		return diag.FromErr(err)
 	}
+	if err := utils.CheckForUnparsed(ruleResponse); err != nil {
+		return diag.FromErr(err)
+	}
 
 	updateResourceDataFromResponse(d, ruleResponse)
 
@@ -559,6 +565,9 @@ func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.
 	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, d.Id(), ruleUpdate)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating security monitoring rule")
+	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
 	}
 
 	updateResourceDataFromResponse(d, response)

@@ -122,6 +122,9 @@ func resourceDatadogLogsIndexCreate(ctx context.Context, d *schema.ResourceData,
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating logs index")
 	}
+	if err := utils.CheckForUnparsed(createdIndex); err != nil {
+		return diag.FromErr(err)
+	}
 	d.SetId(createdIndex.GetName())
 
 	return updateLogsIndexState(d, &createdIndex)
@@ -162,6 +165,9 @@ func resourceDatadogLogsIndexRead(ctx context.Context, d *schema.ResourceData, m
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting logs index")
 	}
+	if err := utils.CheckForUnparsed(ddIndex); err != nil {
+		return diag.FromErr(err)
+	}
 	return updateLogsIndexState(d, &ddIndex)
 }
 
@@ -175,6 +181,9 @@ func resourceDatadogLogsIndexUpdate(ctx context.Context, d *schema.ResourceData,
 	updatedIndex, httpResponse, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndex(authV1, tfName, *ddIndex)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs index")
+	}
+	if err := utils.CheckForUnparsed(updatedIndex); err != nil {
+		return diag.FromErr(err)
 	}
 	return updateLogsIndexState(d, &updatedIndex)
 }

@@ -37,6 +37,9 @@ func dataSourceDatadogPermissionsRead(ctx context.Context, d *schema.ResourceDat
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, resp, "error listing permissions")
 	}
+	if err := utils.CheckForUnparsed(res); err != nil {
+		return diag.FromErr(err)
+	}
 	perms := res.GetData()
 	permsNameToID := make(map[string]string, len(perms))
 	for _, perm := range perms {

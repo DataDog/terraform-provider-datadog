@@ -228,6 +228,9 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	}
 
 	m := monitors[0]
+	if err := utils.CheckForUnparsed(m); err != nil {
+		return diag.FromErr(err)
+	}
 
 	thresholds := make(map[string]string)
 

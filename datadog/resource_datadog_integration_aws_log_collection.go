@@ -95,6 +95,9 @@ func resourceDatadogIntegrationAwsLogCollectionRead(ctx context.Context, d *sche
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting log collection for aws integration.")
 	}
+	if err := utils.CheckForUnparsed(logCollections); err != nil {
+		return diag.FromErr(err)
+	}
 	for _, logCollection := range logCollections {
 		if logCollection.GetAccountId() == accountID {
 			d.Set("account_id", logCollection.GetAccountId())
