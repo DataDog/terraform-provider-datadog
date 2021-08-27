@@ -42,6 +42,33 @@ func TestAccDatadogIntegrationAwsTagFilter_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogIntegrationAwsTagFilter_BasicAccessKey(t *testing.T) {
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accessKeyID := uniqueAWSAccessKeyID(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	t.Parallel()
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogIntegrationAwsTagFilterBasicAccessKey(accessKeyID),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_tag_filter.testing_aws_tag_filter", "account_id", accessKeyID),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_tag_filter.testing_aws_tag_filter", "namespace", "application_elb"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_tag_filter.testing_aws_tag_filter", "tag_filter_str", "test:filter"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogIntegrationAwsTagFilterBasic(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_aws" "account" {
@@ -54,6 +81,21 @@ resource "datadog_integration_aws_tag_filter" "testing_aws_tag_filter" {
 	namespace      = "application_elb"
 	tag_filter_str = "test:filter"
     depends_on     = [datadog_integration_aws.account]
+}`, uniq)
+}
+
+func testAccCheckDatadogIntegrationAwsTagFilterBasicAccessKey(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_integration_aws" "account" {
+	access_key_id     = "%s"
+	secret_access_key = "testacc-datadog-integration-secret"
+}
+
+resource "datadog_integration_aws_tag_filter" "testing_aws_tag_filter" {
+	account_id     = datadog_integration_aws.account.access_key_id
+	namespace      = "application_elb"
+	tag_filter_str = "test:filter"
+	depends_on     = [datadog_integration_aws.account]
 }`, uniq)
 }
 

@@ -35,6 +35,26 @@ resource "datadog_integration_aws_log_collection" "main" {
 }`, uniq, uniq)
 }
 
+func testAccDatadogIntegrationAWSLogCollectionConfigAccessKey(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_integration_aws" "account" {
+  access_key_id     = "%s"
+  secret_access_key = "testacc-datadog-integration-secret"
+}
+
+resource "datadog_integration_aws_lambda_arn" "lambda" {
+  account_id = datadog_integration_aws.account.access_key_id
+  lambda_arn = "arn:aws:lambda:us-east-1:1234567890:function:datadog-forwarder-Forwarder"
+  depends_on = [datadog_integration_aws.account]
+}
+
+resource "datadog_integration_aws_log_collection" "main" {
+  account_id = datadog_integration_aws.account.access_key_id
+  services = ["lambda"]
+  depends_on = [datadog_integration_aws_lambda_arn.lambda]
+}`, uniq)
+}
+
 func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
@@ -52,6 +72,32 @@ func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_log_collection.main",
 						"account_id", accountID),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_log_collection.main",
+						"services.0", "lambda"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogIntegrationAWSLogCollectionAccessKey(t *testing.T) {
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accessKeyID := uniqueAWSAccessKeyID(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkIntegrationAWSLogCollectionDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDatadogIntegrationAWSLogCollectionConfigAccessKey(accessKeyID),
+				Check: resource.ComposeTestCheckFunc(
+					checkIntegrationAWSLogCollectionExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_log_collection.main",
+						"account_id", accessKeyID),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_log_collection.main",
 						"services.0", "lambda"),
