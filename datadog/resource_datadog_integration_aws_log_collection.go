@@ -23,7 +23,7 @@ func resourceDatadogIntegrationAwsLogCollection() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"account_id": {
-				Description: "Your AWS Account ID without dashes.",
+				Description: "Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.",
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
