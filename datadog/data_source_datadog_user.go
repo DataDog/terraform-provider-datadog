@@ -49,6 +49,9 @@ func dataSourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying user")
 	}
+	if err := utils.CheckForUnparsed(res); err != nil {
+		return diag.FromErr(err)
+	}
 	users := res.GetData()
 	if len(users) > 1 {
 		return diag.Errorf("your query returned more than one result for filter \"%s\", please try a more specific search criteria",

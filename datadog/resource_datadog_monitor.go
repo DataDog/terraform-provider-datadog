@@ -165,11 +165,26 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional:    true,
 				Default:     false,
 			},
+			// We only set new_group_delay in the monitor API payload if it is nonzero
+			// because the SDKv2 terraform plugin API prevents unsetting new_group_delay
+			// in updateMonitorState, so we can't reliably distinguish between new_group_delay
+			// being unset (null) or set to zero.
+			// Note that "new_group_delay overrides new_host_delay if it is set to a nonzero value"
+			// refers to this terraform resource. In the API, setting new_group_delay
+			// to any value, including zero, causes it to override new_host_delay.
+			"new_group_delay": {
+				Description: "Time (in seconds) to skip evaluations for new groups.\n\n`new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.\n\nTo disable group delay for monitors grouped by host, `new_host_delay` must be set to zero due to the default value of `300` for that field (`new_group_delay` defaults to zero, so setting it to zero is not required).",
+				Type:        schema.TypeInt,
+				Optional:    true,
+			},
 			"new_host_delay": {
-				Description: "Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non negative integer. Defaults to `300`.",
+				// Removing the default requires removing the default in the API as well (possibly only for
+				// terraform user agents)
+				Description: "Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. Defaults to `300` (this default will be removed in a major version release and `new_host_delay` will be removed entirely in a subsequent major version release).",
 				Type:        schema.TypeInt,
 				Optional:    true,
 				Default:     300,
+				Deprecated:  "Prefer using new_group_delay (except when setting `new_host_delay` to zero).",
 			},
 			"evaluation_delay": {
 				Description: "(Only applies to metric alert) Time (in seconds) to delay evaluation, as a non-negative integer.\n\nFor example, if the value is set to `300` (5min), the `timeframe` is set to `last_5m` and the time is 7:00, the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor will always have data during evaluation.",
@@ -332,7 +347,11 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	if attr, ok := d.GetOk("notify_no_data"); ok {
 		o.SetNotifyNoData(attr.(bool))
 	}
-	// Don't check with GetOk, doesn't work with 0
+	if attr, ok := d.GetOk("new_group_delay"); ok {
+		o.SetNewGroupDelay(int64(attr.(int)))
+	}
+	// Don't check with GetOk, doesn't work with 0 (we can't do the same for
+	// new_group_delay because it would always override new_host_delay).
 	o.SetNewHostDelay(int64(d.Get("new_host_delay").(int)))
 	if attr, ok := d.GetOk("evaluation_delay"); ok {
 		o.SetEvaluationDelay(int64(attr.(int)))
@@ -450,6 +469,9 @@ func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating monitor")
 	}
+	if err := utils.CheckForUnparsed(m); err != nil {
+		return diag.FromErr(err)
+	}
 	mCreatedID := strconv.FormatInt(mCreated.GetId(), 10)
 	d.SetId(mCreatedID)
 
@@ -516,6 +538,9 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		}
 	}
 
+	if err := d.Set("new_group_delay", m.Options.GetNewGroupDelay()); err != nil {
+		return diag.FromErr(err)
+	}
 	if err := d.Set("new_host_delay", m.Options.GetNewHostDelay()); err != nil {
 		return diag.FromErr(err)
 	}
@@ -600,6 +625,9 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 			}
 			return resource.NonRetryableError(utils.TranslateClientError(err, httpresp, "error getting monitor"))
 		}
+		if err := utils.CheckForUnparsed(m); err != nil {
+			return resource.NonRetryableError(err)
+		}
 		return nil
 	}); err != nil {
 		return diag.FromErr(err)
@@ -628,6 +656,9 @@ func resourceDatadogMonitorUpdate(ctx context.Context, d *schema.ResourceData, m
 	monitorResp, httpresp, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i, *m)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating monitor")
+	}
+	if err := utils.CheckForUnparsed(monitorResp); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return updateMonitorState(d, meta, &monitorResp)

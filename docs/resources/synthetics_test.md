@@ -14,16 +14,27 @@ Provides a Datadog synthetics test resource. This can be used to create and mana
 #### *Warning*
 Starting from version 3.1.0+, the direct usage of global variables in the configuration is deprecated, in favor of
 local variables of type `global`. As an example, if you were previously using `{{ GLOBAL_VAR }}` directly in your
-configuration, you now need to add a `configVariable` of type `global` and whose `id` must be the `id` 
-of the global variable `GLOBAL_VAR` (you can find it in Synthetics UI) and whose name can be chosen freely. 
+configuration, add a `config_variable` of type `global` with the `id` matching the `id` of the global variable `GLOBAL_VAR`, which can be found in the Synthetics UI or from the output of the `datadog_synthetics_global_variable` resource. The name can be chosen freely. 
+
 In practice, it means going from (simplified configuration):
+
 ```
 url = https://{{ GLOBAL_VAR }}
 ```
+
 to
+
+```
+config_variable = {
+  name = "LOCAL_VAR"
+  id = [your_global_variable_id]
+  type = "global"
+}
+```
+
+which you can now use in your request definition:
 ```
 url = https://{{ LOCAL_VAR }}
-configVariable = {name: "LOCAL_VAR", id: GLOBAL_VAR.id, type: "global"}
 ```
 
 ## Example Usage
@@ -229,13 +240,13 @@ resource "datadog_synthetics_test" "test_browser" {
 
   status = "paused"
 
-  step {
+  browser_step {
     name = "Check current url"
     type = "assertCurrentUrl"
-    params = jsonencode({
-      "check" : "contains",
-      "value" : "datadoghq"
-    })
+    params {
+      check = "contains"
+      value = "datadoghq"
+    }
   }
 
   browser_variable {
@@ -277,7 +288,7 @@ resource "datadog_synthetics_test" "test_browser" {
 - **browser_step** (Block List) Steps for browser tests. (see [below for nested schema](#nestedblock--browser_step))
 - **browser_variable** (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
 - **config_variable** (Block List) Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--config_variable))
-- **device_ids** (List of String) Array with the different device IDs used to run the test (only for `browser` tests). Valid values are `laptop_large`, `tablet`, `mobile_small`, `chrome.laptop_large`, `chrome.tablet`, `chrome.mobile_small`, `firefox.laptop_large`, `firefox.tablet`, `firefox.mobile_small`.
+- **device_ids** (List of String) Array with the different device IDs used to run the test (only for `browser` tests). Valid values are `laptop_large`, `tablet`, `mobile_small`, `chrome.laptop_large`, `chrome.tablet`, `chrome.mobile_small`, `firefox.laptop_large`, `firefox.tablet`, `firefox.mobile_small`, `edge.laptop_large`, `edge.tablet`, `edge.mobile_small`.
 - **message** (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.
 - **options_list** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
 - **request_basicauth** (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
@@ -357,7 +368,7 @@ Optional:
 
 Required:
 
-- **type** (String) Type of parser for a Synthetics global variable from a synthetics test. Valid values are `raw`, `json_path`, `regex`.
+- **type** (String) Type of parser for a Synthetics global variable from a synthetics test. Valid values are `raw`, `json_path`, `regex`, `x_path`.
 
 Optional:
 

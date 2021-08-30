@@ -56,6 +56,9 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(ctx context.Context, d *schema
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error attaching Lambda ARN to AWS integration account")
 	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
+	}
 
 	res := response.(map[string]interface{})
 	if status, ok := res["status"]; ok && status == "error" {
@@ -80,6 +83,9 @@ func resourceDatadogIntegrationAwsLambdaArnRead(ctx context.Context, d *schema.R
 	logCollections, httpresp, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting aws log integrations for datadog account.")
+	}
+	if err := utils.CheckForUnparsed(logCollections); err != nil {
+		return diag.FromErr(err)
 	}
 	for _, logCollection := range logCollections {
 		if logCollection.GetAccountId() == accountID {

@@ -145,6 +145,9 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating dashboard")
 	}
+	if err := utils.CheckForUnparsed(dashboard); err != nil {
+		return diag.FromErr(err)
+	}
 	d.SetId(*dashboard.Id)
 
 	var getDashboard datadogV1.Dashboard
@@ -156,6 +159,9 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 				return resource.RetryableError(fmt.Errorf("dashboard not created yet"))
 			}
 
+			return resource.NonRetryableError(err)
+		}
+		if err := utils.CheckForUnparsed(getDashboard); err != nil {
 			return resource.NonRetryableError(err)
 		}
 
@@ -183,6 +189,9 @@ func resourceDatadogDashboardUpdate(ctx context.Context, d *schema.ResourceData,
 	updatedDashboard, httpresp, err := datadogClientV1.DashboardsApi.UpdateDashboard(authV1, id, *dashboard)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating dashboard")
+	}
+	if err := utils.CheckForUnparsed(updatedDashboard); err != nil {
+		return diag.FromErr(err)
 	}
 
 	updateDashboardLists(d, providerConf, *dashboard.Id, d.Get("layout_type").(string))
@@ -293,6 +302,9 @@ func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, m
 			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting dashboard")
+	}
+	if err := utils.CheckForUnparsed(dashboard); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return updateDashboardState(d, &dashboard)
@@ -3749,6 +3761,9 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 		"rum_query":       getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"security_query":  getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"apm_stats_query": getApmStatsQuerySchema(),
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getFormulaSchema(),
 		// Settings specific to QueryTable requests
 		"conditional_formats": {
 			Description: "Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
@@ -3817,6 +3832,29 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 		} else if v, ok := terraformRequest["apm_stats_query"].([]interface{}); ok && len(v) > 0 {
 			apmStatsQuery := v[0].(map[string]interface{})
 			datadogQueryTableRequest.ApmStatsQuery = buildDatadogApmStatsQuery(apmStatsQuery)
+		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+			for i, q := range v {
+				query := q.(map[string]interface{})
+				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogEventQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				}
+			}
+			datadogQueryTableRequest.SetQueries(queries)
+			// Query Table request for formulas and functions always have a response format of "scalar"
+			datadogQueryTableRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
+		}
+
+		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+			formulas := make([]datadogV1.WidgetFormula, len(v))
+			for i, formula := range v {
+				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
+			}
+			datadogQueryTableRequest.SetFormulas(formulas)
 		}
 
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
@@ -3874,6 +3912,12 @@ func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.Tab
 		} else if v, ok := datadogRequest.GetApmStatsQueryOk(); ok {
 			terraformQuery := buildTerraformApmStatsQuery(*v)
 			terraformRequest["apm_stats_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
+			terraformRequest["query"] = buildTerraformQuery(*v)
+		}
+
+		if v, ok := datadogRequest.GetFormulasOk(); ok {
+			terraformRequest["formula"] = buildTerraformFormula(*v)
 		}
 
 		if v, ok := datadogRequest.GetConditionalFormatsOk(); ok {
@@ -4135,7 +4179,7 @@ func buildDatadogScatterplotRequest(terraformRequest map[string]interface{}) *da
 	}
 
 	if v, ok := terraformRequest["aggregator"].(string); ok && len(v) != 0 {
-		datadogScatterplotRequest.SetAggregator(datadogV1.WidgetAggregator(v))
+		datadogScatterplotRequest.SetAggregator(datadogV1.ScatterplotWidgetAggregator(v))
 	}
 
 	return datadogScatterplotRequest
@@ -4857,6 +4901,20 @@ func getFormulaSchema() *schema.Schema {
 					Optional:    true,
 					Description: "An expression alias.",
 				},
+				"conditional_formats": {
+					Description: "Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: getWidgetConditionalFormatSchema(),
+					},
+				},
+				"cell_display_mode": {
+					Description:      "A list of display modes for each table cell.",
+					Type:             schema.TypeString,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
+					Optional:         true,
+				},
 			},
 		},
 	}
@@ -5173,6 +5231,14 @@ func buildDatadogFormula(data map[string]interface{}) datadogV1.WidgetFormula {
 		}
 		formula.SetLimit(*datadogLimit)
 	}
+	if value, ok := data["cell_display_mode"].(string); ok && len(value) != 0 {
+		formula.SetCellDisplayMode(datadogV1.TableWidgetCellDisplayMode(value))
+	}
+
+	if v, ok := data["conditional_formats"].([]interface{}); ok && len(v) != 0 {
+		formula.ConditionalFormats = buildDatadogWidgetConditionalFormat(&v)
+	}
+
 	return formula
 }
 
@@ -6553,6 +6619,13 @@ func buildTerraformFormula(datadogFormulas []datadogV1.WidgetFormula) []map[stri
 				terraFormLimit["order"] = string(*order)
 			}
 			terraformFormula["limit"] = []map[string]interface{}{terraFormLimit}
+		}
+		if v, ok := formula.GetConditionalFormatsOk(); ok {
+			terraformConditionalFormats := buildTerraformWidgetConditionalFormat(v)
+			terraformFormula["conditional_formats"] = terraformConditionalFormats
+		}
+		if cellDisplayMode, cellDisplayModeOk := formula.GetCellDisplayModeOk(); cellDisplayModeOk {
+			terraformFormula["cell_display_mode"] = cellDisplayMode
 		}
 		formulas[i] = terraformFormula
 	}

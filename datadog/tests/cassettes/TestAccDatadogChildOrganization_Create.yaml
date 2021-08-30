@@ -1,0 +1,44 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"name":"nization_Create-local-1628163595"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateChildOrg
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org
+    method: POST
+  response:
+    body: '{"org":{"public_id":"dd2b22d8-f5e1-11eb-b9cb-da7ad0900002","name":"nization_Create-local-1628163595","billing":{"type":"parent_billing"},"created":"2021-08-05 11:39:59","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":false,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":[],"enabled":false},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628163600,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":786464}},"api_key":{"name":"API Key created by janda.bartosz@bcg.com on 2021-08-05","created":"2021-08-05 11:40:00","disabled_by":"","is_active":true,"created_by":"janda.bartosz@bcg.com","disabled":"","key":"12345678901234567890123456789012"},"user":{"disabled":false,"handle":"janda.bartosz@bcg.com","name":"Bartosz Janda","title":null,"is_admin":true,"role":null,"access_role":"adm","verified":true,"email":"janda.bartosz@bcg.com","icon":"https://secure.gravatar.com/avatar/6dd3ecad162a6c2f1b7296931b3c341f?s=48&d=retro"},"application_key":{"owner":"janda.bartosz@bcg.com","org_id":589983,"hash":"1234567890123456789012345678901234567890","name":"janda.bartosz@bcg.com (api)","revoked":false}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 05 Aug 2021 11:40:00 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""

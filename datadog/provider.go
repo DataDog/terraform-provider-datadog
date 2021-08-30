@@ -129,6 +129,9 @@ func Provider() *schema.Provider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
+			"datadog_api_key":                              resourceDatadogApiKey(),
+			"datadog_application_key":                      resourceDatadogApplicationKey(),
+			"datadog_child_organization":                   resourceDatadogChildOrganization(),
 			"datadog_dashboard":                            resourceDatadogDashboard(),
 			"datadog_dashboard_json":                       resourceDatadogDashboardJSON(),
 			"datadog_dashboard_list":                       resourceDatadogDashboardList(),
@@ -153,6 +156,7 @@ func Provider() *schema.Provider {
 			"datadog_metric_metadata":                      resourceDatadogMetricMetadata(),
 			"datadog_metric_tag_configuration":             resourceDatadogMetricTagConfiguration(),
 			"datadog_monitor":                              resourceDatadogMonitor(),
+			"datadog_organization_settings":                resourceDatadogOrganizationSettings(),
 			"datadog_role":                                 resourceDatadogRole(),
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
@@ -166,6 +170,8 @@ func Provider() *schema.Provider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
+			"datadog_api_key":                     dataSourceDatadogApiKey(),
+			"datadog_application_key":             dataSourceDatadogApplicationKey(),
 			"datadog_dashboard":                   dataSourceDatadogDashboard(),
 			"datadog_dashboard_list":              dataSourceDatadogDashboardList(),
 			"datadog_ip_ranges":                   dataSourceDatadogIPRanges(),

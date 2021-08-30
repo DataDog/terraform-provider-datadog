@@ -76,6 +76,46 @@ resource "datadog_dashboard" "query_table_dashboard" {
 }
 `
 
+const datadogDashboardQueryTableFormulaConfig = `
+resource "datadog_dashboard" "query_table_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+	widget {
+		query_table_definition {
+		  request {
+			formula {
+			  formula_expression = "query1"
+			  limit {
+				count = 500
+				order = "desc"
+			  }
+			  conditional_formats {
+				palette = "white_on_green"
+				value = 90
+				comparator = "<"
+			  }
+			  conditional_formats {
+			    palette = "white_on_red"
+			    value = 90
+				comparator = ">="
+			  }  
+			}
+			query {
+			  metric_query {
+				data_source = "metrics"
+				query       = "avg:system.cpu.system{*} by {datacenter}"
+				name        = "query1"
+				aggregator  = "sum"
+			  }
+			}
+		  }
+		}
+	  }
+}
+`
+
 const datadogDashboardQueryTableConfigImport = `
 resource "datadog_dashboard" "query_table_dashboard" {
 	title         = "{{uniq}}"
@@ -203,10 +243,38 @@ var datadogDashboardQueryTableAsserts = []string{
 	"widget.1.query_table_definition.0.has_search_bar = never",
 }
 
+var datadogDashboardQueryTableFormulaAsserts = []string{
+	"title = {{uniq}}",
+	"is_read_only = true",
+	"layout_type = ordered",
+	"description = Created using the Datadog provider in Terraform",
+	"widget.0.query_table_definition.0.request.0.formula.0.formula_expression = query1",
+	"widget.0.query_table_definition.0.request.0.formula.0.limit.0.count = 500",
+	"widget.0.query_table_definition.0.request.0.formula.0.limit.0.order = desc",
+	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.0.palette = white_on_green",
+	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.0.value = 90",
+	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.0.comparator = <",
+	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.1.palette = white_on_red",
+	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.1.value = 90",
+	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.1.comparator = >=",
+	"widget.0.query_table_definition.0.request.0.query.0.metric_query.0.data_source = metrics",
+	"widget.0.query_table_definition.0.request.0.query.0.metric_query.0.query = avg:system.cpu.system{*} by {datacenter}",
+	"widget.0.query_table_definition.0.request.0.query.0.metric_query.0.name = query1",
+	"widget.0.query_table_definition.0.request.0.query.0.metric_query.0.aggregator = sum",
+}
+
 func TestAccDatadogDashboardQueryTable(t *testing.T) {
 	testAccDatadogDashboardWidgetUtil(t, datadogDashboardQueryTableConfig, "datadog_dashboard.query_table_dashboard", datadogDashboardQueryTableAsserts)
 }
 
 func TestAccDatadogDashboardQueryTable_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardQueryTableConfigImport, "datadog_dashboard.query_table_dashboard")
+}
+
+func TestAccDatadogDashboardQueryTableFormula(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardQueryTableFormulaConfig, "datadog_dashboard.query_table_dashboard", datadogDashboardQueryTableFormulaAsserts)
+}
+
+func TestAccDatadogDashboardQueryTableFormula_import(t *testing.T) {
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardQueryTableFormulaConfig, "datadog_dashboard.query_table_dashboard")
 }

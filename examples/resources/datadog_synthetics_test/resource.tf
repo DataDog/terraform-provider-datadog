@@ -199,13 +199,13 @@ resource "datadog_synthetics_test" "test_browser" {
 
   status = "paused"
 
-  step {
+  browser_step {
     name = "Check current url"
     type = "assertCurrentUrl"
-    params = jsonencode({
-      "check" : "contains",
-      "value" : "datadoghq"
-    })
+    params {
+      check = "contains"
+      value = "datadoghq"
+    }
   }
 
   browser_variable {

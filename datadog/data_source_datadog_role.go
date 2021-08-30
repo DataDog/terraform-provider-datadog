@@ -51,6 +51,9 @@ func dataSourceDatadogRoleRead(ctx context.Context, d *schema.ResourceData, meta
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying roles")
 	}
+	if err := utils.CheckForUnparsed(res); err != nil {
+		return diag.FromErr(err)
+	}
 	roles := res.GetData()
 	roleIndex := 0
 	if len(roles) > 1 {

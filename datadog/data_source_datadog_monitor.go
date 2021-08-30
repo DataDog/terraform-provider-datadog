@@ -120,6 +120,11 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				Type:        schema.TypeBool,
 				Computed:    true,
 			},
+			"new_group_delay": {
+				Description: "Time (in seconds) to skip evaluations for new groups.",
+				Type:        schema.TypeInt,
+				Computed:    true,
+			},
 			"new_host_delay": {
 				Description: "Time (in seconds) allowing a host to boot and applications to fully start before starting the evaluation of monitor results.",
 				Type:        schema.TypeInt,
@@ -223,6 +228,9 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	}
 
 	m := monitors[0]
+	if err := utils.CheckForUnparsed(m); err != nil {
+		return diag.FromErr(err)
+	}
 
 	thresholds := make(map[string]string)
 
@@ -276,6 +284,7 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 		return diag.FromErr(err)
 	}
 
+	d.Set("new_group_delay", m.Options.GetNewGroupDelay())
 	d.Set("new_host_delay", m.Options.GetNewHostDelay())
 	d.Set("evaluation_delay", m.Options.GetEvaluationDelay())
 	d.Set("notify_no_data", m.Options.GetNotifyNoData())

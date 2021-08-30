@@ -103,6 +103,9 @@ func resourceDatadogIntegrationAwsTagFilterRead(ctx context.Context, d *schema.R
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error listing aws tag filter")
 	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		return diag.FromErr(err)
+	}
 
 	for _, ns := range resp.GetFilters() {
 		if ns.GetNamespace() == namespace {

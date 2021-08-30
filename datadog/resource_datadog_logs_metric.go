@@ -191,6 +191,9 @@ func resourceDatadogLogsMetricCreate(ctx context.Context, d *schema.ResourceData
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating LogsMetric")
 	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
+	}
 	id := *response.GetData().Id
 	d.SetId(id)
 
@@ -267,6 +270,9 @@ func resourceDatadogLogsMetricRead(ctx context.Context, d *schema.ResourceData, 
 		}
 		return utils.TranslateClientErrorDiag(err, httpResp, "error reading LogsMetric")
 	}
+	if err := utils.CheckForUnparsed(resourceLogsMetricResponse); err != nil {
+		return diag.FromErr(err)
+	}
 
 	resource := resourceLogsMetricResponse.GetData()
 	return updateLogsMetricState(d, &resource)
@@ -310,6 +316,9 @@ func resourceDatadogLogsMetricUpdate(ctx context.Context, d *schema.ResourceData
 	response, httpResponse, err := datadogClient.LogsMetricsApi.UpdateLogsMetric(auth, id, *ddObject)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating LogsMetric")
+	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return updateLogsMetricState(d, response.Data)

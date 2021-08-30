@@ -99,7 +99,7 @@ resource "datadog_monitor" "foo" {
   }
 
   notify_no_data = false
-  new_host_delay = 600
+  new_group_delay = 500
   renotify_interval = 60
 
   notify_audit = false

@@ -55,6 +55,9 @@ func resourceDatadogLogsArchiveOrderCreate(ctx context.Context, d *schema.Resour
 		}
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating logs archive order")
 	}
+	if err := utils.CheckForUnparsed(order); err != nil {
+		return diag.FromErr(err)
+	}
 	d.SetId("archiveOrderID")
 	return updateLogsArchiveOrderState(d, &order)
 }
@@ -66,6 +69,9 @@ func resourceDatadogLogsArchiveOrderRead(ctx context.Context, d *schema.Resource
 	order, httpResponse, err := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs archive order")
+	}
+	if err := utils.CheckForUnparsed(order); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return updateLogsArchiveOrderState(d, &order)
@@ -100,6 +106,9 @@ func resourceDatadogLogsArchiveOrderUpdate(ctx context.Context, d *schema.Resour
 				ddArchiveList.Data.Attributes.GetArchiveIds())
 		}
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs archive order")
+	}
+	if err := utils.CheckForUnparsed(updatedOrder); err != nil {
+		return diag.FromErr(err)
 	}
 	d.SetId("archiveOrderID")
 	return updateLogsArchiveOrderState(d, &updatedOrder)

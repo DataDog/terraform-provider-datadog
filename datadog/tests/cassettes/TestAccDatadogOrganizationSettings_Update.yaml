@@ -1,0 +1,430 @@
+---
+version: 1
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - ListOrgs
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.4) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org
+    method: GET
+  response:
+    body: '{"orgs":[{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236083-2","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 06 Aug 2021 07:48:41 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"name":"ttings_Update-local-1628236119","settings":{"private_widget_share":false,"saml":{"enabled":false},"saml_autocreate_access_role":"st","saml_autocreate_users_domains":{"domains":[],"enabled":false},"saml_idp_initiated_login":{"enabled":false},"saml_strict_mode":{"enabled":false}}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - UpdateOrg
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.4) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
+    method: PUT
+  response:
+    body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":false,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":[],"enabled":false},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 06 Aug 2021 07:48:42 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetOrg
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.4) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
+    method: GET
+  response:
+    body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":false,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":[],"enabled":false},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 06 Aug 2021 07:48:42 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetOrg
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.4) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
+    method: GET
+  response:
+    body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":false,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":[],"enabled":false},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 06 Aug 2021 07:48:43 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetOrg
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.4) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
+    method: GET
+  response:
+    body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":false,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":[],"enabled":false},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 06 Aug 2021 07:48:44 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetOrg
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.4) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
+    method: GET
+  response:
+    body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":false,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":[],"enabled":false},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 06 Aug 2021 07:48:45 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"name":"ttings_Update-local-1628236119","settings":{"private_widget_share":true,"saml":{"enabled":false},"saml_autocreate_access_role":"st","saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_strict_mode":{"enabled":false}}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - UpdateOrg
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.4) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
+    method: PUT
+  response:
+    body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 06 Aug 2021 07:48:46 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetOrg
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.4) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
+    method: GET
+  response:
+    body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 06 Aug 2021 07:48:47 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetOrg
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.4) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
+    method: GET
+  response:
+    body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 06 Aug 2021 07:48:48 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"name":"ttings_Update-local-1628236119-2","settings":{"private_widget_share":true,"saml":{"enabled":false},"saml_autocreate_access_role":"st","saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_strict_mode":{"enabled":false}}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - UpdateOrg
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.4) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
+    method: PUT
+  response:
+    body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119-2","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 06 Aug 2021 07:48:48 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetOrg
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.4) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
+    method: GET
+  response:
+    body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119-2","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 06 Aug 2021 07:48:49 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""

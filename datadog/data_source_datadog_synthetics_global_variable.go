@@ -4,9 +4,10 @@ import (
 	"context"
 	"regexp"
 
+	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -43,6 +44,9 @@ func dataSourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schem
 	globalVariables, httpresp, err := datadogClientV1.SyntheticsApi.ListGlobalVariables(authV1)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetics global variables")
+	}
+	if err := utils.CheckForUnparsed(globalVariables); err != nil {
+		return diag.FromErr(err)
 	}
 
 	searchedName := d.Get("name").(string)

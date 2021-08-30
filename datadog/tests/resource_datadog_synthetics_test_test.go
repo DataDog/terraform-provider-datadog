@@ -2730,6 +2730,10 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 				"datadog_synthetics_test.multi", "api_step.0.allow_failure", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.is_critical", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "config_variable.0.name", "VARIABLE_NAME"),
 		),
 	}
 }
