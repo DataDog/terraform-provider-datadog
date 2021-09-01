@@ -805,12 +805,14 @@ Optional:
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query))
 - **change_type** (String) Whether to show absolute or relative change. Valid values are `absolute`, `relative`.
 - **compare_to** (String) Choose from when to compare current data to. Valid values are `hour_before`, `day_before`, `week_before`, `month_before`.
+- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula))
 - **increase_good** (Boolean) A Boolean indicating whether an increase in the value is good (displayed in green) or not (displayed in red).
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query))
 - **order_by** (String) What to order by. Valid values are `change`, `name`, `present`, `past`.
 - **order_dir** (String) Widget sorting method. Valid values are `asc`, `desc`.
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--change_definition--request--process_query))
 - **q** (String) The metric query to use for this widget.
+- **query** (Block List) (see [below for nested schema](#nestedblock--widget--change_definition--request--query))
 - **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query))
 - **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query))
 - **show_present** (Boolean) If set to `true`, displays the current value.
@@ -876,6 +878,49 @@ Optional:
 
 - **facet** (String) The facet name.
 - **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--change_definition--request--formula"></a>
+### Nested Schema for `widget.change_definition.request.formula`
+
+Required:
+
+- **formula_expression** (String) A string expression built from queries, formulas, and functions.
+
+Optional:
+
+- **alias** (String) An expression alias.
+- **cell_display_mode** (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--conditional_formats))
+- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--limit))
+
+<a id="nestedblock--widget--change_definition--request--formula--conditional_formats"></a>
+### Nested Schema for `widget.change_definition.request.formula.conditional_formats`
+
+Required:
+
+- **comparator** (String) The comparator to use. Valid values are `>`, `>=`, `<`, `<=`.
+- **palette** (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- **value** (Number) A value for the comparator.
+
+Optional:
+
+- **custom_bg_color** (String) The color palette to apply to the background, same values available as palette.
+- **custom_fg_color** (String) The color palette to apply to the foreground, same values available as palette.
+- **hide_value** (Boolean) Setting this to True hides values.
+- **image_url** (String) Displays an image as the background.
+- **metric** (String) The metric from the request to correlate with this conditional format.
+- **timeframe** (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--change_definition--request--formula--limit"></a>
+### Nested Schema for `widget.change_definition.request.formula.limit`
+
+Optional:
+
+- **count** (Number) The number of results to return
+- **order** (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 
@@ -955,6 +1000,112 @@ Optional:
 - **filter_by** (List of String) A list of processes.
 - **limit** (Number) The max number of items in the filter list.
 - **search_by** (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--change_definition--request--query"></a>
+### Nested Schema for `widget.change_definition.request.query`
+
+Optional:
+
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--metric_query))
+- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--process_query))
+
+<a id="nestedblock--widget--change_definition--request--query--event_query"></a>
+### Nested Schema for `widget.change_definition.request.query.event_query`
+
+Required:
+
+- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--compute))
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
+- **name** (String) The name of query for use in formulas.
+
+Optional:
+
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--group_by))
+- **indexes** (List of String) An array of index names to query in the stream.
+- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--search))
+
+<a id="nestedblock--widget--change_definition--request--query--event_query--compute"></a>
+### Nested Schema for `widget.change_definition.request.query.event_query.compute`
+
+Required:
+
+- **aggregation** (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- **interval** (Number) A time interval in milliseconds.
+- **metric** (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--change_definition--request--query--event_query--group_by"></a>
+### Nested Schema for `widget.change_definition.request.query.event_query.group_by`
+
+Required:
+
+- **facet** (String) The event facet.
+
+Optional:
+
+- **limit** (Number) The number of groups to return.
+- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--change_definition--request--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.change_definition.request.query.event_query.group_by.sort`
+
+Required:
+
+- **aggregation** (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- **metric** (String) The metric used for sorting group by results.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--change_definition--request--query--event_query--search"></a>
+### Nested Schema for `widget.change_definition.request.query.event_query.search`
+
+Required:
+
+- **query** (String) The events search string.
+
+
+
+<a id="nestedblock--widget--change_definition--request--query--metric_query"></a>
+### Nested Schema for `widget.change_definition.request.query.metric_query`
+
+Required:
+
+- **name** (String) The name of the query for use in formulas.
+- **query** (String) The metrics query definition.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- **data_source** (String) The data source for metrics queries.
+
+
+<a id="nestedblock--widget--change_definition--request--query--process_query"></a>
+### Nested Schema for `widget.change_definition.request.query.process_query`
+
+Required:
+
+- **data_source** (String) The data source for process queries. Valid values are `process`, `container`.
+- **metric** (String) The process metric name.
+- **name** (String) The name of query for use in formulas.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
+- **limit** (Number) The number of hits to return.
+- **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
+- **tag_filters** (List of String) An array of tags to filter by.
+- **text_filter** (String) The text to use as a filter.
+
 
 
 <a id="nestedblock--widget--change_definition--request--rum_query"></a>
@@ -1908,12 +2059,14 @@ Optional:
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query))
 - **change_type** (String) Whether to show absolute or relative change. Valid values are `absolute`, `relative`.
 - **compare_to** (String) Choose from when to compare current data to. Valid values are `hour_before`, `day_before`, `week_before`, `month_before`.
+- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula))
 - **increase_good** (Boolean) A Boolean indicating whether an increase in the value is good (displayed in green) or not (displayed in red).
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query))
 - **order_by** (String) What to order by. Valid values are `change`, `name`, `present`, `past`.
 - **order_dir** (String) Widget sorting method. Valid values are `asc`, `desc`.
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--process_query))
 - **q** (String) The metric query to use for this widget.
+- **query** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query))
 - **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query))
 - **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--security_query))
 - **show_present** (Boolean) If set to `true`, displays the current value.
@@ -1979,6 +2132,49 @@ Optional:
 
 - **facet** (String) The facet name.
 - **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--formula"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.formula`
+
+Required:
+
+- **formula_expression** (String) A string expression built from queries, formulas, and functions.
+
+Optional:
+
+- **alias** (String) An expression alias.
+- **cell_display_mode** (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula--conditional_formats))
+- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula--limit))
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--formula--conditional_formats"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.formula.conditional_formats`
+
+Required:
+
+- **comparator** (String) The comparator to use. Valid values are `>`, `>=`, `<`, `<=`.
+- **palette** (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- **value** (Number) A value for the comparator.
+
+Optional:
+
+- **custom_bg_color** (String) The color palette to apply to the background, same values available as palette.
+- **custom_fg_color** (String) The color palette to apply to the foreground, same values available as palette.
+- **hide_value** (Boolean) Setting this to True hides values.
+- **image_url** (String) Displays an image as the background.
+- **metric** (String) The metric from the request to correlate with this conditional format.
+- **timeframe** (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--formula--limit"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.formula.limit`
+
+Optional:
+
+- **count** (Number) The number of results to return
+- **order** (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 
@@ -2058,6 +2254,112 @@ Optional:
 - **filter_by** (List of String) A list of processes.
 - **limit** (Number) The max number of items in the filter list.
 - **search_by** (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query`
+
+Optional:
+
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--metric_query))
+- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--process_query))
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query.event_query`
+
+Required:
+
+- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--compute))
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
+- **name** (String) The name of query for use in formulas.
+
+Optional:
+
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--group_by))
+- **indexes** (List of String) An array of index names to query in the stream.
+- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--search))
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query.event_query.compute`
+
+Required:
+
+- **aggregation** (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- **interval** (Number) A time interval in milliseconds.
+- **metric** (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query.event_query.group_by`
+
+Required:
+
+- **facet** (String) The event facet.
+
+Optional:
+
+- **limit** (Number) The number of groups to return.
+- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query.event_query.group_by.sort`
+
+Required:
+
+- **aggregation** (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- **metric** (String) The metric used for sorting group by results.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query.event_query.search`
+
+Required:
+
+- **query** (String) The events search string.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query.metric_query`
+
+Required:
+
+- **name** (String) The name of the query for use in formulas.
+- **query** (String) The metrics query definition.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- **data_source** (String) The data source for metrics queries.
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query.process_query`
+
+Required:
+
+- **data_source** (String) The data source for process queries. Valid values are `process`, `container`.
+- **metric** (String) The process metric name.
+- **name** (String) The name of query for use in formulas.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
+- **limit** (Number) The number of hits to return.
+- **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
+- **tag_filters** (List of String) An array of tags to filter by.
+- **text_filter** (String) The text to use as a filter.
+
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--rum_query"></a>
