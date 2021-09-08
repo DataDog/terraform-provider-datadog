@@ -4621,26 +4621,6 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 	return &datadogRequests
 }
 
-func buildTerraformListStreamDefinition(datadogDefinition datadogV1.ListStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
-	terraformDefinition := map[string]interface{}{}
-	// Required params
-	terraformDefinition["requests"] = datadogDefinition.Requests
-	// Optional params
-	if datadogDefinition.Title != nil {
-		terraformDefinition["title"] = *datadogDefinition.Title
-	}
-	if datadogDefinition.TitleSize != nil {
-		terraformDefinition["title_size"] = *datadogDefinition.TitleSize
-	}
-	if datadogDefinition.TitleAlign != nil {
-		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
-	}
-	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
-	}
-	return terraformDefinition
-}
-
 //
 // Geomap Widget Definition helpers
 //
@@ -6302,6 +6282,26 @@ func buildTerraformGeomapDefinition(datadogDefinition datadogV1.GeomapWidgetDefi
 		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 
+	return terraformDefinition
+}
+
+func buildTerraformListStreamDefinition(datadogDefinition datadogV1.ListStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+	terraformDefinition := map[string]interface{}{}
+	// Required params
+	terraformDefinition["requests"] = datadogDefinition.Requests
+	// Optional params
+	if datadogDefinition.Title != nil {
+		terraformDefinition["title"] = *datadogDefinition.Title
+	}
+	if datadogDefinition.TitleSize != nil {
+		terraformDefinition["title_size"] = *datadogDefinition.TitleSize
+	}
+	if datadogDefinition.TitleAlign != nil {
+		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
+	}
+	if v, ok := datadogDefinition.GetTimeOk(); ok {
+		terraformDefinition["live_span"] = v.GetLiveSpan()
+	}
 	return terraformDefinition
 }
 
