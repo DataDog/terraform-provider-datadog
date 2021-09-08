@@ -4517,7 +4517,6 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 			Description: "Widget columns.",
 			Type:        schema.TypeList,
 			Optional:    false,
-			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"width": {
@@ -4542,8 +4541,8 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 		"query": {
 			Description: "Updated list stream widget.",
 			Type:        schema.TypeList,
-			Computed:    true,
 			Optional:    false,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"data_source": {
@@ -4574,7 +4573,7 @@ func buildDatadogListStreamDefinition(terraformDefinition map[string]interface{}
 	datadogDefinition := datadogV1.NewListStreamWidgetDefinitionWithDefaults()
 	// Required params
 	terraformRequest := terraformDefinition["request"].([]interface{})
-	datadogDefinition.Requests = *buildDatadogListStreamRequests(&terraformRequest)
+	datadogDefinition.SetRequests(*buildDatadogListStreamRequests(&terraformRequest))
 	// Optional params
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
@@ -4618,10 +4617,19 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 	for i, r := range *terraformRequests {
 		terraformRequest := r.(map[string]interface{})
 		// Build ListStream Request
-		datadogListStreamRequest := datadogV1.NewListStreamWidgetRequestWithDefaults()
+		datadogListStreamRequest := &datadogV1.ListStreamWidgetRequest{}
+		// datadogListStreamRequest := datadogV1.NewListStreamWidgetRequestWithDefaults()
 		if v, ok := terraformRequest["response_format"].(datadogV1.ListStreamResponseFormat); ok && len(v) != 0 {
 			datadogListStreamRequest.SetResponseFormat(v)
 		}
+
+		terraformColumns := terraformRequest["columns"].([]interface{})
+		datadogColumns := make([](datadogV1.ListStreamColumn), len(terraformColumns))
+		for i, column := range terraformColumns {
+			datadogColumns[i] = column.(datadogV1.ListStreamColumn)
+		}
+		datadogListStreamRequest.SetColumns(datadogColumns)
+
 		datadogRequests[i] = *datadogListStreamRequest
 	}
 	return &datadogRequests
