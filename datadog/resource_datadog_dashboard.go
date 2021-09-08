@@ -4598,26 +4598,6 @@ func buildDatadogListStreamDefinition(terraformDefinition map[string]interface{}
 	return datadogDefinition
 }
 
-func buildTerraformListStreamDefinition(datadogDefinition datadogV1.ListStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
-	terraformDefinition := map[string]interface{}{}
-	// Required params
-	terraformDefinition["requests"] = datadogDefinition.Requests
-	// Optional params
-	if datadogDefinition.Title != nil {
-		terraformDefinition["title"] = *datadogDefinition.Title
-	}
-	if datadogDefinition.TitleSize != nil {
-		terraformDefinition["title_size"] = *datadogDefinition.TitleSize
-	}
-	if datadogDefinition.TitleAlign != nil {
-		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
-	}
-	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
-	}
-	return terraformDefinition
-}
-
 func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadogV1.ListStreamWidgetRequest {
 	datadogRequests := make([]datadogV1.ListStreamWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
@@ -4639,6 +4619,26 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 		datadogRequests[i] = *datadogListStreamRequest
 	}
 	return &datadogRequests
+}
+
+func buildTerraformListStreamDefinition(datadogDefinition datadogV1.ListStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+	terraformDefinition := map[string]interface{}{}
+	// Required params
+	terraformDefinition["requests"] = datadogDefinition.Requests
+	// Optional params
+	if datadogDefinition.Title != nil {
+		terraformDefinition["title"] = *datadogDefinition.Title
+	}
+	if datadogDefinition.TitleSize != nil {
+		terraformDefinition["title_size"] = *datadogDefinition.TitleSize
+	}
+	if datadogDefinition.TitleAlign != nil {
+		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
+	}
+	if v, ok := datadogDefinition.GetTimeOk(); ok {
+		terraformDefinition["live_span"] = v.GetLiveSpan()
+	}
+	return terraformDefinition
 }
 
 //
