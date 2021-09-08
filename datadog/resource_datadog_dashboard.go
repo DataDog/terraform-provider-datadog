@@ -4573,7 +4573,8 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 func buildDatadogListStreamDefinition(terraformDefinition map[string]interface{}) *datadogV1.ListStreamWidgetDefinition {
 	datadogDefinition := datadogV1.NewListStreamWidgetDefinitionWithDefaults()
 	// Required params
-	datadogDefinition.SetRequests(terraformDefinition["requests"].(string))
+	terraformRequest := terraformDefinition["request"].([]interface{})
+	datadogDefinition.Requests = *buildDatadogListStreamRequests(&terraformRequest)
 	// Optional params
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
@@ -4610,6 +4611,20 @@ func buildTerraformListStreamDefinition(datadogDefinition datadogV1.ListStreamWi
 		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 	return terraformDefinition
+}
+
+func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadogV1.ListStreamWidgetRequest {
+	datadogRequests := make([]datadogV1.ListStreamWidgetRequest, len(*terraformRequests))
+	for i, r := range *terraformRequests {
+		terraformRequest := r.(map[string]interface{})
+		// Build ListStream Request
+		datadogListStreamRequest := datadogV1.NewListStreamWidgetRequestWithDefaults()
+		if v, ok := terraformRequest["response_format"].(datadogV1.ListStreamResponseFormat); ok && len(v) != 0 {
+			datadogListStreamRequest.SetResponseFormat(v)
+		}
+		datadogRequests[i] = *datadogListStreamRequest
+	}
+	return &datadogRequests
 }
 
 //
