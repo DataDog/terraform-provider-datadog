@@ -81,9 +81,19 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			"aggregations": {
 				Description: "A list of custom aggregation combinations for a count, rate, or gauge metric. Defaults to time sum & space sum for count and rate metrics, and time avg & space avg for gauge metrics. Can only be applied to metrics that have a `metric_type` of `count`, `rate`, or `gauge`.",
 				Type:        schema.TypeSet,
-				Elem: &schema.Schema{
-					// TODO[efraese] add proper type here, no extra validation needed as the type is an enum
-					Type: datadogV2.MetricCustomAggregation,
+				Elem: map[string]*schema.Schema{
+					"time": {
+						Description:      "A time aggregation for use in query.",
+						Type:             schema.TypeBool,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricCustomTimeAggregationFromValue),
+						Required:         true,
+					},
+					"space": {
+						Description:      "A space aggregation for use in query.",
+						Type:             schema.TypeBool,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricCustomSpaceAggregationFromValue),
+						Required:         true,
+					},
 				},
 				Optional: true,
 			},
@@ -128,7 +138,7 @@ func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.Metr
 		if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 			return nil, fmt.Errorf("aggregations field not allowed with metric_type: %s, only with metric_type of count, rate, or gauge", *metricType)
 		}
-		attributes.SetAggregations(aggregations.(datadogV2.MetricCustomAggregations))
+		attributes.SetAggregations(aggregations.([]datadogV2.MetricCustomAggregation))
 	} else {
 		// if the aggregations field is not set either set it to the default value if metric type is not a distribution
 		// or remove the aggregations field from the payload otherwise
@@ -136,11 +146,11 @@ func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.Metr
 			attributes.IncludePercentiles = nil
 		} else {
 			if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_GAUGE {
-				// TODO[efraese] create a new MetricCustomAggregations object with one element that is the avg/avg combo
-				attributes.SetAggregations()
+				// create a new MetricCustomAggregations object with one element that is the avg/avg combo as that is the default aggregation for gauge metrics
+				attributes.SetAggregations([]datadogV2.MetricCustomAggregation{*datadogV2.NewMetricCustomAggregation(datadogV2.METRICCUSTOMSPACEAGGREGATION_AVG, datadogV2.METRICCUSTOMTIMEAGGREGATION_AVG)})
 			} else {
-				// TODO[efraese] create a new MetricCustomAggregations object with one element that is the sum/sum combo
-				attributes.SetAggregations()
+				// create a new MetricCustomAggregations object with one element that is the sum/sum combo as that is the default aggregation for count/rates metrics
+				attributes.SetAggregations([]datadogV2.MetricCustomAggregation{*datadogV2.NewMetricCustomAggregation(datadogV2.METRICCUSTOMSPACEAGGREGATION_SUM, datadogV2.METRICCUSTOMTIMEAGGREGATION_SUM)})
 			}
 		}
 	}
@@ -177,23 +187,14 @@ func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existingMe
 
 	aggregations, aggregationsFieldSet := d.GetOk("aggregations")
 	if aggregationsFieldSet {
-		if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-			return nil, fmt.Errorf("aggregations field not allowed with metric_type: %s, only with metric_type of count, rate, or gauge", *metricType)
+		if *existingMetricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+			return nil, fmt.Errorf("aggregations field not allowed with metric_type: %s, only with metric_type of count, rate, or gauge", *existingMetricType)
 		}
-		attributes.SetAggregations(aggregations.(datadogV2.MetricCustomAggregations))
+		attributes.SetAggregations(aggregations.([]datadogV2.MetricCustomAggregation))
 	} else {
-		// if the aggregations field is not set either set it to the default value if metric type is not a distribution
-		// or remove the aggregations field from the payload otherwise
-		if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+		// if the aggregations field is not set and the metric type is a distribution remove the aggregations field from the payload
+		if *existingMetricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 			attributes.IncludePercentiles = nil
-		} else {
-			if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_GAUGE {
-				// TODO[efraese] create a new MetricCustomAggregations object with one element that is the avg/avg combo
-				attributes.SetAggregations()
-			} else {
-				// TODO[efraese] create a new MetricCustomAggregations object with one element that is the sum/sum combo
-				attributes.SetAggregations()
-			}
 		}
 	}
 

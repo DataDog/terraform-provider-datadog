@@ -4135,7 +4135,7 @@ func buildDatadogScatterplotRequest(terraformRequest map[string]interface{}) *da
 	}
 
 	if v, ok := terraformRequest["aggregator"].(string); ok && len(v) != 0 {
-		datadogScatterplotRequest.SetAggregator(datadogV1.WidgetAggregator(v))
+		datadogScatterplotRequest.SetAggregator(datadogV1.ScatterplotWidgetAggregator(v))
 	}
 
 	return datadogScatterplotRequest
