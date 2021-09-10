@@ -57,7 +57,14 @@ func testAccCheckDatadogMetricTagConfigurationAggregationsError(uniq string, met
 			metric_name = "%s"
 			metric_type = "%s"
 			tags = ["sport"]
-			aggregations = [{"time": "sum", "space": "sum"}, {"time": "avg", "space": "avg"}]
+			aggregations {
+				time = "sum"
+				space = "sum"
+			}
+			aggregations {
+				time = "avg"
+				space = "avg"
+			}
         }
     `, uniq, metricType)
 }

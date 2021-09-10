@@ -23,14 +23,11 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 		DeleteContext: resourceDatadogMetricTagConfigurationDelete,
 		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 			_, includePercentilesOk := diff.GetOkExists("include_percentiles")
-			_, aggregationsOk := diff.GetOkExists("aggregations")
-			if !includePercentilesOk && !aggregationsOk {
-				// if there was no change to include_percentiles nor aggregations we don't need special handling
-				return nil
-			}
-			metricType, ok := diff.GetOkExists("metric_type")
-			if !ok {
-				// no change to metric_type so no special handling
+			oldAggrs, newAggrs := diff.GetChange("aggregations")
+			metricType, metricTypeOk := diff.GetOkExists("metric_type")
+
+			if !includePercentilesOk && !oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) && !metricTypeOk {
+				// if there was no change to include_percentiles nor aggregations nor metricType we don't need special handling
 				return nil
 			}
 			metricTypeValidated, err := datadogV2.NewMetricTagConfigurationMetricTypesFromValue(metricType.(string))
@@ -40,9 +37,29 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			if includePercentilesOk && *metricTypeValidated != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 				return fmt.Errorf("cannot use include_percentiles with a metric_type of %s, must use metric_type of 'distribution'", metricType)
 			}
-			if aggregationsOk && *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-				return fmt.Errorf("cannot use aggregations with a metric_type of %s, must use metric_type of 'count','rate', or 'gauge'", metricType)
+
+			if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+				if !oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) {
+					return fmt.Errorf("cannot use aggregations with a metric_type of %s, must use metric_type of 'count','rate', or 'gauge'", metricType)
+				}
+				diff.SetNew("aggregations", nil)
+			} else {
+				// set default aggregations if the user did not specify any
+				if newAggrs.(*schema.Set).Len() == 0 {
+					var defaultAggrs []map[string]interface{}
+					if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_GAUGE {
+						// create a new aggregations with one element that is the avg/avg combo as that is the default aggregation for gauge metrics
+						defaultAggrs = append(defaultAggrs, map[string]interface{}{"time": "avg", "space": "avg"})
+					} else {
+						// create a new aggregations with one element that is the sum/sum combo as that is the default aggregation for count/rates metrics
+						defaultAggrs = append(defaultAggrs, map[string]interface{}{"time": "sum", "space": "sum"})
+					}
+					if err := diff.SetNew("aggregations", defaultAggrs); err != nil {
+						return err
+					}
+				}
 			}
+
 			return nil
 		},
 		Importer: &schema.ResourceImporter{
@@ -81,24 +98,46 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			"aggregations": {
 				Description: "A list of custom aggregation combinations for a count, rate, or gauge metric. Defaults to time sum & space sum for count and rate metrics, and time avg & space avg for gauge metrics. Can only be applied to metrics that have a `metric_type` of `count`, `rate`, or `gauge`.",
 				Type:        schema.TypeSet,
-				Elem: map[string]*schema.Schema{
-					"time": {
-						Description:      "A time aggregation for use in query.",
-						Type:             schema.TypeBool,
-						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricCustomTimeAggregationFromValue),
-						Required:         true,
-					},
-					"space": {
-						Description:      "A space aggregation for use in query.",
-						Type:             schema.TypeBool,
-						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricCustomSpaceAggregationFromValue),
-						Required:         true,
+				Optional:    true,
+				Computed:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"time": {
+							Description:      "A time aggregation for use in query.",
+							Type:             schema.TypeString,
+							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricCustomTimeAggregationFromValue),
+							Required:         true,
+						},
+						"space": {
+							Description:      "A space aggregation for use in query.",
+							Type:             schema.TypeString,
+							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricCustomSpaceAggregationFromValue),
+							Required:         true,
+						},
 					},
 				},
-				Optional: true,
 			},
 		},
 	}
+}
+
+func buildAggregations(resourceAggregations []interface{}) ([]datadogV2.MetricCustomAggregation, error) {
+	aggregations := make([]datadogV2.MetricCustomAggregation, len(resourceAggregations))
+	for i, v := range resourceAggregations {
+		resourceAggregation := v.(map[string]interface{})
+		spaceAggr, err := datadogV2.NewMetricCustomSpaceAggregationFromValue(resourceAggregation["space"].(string))
+		if err != nil {
+			return nil, err
+		}
+
+		timeAggr, err := datadogV2.NewMetricCustomTimeAggregationFromValue(resourceAggregation["time"].(string))
+		if err != nil {
+			return nil, err
+		}
+		aggregation := datadogV2.NewMetricCustomAggregation(*spaceAggr, *timeAggr)
+		aggregations[i] = *aggregation
+	}
+	return aggregations, nil
 }
 
 func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.MetricTagConfigurationCreateData, error) {
@@ -133,27 +172,18 @@ func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.Metr
 		}
 	}
 
-	aggregations, aggregationsFieldSet := d.GetOk("aggregations")
+	aggregationsArray, aggregationsFieldSet := d.GetOk("aggregations")
 	if aggregationsFieldSet {
 		if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 			return nil, fmt.Errorf("aggregations field not allowed with metric_type: %s, only with metric_type of count, rate, or gauge", *metricType)
 		}
-		attributes.SetAggregations(aggregations.([]datadogV2.MetricCustomAggregation))
-	} else {
-		// if the aggregations field is not set either set it to the default value if metric type is not a distribution
-		// or remove the aggregations field from the payload otherwise
-		if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-			attributes.IncludePercentiles = nil
-		} else {
-			if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_GAUGE {
-				// create a new MetricCustomAggregations object with one element that is the avg/avg combo as that is the default aggregation for gauge metrics
-				attributes.SetAggregations([]datadogV2.MetricCustomAggregation{*datadogV2.NewMetricCustomAggregation(datadogV2.METRICCUSTOMSPACEAGGREGATION_AVG, datadogV2.METRICCUSTOMTIMEAGGREGATION_AVG)})
-			} else {
-				// create a new MetricCustomAggregations object with one element that is the sum/sum combo as that is the default aggregation for count/rates metrics
-				attributes.SetAggregations([]datadogV2.MetricCustomAggregation{*datadogV2.NewMetricCustomAggregation(datadogV2.METRICCUSTOMSPACEAGGREGATION_SUM, datadogV2.METRICCUSTOMTIMEAGGREGATION_SUM)})
-			}
+		aggregations, err := buildAggregations(aggregationsArray.(*schema.Set).List())
+		if err != nil {
+			return nil, err
 		}
+		attributes.SetAggregations(aggregations)
 	}
+
 	result.SetAttributes(*attributes)
 
 	return result, nil
@@ -185,17 +215,16 @@ func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existingMe
 		}
 	}
 
-	aggregations, aggregationsFieldSet := d.GetOk("aggregations")
+	aggregationsArray, aggregationsFieldSet := d.GetOk("aggregations")
 	if aggregationsFieldSet {
 		if *existingMetricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 			return nil, fmt.Errorf("aggregations field not allowed with metric_type: %s, only with metric_type of count, rate, or gauge", *existingMetricType)
 		}
-		attributes.SetAggregations(aggregations.([]datadogV2.MetricCustomAggregation))
-	} else {
-		// if the aggregations field is not set and the metric type is a distribution remove the aggregations field from the payload
-		if *existingMetricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-			attributes.IncludePercentiles = nil
+		aggregations, err := buildAggregations(aggregationsArray.(*schema.Set).List())
+		if err != nil {
+			return nil, err
 		}
+		attributes.SetAggregations(aggregations)
 	}
 
 	result.SetAttributes(*attributes)
@@ -235,8 +264,17 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 					return diag.FromErr(err)
 				}
 			} else {
-				if err := d.Set("aggregations", attributes.GetAggregations()); err != nil {
-					return diag.FromErr(err)
+				aggregationsMapArray := make([]map[string]interface{}, 0)
+				if aggregationsArray, ok := attributes.GetAggregationsOk(); ok {
+					for _, aggregation := range *aggregationsArray {
+						aggregationsMap := map[string]interface{}{}
+						aggregationsMap["time"] = aggregation.GetTime()
+						aggregationsMap["space"] = aggregation.GetSpace()
+						aggregationsMapArray = append(aggregationsMapArray, aggregationsMap)
+					}
+					if err := d.Set("aggregations", aggregationsMapArray); err != nil {
+						return diag.FromErr(err)
+					}
 				}
 			}
 		}
