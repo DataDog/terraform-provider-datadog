@@ -372,16 +372,14 @@ resource "datadog_dashboard" "ordered_dashboard" {
   }
 
   template_variable {
-    name             = "var_1"
-    prefix           = "host"
-    default          = "aws"
-    available_values = ["aws", "gcp"]
+    name    = "var_1"
+    prefix  = "host"
+    default = "aws"
   }
   template_variable {
-    name             = "var_2"
-    prefix           = "service_name"
-    default          = "autoscaling"
-    available_values = ["autoscaling", "kubernetes"]
+    name    = "var_2"
+    prefix  = "service_name"
+    default = "autoscaling"
   }
 
   template_variable_preset {
@@ -642,17 +640,14 @@ resource "datadog_dashboard" "free_dashboard" {
   }
 
   template_variable {
-    name             = "var_1"
-    prefix           = "host"
-    default          = "aws"
-    available_values = ["aws", "gcp"]
-
+    name    = "var_1"
+    prefix  = "host"
+    default = "aws"
   }
   template_variable {
-    name             = "var_2"
-    prefix           = "service_name"
-    default          = "autoscaling"
-    available_values = ["autoscaling", "kubernetes"]
+    name    = "var_2"
+    prefix  = "service_name"
+    default = "autoscaling"
   }
 
   template_variable_preset {
