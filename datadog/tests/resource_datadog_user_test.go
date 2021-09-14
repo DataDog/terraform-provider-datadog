@@ -244,6 +244,9 @@ func TestAccDatadogUser_ReEnableRoleUpdate(t *testing.T) {
 			{
 				// Destroy the user resource by passing data source resource only
 				Config: roleDatasources,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckUserIsDisabled(accProvider, username),
+				),
 			},
 			{
 				Config: testAccCheckDatadogUserConfigRoleUpdate2(username),
@@ -259,6 +262,24 @@ func TestAccDatadogUser_ReEnableRoleUpdate(t *testing.T) {
 			},
 		},
 	})
+}
+
+func testAccCheckUserIsDisabled(accProvider func() (*schema.Provider, error), username string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
+		datadogClientV2 := providerConf.DatadogClientV2
+		authV2 := providerConf.AuthV2
+
+		resp, _, err := datadogClientV2.UsersApi.ListUsers(authV2, datadogV2.ListUsersOptionalParameters{Filter: &username, FilterStatus: datadogV2.PtrString("Disabled")})
+		if err != nil {
+			return fmt.Errorf("received an listing users %s", err)
+		}
+		if len(resp.GetData()) == 0 {
+			return fmt.Errorf("user is not disabled")
+		}
+		return nil
+	}
 }
 
 func testCheckUserHasRole(username string, roleSource string) resource.TestCheckFunc {
