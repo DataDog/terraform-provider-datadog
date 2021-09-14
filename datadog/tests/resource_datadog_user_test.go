@@ -273,7 +273,7 @@ func testAccCheckUserIsDisabled(accProvider func() (*schema.Provider, error), us
 
 		resp, _, err := datadogClientV2.UsersApi.ListUsers(authV2, datadogV2.ListUsersOptionalParameters{Filter: &username, FilterStatus: datadogV2.PtrString("Disabled")})
 		if err != nil {
-			return fmt.Errorf("received an listing users %s", err)
+			return fmt.Errorf("received an error listing users %s", err)
 		}
 		if len(resp.GetData()) == 0 {
 			return fmt.Errorf("user is not disabled")
