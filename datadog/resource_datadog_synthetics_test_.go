@@ -1406,6 +1406,31 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		}
 	}
 
+	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
+
+	if attr, ok := d.GetOk("config_variable"); ok && attr != nil {
+		for _, v := range attr.([]interface{}) {
+			variableMap := v.(map[string]interface{})
+			variable := datadogV1.SyntheticsConfigVariable{}
+
+			variable.SetName(variableMap["name"].(string))
+			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
+
+			if variable.GetType() != "global" {
+				variable.SetPattern(variableMap["pattern"].(string))
+				variable.SetExample(variableMap["example"].(string))
+			}
+
+			if variableMap["id"] != "" {
+				variable.SetId(variableMap["id"].(string))
+			}
+
+			configVariables = append(configVariables, variable)
+		}
+	}
+
+	config.SetConfigVariables(configVariables)
+
 	options := datadogV1.NewSyntheticsTestOptions()
 
 	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
@@ -1740,6 +1765,35 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	localAssertions := make([]map[string]interface{}, 0)
 
 	if err := d.Set("assertion", localAssertions); err != nil {
+		return diag.FromErr(err)
+	}
+
+	configVariables := config.GetConfigVariables()
+	localConfigVariables := make([]map[string]interface{}, len(configVariables))
+	for i, configVariable := range configVariables {
+		localVariable := make(map[string]interface{})
+		if v, ok := configVariable.GetTypeOk(); ok {
+			localVariable["type"] = *v
+		}
+		if v, ok := configVariable.GetNameOk(); ok {
+			localVariable["name"] = *v
+		}
+
+		if configVariable.GetType() != "global" {
+			if v, ok := configVariable.GetExampleOk(); ok {
+				localVariable["example"] = *v
+			}
+			if v, ok := configVariable.GetPatternOk(); ok {
+				localVariable["pattern"] = *v
+			}
+		}
+		if v, ok := configVariable.GetIdOk(); ok {
+			localVariable["id"] = *v
+		}
+		localConfigVariables[i] = localVariable
+	}
+
+	if err := d.Set("config_variable", localConfigVariables); err != nil {
 		return diag.FromErr(err)
 	}
 
