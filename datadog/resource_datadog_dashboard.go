@@ -390,6 +390,12 @@ func getTemplateVariableSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Description: "The default value for the template variable on dashboard load.",
 		},
+		"available_values": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
+			Description: "The list of values that the template variable drop-down is be limited to",
+		},
 	}
 }
 
@@ -407,15 +413,22 @@ func buildDatadogTemplateVariables(terraformTemplateVariables *[]interface{}) *[
 		if v, ok := terraformTemplateVariable["default"].(string); ok && len(v) != 0 {
 			datadogTemplateVariable.SetDefault(v)
 		}
+		if v, ok := terraformTemplateVariable["available_values"].([]interface{}); ok && len(v) > 0 {
+			availableValues := make([]string, len(v))
+			for i, availableValue := range v {
+				availableValues[i] = availableValue.(string)
+			}
+			datadogTemplateVariable.SetAvailableValues(availableValues)
+		}
 		datadogTemplateVariables[i] = datadogTemplateVariable
 	}
 	return &datadogTemplateVariables
 }
 
-func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadogV1.DashboardTemplateVariable) *[]map[string]string {
-	terraformTemplateVariables := make([]map[string]string, len(*datadogTemplateVariables))
+func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadogV1.DashboardTemplateVariable) *[]map[string]interface{} {
+	terraformTemplateVariables := make([]map[string]interface{}, len(*datadogTemplateVariables))
 	for i, templateVariable := range *datadogTemplateVariables {
-		terraformTemplateVariable := map[string]string{}
+		terraformTemplateVariable := map[string]interface{}{}
 		if v, ok := templateVariable.GetNameOk(); ok {
 			terraformTemplateVariable["name"] = *v
 		}
@@ -424,6 +437,13 @@ func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadogV1.Dashb
 		}
 		if v, ok := templateVariable.GetDefaultOk(); ok {
 			terraformTemplateVariable["default"] = *v
+		}
+		if v, ok := templateVariable.GetAvailableValuesOk(); ok {
+			availableValues := make([]string, len(*v))
+			for i, availableValue := range *v {
+				availableValues[i] = availableValue
+			}
+			terraformTemplateVariable["available_values"] = availableValues
 		}
 		terraformTemplateVariables[i] = terraformTemplateVariable
 	}

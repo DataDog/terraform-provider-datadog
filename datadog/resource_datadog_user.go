@@ -118,6 +118,40 @@ func buildDatadogUserV2UpdateStruct(d *schema.ResourceData, userID string) *data
 	return userRequest
 }
 
+func updateRoles(meta interface{}, userID string, oldRoles *schema.Set, newRoles *schema.Set) diag.Diagnostics {
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
+
+	rolesToRemove := oldRoles.Difference(newRoles)
+	rolesToAdd := newRoles.Difference(oldRoles)
+
+	for _, roleI := range rolesToRemove.List() {
+		role := roleI.(string)
+		userRelation := datadogV2.NewRelationshipToUserWithDefaults()
+		userRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
+		userRelationData.SetId(userID)
+		userRelation.SetData(*userRelationData)
+		_, httpResponse, err := datadogClientV2.RolesApi.RemoveUserFromRole(authV2, role, *userRelation)
+		if err != nil {
+			return utils.TranslateClientErrorDiag(err, httpResponse, "error removing user from role")
+		}
+	}
+	for _, roleI := range rolesToAdd.List() {
+		role := roleI.(string)
+		roleRelation := datadogV2.NewRelationshipToUserWithDefaults()
+		roleRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
+		roleRelationData.SetId(userID)
+		roleRelation.SetData(*roleRelationData)
+		_, httpResponse, err := datadogClientV2.RolesApi.AddUserToRole(authV2, role, *roleRelation)
+		if err != nil {
+			return utils.TranslateClientErrorDiag(err, httpResponse, "error adding user to role")
+		}
+	}
+
+	return nil
+}
+
 func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
@@ -159,6 +193,19 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 		if err := utils.CheckForUnparsed(updatedUser); err != nil {
 			return diag.FromErr(err)
 		}
+
+		// Update roles
+		_, newRolesI := d.GetChange("roles")
+		newRoles := newRolesI.(*schema.Set)
+		oldRoles := schema.NewSet(newRoles.F, []interface{}{})
+		for _, existingRole := range updatedUser.Data.Relationships.Roles.GetData() {
+			oldRoles.Add(existingRole.GetId())
+		}
+
+		if err := updateRoles(meta, userID, oldRoles, newRoles); err != nil {
+			return err
+		}
+
 		if err := updateUserStateV2(d, &updatedUser); err != nil {
 			return err
 		}
@@ -261,6 +308,7 @@ func resourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta i
 	}
 	return updateUserStateV2(d, &userResponse)
 }
+
 func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
@@ -270,29 +318,9 @@ func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta
 		oldRolesI, newRolesI := d.GetChange("roles")
 		oldRoles := oldRolesI.(*schema.Set)
 		newRoles := newRolesI.(*schema.Set)
-		rolesToRemove := oldRoles.Difference(newRoles)
-		rolesToAdd := newRoles.Difference(oldRoles)
-		for _, roleI := range rolesToRemove.List() {
-			role := roleI.(string)
-			userRelation := datadogV2.NewRelationshipToUserWithDefaults()
-			userRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
-			userRelationData.SetId(d.Id())
-			userRelation.SetData(*userRelationData)
-			_, httpResponse, err := datadogClientV2.RolesApi.RemoveUserFromRole(authV2, role, *userRelation)
-			if err != nil {
-				return utils.TranslateClientErrorDiag(err, httpResponse, "error removing user from role")
-			}
-		}
-		for _, roleI := range rolesToAdd.List() {
-			role := roleI.(string)
-			roleRelation := datadogV2.NewRelationshipToUserWithDefaults()
-			roleRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
-			roleRelationData.SetId(d.Id())
-			roleRelation.SetData(*roleRelationData)
-			_, httpResponse, err := datadogClientV2.RolesApi.AddUserToRole(authV2, role, *roleRelation)
-			if err != nil {
-				return utils.TranslateClientErrorDiag(err, httpResponse, "error adding user to role")
-			}
+
+		if err := updateRoles(meta, d.Id(), oldRoles, newRoles); err != nil {
+			return err
 		}
 	}
 
