@@ -61,7 +61,7 @@ func buildDatadogSloCorrection(d *schema.ResourceData) *datadogV1.SLOCorrectionC
 	result := datadogV1.NewSLOCorrectionCreateRequestWithDefaults()
 	// `type` is hardcoded to 'correction' in Data
 	// only need to set `attributes` here
-	createData := datadogV1.NewSLOCorrectionCreateData()
+	createData := datadogV1.NewSLOCorrectionCreateData(datadogV1.SLOCORRECTIONTYPE_CORRECTION)
 	attributes := datadogV1.NewSLOCorrectionCreateRequestAttributesWithDefaults()
 	correctionCategory := datadogV1.SLOCorrectionCategory(d.Get("category").(string))
 	attributes.SetCategory(correctionCategory)
