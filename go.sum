@@ -34,8 +34,8 @@ cloud.google.com/go/storage v1.10.0/go.mod h1:FLPqc6j+Ki4BU591ie1oL6qBQGu2Bl/tZ9
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/DataDog/datadog-api-client-go v1.3.1-0.20210909131424-901b75865816 h1:uQdFvyZZy2hDHmMeokYnMb/F9tXHQiHxw2GKzLGn6Qk=
-github.com/DataDog/datadog-api-client-go v1.3.1-0.20210909131424-901b75865816/go.mod h1:QzaQF1cDO1/BIQG1fz14VrY+6RECUGkiwzDCtVbfP5c=
+github.com/DataDog/datadog-api-client-go v1.4.0 h1:EpiKfVg8aUdZB8ovvqIqiVC8Ox4kpcemNIIJ/5TZsXo=
+github.com/DataDog/datadog-api-client-go v1.4.0/go.mod h1:QzaQF1cDO1/BIQG1fz14VrY+6RECUGkiwzDCtVbfP5c=
 github.com/DataDog/datadog-go v3.6.0+incompatible h1:ILg7c5Y1KvZFDOaVS0higGmJ5Fal5O1KQrkrT9j6dSM=
 github.com/DataDog/datadog-go v3.6.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/DataDog/dd-trace-go v1.29.0-alpha.1.0.20210128154316-c84d7933b726 h1:E6y5wxU93et78p5JhD1tl/QDdFofxiSadMJ2p0AqO4Y=
