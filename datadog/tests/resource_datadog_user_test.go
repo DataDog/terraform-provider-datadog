@@ -218,6 +218,70 @@ func TestAccDatadogUser_UpdateRole(t *testing.T) {
 	})
 }
 
+func TestAccDatadogUser_ReEnableRoleUpdate(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogUserConfigRoleUpdate1(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "2"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.st_role"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.ro_role"),
+				),
+			},
+			{
+				// Destroy the user resource by passing data source resource only
+				Config: roleDatasources,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckUserIsDisabled(accProvider, username),
+				),
+			},
+			{
+				Config: testAccCheckDatadogUserConfigRoleUpdate2(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr("datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttr("datadog_user.foo", "roles.#", "2"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.st_role"),
+					testCheckUserHasRole("datadog_user.foo", "data.datadog_role.adm_role"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckUserIsDisabled(accProvider func() (*schema.Provider, error), username string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
+		datadogClientV2 := providerConf.DatadogClientV2
+		authV2 := providerConf.AuthV2
+
+		resp, _, err := datadogClientV2.UsersApi.ListUsers(authV2, datadogV2.ListUsersOptionalParameters{Filter: &username, FilterStatus: datadogV2.PtrString("Disabled")})
+		if err != nil {
+			return fmt.Errorf("received an error listing users %s", err)
+		}
+		if len(resp.GetData()) == 0 {
+			return fmt.Errorf("user is not disabled")
+		}
+		return nil
+	}
+}
+
 func testCheckUserHasRole(username string, roleSource string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rootModule := s.RootModule()
