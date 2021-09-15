@@ -5165,7 +5165,7 @@ func getFormulaQuerySchema() *schema.Schema {
 								Type:             schema.TypeString,
 								Required:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionApmDependencyStatsDataSourceFromValue),
-								Description:      "The data source for APM.",
+								Description:      "The data source for APM Dependency Stats queries.",
 							},
 							"env": {
 								Type:        schema.TypeString,
