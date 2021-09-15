@@ -57,7 +57,9 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 						delete(attrMap, f)
 					}
 					// Remove every widget id too
-					deleteWidgetID(attrMap["widgets"].([]interface{}))
+					if widgets, ok := attrMap["widgets"].([]interface{}); ok {
+						deleteWidgetID(widgets)
+					}
 					res, _ := structure.FlattenJsonToString(attrMap)
 					return res
 				},
