@@ -787,7 +787,7 @@ func syntheticsAllowInsecureOption() *schema.Schema {
 
 func syntheticsFollowRedirectsOption() *schema.Schema {
 	return &schema.Schema{
-		Description: "For API HTTP test, whether or not the test should follow redirects.",
+		Description: "Determines whether or not the API HTTP test should follow redirects.",
 		Type:        schema.TypeBool,
 		Optional:    true,
 	}
