@@ -1619,6 +1619,7 @@ Optional:
 Optional:
 
 - **apm_dependency_stats_query** (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--apm_dependency_stats_query))
+- **apm_resource_stats_query** (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--apm_resource_stats_query))
 - **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query))
 - **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--metric_query))
 - **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--process_query))
@@ -1628,7 +1629,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -1641,6 +1642,26 @@ Optional:
 - **is_upstream** (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--geomap_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.geomap_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- **group_by** (List of String) Array of fields to group results by.
+- **operation_name** (String) Name of operation on service.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- **resource_name** (String) APM resource.
 
 
 <a id="nestedblock--widget--geomap_definition--request--query--event_query"></a>
@@ -2743,6 +2764,7 @@ Optional:
 Optional:
 
 - **apm_dependency_stats_query** (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_dependency_stats_query))
+- **apm_resource_stats_query** (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_resource_stats_query))
 - **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query))
 - **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--metric_query))
 - **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--process_query))
@@ -2752,7 +2774,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -2765,6 +2787,26 @@ Optional:
 - **is_upstream** (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- **group_by** (List of String) Array of fields to group results by.
+- **operation_name** (String) Name of operation on service.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- **resource_name** (String) APM resource.
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query"></a>
@@ -4276,6 +4318,7 @@ Optional:
 Optional:
 
 - **apm_dependency_stats_query** (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_dependency_stats_query))
+- **apm_resource_stats_query** (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_resource_stats_query))
 - **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query))
 - **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--metric_query))
 - **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--process_query))
@@ -4285,7 +4328,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -4298,6 +4341,26 @@ Optional:
 - **is_upstream** (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- **group_by** (List of String) Array of fields to group results by.
+- **operation_name** (String) Name of operation on service.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- **resource_name** (String) APM resource.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query"></a>
@@ -4845,6 +4908,7 @@ Optional:
 Optional:
 
 - **apm_dependency_stats_query** (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_dependency_stats_query))
+- **apm_resource_stats_query** (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_resource_stats_query))
 - **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query))
 - **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--metric_query))
 - **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--process_query))
@@ -4854,7 +4918,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -4867,6 +4931,26 @@ Optional:
 - **is_upstream** (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- **group_by** (List of String) Array of fields to group results by.
+- **operation_name** (String) Name of operation on service.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- **resource_name** (String) APM resource.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query"></a>
@@ -6177,6 +6261,7 @@ Optional:
 Optional:
 
 - **apm_dependency_stats_query** (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_dependency_stats_query))
+- **apm_resource_stats_query** (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_resource_stats_query))
 - **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query))
 - **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--metric_query))
 - **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--process_query))
@@ -6186,7 +6271,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -6199,6 +6284,26 @@ Optional:
 - **is_upstream** (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- **group_by** (List of String) Array of fields to group results by.
+- **operation_name** (String) Name of operation on service.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- **resource_name** (String) APM resource.
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query"></a>
@@ -6776,6 +6881,7 @@ Optional:
 Optional:
 
 - **apm_dependency_stats_query** (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_dependency_stats_query))
+- **apm_resource_stats_query** (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_resource_stats_query))
 - **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query))
 - **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--metric_query))
 - **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--process_query))
@@ -6785,7 +6891,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -6798,6 +6904,26 @@ Optional:
 - **is_upstream** (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- **group_by** (List of String) Array of fields to group results by.
+- **operation_name** (String) Name of operation on service.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- **resource_name** (String) APM resource.
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query"></a>
@@ -8414,6 +8540,7 @@ Optional:
 Optional:
 
 - **apm_dependency_stats_query** (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--apm_dependency_stats_query))
+- **apm_resource_stats_query** (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--apm_resource_stats_query))
 - **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query))
 - **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--metric_query))
 - **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--process_query))
@@ -8423,7 +8550,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -8436,6 +8563,26 @@ Optional:
 - **is_upstream** (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--query_table_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.query_table_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- **group_by** (List of String) Array of fields to group results by.
+- **operation_name** (String) Name of operation on service.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- **resource_name** (String) APM resource.
 
 
 <a id="nestedblock--widget--query_table_definition--request--query--event_query"></a>
@@ -8983,6 +9130,7 @@ Optional:
 Optional:
 
 - **apm_dependency_stats_query** (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--apm_dependency_stats_query))
+- **apm_resource_stats_query** (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--apm_resource_stats_query))
 - **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query))
 - **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--metric_query))
 - **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--process_query))
@@ -8992,7 +9140,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -9005,6 +9153,26 @@ Optional:
 - **is_upstream** (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--query_value_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.query_value_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- **group_by** (List of String) Array of fields to group results by.
+- **operation_name** (String) Name of operation on service.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- **resource_name** (String) APM resource.
 
 
 <a id="nestedblock--widget--query_value_definition--request--query--event_query"></a>
@@ -10315,6 +10483,7 @@ Optional:
 Optional:
 
 - **apm_dependency_stats_query** (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--apm_dependency_stats_query))
+- **apm_resource_stats_query** (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--apm_resource_stats_query))
 - **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query))
 - **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--metric_query))
 - **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--process_query))
@@ -10324,7 +10493,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -10337,6 +10506,26 @@ Optional:
 - **is_upstream** (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--timeseries_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- **group_by** (List of String) Array of fields to group results by.
+- **operation_name** (String) Name of operation on service.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- **resource_name** (String) APM resource.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--query--event_query"></a>
@@ -10914,6 +11103,7 @@ Optional:
 Optional:
 
 - **apm_dependency_stats_query** (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--apm_dependency_stats_query))
+- **apm_resource_stats_query** (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--apm_resource_stats_query))
 - **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query))
 - **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--metric_query))
 - **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--process_query))
@@ -10923,7 +11113,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -10936,6 +11126,26 @@ Optional:
 - **is_upstream** (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--toplist_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.toplist_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- **group_by** (List of String) Array of fields to group results by.
+- **operation_name** (String) Name of operation on service.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- **resource_name** (String) APM resource.
 
 
 <a id="nestedblock--widget--toplist_definition--request--query--event_query"></a>
