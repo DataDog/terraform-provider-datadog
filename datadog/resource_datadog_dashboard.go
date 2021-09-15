@@ -5175,7 +5175,7 @@ func getFormulaQuerySchema() *schema.Schema {
 							"stat": {
 								Type:             schema.TypeString,
 								Required:         true,
-								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionApmDependencyStatsDataSourceStatFromValue),
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionApmDependencyStatNameFromValue),
 								Description:      "APM statistic.",
 							},
 							"operation_name": {
@@ -5405,8 +5405,8 @@ func buildDatadogMetricQuery(data map[string]interface{}) datadogV1.FormulaAndFu
 
 func buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.FormulaAndFunctionApmDependencyStatsDataSource(data["data_source"].(string))
-	stat := datadogV1.FormulaAndFunctionApmDependencyStatsDataSourceStat(data["stat"].(string))
-	apmDependencyStatsQuery := datadogV1.NewFormulaAndFunctionApmDependencyStatsQueryDefinition(dataSource, data["env"].(string), data["operation_name"].(string), data["resource_name"].(string), data["service"].(string), stat)
+	stat := datadogV1.FormulaAndFunctionApmDependencyStatName(data["stat"].(string))
+	apmDependencyStatsQuery := datadogV1.NewFormulaAndFunctionApmDependencyStatsQueryDefinition(dataSource, data["env"].(string), data["name"].(string), data["operation_name"].(string), data["resource_name"].(string), data["service"].(string), stat)
 
 	// primary_tag_name
 	if v, ok := data["primary_tag_name"].(string); ok && len(v) != 0 {
