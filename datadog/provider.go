@@ -167,7 +167,7 @@ func Provider() *schema.Provider {
 			"datadog_synthetics_global_variable":           resourceDatadogSyntheticsGlobalVariable(),
 			"datadog_synthetics_private_location":          resourceDatadogSyntheticsPrivateLocation(),
 			"datadog_user":                                 resourceDatadogUser(),
-			"datadog_webhooks_custom_variable":             resourceDatadogWebhooksCustomVariable(),
+			"datadog_webhook_custom_variable":              resourceDatadogWebhookCustomVariable(),
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{

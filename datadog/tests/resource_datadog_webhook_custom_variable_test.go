@@ -27,19 +27,19 @@ func TestAccDatadogWebhookCustomVariable_Basic(t *testing.T) {
 			{
 				Config: testAccCheckDatadogWebhookCustomVariableBasicConfig(uniqueName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogWebhookCustomVariableExists(accProvider, "datadog_webhooks_custom_variable.foo"),
-					resource.TestCheckResourceAttr("datadog_webhooks_custom_variable.foo", "name", uniqueName),
-					resource.TestCheckResourceAttr("datadog_webhooks_custom_variable.foo", "value", "test-value"),
-					resource.TestCheckResourceAttr("datadog_webhooks_custom_variable.foo", "is_secret", "false"),
+					testAccCheckDatadogWebhookCustomVariableExists(accProvider, "datadog_webhook_custom_variable.foo"),
+					resource.TestCheckResourceAttr("datadog_webhook_custom_variable.foo", "name", uniqueName),
+					resource.TestCheckResourceAttr("datadog_webhook_custom_variable.foo", "value", "test-value"),
+					resource.TestCheckResourceAttr("datadog_webhook_custom_variable.foo", "is_secret", "false"),
 				),
 			},
 			{
 				Config: testAccCheckDatadogWebhookCustomVariableBasicConfigUpdated(uniqueName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogWebhookCustomVariableExists(accProvider, "datadog_webhooks_custom_variable.foo"),
-					resource.TestCheckResourceAttr("datadog_webhooks_custom_variable.foo", "name", uniqueName+"UPDATED"),
-					resource.TestCheckResourceAttr("datadog_webhooks_custom_variable.foo", "value", "test-value-updated"),
-					resource.TestCheckResourceAttr("datadog_webhooks_custom_variable.foo", "is_secret", "true"),
+					testAccCheckDatadogWebhookCustomVariableExists(accProvider, "datadog_webhook_custom_variable.foo"),
+					resource.TestCheckResourceAttr("datadog_webhook_custom_variable.foo", "name", uniqueName+"UPDATED"),
+					resource.TestCheckResourceAttr("datadog_webhook_custom_variable.foo", "value", "test-value-updated"),
+					resource.TestCheckResourceAttr("datadog_webhook_custom_variable.foo", "is_secret", "true"),
 				),
 			},
 		},
@@ -48,7 +48,7 @@ func TestAccDatadogWebhookCustomVariable_Basic(t *testing.T) {
 
 func testAccCheckDatadogWebhookCustomVariableBasicConfig(uniq string) string {
 	return fmt.Sprintf(`
-resource "datadog_webhooks_custom_variable" "foo" {
+resource "datadog_webhook_custom_variable" "foo" {
   name      = "%s"
   value     = "test-value"
   is_secret = false
@@ -57,7 +57,7 @@ resource "datadog_webhooks_custom_variable" "foo" {
 
 func testAccCheckDatadogWebhookCustomVariableBasicConfigUpdated(uniq string) string {
 	return fmt.Sprintf(`
-resource "datadog_webhooks_custom_variable" "foo" {
+resource "datadog_webhook_custom_variable" "foo" {
   name      = "%sUPDATED"
   value     = "test-value-updated"
   is_secret = true

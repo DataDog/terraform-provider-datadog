@@ -10,13 +10,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func resourceDatadogWebhooksCustomVariable() *schema.Resource {
+func resourceDatadogWebhookCustomVariable() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog webhooks custom variable resource. This can be used to create and manage Datadog webhooks custom variables.",
-		CreateContext: resourceDatadogWebhooksCustomVariableCreate,
-		ReadContext:   resourceDatadogWebhooksCustomVariableRead,
-		UpdateContext: resourceDatadogWebhooksCustomVariableUpdate,
-		DeleteContext: resourceDatadogWebhooksCustomVariableDelete,
+		CreateContext: resourceDatadogWebhookCustomVariableCreate,
+		ReadContext:   resourceDatadogWebhookCustomVariableRead,
+		UpdateContext: resourceDatadogWebhookCustomVariableUpdate,
+		DeleteContext: resourceDatadogWebhookCustomVariableDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -41,7 +41,7 @@ func resourceDatadogWebhooksCustomVariable() *schema.Resource {
 	}
 }
 
-func updateWebhooksCustomVariableState(d *schema.ResourceData, customVariable *datadogV1.WebhooksIntegrationCustomVariableResponse) diag.Diagnostics {
+func updateWebhookCustomVariableState(d *schema.ResourceData, customVariable *datadogV1.WebhooksIntegrationCustomVariableResponse) diag.Diagnostics {
 	if err := d.Set("name", customVariable.GetName()); err != nil {
 		return diag.FromErr(err)
 	}
@@ -56,7 +56,7 @@ func updateWebhooksCustomVariableState(d *schema.ResourceData, customVariable *d
 	return nil
 }
 
-func resourceDatadogWebhooksCustomVariableCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogWebhookCustomVariableCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -72,10 +72,10 @@ func resourceDatadogWebhooksCustomVariableCreate(ctx context.Context, d *schema.
 
 	d.SetId(resp.GetName())
 
-	return updateWebhooksCustomVariableState(d, &resp)
+	return updateWebhookCustomVariableState(d, &resp)
 }
 
-func resourceDatadogWebhooksCustomVariableRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogWebhookCustomVariableRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -88,10 +88,10 @@ func resourceDatadogWebhooksCustomVariableRead(ctx context.Context, d *schema.Re
 		}
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting webhooks custom variable")
 	}
-	return updateWebhooksCustomVariableState(d, &resp)
+	return updateWebhookCustomVariableState(d, &resp)
 }
 
-func resourceDatadogWebhooksCustomVariableUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogWebhookCustomVariableUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -107,10 +107,10 @@ func resourceDatadogWebhooksCustomVariableUpdate(ctx context.Context, d *schema.
 
 	d.SetId(resp.GetName())
 
-	return updateWebhooksCustomVariableState(d, &resp)
+	return updateWebhookCustomVariableState(d, &resp)
 }
 
-func resourceDatadogWebhooksCustomVariableDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogWebhookCustomVariableDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
