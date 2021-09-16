@@ -44,19 +44,20 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				}
 				diff.SetNew("aggregations", nil)
 			} else {
-				// set default aggregations if the user did not specify any
-				if newAggrs.(*schema.Set).Len() == 0 {
-					var defaultAggrs []map[string]interface{}
-					if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_GAUGE {
-						// create a new aggregations with one element that is the avg/avg combo as that is the default aggregation for gauge metrics
-						defaultAggrs = append(defaultAggrs, map[string]interface{}{"time": "avg", "space": "avg"})
-					} else {
-						// create a new aggregations with one element that is the sum/sum combo as that is the default aggregation for count/rates metrics
-						defaultAggrs = append(defaultAggrs, map[string]interface{}{"time": "sum", "space": "sum"})
-					}
-					if err := diff.SetNew("aggregations", defaultAggrs); err != nil {
-						return err
-					}
+				// Always add the default aggregation regardless of if the user manually added it or not
+				var defaultAggrCombo map[string]interface{}
+				if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_GAUGE {
+					// the avg/avg combo is the default aggregation for gauge metrics
+					defaultAggrCombo = map[string]interface{}{"time": "avg", "space": "avg"}
+				} else {
+					// the sum/sum combo is the default aggregation for count/rates metrics
+					defaultAggrCombo = map[string]interface{}{"time": "sum", "space": "sum"}
+				}
+
+				newAggrs.(*schema.Set).Add(defaultAggrCombo)
+
+				if err := diff.SetNew("aggregations", newAggrs); err != nil {
+					return err
 				}
 			}
 
