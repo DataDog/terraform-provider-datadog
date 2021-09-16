@@ -1,3 +1,21 @@
+## 3.4.0 (September 16, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_dashboard_list`: Expand the example to demonstrate how to use the dashboard list data ([#1148](https://github.com/DataDog/terraform-provider-datadog/pull/1148)) Thanks [@jyee](https://github.com/jyee)
+-   `datadog_synthetics_test`: Add support for local variables for browser tests ([#1185](https://github.com/DataDog/terraform-provider-datadog/pull/1185))
+-   `datadog_integration_aws`: Document use of `access_key_id` as `account_id` for aws integrations ([#1189](https://github.com/DataDog/terraform-provider-datadog/pull/1189))
+-   `datadog_dashboard`: Add available_values property to dashboard template variables ([#1195](https://github.com/DataDog/terraform-provider-datadog/pull/1195))
+-   `datadog_user`: Update User roles when re-enabling previously deleted user ([#1174](https://github.com/DataDog/terraform-provider-datadog/pull/1174))
+
+BUGFIXES:
+
+-   `datadog_dashboard_json`: Validate widgets cast in dashboard JSON ([#1197](https://github.com/DataDog/terraform-provider-datadog/pull/1197))
+
+NOTES:
+
+-   Update Datadog client to [v1.4.0](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.4.0)
+
 ## 3.3.0 (August 26, 2021)
 
 IMPROVEMENTS:
