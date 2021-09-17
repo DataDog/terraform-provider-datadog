@@ -1628,7 +1628,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -2752,7 +2752,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -4285,7 +4285,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -4854,7 +4854,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -6186,7 +6186,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -6785,7 +6785,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -8423,7 +8423,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -8992,7 +8992,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -10324,7 +10324,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
@@ -10923,7 +10923,7 @@ Optional:
 
 Required:
 
-- **data_source** (String) The data source for APM. Valid values are `apm_dependency_stats`.
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - **env** (String) APM Environment.
 - **name** (String) The name of query for use in formulas.
 - **operation_name** (String) Name of operation on service.
