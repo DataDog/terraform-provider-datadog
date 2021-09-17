@@ -2,6 +2,8 @@ package datadog
 
 import (
 	"context"
+	"io/ioutil"
+	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -45,7 +47,7 @@ func updateWebhookCustomVariableState(d *schema.ResourceData, customVariable *da
 	if err := d.Set("name", customVariable.GetName()); err != nil {
 		return diag.FromErr(err)
 	}
-	if v, ok := customVariable.GetValueOk(); ok && !customVariable.GetIsSecret() {
+	if v, ok := customVariable.GetValueOk(); ok {
 		if err := d.Set("value", v); err != nil {
 			return diag.FromErr(err)
 		}
@@ -53,6 +55,7 @@ func updateWebhookCustomVariableState(d *schema.ResourceData, customVariable *da
 	if err := d.Set("is_secret", customVariable.GetIsSecret()); err != nil {
 		return diag.FromErr(err)
 	}
+
 	return nil
 }
 
@@ -82,9 +85,14 @@ func resourceDatadogWebhookCustomVariableRead(ctx context.Context, d *schema.Res
 
 	resp, httpResponse, err := datadogClientV1.WebhooksIntegrationApi.GetWebhooksIntegrationCustomVariable(authV1, d.Id())
 	if err != nil {
-		if httpResponse != nil && httpResponse.StatusCode == 404 {
-			d.SetId("")
-			return nil
+		// Api returns 400 when the webhook custom variable does not exist
+		if httpResponse != nil && httpResponse.StatusCode == 400 {
+			bodyBytes, _ := ioutil.ReadAll(httpResponse.Body)
+			bodyString := string(bodyBytes)
+			if strings.Contains(bodyString, "Custom variable does not exist") {
+				d.SetId("")
+				return nil
+			}
 		}
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting webhooks custom variable")
 	}

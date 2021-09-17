@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"strings"
 	"testing"
 
@@ -92,11 +93,15 @@ func testAccCheckDatadogWebhookCustomVariableDestroy(accProvider func() (*schema
 
 			id := r.Primary.ID
 
-			_, _, err = datadogClient.WebhooksIntegrationApi.GetWebhooksIntegrationCustomVariable(auth, id)
+			_, httpResp, err := datadogClient.WebhooksIntegrationApi.GetWebhooksIntegrationCustomVariable(auth, id)
 			if err != nil {
 				// Api returns 400 when the webhook custom variable does not exist
-				if strings.Contains(err.Error(), "400 Bad Request") {
-					continue
+				if httpResp != nil && httpResp.StatusCode == 400 {
+					bodyBytes, _ := ioutil.ReadAll(httpResp.Body)
+					bodyString := string(bodyBytes)
+					if strings.Contains(bodyString, "Custom variable does not exist") {
+						continue
+					}
 				} else {
 					return fmt.Errorf("received an error retrieving webhooks custom variable: %s", err.Error())
 				}
