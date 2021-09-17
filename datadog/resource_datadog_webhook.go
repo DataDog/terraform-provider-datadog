@@ -2,6 +2,8 @@ package datadog
 
 import (
 	"context"
+	"io/ioutil"
+	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -111,9 +113,14 @@ func resourceDatadogWebhookRead(ctx context.Context, d *schema.ResourceData, met
 
 	resp, httpResponse, err := datadogClientV1.WebhooksIntegrationApi.GetWebhooksIntegration(authV1, d.Id())
 	if err != nil {
-		if httpResponse != nil && httpResponse.StatusCode == 404 {
-			d.SetId("")
-			return nil
+		// Api returns 400 when the webhook does not exist
+		if httpResponse != nil && httpResponse.StatusCode == 400 {
+			bodyBytes, _ := ioutil.ReadAll(httpResponse.Body)
+			bodyString := string(bodyBytes)
+			if strings.Contains(bodyString, "Webhook does not exist") {
+				d.SetId("")
+				return nil
+			}
 		}
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting webhook")
 	}
