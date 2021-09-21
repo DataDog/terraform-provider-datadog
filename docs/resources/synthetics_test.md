@@ -427,6 +427,7 @@ Optional:
 - **body** (String) The request body.
 - **dns_server** (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - **dns_server_port** (Number) DNS server port to use for DNS tests.
+- **follow_redirects** (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - **host** (String) Host name to perform the test with.
 - **method** (String) The HTTP method. Valid values are `GET`, `POST`, `PATCH`, `PUT`, `DELETE`, `HEAD`, `OPTIONS`.
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
@@ -554,7 +555,7 @@ Optional:
 
 - **accept_self_signed** (Boolean) For SSL test, whether or not the test should allow self signed certificates.
 - **allow_insecure** (Boolean) Allows loading insecure content for an HTTP test.
-- **follow_redirects** (Boolean) For API HTTP test, whether or not the test should follow redirects.
+- **follow_redirects** (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - **min_failure_duration** (Number) Minimum amount of time in failure required to trigger an alert. Default is `0`.
 - **min_location_failed** (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`.
 - **monitor_name** (String) The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.

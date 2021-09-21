@@ -335,12 +335,8 @@ func syntheticsTestOptionsList() *schema.Schema {
 		MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"allow_insecure": syntheticsAllowInsecureOption(),
-				"follow_redirects": {
-					Description: "For API HTTP test, whether or not the test should follow redirects.",
-					Type:        schema.TypeBool,
-					Optional:    true,
-				},
+				"allow_insecure":   syntheticsAllowInsecureOption(),
+				"follow_redirects": syntheticsFollowRedirectsOption(),
 				"tick_every": {
 					Description:  "How often the test should run (in seconds).",
 					Type:         schema.TypeInt,
@@ -422,6 +418,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema := syntheticsTestRequest()
 	requestElemSchema.Schema["allow_insecure"] = syntheticsAllowInsecureOption()
+	requestElemSchema.Schema["follow_redirects"] = syntheticsFollowRedirectsOption()
 
 	return &schema.Schema{
 		Description: "Steps for multistep api tests",
@@ -788,6 +785,14 @@ func syntheticsAllowInsecureOption() *schema.Schema {
 	}
 }
 
+func syntheticsFollowRedirectsOption() *schema.Schema {
+	return &schema.Schema{
+		Description: "Determines whether or not the API HTTP test should follow redirects.",
+		Type:        schema.TypeBool,
+		Optional:    true,
+	}
+}
+
 func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -1072,6 +1077,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			request.SetBody(requestMap["body"].(string))
 			request.SetTimeout(float64(requestMap["timeout"].(int)))
 			request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
+			request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
 
 			request = completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}))
 
@@ -2067,6 +2073,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			stepRequest := step.GetRequest()
 			localRequest := buildLocalRequest(stepRequest)
 			localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
+			localRequest["follow_redirects"] = stepRequest.GetFollowRedirects()
 			localStep["request_definition"] = []map[string]interface{}{localRequest}
 			localStep["request_headers"] = stepRequest.GetHeaders()
 			localStep["request_query"] = stepRequest.GetQuery()
