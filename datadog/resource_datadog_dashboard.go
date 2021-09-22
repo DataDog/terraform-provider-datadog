@@ -3864,6 +3864,8 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["apm_dependency_stats_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["apm_resource_stats_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionAPMResourceStatsQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogQueryTableRequest.SetQueries(queries)
@@ -5216,6 +5218,69 @@ func getFormulaQuerySchema() *schema.Schema {
 						},
 					},
 				},
+				"apm_resource_stats_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "The APM Resource Stats query using formulas and functions.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionApmResourceStatsDataSourceFromValue),
+								Description:      "The data source for APM Resource Stats queries.",
+							},
+							"env": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "APM Environment.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The name of query for use in formulas.",
+							},
+							"stat": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionApmResourceStatNameFromValue),
+								Description:      "APM statistic.",
+							},
+							"operation_name": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Name of operation on service.",
+							},
+							"resource_name": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "APM resource.",
+							},
+							"service": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "APM service.",
+							},
+							"primary_tag_name": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.",
+							},
+							"primary_tag_value": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Filter APM data by the second primary tag. `primary_tag_name` must also be specified.",
+							},
+							"group_by": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Elem:        &schema.Schema{Type: schema.TypeString},
+								Description: "Array of fields to group results by.",
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -5401,6 +5466,43 @@ func buildDatadogMetricQuery(data map[string]interface{}) datadogV1.FormulaAndFu
 	}
 
 	return datadogV1.FormulaAndFunctionMetricQueryDefinitionAsFormulaAndFunctionQueryDefinition(metricQuery)
+}
+
+func buildDatadogFormulaAndFunctionAPMResourceStatsQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.FormulaAndFunctionApmResourceStatsDataSource(data["data_source"].(string))
+	stat := datadogV1.FormulaAndFunctionApmResourceStatName(data["stat"].(string))
+	apmResourceStatsQuery := datadogV1.NewFormulaAndFunctionApmResourceStatsQueryDefinition(dataSource, data["env"].(string), data["name"].(string), data["service"].(string), stat)
+
+	// operation_name
+	if v, ok := data["operation_name"].(string); ok && len(v) != 0 {
+		apmResourceStatsQuery.SetOperationName(v)
+	}
+
+	// resource_name
+	if v, ok := data["resource_name"].(string); ok && len(v) != 0 {
+		apmResourceStatsQuery.SetResourceName(v)
+	}
+
+	// primary_tag_name
+	if v, ok := data["primary_tag_name"].(string); ok && len(v) != 0 {
+		apmResourceStatsQuery.SetPrimaryTagName(v)
+	}
+
+	// primary_tag_value
+	if v, ok := data["primary_tag_value"].(string); ok && len(v) != 0 {
+		apmResourceStatsQuery.SetPrimaryTagValue(v)
+	}
+
+	// group_by
+	if terraformGroupBys, ok := data["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
+		datadogGroupBys := make([]string, len(terraformGroupBys))
+		for i, groupBy := range terraformGroupBys {
+			datadogGroupBys[i] = groupBy.(string)
+		}
+		apmResourceStatsQuery.SetGroupBy(datadogGroupBys)
+	}
+
+	return datadogV1.FormulaAndFunctionApmResourceStatsQueryDefinitionAsFormulaAndFunctionQueryDefinition(apmResourceStatsQuery)
 }
 
 func buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
@@ -6707,6 +6809,43 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 			terraformApmDependencyStatQuery := map[string]interface{}{}
 			terraformApmDependencyStatQuery["apm_dependency_stats_query"] = terraformQueries
 			queries[i] = terraformApmDependencyStatQuery
+		}
+		terraformApmResourceStatsQueryDefinition := query.FormulaAndFunctionApmResourceStatsQueryDefinition
+		if terraformApmResourceStatsQueryDefinition != nil {
+			if dataSource, ok := terraformApmResourceStatsQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if env, ok := terraformApmResourceStatsQueryDefinition.GetEnvOk(); ok {
+				terraformQuery["env"] = env
+			}
+			if stat, ok := terraformApmResourceStatsQueryDefinition.GetStatOk(); ok {
+				terraformQuery["stat"] = stat
+			}
+			if operationName, ok := terraformApmResourceStatsQueryDefinition.GetOperationNameOk(); ok {
+				terraformQuery["operation_name"] = operationName
+			}
+			if resourceName, ok := terraformApmResourceStatsQueryDefinition.GetResourceNameOk(); ok {
+				terraformQuery["resource_name"] = resourceName
+			}
+			if service, ok := terraformApmResourceStatsQueryDefinition.GetServiceOk(); ok {
+				terraformQuery["service"] = service
+			}
+			if primaryTagName, ok := terraformApmResourceStatsQueryDefinition.GetPrimaryTagNameOk(); ok {
+				terraformQuery["primary_tag_name"] = primaryTagName
+			}
+			if primaryTagValue, ok := terraformApmResourceStatsQueryDefinition.GetPrimaryTagValueOk(); ok {
+				terraformQuery["primary_tag_value"] = primaryTagValue
+			}
+			if groupBy, ok := terraformApmResourceStatsQueryDefinition.GetGroupByOk(); ok {
+				terraformQuery["group_by"] = groupBy
+			}
+			if name, ok := terraformApmResourceStatsQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			terraformQueries := []map[string]interface{}{terraformQuery}
+			terraformApmResourceStatQuery := map[string]interface{}{}
+			terraformApmResourceStatQuery["apm_resource_stats_query"] = terraformQueries
+			queries[i] = terraformApmResourceStatQuery
 		}
 		terraformProcessqueryDefinition := query.FormulaAndFunctionProcessQueryDefinition
 		if terraformProcessqueryDefinition != nil {

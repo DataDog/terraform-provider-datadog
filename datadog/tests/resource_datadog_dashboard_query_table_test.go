@@ -130,6 +130,25 @@ resource "datadog_dashboard" "query_table_dashboard" {
 		  }
 		}
 	  }
+	  widget {
+		query_table_definition {
+		  request {
+			query {
+			  apm_resource_stats_query {
+				name              = "my-query-2"
+				data_source       = "apm_resource_stats"
+				env               = "staging"
+				service           = "foobar-controller"
+				operation_name    = "pylons.request"
+				stat              = "latency_p99"
+				group_by          = ["resource_name"]
+				primary_tag_name  = "datacenter"
+				primary_tag_value = "abc"
+			  }
+			}
+		  }
+		}
+	  }
 }
 `
 
@@ -285,6 +304,15 @@ var datadogDashboardQueryTableFormulaAsserts = []string{
 	"widget.1.query_table_definition.0.request.0.query.0.apm_dependency_stats_query.0.operation_name = cassandra.query",
 	"widget.1.query_table_definition.0.request.0.query.0.apm_dependency_stats_query.0.resource_name = CREATE TABLE IF NOT EXISTS foobar",
 	"widget.1.query_table_definition.0.request.0.query.0.apm_dependency_stats_query.0.stat = avg_duration",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.name = my-query-2",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.data_source = apm_resource_stats",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.env = staging",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.service = foobar-controller",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.operation_name = pylons.request",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.stat = latency_p99",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.group_by.0 = resource_name",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.primary_tag_name = datacenter",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.primary_tag_value = abc",
 }
 
 func TestAccDatadogDashboardQueryTable(t *testing.T) {
