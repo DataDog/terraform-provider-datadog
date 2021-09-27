@@ -1,0 +1,1 @@
+terraform import datadog_webhooks_custom_variable.foo EXAMPLE_VARIABLE

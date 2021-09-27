@@ -2,8 +2,6 @@ package datadog
 
 import (
 	"context"
-	"io/ioutil"
-	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -25,12 +23,12 @@ func resourceDatadogWebhookCustomVariable() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Description: "The name of the variable. It corresponds with `<CUSTOM_VARIABLE_NAME>`",
+				Description: "The name of the variable. It corresponds with `<CUSTOM_VARIABLE_NAME>`.",
 				Type:        schema.TypeString,
 				Required:    true,
 			},
 			"value": {
-				Description: "The Value of the custom variable.",
+				Description: "The value of the custom variable.",
 				Type:        schema.TypeString,
 				Required:    true,
 			},
@@ -85,14 +83,9 @@ func resourceDatadogWebhookCustomVariableRead(ctx context.Context, d *schema.Res
 
 	resp, httpResponse, err := datadogClientV1.WebhooksIntegrationApi.GetWebhooksIntegrationCustomVariable(authV1, d.Id())
 	if err != nil {
-		// Api returns 400 when the webhook custom variable does not exist
-		if httpResponse != nil && httpResponse.StatusCode == 400 {
-			bodyBytes, _ := ioutil.ReadAll(httpResponse.Body)
-			bodyString := string(bodyBytes)
-			if strings.Contains(bodyString, "Custom variable does not exist") {
-				d.SetId("")
-				return nil
-			}
+		if httpResponse != nil && httpResponse.StatusCode == 404 {
+			d.SetId("")
+			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting webhooks custom variable")
 	}
