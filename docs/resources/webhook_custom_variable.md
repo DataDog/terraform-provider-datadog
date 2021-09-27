@@ -28,11 +28,17 @@ resource "datadog_webhooks_custom_variable" "foo" {
 ### Required
 
 - **is_secret** (Boolean) Whether the custom variable is secret or not.
-- **name** (String) The name of the variable. It corresponds with `<CUSTOM_VARIABLE_NAME>`
-- **value** (String) The Value of the custom variable.
+- **name** (String) The name of the variable. It corresponds with `<CUSTOM_VARIABLE_NAME>`.
+- **value** (String) The value of the custom variable.
 
 ### Read-Only
 
 - **id** (String) The ID of this resource.
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+terraform import datadog_webhooks_custom_variable.foo EXAMPLE_VARIABLE
+```
