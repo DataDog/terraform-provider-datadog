@@ -724,6 +724,7 @@ Optional:
 - **hostmap_definition** (Block List, Max: 1) The definition for a Hostmap widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition))
 - **iframe_definition** (Block List, Max: 1) The definition for an Iframe widget. (see [below for nested schema](#nestedblock--widget--iframe_definition))
 - **image_definition** (Block List, Max: 1) The definition for an Image widget (see [below for nested schema](#nestedblock--widget--image_definition))
+- **list_stream_definition** (Block List, Max: 1) The definition for a List Stream widget. (see [below for nested schema](#nestedblock--widget--list_stream_definition))
 - **log_stream_definition** (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--log_stream_definition))
 - **manage_status_definition** (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--manage_status_definition))
 - **note_definition** (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--note_definition))
@@ -1869,6 +1870,7 @@ Optional:
 - **hostmap_definition** (Block List, Max: 1) The definition for a Hostmap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition))
 - **iframe_definition** (Block List, Max: 1) The definition for an Iframe widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--iframe_definition))
 - **image_definition** (Block List, Max: 1) The definition for an Image widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--image_definition))
+- **list_stream_definition** (Block List, Max: 1) The definition for a List Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition))
 - **log_stream_definition** (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition))
 - **manage_status_definition** (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--manage_status_definition))
 - **note_definition** (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--note_definition))
@@ -3964,6 +3966,53 @@ Optional:
 - **sizing** (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties. Note: `zoom`, `fit` and `center` values are deprecated. Valid values are `fill`, `contain`, `cover`, `none`, `scale-down`, `zoom`, `fit`, `center`.
 - **url_dark_theme** (String) The URL in dark mode to use as a data source for the widget.
 - **vertical_align** (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
+
+
+<a id="nestedblock--widget--group_definition--widget--list_stream_definition"></a>
+### Nested Schema for `widget.group_definition.widget.list_stream_definition`
+
+Required:
+
+- **request** (Block List, Min: 1, Max: 1) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request))
+
+Optional:
+
+- **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
+
+<a id="nestedblock--widget--group_definition--widget--list_stream_definition--request"></a>
+### Nested Schema for `widget.group_definition.widget.list_stream_definition.request`
+
+Required:
+
+- **columns** (Block List, Min: 1) Widget columns. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request--columns))
+- **query** (Block List, Min: 1, Max: 1) Updated list stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request--query))
+- **response_format** (String) Widget response format. Valid values are `event_list`.
+
+<a id="nestedblock--widget--group_definition--widget--list_stream_definition--request--columns"></a>
+### Nested Schema for `widget.group_definition.widget.list_stream_definition.request.columns`
+
+Required:
+
+- **field** (String) Widget column field.
+- **width** (String) Widget column width.
+
+
+<a id="nestedblock--widget--group_definition--widget--list_stream_definition--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.list_stream_definition.request.query`
+
+Required:
+
+- **data_source** (String) Source from which to query items to display in the stream. Valid values are `issue_stream`, `logs_stream`, `audit_stream`.
+- **query_string** (String) Widget query.
+
+Optional:
+
+- **indexes** (List of String) List of indexes.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--log_stream_definition"></a>
@@ -8186,6 +8235,53 @@ Optional:
 - **sizing** (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties. Note: `zoom`, `fit` and `center` values are deprecated. Valid values are `fill`, `contain`, `cover`, `none`, `scale-down`, `zoom`, `fit`, `center`.
 - **url_dark_theme** (String) The URL in dark mode to use as a data source for the widget.
 - **vertical_align** (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
+
+
+<a id="nestedblock--widget--list_stream_definition"></a>
+### Nested Schema for `widget.list_stream_definition`
+
+Required:
+
+- **request** (Block List, Min: 1, Max: 1) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request))
+
+Optional:
+
+- **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
+
+<a id="nestedblock--widget--list_stream_definition--request"></a>
+### Nested Schema for `widget.list_stream_definition.request`
+
+Required:
+
+- **columns** (Block List, Min: 1) Widget columns. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request--columns))
+- **query** (Block List, Min: 1, Max: 1) Updated list stream widget. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request--query))
+- **response_format** (String) Widget response format. Valid values are `event_list`.
+
+<a id="nestedblock--widget--list_stream_definition--request--columns"></a>
+### Nested Schema for `widget.list_stream_definition.request.columns`
+
+Required:
+
+- **field** (String) Widget column field.
+- **width** (String) Widget column width.
+
+
+<a id="nestedblock--widget--list_stream_definition--request--query"></a>
+### Nested Schema for `widget.list_stream_definition.request.query`
+
+Required:
+
+- **data_source** (String) Source from which to query items to display in the stream. Valid values are `issue_stream`, `logs_stream`, `audit_stream`.
+- **query_string** (String) Widget query.
+
+Optional:
+
+- **indexes** (List of String) List of indexes.
+
+
 
 
 <a id="nestedblock--widget--log_stream_definition"></a>

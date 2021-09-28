@@ -4493,8 +4493,9 @@ func getListStreamDefinitionSchema() map[string]*schema.Schema {
 		"request": {
 			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
-			Optional:    false,
+			Required:    true,
 			MaxItems:    1,
+			MinItems:    1,
 			Elem: &schema.Resource{
 				Schema: getListStreamRequestSchema(),
 			},
@@ -4524,18 +4525,18 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 		"columns": {
 			Description: "Widget columns.",
 			Type:        schema.TypeList,
-			Optional:    false,
+			Required:    true,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"width": {
 						Description: "Widget column width.",
 						Type:        schema.TypeString,
-						Optional:    false,
+						Required:    true,
 					},
 					"field": {
 						Description: "Widget column field.",
 						Type:        schema.TypeString,
-						Optional:    false,
+						Required:    true,
 					},
 				},
 			},
@@ -4544,24 +4545,26 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 			Description:      "Widget response format.",
 			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewListStreamResponseFormatFromValue),
-			Optional:         false,
+			Required:         true,
 		},
 		"query": {
 			Description: "Updated list stream widget.",
 			Type:        schema.TypeList,
-			Optional:    false,
+			Required:    true,
 			MaxItems:    1,
+			MinItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"data_source": {
 						Description: "Source from which to query items to display in the stream.",
-						Type:        schema.TypeInt,
-						Optional:    false,
+						Type:        schema.TypeString,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewListStreamSourceFromValue),
+						Required:    true,
 					},
 					"query_string": {
 						Description: "Widget query.",
 						Type:        schema.TypeString,
-						Optional:    false,
+						Required:    true,
 					},
 					"indexes": {
 						Description: "List of indexes.",
