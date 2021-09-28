@@ -52,7 +52,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsSubTypeFromValue),
 			},
 			"request_definition": {
-				Description: "The synthetics test request. Required if `type = \"api\"`.",
+				Description: "Required if `type = \"api\"`. The synthetics test request.",
 				Type:        schema.TypeList,
 				MaxItems:    1,
 				Optional:    true,
@@ -66,7 +66,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			"browser_variable":           syntheticsBrowserVariable(),
 			"config_variable":            syntheticsConfigVariable(),
 			"device_ids": {
-				Description: "Array with the different device IDs used to run the test (only for `browser` tests).",
+				Description: "Required if `type = \"browser\"`. Array with the different device IDs used to run the test.",
 				Type:        schema.TypeList,
 				Optional:    true,
 				Elem: &schema.Schema{
