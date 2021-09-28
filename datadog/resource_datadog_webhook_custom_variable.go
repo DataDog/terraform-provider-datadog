@@ -31,6 +31,7 @@ func resourceDatadogWebhookCustomVariable() *schema.Resource {
 				Description: "The value of the custom variable.",
 				Type:        schema.TypeString,
 				Required:    true,
+				Sensitive:   true,
 			},
 			"is_secret": {
 				Description: "Whether the custom variable is secret or not.",

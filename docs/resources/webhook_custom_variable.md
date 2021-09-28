@@ -29,7 +29,7 @@ resource "datadog_webhook_custom_variable" "foo" {
 
 - **is_secret** (Boolean) Whether the custom variable is secret or not.
 - **name** (String) The name of the variable. It corresponds with `<CUSTOM_VARIABLE_NAME>`.
-- **value** (String) The value of the custom variable.
+- **value** (String, Sensitive) The value of the custom variable.
 
 ### Read-Only
 
