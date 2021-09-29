@@ -1,0 +1,353 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454","value":"test-value"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateWebhooksIntegrationCustomVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables
+    method: POST
+  response:
+    body: '{"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454","value":"test-value"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "111"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 27 Sep 2021 15:44:16 GMT
+      Location:
+      - https://app.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetWebhooksIntegrationCustomVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454
+    method: GET
+  response:
+    body: '{"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454","value":"test-value"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 27 Sep 2021 15:44:16 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetWebhooksIntegrationCustomVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454
+    method: GET
+  response:
+    body: '{"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454","value":"test-value"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 27 Sep 2021 15:44:17 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetWebhooksIntegrationCustomVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454
+    method: GET
+  response:
+    body: '{"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454","value":"test-value"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 27 Sep 2021 15:44:18 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"is_secret":true,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454UPDATED","value":"test-value-updated"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - UpdateWebhooksIntegrationCustomVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454
+    method: PUT
+  response:
+    body: '{"is_secret":true,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454UPDATED"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 27 Sep 2021 15:44:18 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetWebhooksIntegrationCustomVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454UPDATED
+    method: GET
+  response:
+    body: '{"is_secret":true,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454UPDATED"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 27 Sep 2021 15:44:19 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetWebhooksIntegrationCustomVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454UPDATED
+    method: GET
+  response:
+    body: '{"is_secret":true,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454UPDATED"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 27 Sep 2021 15:44:19 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - DeleteWebhooksIntegrationCustomVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454UPDATED
+    method: DELETE
+  response:
+    body: '{}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "2"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 27 Sep 2021 15:44:20 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetWebhooksIntegrationCustomVariable
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1632757454UPDATED
+    method: GET
+  response:
+    body: '{"errors": ["Custom variable does not exist"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 27 Sep 2021 15:44:21 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 404 Not Found
+    code: 404
+    duration: ""
