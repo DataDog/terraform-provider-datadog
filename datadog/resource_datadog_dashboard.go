@@ -4556,10 +4556,10 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"data_source": {
-						Description: "Source from which to query items to display in the stream.",
-						Type:        schema.TypeString,
+						Description:      "Source from which to query items to display in the stream.",
+						Type:             schema.TypeString,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewListStreamSourceFromValue),
-						Required:    true,
+						Required:         true,
 					},
 					"query_string": {
 						Description: "Widget query.",
