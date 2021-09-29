@@ -2350,9 +2350,11 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 
 func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key string, value interface{}) interface{} {
 	switch key {
-	case "element", "email", "file", "request":
-		result := make(map[string]interface{})
-		utils.GetMetadataFromJSON([]byte(value.(string)), &result)
+	case "element", "email", "file", "files", "request":
+		var result interface{}
+		if err := utils.GetMetadataFromJSON([]byte(value.(string)), &result); err != nil {
+			log.Printf("[ERROR] Error converting step param %s: %v", key, err)
+		}
 		return result
 
 	case "playing_tab_id":
@@ -2376,7 +2378,7 @@ func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key 
 
 func convertStepParamsValueForState(key string, value interface{}) interface{} {
 	switch key {
-	case "element", "email", "file", "request":
+	case "element", "email", "file", "files", "request":
 		result, _ := json.Marshal(value)
 		return string(result)
 
