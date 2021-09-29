@@ -52,7 +52,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsSubTypeFromValue),
 			},
 			"request_definition": {
-				Description: "The synthetics test request. Required if `type = \"api\"`.",
+				Description: "Required if `type = \"api\"`. The synthetics test request.",
 				Type:        schema.TypeList,
 				MaxItems:    1,
 				Optional:    true,
@@ -66,7 +66,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			"browser_variable":           syntheticsBrowserVariable(),
 			"config_variable":            syntheticsConfigVariable(),
 			"device_ids": {
-				Description: "Array with the different device IDs used to run the test (only for `browser` tests).",
+				Description: "Required if `type = \"browser\"`. Array with the different device IDs used to run the test.",
 				Type:        schema.TypeList,
 				Optional:    true,
 				Elem: &schema.Schema{
@@ -335,12 +335,8 @@ func syntheticsTestOptionsList() *schema.Schema {
 		MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"allow_insecure": syntheticsAllowInsecureOption(),
-				"follow_redirects": {
-					Description: "For API HTTP test, whether or not the test should follow redirects.",
-					Type:        schema.TypeBool,
-					Optional:    true,
-				},
+				"allow_insecure":   syntheticsAllowInsecureOption(),
+				"follow_redirects": syntheticsFollowRedirectsOption(),
 				"tick_every": {
 					Description:  "How often the test should run (in seconds).",
 					Type:         schema.TypeInt,
@@ -422,6 +418,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema := syntheticsTestRequest()
 	requestElemSchema.Schema["allow_insecure"] = syntheticsAllowInsecureOption()
+	requestElemSchema.Schema["follow_redirects"] = syntheticsFollowRedirectsOption()
 
 	return &schema.Schema{
 		Description: "Steps for multistep api tests",
@@ -788,6 +785,14 @@ func syntheticsAllowInsecureOption() *schema.Schema {
 	}
 }
 
+func syntheticsFollowRedirectsOption() *schema.Schema {
+	return &schema.Schema{
+		Description: "Determines whether or not the API HTTP test should follow redirects.",
+		Type:        schema.TypeBool,
+		Optional:    true,
+	}
+}
+
 func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -1072,6 +1077,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			request.SetBody(requestMap["body"].(string))
 			request.SetTimeout(float64(requestMap["timeout"].(int)))
 			request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
+			request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
 
 			request = completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}))
 
@@ -2067,6 +2073,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			stepRequest := step.GetRequest()
 			localRequest := buildLocalRequest(stepRequest)
 			localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
+			localRequest["follow_redirects"] = stepRequest.GetFollowRedirects()
 			localStep["request_definition"] = []map[string]interface{}{localRequest}
 			localStep["request_headers"] = stepRequest.GetHeaders()
 			localStep["request_query"] = stepRequest.GetQuery()
@@ -2343,9 +2350,11 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 
 func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key string, value interface{}) interface{} {
 	switch key {
-	case "element", "email", "file", "request":
-		result := make(map[string]interface{})
-		utils.GetMetadataFromJSON([]byte(value.(string)), &result)
+	case "element", "email", "file", "files", "request":
+		var result interface{}
+		if err := utils.GetMetadataFromJSON([]byte(value.(string)), &result); err != nil {
+			log.Printf("[ERROR] Error converting step param %s: %v", key, err)
+		}
 		return result
 
 	case "playing_tab_id":
@@ -2369,7 +2378,7 @@ func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key 
 
 func convertStepParamsValueForState(key string, value interface{}) interface{} {
 	switch key {
-	case "element", "email", "file", "request":
+	case "element", "email", "file", "files", "request":
 		result, _ := json.Marshal(value)
 		return string(result)
 
