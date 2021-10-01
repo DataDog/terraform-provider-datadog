@@ -139,6 +139,11 @@ func resourceDatadogDowntime() *schema.Resource {
 				ConflictsWith: []string{"start"},
 				Optional:      true,
 				Description:   "String representing date and time to start the downtime in RFC3339 format.",
+				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+					oldDate, _ := time.Parse(time.RFC3339, oldVal)
+					newDate, _ := time.Parse(time.RFC3339, newVal)
+					return oldDate.Equal(newDate)
+				},
 			},
 			"end": {
 				Type:     schema.TypeInt,
@@ -155,6 +160,11 @@ func resourceDatadogDowntime() *schema.Resource {
 				ConflictsWith: []string{"end"},
 				Optional:      true,
 				Description:   "String representing date and time to end the downtime in RFC3339 format.",
+				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+					oldDate, _ := time.Parse(time.RFC3339, oldVal)
+					newDate, _ := time.Parse(time.RFC3339, newVal)
+					return oldDate.Equal(newDate)
+				},
 			},
 			"timezone": {
 				Type:         schema.TypeString,
@@ -517,11 +527,25 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild, upd
 
 	// Don't set the `start`, `end` stored in terraform unless in specific cases for recurring downtimes.
 	if updateBounds {
-		if err := d.Set("start", dt.GetStart()); err != nil {
-			return diag.FromErr(err)
+		if _, ok := d.GetOk("start_date"); ok {
+			// Only set start_date if used in config to avoid inconsistent plans
+			if err := d.Set("start_date", time.Unix(dt.GetStart(), 0).In(time.UTC).Format(time.RFC3339)); err != nil {
+				return diag.FromErr(err)
+			}
+		} else {
+			if err := d.Set("start", dt.GetStart()); err != nil {
+				return diag.FromErr(err)
+			}
 		}
-		if err := d.Set("end", dt.GetEnd()); err != nil {
-			return diag.FromErr(err)
+		if _, ok := d.GetOk("end_date"); ok {
+			// Only set end_date if used in config to avoid inconsistent plans
+			if err := d.Set("end_date", time.Unix(dt.GetEnd(), 0).In(time.UTC).Format(time.RFC3339)); err != nil {
+				return diag.FromErr(err)
+			}
+		} else {
+			if err := d.Set("end", dt.GetEnd()); err != nil {
+				return diag.FromErr(err)
+			}
 		}
 	}
 

@@ -481,9 +481,9 @@ func TestAccDatadogDowntimeDates(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "scope.0", "*"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "start_date", "2099-10-31T11:11:00+01:00"),
+						"datadog_downtime.foo", "start_date", "2099-10-31T10:11:00Z"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "end_date", "2099-10-31T21:00:00+01:00"),
+						"datadog_downtime.foo", "end_date", "2099-10-31T20:00:00Z"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "recurrence.0.type", "days"),
 					resource.TestCheckResourceAttr(
