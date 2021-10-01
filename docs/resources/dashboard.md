@@ -686,7 +686,6 @@ resource "datadog_dashboard" "free_dashboard" {
 
 - **layout_type** (String) The layout type of the dashboard. Valid values are `ordered`, `free`.
 - **title** (String) The title of the dashboard.
-- **widget** (Block List, Min: 1) The list of widgets to display on the dashboard. (see [below for nested schema](#nestedblock--widget))
 
 ### Optional
 
@@ -699,11 +698,44 @@ resource "datadog_dashboard" "free_dashboard" {
 - **template_variable** (Block List) The list of template variables for this dashboard. (see [below for nested schema](#nestedblock--template_variable))
 - **template_variable_preset** (Block List) The list of selectable template variable presets for this dashboard. (see [below for nested schema](#nestedblock--template_variable_preset))
 - **url** (String) The URL of the dashboard.
+- **widget** (Block List) The list of widgets to display on the dashboard. (see [below for nested schema](#nestedblock--widget))
 
 ### Read-Only
 
 - **dashboard_lists_removed** (Set of Number) A list of dashboard lists this dashboard should be removed from. Internal only.
 - **id** (String) The ID of this resource.
+
+<a id="nestedblock--template_variable"></a>
+### Nested Schema for `template_variable`
+
+Required:
+
+- **name** (String) The name of the variable.
+
+Optional:
+
+- **available_values** (List of String) The list of values that the template variable drop-down is be limited to
+- **default** (String) The default value for the template variable on dashboard load.
+- **prefix** (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
+
+
+<a id="nestedblock--template_variable_preset"></a>
+### Nested Schema for `template_variable_preset`
+
+Optional:
+
+- **name** (String) The name of the preset.
+- **template_variable** (Block List) The template variable names and assumed values under the given preset (see [below for nested schema](#nestedblock--template_variable_preset--template_variable))
+
+<a id="nestedblock--template_variable_preset--template_variable"></a>
+### Nested Schema for `template_variable_preset.template_variable`
+
+Optional:
+
+- **name** (String) The name of the template variable
+- **value** (String) The value that should be assumed by the template variable in this preset
+
+
 
 <a id="nestedblock--widget"></a>
 ### Nested Schema for `widget`
@@ -11421,38 +11453,6 @@ Required:
 Optional:
 
 - **is_column_break** (Boolean) Whether the widget should be the first one on the second column in high density or not. Only for the new dashboard layout and only one widget in the dashboard should have this property set to `true`.
-
-
-
-<a id="nestedblock--template_variable"></a>
-### Nested Schema for `template_variable`
-
-Required:
-
-- **name** (String) The name of the variable.
-
-Optional:
-
-- **available_values** (List of String) The list of values that the template variable drop-down is be limited to
-- **default** (String) The default value for the template variable on dashboard load.
-- **prefix** (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
-
-
-<a id="nestedblock--template_variable_preset"></a>
-### Nested Schema for `template_variable_preset`
-
-Optional:
-
-- **name** (String) The name of the preset.
-- **template_variable** (Block List) The template variable names and assumed values under the given preset (see [below for nested schema](#nestedblock--template_variable_preset--template_variable))
-
-<a id="nestedblock--template_variable_preset--template_variable"></a>
-### Nested Schema for `template_variable_preset.template_variable`
-
-Optional:
-
-- **name** (String) The name of the template variable
-- **value** (String) The value that should be assumed by the template variable in this preset
 
 ## Import
 

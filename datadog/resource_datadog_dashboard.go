@@ -51,7 +51,7 @@ func resourceDatadogDashboard() *schema.Resource {
 			},
 			"widget": {
 				Type:        schema.TypeList,
-				Required:    true,
+				Optional:    true,
 				Description: "The list of widgets to display on the dashboard.",
 				Elem: &schema.Resource{
 					Schema: getWidgetSchema(),
