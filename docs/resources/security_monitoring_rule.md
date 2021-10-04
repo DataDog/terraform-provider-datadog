@@ -73,7 +73,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - **id** (String) The ID of this resource.
 
 <a id="nestedblock--case"></a>
-### Nested Schema for `case`
+### Nested schema for `case`
 
 Required:
 
@@ -113,7 +113,7 @@ Required:
 
 
 <a id="nestedblock--filter"></a>
-### Nested Schema for `filter`
+### Nested schema for `filter`
 
 Required:
 

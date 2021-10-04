@@ -14,6 +14,18 @@ fi
 
 tfplugindocs
 
+security_monitoring_doc_files=(
+  'docs/data-sources/security_monitoring_rules.md'
+  'docs/resources/security_monitoring_default_rule.md'
+  'docs/resources/security_monitoring_rule.md'
+)
+
+# Special formatting for security monitoring documentation files
+for file in "${security_monitoring_doc_files[@]}"
+do
+  sed -i '' 's/Read-Only/Read-only/g' $file
+  sed -i '' 's/Nested Schema/Nested schema/g' $file
+done
 
 # Remove the changes to files we don't autogenerate
 git checkout HEAD -- "${exclude_files[@]}"
