@@ -34,7 +34,7 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 - **enabled** (Boolean) Enable the rule.
 - **filter** (Block List) Additional queries to filter matched events before they are processed. (see [below for nested schema](#nestedblock--filter))
 
-### Read-Only
+### Read-only
 
 - **id** (String) The ID of this resource.
 
@@ -48,7 +48,7 @@ Required:
 
 
 <a id="nestedblock--filter"></a>
-### Nested Schema for `filter`
+### Nested schema for `filter`
 
 Required:
 

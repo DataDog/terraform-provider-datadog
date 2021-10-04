@@ -30,16 +30,16 @@ data "datadog_security_monitoring_rules" "test" {
 - **tags_filter** (List of String) A list of tags to limit the search
 - **user_only_filter** (Boolean) Limit the search to user rules
 
-### Read-Only
+### Read-only
 
 - **id** (String) The ID of this resource.
 - **rule_ids** (List of String) List of IDs of the matched rules.
 - **rules** (List of Object) List of rules. (see [below for nested schema](#nestedatt--rules))
 
 <a id="nestedatt--rules"></a>
-### Nested Schema for `rules`
+### Nested schema for `rules`
 
-Read-Only:
+Read-only:
 
 - **case** (List of Object) (see [below for nested schema](#nestedobjatt--rules--case))
 - **enabled** (Boolean)
@@ -53,9 +53,9 @@ Read-Only:
 - **type** (String)
 
 <a id="nestedobjatt--rules--case"></a>
-### Nested Schema for `rules.case`
+### Nested schema for `rules.case`
 
-Read-Only:
+Read-only:
 
 - **condition** (String)
 - **name** (String)
@@ -64,18 +64,18 @@ Read-Only:
 
 
 <a id="nestedobjatt--rules--filter"></a>
-### Nested Schema for `rules.filter`
+### Nested schema for `rules.filter`
 
-Read-Only:
+Read-only:
 
 - **action** (String)
 - **query** (String)
 
 
 <a id="nestedobjatt--rules--options"></a>
-### Nested Schema for `rules.options`
+### Nested schema for `rules.options`
 
-Read-Only:
+Read-only:
 
 - **detection_method** (String)
 - **evaluation_window** (Number)
@@ -84,9 +84,9 @@ Read-Only:
 - **new_value_options** (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--new_value_options))
 
 <a id="nestedobjatt--rules--options--new_value_options"></a>
-### Nested Schema for `rules.options.new_value_options`
+### Nested schema for `rules.options.new_value_options`
 
-Read-Only:
+Read-only:
 
 - **forget_after** (Number)
 - **learning_duration** (Number)
@@ -94,9 +94,9 @@ Read-Only:
 
 
 <a id="nestedobjatt--rules--query"></a>
-### Nested Schema for `rules.query`
+### Nested schema for `rules.query`
 
-Read-Only:
+Read-only:
 
 - **agent_rule** (List of Object) (see [below for nested schema](#nestedobjatt--rules--query--agent_rule))
 - **aggregation** (String)
@@ -107,9 +107,9 @@ Read-Only:
 - **query** (String)
 
 <a id="nestedobjatt--rules--query--agent_rule"></a>
-### Nested Schema for `rules.query.agent_rule`
+### Nested schema for `rules.query.agent_rule`
 
-Read-Only:
+Read-only:
 
 - **agent_rule_id** (String)
 - **expression** (String)

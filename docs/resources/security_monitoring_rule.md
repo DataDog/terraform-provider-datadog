@@ -68,7 +68,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - **tags** (List of String) Tags for generated signals.
 - **type** (String) The rule type. Valid values are `log_detection`, `infrastructure_configuration`, `workload_security`, `cloud_configuration`.
 
-### Read-Only
+### Read-only
 
 - **id** (String) The ID of this resource.
 
@@ -87,7 +87,7 @@ Optional:
 
 
 <a id="nestedblock--query"></a>
-### Nested Schema for `query`
+### Nested schema for `query`
 
 Required:
 
@@ -103,7 +103,7 @@ Optional:
 - **name** (String) Name of the query.
 
 <a id="nestedblock--query--agent_rule"></a>
-### Nested Schema for `query.agent_rule`
+### Nested schema for `query.agent_rule`
 
 Required:
 
@@ -122,7 +122,7 @@ Required:
 
 
 <a id="nestedblock--options"></a>
-### Nested Schema for `options`
+### Nested schema for `options`
 
 Required:
 
@@ -136,7 +136,7 @@ Optional:
 - **new_value_options** (Block List, Max: 1) New value rules specific options. (see [below for nested schema](#nestedblock--options--new_value_options))
 
 <a id="nestedblock--options--new_value_options"></a>
-### Nested Schema for `options.new_value_options`
+### Nested schema for `options.new_value_options`
 
 Required:
 
