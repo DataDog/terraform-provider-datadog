@@ -23,8 +23,8 @@ security_monitoring_doc_files=(
 # Special formatting for security monitoring documentation files
 for file in "${security_monitoring_doc_files[@]}"
 do
-  sed -i '' 's/Read-Only/Read-only/g' $file
-  sed -i '' 's/Nested Schema/Nested schema/g' $file
+  perl -i -pe 's/Read-Only/Read-only/g' $file
+  perl -i -pe 's/Nested Schema/Nested schema/g' $file
 done
 
 # Remove the changes to files we don't autogenerate
