@@ -1,0 +1,437 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"cases":[{"condition":"first \u003e 3","name":"high case","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1633078223","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"agentRule":{"agentRuleId":"random_id","expression":"open.filename =~ \"/etc/ssl/certs/*\" \u0026\u0026 open.flags \u0026 (O_CREAT | O_RDWR | O_WRONLY) \u003e 0"},"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"first","query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1633078223_random_id OR random_id)"}],"tags":["i:tomato","u:tomato"],"type":"workload_security"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateSecurityMonitoringRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules
+    method: POST
+  response:
+    body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1633078247119,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1633078223_random_id OR random_id)","agentRule":{"expression":"open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0","agentRuleId":"random_id"}}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"gev-ic7-asj","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1633078223"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 01 Oct 2021 08:50:47 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "568"
+      X-Ratelimit-Reset:
+      - "13"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetSecurityMonitoringRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gev-ic7-asj
+    method: GET
+  response:
+    body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1633078247119,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1633078223_random_id OR random_id)","agentRule":{"expression":"open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0","agentRuleId":"random_id"}}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"gev-ic7-asj","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1633078223"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 01 Oct 2021 08:50:50 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "562"
+      X-Ratelimit-Reset:
+      - "10"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetSecurityMonitoringRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gev-ic7-asj
+    method: GET
+  response:
+    body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1633078247119,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1633078223_random_id OR random_id)","agentRule":{"expression":"open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0","agentRuleId":"random_id"}}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"gev-ic7-asj","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1633078223"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 01 Oct 2021 08:51:00 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "597"
+      X-Ratelimit-Reset:
+      - "60"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetSecurityMonitoringRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gev-ic7-asj
+    method: GET
+  response:
+    body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1633078247119,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1633078223_random_id OR random_id)","agentRule":{"expression":"open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0","agentRuleId":"random_id"}}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"gev-ic7-asj","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1633078223"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 01 Oct 2021 08:51:17 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "581"
+      X-Ratelimit-Reset:
+      - "43"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"cases":[{"condition":"first \u003e 10","name":"high case (updated)","notifications":["@user"],"status":"medium"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1633078223","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"agentRule":{"agentRuleId":"random_id","expression":"open.filename =~ \"/etc/ssl/certs/*\" \u0026\u0026 open.flags \u0026 (O_CREAT | O_RDWR | O_WRONLY) \u003e 0"},"aggregation":"count","distinctFields":[],"groupByFields":["service"],"metric":"@network.bytes_read","name":"first","query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1633078223_random_id OR random_id)"}],"tags":["u:tomato","i:tomato"]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - UpdateSecurityMonitoringRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gev-ic7-asj
+    method: PUT
+  response:
+    body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@network.bytes_read","aggregation":"count","groupByFields":["service"],"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1633078223_random_id OR random_id)","agentRule":{"expression":"open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0","agentRuleId":"random_id"}}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first > 10"}],"type":"workload_security","id":"gev-ic7-asj","createdAt":1633078247119,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1633078223"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 01 Oct 2021 08:51:28 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "575"
+      X-Ratelimit-Reset:
+      - "32"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetSecurityMonitoringRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gev-ic7-asj
+    method: GET
+  response:
+    body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@network.bytes_read","aggregation":"count","groupByFields":["service"],"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1633078223_random_id OR random_id)","agentRule":{"expression":"open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0","agentRuleId":"random_id"}}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first > 10"}],"type":"workload_security","id":"gev-ic7-asj","createdAt":1633078247119,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1633078223"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 01 Oct 2021 08:51:31 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "569"
+      X-Ratelimit-Reset:
+      - "29"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetSecurityMonitoringRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gev-ic7-asj
+    method: GET
+  response:
+    body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@network.bytes_read","aggregation":"count","groupByFields":["service"],"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1633078223_random_id OR random_id)","agentRule":{"expression":"open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0","agentRuleId":"random_id"}}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first > 10"}],"type":"workload_security","id":"gev-ic7-asj","createdAt":1633078247119,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1633078223"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 01 Oct 2021 08:51:40 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "562"
+      X-Ratelimit-Reset:
+      - "20"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - DeleteSecurityMonitoringRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gev-ic7-asj
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Length:
+      - "0"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Date:
+      - Fri, 01 Oct 2021 08:51:54 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "555"
+      X-Ratelimit-Reset:
+      - "6"
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetSecurityMonitoringRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gev-ic7-asj
+    method: GET
+  response:
+    body: '{"errors":["Threat detection rule not found: gev-ic7-asj"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 01 Oct 2021 08:51:54 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "600"
+      X-Ratelimit-Period:
+      - "60"
+      X-Ratelimit-Remaining:
+      - "553"
+      X-Ratelimit-Reset:
+      - "6"
+    status: 404 Not Found
+    code: 404
+    duration: ""
