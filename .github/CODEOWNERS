@@ -19,8 +19,8 @@ datadog/*datadog_ip_ranges*               @DataDog/integrations-tools-and-librar
 docs/data-sources/ip_ranges*              @DataDog/integrations-tools-and-libraries @DataDog/team-aaa @DataDog/documentation
 datadog/*datadog_logs*                    @DataDog/integrations-tools-and-libraries @DataDog/logs-backend @DataDog/logs-app
 docs/resources/logs*                      @DataDog/integrations-tools-and-libraries @DataDog/logs-backend @DataDog/logs-app @DataDog/documentation
-datadog/*datadog_metric*                  @DataDog/integrations-tools-and-libraries @DataDog/metrics-intake @DataDog/metrics-query @DataDog/metrics-aggregation
-docs/resources/metric*                    @DataDog/integrations-tools-and-libraries @DataDog/metrics-intake @DataDog/metrics-query @DataDog/metrics-aggregation @DataDog/documentation
+datadog/*datadog_metric*                  @DataDog/integrations-tools-and-libraries @DataDog/metrics-intake @DataDog/metrics-query @DataDog/points-aggregation
+docs/resources/metric*                    @DataDog/integrations-tools-and-libraries @DataDog/metrics-intake @DataDog/metrics-query @DataDog/points-aggregation @DataDog/documentation
 datadog/*datadog_monitor*                 @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
 docs/data-sources/monitor*                @DataDog/integrations-tools-and-libraries @DataDog/monitor-app @DataDog/documentation
 docs/resources/monitor*                   @DataDog/integrations-tools-and-libraries @DataDog/monitor-app @DataDog/documentation
