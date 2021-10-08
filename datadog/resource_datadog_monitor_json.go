@@ -5,11 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/structure"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
-	"net/http"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -28,7 +26,6 @@ var monitorComputedFields = []string{
 	"org_id",
 	"overall_state",
 	"overall_state_modified",
-	"restricted_roles",
 	"url",
 }
 
@@ -116,23 +113,6 @@ func resourceDatadogMonitorJSONCreate(ctx context.Context, d *schema.ResourceDat
 	}
 	stringId := fmt.Sprintf("%.0f", id)
 	d.SetId(stringId)
-
-	var httpResponse *http.Response
-	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
-		_, httpResponse, err = utils.SendRequest(authV1, datadogClientV1, "GET", monitorPath+"/"+stringId, nil)
-		if err != nil {
-			if httpResponse != nil && httpResponse.StatusCode == 404 {
-				return resource.RetryableError(fmt.Errorf("monitor not created yet"))
-			}
-
-			return resource.NonRetryableError(err)
-		}
-
-		return nil
-	})
-	if err != nil {
-		return diag.FromErr(err)
-	}
 
 	return updateMonitorJSONState(d, respMap)
 }
