@@ -515,11 +515,11 @@ EOF
 ### Optional
 
 - **dashboard_lists** (Set of Number) The list of dashboard lists this dashboard belongs to.
-- **id** (String) The ID of this resource.
 - **url** (String) The URL of the dashboard.
 
 ### Read-Only
 
 - **dashboard_lists_removed** (Set of Number) The list of dashboard lists this dashboard should be removed from. Internal only.
+- **id** (String) The ID of this resource.
 
 

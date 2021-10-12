@@ -19,13 +19,10 @@ Use this data source to retrieve information about an existing user to use it in
 
 - **filter** (String) Filter all users by the given string.
 
-### Optional
-
-- **id** (String) The ID of this resource.
-
 ### Read-Only
 
 - **email** (String) Email of the user.
+- **id** (String) The ID of this resource.
 - **name** (String) Name of the user.
 
 

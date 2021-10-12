@@ -24,7 +24,6 @@ data "datadog_monitor" "test" {
 
 ### Optional
 
-- **id** (String) The ID of this resource.
 - **monitor_tags_filter** (List of String) A list of monitor tags to limit the search. This filters on the tags set on the monitor itself.
 - **name_filter** (String) A monitor name to limit the search.
 - **tags_filter** (List of String) A list of tags to limit the search. This filters on the monitor scope.
@@ -35,6 +34,7 @@ data "datadog_monitor" "test" {
 - **escalation_message** (String) Message included with a re-notification for this monitor.
 - **evaluation_delay** (Number) Time (in seconds) for which evaluation is delayed. This is only used by metric monitors.
 - **groupby_simple_monitor** (Boolean) Whether or not to trigger one alert if any source breaches a threshold.
+- **id** (String) The ID of this resource.
 - **include_tags** (Boolean) Whether or not notifications from the monitor automatically inserts its triggering tags into the title.
 - **locked** (Boolean) Whether or not changes to the monitor are restricted to the creator or admins.
 - **message** (String) Message included with notifications for this monitor

@@ -19,12 +19,9 @@ Use this data source to retrieve a Datadog Synthetics global variable (to be use
 
 - **name** (String) The synthetics global variable name to search for. Must only match one global variable.
 
-### Optional
-
-- **id** (String) The ID of this resource.
-
 ### Read-Only
 
+- **id** (String) The ID of this resource.
 - **tags** (List of String) A list of tags assigned to the Synthetics global variable.
 
 

@@ -24,13 +24,13 @@ resource "datadog_organization_settings" "organization" {
 
 ### Optional
 
-- **id** (String) The ID of this resource.
 - **name** (String) Name for Organization.
 - **settings** (Block List, Max: 1) Organization settings (see [below for nested schema](#nestedblock--settings))
 
 ### Read-Only
 
 - **description** (String) Description of the organization.
+- **id** (String) The ID of this resource.
 - **public_id** (String) The `public_id` of the organization you are operating within.
 
 <a id="nestedblock--settings"></a>

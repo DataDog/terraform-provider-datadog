@@ -26,15 +26,12 @@ resource "datadog_child_organization" "organization" {
 
 - **name** (String) Name for Child Organization after creation.
 
-### Optional
-
-- **id** (String) The ID of this resource.
-
 ### Read-Only
 
 - **api_key** (List of Object) Datadog API key. (see [below for nested schema](#nestedatt--api_key))
 - **application_key** (List of Object) An application key with its associated metadata. (see [below for nested schema](#nestedatt--application_key))
 - **description** (String) Description of the organization.
+- **id** (String) The ID of this resource.
 - **public_id** (String) The `public_id` of the organization you are operating within.
 - **settings** (List of Object) Organization settings (see [below for nested schema](#nestedatt--settings))
 - **user** (List of Object) Information about a user (see [below for nested schema](#nestedatt--user))

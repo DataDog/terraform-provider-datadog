@@ -36,8 +36,11 @@ resource "datadog_webhook" "foo" {
 
 - **custom_headers** (String) The headers attached to the webhook.
 - **encode_as** (String) Encoding type. Valid values are `json`, `form`.
-- **id** (String) The ID of this resource.
 - **payload** (String) The payload of the webhook.
+
+### Read-Only
+
+- **id** (String) The ID of this resource.
 
 ## Import
 

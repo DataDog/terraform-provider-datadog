@@ -31,7 +31,7 @@ resource "datadog_webhook_custom_variable" "foo" {
 - **name** (String) The name of the variable. It corresponds with `<CUSTOM_VARIABLE_NAME>`.
 - **value** (String, Sensitive) The value of the custom variable.
 
-### Optional
+### Read-Only
 
 - **id** (String) The ID of this resource.
 
