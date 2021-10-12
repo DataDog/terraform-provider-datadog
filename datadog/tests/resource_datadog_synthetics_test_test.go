@@ -1044,6 +1044,8 @@ func createSyntheticsSSLTestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "request_definition.0.port", "443"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "request_definition.0.servername", "datadoghq.com"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "assertion.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "assertion.0.type", "certificate"),
@@ -1082,6 +1084,7 @@ resource "datadog_synthetics_test" "ssl" {
 	request_definition {
 		host = "datadoghq.com"
 		port = 443
+		servername = "datagoghq.com"
 	}
 
 	assertion {
