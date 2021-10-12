@@ -1084,7 +1084,7 @@ resource "datadog_synthetics_test" "ssl" {
 	request_definition {
 		host = "datadoghq.com"
 		port = 443
-		servername = "datagoghq.com"
+		servername = "datadoghq.com"
 	}
 
 	assertion {
