@@ -45,9 +45,6 @@ resource "datadog_logs_metric" "testing_logs_metric" {
 ### Optional
 
 - **group_by** (Block List) The rules for the group by. (see [below for nested schema](#nestedblock--group_by))
-
-### Read-Only
-
 - **id** (String) The ID of this resource.
 
 <a id="nestedblock--compute"></a>

@@ -42,7 +42,7 @@ resource "datadog_dashboard" "time" {
 
 - **name** (String) A dashboard list name to limit the search.
 
-### Read-Only
+### Optional
 
 - **id** (String) The ID of this resource.
 

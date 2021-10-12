@@ -36,13 +36,13 @@ resource "datadog_user" "foo" {
 ### Optional
 
 - **disabled** (Boolean) Whether the user is disabled.
+- **id** (String) The ID of this resource.
 - **name** (String) Name for user.
 - **roles** (Set of String) A list a role IDs to assign to the user.
 - **send_user_invitation** (Boolean) Whether an invitation email should be sent when the user is created.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
 - **user_invitation_id** (String) The ID of the user invitation that was sent when creating the user.
 - **verified** (Boolean) Returns `true` if the user is verified.
 

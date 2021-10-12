@@ -55,11 +55,8 @@ resource "datadog_logs_index" "sample_index" {
 - **daily_limit** (Number) The number of log events you can send in this index per day before you are rate-limited.
 - **disable_daily_limit** (Boolean) If true, sets the daily_limit value to null and the index is not limited on a daily basis (any specified daily_limit value in the request is ignored). If false or omitted, the index's current daily_limit is maintained.
 - **exclusion_filter** (Block List) List of exclusion filters. (see [below for nested schema](#nestedblock--exclusion_filter))
-- **retention_days** (Number) The number of days before logs are deleted from this index.
-
-### Read-Only
-
 - **id** (String) The ID of this resource.
+- **retention_days** (Number) The number of days before logs are deleted from this index.
 
 <a id="nestedblock--filter"></a>
 ### Nested Schema for `filter`

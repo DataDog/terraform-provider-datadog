@@ -26,9 +26,12 @@ resource "datadog_api_key" "foo" {
 
 - **name** (String) Name for API Key.
 
-### Read-Only
+### Optional
 
 - **id** (String) The ID of this resource.
+
+### Read-Only
+
 - **key** (String, Sensitive) The value of the API Key.
 
 ## Import

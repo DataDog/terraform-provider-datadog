@@ -30,7 +30,7 @@ resource "datadog_integration_aws_tag_filter" "foo" {
 - **namespace** (String) The namespace associated with the tag filter entry. Valid values are `elb`, `application_elb`, `sqs`, `rds`, `custom`, `network_elb`, `lambda`.
 - **tag_filter_str** (String) The tag filter string.
 
-### Read-Only
+### Optional
 
 - **id** (String) The ID of this resource.
 

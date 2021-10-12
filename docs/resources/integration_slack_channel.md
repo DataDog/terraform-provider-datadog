@@ -35,7 +35,7 @@ resource "datadog_integration_slack_channel" "test_channel" {
 - **channel_name** (String) Slack channel name.
 - **display** (Block List, Min: 1, Max: 1) Configuration options for what is shown in an alert event message. (see [below for nested schema](#nestedblock--display))
 
-### Read-Only
+### Optional
 
 - **id** (String) The ID of this resource.
 

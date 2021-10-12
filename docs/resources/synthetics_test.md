@@ -289,6 +289,7 @@ resource "datadog_synthetics_test" "test_browser" {
 - **browser_variable** (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
 - **config_variable** (Block List) Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--config_variable))
 - **device_ids** (List of String) Required if `type = "browser"`. Array with the different device IDs used to run the test. Valid values are `laptop_large`, `tablet`, `mobile_small`, `chrome.laptop_large`, `chrome.tablet`, `chrome.mobile_small`, `firefox.laptop_large`, `firefox.tablet`, `firefox.mobile_small`, `edge.laptop_large`, `edge.tablet`, `edge.mobile_small`.
+- **id** (String) The ID of this resource.
 - **message** (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.
 - **options_list** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
 - **request_basicauth** (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
@@ -302,7 +303,6 @@ resource "datadog_synthetics_test" "test_browser" {
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
 - **monitor_id** (Number) ID of the monitor associated with the Datadog synthetics test.
 
 <a id="nestedblock--api_step"></a>
@@ -433,6 +433,7 @@ Optional:
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
 - **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - **port** (Number) Port to use when performing the test.
+- **servername** (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.
@@ -637,10 +638,10 @@ Optional:
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
 - **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - **port** (Number) Port to use when performing the test.
+- **servername** (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.
-- **servername** (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 
 ## Import
 

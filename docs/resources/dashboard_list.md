@@ -81,9 +81,6 @@ resource "datadog_dashboard" "screen" {
 ### Optional
 
 - **dash_item** (Block Set) A set of dashboard items that belong to this list (see [below for nested schema](#nestedblock--dash_item))
-
-### Read-Only
-
 - **id** (String) The ID of this resource.
 
 <a id="nestedblock--dash_item"></a>
