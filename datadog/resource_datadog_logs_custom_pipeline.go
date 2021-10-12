@@ -613,9 +613,12 @@ func buildTerraformGrokParser(ddGrok *datadogV1.LogsGrokParser) map[string]inter
 }
 
 func buildTerraformGrokRule(ddGrokRule *datadogV1.LogsGrokParserRules) []map[string]interface{} {
+	escapeTfTemplateInterpolation := func(s string) string {
+		return strings.Replace(s, "%{", "%%{", -1)
+	}
 	tfGrokRule := map[string]interface{}{
-		"support_rules": ddGrokRule.GetSupportRules(),
-		"match_rules":   ddGrokRule.GetMatchRules(),
+		"support_rules": escapeTfTemplateInterpolation(ddGrokRule.GetSupportRules()),
+		"match_rules":   escapeTfTemplateInterpolation(ddGrokRule.GetMatchRules()),
 	}
 	return []map[string]interface{}{tfGrokRule}
 }
@@ -924,6 +927,9 @@ func buildDatadogGeoIPParser(tfProcessor map[string]interface{}) *datadogV1.Logs
 }
 
 func buildDatadogGrokParser(tfProcessor map[string]interface{}) *datadogV1.LogsGrokParser {
+	unescapeTfTemplateInterpolation := func(s string) string {
+		return strings.Replace(s, "%%{", "%{", -1)
+	}
 	ddGrokParser := datadogV1.NewLogsGrokParserWithDefaults()
 	if tfSource, exists := tfProcessor["source"].(string); exists {
 		ddGrokParser.SetSource(tfSource)
@@ -939,10 +945,10 @@ func buildDatadogGrokParser(tfProcessor map[string]interface{}) *datadogV1.LogsG
 		ddGrok := datadogV1.LogsGrokParserRules{}
 		tfGrokRule := tfGrok[0].(map[string]interface{})
 		if tfSupportRule, exist := tfGrokRule["support_rules"].(string); exist {
-			ddGrok.SetSupportRules(tfSupportRule)
+			ddGrok.SetSupportRules(unescapeTfTemplateInterpolation(tfSupportRule))
 		}
 		if tfMatchRule, exist := tfGrokRule["match_rules"].(string); exist {
-			ddGrok.SetMatchRules(tfMatchRule)
+			ddGrok.SetMatchRules(unescapeTfTemplateInterpolation(tfMatchRule))
 		}
 		ddGrokParser.SetGrok(ddGrok)
 	}
