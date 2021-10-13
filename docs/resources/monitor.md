@@ -80,6 +80,8 @@ We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes fo
 - **notify_no_data** (Boolean) A boolean indicating whether this monitor will notify when data stops reporting. Defaults to `false`.
 - **priority** (Number) Integer from 1 (high) to 5 (low) indicating alert severity.
 - **renotify_interval** (Number) The number of minutes after the last notification before a monitor will re-notify on the current status. It will only re-notify if it's not resolved.
+- **renotify_occurrences** (Number) The number of times the monitor re-notifies on the current status.
+- **renotify_statuses** (Set of String) The types of statuses for which the monitor should re-notify. Valid values are: `alert`, `warn`, and `no data`.
 - **require_full_window** (Boolean) A boolean indicating whether this monitor needs a full window of data before it's evaluated.
 
 We highly recommend you set this to `false` for sparse metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.

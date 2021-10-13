@@ -101,6 +101,8 @@ resource "datadog_monitor" "foo" {
   notify_no_data = false
   new_group_delay = 500
   renotify_interval = 60
+  renotify_occurrences = 3
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
   timeout_h = 60
@@ -130,6 +132,8 @@ resource "datadog_monitor" "foo" {
   notify_no_data = false
   new_host_delay = 600
   renotify_interval = 60
+  renotify_occurrences = 3
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
   timeout_h = 60
@@ -162,6 +166,8 @@ resource "datadog_monitor" "foo" {
   no_data_timeframe = 300
   new_host_delay = 600
   renotify_interval = 60
+  renotify_occurrences = 3
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
   timeout_h = 60
