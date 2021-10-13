@@ -183,6 +183,11 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
+			"servername": {
+				Description: "For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -1012,6 +1017,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := k.GetOkWith("should_track_hops"); ok {
 		request.SetShouldTrackHops(attr.(bool))
 	}
+	if attr, ok := k.GetOkWith("servername"); ok {
+		request.SetServername(attr.(string))
+	}
 	k.Remove(parts)
 
 	request = completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}))
@@ -1600,6 +1608,9 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	}
 	if request.HasShouldTrackHops() {
 		localRequest["should_track_hops"] = request.GetShouldTrackHops()
+	}
+	if request.HasServername() {
+		localRequest["servername"] = request.GetServername()
 	}
 
 	return localRequest
