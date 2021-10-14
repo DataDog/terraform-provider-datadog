@@ -23,7 +23,7 @@ func resourceDatadogIntegrationAwsLogCollection() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"account_id": {
-				Description: "Your AWS Account ID without dashes.",
+				Description: "Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.",
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
@@ -94,6 +94,9 @@ func resourceDatadogIntegrationAwsLogCollectionRead(ctx context.Context, d *sche
 	logCollections, httpresp, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting log collection for aws integration.")
+	}
+	if err := utils.CheckForUnparsed(logCollections); err != nil {
+		return diag.FromErr(err)
 	}
 	for _, logCollection := range logCollections {
 		if logCollection.GetAccountId() == accountID {

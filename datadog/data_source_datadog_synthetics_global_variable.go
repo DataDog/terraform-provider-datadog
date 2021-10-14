@@ -45,6 +45,9 @@ func dataSourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schem
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetics global variables")
 	}
+	if err := utils.CheckForUnparsed(globalVariables); err != nil {
+		return diag.FromErr(err)
+	}
 
 	searchedName := d.Get("name").(string)
 	var matchedGlobalVariables []datadog.SyntheticsGlobalVariable

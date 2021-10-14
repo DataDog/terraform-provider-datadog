@@ -61,7 +61,7 @@ func buildDatadogSloCorrection(d *schema.ResourceData) *datadogV1.SLOCorrectionC
 	result := datadogV1.NewSLOCorrectionCreateRequestWithDefaults()
 	// `type` is hardcoded to 'correction' in Data
 	// only need to set `attributes` here
-	createData := datadogV1.NewSLOCorrectionCreateData()
+	createData := datadogV1.NewSLOCorrectionCreateData(datadogV1.SLOCORRECTIONTYPE_CORRECTION)
 	attributes := datadogV1.NewSLOCorrectionCreateRequestAttributesWithDefaults()
 	correctionCategory := datadogV1.SLOCorrectionCategory(d.Get("category").(string))
 	attributes.SetCategory(correctionCategory)
@@ -116,6 +116,9 @@ func resourceDatadogSloCorrectionCreate(ctx context.Context, d *schema.ResourceD
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating SloCorrection")
 	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
+	}
 	sloCorrection := response.GetData()
 	d.SetId(sloCorrection.GetId())
 
@@ -168,12 +171,15 @@ func resourceDatadogSloCorrectionRead(ctx context.Context, d *schema.ResourceDat
 
 	sloCorrectionGetResp, httpResponse, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.GetSLOCorrection(auth, id)
 	if err != nil {
-		if httpResponse.StatusCode == 404 {
+		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			// this condition takes on the job of the deprecated Exists handlers
 			d.SetId("")
 			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error reading SloCorrection")
+	}
+	if err := utils.CheckForUnparsed(sloCorrectionGetResp); err != nil {
+		return diag.FromErr(err)
 	}
 	return updateSLOCorrectionState(d, sloCorrectionGetResp.Data)
 }
@@ -189,6 +195,9 @@ func resourceDatadogSloCorrectionUpdate(ctx context.Context, d *schema.ResourceD
 	response, httpResponse, err := datadogClient.ServiceLevelObjectiveCorrectionsApi.UpdateSLOCorrection(auth, id, *ddObject)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating SloCorrection")
+	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return updateSLOCorrectionState(d, response.Data)

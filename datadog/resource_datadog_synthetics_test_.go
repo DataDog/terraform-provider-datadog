@@ -52,7 +52,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsSubTypeFromValue),
 			},
 			"request_definition": {
-				Description: "The synthetics test request. Required if `type = \"api\"`.",
+				Description: "Required if `type = \"api\"`. The synthetics test request.",
 				Type:        schema.TypeList,
 				MaxItems:    1,
 				Optional:    true,
@@ -66,7 +66,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			"browser_variable":           syntheticsBrowserVariable(),
 			"config_variable":            syntheticsConfigVariable(),
 			"device_ids": {
-				Description: "Array with the different device IDs used to run the test (only for `browser` tests).",
+				Description: "Required if `type = \"browser\"`. Array with the different device IDs used to run the test.",
 				Type:        schema.TypeList,
 				Optional:    true,
 				Elem: &schema.Schema{
@@ -181,6 +181,11 @@ func syntheticsTestRequest() *schema.Resource {
 			"should_track_hops": {
 				Description: "This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = \"icmp\"`).",
 				Type:        schema.TypeBool,
+				Optional:    true,
+			},
+			"servername": {
+				Description: "For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.",
+				Type:        schema.TypeString,
 				Optional:    true,
 			},
 		},
@@ -335,12 +340,8 @@ func syntheticsTestOptionsList() *schema.Schema {
 		MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"allow_insecure": syntheticsAllowInsecureOption(),
-				"follow_redirects": {
-					Description: "For API HTTP test, whether or not the test should follow redirects.",
-					Type:        schema.TypeBool,
-					Optional:    true,
-				},
+				"allow_insecure":   syntheticsAllowInsecureOption(),
+				"follow_redirects": syntheticsFollowRedirectsOption(),
 				"tick_every": {
 					Description:  "How often the test should run (in seconds).",
 					Type:         schema.TypeInt,
@@ -422,6 +423,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema := syntheticsTestRequest()
 	requestElemSchema.Schema["allow_insecure"] = syntheticsAllowInsecureOption()
+	requestElemSchema.Schema["follow_redirects"] = syntheticsFollowRedirectsOption()
 
 	return &schema.Schema{
 		Description: "Steps for multistep api tests",
@@ -788,6 +790,14 @@ func syntheticsAllowInsecureOption() *schema.Schema {
 	}
 }
 
+func syntheticsFollowRedirectsOption() *schema.Schema {
+	return &schema.Schema{
+		Description: "Determines whether or not the API HTTP test should follow redirects.",
+		Type:        schema.TypeBool,
+		Optional:    true,
+	}
+}
+
 func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
@@ -802,6 +812,9 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 			// Note that Id won't be set, so no state will be saved.
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics API test")
 		}
+		if err := utils.CheckForUnparsed(createdSyntheticsTest); err != nil {
+			return diag.FromErr(err)
+		}
 
 		// If the Create callback returns with or without an error without an ID set using SetId,
 		// the resource is assumed to not be created, and no state is saved.
@@ -814,6 +827,9 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics browser test")
+		}
+		if err := utils.CheckForUnparsed(createdSyntheticsTest); err != nil {
+			return diag.FromErr(err)
 		}
 
 		// If the Create callback returns with or without an error without an ID set using SetId,
@@ -847,6 +863,9 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetics test")
 	}
+	if err := utils.CheckForUnparsed(syntheticsTest); err != nil {
+		return diag.FromErr(err)
+	}
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsBrowserTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id())
@@ -864,9 +883,15 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	}
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
+		if err := utils.CheckForUnparsed(syntheticsBrowserTest); err != nil {
+			return diag.FromErr(err)
+		}
 		return updateSyntheticsBrowserTestLocalState(d, &syntheticsBrowserTest)
 	}
 
+	if err := utils.CheckForUnparsed(syntheticsAPITest); err != nil {
+		return diag.FromErr(err)
+	}
 	return updateSyntheticsAPITestLocalState(d, &syntheticsAPITest)
 }
 
@@ -884,6 +909,9 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 			// If the Update callback returns with or without an error, the full state is saved.
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics API test")
 		}
+		if err := utils.CheckForUnparsed(updatedTest); err != nil {
+			return diag.FromErr(err)
+		}
 		return updateSyntheticsAPITestLocalState(d, &updatedTest)
 	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
@@ -891,6 +919,9 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics browser test")
+		}
+		if err := utils.CheckForUnparsed(updatedTest); err != nil {
+			return diag.FromErr(err)
 		}
 		return updateSyntheticsBrowserTestLocalState(d, &updatedTest)
 	}
@@ -986,6 +1017,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := k.GetOkWith("should_track_hops"); ok {
 		request.SetShouldTrackHops(attr.(bool))
 	}
+	if attr, ok := k.GetOkWith("servername"); ok {
+		request.SetServername(attr.(string))
+	}
 	k.Remove(parts)
 
 	request = completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}))
@@ -1051,6 +1085,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			request.SetBody(requestMap["body"].(string))
 			request.SetTimeout(float64(requestMap["timeout"].(int)))
 			request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
+			request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
 
 			request = completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}))
 
@@ -1385,6 +1420,31 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		}
 	}
 
+	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
+
+	if attr, ok := d.GetOk("config_variable"); ok && attr != nil {
+		for _, v := range attr.([]interface{}) {
+			variableMap := v.(map[string]interface{})
+			variable := datadogV1.SyntheticsConfigVariable{}
+
+			variable.SetName(variableMap["name"].(string))
+			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
+
+			if variable.GetType() != "global" {
+				variable.SetPattern(variableMap["pattern"].(string))
+				variable.SetExample(variableMap["example"].(string))
+			}
+
+			if variableMap["id"] != "" {
+				variable.SetId(variableMap["id"].(string))
+			}
+
+			configVariables = append(configVariables, variable)
+		}
+	}
+
+	config.SetConfigVariables(configVariables)
+
 	options := datadogV1.NewSyntheticsTestOptions()
 
 	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
@@ -1548,6 +1608,9 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	}
 	if request.HasShouldTrackHops() {
 		localRequest["should_track_hops"] = request.GetShouldTrackHops()
+	}
+	if request.HasServername() {
+		localRequest["servername"] = request.GetServername()
 	}
 
 	return localRequest
@@ -1719,6 +1782,35 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	localAssertions := make([]map[string]interface{}, 0)
 
 	if err := d.Set("assertion", localAssertions); err != nil {
+		return diag.FromErr(err)
+	}
+
+	configVariables := config.GetConfigVariables()
+	localConfigVariables := make([]map[string]interface{}, len(configVariables))
+	for i, configVariable := range configVariables {
+		localVariable := make(map[string]interface{})
+		if v, ok := configVariable.GetTypeOk(); ok {
+			localVariable["type"] = *v
+		}
+		if v, ok := configVariable.GetNameOk(); ok {
+			localVariable["name"] = *v
+		}
+
+		if configVariable.GetType() != "global" {
+			if v, ok := configVariable.GetExampleOk(); ok {
+				localVariable["example"] = *v
+			}
+			if v, ok := configVariable.GetPatternOk(); ok {
+				localVariable["pattern"] = *v
+			}
+		}
+		if v, ok := configVariable.GetIdOk(); ok {
+			localVariable["id"] = *v
+		}
+		localConfigVariables[i] = localVariable
+	}
+
+	if err := d.Set("config_variable", localConfigVariables); err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -1992,6 +2084,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			stepRequest := step.GetRequest()
 			localRequest := buildLocalRequest(stepRequest)
 			localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
+			localRequest["follow_redirects"] = stepRequest.GetFollowRedirects()
 			localStep["request_definition"] = []map[string]interface{}{localRequest}
 			localStep["request_headers"] = stepRequest.GetHeaders()
 			localStep["request_query"] = stepRequest.GetQuery()
@@ -2268,9 +2361,11 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 
 func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key string, value interface{}) interface{} {
 	switch key {
-	case "element", "email", "file", "request":
-		result := make(map[string]interface{})
-		utils.GetMetadataFromJSON([]byte(value.(string)), &result)
+	case "element", "email", "file", "files", "request":
+		var result interface{}
+		if err := utils.GetMetadataFromJSON([]byte(value.(string)), &result); err != nil {
+			log.Printf("[ERROR] Error converting step param %s: %v", key, err)
+		}
 		return result
 
 	case "playing_tab_id":
@@ -2294,7 +2389,7 @@ func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key 
 
 func convertStepParamsValueForState(key string, value interface{}) interface{} {
 	switch key {
-	case "element", "email", "file", "request":
+	case "element", "email", "file", "files", "request":
 		result, _ := json.Marshal(value)
 		return string(result)
 

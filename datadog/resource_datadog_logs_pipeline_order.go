@@ -56,6 +56,9 @@ func resourceDatadogLogsPipelineOrderRead(ctx context.Context, d *schema.Resourc
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs pipeline order")
 	}
+	if err := utils.CheckForUnparsed(order); err != nil {
+		return diag.FromErr(err)
+	}
 
 	return updateLogsPipelineOrderState(d, &order)
 }
@@ -88,6 +91,9 @@ func resourceDatadogLogsPipelineOrderUpdate(ctx context.Context, d *schema.Resou
 				ddList)
 		}
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs pipeline order")
+	}
+	if err := utils.CheckForUnparsed(updatedOrder); err != nil {
+		return diag.FromErr(err)
 	}
 	d.SetId(tfID)
 	return updateLogsPipelineOrderState(d, &updatedOrder)

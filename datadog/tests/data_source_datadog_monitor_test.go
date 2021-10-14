@@ -55,11 +55,21 @@ func checkDatasourceAttrs(accProvider func() (*schema.Provider, error), uniq str
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "notify_no_data", "false"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "new_host_delay", "600"),
+			"data.datadog_monitor.foo", "new_group_delay", "500"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_monitor.foo", "new_host_delay", "300"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "evaluation_delay", "700"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "renotify_interval", "60"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_monitor.foo", "renotify_occurrences", "5"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_monitor.foo", "renotify_statuses.#", "2"),
+		resource.TestCheckTypeSetElemAttr(
+			"data.datadog_monitor.foo", "renotify_statuses.*", "alert"),
+		resource.TestCheckTypeSetElemAttr(
+			"data.datadog_monitor.foo", "renotify_statuses.*", "warn"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "monitor_thresholds.0.warning", "0.5"),
 		resource.TestCheckResourceAttr(
@@ -120,10 +130,12 @@ resource "datadog_monitor" "foo" {
 	}
 
   renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
   timeout_h = 60
-  new_host_delay = 600
+  new_group_delay = 500
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
@@ -159,10 +171,12 @@ resource "datadog_monitor" "foo" {
 	}
 
   renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
   timeout_h = 60
-  new_host_delay = 600
+  new_group_delay = 500
   evaluation_delay = 700
   include_tags = true
   require_full_window = true

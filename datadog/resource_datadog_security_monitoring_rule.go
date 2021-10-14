@@ -157,6 +157,25 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Description: "Queries for selecting logs which are part of the rule.",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
+					"agent_rule": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						Description: "The agent rule.",
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"agent_rule_id": {
+									Type:        schema.TypeString,
+									Required:    true,
+									Description: "The Agent rule ID. Must be unique within the rule.",
+								},
+								"expression": {
+									Type:        schema.TypeString,
+									Required:    true,
+									Description: "A Runtime Security expression determines what activity should be collected by the Datadog Agent. These logical expressions can use predefined operators and attributes. Tags cannot be used in Runtime Security expressions. Instead, allow or deny based on tags under the advanced option.",
+								},
+							},
+						},
+					},
 					"aggregation": {
 						Type:             schema.TypeString,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleQueryAggregationFromValue),
@@ -221,6 +240,14 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 				},
 			},
 		},
+
+		"type": {
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleTypeReadFromValue),
+			Optional:         true,
+			Description:      "The rule type.",
+			Default:          "log_detection",
+		},
 	}
 }
 
@@ -236,6 +263,9 @@ func resourceDatadogSecurityMonitoringRuleCreate(ctx context.Context, d *schema.
 	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.CreateSecurityMonitoringRule(authV2, ruleCreate)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating security monitoring rule")
+	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
 	}
 
 	d.SetId(response.GetId())
@@ -272,6 +302,14 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 	if v, ok := d.GetOk("filter"); ok {
 		tfFilterList := v.([]interface{})
 		payload.SetFilters(buildPayloadFilters(tfFilterList))
+	}
+
+	if v, ok := d.GetOk("type"); ok {
+		if ruleType, err := datadogV2.NewSecurityMonitoringRuleTypeCreateFromValue(v.(string)); err == nil {
+			payload.Type = ruleType
+		} else {
+			return payload, err
+		}
 	}
 
 	return payload, nil
@@ -371,6 +409,13 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 		query := tfQuery.(map[string]interface{})
 		payloadQuery := datadogV2.SecurityMonitoringRuleQueryCreate{}
 
+		if v, ok := query["agent_rule"]; ok {
+			tfAgentRuleList := v.([]interface{})
+			if payloadAgentRule, ok := buildPayloadAgentRule(tfAgentRuleList); ok {
+				payloadQuery.AgentRule = payloadAgentRule
+			}
+		}
+
 		if v, ok := query["aggregation"]; ok {
 			aggregation := datadogV2.SecurityMonitoringRuleQueryAggregation(v.(string))
 			payloadQuery.Aggregation = &aggregation
@@ -411,6 +456,23 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 	return payloadQueries
 }
 
+func buildPayloadAgentRule(tfAgentRuleList []interface{}) (*datadogV2.SecurityMonitoringRuntimeAgentRule, bool) {
+	payloadAgentRule := datadogV2.NewSecurityMonitoringRuntimeAgentRule()
+	tfAgentRule := extractMapFromInterface(tfAgentRuleList)
+	hasPayload := false
+	if v, ok := tfAgentRule["agent_rule_id"]; ok {
+		hasPayload = true
+		agentRuleId := v.(string)
+		payloadAgentRule.AgentRuleId = &agentRuleId
+	}
+	if v, ok := tfAgentRule["expression"]; ok {
+		hasPayload = true
+		expression := v.(string)
+		payloadAgentRule.Expression = &expression
+	}
+	return payloadAgentRule, hasPayload
+}
+
 func buildPayloadFilters(tfFilters []interface{}) []datadogV2.SecurityMonitoringFilter {
 	payloadFilters := make([]datadogV2.SecurityMonitoringFilter, len(tfFilters))
 	for idx, tfFilter := range tfFilters {
@@ -439,6 +501,9 @@ func resourceDatadogSecurityMonitoringRuleRead(ctx context.Context, d *schema.Re
 			d.SetId("")
 			return nil
 		}
+		return diag.FromErr(err)
+	}
+	if err := utils.CheckForUnparsed(ruleResponse); err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -481,6 +546,10 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 	for idx := range ruleResponse.GetQueries() {
 		ruleQuery := make(map[string]interface{})
 		responseRuleQuery := ruleResponse.GetQueries()[idx]
+
+		if agentRule, ok := responseRuleQuery.GetAgentRuleOk(); ok {
+			ruleQuery["agent_rule"] = extractTfAgentRule(*agentRule)
+		}
 		if aggregation, ok := responseRuleQuery.GetAggregationOk(); ok {
 			ruleQuery["aggregation"] = *aggregation
 		}
@@ -509,6 +578,9 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 		d.Set("filter", filters)
 	}
 
+	if ruleType, ok := ruleResponse.GetTypeOk(); ok {
+		d.Set("type", *ruleType)
+	}
 }
 
 func extractFiltersFromRuleResponse(ruleResponse datadogV2.SecurityMonitoringRuleResponse) []interface{} {
@@ -550,6 +622,13 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 	return tfOptions
 }
 
+func extractTfAgentRule(agentRule datadogV2.SecurityMonitoringRuntimeAgentRule) []map[string]interface{} {
+	tfAgentRule := make(map[string]interface{})
+	tfAgentRule["agent_rule_id"] = agentRule.GetAgentRuleId()
+	tfAgentRule["expression"] = agentRule.GetExpression()
+	return []map[string]interface{}{tfAgentRule}
+}
+
 func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
@@ -559,6 +638,9 @@ func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.
 	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, d.Id(), ruleUpdate)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating security monitoring rule")
+	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
 	}
 
 	updateResourceDataFromResponse(d, response)
@@ -620,6 +702,13 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 		for idx, tfQuery := range tfQueries {
 			query := tfQuery.(map[string]interface{})
 			payloadQuery := datadogV2.SecurityMonitoringRuleQuery{}
+
+			if v, ok := query["agent_rule"]; ok {
+				tfAgentRuleList := v.([]interface{})
+				if payloadAgentRule, ok := buildPayloadAgentRule(tfAgentRuleList); ok {
+					payloadQuery.AgentRule = payloadAgentRule
+				}
+			}
 
 			if v, ok := query["aggregation"]; ok {
 				aggregation := datadogV2.SecurityMonitoringRuleQueryAggregation(v.(string))

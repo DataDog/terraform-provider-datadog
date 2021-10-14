@@ -118,6 +118,40 @@ func buildDatadogUserV2UpdateStruct(d *schema.ResourceData, userID string) *data
 	return userRequest
 }
 
+func updateRoles(meta interface{}, userID string, oldRoles *schema.Set, newRoles *schema.Set) diag.Diagnostics {
+	providerConf := meta.(*ProviderConfiguration)
+	datadogClientV2 := providerConf.DatadogClientV2
+	authV2 := providerConf.AuthV2
+
+	rolesToRemove := oldRoles.Difference(newRoles)
+	rolesToAdd := newRoles.Difference(oldRoles)
+
+	for _, roleI := range rolesToRemove.List() {
+		role := roleI.(string)
+		userRelation := datadogV2.NewRelationshipToUserWithDefaults()
+		userRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
+		userRelationData.SetId(userID)
+		userRelation.SetData(*userRelationData)
+		_, httpResponse, err := datadogClientV2.RolesApi.RemoveUserFromRole(authV2, role, *userRelation)
+		if err != nil {
+			return utils.TranslateClientErrorDiag(err, httpResponse, "error removing user from role")
+		}
+	}
+	for _, roleI := range rolesToAdd.List() {
+		role := roleI.(string)
+		roleRelation := datadogV2.NewRelationshipToUserWithDefaults()
+		roleRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
+		roleRelationData.SetId(userID)
+		roleRelation.SetData(*roleRelationData)
+		_, httpResponse, err := datadogClientV2.RolesApi.AddUserToRole(authV2, role, *roleRelation)
+		if err != nil {
+			return utils.TranslateClientErrorDiag(err, httpResponse, "error adding user to role")
+		}
+	}
+
+	return nil
+}
+
 func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
@@ -142,6 +176,9 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpresp, "error searching user")
 		}
+		if err := utils.CheckForUnparsed(listResponse); err != nil {
+			return diag.FromErr(err)
+		}
 		responseData := listResponse.GetData()
 		if len(responseData) != 1 {
 			return diag.Errorf("could not find single user with email %s", email)
@@ -153,11 +190,30 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpresp, "error updating user")
 		}
+		if err := utils.CheckForUnparsed(updatedUser); err != nil {
+			return diag.FromErr(err)
+		}
+
+		// Update roles
+		_, newRolesI := d.GetChange("roles")
+		newRoles := newRolesI.(*schema.Set)
+		oldRoles := schema.NewSet(newRoles.F, []interface{}{})
+		for _, existingRole := range updatedUser.Data.Relationships.Roles.GetData() {
+			oldRoles.Add(existingRole.GetId())
+		}
+
+		if err := updateRoles(meta, userID, oldRoles, newRoles); err != nil {
+			return err
+		}
+
 		if err := updateUserStateV2(d, &updatedUser); err != nil {
 			return err
 		}
 		updated = true
 	} else {
+		if err := utils.CheckForUnparsed(createResponse); err != nil {
+			return diag.FromErr(err)
+		}
 		userData := createResponse.GetData()
 		userID = userData.GetId()
 	}
@@ -196,6 +252,9 @@ func sendUserInvitation(userID string, d *schema.ResourceData, meta interface{})
 	res, httpResponse, err := datadogClientV2.UsersApi.SendInvitations(authV2, body)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error sending user invitation")
+	}
+	if err := utils.CheckForUnparsed(res); err != nil {
+		return diag.FromErr(err)
 	}
 	if err := d.Set("user_invitation_id", res.GetData()[0].GetId()); err != nil {
 		return diag.FromErr(err)
@@ -244,8 +303,12 @@ func resourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta i
 		}
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting user")
 	}
+	if err := utils.CheckForUnparsed(userResponse); err != nil {
+		return diag.FromErr(err)
+	}
 	return updateUserStateV2(d, &userResponse)
 }
+
 func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
@@ -255,29 +318,9 @@ func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta
 		oldRolesI, newRolesI := d.GetChange("roles")
 		oldRoles := oldRolesI.(*schema.Set)
 		newRoles := newRolesI.(*schema.Set)
-		rolesToRemove := oldRoles.Difference(newRoles)
-		rolesToAdd := newRoles.Difference(oldRoles)
-		for _, roleI := range rolesToRemove.List() {
-			role := roleI.(string)
-			userRelation := datadogV2.NewRelationshipToUserWithDefaults()
-			userRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
-			userRelationData.SetId(d.Id())
-			userRelation.SetData(*userRelationData)
-			_, httpResponse, err := datadogClientV2.RolesApi.RemoveUserFromRole(authV2, role, *userRelation)
-			if err != nil {
-				return utils.TranslateClientErrorDiag(err, httpResponse, "error removing user from role")
-			}
-		}
-		for _, roleI := range rolesToAdd.List() {
-			role := roleI.(string)
-			roleRelation := datadogV2.NewRelationshipToUserWithDefaults()
-			roleRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
-			roleRelationData.SetId(d.Id())
-			roleRelation.SetData(*roleRelationData)
-			_, httpResponse, err := datadogClientV2.RolesApi.AddUserToRole(authV2, role, *roleRelation)
-			if err != nil {
-				return utils.TranslateClientErrorDiag(err, httpResponse, "error adding user to role")
-			}
+
+		if err := updateRoles(meta, d.Id(), oldRoles, newRoles); err != nil {
+			return err
 		}
 	}
 
@@ -285,6 +328,9 @@ func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta
 	updatedUser, httpResponse, err := datadogClientV2.UsersApi.UpdateUser(authV2, d.Id(), *userRequest)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating user")
+	}
+	if err := utils.CheckForUnparsed(updatedUser); err != nil {
+		return diag.FromErr(err)
 	}
 	// Update state once after we do the UpdateUser operation. At this point, the roles have already been changed
 	// so the updated list is available in the update response.

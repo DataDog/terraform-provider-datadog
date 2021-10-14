@@ -82,6 +82,9 @@ func resourceDatadogMetricMetadataCreate(ctx context.Context, d *schema.Resource
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating metric metadata")
 	}
+	if err := utils.CheckForUnparsed(createdMetadata); err != nil {
+		return diag.FromErr(err)
+	}
 
 	d.SetId(id)
 
@@ -126,6 +129,9 @@ func resourceDatadogMetricMetadataRead(ctx context.Context, d *schema.ResourceDa
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting metric metadata")
 	}
+	if err := utils.CheckForUnparsed(m); err != nil {
+		return diag.FromErr(err)
+	}
 	return updateMetricMetadataState(d, &m)
 }
 
@@ -159,6 +165,9 @@ func resourceDatadogMetricMetadataUpdate(ctx context.Context, d *schema.Resource
 	updatedMetadata, httpResponse, err := datadogClientV1.MetricsApi.UpdateMetricMetadata(authV1, id, *m)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating metric metadata")
+	}
+	if err := utils.CheckForUnparsed(updatedMetadata); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return updateMetricMetadataState(d, &updatedMetadata)

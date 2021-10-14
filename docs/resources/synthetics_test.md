@@ -14,16 +14,27 @@ Provides a Datadog synthetics test resource. This can be used to create and mana
 #### *Warning*
 Starting from version 3.1.0+, the direct usage of global variables in the configuration is deprecated, in favor of
 local variables of type `global`. As an example, if you were previously using `{{ GLOBAL_VAR }}` directly in your
-configuration, you now need to add a `configVariable` of type `global` and whose `id` must be the `id` 
-of the global variable `GLOBAL_VAR` (you can find it in Synthetics UI) and whose name can be chosen freely. 
+configuration, add a `config_variable` of type `global` with the `id` matching the `id` of the global variable `GLOBAL_VAR`, which can be found in the Synthetics UI or from the output of the `datadog_synthetics_global_variable` resource. The name can be chosen freely. 
+
 In practice, it means going from (simplified configuration):
+
 ```
 url = https://{{ GLOBAL_VAR }}
 ```
+
 to
+
+```
+config_variable = {
+  name = "LOCAL_VAR"
+  id = [your_global_variable_id]
+  type = "global"
+}
+```
+
+which you can now use in your request definition:
 ```
 url = https://{{ LOCAL_VAR }}
-configVariable = {name: "LOCAL_VAR", id: GLOBAL_VAR.id, type: "global"}
 ```
 
 ## Example Usage
@@ -229,13 +240,13 @@ resource "datadog_synthetics_test" "test_browser" {
 
   status = "paused"
 
-  step {
+  browser_step {
     name = "Check current url"
     type = "assertCurrentUrl"
-    params = jsonencode({
-      "check" : "contains",
-      "value" : "datadoghq"
-    })
+    params {
+      check = "contains"
+      value = "datadoghq"
+    }
   }
 
   browser_variable {
@@ -277,12 +288,12 @@ resource "datadog_synthetics_test" "test_browser" {
 - **browser_step** (Block List) Steps for browser tests. (see [below for nested schema](#nestedblock--browser_step))
 - **browser_variable** (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
 - **config_variable** (Block List) Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--config_variable))
-- **device_ids** (List of String) Array with the different device IDs used to run the test (only for `browser` tests). Valid values are `laptop_large`, `tablet`, `mobile_small`, `chrome.laptop_large`, `chrome.tablet`, `chrome.mobile_small`, `firefox.laptop_large`, `firefox.tablet`, `firefox.mobile_small`.
+- **device_ids** (List of String) Required if `type = "browser"`. Array with the different device IDs used to run the test. Valid values are `laptop_large`, `tablet`, `mobile_small`, `chrome.laptop_large`, `chrome.tablet`, `chrome.mobile_small`, `firefox.laptop_large`, `firefox.tablet`, `firefox.mobile_small`, `edge.laptop_large`, `edge.tablet`, `edge.mobile_small`.
 - **message** (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.
 - **options_list** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
 - **request_basicauth** (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
 - **request_client_certificate** (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
-- **request_definition** (Block List, Max: 1) The synthetics test request. Required if `type = "api"`. (see [below for nested schema](#nestedblock--request_definition))
+- **request_definition** (Block List, Max: 1) Required if `type = "api"`. The synthetics test request. (see [below for nested schema](#nestedblock--request_definition))
 - **request_headers** (Map of String) Header name and value map.
 - **request_query** (Map of String) Query arguments name and value map.
 - **set_cookie** (String) Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.
@@ -357,7 +368,7 @@ Optional:
 
 Required:
 
-- **type** (String) Type of parser for a Synthetics global variable from a synthetics test. Valid values are `raw`, `json_path`, `regex`.
+- **type** (String) Type of parser for a Synthetics global variable from a synthetics test. Valid values are `raw`, `json_path`, `regex`, `x_path`.
 
 Optional:
 
@@ -416,11 +427,13 @@ Optional:
 - **body** (String) The request body.
 - **dns_server** (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - **dns_server_port** (Number) DNS server port to use for DNS tests.
+- **follow_redirects** (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - **host** (String) Host name to perform the test with.
 - **method** (String) The HTTP method. Valid values are `GET`, `POST`, `PATCH`, `PUT`, `DELETE`, `HEAD`, `OPTIONS`.
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
 - **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - **port** (Number) Port to use when performing the test.
+- **servername** (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.
@@ -543,7 +556,7 @@ Optional:
 
 - **accept_self_signed** (Boolean) For SSL test, whether or not the test should allow self signed certificates.
 - **allow_insecure** (Boolean) Allows loading insecure content for an HTTP test.
-- **follow_redirects** (Boolean) For API HTTP test, whether or not the test should follow redirects.
+- **follow_redirects** (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - **min_failure_duration** (Number) Minimum amount of time in failure required to trigger an alert. Default is `0`.
 - **min_location_failed** (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`.
 - **monitor_name** (String) The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.
@@ -625,6 +638,7 @@ Optional:
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
 - **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - **port** (Number) Port to use when performing the test.
+- **servername** (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.

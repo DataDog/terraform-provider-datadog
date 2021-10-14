@@ -41,11 +41,19 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "new_host_delay", "600"),
+						"datadog_monitor.foo", "new_group_delay", "500"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "evaluation_delay", "700"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_occurrences", "5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_statuses.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "alert"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "warn"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.warning", "1"),
 					resource.TestCheckResourceAttr(
@@ -104,6 +112,14 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_occurrences", "5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_statuses.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "alert"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "warn"),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.warning", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.critical", "1"),
@@ -157,6 +173,14 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_occurrences", "5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_statuses.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "alert"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "warn"),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "locked", "false"),
@@ -201,11 +225,21 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "new_host_delay", "600"),
+						"datadog_monitor.foo", "new_group_delay", "500"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "new_host_delay", "300"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "evaluation_delay", "700"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_occurrences", "5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_statuses.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "alert"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "warn"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.warning", "1"),
 					resource.TestCheckResourceAttr(
@@ -258,6 +292,10 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "no_data_timeframe", "20"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "40"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_occurrences", "0"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_monitor.foo", "renotify_statuses.#"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.ok", "0"),
 					resource.TestCheckResourceAttr(
@@ -337,11 +375,21 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "new_host_delay", "600"),
+						"datadog_monitor.foo", "new_group_delay", "500"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "new_host_delay", "300"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "evaluation_delay", "700"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_occurrences", "5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_statuses.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "alert"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "warn"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.warning", "1"),
 					resource.TestCheckResourceAttr(
@@ -392,6 +440,10 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "no_data_timeframe", "20"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "40"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_occurrences", "0"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_monitor.foo", "renotify_statuses.#"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.ok", "0"),
 					resource.TestCheckResourceAttr(
@@ -465,6 +517,14 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_occurrences", "5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_statuses.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "alert"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "warn"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.ok", "0"),
 					resource.TestCheckResourceAttr(
@@ -553,6 +613,14 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_occurrences", "5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_statuses.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "alert"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "warn"),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.warning", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.critical", "2"),
@@ -618,6 +686,14 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_occurrences", "5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_statuses.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "alert"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "warn"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.ok", "0"),
 					resource.TestCheckResourceAttr(
@@ -781,10 +857,12 @@ resource "datadog_monitor" "foo" {
   }
 
   renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
   timeout_h = 60
-  new_host_delay = 600
+  new_group_delay = 500
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
@@ -805,6 +883,8 @@ resource "datadog_monitor" "foo" {
 
   notify_no_data = false
   renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
   timeout_h = 60
@@ -834,6 +914,8 @@ resource "datadog_monitor" "foo" {
   }
 
   renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
   timeout_h = 60
@@ -865,6 +947,8 @@ resource "datadog_monitor" "foo" {
 
   notify_no_data    = false
   renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit        = false
   timeout_h           = 60
@@ -895,6 +979,8 @@ resource "datadog_monitor" "foo" {
 
   notify_no_data    = false
   renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit        = false
   timeout_h           = 60
@@ -1018,6 +1104,8 @@ EOF
 
   notify_no_data = false
   renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
   timeout_h = 60
@@ -1041,6 +1129,8 @@ resource "datadog_monitor" "foo" {
   }
 
   renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
   timeout_h = 60
@@ -1072,6 +1162,8 @@ resource "datadog_monitor" "foo" {
 
 	notify_no_data = false
 	renotify_interval = 60
+	renotify_occurrences = 5
+	renotify_statuses = ["alert", "warn"]
 
 	notify_audit = false
 	timeout_h = 60
@@ -1097,6 +1189,8 @@ resource "datadog_monitor" "foo" {
 
 	notify_no_data = false
 	renotify_interval = 60
+	renotify_occurrences = 5
+	renotify_statuses = ["alert", "warn"]
 
 	notify_audit = false
 	timeout_h = 60

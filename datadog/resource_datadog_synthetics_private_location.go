@@ -59,6 +59,9 @@ func resourceDatadogSyntheticsPrivateLocationCreate(ctx context.Context, d *sche
 		// Note that Id won't be set, so no state will be saved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics private location")
 	}
+	if err := utils.CheckForUnparsed(createdSyntheticsPrivateLocationResponse); err != nil {
+		return diag.FromErr(err)
+	}
 
 	createdSyntheticsPrivateLocation := createdSyntheticsPrivateLocationResponse.GetPrivateLocation()
 	// If the Create callback returns with or without an error without an ID set using SetId,
@@ -87,6 +90,9 @@ func resourceDatadogSyntheticsPrivateLocationRead(ctx context.Context, d *schema
 			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetics private location")
+	}
+	if err := utils.CheckForUnparsed(syntheticsPrivateLocation); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return updateSyntheticsPrivateLocationLocalState(d, &syntheticsPrivateLocation)

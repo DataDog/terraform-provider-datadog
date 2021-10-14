@@ -57,9 +57,9 @@ jobs:
             - name: Set TF_ACC_TERRAFORM_PATH env var on windows platform
               if: ${{ matrix.platform == 'windows-latest' }}
               run: echo ("TF_ACC_TERRAFORM_PATH=" + (Get-Command terraform).Path) >> $env:GITHUB_ENV
+            - name: Check Docs Are Up To Date
+              run: make check-docs
             - name: Test
               run: make testall
               env:
                   RECORD: false
-            - name: Check Docs Are Up To Date
-              run: make check-docs

@@ -9,6 +9,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zorkian/go-datadog-api"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 // creating/modifying/deleting PD integration and its service objects in parallel on one account
@@ -82,6 +84,9 @@ func resourceDatadogIntegrationPagerdutyCreate(ctx context.Context, d *schema.Re
 	if err != nil {
 		return diag.Errorf("error getting PagerDuty integration: %s", err.Error())
 	}
+	if err := utils.CheckForUnparsed(pdIntegration); err != nil {
+		return diag.FromErr(err)
+	}
 
 	d.SetId(pdIntegration.GetSubdomain())
 
@@ -99,6 +104,9 @@ func resourceDatadogIntegrationPagerdutyRead(ctx context.Context, d *schema.Reso
 			return nil
 		}
 		return diag.Errorf("error getting PagerDuty integration: %s", err.Error())
+	}
+	if err := utils.CheckForUnparsed(pd); err != nil {
+		return diag.FromErr(err)
 	}
 
 	d.Set("subdomain", pd.GetSubdomain())

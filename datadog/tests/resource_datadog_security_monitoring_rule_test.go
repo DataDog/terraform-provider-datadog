@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
@@ -59,6 +60,29 @@ func TestAccDatadogSecurityMonitoringRule_NewValueRule(t *testing.T) {
 			{
 				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfigNewValueRule(ruleName),
 				Check:  testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRule(accProvider, ruleName),
+			},
+		},
+	})
+}
+
+func TestAccDatadogSecurityMonitoringRule_CwsRule(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigCwsRule(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitoringCreatedCheckCwsRule(accProvider, ruleName),
+			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfigCwsRule(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitoringUpdateCheckCwsRule(accProvider, ruleName),
 			},
 		},
 	})
@@ -314,6 +338,88 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckNewValueRule(accProvider func
 	)
 }
 
+func testAccCheckDatadogSecurityMonitoringCreatedConfigCwsRule(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+	name = "%s"
+	message = "acceptance rule triggered"
+	enabled = false
+
+	query {
+		name = "first"
+		query = "@agent.rule_id:(%s_random_id OR random_id)"
+		aggregation = "count"
+		group_by_fields = ["host"]
+		agent_rule {
+			agent_rule_id = "random_id"
+			expression = "open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0"
+		}
+	}
+
+	case {
+		name = "high case"
+		status = "high"
+		condition = "first > 3"
+	}
+
+	options {
+		detection_method = "threshold"
+		evaluation_window = 300
+		keep_alive = 600
+		max_signal_duration = 900
+	}
+
+	tags = ["i:tomato", "u:tomato"]
+
+	type = "workload_security"
+}
+`, name, strings.Replace(name, "-", "_", -1))
+}
+
+func testAccCheckDatadogSecurityMonitoringCreatedCheckCwsRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "acceptance rule triggered"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "enabled", "false"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.name", "first"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.query", fmt.Sprintf("@agent.rule_id:(%s_random_id OR random_id)", strings.Replace(ruleName, "-", "_", -1))),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.aggregation", "count"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.group_by_fields.0", "host"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.agent_rule.0.agent_rule_id", "random_id"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.agent_rule.0.expression", "open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.name", "high case"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.status", "high"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.condition", "first > 3"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.detection_method", "threshold"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.evaluation_window", "300"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.0", "i:tomato"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.1", "u:tomato"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "type", "workload_security"),
+	)
+}
+
 func testAccCheckDatadogSecurityMonitoringUpdatedConfig(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_rule" "acceptance_test" {
@@ -354,7 +460,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         query = "does not really suppress (updated)"
         action = "suppress"
     }
-
 
     tags = ["u:tomato", "i:tomato"]
 }
@@ -494,6 +599,94 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRule(accProvider fu
 			tfSecurityRuleName, "tags.0", "u:tomato"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "tags.1", "i:tomato"),
+	)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdatedConfigCwsRule(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "acceptance rule triggered (updated)"
+    enabled = true
+
+    query {
+		name = "first"
+        query = "@agent.rule_id:(%s_random_id OR random_id)"
+        aggregation = "count"
+        group_by_fields = ["service"]
+        metric = "@network.bytes_read"
+		agent_rule {
+			agent_rule_id = "random_id"
+			expression = "open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0"
+		}
+    }
+
+    case {
+        name = "high case (updated)"
+        status = "medium"
+        condition = "first > 10"
+        notifications = ["@user"]
+    }
+
+     options {
+		detection_method = "threshold"
+        evaluation_window = 300
+        keep_alive = 600
+		max_signal_duration = 900
+    }
+
+    tags = ["u:tomato", "i:tomato"]
+
+	type = "workload_security"
+}
+`, name, strings.Replace(name, "-", "_", -1))
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdateCheckCwsRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "acceptance rule triggered (updated)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "enabled", "true"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.name", "first"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.query", fmt.Sprintf("@agent.rule_id:(%s_random_id OR random_id)", strings.Replace(ruleName, "-", "_", -1))),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.aggregation", "count"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.metric", "@network.bytes_read"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.agent_rule.0.agent_rule_id", "random_id"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.agent_rule.0.expression", "open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.name", "high case (updated)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.status", "medium"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.condition", "first > 10"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.notifications.0", "@user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.detection_method", "threshold"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.evaluation_window", "300"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.0", "u:tomato"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.1", "i:tomato"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "type", "workload_security"),
 	)
 }
 

@@ -48,7 +48,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 				Sensitive:   true,
 			},
 			"secure": {
-				Description: "Sets the variable as secure. Defaults to `false`.",
+				Description: "If set to true, the value of the global variable is hidden. Defaults to `false`.",
 				Default:     false,
 				Type:        schema.TypeBool,
 				Optional:    true,
@@ -99,6 +99,12 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 					},
 				},
 			},
+			"restricted_roles": {
+				Description: "A list of role identifiers to associate with the Synthetics global variable.",
+				Type:        schema.TypeSet,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -113,6 +119,9 @@ func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schem
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics global variable")
+	}
+	if err := utils.CheckForUnparsed(createdSyntheticsGlobalVariable); err != nil {
+		return diag.FromErr(err)
 	}
 
 	// If the Create callback returns with or without an error without an ID set using SetId,
@@ -137,6 +146,9 @@ func resourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.
 			return nil
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetics global variable")
+	}
+	if err := utils.CheckForUnparsed(syntheticsGlobalVariable); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return updateSyntheticsGlobalVariableLocalState(d, &syntheticsGlobalVariable)
@@ -219,6 +231,14 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 		}
 	}
 
+	if restrictedRolesSet, ok := d.GetOk("restricted_roles"); ok {
+		restrictedRoles := buildDatadogRestrictedRoles(restrictedRolesSet.(*schema.Set))
+		attributes := datadogV1.SyntheticsGlobalVariableAttributes{
+			RestrictedRoles: restrictedRoles,
+		}
+		syntheticsGlobalVariable.SetAttributes(attributes)
+	}
+
 	return syntheticsGlobalVariable
 }
 
@@ -262,6 +282,13 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 		localParseTestOptions["parser"] = []map[string]string{localParser}
 
 		d.Set("parse_test_options", []map[string]interface{}{localParseTestOptions})
+	}
+
+	if syntheticsGlobalVariable.HasAttributes() {
+		attributes := syntheticsGlobalVariable.GetAttributes()
+		variableRestrictedRoles := attributes.GetRestrictedRoles()
+		restrictedRoles := buildTerraformRestrictedRoles(&variableRestrictedRoles)
+		d.Set("restricted_roles", restrictedRoles)
 	}
 
 	return nil

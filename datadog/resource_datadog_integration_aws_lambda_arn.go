@@ -31,7 +31,7 @@ func resourceDatadogIntegrationAwsLambdaArn() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"account_id": {
-				Description: "Your AWS Account ID without dashes.",
+				Description: "Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.",
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true, // waits for update API call support
@@ -55,6 +55,9 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(ctx context.Context, d *schema
 	response, httpresp, err := datadogClientV1.AWSLogsIntegrationApi.CreateAWSLambdaARN(authV1, *attachLambdaArnRequest)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error attaching Lambda ARN to AWS integration account")
+	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
 	}
 
 	res := response.(map[string]interface{})
@@ -80,6 +83,9 @@ func resourceDatadogIntegrationAwsLambdaArnRead(ctx context.Context, d *schema.R
 	logCollections, httpresp, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting aws log integrations for datadog account.")
+	}
+	if err := utils.CheckForUnparsed(logCollections); err != nil {
+		return diag.FromErr(err)
 	}
 	for _, logCollection := range logCollections {
 		if logCollection.GetAccountId() == accountID {

@@ -25,7 +25,7 @@ func resourceDatadogIntegrationAwsTagFilter() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"account_id": {
-				Description: "Your AWS Account ID without dashes.",
+				Description: "Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.",
 				Type:        schema.TypeString,
 				Required:    true,
 			},
@@ -102,6 +102,9 @@ func resourceDatadogIntegrationAwsTagFilterRead(ctx context.Context, d *schema.R
 	resp, httpresp, err := datadogClientV1.AWSIntegrationApi.ListAWSTagFilters(authV1, accountID)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error listing aws tag filter")
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		return diag.FromErr(err)
 	}
 
 	for _, ns := range resp.GetFilters() {

@@ -75,7 +75,7 @@ resource "datadog_monitor" "foo" {
 
   notify_audit = false
   timeout_h = 60
-  new_host_delay = 600
+  new_group_delay = 500
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
@@ -103,6 +103,8 @@ resource "datadog_monitor" "bar" {
 	}
 
   renotify_interval = 60
+  renotify_occurrences = 3
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
   timeout_h = 60

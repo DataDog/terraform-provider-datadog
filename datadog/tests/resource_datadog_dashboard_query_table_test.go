@@ -76,6 +76,82 @@ resource "datadog_dashboard" "query_table_dashboard" {
 }
 `
 
+const datadogDashboardQueryTableFormulaConfig = `
+resource "datadog_dashboard" "query_table_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+	widget {
+		query_table_definition {
+		  request {
+			formula {
+			  formula_expression = "query1"
+			  limit {
+				count = 500
+				order = "desc"
+			  }
+			  conditional_formats {
+				palette = "white_on_green"
+				value = 90
+				comparator = "<"
+			  }
+			  conditional_formats {
+			    palette = "white_on_red"
+			    value = 90
+				comparator = ">="
+			  }  
+			}
+			query {
+			  metric_query {
+				data_source = "metrics"
+				query       = "avg:system.cpu.system{*} by {datacenter}"
+				name        = "query1"
+				aggregator  = "sum"
+			  }
+			}
+		  }
+		}
+	  }
+	  widget {
+		query_table_definition {
+		  request {
+			query {
+			  apm_dependency_stats_query {
+				name           = "my-query"
+				data_source    = "apm_dependency_stats"
+				env            = "ci"
+				service        = "cassandra"
+				operation_name = "cassandra.query"
+				resource_name  = "CREATE TABLE IF NOT EXISTS foobar"
+				stat           = "avg_duration"
+			  }
+			}
+		  }
+		}
+	  }
+	  widget {
+		query_table_definition {
+		  request {
+			query {
+			  apm_resource_stats_query {
+				name              = "my-query-2"
+				data_source       = "apm_resource_stats"
+				env               = "staging"
+				service           = "foobar-controller"
+				operation_name    = "pylons.request"
+				stat              = "latency_p99"
+				group_by          = ["resource_name"]
+				primary_tag_name  = "datacenter"
+				primary_tag_value = "abc"
+			  }
+			}
+		  }
+		}
+	  }
+}
+`
+
 const datadogDashboardQueryTableConfigImport = `
 resource "datadog_dashboard" "query_table_dashboard" {
 	title         = "{{uniq}}"
@@ -203,10 +279,54 @@ var datadogDashboardQueryTableAsserts = []string{
 	"widget.1.query_table_definition.0.has_search_bar = never",
 }
 
+var datadogDashboardQueryTableFormulaAsserts = []string{
+	"title = {{uniq}}",
+	"is_read_only = true",
+	"layout_type = ordered",
+	"description = Created using the Datadog provider in Terraform",
+	"widget.0.query_table_definition.0.request.0.formula.0.formula_expression = query1",
+	"widget.0.query_table_definition.0.request.0.formula.0.limit.0.count = 500",
+	"widget.0.query_table_definition.0.request.0.formula.0.limit.0.order = desc",
+	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.0.palette = white_on_green",
+	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.0.value = 90",
+	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.0.comparator = <",
+	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.1.palette = white_on_red",
+	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.1.value = 90",
+	"widget.0.query_table_definition.0.request.0.formula.0.conditional_formats.1.comparator = >=",
+	"widget.0.query_table_definition.0.request.0.query.0.metric_query.0.data_source = metrics",
+	"widget.0.query_table_definition.0.request.0.query.0.metric_query.0.query = avg:system.cpu.system{*} by {datacenter}",
+	"widget.0.query_table_definition.0.request.0.query.0.metric_query.0.name = query1",
+	"widget.0.query_table_definition.0.request.0.query.0.metric_query.0.aggregator = sum",
+	"widget.1.query_table_definition.0.request.0.query.0.apm_dependency_stats_query.0.name = my-query",
+	"widget.1.query_table_definition.0.request.0.query.0.apm_dependency_stats_query.0.data_source = apm_dependency_stats",
+	"widget.1.query_table_definition.0.request.0.query.0.apm_dependency_stats_query.0.env = ci",
+	"widget.1.query_table_definition.0.request.0.query.0.apm_dependency_stats_query.0.service = cassandra",
+	"widget.1.query_table_definition.0.request.0.query.0.apm_dependency_stats_query.0.operation_name = cassandra.query",
+	"widget.1.query_table_definition.0.request.0.query.0.apm_dependency_stats_query.0.resource_name = CREATE TABLE IF NOT EXISTS foobar",
+	"widget.1.query_table_definition.0.request.0.query.0.apm_dependency_stats_query.0.stat = avg_duration",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.name = my-query-2",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.data_source = apm_resource_stats",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.env = staging",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.service = foobar-controller",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.operation_name = pylons.request",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.stat = latency_p99",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.group_by.0 = resource_name",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.primary_tag_name = datacenter",
+	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.primary_tag_value = abc",
+}
+
 func TestAccDatadogDashboardQueryTable(t *testing.T) {
 	testAccDatadogDashboardWidgetUtil(t, datadogDashboardQueryTableConfig, "datadog_dashboard.query_table_dashboard", datadogDashboardQueryTableAsserts)
 }
 
 func TestAccDatadogDashboardQueryTable_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardQueryTableConfigImport, "datadog_dashboard.query_table_dashboard")
+}
+
+func TestAccDatadogDashboardQueryTableFormula(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardQueryTableFormulaConfig, "datadog_dashboard.query_table_dashboard", datadogDashboardQueryTableFormulaAsserts)
+}
+
+func TestAccDatadogDashboardQueryTableFormula_import(t *testing.T) {
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardQueryTableFormulaConfig, "datadog_dashboard.query_table_dashboard")
 }

@@ -28,7 +28,7 @@ resource "datadog_integration_aws_lambda_arn" "main_collector" {
 
 ### Required
 
-- **account_id** (String) Your AWS Account ID without dashes.
+- **account_id** (String) Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.
 - **lambda_arn** (String) The ARN of the Datadog forwarder Lambda.
 
 ### Read-Only
