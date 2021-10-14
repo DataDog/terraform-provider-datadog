@@ -5,12 +5,13 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/structure"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var monitorComputedFields = []string{
@@ -24,6 +25,7 @@ var monitorComputedFields = []string{
 	"deleted",
 	"modified",
 	"modified_at",
+	"multi",
 	"org_id",
 	"overall_state",
 	"overall_state_modified",
@@ -42,6 +44,16 @@ func resourceDatadogMonitorJSON() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
+		CustomizeDiff: customdiff.ForceNewIfChange("monitor", func(ctx context.Context, old, new, meta interface{}) bool {
+			oldAttrMap, _ := structure.ExpandJsonFromString(old.(string))
+			newAttrMap, _ := structure.ExpandJsonFromString(new.(string))
+
+			oldType, ok := oldAttrMap["type"].(string)
+			if !ok {
+				return true
+			}
+			return oldType != newAttrMap["type"].(string)
+		}),
 		Schema: map[string]*schema.Schema{
 			"monitor": {
 				Type:         schema.TypeString,
