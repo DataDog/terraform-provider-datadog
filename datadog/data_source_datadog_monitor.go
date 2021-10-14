@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -144,6 +145,20 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				Description: "The number of minutes after the last notification before the monitor re-notifies on the current status.",
 				Type:        schema.TypeInt,
 				Computed:    true,
+			},
+			"renotify_occurrences": {
+				Description: "The number of re-notification messages that should be sent on the current status.",
+				Type:        schema.TypeInt,
+				Computed:    true,
+			},
+			"renotify_statuses": {
+				Description: "The types of statuses for which re-notification messages should be sent.",
+				Type:        schema.TypeSet,
+				Elem: &schema.Schema{
+					Type:             schema.TypeString,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorRenotifyStatusTypeFromValue),
+				},
+				Computed: true,
 			},
 			"notify_audit": {
 				Description: "Whether or not tagged users are notified on changes to the monitor.",
@@ -290,6 +305,8 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	d.Set("notify_no_data", m.Options.GetNotifyNoData())
 	d.Set("no_data_timeframe", m.Options.GetNoDataTimeframe())
 	d.Set("renotify_interval", m.Options.GetRenotifyInterval())
+	d.Set("renotify_occurrences", m.Options.GetRenotifyOccurrences())
+	d.Set("renotify_statuses", m.Options.GetRenotifyStatuses())
 	d.Set("notify_audit", m.Options.GetNotifyAudit())
 	d.Set("timeout_h", m.Options.GetTimeoutH())
 	d.Set("escalation_message", m.Options.GetEscalationMessage())

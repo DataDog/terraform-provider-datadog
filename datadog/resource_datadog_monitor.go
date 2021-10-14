@@ -212,6 +212,20 @@ func resourceDatadogMonitor() *schema.Resource {
 				Type:        schema.TypeInt,
 				Optional:    true,
 			},
+			"renotify_occurrences": {
+				Description: "The number of re-notification messages that should be sent on the current status.",
+				Type:        schema.TypeInt,
+				Optional:    true,
+			},
+			"renotify_statuses": {
+				Description: "The types of statuses for which re-notification messages should be sent.",
+				Type:        schema.TypeSet,
+				Elem: &schema.Schema{
+					Type:             schema.TypeString,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorRenotifyStatusTypeFromValue),
+				},
+				Optional: true,
+			},
 			"notify_audit": {
 				Description: "A boolean indicating whether tagged users will be notified on changes to this monitor. Defaults to `false`.",
 				Type:        schema.TypeBool,
@@ -361,6 +375,18 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	}
 	if attr, ok := d.GetOk("renotify_interval"); ok {
 		o.SetRenotifyInterval(int64(attr.(int)))
+	}
+	if attr, ok := d.GetOk("renotify_occurrences"); ok {
+		o.SetRenotifyOccurrences(int64(attr.(int)))
+	}
+	renotify_statuses := make([]datadogV1.MonitorRenotifyStatusType, 0)
+	if attr, ok := d.GetOk("renotify_statuses"); ok {
+		for _, s := range attr.(*schema.Set).List() {
+			renotify_statuses = append(renotify_statuses, datadogV1.MonitorRenotifyStatusType(s.(string)))
+		}
+		o.SetRenotifyStatuses(renotify_statuses)
+	} else {
+		o.SetRenotifyStatuses(nil)
 	}
 	if attr, ok := d.GetOk("notify_audit"); ok {
 		o.SetNotifyAudit(attr.(bool))
@@ -556,6 +582,9 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("renotify_interval", m.Options.GetRenotifyInterval()); err != nil {
 		return diag.FromErr(err)
 	}
+	if err := d.Set("renotify_occurrences", m.Options.GetRenotifyOccurrences()); err != nil {
+		return diag.FromErr(err)
+	}
 	if err := d.Set("notify_audit", m.Options.GetNotifyAudit()); err != nil {
 		return diag.FromErr(err)
 	}
@@ -566,6 +595,12 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return diag.FromErr(err)
 	}
 	if err := d.Set("include_tags", m.Options.GetIncludeTags()); err != nil {
+		return diag.FromErr(err)
+	}
+
+	var renotify_statuses []datadogV1.MonitorRenotifyStatusType
+	renotify_statuses = append(renotify_statuses, m.Options.GetRenotifyStatuses()...)
+	if err := d.Set("renotify_statuses", renotify_statuses); err != nil {
 		return diag.FromErr(err)
 	}
 

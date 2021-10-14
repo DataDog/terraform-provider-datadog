@@ -103,6 +103,8 @@ resource "datadog_monitor" "bar" {
 	}
 
   renotify_interval = 60
+  renotify_occurrences = 3
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
   timeout_h = 60
