@@ -619,7 +619,7 @@ resource "datadog_dashboard" "free_dashboard" {
 	widget {
 		trace_service_definition {
 			display_format = "three_column"
-			env = "datad0g.com"
+			env = "datadog.com"
 			service = "alerting-cassandra"
 			show_breakdown = true
 			show_distribution = true
@@ -629,7 +629,7 @@ resource "datadog_dashboard" "free_dashboard" {
 			show_resource_list = false
 			size_format = "large"
 			span_name = "cassandra.query"
-			title = "alerting-cassandra #env:datad0g.com"
+			title = "alerting-cassandra #env:datadog.com"
 			title_align = "center"
 			title_size = "13"
 			live_span = "1h"
@@ -1147,7 +1147,7 @@ var datadogFreeDashboardAsserts = []string{
 	"widget.6.widget_layout.0.y = 55",
 	// Trace Service widget
 	"widget.7.trace_service_definition.0.display_format = three_column",
-	"widget.7.trace_service_definition.0.env = datad0g.com",
+	"widget.7.trace_service_definition.0.env = datadog.com",
 	"widget.7.trace_service_definition.0.service = alerting-cassandra",
 	"widget.7.trace_service_definition.0.show_breakdown = true",
 	"widget.7.trace_service_definition.0.show_distribution = true",
@@ -1157,7 +1157,7 @@ var datadogFreeDashboardAsserts = []string{
 	"widget.7.trace_service_definition.0.show_resource_list = false",
 	"widget.7.trace_service_definition.0.size_format = large",
 	"widget.7.trace_service_definition.0.span_name = cassandra.query",
-	"widget.7.trace_service_definition.0.title = alerting-cassandra #env:datad0g.com",
+	"widget.7.trace_service_definition.0.title = alerting-cassandra #env:datadog.com",
 	"widget.7.trace_service_definition.0.title_align = center",
 	"widget.7.trace_service_definition.0.title_size = 13",
 	"widget.7.trace_service_definition.0.live_span = 1h",
