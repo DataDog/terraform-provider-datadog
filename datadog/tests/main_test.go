@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
+	ddtesting "github.com/DataDog/dd-sdk-go-testing"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/meta"
-	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 	"gopkg.in/DataDog/dd-trace-go.v1/profiler"
 )
 
@@ -23,11 +23,6 @@ func TestMain(m *testing.M) {
 	if !ok {
 		service = "terraform-datadog-provider"
 	}
-	tracer.Start(
-		tracer.WithService(service),
-		// tracer.WithServiceVersion(version.ProviderVersion),
-	)
-	defer tracer.Stop()
 
 	profilerOpts := []profiler.Option{
 		profiler.WithService(service),
@@ -49,6 +44,6 @@ func TestMain(m *testing.M) {
 		defer profiler.Stop()
 	}
 
-	code := m.Run()
+	code := ddtesting.Run(m)
 	os.Exit(code)
 }
