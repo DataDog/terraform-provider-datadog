@@ -2,7 +2,7 @@
 version: 1
 interactions:
 - request:
-    body: "{\n    \"name\": \"tf-TestAccDatadogMonitorJSONImport-local-1634241141\",\n    \"type\": \"service check\",\n    \"query\": \"\\\"ntp.in_sync\\\".over(\\\"*\\\").last(2).count_by_status()\",\n    \"message\": \"Change the message Triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\\n\\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.\",\n    \"tags\": [],\n    \"multi\": true,\n\t\"restricted_roles\": null,\n    \"options\": {\n        \"include_tags\": true,\n        \"locked\": false,\n        \"new_host_delay\": 150,\n        \"notify_audit\": false,\n        \"notify_no_data\": false,\n        \"thresholds\": {\n            \"warning\": 1,\n            \"ok\": 1,\n            \"critical\": 1\n        },\n        \"silenced\": {}\n    },\n    \"priority\": null,\n    \"classification\": \"custom\"\n}\n"
+    body: "{\n    \"name\": \"tf-TestAccDatadogMonitorJSONImport-local-1634588389\",\n    \"type\": \"service check\",\n    \"query\": \"\\\"ntp.in_sync\\\".over(\\\"*\\\").last(2).count_by_status()\",\n    \"message\": \"Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\\n\\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.\",\n    \"tags\": [],\n    \"multi\": true,\n\t\"restricted_roles\": null,\n    \"options\": {\n        \"include_tags\": true,\n        \"locked\": false,\n        \"new_host_delay\": 150,\n        \"notify_audit\": false,\n        \"notify_no_data\": false,\n        \"thresholds\": {\n            \"warning\": 1,\n            \"ok\": 1,\n            \"critical\": 1\n        },\n        \"silenced\": {}\n    },\n    \"priority\": null,\n    \"classification\": \"custom\"\n}\n"
     form: {}
     headers:
       Content-Length:
@@ -14,7 +14,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/monitor
     method: POST
   response:
-    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"\"ntp.in_sync\".over(\"*\").last(2).count_by_status()","message":"Change the message Triggers if any host''s clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent''s ''ntp.yaml'' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","id":49746553,"multi":true,"name":"tf-TestAccDatadogMonitorJSONImport-local-1634241141","created":"2021-10-14T19:52:23.660929+00:00","created_at":1634241143000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-14T19:52:23.660929+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"service check","options":{"notify_audit":false,"locked":false,"silenced":{},"include_tags":true,"thresholds":{"warning":1,"ok":1,"critical":1},"new_host_delay":150,"notify_no_data":false}}'
+    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"\"ntp.in_sync\".over(\"*\").last(2).count_by_status()","message":"Change the message triggers if any host''s clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent''s ''ntp.yaml'' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","id":50205927,"multi":true,"name":"tf-TestAccDatadogMonitorJSONImport-local-1634588389","created":"2021-10-18T20:19:51.646745+00:00","created_at":1634588391000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-18T20:19:51.646745+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"service check","options":{"notify_audit":false,"locked":false,"silenced":{},"include_tags":true,"thresholds":{"warning":1,"ok":1,"critical":1},"new_host_delay":150,"notify_no_data":false}}'
     headers:
       Cache-Control:
       - no-cache
@@ -25,7 +25,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 Oct 2021 19:52:23 GMT
+      - Mon, 18 Oct 2021 20:19:51 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -43,7 +43,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "499"
       X-Ratelimit-Reset:
-      - "7"
+      - "9"
     status: 200 OK
     code: 200
     duration: ""
@@ -55,10 +55,10 @@ interactions:
       - application/json
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/monitor/49746553
+    url: https://api.datadoghq.com/api/v1/monitor/50205927
     method: GET
   response:
-    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"\"ntp.in_sync\".over(\"*\").last(2).count_by_status()","message":"Change the message Triggers if any host''s clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent''s ''ntp.yaml'' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","id":49746553,"multi":true,"name":"tf-TestAccDatadogMonitorJSONImport-local-1634241141","created":"2021-10-14T19:52:23.660929+00:00","created_at":1634241143000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-14T19:52:23.660929+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"service check","options":{"notify_audit":false,"locked":false,"silenced":{},"include_tags":true,"thresholds":{"warning":1,"ok":1,"critical":1},"new_host_delay":150,"notify_no_data":false}}'
+    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"\"ntp.in_sync\".over(\"*\").last(2).count_by_status()","message":"Change the message triggers if any host''s clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent''s ''ntp.yaml'' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","id":50205927,"multi":true,"name":"tf-TestAccDatadogMonitorJSONImport-local-1634588389","created":"2021-10-18T20:19:51.646745+00:00","created_at":1634588391000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-18T20:19:51.646745+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"service check","options":{"notify_audit":false,"locked":false,"silenced":{},"include_tags":true,"thresholds":{"warning":1,"ok":1,"critical":1},"new_host_delay":150,"notify_no_data":false}}'
     headers:
       Cache-Control:
       - no-cache
@@ -69,7 +69,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 Oct 2021 19:52:24 GMT
+      - Mon, 18 Oct 2021 20:19:52 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -87,7 +87,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "2999"
       X-Ratelimit-Reset:
-      - "6"
+      - "8"
     status: 200 OK
     code: 200
     duration: ""
@@ -99,10 +99,10 @@ interactions:
       - application/json
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/monitor/49746553
+    url: https://api.datadoghq.com/api/v1/monitor/50205927
     method: GET
   response:
-    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"\"ntp.in_sync\".over(\"*\").last(2).count_by_status()","message":"Change the message Triggers if any host''s clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent''s ''ntp.yaml'' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","id":49746553,"multi":true,"name":"tf-TestAccDatadogMonitorJSONImport-local-1634241141","created":"2021-10-14T19:52:23.660929+00:00","created_at":1634241143000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-14T19:52:23.660929+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"service check","options":{"notify_audit":false,"locked":false,"silenced":{},"include_tags":true,"thresholds":{"warning":1,"ok":1,"critical":1},"new_host_delay":150,"notify_no_data":false}}'
+    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"\"ntp.in_sync\".over(\"*\").last(2).count_by_status()","message":"Change the message triggers if any host''s clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent''s ''ntp.yaml'' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","id":50205927,"multi":true,"name":"tf-TestAccDatadogMonitorJSONImport-local-1634588389","created":"2021-10-18T20:19:51.646745+00:00","created_at":1634588391000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-18T20:19:51.646745+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"service check","options":{"notify_audit":false,"locked":false,"silenced":{},"include_tags":true,"thresholds":{"warning":1,"ok":1,"critical":1},"new_host_delay":150,"notify_no_data":false}}'
     headers:
       Cache-Control:
       - no-cache
@@ -113,7 +113,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 Oct 2021 19:52:25 GMT
+      - Mon, 18 Oct 2021 20:19:53 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -122,6 +122,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "76"
       X-Frame-Options:
       - SAMEORIGIN
       X-Ratelimit-Limit:
@@ -131,7 +133,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "2998"
       X-Ratelimit-Reset:
-      - "5"
+      - "7"
     status: 200 OK
     code: 200
     duration: ""
@@ -143,10 +145,10 @@ interactions:
       - application/json
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/monitor/49746553
+    url: https://api.datadoghq.com/api/v1/monitor/50205927
     method: DELETE
   response:
-    body: '{"deleted_monitor_id":49746553}'
+    body: '{"deleted_monitor_id":50205927}'
     headers:
       Cache-Control:
       - no-cache
@@ -157,7 +159,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 Oct 2021 19:52:25 GMT
+      - Mon, 18 Oct 2021 20:19:53 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -181,7 +183,7 @@ interactions:
       - GetMonitor
       User-Agent:
       - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/monitor/49746553
+    url: https://api.datadoghq.com/api/v1/monitor/50205927
     method: GET
   response:
     body: '{"errors": ["Monitor not found"]}'
@@ -195,7 +197,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 14 Oct 2021 19:52:26 GMT
+      - Mon, 18 Oct 2021 20:19:54 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -213,7 +215,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "2997"
       X-Ratelimit-Reset:
-      - "4"
+      - "6"
     status: 404 Not Found
     code: 404
     duration: ""

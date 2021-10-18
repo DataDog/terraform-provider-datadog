@@ -68,7 +68,7 @@ func resourceDatadogMonitorJSON() *schema.Resource {
 					res, _ := structure.FlattenJsonToString(attrMap)
 					return res
 				},
-				Description: "The JSON formatted definition of the Monitor.",
+				Description: "The JSON formatted definition of the monitor.",
 			},
 			"url": {
 				Type:        schema.TypeString,

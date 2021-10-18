@@ -17,7 +17,7 @@ Provides a Datadog monitor JSON resource. This can be used to create and manage 
 
 ### Required
 
-- **monitor** (String) The JSON formatted definition of the Monitor.
+- **monitor** (String) The JSON formatted definition of the monitor.
 
 ### Optional
 
