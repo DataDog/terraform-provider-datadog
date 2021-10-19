@@ -83,12 +83,14 @@ func dataSourceDatadogRolesRead(ctx context.Context, d *schema.ResourceData, met
 		if err := utils.CheckForUnparsed(rolesResp); err != nil {
 			return diag.FromErr(err)
 		}
-		if len(rolesResp.GetData()) == 0 {
-			return diag.Errorf("your query returned no result, please try a less specific search criteria")
-		}
+
 		roles = append(roles, rolesResp.GetData()...)
 
-		remaining = rolesResp.Meta.Page.GetTotalCount() - pageSize*(pageNumber+1)
+		if reqParams.Filter != nil {
+			remaining = rolesResp.Meta.Page.GetTotalFilteredCount() - pageSize*(pageNumber+1)
+		} else {
+			remaining = rolesResp.Meta.Page.GetTotalCount() - pageSize*(pageNumber+1)
+		}
 		pageNumber++
 	}
 
