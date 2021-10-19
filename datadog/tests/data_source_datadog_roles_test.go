@@ -39,14 +39,7 @@ func TestAccDatadogRolesDatasourceMultipleMatch(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatasourceRoleCreateConfig(rolename),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("datadog_role.main", "name", rolename+" main"),
-					resource.TestCheckResourceAttr("datadog_role.cloned", "name", rolename+" main cloned"),
-				),
-			},
-			{
-				Config: testAccDatasourceRolesConfig(rolename),
+				Config: testAccDatasourceRolesMultipleMatchConfig(rolename),
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("data.datadog_roles.foo", "roles.#", "2"),
 					resource.TestCheckResourceAttrSet("data.datadog_roles.foo", "id"),
@@ -64,5 +57,21 @@ func testAccDatasourceRolesConfig(filter string) string {
 	return fmt.Sprintf(`
 data "datadog_roles" "foo" {
   filter = "%s"
+}`, filter)
+}
+
+func testAccDatasourceRolesMultipleMatchConfig(filter string) string {
+	return fmt.Sprintf(`
+data "datadog_roles" "foo" {
+  filter = "%[1]s"
+  depends_on = [datadog_role.main, datadog_role.cloned]
+}
+
+resource "datadog_role" "main" {
+  name      = "%[1]s main"
+}
+
+resource "datadog_role" "cloned" {
+  name      = "%[1]s main cloned"
 }`, filter)
 }

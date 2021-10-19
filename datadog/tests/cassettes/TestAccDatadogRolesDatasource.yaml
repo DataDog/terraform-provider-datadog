@@ -25,7 +25,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 19 Oct 2021 20:00:02 GMT
+      - Tue, 19 Oct 2021 21:38:14 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -43,7 +43,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "499"
       X-Ratelimit-Reset:
-      - "58"
+      - "46"
     status: 200 OK
     code: 200
     duration: ""
@@ -71,7 +71,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 19 Oct 2021 20:00:02 GMT
+      - Tue, 19 Oct 2021 21:38:14 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -89,7 +89,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "498"
       X-Ratelimit-Reset:
-      - "58"
+      - "46"
     status: 200 OK
     code: 200
     duration: ""
@@ -117,7 +117,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 19 Oct 2021 20:00:03 GMT
+      - Tue, 19 Oct 2021 21:38:15 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -135,7 +135,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "497"
       X-Ratelimit-Reset:
-      - "57"
+      - "45"
     status: 200 OK
     code: 200
     duration: ""
@@ -163,7 +163,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 19 Oct 2021 20:00:03 GMT
+      - Tue, 19 Oct 2021 21:38:15 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -181,7 +181,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "496"
       X-Ratelimit-Reset:
-      - "57"
+      - "45"
     status: 200 OK
     code: 200
     duration: ""
@@ -209,7 +209,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Tue, 19 Oct 2021 20:00:04 GMT
+      - Tue, 19 Oct 2021 21:38:16 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -227,7 +227,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "495"
       X-Ratelimit-Reset:
-      - "56"
+      - "44"
     status: 200 OK
     code: 200
     duration: ""
