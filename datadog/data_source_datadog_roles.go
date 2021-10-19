@@ -94,6 +94,10 @@ func dataSourceDatadogRolesRead(ctx context.Context, d *schema.ResourceData, met
 		pageNumber++
 	}
 
+	if len(roles) == 0 {
+		return diag.Errorf("your query returned no result, please try a less specific search criteria")
+	}
+
 	tfRoles := make([]map[string]interface{}, 0, len(roles))
 	for _, role := range roles {
 		attributes := role.GetAttributes()
