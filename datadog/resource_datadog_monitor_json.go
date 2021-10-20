@@ -62,17 +62,6 @@ func resourceDatadogMonitorJSON() *schema.Resource {
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validation.StringIsJSON,
-				//DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
-				//	oldAttrMap, _ := structure.ExpandJsonFromString(old)
-				//	newAttrMap, _ := structure.ExpandJsonFromString(new)
-				//	// restricted_roles is a special case and is not GA. The UI export function does not currently
-				//	// export this field. So ignore the
-				//	if val := reflect.ValueOf(oldAttrMap["restricted_roles"]); !val.IsValid() {
-				//		utils.DeleteKeyInMap(oldAttrMap, []string{"restricted_roles"})
-				//	}
-				//
-				//	return reflect.DeepEqual(oldAttrMap, newAttrMap)
-				//},
 				StateFunc: func(v interface{}) string {
 					// Remove computed fields when comparing diffs
 					attrMap, _ := structure.ExpandJsonFromString(v.(string))
