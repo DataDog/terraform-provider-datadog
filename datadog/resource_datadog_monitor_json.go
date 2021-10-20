@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"reflect"
+	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -27,6 +29,7 @@ var monitorComputedFields = []string{
 	"modified_at",
 	"multi",
 	"org_id",
+	"options.silenced",
 	"overall_state",
 	"overall_state_modified",
 	"url",
@@ -59,12 +62,24 @@ func resourceDatadogMonitorJSON() *schema.Resource {
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validation.StringIsJSON,
+				//DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+				//	oldAttrMap, _ := structure.ExpandJsonFromString(old)
+				//	newAttrMap, _ := structure.ExpandJsonFromString(new)
+				//	// restricted_roles is a special case and is not GA. The UI export function does not currently
+				//	// export this field. So ignore the
+				//	if val := reflect.ValueOf(oldAttrMap["restricted_roles"]); !val.IsValid() {
+				//		utils.DeleteKeyInMap(oldAttrMap, []string{"restricted_roles"})
+				//	}
+				//
+				//	return reflect.DeepEqual(oldAttrMap, newAttrMap)
+				//},
 				StateFunc: func(v interface{}) string {
 					// Remove computed fields when comparing diffs
 					attrMap, _ := structure.ExpandJsonFromString(v.(string))
 					for _, f := range monitorComputedFields {
-						delete(attrMap, f)
+						utils.DeleteKeyInMap(attrMap, strings.Split(f, "."))
 					}
+
 					res, _ := structure.FlattenJsonToString(attrMap)
 					return res
 				},
@@ -175,7 +190,13 @@ func updateMonitorJSONState(d *schema.ResourceData, monitor map[string]interface
 
 	// Remove computed fields from the object
 	for _, f := range monitorComputedFields {
-		delete(monitor, f)
+		utils.DeleteKeyInMap(monitor, strings.Split(f, "."))
+	}
+
+	// restricted_roles is a special case and exporting the field from UI does not include this field. But the api
+	// returns a `null` value on creation. If null we remove the field from state to avoid unnecessary diffs.
+	if val := reflect.ValueOf(monitor["restricted_roles"]); !val.IsValid() {
+		utils.DeleteKeyInMap(monitor, []string{"restricted_roles"})
 	}
 
 	monitorString, err := structure.FlattenJsonToString(monitor)

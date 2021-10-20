@@ -33,8 +33,7 @@ resource "datadog_monitor_json" "monitor_json" {
             "warning": 1,
             "ok": 1,
             "critical": 1
-        },
-        "silenced": {}
+        }
     },
     "priority": null,
     "classification": "custom"
