@@ -177,6 +177,7 @@ func Provider() *schema.Provider {
 			"datadog_dashboard":                   dataSourceDatadogDashboard(),
 			"datadog_dashboard_list":              dataSourceDatadogDashboardList(),
 			"datadog_ip_ranges":                   dataSourceDatadogIPRanges(),
+			"datadog_logs_indexes_order":          dataSourceDatadogLogsIndexesOrder(),
 			"datadog_monitor":                     dataSourceDatadogMonitor(),
 			"datadog_monitors":                    dataSourceDatadogMonitors(),
 			"datadog_permissions":                 dataSourceDatadogPermissions(),
