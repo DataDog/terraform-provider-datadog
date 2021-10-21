@@ -23,6 +23,7 @@ import (
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	ddtesting "github.com/DataDog/dd-sdk-go-testing"
 	"github.com/dnaeon/go-vcr/cassette"
 	"github.com/dnaeon/go-vcr/recorder"
 	"github.com/hashicorp/go-cleanhttp"
@@ -34,7 +35,6 @@ import (
 	"github.com/jonboulle/clockwork"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
-	ddtesting "gopkg.in/DataDog/dd-trace-go.v1/contrib/testing"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/ext"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
@@ -416,7 +416,11 @@ func testSpan(ctx context.Context, t *testing.T) context.Context {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	ctx, finish := ddtesting.StartSpanWithFinish(ctx, t, ddtesting.WithSkipFrames(3), ddtesting.WithSpanOptions(
+
+	ctx, finish := ddtesting.StartTestWithContext(ctx, t, ddtesting.WithSkipFrames(3), ddtesting.WithSpanOptions(
+		// Set resource name to TestName
+		tracer.ResourceName(t.Name()),
+
 		// We need to make the tag be something that is then searchable in monitors
 		// https://docs.datadoghq.com/tracing/guide/metrics_namespace/#errors
 		// "version" is really the only one we can use here
