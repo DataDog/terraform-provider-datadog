@@ -15,7 +15,7 @@ import (
 
 func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog Security Monitoring Rule API resource for default rules.",
+		Description:   "Provides a Datadog Security Monitoring Rule API resource for default rules. It can only be imported, you can't create a default rule.",
 		CreateContext: resourceDatadogSecurityMonitoringDefaultRuleCreate,
 		ReadContext:   resourceDatadogSecurityMonitoringDefaultRuleRead,
 		UpdateContext: resourceDatadogSecurityMonitoringDefaultRuleUpdate,
