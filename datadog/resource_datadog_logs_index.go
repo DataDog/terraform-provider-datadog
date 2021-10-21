@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"log"
+	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -11,6 +12,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
+
+var logsIndexMutex = sync.Mutex{}
 
 var indexSchema = map[string]*schema.Schema{
 	"name": {
@@ -117,6 +120,9 @@ func resourceDatadogLogsIndexCreate(ctx context.Context, d *schema.ResourceData,
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
+	logsIndexMutex.Lock()
+	defer logsIndexMutex.Unlock()
+
 	ddIndex := buildDatadogIndexCreateRequest(d)
 	createdIndex, httpResponse, err := datadogClientV1.LogsIndexesApi.CreateLogsIndex(authV1, *ddIndex)
 	if err != nil {
@@ -175,6 +181,9 @@ func resourceDatadogLogsIndexUpdate(ctx context.Context, d *schema.ResourceData,
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
+
+	logsIndexMutex.Lock()
+	defer logsIndexMutex.Unlock()
 
 	ddIndex := buildDatadogIndexUpdateRequest(d)
 	tfName := d.Get("name").(string)
