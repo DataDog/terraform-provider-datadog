@@ -3,19 +3,19 @@ version: 1
 interactions:
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634151847","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":60},"priority":0,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634927233","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":60},"priority":0,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","tags":[],"type":"query alert"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Length:
-      - "593"
+      - "569"
       Content-Type:
       - application/json
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.15.0) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -32,7 +32,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 13 Oct 2021 19:04:21 GMT
+      - Fri, 22 Oct 2021 18:27:14 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -46,19 +46,19 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634151847","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":60},"priority":0,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634927233","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":60},"priority":0,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","tags":[],"type":"query alert"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Length:
-      - "593"
+      - "569"
       Content-Type:
       - application/json
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.15.0) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -75,13 +75,15 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 13 Oct 2021 19:04:25 GMT
+      - Fri, 22 Oct 2021 18:27:14 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "57"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -89,19 +91,19 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634151847","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":60},"priority":0,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634927233","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":60},"priority":0,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","tags":[],"type":"query alert"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Length:
-      - "593"
+      - "569"
       Content-Type:
       - application/json
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.15.0) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -118,7 +120,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 13 Oct 2021 19:04:31 GMT
+      - Fri, 22 Oct 2021 18:27:14 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -132,23 +134,23 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634151847","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":60},"priority":0,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634927233","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":60},"priority":0,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","tags":[],"type":"query alert"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Length:
-      - "570"
+      - "546"
       Content-Type:
       - application/json
       Dd-Operation-Id:
       - CreateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.15.0) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor
     method: POST
   response:
-    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, ''basic'', 2, direction=''above'') >= 1","message":"test","id":49579529,"multi":false,"name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634151847","created":"2021-10-13T19:04:31.395069+00:00","created_at":1634151871000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-13T19:04:31.395069+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"query alert","options":{"notify_audit":false,"renotify_statuses":["alert","warn"],"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"warning":0.5,"ok":0.0,"critical":1.0,"warning_recovery":0.25,"critical_recovery":0.5},"new_host_delay":300,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5}}'
+    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, ''basic'', 2, direction=''above'') >= 1","message":"test","id":51393124,"multi":false,"name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634927233","created":"2021-10-22T18:27:14.680043+00:00","created_at":1634927234000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-22T18:27:14.680043+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"query alert","options":{"notify_audit":false,"renotify_statuses":["alert","warn"],"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"warning":0.5,"ok":0.0,"critical":1.0,"warning_recovery":0.25,"critical_recovery":0.5},"new_host_delay":300,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5}}'
     headers:
       Cache-Control:
       - no-cache
@@ -159,7 +161,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 13 Oct 2021 19:04:31 GMT
+      - Fri, 22 Oct 2021 18:27:14 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -177,7 +179,7 @@ interactions:
       X-Ratelimit-Remaining:
       - "499"
       X-Ratelimit-Reset:
-      - "9"
+      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -190,11 +192,11 @@ interactions:
       Dd-Operation-Id:
       - GetMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.15.0) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/monitor/49579529
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/monitor/51393124
     method: GET
   response:
-    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, ''basic'', 2, direction=''above'') >= 1","message":"test","id":49579529,"multi":false,"name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634151847","created":"2021-10-13T19:04:31.395069+00:00","created_at":1634151871000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-13T19:04:31.395069+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"query alert","options":{"notify_audit":false,"renotify_statuses":["alert","warn"],"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"warning":0.5,"ok":0.0,"critical":1.0,"warning_recovery":0.25,"critical_recovery":0.5},"new_host_delay":300,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5}}'
+    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, ''basic'', 2, direction=''above'') >= 1","message":"test","id":51393124,"multi":false,"name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634927233","created":"2021-10-22T18:27:14.680043+00:00","created_at":1634927234000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-22T18:27:14.680043+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"query alert","options":{"notify_audit":false,"renotify_statuses":["alert","warn"],"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"warning":0.5,"ok":0.0,"critical":1.0,"warning_recovery":0.25,"critical_recovery":0.5},"new_host_delay":300,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5}}'
     headers:
       Cache-Control:
       - no-cache
@@ -205,7 +207,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 13 Oct 2021 19:04:34 GMT
+      - Fri, 22 Oct 2021 18:27:14 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -221,7 +223,7 @@ interactions:
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "2996"
+      - "2999"
       X-Ratelimit-Reset:
       - "6"
     status: 200 OK
@@ -229,19 +231,19 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634151847","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":60},"priority":0,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634927233","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":60},"priority":0,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","tags":[],"type":"query alert"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Length:
-      - "593"
+      - "569"
       Content-Type:
       - application/json
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.15.0) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -258,7 +260,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 13 Oct 2021 19:04:38 GMT
+      - Fri, 22 Oct 2021 18:27:15 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -279,11 +281,11 @@ interactions:
       Dd-Operation-Id:
       - GetMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/monitor/49579529
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/monitor/51393124
     method: GET
   response:
-    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, ''basic'', 2, direction=''above'') >= 1","message":"test","id":49579529,"multi":false,"name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634151847","created":"2021-10-13T19:04:31.395069+00:00","created_at":1634151871000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-13T19:04:31.395069+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"query alert","options":{"notify_audit":false,"renotify_statuses":["alert","warn"],"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"warning":0.5,"ok":0.0,"critical":1.0,"warning_recovery":0.25,"critical_recovery":0.5},"new_host_delay":300,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5}}'
+    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, ''basic'', 2, direction=''above'') >= 1","message":"test","id":51393124,"multi":false,"name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634927233","created":"2021-10-22T18:27:14.680043+00:00","created_at":1634927234000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-22T18:27:14.680043+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"query alert","options":{"notify_audit":false,"renotify_statuses":["alert","warn"],"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"warning":0.5,"ok":0.0,"critical":1.0,"warning_recovery":0.25,"critical_recovery":0.5},"new_host_delay":300,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5}}'
     headers:
       Cache-Control:
       - no-cache
@@ -294,7 +296,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 13 Oct 2021 19:04:47 GMT
+      - Fri, 22 Oct 2021 18:27:15 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -310,27 +312,27 @@ interactions:
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "2994"
+      - "2998"
       X-Ratelimit-Reset:
-      - "3"
+      - "5"
     status: 200 OK
     code: 200
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634151847","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":60},"priority":0,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634927233","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":60},"priority":0,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","tags":[],"type":"query alert"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Length:
-      - "593"
+      - "569"
       Content-Type:
       - application/json
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -347,7 +349,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 13 Oct 2021 19:04:47 GMT
+      - Fri, 22 Oct 2021 18:27:15 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -361,19 +363,19 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634151847","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":60},"priority":0,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","restricted_roles":null,"tags":[],"type":"query alert"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_NoThresholdWindows-local-1634927233","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"critical_recovery":0.5,"ok":0,"warning":0.5,"warning_recovery":0.25},"timeout_h":60},"priority":0,"query":"avg(last_1h):anomalies(avg:system.cpu.system{name:cassandra}, 'basic', 2, direction='above') \u003e= 1","tags":[],"type":"query alert"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Length:
-      - "593"
+      - "569"
       Content-Type:
       - application/json
       Dd-Operation-Id:
       - ValidateMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
   response:
@@ -390,7 +392,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 13 Oct 2021 19:04:52 GMT
+      - Fri, 22 Oct 2021 18:27:16 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -411,11 +413,11 @@ interactions:
       Dd-Operation-Id:
       - DeleteMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/monitor/49579529
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/monitor/51393124
     method: DELETE
   response:
-    body: '{"deleted_monitor_id":49579529}'
+    body: '{"deleted_monitor_id":51393124}'
     headers:
       Cache-Control:
       - no-cache
@@ -426,7 +428,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 13 Oct 2021 19:05:06 GMT
+      - Fri, 22 Oct 2021 18:27:16 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -449,8 +451,8 @@ interactions:
       Dd-Operation-Id:
       - GetMonitor
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli ) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/monitor/49579529
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/monitor/51393124
     method: GET
   response:
     body: '{"errors": ["Monitor not found"]}'
@@ -464,7 +466,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 13 Oct 2021 19:05:06 GMT
+      - Fri, 22 Oct 2021 18:27:28 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -480,9 +482,9 @@ interactions:
       X-Ratelimit-Period:
       - "10"
       X-Ratelimit-Remaining:
-      - "2991"
+      - "2999"
       X-Ratelimit-Reset:
-      - "4"
+      - "2"
     status: 404 Not Found
     code: 404
     duration: ""
