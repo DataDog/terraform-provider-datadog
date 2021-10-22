@@ -617,7 +617,7 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return diag.FromErr(err)
 	}
 	// This helper function is defined in `resource_datadog_dashboard`
-	restrictedRoles := buildTerraformRestrictedRoles(m.RestrictedRoles)
+	restrictedRoles := buildTerraformRestrictedRoles(&m.RestrictedRoles)
 	if err := d.Set("restricted_roles", restrictedRoles); err != nil {
 		return diag.FromErr(err)
 	}
