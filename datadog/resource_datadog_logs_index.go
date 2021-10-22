@@ -50,6 +50,7 @@ var indexSchema = map[string]*schema.Schema{
 		Description: "Logs filter",
 		Type:        schema.TypeList,
 		Required:    true,
+		MaxItems:    1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"query": {
