@@ -81,19 +81,12 @@ func resourceDatadogDashboard() *schema.Resource {
 				Computed:    true,
 				Description: "The URL of the dashboard.",
 			},
-			"is_read_only": {
-				Type:          schema.TypeBool,
-				Optional:      true,
-				Default:       false,
-				ConflictsWith: []string{"restricted_roles"},
-				Description:   "Whether this dashboard is read-only.",
-			},
 			"restricted_roles": {
 				Type:          schema.TypeSet,
 				Optional:      true,
 				Elem:          &schema.Schema{Type: schema.TypeString},
 				ConflictsWith: []string{"is_read_only"},
-				Description:   "Role UUIDs corresponding to users authorized to edit the dashboard. **This feature is currently in beta.**",
+				Description:   "UUIDs of roles whose associated users are authorized to edit the dashboard.",
 			},
 			"template_variable": {
 				Type:        schema.TypeList,
@@ -128,6 +121,14 @@ func resourceDatadogDashboard() *schema.Resource {
 				Computed:    true,
 				Description: "A list of dashboard lists this dashboard should be removed from. Internal only.",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
+			},
+			"is_read_only": {
+				Type:          schema.TypeBool,
+				Optional:      true,
+				Default:       false,
+				ConflictsWith: []string{"restricted_roles"},
+				Description:   "Whether this dashboard is read-only.",
+				Deprecated:    "Prefer using `restricted_roles` to define which roles are required to edit the dashboard.",
 			},
 		},
 	}
