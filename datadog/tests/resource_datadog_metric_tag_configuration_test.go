@@ -33,7 +33,7 @@ func TestAccDatadogMetricTagConfiguration_Error(t *testing.T) {
 				ExpectError: regexp.MustCompile("cannot use include_percentiles with a metric_type of gauge*"),
 			},
 			{
-				Config:      testAccCheckDatadogMetricTagConfigurationIncludePercentilesError(uniqueMetricTagConfig, "distribution"),
+				Config:      testAccCheckDatadogMetricTagConfigurationAggregationsError(uniqueMetricTagConfig, "distribution"),
 				ExpectError: regexp.MustCompile("cannot use aggregations with a metric_type of distribution*"),
 			},
 		},
