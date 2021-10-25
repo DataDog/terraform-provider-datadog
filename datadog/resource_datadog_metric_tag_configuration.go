@@ -97,7 +97,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				Optional:    true,
 			},
 			"aggregations": {
-				Description: "A list of custom aggregation combinations for a count, rate, or gauge metric. Defaults to time sum & space sum for count and rate metrics, and time avg & space avg for gauge metrics. Can only be applied to metrics that have a `metric_type` of `count`, `rate`, or `gauge`.",
+				Description: "A list of queryable aggregation combinations for a count, rate, or gauge metric. By default, count and rate metrics require the (time: sum, space: sum) aggregation and Gauge metrics require the (time: avg, space: avg) aggregation. Can only be applied to metrics that have a metric_type of count, rate, or gauge.",
 				Type:        schema.TypeSet,
 				Optional:    true,
 				Computed:    true,

@@ -26,6 +26,14 @@ resource "datadog_metric_tag_configuration" "example_count_metric" {
   metric_name = "example.terraform.count.metric"
   metric_type = "count"
   tags        = ["sport", "datacenter"]
+  aggregations {
+    time  = "avg"
+    space = "min"
+  }
+  aggregations {
+    time  = "avg"
+    space = "max"
+  }
 }
 ```
 
@@ -40,10 +48,19 @@ resource "datadog_metric_tag_configuration" "example_count_metric" {
 
 ### Optional
 
+- **aggregations** (Block Set) A list of queryable aggregation combinations for a count, rate, or gauge metric. By default, count and rate metrics require the (time: sum, space: sum) aggregation and Gauge metrics require the (time: avg, space: avg) aggregation. Can only be applied to metrics that have a metric_type of count, rate, or gauge. (see [below for nested schema](#nestedblock--aggregations))
 - **include_percentiles** (Boolean) Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a metric_type of distribution.
 
 ### Read-Only
 
 - **id** (String) The ID of this resource.
+
+<a id="nestedblock--aggregations"></a>
+### Nested Schema for `aggregations`
+
+Required:
+
+- **space** (String) A space aggregation for use in query. Valid values are `avg`, `max`, `min`, `sum`.
+- **time** (String) A time aggregation for use in query. Valid values are `avg`, `count`, `max`, `min`, `sum`.
 
 
