@@ -8,7 +8,7 @@ IMPROVEMENTS:
 -   `datadog_logs_custom_pipeline`: Document how to find pipeline ID for import ([#1220](https://github.com/DataDog/terraform-provider-datadog/pull/1220))
 -   `datadog_security_monitoring_rules`: Add CWS support to terraform provider ([#1222](https://github.com/DataDog/terraform-provider-datadog/pull/1222))
 -   `datadog_dashboard`: Set dashboard resource's widget attribute to Optional ([#1224](https://github.com/DataDog/terraform-provider-datadog/pull/1224))
--   `datadog_synthetics_test`: Add support for servername in Synthetics test request ([#1232](https://github.com/DataDog/terraform-provider-datadog/pull/1232))
+-   `datadog_synthetics_test`: Add support for `servername` in Synthetics test request ([#1232](https://github.com/DataDog/terraform-provider-datadog/pull/1232))
 -   `datadog_monitor`: Add support for new renotify options ([#1235](https://github.com/DataDog/terraform-provider-datadog/pull/1235))
 -   `datadog_logs_index`: Use mutex to avoid creating/modifying logs indexes in parallel ([#1245](https://github.com/DataDog/terraform-provider-datadog/pull/1245))
 
@@ -23,10 +23,10 @@ BUGFIXES:
 
 -   `datadog_synthetics_test`: Document `device_ids` as required for browser type only ([#1216](https://github.com/DataDog/terraform-provider-datadog/pull/1216)) Thanks [@alexjurkiewicz](https://github.com/alexjurkiewicz)
 -   `datadog_synthetics_test`: Fix synthetics browser test `upload-files` step ([#1219](https://github.com/DataDog/terraform-provider-datadog/pull/1219))
--   `datadog_integration_gcp`: Changed Token Uri for GCP Service account ([#1201](https://github.com/DataDog/terraform-provider-datadog/pull/1201)) Thanks [@pbrao08](https://github.com/pbrao08)
+-   `datadog_integration_gcp`: Changed Token URI for GCP Service account ([#1201](https://github.com/DataDog/terraform-provider-datadog/pull/1201)) Thanks [@pbrao08](https://github.com/pbrao08)
 -   `datadog_downtime`: Set only one of timestamp or date format for start and end to avoid inconsistent plans ([#1223](https://github.com/DataDog/terraform-provider-datadog/pull/1223))
 -   `datadog_security_monitoring_rules`: Fix docs and example for security monitoring default rule ([#1246](https://github.com/DataDog/terraform-provider-datadog/pull/1246))
--   `datadog_logs_index`: Specify 1 filter block ([#1247](https://github.com/DataDog/terraform-provider-datadog/pull/1247)) Thanks [@bendrucker ](https://github.com/bendrucker )
+-   `datadog_logs_index`: Specify 1 filter block ([#1247](https://github.com/DataDog/terraform-provider-datadog/pull/1247)) Thanks [@bendrucker](https://github.com/bendrucker)
 
 NOTES:
 
