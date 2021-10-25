@@ -8,13 +8,12 @@ description: |-
 
 # datadog_security_monitoring_default_rule (Resource)
 
-Provides a Datadog Security Monitoring Rule API resource for default rules.
+Provides a Datadog Security Monitoring Rule API resource for default rules. It can only be imported, you can't create a default rule.
 
 ## Example Usage
 
 ```terraform
 resource "datadog_security_monitoring_default_rule" "adefaultrule" {
-  rule_id = "ojo-qef-3g3"
   enabled = true
 
   # Change the notifications for the high case

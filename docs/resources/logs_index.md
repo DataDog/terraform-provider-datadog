@@ -47,7 +47,7 @@ resource "datadog_logs_index" "sample_index" {
 
 ### Required
 
-- **filter** (Block List, Min: 1) Logs filter (see [below for nested schema](#nestedblock--filter))
+- **filter** (Block List, Min: 1, Max: 1) Logs filter (see [below for nested schema](#nestedblock--filter))
 - **name** (String) The name of the index.
 
 ### Optional

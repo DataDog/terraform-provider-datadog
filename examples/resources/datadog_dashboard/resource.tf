@@ -212,8 +212,8 @@ resource "datadog_dashboard" "ordered_dashboard" {
   widget {
     servicemap_definition {
       service     = "master-db"
-      filters     = ["env:prod", "datacenter:us1.prod.dog"]
-      title       = "env: prod, datacenter:us1.prod.dog, service: master-db"
+      filters     = ["env:prod", "datacenter:dc1"]
+      title       = "env: prod, datacenter:dc1, service: master-db"
       title_size  = "16"
       title_align = "left"
     }
@@ -521,7 +521,7 @@ resource "datadog_dashboard" "free_dashboard" {
   widget {
     trace_service_definition {
       display_format     = "three_column"
-      env                = "datad0g.com"
+      env                = "datadog.com"
       service            = "alerting-cassandra"
       show_breakdown     = true
       show_distribution  = true
@@ -531,7 +531,7 @@ resource "datadog_dashboard" "free_dashboard" {
       show_resource_list = false
       size_format        = "large"
       span_name          = "cassandra.query"
-      title              = "alerting-cassandra #env:datad0g.com"
+      title              = "alerting-cassandra #env:datadog.com"
       title_align        = "center"
       title_size         = "13"
       live_span          = "1h"
