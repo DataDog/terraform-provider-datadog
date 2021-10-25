@@ -26,7 +26,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			oldAggrs, newAggrs := diff.GetChange("aggregations")
 			metricType, metricTypeOk := diff.GetOkExists("metric_type")
 
-			if !includePercentilesOk && !oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) && !metricTypeOk {
+			if !includePercentilesOk && oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) && !metricTypeOk {
 				// if there was no change to include_percentiles nor aggregations nor metricType we don't need special handling
 				return nil
 			}
