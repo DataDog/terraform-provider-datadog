@@ -48,8 +48,8 @@ resource "datadog_metric_tag_configuration" "example_count_metric" {
 
 ### Optional
 
-- **aggregations** (Block Set) A list of queryable aggregation combinations for a count, rate, or gauge metric. By default, count and rate metrics require the (time: sum, space: sum) aggregation and Gauge metrics require the (time: avg, space: avg) aggregation. Can only be applied to metrics that have a metric_type of count, rate, or gauge. (see [below for nested schema](#nestedblock--aggregations))
-- **include_percentiles** (Boolean) Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a metric_type of distribution.
+- **aggregations** (Block Set) A list of queryable aggregation combinations for a count, rate, or gauge metric. By default, count and rate metrics require the (time: sum, space: sum) aggregation and gauge metrics require the (time: avg, space: avg) aggregation. Can only be applied to metrics that have a `metric_type` of count, rate, or gauge. (see [below for nested schema](#nestedblock--aggregations))
+- **include_percentiles** (Boolean) Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a `metric_type` of distribution.
 
 ### Read-Only
 

@@ -92,12 +92,12 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				Required: true,
 			},
 			"include_percentiles": {
-				Description: "Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a metric_type of distribution.",
+				Description: "Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a `metric_type` of distribution.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
 			"aggregations": {
-				Description: "A list of queryable aggregation combinations for a count, rate, or gauge metric. By default, count and rate metrics require the (time: sum, space: sum) aggregation and Gauge metrics require the (time: avg, space: avg) aggregation. Can only be applied to metrics that have a metric_type of count, rate, or gauge.",
+				Description: "A list of queryable aggregation combinations for a count, rate, or gauge metric. By default, count and rate metrics require the (time: sum, space: sum) aggregation and gauge metrics require the (time: avg, space: avg) aggregation. Can only be applied to metrics that have a `metric_type` of count, rate, or gauge.",
 				Type:        schema.TypeSet,
 				Optional:    true,
 				Computed:    true,
