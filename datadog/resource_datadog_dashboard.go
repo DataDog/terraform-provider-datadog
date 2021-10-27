@@ -1601,6 +1601,9 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.ChangeWidgetRequest {
 	datadogRequests := make([]datadogV1.ChangeWidgetRequest, len(*terraformRequests))
 	for i, request := range *terraformRequests {
+		if request == nil {
+			continue
+		}
 		terraformRequest := request.(map[string]interface{})
 		// Build ChangeRequest
 		datadogChangeRequest := datadogV1.NewChangeWidgetRequest()
@@ -1820,6 +1823,9 @@ func getDistributionRequestSchema() map[string]*schema.Schema {
 func buildDatadogDistributionRequests(terraformRequests *[]interface{}) *[]datadogV1.DistributionWidgetRequest {
 	datadogRequests := make([]datadogV1.DistributionWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build DistributionRequest
 		datadogDistributionRequest := datadogV1.NewDistributionWidgetRequest()
@@ -2433,6 +2439,9 @@ func getHeatmapRequestSchema() map[string]*schema.Schema {
 func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadogV1.HeatMapWidgetRequest {
 	datadogRequests := make([]datadogV1.HeatMapWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build HeatmapRequest
 		datadogHeatmapRequest := datadogV1.NewHeatMapWidgetRequest()
@@ -3562,6 +3571,9 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadogV1.QueryValueWidgetRequest {
 	datadogRequests := make([]datadogV1.QueryValueWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build QueryValueRequest
 		datadogQueryValueRequest := datadogV1.NewQueryValueWidgetRequest()
@@ -3829,6 +3841,9 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadogV1.TableWidgetRequest {
 	datadogRequests := make([]datadogV1.TableWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build QueryTableRequest
 		datadogQueryTableRequest := datadogV1.NewTableWidgetRequest()
@@ -4606,6 +4621,9 @@ func buildDatadogGeomapDefinition(terraformDefinition map[string]interface{}) *d
 func buildDatadogGeomapRequests(terraformRequests *[]interface{}) *[]datadogV1.GeomapWidgetRequest {
 	datadogRequests := make([]datadogV1.GeomapWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build Geomap Request
 		datadogGeomapRequest := datadogV1.NewGeomapWidgetRequest()
@@ -5572,6 +5590,9 @@ func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) dat
 func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadogV1.TimeseriesWidgetRequest {
 	datadogRequests := make([]datadogV1.TimeseriesWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build TimeseriesRequest
 		datadogTimeseriesRequest := datadogV1.NewTimeseriesWidgetRequest()
@@ -5852,6 +5873,9 @@ func getToplistRequestSchema() map[string]*schema.Schema {
 func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.ToplistWidgetRequest {
 	datadogRequests := make([]datadogV1.ToplistWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build ToplistRequest
 		datadogToplistRequest := datadogV1.NewToplistWidgetRequest()
