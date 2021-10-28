@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -10,6 +11,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+var integrationAzureMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationAzure() *schema.Resource {
 	return &schema.Resource{
@@ -84,6 +87,9 @@ func resourceDatadogIntegrationAzureCreate(ctx context.Context, d *schema.Resour
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
+	integrationAzureMutex.Lock()
+	defer integrationAzureMutex.Unlock()
+
 	tenantName := d.Get("tenant_name").(string)
 	clientID := d.Get("client_id").(string)
 
@@ -102,6 +108,9 @@ func resourceDatadogIntegrationAzureUpdate(ctx context.Context, d *schema.Resour
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
+
+	integrationAzureMutex.Lock()
+	defer integrationAzureMutex.Unlock()
 
 	existingTenantName, existingClientID, err := utils.TenantAndClientFromID(d.Id())
 	if err != nil {
@@ -123,6 +132,9 @@ func resourceDatadogIntegrationAzureDelete(ctx context.Context, d *schema.Resour
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
+
+	integrationAzureMutex.Lock()
+	defer integrationAzureMutex.Unlock()
 
 	tenantName, clientID, err := utils.TenantAndClientFromID(d.Id())
 	if err != nil {
