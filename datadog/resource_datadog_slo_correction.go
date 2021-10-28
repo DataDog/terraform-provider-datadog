@@ -36,7 +36,7 @@ func resourceDatadogSloCorrection() *schema.Resource {
 			"end": {
 				Type:        schema.TypeInt,
 				Required:    true,
-				Description: "Ending time of the correction in epoch seconds.",
+				Description: "Ending time of the correction in epoch seconds. If `rrule` is specified, end must not be included.",
 			},
 			"slo_id": {
 				Type:        schema.TypeString,
@@ -52,6 +52,16 @@ func resourceDatadogSloCorrection() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "The timezone to display in the UI for the correction times (defaults to \"UTC\")",
+			},
+			"duration": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Description: "Length of time in seconds for a specified `rrule` recurring SLO correction (required if specifying `rrule`)",
+			},
+			"rrule": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Recurrence rules as defined in the iCalendar RFC 5545.",
 			},
 		},
 	}

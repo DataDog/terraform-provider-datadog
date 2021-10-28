@@ -39,7 +39,6 @@ resource "datadog_slo_correction" "example_slo_correction" {
   slo_id      = "datadog_service_level_objective.example_slo.id"
   timezone    = "UTC"
 }
-
 resource "datadog_slo_correction" "example_slo_correction_with_recurrence" {
   category    = "Scheduled Maintenance"
   description = "correction example with recurrence"
@@ -64,9 +63,9 @@ resource "datadog_slo_correction" "example_slo_correction_with_recurrence" {
 ### Optional
 
 - **description** (String) Description of the correction being made.
-- **timezone** (String) The timezone to display in the UI for the correction times (defaults to "UTC")
-- **rrule** (String) Recurrence rules as defined in the iCalendar RFC 5545.
 - **duration** (Number) Length of time in seconds for a specified `rrule` recurring SLO correction (required if specifying `rrule`)
+- **rrule** (String) Recurrence rules as defined in the iCalendar RFC 5545.
+- **timezone** (String) The timezone to display in the UI for the correction times (defaults to "UTC")
 
 ### Read-Only
 
