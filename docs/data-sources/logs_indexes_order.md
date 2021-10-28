@@ -3,12 +3,12 @@
 page_title: "datadog_logs_indexes_order Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to get the current order of your log indexes..
+  Get the current order of your log indexes.
 ---
 
 # datadog_logs_indexes_order (Data Source)
 
-Use this data source to get the current order of your log indexes..
+Get the current order of your log indexes.
 
 ## Example Usage
 
@@ -21,4 +21,7 @@ data "datadog_logs_indexes_order" "test" {}
 
 ### Read-Only
 
+- **id** (String) The ID of this resource.
 - **index_names** (List of String) Array of strings identifying by their name(s) the index(es) of your organization. Logs are tested against the query filter of each index one by one, following the order of the array. Logs are eventually stored in the first matching index.
+
+

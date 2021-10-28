@@ -17,7 +17,7 @@ func dataSourceDatadogLogsIndexesOrder() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			// Computed values
 			"index_names": {
-				Description: "Array of strings identifying by their name(s) the index(es) of your organization.",
+				Description: "Array of strings identifying by their name(s) the index(es) of your organization. Logs are tested against the query filter of each index one by one, following the order of the array. Logs are eventually stored in the first matching index.",
 				Type:        schema.TypeList,
 				Computed:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
