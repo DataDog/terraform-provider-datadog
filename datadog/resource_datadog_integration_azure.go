@@ -53,7 +53,7 @@ func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.Resource
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	tenantName, _, err := utils.TenantAndClientFromID(d.Id())
+	tenantName, clientId, err := utils.TenantAndClientFromID(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -66,7 +66,7 @@ func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.Resource
 		return diag.FromErr(err)
 	}
 	for _, integration := range integrations {
-		if integration.GetTenantName() == tenantName {
+		if integration.GetTenantName() == tenantName && integration.GetClientId() == clientId {
 			d.Set("tenant_name", integration.GetTenantName())
 			d.Set("client_id", integration.GetClientId())
 			hostFilters, exists := integration.GetHostFiltersOk()
