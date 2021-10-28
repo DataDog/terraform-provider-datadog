@@ -18,6 +18,7 @@ func TestAccDatadogLogsIndexesOrderDatasource(t *testing.T) {
 		log.Println("Skipping logs indexes tests in non replaying mode")
 		return
 	}
+
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "_", "-"))
 
@@ -55,7 +56,7 @@ data "datadog_logs_indexes_order" "order" {
 }
 
 resource "datadog_logs_index" "sample_index" {
-	name           = "%s_sample"
+	name           = "%s-sample"
 	filter {
 		query = "project:sample"
 	}
