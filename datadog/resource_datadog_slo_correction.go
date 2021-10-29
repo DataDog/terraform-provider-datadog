@@ -35,8 +35,8 @@ func resourceDatadogSloCorrection() *schema.Resource {
 			},
 			"end": {
 				Type:        schema.TypeInt,
-				Required:    true,
-				Description: "Ending time of the correction in epoch seconds. If `rrule` is specified, end must not be included.",
+				Optional:    true,
+				Description: "Ending time of the correction in epoch seconds. Required for one time corrections, but optional if `rrule` is specified",
 			},
 			"slo_id": {
 				Type:        schema.TypeString,
@@ -76,7 +76,11 @@ func buildDatadogSloCorrection(d *schema.ResourceData) *datadogV1.SLOCorrectionC
 	correctionCategory := datadogV1.SLOCorrectionCategory(d.Get("category").(string))
 	attributes.SetCategory(correctionCategory)
 	attributes.SetStart(int64(d.Get("start").(int)))
-	attributes.SetEnd(int64(d.Get("end").(int)))
+
+	if end, ok := d.GetOk("end"); ok {
+		attributes.SetEnd(int64(end.(int)))
+	}
+
 	attributes.SetSloId(d.Get("slo_id").(string))
 
 	if timezone, ok := d.GetOk("timezone"); ok {
@@ -85,6 +89,12 @@ func buildDatadogSloCorrection(d *schema.ResourceData) *datadogV1.SLOCorrectionC
 
 	if description, ok := d.GetOk("description"); ok {
 		attributes.SetDescription(description.(string))
+	}
+	if rrule, ok := d.GetOk("rrule"); ok {
+		attributes.SetRrule(rrule.(string))
+	}
+	if duration, ok := d.GetOk("duration"); ok {
+		attributes.SetDuration(int64(duration.(int)))
 	}
 	createData.SetAttributes(*attributes)
 	result.SetData(*createData)
@@ -109,6 +119,12 @@ func buildDatadogSloCorrectionUpdate(d *schema.ResourceData) *datadogV1.SLOCorre
 	}
 	if category, ok := d.GetOk("category"); ok {
 		attributes.SetCategory(datadogV1.SLOCorrectionCategory(category.(string)))
+	}
+	if rrule, ok := d.GetOk("rrule"); ok {
+		attributes.SetRrule(rrule.(string))
+	}
+	if duration, ok := d.GetOk("duration"); ok {
+		attributes.SetDuration(int64(duration.(int)))
 	}
 	updateData.SetAttributes(*attributes)
 	result.SetData(*updateData)
@@ -164,6 +180,16 @@ func updateSLOCorrectionState(d *schema.ResourceData, sloCorrectionData *datadog
 		}
 		if end, ok := sloCorrectionAttributes.GetEndOk(); ok {
 			if err := d.Set("end", *end); err != nil {
+				return diag.FromErr(err)
+			}
+		}
+		if rrule, ok := sloCorrectionAttributes.GetRruleOk(); ok {
+			if err := d.Set("rrule", *rrule); err != nil {
+				return diag.FromErr(err)
+			}
+		}
+		if duration, ok := sloCorrectionAttributes.GetDescriptionOk(); ok {
+			if err := d.Set("duration", *duration); err != nil {
 				return diag.FromErr(err)
 			}
 		}
