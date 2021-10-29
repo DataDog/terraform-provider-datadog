@@ -691,10 +691,10 @@ resource "datadog_dashboard" "free_dashboard" {
 
 - **dashboard_lists** (Set of Number) A list of dashboard lists this dashboard belongs to.
 - **description** (String) The description of the dashboard.
-- **is_read_only** (Boolean) Whether this dashboard is read-only.
+- **is_read_only** (Boolean, Deprecated) Whether this dashboard is read-only. **Deprecated.** Prefer using `restricted_roles` to define which roles are required to edit the dashboard.
 - **notify_list** (List of String) The list of handles for the users to notify when changes are made to this dashboard.
 - **reflow_type** (String) The reflow type of a new dashboard layout. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts. Valid values are `auto`, `fixed`.
-- **restricted_roles** (Set of String) Role UUIDs corresponding to users authorized to edit the dashboard. **This feature is currently in beta.**
+- **restricted_roles** (Set of String) UUIDs of roles whose associated users are authorized to edit the dashboard.
 - **template_variable** (Block List) The list of template variables for this dashboard. (see [below for nested schema](#nestedblock--template_variable))
 - **template_variable_preset** (Block List) The list of selectable template variable presets for this dashboard. (see [below for nested schema](#nestedblock--template_variable_preset))
 - **url** (String) The URL of the dashboard.

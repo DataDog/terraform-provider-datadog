@@ -245,7 +245,7 @@ func resourceDatadogDowntime() *schema.Resource {
 				// TypeSet makes Terraform ignore differences in order when creating a plan
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "A list of monitor tags (up to 25), i.e. tags that are applied directly to monitors to which the downtime applies",
+				Description: "A list of monitor tags (up to 32) to base the scheduled downtime on. Only monitors that have all selected tags are silenced",
 				// MonitorTags conflicts with MonitorId and it also has a default of `["*"]`, which brings some problems:
 				// * We can't use DefaultFunc to default to ["*"], since that's incompatible with
 				//   ConflictsWith
