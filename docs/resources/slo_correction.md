@@ -56,7 +56,6 @@ resource "datadog_slo_correction" "example_slo_correction_with_recurrence" {
 ### Required
 
 - **category** (String) Category the SLO correction belongs to. Valid values are `Scheduled Maintenance`, `Outside Business Hours`, `Deployment`, `Other`.
-- **end** (Number) Ending time of the correction in epoch seconds. If `rrule` is specified, end must not be included.
 - **slo_id** (String) ID of the SLO that this correction will be applied to.
 - **start** (Number) Starting time of the correction in epoch seconds.
 
@@ -64,6 +63,7 @@ resource "datadog_slo_correction" "example_slo_correction_with_recurrence" {
 
 - **description** (String) Description of the correction being made.
 - **duration** (Number) Length of time in seconds for a specified `rrule` recurring SLO correction (required if specifying `rrule`)
+- **end** (Number) Ending time of the correction in epoch seconds. Required for one time corrections, but optional if `rrule` is specified
 - **rrule** (String) Recurrence rules as defined in the iCalendar RFC 5545.
 - **timezone** (String) The timezone to display in the UI for the correction times (defaults to "UTC")
 
