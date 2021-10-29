@@ -188,7 +188,7 @@ func updateSLOCorrectionState(d *schema.ResourceData, sloCorrectionData *datadog
 				return diag.FromErr(err)
 			}
 		}
-		if duration, ok := sloCorrectionAttributes.GetDescriptionOk(); ok {
+		if duration, ok := sloCorrectionAttributes.GetDurationOk(); ok {
 			if err := d.Set("duration", *duration); err != nil {
 				return diag.FromErr(err)
 			}
