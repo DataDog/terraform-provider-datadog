@@ -34,9 +34,10 @@ func resourceDatadogSloCorrection() *schema.Resource {
 				Description: "Description of the correction being made.",
 			},
 			"end": {
-				Type:        schema.TypeInt,
-				Optional:    true,
-				Description: "Ending time of the correction in epoch seconds. Required for one time corrections, but optional if `rrule` is specified",
+				Type:          schema.TypeInt,
+				Optional:      true,
+				ConflictsWith: []string{"rrule", "duration"},
+				Description:   "Ending time of the correction in epoch seconds. Required for one time corrections, but optional if `rrule` is specified",
 			},
 			"slo_id": {
 				Type:        schema.TypeString,
