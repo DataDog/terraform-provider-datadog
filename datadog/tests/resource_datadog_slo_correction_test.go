@@ -167,7 +167,7 @@ func testAccCheckDatadogSloCorrectionConfig(uniq string) string {
 
 func testAccCheckDatadogSloCorrectionConfigRecurring(uniq string) string {
 	return fmt.Sprintf(`
-		resource "datadog_service_level_objective" "foo" {
+	resource "datadog_service_level_objective" "foo" {
 			name = "%s"
 			type = "metric"
 			description = "some updated description about foo SLO"
