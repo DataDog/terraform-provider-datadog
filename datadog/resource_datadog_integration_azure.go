@@ -44,6 +44,12 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"automute": {
+				Description: "Silence monitors for expected Azure VM shutdowns.",
+				Type:        schema.TypeBool,
+				Default:     false,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -69,6 +75,7 @@ func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.Resource
 		if integration.GetTenantName() == tenantName {
 			d.Set("tenant_name", integration.GetTenantName())
 			d.Set("client_id", integration.GetClientId())
+			d.Set("automute", integration.GetAutomute())
 			hostFilters, exists := integration.GetHostFiltersOk()
 			if exists {
 				d.Set("host_filters", hostFilters)
@@ -145,6 +152,7 @@ func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.Resource
 	// Optional params
 	hostFilters := terraformDefinition.Get("host_filters")
 	datadogDefinition.SetHostFilters(hostFilters.(string))
+	datadogDefinition.SetAutomute(terraformDefinition.Get("automute").(bool))
 
 	clientSecret, exists := terraformDefinition.GetOk("client_secret")
 	if exists {
