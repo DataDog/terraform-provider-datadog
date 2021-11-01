@@ -243,7 +243,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Default:     true,
 			},
 			"locked": {
-				Description:   "A boolean indicating whether changes to to this monitor should be restricted to the creator or admins. Defaults to `false`.",
+				Description:   "A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.",
 				Type:          schema.TypeBool,
 				Optional:      true,
 				ConflictsWith: []string{"restricted_roles"},
