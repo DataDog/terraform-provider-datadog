@@ -152,7 +152,8 @@ func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.Resource
 	// Optional params
 	hostFilters := terraformDefinition.Get("host_filters")
 	datadogDefinition.SetHostFilters(hostFilters.(string))
-	datadogDefinition.SetAutomute(terraformDefinition.Get("automute").(bool))
+	automute := terraformDefinition.Get("automute")
+	datadogDefinition.SetAutomute(automute.(bool))
 
 	clientSecret, exists := terraformDefinition.GetOk("client_secret")
 	if exists {
