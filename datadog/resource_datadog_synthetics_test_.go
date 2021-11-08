@@ -1204,11 +1204,11 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 	}
 
 	if len(basicAuth) > 0 {
-		requestBasicAuth := basicAuth[0].(map[string]interface{})
-
-		if requestBasicAuth["username"] != "" && requestBasicAuth["password"] != "" {
-			basicAuth := datadogV1.NewSyntheticsBasicAuth(requestBasicAuth["password"].(string), requestBasicAuth["username"].(string))
-			request.SetBasicAuth(*basicAuth)
+		if requestBasicAuth, ok := basicAuth[0].(map[string]interface{}); ok {
+			if requestBasicAuth["username"] != "" && requestBasicAuth["password"] != "" {
+				basicAuth := datadogV1.NewSyntheticsBasicAuth(requestBasicAuth["password"].(string), requestBasicAuth["username"].(string))
+				request.SetBasicAuth(*basicAuth)
+			}
 		}
 	}
 
