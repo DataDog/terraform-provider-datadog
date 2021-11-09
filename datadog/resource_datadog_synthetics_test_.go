@@ -1079,13 +1079,15 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 			request := datadogV1.SyntheticsTestRequest{}
 			requests := stepMap["request_definition"].([]interface{})
-			requestMap := requests[0].(map[string]interface{})
-			request.SetMethod(datadogV1.HTTPMethod(requestMap["method"].(string)))
-			request.SetUrl(requestMap["url"].(string))
-			request.SetBody(requestMap["body"].(string))
-			request.SetTimeout(float64(requestMap["timeout"].(int)))
-			request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
-			request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
+			if len(requests) > 0 && requests[0] != nil {
+				requestMap := requests[0].(map[string]interface{})
+				request.SetMethod(datadogV1.HTTPMethod(requestMap["method"].(string)))
+				request.SetUrl(requestMap["url"].(string))
+				request.SetBody(requestMap["body"].(string))
+				request.SetTimeout(float64(requestMap["timeout"].(int)))
+				request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
+				request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
+			}
 
 			request = completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}))
 
