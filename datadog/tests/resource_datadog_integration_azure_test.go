@@ -25,6 +25,7 @@ resource "datadog_integration_azure" "an_azure_integration" {
 }
 
 resource "datadog_integration_azure" "an_azure_integration_two" {
+  depends_on    = [datadog_integration_azure.an_azure_integration]
   tenant_name   = "%[1]s"
   client_id     = "testc7f6-1234-5678-9101-3fcbf123test"
   client_secret = "testingx./Sw*g/Y33t..R1cH+hScMDt"
