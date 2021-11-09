@@ -3,19 +3,19 @@ version: 1
 interactions:
 - request:
     body: |
-      {"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"foo:bar,buzz:lightyear","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773"}
+      {"automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"foo:bar,buzz:lightyear","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Length:
-      - "211"
+      - "228"
       Content-Type:
       - application/json
       Dd-Operation-Id:
       - CreateAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: POST
   response:
@@ -32,13 +32,15 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:16 GMT
+      - Tue, 09 Nov 2021 16:40:58 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "1692"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -53,11 +55,11 @@ interactions:
       Dd-Operation-Id:
       - ListAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451360","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451660","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452319","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452663","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-62270-1620302653","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-73061-1629707067","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basicDeprecated-62270-1620302652","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
+    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -68,7 +70,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:16 GMT
+      - Tue, 09 Nov 2021 16:40:58 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -77,6 +79,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "109"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -84,19 +88,19 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"client_id":"testc7f6-1234-5678-9101-3fcbf123test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"foo:bar,buzz:lightyear","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773"}
+      {"automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"foo:bar,buzz:lightyear","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Length:
-      - "211"
+      - "228"
       Content-Type:
       - application/json
       Dd-Operation-Id:
       - CreateAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: POST
   response:
@@ -113,13 +117,15 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:18 GMT
+      - Tue, 09 Nov 2021 16:40:59 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "1449"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -134,11 +140,11 @@ interactions:
       Dd-Operation-Id:
       - ListAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451360","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451660","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452319","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452663","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-62270-1620302653","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-73061-1629707067","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basicDeprecated-62270-1620302652","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
+    body: '[{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -149,7 +155,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:19 GMT
+      - Tue, 09 Nov 2021 16:40:59 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -158,6 +164,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "96"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -172,11 +180,11 @@ interactions:
       Dd-Operation-Id:
       - ListAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451360","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451660","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452319","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452663","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-62270-1620302653","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-73061-1629707067","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basicDeprecated-62270-1620302652","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
+    body: '[{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -187,7 +195,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:19 GMT
+      - Tue, 09 Nov 2021 16:41:00 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -196,6 +204,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "83"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -210,11 +220,11 @@ interactions:
       Dd-Operation-Id:
       - ListAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451360","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451660","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452319","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452663","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-62270-1620302653","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-73061-1629707067","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basicDeprecated-62270-1620302652","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
+    body: '[{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -225,7 +235,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:19 GMT
+      - Tue, 09 Nov 2021 16:41:00 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -234,6 +244,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "90"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -248,11 +260,11 @@ interactions:
       Dd-Operation-Id:
       - ListAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451360","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451660","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452319","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452663","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-62270-1620302653","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-73061-1629707067","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basicDeprecated-62270-1620302652","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
+    body: '[{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -263,7 +275,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:20 GMT
+      - Tue, 09 Nov 2021 16:41:01 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -272,6 +284,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "66"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -286,11 +300,11 @@ interactions:
       Dd-Operation-Id:
       - ListAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451360","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451660","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452319","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452663","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-62270-1620302653","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-73061-1629707067","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basicDeprecated-62270-1620302652","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
+    body: '[{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -301,7 +315,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:20 GMT
+      - Tue, 09 Nov 2021 16:41:01 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -310,6 +324,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "73"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -324,11 +340,11 @@ interactions:
       Dd-Operation-Id:
       - ListAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451360","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451660","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452319","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452663","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-62270-1620302653","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-73061-1629707067","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basicDeprecated-62270-1620302652","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
+    body: '[{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -339,7 +355,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:20 GMT
+      - Tue, 09 Nov 2021 16:41:01 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -348,6 +364,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "81"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -355,19 +373,19 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"client_id":"testc7f6-1234-5678-9101-3fcbf123test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"foo:bar,buzz:lightyear","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773"}
+      {"automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"foo:bar,buzz:lightyear","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Length:
-      - "211"
+      - "228"
       Content-Type:
       - application/json
       Dd-Operation-Id:
       - DeleteAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: DELETE
   response:
@@ -384,13 +402,15 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:21 GMT
+      - Tue, 09 Nov 2021 16:41:02 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "128"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -398,19 +418,19 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"","new_client_id":"testc7f6-1234-5678-9101-3fcbf464test","new_tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773"}
+      {"automute":true,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"","new_client_id":"testc7f6-1234-5678-9101-3fcbf464test","new_tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Length:
-      - "315"
+      - "331"
       Content-Type:
       - application/json
       Dd-Operation-Id:
       - UpdateAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: PUT
   response:
@@ -427,7 +447,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:23 GMT
+      - Tue, 09 Nov 2021 16:41:04 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -448,11 +468,11 @@ interactions:
       Dd-Operation-Id:
       - ListAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451360","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451660","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452319","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452663","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-62270-1620302653","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-73061-1629707067","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basicDeprecated-62270-1620302652","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
+    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":true,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -463,7 +483,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:23 GMT
+      - Tue, 09 Nov 2021 16:41:04 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -472,6 +492,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "100"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -486,11 +508,11 @@ interactions:
       Dd-Operation-Id:
       - ListAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451360","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451660","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452319","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452663","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-62270-1620302653","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-73061-1629707067","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basicDeprecated-62270-1620302652","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
+    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":true,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -501,7 +523,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:23 GMT
+      - Tue, 09 Nov 2021 16:41:04 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -510,6 +532,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "80"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -524,11 +548,11 @@ interactions:
       Dd-Operation-Id:
       - ListAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451360","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451660","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452319","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452663","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-62270-1620302653","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-73061-1629707067","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basicDeprecated-62270-1620302652","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
+    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":true,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -539,7 +563,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:24 GMT
+      - Tue, 09 Nov 2021 16:41:05 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -548,6 +572,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "231"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -555,19 +581,19 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452773"}
+      {"automute":true,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Length:
-      - "189"
+      - "205"
       Content-Type:
       - application/json
       Dd-Operation-Id:
       - DeleteAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: DELETE
   response:
@@ -584,13 +610,15 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:24 GMT
+      - Tue, 09 Nov 2021 16:41:06 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "105"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -605,11 +633,11 @@ interactions:
       Dd-Operation-Id:
       - ListAzureIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.5.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451360","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451660","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452319","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635452663","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1635451549","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-62270-1620302653","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-73061-1629707067","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basicDeprecated-62270-1620302652","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
+    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
     headers:
       Cache-Control:
       - no-cache
@@ -620,7 +648,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Thu, 28 Oct 2021 20:26:24 GMT
+      - Tue, 09 Nov 2021 16:41:06 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -629,6 +657,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "117"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
