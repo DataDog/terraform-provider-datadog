@@ -1,3 +1,30 @@
+## 3.6.0 (November 10, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_metric_tag_configuration`: add aggregations option to `metric_tag_configuration` TF resource ([#1179](https://github.com/DataDog/terraform-provider-datadog/pull/1179))
+-   `datadog_dashboard`: Safeguard against empty widget requests ([#1253](https://github.com/DataDog/terraform-provider-datadog/pull/1253))
+-   `datadog_downtime`: Correct `downtime.monitor_tags` description ([#1252](https://github.com/DataDog/terraform-provider-datadog/pull/1252)) Thanks [@antonioalmeida](https://github.com/antonioalmeida)
+-   `datadog_dashboard`: Update property descriptions for Dashboard RBAC release ([#1251](https://github.com/DataDog/terraform-provider-datadog/pull/1251))
+-   `datadog_monitor`: Fix typo in the `datadog_monitor` page ([#1257](https://github.com/DataDog/terraform-provider-datadog/pull/1257)) Thanks [@jtamagnan-delphix](https://github.com/jtamagnan-delphix)
+-   `datadog_slo_correction`: Add docs for recurring slo correction ([#1256](https://github.com/DataDog/terraform-provider-datadog/pull/1256))
+-   `datadog_integration_azure`: Add support for Azure resource automute option ([#1262](https://github.com/DataDog/terraform-provider-datadog/pull/1262)).
+
+FEATURES:
+
+-   `datadog_logs_indexes_order`: Add datasource datadog_logs_indexes_order ([#1244](https://github.com/DataDog/terraform-provider-datadog/pull/1244))
+-   `datadog_integration_azure`: Fix azure resource state when duplicate tenants are present ([#1255](https://github.com/DataDog/terraform-provider-datadog/pull/1255)).
+
+BUGFIXES:
+
+-   `datadog_dashboard`: Safeguard against empty widget requests ([#1253](https://github.com/DataDog/terraform-provider-datadog/pull/1253))
+-   `datadog_synthetics_test`: Properly handle empty `basicAuth` values ([#1263](https://github.com/DataDog/terraform-provider-datadog/pull/1263))
+-   `datadog_synthetics_test`: Handle empty `request_definition` values ([#1268](https://github.com/DataDog/terraform-provider-datadog/pull/1268))
+
+NOTES:
+
+-   Update Datadog client to [v1.6.0](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.6.0)
+
 ## 3.5.0 (October 25, 2021)
 
 IMPROVEMENTS:
