@@ -1044,6 +1044,8 @@ func createSyntheticsSSLTestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "request_definition.0.port", "443"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "request_definition.0.servername", "datadoghq.com"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "assertion.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "assertion.0.type", "certificate"),
@@ -1082,6 +1084,7 @@ resource "datadog_synthetics_test" "ssl" {
 	request_definition {
 		host = "datadoghq.com"
 		port = 443
+		servername = "datadoghq.com"
 	}
 
 	assertion {
@@ -2698,6 +2701,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.allow_insecure", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.follow_redirects", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_headers.%", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_headers.Accept", "application/json"),
@@ -2790,6 +2795,7 @@ resource "datadog_synthetics_test" "multi" {
                        body = "this is a body"
                        timeout = 30
                        allow_insecure = true
+                       follow_redirects = true
                }
                request_headers = {
                	       Accept = "application/json"

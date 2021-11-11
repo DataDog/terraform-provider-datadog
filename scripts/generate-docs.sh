@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Generate the documentation using tfplugindocs and remove changes to files that shouldn't change
 
+# Add here the files to be excluded from the doc generation
 exclude_files=(
-  # There is an issue with the security_monitoring schema that requires the docs to be updated by hand if needed
   'docs/data-sources/security_monitoring_rules.md'
   'docs/resources/security_monitoring_default_rule.md'
   'docs/resources/security_monitoring_rule.md'
@@ -17,7 +17,6 @@ if [ "$(git status --porcelain "${exclude_files[@]}")" ]; then
 fi
 
 tfplugindocs
-
 
 # Remove the changes to files we don't autogenerate
 git checkout HEAD -- "${exclude_files[@]}"

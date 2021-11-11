@@ -206,6 +206,9 @@ func buildSecurityMonitoringTfRule(rule datadogV2.SecurityMonitoringRuleResponse
 	tfQueries := make([]map[string]interface{}, len(rule.GetQueries()))
 	for i, query := range rule.GetQueries() {
 		tfQuery := make(map[string]interface{})
+		if agentRule, ok := query.GetAgentRuleOk(); ok {
+			tfQuery["agent_rule"] = extractTfAgentRule(*agentRule)
+		}
 		if aggregation, ok := query.GetAggregationOk(); ok {
 			tfQuery["aggregation"] = string(*aggregation)
 		}
@@ -232,6 +235,10 @@ func buildSecurityMonitoringTfRule(rule datadogV2.SecurityMonitoringRuleResponse
 
 	filters := extractFiltersFromRuleResponse(rule)
 	tfRule["filter"] = filters
+
+	if ruleType, ok := rule.GetTypeOk(); ok {
+		tfRule["type"] = *ruleType
+	}
 
 	return tfRule
 }

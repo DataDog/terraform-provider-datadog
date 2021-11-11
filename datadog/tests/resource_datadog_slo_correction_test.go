@@ -44,6 +44,39 @@ func TestAccDatadogSloCorrection_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSloCorrection_Recurring(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	sloName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSloCorrectionDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSloCorrectionConfigRecurring(sloName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogSloCorrectionExists(accProvider, "datadog_slo_correction.testing_slo_correction"),
+					resource.TestCheckResourceAttr(
+						"datadog_slo_correction.testing_slo_correction", "description", "test correction on slo "+sloName),
+					resource.TestCheckResourceAttr(
+						"datadog_slo_correction.testing_slo_correction", "timezone", "UTC"),
+					resource.TestCheckResourceAttr(
+						"datadog_slo_correction.testing_slo_correction", "start", "1735707000"),
+					resource.TestCheckResourceAttr(
+						"datadog_slo_correction.testing_slo_correction", "duration", "3600"),
+					resource.TestCheckResourceAttr(
+						"datadog_slo_correction.testing_slo_correction", "rrule", "RRULE:FREQ=DAILY;INTERVAL=10;COUNT=5"),
+					resource.TestCheckResourceAttr(
+						"datadog_slo_correction.testing_slo_correction", "category", "Scheduled Maintenance"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogSloCorrection_Updated(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -128,6 +161,48 @@ func testAccCheckDatadogSloCorrectionConfig(uniq string) string {
 			slo_id = datadog_service_level_objective.foo.id
 			start = 1735707000
 			timezone = "UTC"
+        }
+    `, uniq, uniq)
+}
+
+func testAccCheckDatadogSloCorrectionConfigRecurring(uniq string) string {
+	return fmt.Sprintf(`
+	resource "datadog_service_level_objective" "foo" {
+			name = "%s"
+			type = "metric"
+			description = "some updated description about foo SLO"
+			query {
+			  numerator = "sum:my.metric{type:good}.as_count()"
+			  denominator = "sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()"
+			}
+
+			thresholds {
+			  timeframe = "7d"
+			  target = 99.5
+			  warning = 99.8
+			}
+
+			thresholds {
+			  timeframe = "30d"
+			  target = 98
+			  warning = 99.0
+			}
+
+			thresholds {
+			  timeframe = "90d"
+			  target = 99.9
+			}
+
+			tags = ["foo:bar", "baz"]
+		  }
+        resource "datadog_slo_correction" "testing_slo_correction" {
+			category = "Scheduled Maintenance"
+			description = "test correction on slo %s"
+			slo_id = datadog_service_level_objective.foo.id
+			start = 1735707000
+			timezone = "UTC"
+			rrule = "RRULE:FREQ=DAILY;INTERVAL=10;COUNT=5"
+			duration = 3600
         }
     `, uniq, uniq)
 }

@@ -1,3 +1,82 @@
+## 3.6.0 (November 10, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_metric_tag_configuration`: add aggregations option to `metric_tag_configuration` TF resource ([#1179](https://github.com/DataDog/terraform-provider-datadog/pull/1179))
+-   `datadog_dashboard`: Safeguard against empty widget requests ([#1253](https://github.com/DataDog/terraform-provider-datadog/pull/1253))
+-   `datadog_downtime`: Correct `downtime.monitor_tags` description ([#1252](https://github.com/DataDog/terraform-provider-datadog/pull/1252)) Thanks [@antonioalmeida](https://github.com/antonioalmeida)
+-   `datadog_dashboard`: Update property descriptions for Dashboard RBAC release ([#1251](https://github.com/DataDog/terraform-provider-datadog/pull/1251))
+-   `datadog_monitor`: Fix typo in the `datadog_monitor` page ([#1257](https://github.com/DataDog/terraform-provider-datadog/pull/1257)) Thanks [@jtamagnan-delphix](https://github.com/jtamagnan-delphix)
+-   `datadog_slo_correction`: Add docs for recurring slo correction ([#1256](https://github.com/DataDog/terraform-provider-datadog/pull/1256))
+-   `datadog_integration_azure`: Add support for Azure resource automute option ([#1262](https://github.com/DataDog/terraform-provider-datadog/pull/1262)).
+
+FEATURES:
+
+-   `datadog_logs_indexes_order`: Add datasource datadog_logs_indexes_order ([#1244](https://github.com/DataDog/terraform-provider-datadog/pull/1244))
+-   `datadog_integration_azure`: Fix azure resource state when duplicate tenants are present ([#1255](https://github.com/DataDog/terraform-provider-datadog/pull/1255)).
+
+BUGFIXES:
+
+-   `datadog_dashboard`: Safeguard against empty widget requests ([#1253](https://github.com/DataDog/terraform-provider-datadog/pull/1253))
+-   `datadog_synthetics_test`: Properly handle empty `basicAuth` values ([#1263](https://github.com/DataDog/terraform-provider-datadog/pull/1263))
+-   `datadog_synthetics_test`: Handle empty `request_definition` values ([#1268](https://github.com/DataDog/terraform-provider-datadog/pull/1268))
+
+NOTES:
+
+-   Update Datadog client to [v1.6.0](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.6.0)
+
+## 3.5.0 (October 25, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_dashboard`: Implement support for APM Dependency Stats query in Query Table ([#1199](https://github.com/DataDog/terraform-provider-datadog/pull/1199))
+-   `datadog_synthetics_test`: Add missing follow redirects option for multistep requests ([#1194](https://github.com/DataDog/terraform-provider-datadog/pull/1194))
+-   `datadog_dashboard`: Implement support for APM Resource Stats query in Query Table ([#1200](https://github.com/DataDog/terraform-provider-datadog/pull/1200))
+-   `datadog_logs_custom_pipeline`: Document how to find pipeline ID for import ([#1220](https://github.com/DataDog/terraform-provider-datadog/pull/1220))
+-   `datadog_security_monitoring_rules`: Add CWS support to terraform provider ([#1222](https://github.com/DataDog/terraform-provider-datadog/pull/1222))
+-   `datadog_dashboard`: Set dashboard resource's widget attribute to Optional ([#1224](https://github.com/DataDog/terraform-provider-datadog/pull/1224))
+-   `datadog_synthetics_test`: Add support for `servername` in Synthetics test request ([#1232](https://github.com/DataDog/terraform-provider-datadog/pull/1232))
+-   `datadog_monitor`: Add support for new renotify options ([#1235](https://github.com/DataDog/terraform-provider-datadog/pull/1235))
+-   `datadog_logs_index`: Use mutex to avoid creating/modifying logs indexes in parallel ([#1245](https://github.com/DataDog/terraform-provider-datadog/pull/1245))
+
+FEATURES:
+
+-   `datadog_webhook`: Add Webhook resource ([#1205](https://github.com/DataDog/terraform-provider-datadog/pull/1205))
+-   `datadog_webhook_custom_variable`: Add Webhook Custom Variable resource ([#1206](https://github.com/DataDog/terraform-provider-datadog/pull/1206))
+-   `datadog_roles`: Add datadog roles data source ([#1240](https://github.com/DataDog/terraform-provider-datadog/pull/1240))
+-   `datadog_monitor_json`: Add datadog monitor json resource ([#1240](https://github.com/DataDog/terraform-provider-datadog/pull/1240))
+
+BUGFIXES:
+
+-   `datadog_synthetics_test`: Document `device_ids` as required for browser type only ([#1216](https://github.com/DataDog/terraform-provider-datadog/pull/1216)) Thanks [@alexjurkiewicz](https://github.com/alexjurkiewicz)
+-   `datadog_synthetics_test`: Fix synthetics browser test `upload-files` step ([#1219](https://github.com/DataDog/terraform-provider-datadog/pull/1219))
+-   `datadog_integration_gcp`: Changed Token URI for GCP Service account ([#1201](https://github.com/DataDog/terraform-provider-datadog/pull/1201)) Thanks [@pbrao08](https://github.com/pbrao08)
+-   `datadog_downtime`: Set only one of timestamp or date format for start and end to avoid inconsistent plans ([#1223](https://github.com/DataDog/terraform-provider-datadog/pull/1223))
+-   `datadog_security_monitoring_rules`: Fix docs and example for security monitoring default rule ([#1246](https://github.com/DataDog/terraform-provider-datadog/pull/1246))
+-   `datadog_logs_index`: Specify 1 filter block ([#1247](https://github.com/DataDog/terraform-provider-datadog/pull/1247)) Thanks [@bendrucker](https://github.com/bendrucker)
+
+NOTES:
+
+-   Update Datadog client to [v1.5.0](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.5.0)
+
+## 3.4.0 (September 16, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_dashboard_list`: Expand the example to demonstrate how to use the dashboard list data ([#1148](https://github.com/DataDog/terraform-provider-datadog/pull/1148)) Thanks [@jyee](https://github.com/jyee)
+-   `datadog_synthetics_test`: Add support for local variables for browser tests ([#1185](https://github.com/DataDog/terraform-provider-datadog/pull/1185))
+-   `datadog_integration_aws`: Document use of `access_key_id` as `account_id` for aws integrations ([#1189](https://github.com/DataDog/terraform-provider-datadog/pull/1189))
+-   `datadog_dashboard`: Add available_values property to dashboard template variables ([#1195](https://github.com/DataDog/terraform-provider-datadog/pull/1195))
+-   `datadog_user`: Update User roles when re-enabling previously deleted user ([#1174](https://github.com/DataDog/terraform-provider-datadog/pull/1174))
+
+BUGFIXES:
+
+-   `datadog_dashboard_json`: Validate widgets cast in dashboard JSON ([#1197](https://github.com/DataDog/terraform-provider-datadog/pull/1197))
+
+NOTES:
+
+-   Update Datadog client to [v1.4.0](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.4.0)
+
 ## 3.3.0 (August 26, 2021)
 
 IMPROVEMENTS:

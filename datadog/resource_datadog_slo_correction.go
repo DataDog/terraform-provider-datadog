@@ -34,9 +34,10 @@ func resourceDatadogSloCorrection() *schema.Resource {
 				Description: "Description of the correction being made.",
 			},
 			"end": {
-				Type:        schema.TypeInt,
-				Required:    true,
-				Description: "Ending time of the correction in epoch seconds.",
+				Type:          schema.TypeInt,
+				Optional:      true,
+				ConflictsWith: []string{"rrule", "duration"},
+				Description:   "Ending time of the correction in epoch seconds. Required for one time corrections, but optional if `rrule` is specified",
 			},
 			"slo_id": {
 				Type:        schema.TypeString,
@@ -53,6 +54,16 @@ func resourceDatadogSloCorrection() *schema.Resource {
 				Optional:    true,
 				Description: "The timezone to display in the UI for the correction times (defaults to \"UTC\")",
 			},
+			"duration": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Description: "Length of time in seconds for a specified `rrule` recurring SLO correction (required if specifying `rrule`)",
+			},
+			"rrule": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Recurrence rules as defined in the iCalendar RFC 5545.",
+			},
 		},
 	}
 }
@@ -61,12 +72,16 @@ func buildDatadogSloCorrection(d *schema.ResourceData) *datadogV1.SLOCorrectionC
 	result := datadogV1.NewSLOCorrectionCreateRequestWithDefaults()
 	// `type` is hardcoded to 'correction' in Data
 	// only need to set `attributes` here
-	createData := datadogV1.NewSLOCorrectionCreateData()
+	createData := datadogV1.NewSLOCorrectionCreateData(datadogV1.SLOCORRECTIONTYPE_CORRECTION)
 	attributes := datadogV1.NewSLOCorrectionCreateRequestAttributesWithDefaults()
 	correctionCategory := datadogV1.SLOCorrectionCategory(d.Get("category").(string))
 	attributes.SetCategory(correctionCategory)
 	attributes.SetStart(int64(d.Get("start").(int)))
-	attributes.SetEnd(int64(d.Get("end").(int)))
+
+	if end, ok := d.GetOk("end"); ok {
+		attributes.SetEnd(int64(end.(int)))
+	}
+
 	attributes.SetSloId(d.Get("slo_id").(string))
 
 	if timezone, ok := d.GetOk("timezone"); ok {
@@ -75,6 +90,12 @@ func buildDatadogSloCorrection(d *schema.ResourceData) *datadogV1.SLOCorrectionC
 
 	if description, ok := d.GetOk("description"); ok {
 		attributes.SetDescription(description.(string))
+	}
+	if rrule, ok := d.GetOk("rrule"); ok {
+		attributes.SetRrule(rrule.(string))
+	}
+	if duration, ok := d.GetOk("duration"); ok {
+		attributes.SetDuration(int64(duration.(int)))
 	}
 	createData.SetAttributes(*attributes)
 	result.SetData(*createData)
@@ -99,6 +120,12 @@ func buildDatadogSloCorrectionUpdate(d *schema.ResourceData) *datadogV1.SLOCorre
 	}
 	if category, ok := d.GetOk("category"); ok {
 		attributes.SetCategory(datadogV1.SLOCorrectionCategory(category.(string)))
+	}
+	if rrule, ok := d.GetOk("rrule"); ok {
+		attributes.SetRrule(rrule.(string))
+	}
+	if duration, ok := d.GetOk("duration"); ok {
+		attributes.SetDuration(int64(duration.(int)))
 	}
 	updateData.SetAttributes(*attributes)
 	result.SetData(*updateData)
@@ -154,6 +181,16 @@ func updateSLOCorrectionState(d *schema.ResourceData, sloCorrectionData *datadog
 		}
 		if end, ok := sloCorrectionAttributes.GetEndOk(); ok {
 			if err := d.Set("end", *end); err != nil {
+				return diag.FromErr(err)
+			}
+		}
+		if rrule, ok := sloCorrectionAttributes.GetRruleOk(); ok {
+			if err := d.Set("rrule", *rrule); err != nil {
+				return diag.FromErr(err)
+			}
+		}
+		if duration, ok := sloCorrectionAttributes.GetDurationOk(); ok {
+			if err := d.Set("duration", *duration); err != nil {
 				return diag.FromErr(err)
 			}
 		}

@@ -51,7 +51,7 @@ func resourceDatadogDashboard() *schema.Resource {
 			},
 			"widget": {
 				Type:        schema.TypeList,
-				Required:    true,
+				Optional:    true,
 				Description: "The list of widgets to display on the dashboard.",
 				Elem: &schema.Resource{
 					Schema: getWidgetSchema(),
@@ -81,19 +81,12 @@ func resourceDatadogDashboard() *schema.Resource {
 				Computed:    true,
 				Description: "The URL of the dashboard.",
 			},
-			"is_read_only": {
-				Type:          schema.TypeBool,
-				Optional:      true,
-				Default:       false,
-				ConflictsWith: []string{"restricted_roles"},
-				Description:   "Whether this dashboard is read-only.",
-			},
 			"restricted_roles": {
 				Type:          schema.TypeSet,
 				Optional:      true,
 				Elem:          &schema.Schema{Type: schema.TypeString},
 				ConflictsWith: []string{"is_read_only"},
-				Description:   "Role UUIDs corresponding to users authorized to edit the dashboard. **This feature is currently in beta.**",
+				Description:   "UUIDs of roles whose associated users are authorized to edit the dashboard.",
 			},
 			"template_variable": {
 				Type:        schema.TypeList,
@@ -128,6 +121,14 @@ func resourceDatadogDashboard() *schema.Resource {
 				Computed:    true,
 				Description: "A list of dashboard lists this dashboard should be removed from. Internal only.",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
+			},
+			"is_read_only": {
+				Type:          schema.TypeBool,
+				Optional:      true,
+				Default:       false,
+				ConflictsWith: []string{"restricted_roles"},
+				Description:   "Whether this dashboard is read-only.",
+				Deprecated:    "Prefer using `restricted_roles` to define which roles are required to edit the dashboard.",
 			},
 		},
 	}
@@ -390,6 +391,12 @@ func getTemplateVariableSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Description: "The default value for the template variable on dashboard load.",
 		},
+		"available_values": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
+			Description: "The list of values that the template variable drop-down is be limited to",
+		},
 	}
 }
 
@@ -407,15 +414,22 @@ func buildDatadogTemplateVariables(terraformTemplateVariables *[]interface{}) *[
 		if v, ok := terraformTemplateVariable["default"].(string); ok && len(v) != 0 {
 			datadogTemplateVariable.SetDefault(v)
 		}
+		if v, ok := terraformTemplateVariable["available_values"].([]interface{}); ok && len(v) > 0 {
+			availableValues := make([]string, len(v))
+			for i, availableValue := range v {
+				availableValues[i] = availableValue.(string)
+			}
+			datadogTemplateVariable.SetAvailableValues(availableValues)
+		}
 		datadogTemplateVariables[i] = datadogTemplateVariable
 	}
 	return &datadogTemplateVariables
 }
 
-func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadogV1.DashboardTemplateVariable) *[]map[string]string {
-	terraformTemplateVariables := make([]map[string]string, len(*datadogTemplateVariables))
+func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadogV1.DashboardTemplateVariable) *[]map[string]interface{} {
+	terraformTemplateVariables := make([]map[string]interface{}, len(*datadogTemplateVariables))
 	for i, templateVariable := range *datadogTemplateVariables {
-		terraformTemplateVariable := map[string]string{}
+		terraformTemplateVariable := map[string]interface{}{}
 		if v, ok := templateVariable.GetNameOk(); ok {
 			terraformTemplateVariable["name"] = *v
 		}
@@ -424,6 +438,13 @@ func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadogV1.Dashb
 		}
 		if v, ok := templateVariable.GetDefaultOk(); ok {
 			terraformTemplateVariable["default"] = *v
+		}
+		if v, ok := templateVariable.GetAvailableValuesOk(); ok {
+			availableValues := make([]string, len(*v))
+			for i, availableValue := range *v {
+				availableValues[i] = availableValue
+			}
+			terraformTemplateVariable["available_values"] = availableValues
 		}
 		terraformTemplateVariables[i] = terraformTemplateVariable
 	}
@@ -1584,6 +1605,9 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.ChangeWidgetRequest {
 	datadogRequests := make([]datadogV1.ChangeWidgetRequest, len(*terraformRequests))
 	for i, request := range *terraformRequests {
+		if request == nil {
+			continue
+		}
 		terraformRequest := request.(map[string]interface{})
 		// Build ChangeRequest
 		datadogChangeRequest := datadogV1.NewChangeWidgetRequest()
@@ -1832,6 +1856,9 @@ func getDistributionRequestSchema() map[string]*schema.Schema {
 func buildDatadogDistributionRequests(terraformRequests *[]interface{}) *[]datadogV1.DistributionWidgetRequest {
 	datadogRequests := make([]datadogV1.DistributionWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build DistributionRequest
 		datadogDistributionRequest := datadogV1.NewDistributionWidgetRequest()
@@ -2445,6 +2472,9 @@ func getHeatmapRequestSchema() map[string]*schema.Schema {
 func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadogV1.HeatMapWidgetRequest {
 	datadogRequests := make([]datadogV1.HeatMapWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build HeatmapRequest
 		datadogHeatmapRequest := datadogV1.NewHeatMapWidgetRequest()
@@ -3574,6 +3604,9 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadogV1.QueryValueWidgetRequest {
 	datadogRequests := make([]datadogV1.QueryValueWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build QueryValueRequest
 		datadogQueryValueRequest := datadogV1.NewQueryValueWidgetRequest()
@@ -3841,6 +3874,9 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadogV1.TableWidgetRequest {
 	datadogRequests := make([]datadogV1.TableWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build QueryTableRequest
 		datadogQueryTableRequest := datadogV1.NewTableWidgetRequest()
@@ -3874,6 +3910,10 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["apm_dependency_stats_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["apm_resource_stats_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionAPMResourceStatsQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogQueryTableRequest.SetQueries(queries)
@@ -4614,6 +4654,9 @@ func buildDatadogGeomapDefinition(terraformDefinition map[string]interface{}) *d
 func buildDatadogGeomapRequests(terraformRequests *[]interface{}) *[]datadogV1.GeomapWidgetRequest {
 	datadogRequests := make([]datadogV1.GeomapWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build Geomap Request
 		datadogGeomapRequest := datadogV1.NewGeomapWidgetRequest()
@@ -5164,6 +5207,131 @@ func getFormulaQuerySchema() *schema.Schema {
 						},
 					},
 				},
+				"apm_dependency_stats_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "The APM Dependency Stats query using formulas and functions.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionApmDependencyStatsDataSourceFromValue),
+								Description:      "The data source for APM Dependency Stats queries.",
+							},
+							"env": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "APM Environment.",
+							},
+							"stat": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionApmDependencyStatNameFromValue),
+								Description:      "APM statistic.",
+							},
+							"operation_name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "Name of operation on service.",
+							},
+							"resource_name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "APM resource.",
+							},
+							"service": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "APM service.",
+							},
+							"primary_tag_name": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.",
+							},
+							"primary_tag_value": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Filter APM data by the second primary tag. `primary_tag_name` must also be specified.",
+							},
+							"is_upstream": {
+								Type:        schema.TypeBool,
+								Optional:    true,
+								Description: "Determines whether stats for upstream or downstream dependencies should be queried.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The name of query for use in formulas.",
+							},
+						},
+					},
+				},
+				"apm_resource_stats_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "The APM Resource Stats query using formulas and functions.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionApmResourceStatsDataSourceFromValue),
+								Description:      "The data source for APM Resource Stats queries.",
+							},
+							"env": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "APM Environment.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The name of query for use in formulas.",
+							},
+							"stat": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionApmResourceStatNameFromValue),
+								Description:      "APM statistic.",
+							},
+							"operation_name": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Name of operation on service.",
+							},
+							"resource_name": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "APM resource.",
+							},
+							"service": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "APM service.",
+							},
+							"primary_tag_name": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.",
+							},
+							"primary_tag_value": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Filter APM data by the second primary tag. `primary_tag_name` must also be specified.",
+							},
+							"group_by": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Elem:        &schema.Schema{Type: schema.TypeString},
+								Description: "Array of fields to group results by.",
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -5351,6 +5519,66 @@ func buildDatadogMetricQuery(data map[string]interface{}) datadogV1.FormulaAndFu
 	return datadogV1.FormulaAndFunctionMetricQueryDefinitionAsFormulaAndFunctionQueryDefinition(metricQuery)
 }
 
+func buildDatadogFormulaAndFunctionAPMResourceStatsQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.FormulaAndFunctionApmResourceStatsDataSource(data["data_source"].(string))
+	stat := datadogV1.FormulaAndFunctionApmResourceStatName(data["stat"].(string))
+	apmResourceStatsQuery := datadogV1.NewFormulaAndFunctionApmResourceStatsQueryDefinition(dataSource, data["env"].(string), data["name"].(string), data["service"].(string), stat)
+
+	// operation_name
+	if v, ok := data["operation_name"].(string); ok && len(v) != 0 {
+		apmResourceStatsQuery.SetOperationName(v)
+	}
+
+	// resource_name
+	if v, ok := data["resource_name"].(string); ok && len(v) != 0 {
+		apmResourceStatsQuery.SetResourceName(v)
+	}
+
+	// primary_tag_name
+	if v, ok := data["primary_tag_name"].(string); ok && len(v) != 0 {
+		apmResourceStatsQuery.SetPrimaryTagName(v)
+	}
+
+	// primary_tag_value
+	if v, ok := data["primary_tag_value"].(string); ok && len(v) != 0 {
+		apmResourceStatsQuery.SetPrimaryTagValue(v)
+	}
+
+	// group_by
+	if terraformGroupBys, ok := data["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
+		datadogGroupBys := make([]string, len(terraformGroupBys))
+		for i, groupBy := range terraformGroupBys {
+			datadogGroupBys[i] = groupBy.(string)
+		}
+		apmResourceStatsQuery.SetGroupBy(datadogGroupBys)
+	}
+
+	return datadogV1.FormulaAndFunctionApmResourceStatsQueryDefinitionAsFormulaAndFunctionQueryDefinition(apmResourceStatsQuery)
+}
+
+func buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.FormulaAndFunctionApmDependencyStatsDataSource(data["data_source"].(string))
+	stat := datadogV1.FormulaAndFunctionApmDependencyStatName(data["stat"].(string))
+	apmDependencyStatsQuery := datadogV1.NewFormulaAndFunctionApmDependencyStatsQueryDefinition(dataSource, data["env"].(string), data["name"].(string), data["operation_name"].(string), data["resource_name"].(string), data["service"].(string), stat)
+
+	// primary_tag_name
+	if v, ok := data["primary_tag_name"].(string); ok && len(v) != 0 {
+		apmDependencyStatsQuery.SetPrimaryTagName(v)
+	}
+
+	// primary_tag_value
+	if v, ok := data["primary_tag_value"].(string); ok && len(v) != 0 {
+		apmDependencyStatsQuery.SetPrimaryTagValue(v)
+	}
+
+	// is_upstream
+	if v, ok := data["is_upstream"].(bool); ok {
+		apmDependencyStatsQuery.SetIsUpstream(v)
+	}
+
+	return datadogV1.FormulaAndFunctionApmDependencyStatsQueryDefinitionAsFormulaAndFunctionQueryDefinition(apmDependencyStatsQuery)
+}
+
 func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.FormulaAndFunctionProcessQueryDataSource(data["data_source"].(string))
 	processQuery := datadogV1.NewFormulaAndFunctionProcessQueryDefinition(dataSource, data["metric"].(string), data["name"].(string))
@@ -5395,6 +5623,9 @@ func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) dat
 func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadogV1.TimeseriesWidgetRequest {
 	datadogRequests := make([]datadogV1.TimeseriesWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build TimeseriesRequest
 		datadogTimeseriesRequest := datadogV1.NewTimeseriesWidgetRequest()
@@ -5675,6 +5906,9 @@ func getToplistRequestSchema() map[string]*schema.Schema {
 func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.ToplistWidgetRequest {
 	datadogRequests := make([]datadogV1.ToplistWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build ToplistRequest
 		datadogToplistRequest := datadogV1.NewToplistWidgetRequest()
@@ -6595,6 +6829,80 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 			terraformMetricQuery := map[string]interface{}{}
 			terraformMetricQuery["metric_query"] = terraformQueries
 			queries[i] = terraformMetricQuery
+		}
+		terraformApmDependencyStatsQueryDefinition := query.FormulaAndFunctionApmDependencyStatsQueryDefinition
+		if terraformApmDependencyStatsQueryDefinition != nil {
+			if dataSource, ok := terraformApmDependencyStatsQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if env, ok := terraformApmDependencyStatsQueryDefinition.GetEnvOk(); ok {
+				terraformQuery["env"] = env
+			}
+			if stat, ok := terraformApmDependencyStatsQueryDefinition.GetStatOk(); ok {
+				terraformQuery["stat"] = stat
+			}
+			if operationName, ok := terraformApmDependencyStatsQueryDefinition.GetOperationNameOk(); ok {
+				terraformQuery["operation_name"] = operationName
+			}
+			if resourceName, ok := terraformApmDependencyStatsQueryDefinition.GetResourceNameOk(); ok {
+				terraformQuery["resource_name"] = resourceName
+			}
+			if service, ok := terraformApmDependencyStatsQueryDefinition.GetServiceOk(); ok {
+				terraformQuery["service"] = service
+			}
+			if primaryTagName, ok := terraformApmDependencyStatsQueryDefinition.GetPrimaryTagNameOk(); ok {
+				terraformQuery["primary_tag_name"] = primaryTagName
+			}
+			if primaryTagValue, ok := terraformApmDependencyStatsQueryDefinition.GetPrimaryTagValueOk(); ok {
+				terraformQuery["primary_tag_value"] = primaryTagValue
+			}
+			if isUpstream, ok := terraformApmDependencyStatsQueryDefinition.GetIsUpstreamOk(); ok {
+				terraformQuery["is_upstream"] = isUpstream
+			}
+			if name, ok := terraformApmDependencyStatsQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			terraformQueries := []map[string]interface{}{terraformQuery}
+			terraformApmDependencyStatQuery := map[string]interface{}{}
+			terraformApmDependencyStatQuery["apm_dependency_stats_query"] = terraformQueries
+			queries[i] = terraformApmDependencyStatQuery
+		}
+		terraformApmResourceStatsQueryDefinition := query.FormulaAndFunctionApmResourceStatsQueryDefinition
+		if terraformApmResourceStatsQueryDefinition != nil {
+			if dataSource, ok := terraformApmResourceStatsQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if env, ok := terraformApmResourceStatsQueryDefinition.GetEnvOk(); ok {
+				terraformQuery["env"] = env
+			}
+			if stat, ok := terraformApmResourceStatsQueryDefinition.GetStatOk(); ok {
+				terraformQuery["stat"] = stat
+			}
+			if operationName, ok := terraformApmResourceStatsQueryDefinition.GetOperationNameOk(); ok {
+				terraformQuery["operation_name"] = operationName
+			}
+			if resourceName, ok := terraformApmResourceStatsQueryDefinition.GetResourceNameOk(); ok {
+				terraformQuery["resource_name"] = resourceName
+			}
+			if service, ok := terraformApmResourceStatsQueryDefinition.GetServiceOk(); ok {
+				terraformQuery["service"] = service
+			}
+			if primaryTagName, ok := terraformApmResourceStatsQueryDefinition.GetPrimaryTagNameOk(); ok {
+				terraformQuery["primary_tag_name"] = primaryTagName
+			}
+			if primaryTagValue, ok := terraformApmResourceStatsQueryDefinition.GetPrimaryTagValueOk(); ok {
+				terraformQuery["primary_tag_value"] = primaryTagValue
+			}
+			if groupBy, ok := terraformApmResourceStatsQueryDefinition.GetGroupByOk(); ok {
+				terraformQuery["group_by"] = groupBy
+			}
+			if name, ok := terraformApmResourceStatsQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			terraformQueries := []map[string]interface{}{terraformQuery}
+			terraformApmResourceStatQuery := map[string]interface{}{}
+			terraformApmResourceStatQuery["apm_resource_stats_query"] = terraformQueries
+			queries[i] = terraformApmResourceStatQuery
 		}
 		terraformProcessqueryDefinition := query.FormulaAndFunctionProcessQueryDefinition
 		if terraformProcessqueryDefinition != nil {

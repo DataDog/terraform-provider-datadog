@@ -48,6 +48,8 @@ data "datadog_monitor" "test" {
 - **notify_no_data** (Boolean) Whether or not this monitor notifies when data stops reporting.
 - **query** (String) Query of the monitor.
 - **renotify_interval** (Number) The number of minutes after the last notification before the monitor re-notifies on the current status.
+- **renotify_occurrences** (Number) The number of re-notification messages that should be sent on the current status.
+- **renotify_statuses** (Set of String) The types of statuses for which re-notification messages should be sent. Valid values are `alert`, `warn`, `no data`.
 - **require_full_window** (Boolean) Whether or not the monitor needs a full window of data before it is evaluated.
 - **restricted_roles** (Set of String)
 - **tags** (Set of String) List of tags associated with the monitor.

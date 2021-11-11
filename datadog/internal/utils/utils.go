@@ -142,3 +142,14 @@ func ConvertResponseByteToMap(b []byte) (map[string]interface{}, error) {
 
 	return convertedMap, nil
 }
+
+// DeleteKeyInMap deletes key (in dot notation) in map
+func DeleteKeyInMap(mapObject map[string]interface{}, keyList []string) {
+	if len(keyList) == 1 {
+		delete(mapObject, keyList[0])
+	} else if m, ok := mapObject[keyList[0]].(map[string]interface{}); ok {
+		DeleteKeyInMap(m, keyList[1:])
+	}
+
+	return
+}

@@ -11,4 +11,12 @@ resource "datadog_metric_tag_configuration" "example_count_metric" {
   metric_name = "example.terraform.count.metric"
   metric_type = "count"
   tags        = ["sport", "datacenter"]
+  aggregations {
+    time  = "avg"
+    space = "min"
+  }
+  aggregations {
+    time  = "avg"
+    space = "max"
+  }
 }

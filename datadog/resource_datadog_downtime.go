@@ -139,6 +139,11 @@ func resourceDatadogDowntime() *schema.Resource {
 				ConflictsWith: []string{"start"},
 				Optional:      true,
 				Description:   "String representing date and time to start the downtime in RFC3339 format.",
+				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+					oldDate, _ := time.Parse(time.RFC3339, oldVal)
+					newDate, _ := time.Parse(time.RFC3339, newVal)
+					return oldDate.Equal(newDate)
+				},
 			},
 			"end": {
 				Type:     schema.TypeInt,
@@ -155,6 +160,11 @@ func resourceDatadogDowntime() *schema.Resource {
 				ConflictsWith: []string{"end"},
 				Optional:      true,
 				Description:   "String representing date and time to end the downtime in RFC3339 format.",
+				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+					oldDate, _ := time.Parse(time.RFC3339, oldVal)
+					newDate, _ := time.Parse(time.RFC3339, newVal)
+					return oldDate.Equal(newDate)
+				},
 			},
 			"timezone": {
 				Type:         schema.TypeString,
@@ -235,7 +245,7 @@ func resourceDatadogDowntime() *schema.Resource {
 				// TypeSet makes Terraform ignore differences in order when creating a plan
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "A list of monitor tags (up to 25), i.e. tags that are applied directly to monitors to which the downtime applies",
+				Description: "A list of monitor tags (up to 32) to base the scheduled downtime on. Only monitors that have all selected tags are silenced",
 				// MonitorTags conflicts with MonitorId and it also has a default of `["*"]`, which brings some problems:
 				// * We can't use DefaultFunc to default to ["*"], since that's incompatible with
 				//   ConflictsWith
@@ -517,11 +527,25 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild, upd
 
 	// Don't set the `start`, `end` stored in terraform unless in specific cases for recurring downtimes.
 	if updateBounds {
-		if err := d.Set("start", dt.GetStart()); err != nil {
-			return diag.FromErr(err)
+		if _, ok := d.GetOk("start_date"); ok {
+			// Only set start_date if used in config to avoid inconsistent plans
+			if err := d.Set("start_date", time.Unix(dt.GetStart(), 0).In(time.UTC).Format(time.RFC3339)); err != nil {
+				return diag.FromErr(err)
+			}
+		} else {
+			if err := d.Set("start", dt.GetStart()); err != nil {
+				return diag.FromErr(err)
+			}
 		}
-		if err := d.Set("end", dt.GetEnd()); err != nil {
-			return diag.FromErr(err)
+		if _, ok := d.GetOk("end_date"); ok {
+			// Only set end_date if used in config to avoid inconsistent plans
+			if err := d.Set("end_date", time.Unix(dt.GetEnd(), 0).In(time.UTC).Format(time.RFC3339)); err != nil {
+				return diag.FromErr(err)
+			}
+		} else {
+			if err := d.Set("end", dt.GetEnd()); err != nil {
+				return diag.FromErr(err)
+			}
 		}
 	}
 

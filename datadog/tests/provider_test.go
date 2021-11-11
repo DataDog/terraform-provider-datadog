@@ -23,6 +23,7 @@ import (
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	ddtesting "github.com/DataDog/dd-sdk-go-testing"
 	"github.com/dnaeon/go-vcr/cassette"
 	"github.com/dnaeon/go-vcr/recorder"
 	"github.com/hashicorp/go-cleanhttp"
@@ -34,7 +35,6 @@ import (
 	"github.com/jonboulle/clockwork"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
-	ddtesting "gopkg.in/DataDog/dd-trace-go.v1/contrib/testing"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/ext"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
@@ -54,10 +54,12 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_dashboard_test":                         "dashboard",
 	"tests/data_source_datadog_dashboard_list_test":                    "dashboard-lists",
 	"tests/data_source_datadog_ip_ranges_test":                         "ip-ranges",
+	"tests/data_source_datadog_logs_indexes_order_test":                "logs-index",
 	"tests/data_source_datadog_monitor_test":                           "monitors",
 	"tests/data_source_datadog_monitors_test":                          "monitors",
 	"tests/data_source_datadog_permissions_test":                       "permissions",
 	"tests/data_source_datadog_role_test":                              "roles",
+	"tests/data_source_datadog_roles_test":                             "roles",
 	"tests/data_source_datadog_user_test":                              "users",
 	"tests/data_source_datadog_security_monitoring_rules_test":         "security-monitoring",
 	"tests/data_source_datadog_security_monitoring_filters_test":       "security-monitoring",
@@ -119,6 +121,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_metric_metadata_test":                      "metrics",
 	"tests/resource_datadog_metric_tag_configuration_test":             "metrics",
 	"tests/resource_datadog_monitor_test":                              "monitors",
+	"tests/resource_datadog_monitor_json_test":                         "monitors-json",
 	"tests/resource_datadog_organization_settings_test":                "organization",
 	"tests/resource_datadog_role_test":                                 "roles",
 	"tests/resource_datadog_screenboard_test":                          "dashboards",
@@ -132,6 +135,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_synthetics_private_location_test":          "synthetics",
 	"tests/resource_datadog_timeboard_test":                            "dashboards",
 	"tests/resource_datadog_user_test":                                 "users",
+	"tests/resource_datadog_webhook_custom_variable_test":              "webhook_custom_variable",
+	"tests/resource_datadog_webhook_test":                              "webhook",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;
@@ -413,7 +418,11 @@ func testSpan(ctx context.Context, t *testing.T) context.Context {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	ctx, finish := ddtesting.StartSpanWithFinish(ctx, t, ddtesting.WithSkipFrames(3), ddtesting.WithSpanOptions(
+
+	ctx, finish := ddtesting.StartTestWithContext(ctx, t, ddtesting.WithSkipFrames(3), ddtesting.WithSpanOptions(
+		// Set resource name to TestName
+		tracer.ResourceName(t.Name()),
+
 		// We need to make the tag be something that is then searchable in monitors
 		// https://docs.datadoghq.com/tracing/guide/metrics_namespace/#errors
 		// "version" is really the only one we can use here

@@ -63,6 +63,14 @@ func checkDatasourceAttrs(accProvider func() (*schema.Provider, error), uniq str
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "renotify_interval", "60"),
 		resource.TestCheckResourceAttr(
+			"data.datadog_monitor.foo", "renotify_occurrences", "5"),
+		resource.TestCheckResourceAttr(
+			"data.datadog_monitor.foo", "renotify_statuses.#", "2"),
+		resource.TestCheckTypeSetElemAttr(
+			"data.datadog_monitor.foo", "renotify_statuses.*", "alert"),
+		resource.TestCheckTypeSetElemAttr(
+			"data.datadog_monitor.foo", "renotify_statuses.*", "warn"),
+		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "monitor_thresholds.0.warning", "0.5"),
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "monitor_thresholds.0.warning", "0.5"),
@@ -122,6 +130,8 @@ resource "datadog_monitor" "foo" {
 	}
 
   renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
   timeout_h = 60
@@ -161,6 +171,8 @@ resource "datadog_monitor" "foo" {
 	}
 
   renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
   timeout_h = 60
