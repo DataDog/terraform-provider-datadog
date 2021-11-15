@@ -4024,7 +4024,7 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 						Type:        schema.TypeList,
 						Optional:    true,
 						Elem: &schema.Resource{
-							Schema: getScatterplotRequestSchema(),
+							Schema: getScatterplotTableRequestSchema(),
 						},
 					},
 				},
@@ -4196,6 +4196,14 @@ func buildTerraformScatterplotDefinition(datadogDefinition datadogV1.ScatterPlot
 	return terraformDefinition
 }
 
+func getScatterplotTableRequestSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getScatterplotFormulaSchema(),
+	}
+}
+
 func getScatterplotRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
@@ -4205,9 +4213,6 @@ func getScatterplotRequestSchema() map[string]*schema.Schema {
 		"process_query":  getProcessQuerySchema(),
 		"rum_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
-		// "query" and "formula" go together
-		"query":   getFormulaQuerySchema(),
-		"formula": getScatterplotFormulaSchema(),
 		// Settings specific to Scatterplot requests
 		"aggregator": {
 			Description:      "Aggregator used for the request.",
@@ -4983,16 +4988,16 @@ func getScatterplotFormulaSchema() *schema.Schema {
 					Required:    true,
 					Description: "A string expression built from queries, formulas, and functions.",
 				},
+				"dimension": {
+					Description:      "Dimension of the Scatterplot.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewScatterplotDimensionFromValue),
+				},
 				"alias": {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "An expression alias.",
-				},
-				"dimension": {
-					Description:      "Dimension of the Scatterplot.",
-					Type:             schema.TypeString,
-					Optional:         true,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewScatterplotDimensionFromValue),
 				},
 			},
 		},
