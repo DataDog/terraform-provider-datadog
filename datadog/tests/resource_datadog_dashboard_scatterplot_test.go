@@ -114,7 +114,6 @@ resource "datadog_dashboard" "scatterplot_dashboard" {
 				scatterplot_table {
 					formula {
 						formula_expression = "my_query_1"
-						alias              = "first_query"
 						dimension          = "x"
 					}
 					formula {
@@ -151,7 +150,7 @@ var datadogDashboardScatterplotFormulaAsserts = []string{
 	"layout_type = ordered",
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.formula.0.formula_expression = my_query_1",
-	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.formula.0.alias = first_query",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.formula.0.alias = ",
 	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.formula.0.dimension = x",
 	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.formula.1.formula_expression = my_query_2",
 	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.formula.1.alias = second_query",
