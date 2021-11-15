@@ -112,34 +112,35 @@ resource "datadog_dashboard" "scatterplot_dashboard" {
 		scatterplot_definition {
 			request {
 				scatterplot_table {
-				  formula {
-					formula_expression = "my_query_1"
-					alias              = "first_query"
-					dimension          = "x"
-				  }
-				  formula {
-					formula_expression = "my_query_2"
-					alias              = "second_query"
-					dimension          = "color"
-				  }
-				  query {
-					metric_query {
-					  data_source = "metrics"
-					  query       = "avg:system.cpu.user{foo} by {env}"
-					  name        = "my_query_1"
-					  aggregator  = "sum"
+					formula {
+						formula_expression = "my_query_1"
+						alias              = "first_query"
+						dimension          = "x"
 					}
-				  }
-				  query {
-					metric_query {
-					  data_source = "metrics"
-					  query       = "avg:system.cpu.idle{bar} by {env}"
-					  name        = "my_query_2"
-					  aggregator  = "sum"
+					formula {
+						formula_expression = "my_query_2"
+						alias              = "second_query"
+						dimension          = "color"
 					}
-				  }
+					query {
+						metric_query {
+							data_source = "metrics"
+							query       = "avg:system.cpu.user{foo} by {env}"
+							name        = "my_query_1"
+							aggregator  = "sum"
+						}
+					}
+					query {
+						metric_query {
+							data_source = "metrics"
+							query       = "avg:system.cpu.idle{bar} by {env}"
+							name        = "my_query_2"
+							aggregator  = "sum"
+						}
+					}
 				}
 			}
+		}
 	}
 }
 `
