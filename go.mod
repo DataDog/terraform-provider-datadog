@@ -1,7 +1,7 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
-	github.com/DataDog/datadog-api-client-go v1.6.1-0.20211111153236-e7664265bffa
+	github.com/DataDog/datadog-api-client-go v1.6.1-0.20211115113408-44b9c22838f7
 	github.com/DataDog/datadog-go v4.8.2+incompatible // indirect
 	github.com/DataDog/dd-sdk-go-testing v0.0.0-20210929140144-5d69f0a9bd49
 	github.com/DataDog/sketches-go v1.2.1 // indirect
