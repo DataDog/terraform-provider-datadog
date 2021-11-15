@@ -188,6 +188,11 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"message": {
+				Description: "For UDP tests, message to send with the request.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -1020,6 +1025,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := k.GetOkWith("servername"); ok {
 		request.SetServername(attr.(string))
 	}
+	if attr, ok := k.GetOkWith("message"); ok {
+		request.SetMessage(attr.(string))
+	}
 	k.Remove(parts)
 
 	request = completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}))
@@ -1613,6 +1621,9 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	}
 	if request.HasServername() {
 		localRequest["servername"] = request.GetServername()
+	}
+	if request.HasMessage() {
+		localRequest["message"] = request.GetMessage()
 	}
 
 	return localRequest

@@ -316,6 +316,21 @@ func TestAccDatadogSyntheticsICMPTest_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsUDPTest_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsUDPTestStep(ctx, accProvider, t),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -1647,6 +1662,96 @@ resource "datadog_synthetics_test" "icmp" {
 		operator = "lessThan"
 		property = "avg"
 		target = 200
+	}
+
+	locations = [ "aws:eu-central-1" ]
+	options_list {
+		tick_every = 60
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
+}`, uniq)
+}
+
+func createSyntheticsUDPTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+	return resource.TestStep{
+		Config: createSyntheticsUDPTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "subtype", "udp"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "request_definition.0.host", "www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "request_definition.0.message", "message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "request_definition.0.port", "443"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.0.type", "responseTime"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.0.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.0.target", "2000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.1.type", "receivedMessage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.1.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.1.target", "message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "locations.#", "1"),
+			resource.TestCheckTypeSetElemAttr(
+				"datadog_synthetics_test.icmp", "locations.*", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "options_list.0.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.icmp", "monitor_id"),
+		),
+	}
+}
+
+func createSyntheticsUDPTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "icmp" {
+	type = "api"
+	subtype = "udp"
+
+	request_definition {
+		host = "www.datadoghq.com"
+		port = 443
+		message = "message"
+	}
+
+	assertion {
+		type = "responseTime"
+		operator = "lessThan"
+		target = "2000"
+	}
+	assertion {
+		type = "receivedMessage"
+		operator = "is"
+		target = "message"
 	}
 
 	locations = [ "aws:eu-central-1" ]
