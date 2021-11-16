@@ -184,14 +184,27 @@ func updateSLOCorrectionState(d *schema.ResourceData, sloCorrectionData *datadog
 				return diag.FromErr(err)
 			}
 		}
+		// rrule and duration are nullables, so deal with explicit nulls
 		if rrule, ok := sloCorrectionAttributes.GetRruleOk(); ok {
-			if err := d.Set("rrule", *rrule); err != nil {
-				return diag.FromErr(err)
+			if rrule == nil {
+				if err := d.Set("rrule", ""); err != nil {
+					return diag.FromErr(err)
+				}
+			} else {
+				if err := d.Set("rrule", *rrule); err != nil {
+					return diag.FromErr(err)
+				}
 			}
 		}
 		if duration, ok := sloCorrectionAttributes.GetDurationOk(); ok {
-			if err := d.Set("duration", *duration); err != nil {
-				return diag.FromErr(err)
+			if duration == nil {
+				if err := d.Set("duration", 0); err != nil {
+					return diag.FromErr(err)
+				}
+			} else {
+				if err := d.Set("duration", *duration); err != nil {
+					return diag.FromErr(err)
+				}
 			}
 		}
 	}
