@@ -5243,8 +5243,179 @@ Optional:
 
 Optional:
 
+- **scatterplot_table** (Block List) Scatterplot request containing formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table))
 - **x** (Block List) The query used for the X-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x))
 - **y** (Block List) The query used for the Y-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y))
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table`
+
+Optional:
+
+- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--formula))
+- **query** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query))
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--formula"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.formula`
+
+Required:
+
+- **dimension** (String) Dimension of the Scatterplot. Valid values are `x`, `y`, `radius`, `color`.
+- **formula_expression** (String) A string expression built from queries, formulas, and functions.
+
+Optional:
+
+- **alias** (String) An expression alias.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query`
+
+Optional:
+
+- **apm_dependency_stats_query** (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
+- **apm_resource_stats_query** (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--metric_query))
+- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--process_query))
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.apm_dependency_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **operation_name** (String) Name of operation on service.
+- **resource_name** (String) APM resource.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- **is_upstream** (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.apm_resource_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- **group_by** (List of String) Array of fields to group results by.
+- **operation_name** (String) Name of operation on service.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- **resource_name** (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.event_query`
+
+Required:
+
+- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--compute))
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
+- **name** (String) The name of query for use in formulas.
+
+Optional:
+
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by))
+- **indexes** (List of String) An array of index names to query in the stream.
+- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--search))
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.event_query.compute`
+
+Required:
+
+- **aggregation** (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- **interval** (Number) A time interval in milliseconds.
+- **metric** (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.event_query.group_by`
+
+Required:
+
+- **facet** (String) The event facet.
+
+Optional:
+
+- **limit** (Number) The number of groups to return.
+- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.event_query.group_by.sort`
+
+Required:
+
+- **aggregation** (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- **metric** (String) The metric used for sorting group by results.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.event_query.search`
+
+Required:
+
+- **query** (String) The events search string.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.metric_query`
+
+Required:
+
+- **name** (String) The name of the query for use in formulas.
+- **query** (String) The metrics query definition.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- **data_source** (String) The data source for metrics queries.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.process_query`
+
+Required:
+
+- **data_source** (String) The data source for process queries. Valid values are `process`, `container`.
+- **metric** (String) The process metric name.
+- **name** (String) The name of query for use in formulas.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
+- **limit** (Number) The number of hits to return.
+- **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
+- **tag_filters** (List of String) An array of tags to filter by.
+- **text_filter** (String) The text to use as a filter.
+
+
+
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x"></a>
 ### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x`
@@ -9465,8 +9636,179 @@ Optional:
 
 Optional:
 
+- **scatterplot_table** (Block List) Scatterplot request containing formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table))
 - **x** (Block List) The query used for the X-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x))
 - **y** (Block List) The query used for the Y-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block). (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y))
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table`
+
+Optional:
+
+- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--formula))
+- **query** (Block List) (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query))
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--formula"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.formula`
+
+Required:
+
+- **dimension** (String) Dimension of the Scatterplot. Valid values are `x`, `y`, `radius`, `color`.
+- **formula_expression** (String) A string expression built from queries, formulas, and functions.
+
+Optional:
+
+- **alias** (String) An expression alias.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query`
+
+Optional:
+
+- **apm_dependency_stats_query** (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
+- **apm_resource_stats_query** (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--metric_query))
+- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--process_query))
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.apm_dependency_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **operation_name** (String) Name of operation on service.
+- **resource_name** (String) APM resource.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- **is_upstream** (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.apm_resource_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- **group_by** (List of String) Array of fields to group results by.
+- **operation_name** (String) Name of operation on service.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- **resource_name** (String) APM resource.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.event_query`
+
+Required:
+
+- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--compute))
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
+- **name** (String) The name of query for use in formulas.
+
+Optional:
+
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by))
+- **indexes** (List of String) An array of index names to query in the stream.
+- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--search))
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--compute"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.event_query.compute`
+
+Required:
+
+- **aggregation** (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- **interval** (Number) A time interval in milliseconds.
+- **metric** (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.event_query.group_by`
+
+Required:
+
+- **facet** (String) The event facet.
+
+Optional:
+
+- **limit** (Number) The number of groups to return.
+- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.event_query.group_by.sort`
+
+Required:
+
+- **aggregation** (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- **metric** (String) The metric used for sorting group by results.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--search"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.event_query.search`
+
+Required:
+
+- **query** (String) The events search string.
+
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--metric_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.metric_query`
+
+Required:
+
+- **name** (String) The name of the query for use in formulas.
+- **query** (String) The metrics query definition.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- **data_source** (String) The data source for metrics queries.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.process_query`
+
+Required:
+
+- **data_source** (String) The data source for process queries. Valid values are `process`, `container`.
+- **metric** (String) The process metric name.
+- **name** (String) The name of query for use in formulas.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
+- **limit** (Number) The number of hits to return.
+- **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
+- **tag_filters** (List of String) An array of tags to filter by.
+- **text_filter** (String) The text to use as a filter.
+
+
+
 
 <a id="nestedblock--widget--scatterplot_definition--request--x"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.x`
