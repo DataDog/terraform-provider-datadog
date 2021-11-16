@@ -159,10 +159,10 @@ var datadogDashboardScatterplotFormulaAsserts = []string{
 	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.0.metric_query.0.query = avg:system.cpu.user{foo} by {env}",
 	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.0.metric_query.0.name = my_query_1",
 	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.0.metric_query.0.aggregator = sum",
-	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.0.metric_query.1.data_source = metrics",
-	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.0.metric_query.1.query = avg:system.cpu.idle{bar} by {env}",
-	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.0.metric_query.1.name = my_query_2",
-	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.0.metric_query.1.aggregator = sum",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.1.metric_query.0.data_source = metrics",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.1.metric_query.0.query = avg:system.cpu.idle{bar} by {env}",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.1.metric_query.0.name = my_query_2",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.1.metric_query.0.aggregator = sum",
 }
 
 var datadogDashboardScatterplotAsserts = []string{
