@@ -32,6 +32,12 @@ func TestAccDatadogWebhook_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_webhook.foo", "encode_as", "json"),
 					resource.TestCheckResourceAttr("datadog_webhook.foo", "custom_headers", "{\"test\":\"test\"}"),
 					resource.TestCheckResourceAttr("datadog_webhook.foo", "payload", "{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}"),
+					testAccCheckDatadogWebhookExists(accProvider, "datadog_webhook.foo2"),
+					resource.TestCheckResourceAttr("datadog_webhook.foo2", "name", uniqueName+"2"),
+					resource.TestCheckResourceAttr("datadog_webhook.foo2", "url", "example.com"),
+					resource.TestCheckResourceAttr("datadog_webhook.foo2", "encode_as", "json"),
+					resource.TestCheckResourceAttr("datadog_webhook.foo2", "custom_headers", "{\"test\":\"test\"}"),
+					resource.TestCheckResourceAttr("datadog_webhook.foo2", "payload", "{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}"),
 				),
 			},
 			{
@@ -43,6 +49,12 @@ func TestAccDatadogWebhook_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_webhook.foo", "encode_as", "json"),
 					resource.TestCheckResourceAttr("datadog_webhook.foo", "custom_headers", "{\"test\":\"test-updated\"}"),
 					resource.TestCheckResourceAttr("datadog_webhook.foo", "payload", "{\"custom\":\"payload\"}"),
+					testAccCheckDatadogWebhookExists(accProvider, "datadog_webhook.foo2"),
+					resource.TestCheckResourceAttr("datadog_webhook.foo2", "name", uniqueName+"2UPDATED"),
+					resource.TestCheckResourceAttr("datadog_webhook.foo2", "url", "example.com/updated"),
+					resource.TestCheckResourceAttr("datadog_webhook.foo2", "encode_as", "json"),
+					resource.TestCheckResourceAttr("datadog_webhook.foo2", "custom_headers", "{\"test\":\"test-updated\"}"),
+					resource.TestCheckResourceAttr("datadog_webhook.foo2", "payload", "{\"custom\":\"payload\"}"),
 				),
 			},
 		},
@@ -52,7 +64,13 @@ func TestAccDatadogWebhook_Basic(t *testing.T) {
 func testAccCheckDatadogWebhookBasicConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_webhook" "foo" {
-  name           = "%s"
+  name           = "%[1]s"
+  url            = "example.com"
+  encode_as      = "json"
+  custom_headers = jsonencode({"test": "test"})
+}
+resource "datadog_webhook" "foo2" {
+  name           = "%[1]s2"
   url            = "example.com"
   encode_as      = "json"
   custom_headers = jsonencode({"test": "test"})
@@ -62,7 +80,14 @@ resource "datadog_webhook" "foo" {
 func testAccCheckDatadogWebhookBasicConfigUpdated(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_webhook" "foo" {
-  name           = "%sUPDATED"
+  name           = "%[1]sUPDATED"
+  url            = "example.com/updated"
+  encode_as      = "json"
+  custom_headers = jsonencode({"test": "test-updated"})
+  payload        = jsonencode({"custom": "payload"})
+}
+resource "datadog_webhook" "foo2" {
+  name           = "%[1]s2UPDATED"
   url            = "example.com/updated"
   encode_as      = "json"
   custom_headers = jsonencode({"test": "test-updated"})

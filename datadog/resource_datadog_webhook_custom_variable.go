@@ -59,6 +59,9 @@ func updateWebhookCustomVariableState(d *schema.ResourceData, customVariable *da
 }
 
 func resourceDatadogWebhookCustomVariableCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	webhookMutex.Lock()
+	defer webhookMutex.Unlock()
+
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -94,6 +97,9 @@ func resourceDatadogWebhookCustomVariableRead(ctx context.Context, d *schema.Res
 }
 
 func resourceDatadogWebhookCustomVariableUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	webhookMutex.Lock()
+	defer webhookMutex.Unlock()
+
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -113,6 +119,9 @@ func resourceDatadogWebhookCustomVariableUpdate(ctx context.Context, d *schema.R
 }
 
 func resourceDatadogWebhookCustomVariableDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	webhookMutex.Lock()
+	defer webhookMutex.Unlock()
+
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1

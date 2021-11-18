@@ -3,42 +3,93 @@ version: 1
 interactions:
 - request:
     body: |
-      {"custom_headers":"{\"test\":\"test\"}","encode_as":"json","name":"tf-TestAccDatadogWebhook_Basic-local-1632755829","url":"example.com"}
+      {"custom_headers":"{\"test\":\"test\"}","encode_as":"json","name":"tf-TestAccDatadogWebhook_Basic-local-16372373112","url":"example.com"}
     form: {}
     headers:
       Accept:
       - application/json
+      Content-Length:
+      - "138"
       Content-Type:
       - application/json
       Dd-Operation-Id:
       - CreateWebhooksIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks
     method: POST
   response:
-    body: '{"encode_as":"json","url":"example.com","custom_headers":"{\"test\":\"test\"}","name":"tf-TestAccDatadogWebhook_Basic-local-1632755829","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}"}'
+    body: '{"encode_as":"json","url":"example.com","custom_headers":"{\"test\":\"test\"}","name":"tf-TestAccDatadogWebhook_Basic-local-16372373112","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}"}'
     headers:
       Cache-Control:
       - no-cache
       Connection:
       - keep-alive
-      Content-Length:
-      - "369"
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
       Date:
-      - Mon, 27 Sep 2021 15:17:13 GMT
+      - Thu, 18 Nov 2021 12:08:32 GMT
       Location:
-      - https://app.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1632755829
+      - https://app.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-16372373112
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
+      Vary:
+      - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "207"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: |
+      {"custom_headers":"{\"test\":\"test\"}","encode_as":"json","name":"tf-TestAccDatadogWebhook_Basic-local-1637237311","url":"example.com"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Length:
+      - "137"
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateWebhooksIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks
+    method: POST
+  response:
+    body: '{"encode_as":"json","url":"example.com","custom_headers":"{\"test\":\"test\"}","name":"tf-TestAccDatadogWebhook_Basic-local-1637237311","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 18 Nov 2021 12:08:33 GMT
+      Location:
+      - https://app.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1637237311
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "244"
       X-Frame-Options:
       - SAMEORIGIN
     status: 201 Created
@@ -53,11 +104,11 @@ interactions:
       Dd-Operation-Id:
       - GetWebhooksIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1632755829
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1637237311
     method: GET
   response:
-    body: '{"encode_as":"json","url":"example.com","custom_headers":"{\"test\":\"test\"}","name":"tf-TestAccDatadogWebhook_Basic-local-1632755829","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}"}'
+    body: '{"encode_as":"json","url":"example.com","custom_headers":"{\"test\":\"test\"}","name":"tf-TestAccDatadogWebhook_Basic-local-1637237311","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}"}'
     headers:
       Cache-Control:
       - no-cache
@@ -68,7 +119,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 27 Sep 2021 15:17:13 GMT
+      - Thu, 18 Nov 2021 12:08:57 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -77,6 +128,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "23992"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -91,11 +144,11 @@ interactions:
       Dd-Operation-Id:
       - GetWebhooksIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1632755829
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-16372373112
     method: GET
   response:
-    body: '{"encode_as":"json","url":"example.com","custom_headers":"{\"test\":\"test\"}","name":"tf-TestAccDatadogWebhook_Basic-local-1632755829","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}"}'
+    body: '{"encode_as":"json","url":"example.com","custom_headers":"{\"test\":\"test\"}","name":"tf-TestAccDatadogWebhook_Basic-local-16372373112","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}"}'
     headers:
       Cache-Control:
       - no-cache
@@ -106,7 +159,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 27 Sep 2021 15:17:14 GMT
+      - Thu, 18 Nov 2021 12:08:57 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -115,6 +168,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "72"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -129,11 +184,11 @@ interactions:
       Dd-Operation-Id:
       - GetWebhooksIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1632755829
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1637237311
     method: GET
   response:
-    body: '{"encode_as":"json","url":"example.com","custom_headers":"{\"test\":\"test\"}","name":"tf-TestAccDatadogWebhook_Basic-local-1632755829","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}"}'
+    body: '{"encode_as":"json","url":"example.com","custom_headers":"{\"test\":\"test\"}","name":"tf-TestAccDatadogWebhook_Basic-local-1637237311","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}"}'
     headers:
       Cache-Control:
       - no-cache
@@ -144,7 +199,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 27 Sep 2021 15:17:14 GMT
+      - Thu, 18 Nov 2021 12:08:58 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -153,6 +208,128 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "176"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetWebhooksIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-16372373112
+    method: GET
+  response:
+    body: '{"encode_as":"json","url":"example.com","custom_headers":"{\"test\":\"test\"}","name":"tf-TestAccDatadogWebhook_Basic-local-16372373112","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 18 Nov 2021 12:08:58 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "214"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetWebhooksIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-16372373112
+    method: GET
+  response:
+    body: '{"encode_as":"json","url":"example.com","custom_headers":"{\"test\":\"test\"}","name":"tf-TestAccDatadogWebhook_Basic-local-16372373112","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 18 Nov 2021 12:08:59 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "80"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetWebhooksIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1637237311
+    method: GET
+  response:
+    body: '{"encode_as":"json","url":"example.com","custom_headers":"{\"test\":\"test\"}","name":"tf-TestAccDatadogWebhook_Basic-local-1637237311","payload":"{\"body\": \"$EVENT_MSG\", \"last_updated\": \"$LAST_UPDATED\", \"event_type\": \"$EVENT_TYPE\", \"title\": \"$EVENT_TITLE\", \"date\": \"$DATE\", \"org\": {\"id\": \"$ORG_ID\", \"name\": \"$ORG_NAME\"}, \"id\": \"$ID\"}"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 18 Nov 2021 12:08:59 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "116"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -160,21 +337,23 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","name":"tf-TestAccDatadogWebhook_Basic-local-1632755829UPDATED","payload":"{\"custom\":\"payload\"}","url":"example.com/updated"}
+      {"custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","name":"tf-TestAccDatadogWebhook_Basic-local-1637237311UPDATED","payload":"{\"custom\":\"payload\"}","url":"example.com/updated"}
     form: {}
     headers:
       Accept:
       - application/json
+      Content-Length:
+      - "197"
       Content-Type:
       - application/json
       Dd-Operation-Id:
       - UpdateWebhooksIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1632755829
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1637237311
     method: PUT
   response:
-    body: '{"encode_as":"json","url":"example.com/updated","custom_headers":"{\"test\":\"test-updated\"}","name":"tf-TestAccDatadogWebhook_Basic-local-1632755829UPDATED","payload":"{\"custom\":\"payload\"}"}'
+    body: '{"encode_as":"json","url":"example.com/updated","custom_headers":"{\"test\":\"test-updated\"}","name":"tf-TestAccDatadogWebhook_Basic-local-1637237311UPDATED","payload":"{\"custom\":\"payload\"}"}'
     headers:
       Cache-Control:
       - no-cache
@@ -185,7 +364,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 27 Sep 2021 15:17:15 GMT
+      - Thu, 18 Nov 2021 12:09:00 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -194,6 +373,53 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "139"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"custom_headers":"{\"test\":\"test-updated\"}","encode_as":"json","name":"tf-TestAccDatadogWebhook_Basic-local-16372373112UPDATED","payload":"{\"custom\":\"payload\"}","url":"example.com/updated"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Length:
+      - "198"
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - UpdateWebhooksIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-16372373112
+    method: PUT
+  response:
+    body: '{"encode_as":"json","url":"example.com/updated","custom_headers":"{\"test\":\"test-updated\"}","name":"tf-TestAccDatadogWebhook_Basic-local-16372373112UPDATED","payload":"{\"custom\":\"payload\"}"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 18 Nov 2021 12:09:00 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "109"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -208,11 +434,11 @@ interactions:
       Dd-Operation-Id:
       - GetWebhooksIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1632755829UPDATED
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1637237311UPDATED
     method: GET
   response:
-    body: '{"encode_as":"json","url":"example.com/updated","custom_headers":"{\"test\":\"test-updated\"}","name":"tf-TestAccDatadogWebhook_Basic-local-1632755829UPDATED","payload":"{\"custom\":\"payload\"}"}'
+    body: '{"encode_as":"json","url":"example.com/updated","custom_headers":"{\"test\":\"test-updated\"}","name":"tf-TestAccDatadogWebhook_Basic-local-1637237311UPDATED","payload":"{\"custom\":\"payload\"}"}'
     headers:
       Cache-Control:
       - no-cache
@@ -223,7 +449,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 27 Sep 2021 15:17:15 GMT
+      - Thu, 18 Nov 2021 12:09:44 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -232,6 +458,8 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "43940"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -246,11 +474,11 @@ interactions:
       Dd-Operation-Id:
       - GetWebhooksIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1632755829UPDATED
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-16372373112UPDATED
     method: GET
   response:
-    body: '{"encode_as":"json","url":"example.com/updated","custom_headers":"{\"test\":\"test-updated\"}","name":"tf-TestAccDatadogWebhook_Basic-local-1632755829UPDATED","payload":"{\"custom\":\"payload\"}"}'
+    body: '{"encode_as":"json","url":"example.com/updated","custom_headers":"{\"test\":\"test-updated\"}","name":"tf-TestAccDatadogWebhook_Basic-local-16372373112UPDATED","payload":"{\"custom\":\"payload\"}"}'
     headers:
       Cache-Control:
       - no-cache
@@ -261,7 +489,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 27 Sep 2021 15:17:16 GMT
+      - Thu, 18 Nov 2021 12:09:44 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -270,6 +498,88 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "147"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetWebhooksIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1637237311UPDATED
+    method: GET
+  response:
+    body: '{"encode_as":"json","url":"example.com/updated","custom_headers":"{\"test\":\"test-updated\"}","name":"tf-TestAccDatadogWebhook_Basic-local-1637237311UPDATED","payload":"{\"custom\":\"payload\"}"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 18 Nov 2021 12:09:45 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "92"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetWebhooksIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-16372373112UPDATED
+    method: GET
+  response:
+    body: '{"encode_as":"json","url":"example.com/updated","custom_headers":"{\"test\":\"test-updated\"}","name":"tf-TestAccDatadogWebhook_Basic-local-16372373112UPDATED","payload":"{\"custom\":\"payload\"}"}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 18 Nov 2021 12:09:45 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "131"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -284,8 +594,8 @@ interactions:
       Dd-Operation-Id:
       - DeleteWebhooksIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1632755829UPDATED
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-16372373112UPDATED
     method: DELETE
   response:
     body: '{}'
@@ -301,13 +611,55 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 27 Sep 2021 15:17:17 GMT
+      - Thu, 18 Nov 2021 12:09:46 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
       - max-age=15724800;
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "100"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - DeleteWebhooksIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1637237311UPDATED
+    method: DELETE
+  response:
+    body: '{}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Length:
+      - "2"
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 18 Nov 2021 12:09:46 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "151"
       X-Frame-Options:
       - SAMEORIGIN
     status: 200 OK
@@ -322,8 +674,8 @@ interactions:
       Dd-Operation-Id:
       - GetWebhooksIntegration
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1632755829UPDATED
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-1637237311UPDATED
     method: GET
   response:
     body: '{"errors": ["Webhook does not exist"]}'
@@ -337,7 +689,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Mon, 27 Sep 2021 15:17:17 GMT
+      - Thu, 18 Nov 2021 12:09:46 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -346,6 +698,48 @@ interactions:
       - Accept-Encoding
       X-Content-Type-Options:
       - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "90"
+      X-Frame-Options:
+      - SAMEORIGIN
+    status: 404 Not Found
+    code: 404
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetWebhooksIntegration
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.0 (go go1.16.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks/tf-TestAccDatadogWebhook_Basic-local-16372373112UPDATED
+    method: GET
+  response:
+    body: '{"errors": ["Webhook does not exist"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 18 Nov 2021 12:09:47 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "101"
       X-Frame-Options:
       - SAMEORIGIN
     status: 404 Not Found
