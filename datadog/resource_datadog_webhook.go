@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -10,6 +11,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+var webhookMutex = sync.Mutex{}
 
 func resourceDatadogWebhook() *schema.Resource {
 	return &schema.Resource{
@@ -85,6 +88,9 @@ func updateWebhookState(d *schema.ResourceData, webhook *datadogV1.WebhooksInteg
 }
 
 func resourceDatadogWebhookCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	webhookMutex.Lock()
+	defer webhookMutex.Unlock()
+
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -121,6 +127,9 @@ func resourceDatadogWebhookRead(ctx context.Context, d *schema.ResourceData, met
 }
 
 func resourceDatadogWebhookUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	webhookMutex.Lock()
+	defer webhookMutex.Unlock()
+
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -141,6 +150,9 @@ func resourceDatadogWebhookUpdate(ctx context.Context, d *schema.ResourceData, m
 }
 
 func resourceDatadogWebhookDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	webhookMutex.Lock()
+	defer webhookMutex.Unlock()
+
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
