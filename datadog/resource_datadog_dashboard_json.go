@@ -65,7 +65,6 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 						delete(attrMap, "is_read_only")
 					}
 					res, _ := structure.FlattenJsonToString(attrMap)
-
 					return res
 				},
 				Description: "The JSON formatted definition of the Dashboard.",
