@@ -164,6 +164,28 @@ func TestDatadogDashListInDashboardJSON(t *testing.T) {
 	})
 }
 
+func TestAccDatadogDashboardJSONRbacDiff(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogDashListDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDashboardJSONRbacDiff(uniqueName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_dashboard_json.timeboard_json", "dashboard", fmt.Sprintf("{\"description\":\"Created using the Datadog provider in Terraform\",\"layout_type\":\"ordered\",\"notify_list\":[],\"restricted_roles\":[],\"template_variables\":[],\"title\":\"%s\",\"widgets\":[{\"definition\":{\"alert_id\":\"895605\",\"precision\":3,\"text_align\":\"center\",\"title\":\"Widget Title\",\"type\":\"alert_value\",\"unit\":\"b\"}}]}", uniqueName)),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogDashboardJSONTimeboardJSON(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_dashboard_json" "timeboard_json" {
@@ -1915,4 +1937,40 @@ resource "datadog_dashboard_json" "timeboard_json" {
 }
 EOF
 }`, uniq, uniq)
+}
+
+func testAccCheckDatadogDashboardJSONRbacDiff(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard_json" "timeboard_json" {
+   dashboard = <<EOF
+{
+   "author_handle":"removed_handle",
+   "title":"%s",
+   "description":"Created using the Datadog provider in Terraform",
+   "widgets":[
+      {
+         "id":5436370674582587,
+         "definition":{
+            "title":"Widget Title",
+            "type":"alert_value",
+            "alert_id":"895605",
+            "unit":"b",
+            "text_align":"center",
+            "precision":3
+         }
+      }
+   ],
+   "template_variables":[
+      
+   ],
+   "layout_type":"ordered",
+   "is_read_only":true,
+   "restricted_roles":[],
+   "notify_list":[
+      
+   ],
+   "id":"5uw-bbj-xec"
+}
+EOF
+}`, uniq)
 }
