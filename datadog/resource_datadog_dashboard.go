@@ -1562,6 +1562,9 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 		"rum_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getFormulaSchema(),
 		// Settings specific to Change requests
 		"change_type": {
 			Description:      "Whether to show absolute or relative change.",
@@ -1625,6 +1628,29 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogChangeRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+			for i, q := range v {
+				query := q.(map[string]interface{})
+				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogEventQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				}
+			}
+			datadogChangeRequest.SetQueries(queries)
+			// Change request for formulas and functions always have a response format of "scalar"
+			datadogChangeRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
+		}
+
+		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+			formulas := make([]datadogV1.WidgetFormula, len(v))
+			for i, formula := range v {
+				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
+			}
+			datadogChangeRequest.SetFormulas(formulas)
 		}
 
 		if v, ok := terraformRequest["change_type"].(string); ok && len(v) != 0 {
@@ -1675,6 +1701,12 @@ func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidge
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.security_query.0", i))
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
+			terraformRequest["query"] = buildTerraformQuery(*v)
+		}
+
+		if v, ok := datadogRequest.GetFormulasOk(); ok {
+			terraformRequest["formula"] = buildTerraformFormula(*v)
 		}
 
 		if v, ok := datadogRequest.GetChangeTypeOk(); ok {
