@@ -429,6 +429,7 @@ Optional:
 - **dns_server_port** (Number) DNS server port to use for DNS tests.
 - **follow_redirects** (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - **host** (String) Host name to perform the test with.
+- **message** (String) For UDP tests, message to send with the request.
 - **method** (String) The HTTP method. Valid values are `GET`, `POST`, `PATCH`, `PUT`, `DELETE`, `HEAD`, `OPTIONS`.
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
 - **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
@@ -634,6 +635,7 @@ Optional:
 - **dns_server** (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - **dns_server_port** (Number) DNS server port to use for DNS tests.
 - **host** (String) Host name to perform the test with.
+- **message** (String) For UDP tests, message to send with the request.
 - **method** (String) The HTTP method. Valid values are `GET`, `POST`, `PATCH`, `PUT`, `DELETE`, `HEAD`, `OPTIONS`.
 - **no_saving_response_body** (Boolean) Determines whether or not to save the response body.
 - **number_of_packets** (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
