@@ -189,7 +189,7 @@ func syntheticsTestRequest() *schema.Resource {
 				Optional:    true,
 			},
 			"message": {
-				Description: "For UDP tests, message to send with the request.",
+				Description: "For UDP and websocket tests, message to send with the request.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
