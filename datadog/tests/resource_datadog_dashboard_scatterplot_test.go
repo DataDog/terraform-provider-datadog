@@ -101,6 +101,70 @@ resource "datadog_dashboard" "scatterplot_dashboard" {
 }
 `
 
+const datadogDashboardScatterplotFormulaConfig = `
+resource "datadog_dashboard" "scatterplot_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+
+	widget {
+		scatterplot_definition {
+			request {
+				scatterplot_table {
+					formula {
+						formula_expression = "my_query_1"
+						dimension          = "x"
+					}
+					formula {
+						formula_expression = "my_query_2"
+						alias              = "second_query"
+						dimension          = "color"
+					}
+					query {
+						metric_query {
+							data_source = "metrics"
+							query       = "avg:system.cpu.user{foo} by {env}"
+							name        = "my_query_1"
+							aggregator  = "sum"
+						}
+					}
+					query {
+						metric_query {
+							data_source = "metrics"
+							query       = "avg:system.cpu.idle{bar} by {env}"
+							name        = "my_query_2"
+							aggregator  = "sum"
+						}
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+var datadogDashboardScatterplotFormulaAsserts = []string{
+	"title = {{uniq}}",
+	"is_read_only = true",
+	"layout_type = ordered",
+	"description = Created using the Datadog provider in Terraform",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.formula.0.formula_expression = my_query_1",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.formula.0.alias = ",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.formula.0.dimension = x",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.formula.1.formula_expression = my_query_2",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.formula.1.alias = second_query",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.formula.1.dimension = color",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.0.metric_query.0.data_source = metrics",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.0.metric_query.0.query = avg:system.cpu.user{foo} by {env}",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.0.metric_query.0.name = my_query_1",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.0.metric_query.0.aggregator = sum",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.1.metric_query.0.data_source = metrics",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.1.metric_query.0.query = avg:system.cpu.idle{bar} by {env}",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.1.metric_query.0.name = my_query_2",
+	"widget.0.scatterplot_definition.0.request.0.scatterplot_table.0.query.1.metric_query.0.aggregator = sum",
+}
+
 var datadogDashboardScatterplotAsserts = []string{
 	"widget.0.scatterplot_definition.0.xaxis.0.min = 0",
 	"widget.0.scatterplot_definition.0.color_by_groups.0 = app",
@@ -139,4 +203,12 @@ func TestAccDatadogDashboardScatterplot(t *testing.T) {
 
 func TestAccDatadogDashboardScatterplot_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardScatterplotConfigImport, "datadog_dashboard.scatterplot_dashboard")
+}
+
+func TestAccDatadogDashboardScatterplotFormula(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardScatterplotFormulaConfig, "datadog_dashboard.scatterplot_dashboard", datadogDashboardScatterplotFormulaAsserts)
+}
+
+func TestAccDatadogDashboardScatterplotFormula_import(t *testing.T) {
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardScatterplotFormulaConfig, "datadog_dashboard.scatterplot_dashboard")
 }

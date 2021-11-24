@@ -1299,7 +1299,9 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 					}
 					assertions = append(assertions, datadogV1.SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion(assertionJSONPathTarget))
 				} else {
-					assertionTarget := datadogV1.NewSyntheticsAssertionTarget(datadogV1.SyntheticsAssertionOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
+					assertionTarget := datadogV1.NewSyntheticsAssertionTargetWithDefaults()
+					assertionTarget.SetOperator(datadogV1.SyntheticsAssertionOperator(assertionOperator))
+					assertionTarget.SetType(datadogV1.SyntheticsAssertionType(assertionType))
 					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
 						assertionTarget.SetProperty(v)
 					}

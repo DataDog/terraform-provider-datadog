@@ -4051,6 +4051,14 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 							Schema: getScatterplotRequestSchema(),
 						},
 					},
+					"scatterplot_table": {
+						Description: "Scatterplot request containing formulas and functions.",
+						Type:        schema.TypeList,
+						Optional:    true,
+						Elem: &schema.Resource{
+							Schema: getScatterplotTableRequestSchema(),
+						},
+					},
 				},
 			},
 		},
@@ -4119,6 +4127,12 @@ func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{
 			terraformY := terraformYArray[0].(map[string]interface{})
 			datadogRequests.SetY(*buildDatadogScatterplotRequest(terraformY))
 		}
+
+		if terraformScatterplotTableRequests, ok := terraformRequests["scatterplot_table"].([]interface{}); ok && len(terraformScatterplotTableRequests) > 0 {
+			terraformScatterplotTableRequest := terraformScatterplotTableRequests[0].(map[string]interface{})
+			datadogRequests.SetTable(*buildDatadogScatterplotTableRequest(terraformScatterplotTableRequest))
+		}
+
 		datadogDefinition.SetRequests(*datadogRequests)
 	}
 
@@ -4173,6 +4187,10 @@ func buildTerraformScatterplotDefinition(datadogDefinition datadogV1.ScatterPlot
 		k.Remove("y.0")
 		terraformRequests["y"] = []map[string]interface{}{*terraformY}
 	}
+	if v, ok := datadogDefinition.Requests.GetTableOk(); ok {
+		teraformScatterplotTableRequest := buildTerraformScatterplotTableRequest(v)
+		terraformRequests["scatterplot_table"] = []map[string]interface{}{*teraformScatterplotTableRequest}
+	}
 	terraformDefinition["request"] = []map[string]interface{}{terraformRequests}
 
 	// Optional params
@@ -4210,6 +4228,14 @@ func buildTerraformScatterplotDefinition(datadogDefinition datadogV1.ScatterPlot
 	return terraformDefinition
 }
 
+func getScatterplotTableRequestSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getScatterplotFormulaSchema(),
+	}
+}
+
 func getScatterplotRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
@@ -4228,6 +4254,37 @@ func getScatterplotRequestSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
+func buildDatadogScatterplotTableRequest(terraformRequest map[string]interface{}) *datadogV1.ScatterplotTableRequest {
+	datadogScatterplotTableRequest := datadogV1.NewScatterplotTableRequest()
+
+	if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+		queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+		for i, q := range v {
+			query := q.(map[string]interface{})
+			if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+				queries[i] = buildDatadogEventQuery(w[0].(map[string]interface{}))
+			} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+				queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
+			} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+				queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+			}
+		}
+		datadogScatterplotTableRequest.SetQueries(queries)
+		datadogScatterplotTableRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
+	}
+
+	if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+		formulas := make([]datadogV1.ScatterplotWidgetFormula, len(v))
+		for i, formula := range v {
+			formulas[i] = buildDatadogScatterplotFormula(formula.(map[string]interface{}))
+		}
+		datadogScatterplotTableRequest.SetFormulas(formulas)
+	}
+
+	return datadogScatterplotTableRequest
+}
+
 func buildDatadogScatterplotRequest(terraformRequest map[string]interface{}) *datadogV1.ScatterPlotRequest {
 
 	datadogScatterplotRequest := datadogV1.NewScatterPlotRequest()
@@ -4256,6 +4313,20 @@ func buildDatadogScatterplotRequest(terraformRequest map[string]interface{}) *da
 
 	return datadogScatterplotRequest
 }
+
+func buildTerraformScatterplotTableRequest(datadogScatterplotTableRequest *datadogV1.ScatterplotTableRequest) *map[string]interface{} {
+	terraformRequest := map[string]interface{}{}
+
+	if v, ok := datadogScatterplotTableRequest.GetQueriesOk(); ok {
+		terraformRequest["query"] = buildTerraformQuery(*v)
+	}
+	if v, ok := datadogScatterplotTableRequest.GetFormulasOk(); ok {
+		terraformRequest["formula"] = buildTerraformScatterplotFormula(*v)
+	}
+
+	return &terraformRequest
+}
+
 func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadogV1.ScatterPlotRequest, k *utils.ResourceDataKey) *map[string]interface{} {
 	terraformRequest := map[string]interface{}{}
 	if v, ok := datadogScatterplotRequest.GetQOk(); ok {
@@ -4938,6 +5009,33 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 	return terraformDefinition
 }
 
+func getScatterplotFormulaSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"formula_expression": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "A string expression built from queries, formulas, and functions.",
+				},
+				"dimension": {
+					Description:      "Dimension of the Scatterplot.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewScatterplotDimensionFromValue),
+				},
+				"alias": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "An expression alias.",
+				},
+			},
+		},
+	}
+}
+
 func getFormulaSchema() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
@@ -5410,6 +5508,20 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 	}
+}
+
+func buildDatadogScatterplotFormula(data map[string]interface{}) datadogV1.ScatterplotWidgetFormula {
+	formula := datadogV1.ScatterplotWidgetFormula{}
+	if formulaExpression, ok := data["formula_expression"].(string); ok && len(formulaExpression) != 0 {
+		formula.SetFormula(formulaExpression)
+	}
+	if alias, ok := data["alias"].(string); ok && len(alias) != 0 {
+		formula.SetAlias(alias)
+	}
+	if dimension, ok := data["dimension"].(string); ok && len(dimension) != 0 {
+		formula.SetDimension(datadogV1.ScatterplotDimension(dimension))
+	}
+	return formula
 }
 
 func buildDatadogFormula(data map[string]interface{}) datadogV1.WidgetFormula {
@@ -6940,6 +7052,20 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 		}
 	}
 	return queries
+}
+
+func buildTerraformScatterplotFormula(datadogFormulas []datadogV1.ScatterplotWidgetFormula) []map[string]interface{} {
+	formulas := make([]map[string]interface{}, len(datadogFormulas))
+	for i, formula := range datadogFormulas {
+		terraformFormula := map[string]interface{}{}
+		terraformFormula["formula_expression"] = formula.GetFormula()
+		terraformFormula["dimension"] = formula.GetDimension()
+		if alias, ok := formula.GetAliasOk(); ok {
+			terraformFormula["alias"] = alias
+		}
+		formulas[i] = terraformFormula
+	}
+	return formulas
 }
 
 func buildTerraformFormula(datadogFormulas []datadogV1.WidgetFormula) []map[string]interface{} {
