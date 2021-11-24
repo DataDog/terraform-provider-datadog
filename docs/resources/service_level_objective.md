@@ -101,8 +101,11 @@ Required:
 
 Optional:
 
-- **target_display** (String) A string representation of the target that indicates its precision. It uses trailing zeros to show significant decimal places (e.g. `98.00`).
 - **warning** (Number) The objective's warning value in `[0,100]`. This must be greater than the target value.
+
+Read-Only:
+
+- **target_display** (String) A string representation of the target that indicates its precision. It uses trailing zeros to show significant decimal places (e.g. `98.00`).
 - **warning_display** (String) A string representation of the warning target (see the description of the target_display field for details).
 
 
