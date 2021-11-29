@@ -52,7 +52,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsSubTypeFromValue),
 			},
 			"request_definition": {
-				Description: "The synthetics test request. Required if `type = \"api\"`.",
+				Description: "Required if `type = \"api\"`. The synthetics test request.",
 				Type:        schema.TypeList,
 				MaxItems:    1,
 				Optional:    true,
@@ -66,7 +66,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			"browser_variable":           syntheticsBrowserVariable(),
 			"config_variable":            syntheticsConfigVariable(),
 			"device_ids": {
-				Description: "Array with the different device IDs used to run the test (only for `browser` tests).",
+				Description: "Required if `type = \"browser\"`. Array with the different device IDs used to run the test.",
 				Type:        schema.TypeList,
 				Optional:    true,
 				Elem: &schema.Schema{
@@ -181,6 +181,16 @@ func syntheticsTestRequest() *schema.Resource {
 			"should_track_hops": {
 				Description: "This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = \"icmp\"`).",
 				Type:        schema.TypeBool,
+				Optional:    true,
+			},
+			"servername": {
+				Description: "For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"message": {
+				Description: "For UDP tests, message to send with the request.",
+				Type:        schema.TypeString,
 				Optional:    true,
 			},
 		},
@@ -1012,6 +1022,12 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := k.GetOkWith("should_track_hops"); ok {
 		request.SetShouldTrackHops(attr.(bool))
 	}
+	if attr, ok := k.GetOkWith("servername"); ok {
+		request.SetServername(attr.(string))
+	}
+	if attr, ok := k.GetOkWith("message"); ok {
+		request.SetMessage(attr.(string))
+	}
 	k.Remove(parts)
 
 	request = completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}))
@@ -1071,13 +1087,15 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 			request := datadogV1.SyntheticsTestRequest{}
 			requests := stepMap["request_definition"].([]interface{})
-			requestMap := requests[0].(map[string]interface{})
-			request.SetMethod(datadogV1.HTTPMethod(requestMap["method"].(string)))
-			request.SetUrl(requestMap["url"].(string))
-			request.SetBody(requestMap["body"].(string))
-			request.SetTimeout(float64(requestMap["timeout"].(int)))
-			request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
-			request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
+			if len(requests) > 0 && requests[0] != nil {
+				requestMap := requests[0].(map[string]interface{})
+				request.SetMethod(datadogV1.HTTPMethod(requestMap["method"].(string)))
+				request.SetUrl(requestMap["url"].(string))
+				request.SetBody(requestMap["body"].(string))
+				request.SetTimeout(float64(requestMap["timeout"].(int)))
+				request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
+				request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
+			}
 
 			request = completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}))
 
@@ -1196,11 +1214,11 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 	}
 
 	if len(basicAuth) > 0 {
-		requestBasicAuth := basicAuth[0].(map[string]interface{})
-
-		if requestBasicAuth["username"] != "" && requestBasicAuth["password"] != "" {
-			basicAuth := datadogV1.NewSyntheticsBasicAuth(requestBasicAuth["password"].(string), requestBasicAuth["username"].(string))
-			request.SetBasicAuth(*basicAuth)
+		if requestBasicAuth, ok := basicAuth[0].(map[string]interface{}); ok {
+			if requestBasicAuth["username"] != "" && requestBasicAuth["password"] != "" {
+				basicAuth := datadogV1.NewSyntheticsBasicAuth(requestBasicAuth["password"].(string), requestBasicAuth["username"].(string))
+				request.SetBasicAuth(*basicAuth)
+			}
 		}
 	}
 
@@ -1289,7 +1307,9 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 					}
 					assertions = append(assertions, datadogV1.SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion(assertionJSONPathTarget))
 				} else {
-					assertionTarget := datadogV1.NewSyntheticsAssertionTarget(datadogV1.SyntheticsAssertionOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
+					assertionTarget := datadogV1.NewSyntheticsAssertionTargetWithDefaults()
+					assertionTarget.SetOperator(datadogV1.SyntheticsAssertionOperator(assertionOperator))
+					assertionTarget.SetType(datadogV1.SyntheticsAssertionType(assertionType))
 					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
 						assertionTarget.SetProperty(v)
 					}
@@ -1601,6 +1621,12 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	if request.HasShouldTrackHops() {
 		localRequest["should_track_hops"] = request.GetShouldTrackHops()
 	}
+	if request.HasServername() {
+		localRequest["servername"] = request.GetServername()
+	}
+	if request.HasMessage() {
+		localRequest["message"] = request.GetMessage()
+	}
 
 	return localRequest
 }
@@ -1640,9 +1666,10 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 					localTarget["operator"] = string(*v)
 				}
 				if v, ok := target.GetTargetValueOk(); ok {
-					if vAsString, ok := (*v).(string); ok {
+					val := v.(*interface{})
+					if vAsString, ok := (*val).(string); ok {
 						localTarget["targetvalue"] = vAsString
-					} else if vAsFloat, ok := (*v).(float64); ok {
+					} else if vAsFloat, ok := (*val).(float64); ok {
 						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
 					} else {
 						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
@@ -2350,9 +2377,11 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 
 func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key string, value interface{}) interface{} {
 	switch key {
-	case "element", "email", "file", "request":
-		result := make(map[string]interface{})
-		utils.GetMetadataFromJSON([]byte(value.(string)), &result)
+	case "element", "email", "file", "files", "request":
+		var result interface{}
+		if err := utils.GetMetadataFromJSON([]byte(value.(string)), &result); err != nil {
+			log.Printf("[ERROR] Error converting step param %s: %v", key, err)
+		}
 		return result
 
 	case "playing_tab_id":
@@ -2376,7 +2405,7 @@ func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key 
 
 func convertStepParamsValueForState(key string, value interface{}) interface{} {
 	switch key {
-	case "element", "email", "file", "request":
+	case "element", "email", "file", "files", "request":
 		result, _ := json.Marshal(value)
 		return string(result)
 

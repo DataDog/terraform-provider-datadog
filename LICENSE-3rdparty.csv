@@ -202,3 +202,7 @@ go.sum,github.com/ProtonMail/go-crypto,BSD-3-Clause,Copyright (c) 2009 The Go Au
 go.sum,github.com/acomagu/bufpipe,MIT,Copyright (c) 2019 acomagu
 go.sum,github.com/matryer/is,MIT,Copyright (c) 2017-2018 Mat Ryer
 go.sum,github.com/sebdah/goldie,MIT,Copyright 2016 Sebastian Dahlgren <sebastian.dahlgren@gmail.com>
+go.sum,github.com/DataDog/dd-sdk-go-testing,Apache-2.0 OR BSD-3-Clause,"2016-Present Datadog, Inc."
+go.sum,github.com/DataDog/gostackparse,Apache-2.0 OR BSD-3-Clause,2021-Present Datadog
+go.sum,github.com/DataDog/sketches-go,Apache-2.0,2021 DataDog Inc
+go.sum,github.com/google/gofuzz,Apache-2.0,

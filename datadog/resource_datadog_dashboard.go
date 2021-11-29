@@ -51,7 +51,7 @@ func resourceDatadogDashboard() *schema.Resource {
 			},
 			"widget": {
 				Type:        schema.TypeList,
-				Required:    true,
+				Optional:    true,
 				Description: "The list of widgets to display on the dashboard.",
 				Elem: &schema.Resource{
 					Schema: getWidgetSchema(),
@@ -81,19 +81,12 @@ func resourceDatadogDashboard() *schema.Resource {
 				Computed:    true,
 				Description: "The URL of the dashboard.",
 			},
-			"is_read_only": {
-				Type:          schema.TypeBool,
-				Optional:      true,
-				Default:       false,
-				ConflictsWith: []string{"restricted_roles"},
-				Description:   "Whether this dashboard is read-only.",
-			},
 			"restricted_roles": {
 				Type:          schema.TypeSet,
 				Optional:      true,
 				Elem:          &schema.Schema{Type: schema.TypeString},
 				ConflictsWith: []string{"is_read_only"},
-				Description:   "Role UUIDs corresponding to users authorized to edit the dashboard. **This feature is currently in beta.**",
+				Description:   "UUIDs of roles whose associated users are authorized to edit the dashboard.",
 			},
 			"template_variable": {
 				Type:        schema.TypeList,
@@ -128,6 +121,14 @@ func resourceDatadogDashboard() *schema.Resource {
 				Computed:    true,
 				Description: "A list of dashboard lists this dashboard should be removed from. Internal only.",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
+			},
+			"is_read_only": {
+				Type:          schema.TypeBool,
+				Optional:      true,
+				Default:       false,
+				ConflictsWith: []string{"restricted_roles"},
+				Description:   "Whether this dashboard is read-only.",
+				Deprecated:    "Prefer using `restricted_roles` to define which roles are required to edit the dashboard.",
 			},
 		},
 	}
@@ -1578,6 +1579,9 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 		"rum_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getFormulaSchema(),
 		// Settings specific to Change requests
 		"change_type": {
 			Description:      "Whether to show absolute or relative change.",
@@ -1618,6 +1622,9 @@ func getChangeRequestSchema() map[string]*schema.Schema {
 func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.ChangeWidgetRequest {
 	datadogRequests := make([]datadogV1.ChangeWidgetRequest, len(*terraformRequests))
 	for i, request := range *terraformRequests {
+		if request == nil {
+			continue
+		}
 		terraformRequest := request.(map[string]interface{})
 		// Build ChangeRequest
 		datadogChangeRequest := datadogV1.NewChangeWidgetRequest()
@@ -1638,6 +1645,29 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 		} else if v, ok := terraformRequest["process_query"].([]interface{}); ok && len(v) > 0 {
 			processQuery := v[0].(map[string]interface{})
 			datadogChangeRequest.ProcessQuery = buildDatadogProcessQuery(processQuery)
+		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+			for i, q := range v {
+				query := q.(map[string]interface{})
+				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogEventQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				}
+			}
+			datadogChangeRequest.SetQueries(queries)
+			// Change request for formulas and functions always have a response format of "scalar"
+			datadogChangeRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
+		}
+
+		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+			formulas := make([]datadogV1.WidgetFormula, len(v))
+			for i, formula := range v {
+				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
+			}
+			datadogChangeRequest.SetFormulas(formulas)
 		}
 
 		if v, ok := terraformRequest["change_type"].(string); ok && len(v) != 0 {
@@ -1688,6 +1718,12 @@ func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidge
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.security_query.0", i))
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
+			terraformRequest["query"] = buildTerraformQuery(*v)
+		}
+
+		if v, ok := datadogRequest.GetFormulasOk(); ok {
+			terraformRequest["formula"] = buildTerraformFormula(*v)
 		}
 
 		if v, ok := datadogRequest.GetChangeTypeOk(); ok {
@@ -1837,6 +1873,9 @@ func getDistributionRequestSchema() map[string]*schema.Schema {
 func buildDatadogDistributionRequests(terraformRequests *[]interface{}) *[]datadogV1.DistributionWidgetRequest {
 	datadogRequests := make([]datadogV1.DistributionWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build DistributionRequest
 		datadogDistributionRequest := datadogV1.NewDistributionWidgetRequest()
@@ -2450,6 +2489,9 @@ func getHeatmapRequestSchema() map[string]*schema.Schema {
 func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadogV1.HeatMapWidgetRequest {
 	datadogRequests := make([]datadogV1.HeatMapWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build HeatmapRequest
 		datadogHeatmapRequest := datadogV1.NewHeatMapWidgetRequest()
@@ -3579,6 +3621,9 @@ func getQueryValueRequestSchema() map[string]*schema.Schema {
 func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadogV1.QueryValueWidgetRequest {
 	datadogRequests := make([]datadogV1.QueryValueWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build QueryValueRequest
 		datadogQueryValueRequest := datadogV1.NewQueryValueWidgetRequest()
@@ -3846,6 +3891,9 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadogV1.TableWidgetRequest {
 	datadogRequests := make([]datadogV1.TableWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build QueryTableRequest
 		datadogQueryTableRequest := datadogV1.NewTableWidgetRequest()
@@ -4020,6 +4068,14 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 							Schema: getScatterplotRequestSchema(),
 						},
 					},
+					"scatterplot_table": {
+						Description: "Scatterplot request containing formulas and functions.",
+						Type:        schema.TypeList,
+						Optional:    true,
+						Elem: &schema.Resource{
+							Schema: getScatterplotTableRequestSchema(),
+						},
+					},
 				},
 			},
 		},
@@ -4088,6 +4144,12 @@ func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{
 			terraformY := terraformYArray[0].(map[string]interface{})
 			datadogRequests.SetY(*buildDatadogScatterplotRequest(terraformY))
 		}
+
+		if terraformScatterplotTableRequests, ok := terraformRequests["scatterplot_table"].([]interface{}); ok && len(terraformScatterplotTableRequests) > 0 {
+			terraformScatterplotTableRequest := terraformScatterplotTableRequests[0].(map[string]interface{})
+			datadogRequests.SetTable(*buildDatadogScatterplotTableRequest(terraformScatterplotTableRequest))
+		}
+
 		datadogDefinition.SetRequests(*datadogRequests)
 	}
 
@@ -4142,6 +4204,10 @@ func buildTerraformScatterplotDefinition(datadogDefinition datadogV1.ScatterPlot
 		k.Remove("y.0")
 		terraformRequests["y"] = []map[string]interface{}{*terraformY}
 	}
+	if v, ok := datadogDefinition.Requests.GetTableOk(); ok {
+		teraformScatterplotTableRequest := buildTerraformScatterplotTableRequest(v)
+		terraformRequests["scatterplot_table"] = []map[string]interface{}{*teraformScatterplotTableRequest}
+	}
 	terraformDefinition["request"] = []map[string]interface{}{terraformRequests}
 
 	// Optional params
@@ -4179,6 +4245,14 @@ func buildTerraformScatterplotDefinition(datadogDefinition datadogV1.ScatterPlot
 	return terraformDefinition
 }
 
+func getScatterplotTableRequestSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getScatterplotFormulaSchema(),
+	}
+}
+
 func getScatterplotRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
@@ -4197,6 +4271,37 @@ func getScatterplotRequestSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
+func buildDatadogScatterplotTableRequest(terraformRequest map[string]interface{}) *datadogV1.ScatterplotTableRequest {
+	datadogScatterplotTableRequest := datadogV1.NewScatterplotTableRequest()
+
+	if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+		queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+		for i, q := range v {
+			query := q.(map[string]interface{})
+			if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+				queries[i] = buildDatadogEventQuery(w[0].(map[string]interface{}))
+			} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+				queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
+			} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+				queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+			}
+		}
+		datadogScatterplotTableRequest.SetQueries(queries)
+		datadogScatterplotTableRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
+	}
+
+	if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+		formulas := make([]datadogV1.ScatterplotWidgetFormula, len(v))
+		for i, formula := range v {
+			formulas[i] = buildDatadogScatterplotFormula(formula.(map[string]interface{}))
+		}
+		datadogScatterplotTableRequest.SetFormulas(formulas)
+	}
+
+	return datadogScatterplotTableRequest
+}
+
 func buildDatadogScatterplotRequest(terraformRequest map[string]interface{}) *datadogV1.ScatterPlotRequest {
 
 	datadogScatterplotRequest := datadogV1.NewScatterPlotRequest()
@@ -4225,6 +4330,20 @@ func buildDatadogScatterplotRequest(terraformRequest map[string]interface{}) *da
 
 	return datadogScatterplotRequest
 }
+
+func buildTerraformScatterplotTableRequest(datadogScatterplotTableRequest *datadogV1.ScatterplotTableRequest) *map[string]interface{} {
+	terraformRequest := map[string]interface{}{}
+
+	if v, ok := datadogScatterplotTableRequest.GetQueriesOk(); ok {
+		terraformRequest["query"] = buildTerraformQuery(*v)
+	}
+	if v, ok := datadogScatterplotTableRequest.GetFormulasOk(); ok {
+		terraformRequest["formula"] = buildTerraformScatterplotFormula(*v)
+	}
+
+	return &terraformRequest
+}
+
 func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadogV1.ScatterPlotRequest, k *utils.ResourceDataKey) *map[string]interface{} {
 	terraformRequest := map[string]interface{}{}
 	if v, ok := datadogScatterplotRequest.GetQOk(); ok {
@@ -4763,6 +4882,9 @@ func buildDatadogGeomapDefinition(terraformDefinition map[string]interface{}) *d
 func buildDatadogGeomapRequests(terraformRequests *[]interface{}) *[]datadogV1.GeomapWidgetRequest {
 	datadogRequests := make([]datadogV1.GeomapWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build Geomap Request
 		datadogGeomapRequest := datadogV1.NewGeomapWidgetRequest()
@@ -5042,6 +5164,33 @@ func buildTerraformTimeseriesDefinition(datadogDefinition datadogV1.TimeseriesWi
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
 	}
 	return terraformDefinition
+}
+
+func getScatterplotFormulaSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"formula_expression": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "A string expression built from queries, formulas, and functions.",
+				},
+				"dimension": {
+					Description:      "Dimension of the Scatterplot.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewScatterplotDimensionFromValue),
+				},
+				"alias": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "An expression alias.",
+				},
+			},
+		},
+	}
 }
 
 func getFormulaSchema() *schema.Schema {
@@ -5518,6 +5667,20 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 	}
 }
 
+func buildDatadogScatterplotFormula(data map[string]interface{}) datadogV1.ScatterplotWidgetFormula {
+	formula := datadogV1.ScatterplotWidgetFormula{}
+	if formulaExpression, ok := data["formula_expression"].(string); ok && len(formulaExpression) != 0 {
+		formula.SetFormula(formulaExpression)
+	}
+	if alias, ok := data["alias"].(string); ok && len(alias) != 0 {
+		formula.SetAlias(alias)
+	}
+	if dimension, ok := data["dimension"].(string); ok && len(dimension) != 0 {
+		formula.SetDimension(datadogV1.ScatterplotDimension(dimension))
+	}
+	return formula
+}
+
 func buildDatadogFormula(data map[string]interface{}) datadogV1.WidgetFormula {
 	formula := datadogV1.WidgetFormula{}
 	if formulaExpression, ok := data["formula_expression"].(string); ok && len(formulaExpression) != 0 {
@@ -5729,6 +5892,9 @@ func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) dat
 func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadogV1.TimeseriesWidgetRequest {
 	datadogRequests := make([]datadogV1.TimeseriesWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build TimeseriesRequest
 		datadogTimeseriesRequest := datadogV1.NewTimeseriesWidgetRequest()
@@ -6009,6 +6175,9 @@ func getToplistRequestSchema() map[string]*schema.Schema {
 func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.ToplistWidgetRequest {
 	datadogRequests := make([]datadogV1.ToplistWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
 		terraformRequest := r.(map[string]interface{})
 		// Build ToplistRequest
 		datadogToplistRequest := datadogV1.NewToplistWidgetRequest()
@@ -7060,6 +7229,20 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 		}
 	}
 	return queries
+}
+
+func buildTerraformScatterplotFormula(datadogFormulas []datadogV1.ScatterplotWidgetFormula) []map[string]interface{} {
+	formulas := make([]map[string]interface{}, len(datadogFormulas))
+	for i, formula := range datadogFormulas {
+		terraformFormula := map[string]interface{}{}
+		terraformFormula["formula_expression"] = formula.GetFormula()
+		terraformFormula["dimension"] = formula.GetDimension()
+		if alias, ok := formula.GetAliasOk(); ok {
+			terraformFormula["alias"] = alias
+		}
+		formulas[i] = terraformFormula
+	}
+	return formulas
 }
 
 func buildTerraformFormula(datadogFormulas []datadogV1.WidgetFormula) []map[string]interface{} {

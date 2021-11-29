@@ -33,7 +33,6 @@ resource "datadog_monitor" "foo" {
   renotify_interval = 60
 
   notify_audit = false
-  timeout_h    = 60
   include_tags = true
 
   tags = ["foo:bar", "baz"]
@@ -64,7 +63,7 @@ For example, if the value is set to `300` (5min), the `timeframe` is set to `las
 - **force_delete** (Boolean) A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).
 - **groupby_simple_monitor** (Boolean) Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.
 - **include_tags** (Boolean) A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`.
-- **locked** (Boolean) A boolean indicating whether changes to to this monitor should be restricted to the creator or admins. Defaults to `false`.
+- **locked** (Boolean) A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.
 - **monitor_threshold_windows** (Block List, Max: 1) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors. (see [below for nested schema](#nestedblock--monitor_threshold_windows))
 - **monitor_thresholds** (Block List, Max: 1) Alert thresholds of the monitor. (see [below for nested schema](#nestedblock--monitor_thresholds))
 - **new_group_delay** (Number) Time (in seconds) to skip evaluations for new groups.
@@ -80,6 +79,8 @@ We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes fo
 - **notify_no_data** (Boolean) A boolean indicating whether this monitor will notify when data stops reporting. Defaults to `false`.
 - **priority** (Number) Integer from 1 (high) to 5 (low) indicating alert severity.
 - **renotify_interval** (Number) The number of minutes after the last notification before a monitor will re-notify on the current status. It will only re-notify if it's not resolved.
+- **renotify_occurrences** (Number) The number of re-notification messages that should be sent on the current status.
+- **renotify_statuses** (Set of String) The types of statuses for which re-notification messages should be sent. Valid values are `alert`, `warn`, `no data`.
 - **require_full_window** (Boolean) A boolean indicating whether this monitor needs a full window of data before it's evaluated.
 
 We highly recommend you set this to `false` for sparse metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.

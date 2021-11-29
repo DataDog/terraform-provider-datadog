@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -112,6 +113,23 @@ func TestConvertResponseByteToMap(t *testing.T) {
 		}
 		if err != nil && tc.errMsg == "" {
 			t.Fatalf("%s: error should be nil, not %s", name, err.Error())
+		}
+	}
+}
+
+func TestDeleteKeyInMap(t *testing.T) {
+	cases := map[string]struct {
+		keyPath   []string
+		mapObject map[string]interface{}
+		expected  map[string]interface{}
+	}{
+		"basic":  {[]string{"test"}, map[string]interface{}{"test": true, "field-two": false}, map[string]interface{}{"field-two": false}},
+		"nested": {[]string{"test", "nested"}, map[string]interface{}{"test": map[string]interface{}{"nested": "field"}, "field-two": false}, map[string]interface{}{"test": map[string]interface{}{}, "field-two": false}},
+	}
+	for name, tc := range cases {
+		DeleteKeyInMap(tc.mapObject, tc.keyPath)
+		if !reflect.DeepEqual(tc.mapObject, tc.expected) {
+			t.Fatalf("%s: expected %s, but got %s", name, tc.expected, tc.mapObject)
 		}
 	}
 }

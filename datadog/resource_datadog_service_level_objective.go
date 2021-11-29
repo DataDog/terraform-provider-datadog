@@ -70,10 +70,9 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 							DiffSuppressFunc: suppressDataDogFloatIntDiff,
 						},
 						"target_display": {
-							Description:      "A string representation of the target that indicates its precision. It uses trailing zeros to show significant decimal places (e.g. `98.00`).",
-							Type:             schema.TypeString,
-							Optional:         true,
-							DiffSuppressFunc: suppressDataDogSLODisplayValueDiff,
+							Description: "A string representation of the target that indicates its precision. It uses trailing zeros to show significant decimal places (e.g. `98.00`).",
+							Type:        schema.TypeString,
+							Computed:    true,
 						},
 						"warning": {
 							Description:      "The objective's warning value in `[0,100]`. This must be greater than the target value.",
@@ -82,10 +81,9 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 							DiffSuppressFunc: suppressDataDogFloatIntDiff,
 						},
 						"warning_display": {
-							Description:      "A string representation of the warning target (see the description of the target_display field for details).",
-							Type:             schema.TypeString,
-							Optional:         true,
-							DiffSuppressFunc: suppressDataDogSLODisplayValueDiff,
+							Description: "A string representation of the warning target (see the description of the target_display field for details).",
+							Type:        schema.TypeString,
+							Computed:    true,
 						},
 					},
 				},
@@ -281,17 +279,6 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 				}
 			}
 
-			if targetDisplayValue, ok := d.GetOk(prefix + "target_display"); ok {
-				if s, ok := targetDisplayValue.(string); ok && strings.TrimSpace(s) != "" {
-					t.SetTargetDisplay(strings.TrimSpace(targetDisplayValue.(string)))
-				}
-			}
-
-			if warningDisplayValue, ok := d.GetOk(prefix + "warning_display"); ok {
-				if s, ok := warningDisplayValue.(string); ok && strings.TrimSpace(s) != "" {
-					t.SetWarningDisplay(strings.TrimSpace(warningDisplayValue.(string)))
-				}
-			}
 			sloThresholds = append(sloThresholds, *t)
 		}
 		if len(sloThresholds) > 0 {
@@ -524,24 +511,6 @@ func resourceDatadogServiceLevelObjectiveDelete(ctx context.Context, d *schema.R
 	}
 	return nil
 
-}
-
-// Ignore any diff that results from the mix of *_display string values from the
-// DataDog API.
-func suppressDataDogSLODisplayValueDiff(k, old, new string, d *schema.ResourceData) bool {
-	sloType := d.Get("type")
-	if sloType == datadogV1.SLOTYPE_MONITOR {
-		// always suppress monitor type, this is controlled via API.
-		return true
-	}
-
-	// metric type otherwise
-	if old == "" || new == "" {
-		// always suppress if not specified
-		return true
-	}
-
-	return suppressDataDogFloatIntDiff(k, old, new, d)
 }
 
 func trimStateValue(val interface{}) string {

@@ -12,8 +12,8 @@ resource "datadog_dashboard" "service_map_dashboard" {
   widget {
 		servicemap_definition {
 			service = "master-db"
-			filters = ["env:prod","datacenter:us1.prod.dog"]
-			title = "env: prod, datacenter:us1.prod.dog, service: master-db"
+			filters = ["env:prod","datacenter:dc1"]
+			title = "env: prod, datacenter:dc1, service: master-db"
 			title_size = "16"
 			title_align = "left"
       		custom_link {
@@ -48,9 +48,9 @@ var datadogDashboardServiceMapAsserts = []string{
 	"widget.0.servicemap_definition.0.service = master-db",
 	"is_read_only = true",
 	"widget.0.widget_layout.0.y = 5",
-	"widget.0.servicemap_definition.0.title = env: prod, datacenter:us1.prod.dog, service: master-db",
+	"widget.0.servicemap_definition.0.title = env: prod, datacenter:dc1, service: master-db",
 	"widget.0.widget_layout.0.height = 43",
-	"widget.0.servicemap_definition.0.filters.1 = datacenter:us1.prod.dog",
+	"widget.0.servicemap_definition.0.filters.1 = datacenter:dc1",
 	"widget.0.servicemap_definition.0.custom_link.# = 2",
 	"widget.0.servicemap_definition.0.custom_link.0.label = Test Custom Link label",
 	"widget.0.servicemap_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",

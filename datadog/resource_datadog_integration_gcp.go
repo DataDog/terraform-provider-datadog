@@ -71,7 +71,7 @@ func resourceDatadogIntegrationGcp() *schema.Resource {
 const (
 	defaultType                    = "service_account"
 	defaultAuthURI                 = "https://accounts.google.com/o/oauth2/auth"
-	defaultTokenURI                = "https://accounts.google.com/o/oauth2/token"
+	defaultTokenURI                = "https://oauth2.googleapis.com/token"
 	defaultAuthProviderX509CertURL = "https://www.googleapis.com/oauth2/v1/certs"
 	defaultClientX509CertURLPrefix = "https://www.googleapis.com/robot/v1/metadata/x509/"
 )

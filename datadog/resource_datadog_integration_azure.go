@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -10,6 +11,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+var integrationAzureMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationAzure() *schema.Resource {
 	return &schema.Resource{
@@ -44,6 +47,12 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"automute": {
+				Description: "Silence monitors for expected Azure VM shutdowns.",
+				Type:        schema.TypeBool,
+				Default:     false,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -53,7 +62,7 @@ func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.Resource
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	tenantName, _, err := utils.TenantAndClientFromID(d.Id())
+	tenantName, clientId, err := utils.TenantAndClientFromID(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -66,9 +75,10 @@ func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.Resource
 		return diag.FromErr(err)
 	}
 	for _, integration := range integrations {
-		if integration.GetTenantName() == tenantName {
+		if integration.GetTenantName() == tenantName && integration.GetClientId() == clientId {
 			d.Set("tenant_name", integration.GetTenantName())
 			d.Set("client_id", integration.GetClientId())
+			d.Set("automute", integration.GetAutomute())
 			hostFilters, exists := integration.GetHostFiltersOk()
 			if exists {
 				d.Set("host_filters", hostFilters)
@@ -83,6 +93,9 @@ func resourceDatadogIntegrationAzureCreate(ctx context.Context, d *schema.Resour
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
+
+	integrationAzureMutex.Lock()
+	defer integrationAzureMutex.Unlock()
 
 	tenantName := d.Get("tenant_name").(string)
 	clientID := d.Get("client_id").(string)
@@ -102,6 +115,9 @@ func resourceDatadogIntegrationAzureUpdate(ctx context.Context, d *schema.Resour
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
+
+	integrationAzureMutex.Lock()
+	defer integrationAzureMutex.Unlock()
 
 	existingTenantName, existingClientID, err := utils.TenantAndClientFromID(d.Id())
 	if err != nil {
@@ -124,6 +140,9 @@ func resourceDatadogIntegrationAzureDelete(ctx context.Context, d *schema.Resour
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
+	integrationAzureMutex.Lock()
+	defer integrationAzureMutex.Unlock()
+
 	tenantName, clientID, err := utils.TenantAndClientFromID(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
@@ -145,6 +164,8 @@ func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.Resource
 	// Optional params
 	hostFilters := terraformDefinition.Get("host_filters")
 	datadogDefinition.SetHostFilters(hostFilters.(string))
+	automute := terraformDefinition.Get("automute")
+	datadogDefinition.SetAutomute(automute.(bool))
 
 	clientSecret, exists := terraformDefinition.GetOk("client_secret")
 	if exists {

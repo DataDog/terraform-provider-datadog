@@ -18,7 +18,6 @@ resource "datadog_monitor" "foo" {
   renotify_interval = 60
 
   notify_audit = false
-  timeout_h    = 60
   include_tags = true
 
   tags = ["foo:bar", "baz"]

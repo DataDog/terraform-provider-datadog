@@ -60,6 +60,10 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 					if widgets, ok := attrMap["widgets"].([]interface{}); ok {
 						deleteWidgetID(widgets)
 					}
+					// 'restricted_roles' takes precedence over 'is_read_only'
+					if _, ok := attrMap["restricted_roles"].([]interface{}); ok {
+						delete(attrMap, "is_read_only")
+					}
 					res, _ := structure.FlattenJsonToString(attrMap)
 					return res
 				},
@@ -232,6 +236,11 @@ func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]inter
 
 	// Remove every widget id too
 	deleteWidgetID(dashboard["widgets"].([]interface{}))
+
+	// 'restricted_roles' takes precedence over 'is_read_only'
+	if _, ok := dashboard["restricted_roles"].([]interface{}); ok {
+		delete(dashboard, "is_read_only")
+	}
 
 	dashboardString, err := structure.FlattenJsonToString(dashboard)
 	if err != nil {

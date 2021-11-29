@@ -33,6 +33,7 @@ resource "datadog_integration_azure" "sandbox" {
 
 ### Optional
 
+- **automute** (Boolean) Silence monitors for expected Azure VM shutdowns.
 - **host_filters** (String) String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. e.x. `env:production,deploymentgroup:red`
 
 ### Read-Only

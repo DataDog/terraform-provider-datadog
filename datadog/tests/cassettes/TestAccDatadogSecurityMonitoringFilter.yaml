@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"data":{"attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"second","query":"neither does it"}],"filtered_data_type":"logs","is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626856060","query":"first query"},"type":"security_filters"}}
+      {"data":{"attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"second","query":"neither does it"}],"filtered_data_type":"logs","is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","query":"first query"},"type":"security_filters"}}
     form: {}
     headers:
       Accept:
@@ -13,11 +13,11 @@ interactions:
       Dd-Operation-Id:
       - CreateSecurityFilter
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters
     method: POST
   response:
-    body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626856060","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"tfd-pno-vew"}}'
+    body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
     headers:
       Cache-Control:
       - no-cache
@@ -30,7 +30,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 21 Jul 2021 08:27:43 GMT
+      - Fri, 01 Oct 2021 08:50:46 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -46,9 +46,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "598"
+      - "570"
       X-Ratelimit-Reset:
-      - "17"
+      - "14"
     status: 200 OK
     code: 200
     duration: ""
@@ -61,11 +61,11 @@ interactions:
       Dd-Operation-Id:
       - GetSecurityFilter
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/tfd-pno-vew
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: GET
   response:
-    body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626856060","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"tfd-pno-vew"}}'
+    body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
     headers:
       Cache-Control:
       - no-cache
@@ -78,7 +78,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 21 Jul 2021 08:27:43 GMT
+      - Fri, 01 Oct 2021 08:50:50 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -94,9 +94,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "597"
+      - "564"
       X-Ratelimit-Reset:
-      - "17"
+      - "10"
     status: 200 OK
     code: 200
     duration: ""
@@ -109,11 +109,11 @@ interactions:
       Dd-Operation-Id:
       - GetSecurityFilter
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/tfd-pno-vew
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: GET
   response:
-    body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626856060","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"tfd-pno-vew"}}'
+    body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
     headers:
       Cache-Control:
       - no-cache
@@ -126,7 +126,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 21 Jul 2021 08:27:44 GMT
+      - Fri, 01 Oct 2021 08:51:00 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -142,9 +142,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "596"
+      - "599"
       X-Ratelimit-Reset:
-      - "16"
+      - "60"
     status: 200 OK
     code: 200
     duration: ""
@@ -157,11 +157,11 @@ interactions:
       Dd-Operation-Id:
       - GetSecurityFilter
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/tfd-pno-vew
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: GET
   response:
-    body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626856060","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"tfd-pno-vew"}}'
+    body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
     headers:
       Cache-Control:
       - no-cache
@@ -174,7 +174,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 21 Jul 2021 08:27:45 GMT
+      - Fri, 01 Oct 2021 08:51:17 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -190,15 +190,15 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "595"
+      - "583"
       X-Ratelimit-Reset:
-      - "15"
+      - "43"
     status: 200 OK
     code: 200
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"third","query":"I am new"}],"filtered_data_type":"logs","is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626856060","query":"new query","version":1},"type":"security_filters"}}
+      {"data":{"attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"third","query":"I am new"}],"filtered_data_type":"logs","is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","query":"new query","version":1},"type":"security_filters"}}
     form: {}
     headers:
       Accept:
@@ -208,11 +208,11 @@ interactions:
       Dd-Operation-Id:
       - UpdateSecurityFilter
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/tfd-pno-vew
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: PATCH
   response:
-    body: '{"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626856060","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query","is_builtin":false},"type":"security_filters","id":"tfd-pno-vew"}}'
+    body: '{"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
     headers:
       Cache-Control:
       - no-cache
@@ -225,7 +225,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 21 Jul 2021 08:27:46 GMT
+      - Fri, 01 Oct 2021 08:51:28 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -241,9 +241,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "594"
+      - "577"
       X-Ratelimit-Reset:
-      - "14"
+      - "32"
     status: 200 OK
     code: 200
     duration: ""
@@ -256,11 +256,11 @@ interactions:
       Dd-Operation-Id:
       - GetSecurityFilter
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/tfd-pno-vew
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: GET
   response:
-    body: '{"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626856060","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query","is_builtin":false},"type":"security_filters","id":"tfd-pno-vew"}}'
+    body: '{"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
     headers:
       Cache-Control:
       - no-cache
@@ -273,7 +273,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 21 Jul 2021 08:27:46 GMT
+      - Fri, 01 Oct 2021 08:51:31 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -289,9 +289,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "593"
+      - "571"
       X-Ratelimit-Reset:
-      - "14"
+      - "29"
     status: 200 OK
     code: 200
     duration: ""
@@ -304,11 +304,11 @@ interactions:
       Dd-Operation-Id:
       - GetSecurityFilter
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/tfd-pno-vew
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: GET
   response:
-    body: '{"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1626856060","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query","is_builtin":false},"type":"security_filters","id":"tfd-pno-vew"}}'
+    body: '{"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
     headers:
       Cache-Control:
       - no-cache
@@ -321,7 +321,7 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Wed, 21 Jul 2021 08:27:47 GMT
+      - Fri, 01 Oct 2021 08:51:40 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -337,9 +337,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "592"
+      - "564"
       X-Ratelimit-Reset:
-      - "13"
+      - "20"
     status: 200 OK
     code: 200
     duration: ""
@@ -352,8 +352,8 @@ interactions:
       Dd-Operation-Id:
       - DeleteSecurityFilter
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/tfd-pno-vew
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: DELETE
   response:
     body: ""
@@ -369,7 +369,7 @@ interactions:
       Content-Security-Policy:
       - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Date:
-      - Wed, 21 Jul 2021 08:27:48 GMT
+      - Fri, 01 Oct 2021 08:51:53 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -383,9 +383,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "591"
+      - "559"
       X-Ratelimit-Reset:
-      - "12"
+      - "7"
     status: 204 No Content
     code: 204
     duration: ""
@@ -398,11 +398,11 @@ interactions:
       Dd-Operation-Id:
       - GetSecurityFilter
       User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.0) datadog-api-client-go/1.1.1+dev (go go1.16.5; os darwin; arch amd64)
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/tfd-pno-vew
+      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: GET
   response:
-    body: '{"errors":["not_found(Security filter with id ''tfd-pno-vew'' not found)"]}'
+    body: '{"errors":["not_found(Security filter with id ''as1-no6-k6b'' not found)"]}'
     headers:
       Cache-Control:
       - no-cache
@@ -413,7 +413,7 @@ interactions:
       Content-Type:
       - application/json
       Date:
-      - Wed, 21 Jul 2021 08:27:48 GMT
+      - Fri, 01 Oct 2021 08:51:54 GMT
       Pragma:
       - no-cache
       Strict-Transport-Security:
@@ -429,9 +429,9 @@ interactions:
       X-Ratelimit-Period:
       - "60"
       X-Ratelimit-Remaining:
-      - "590"
+      - "557"
       X-Ratelimit-Reset:
-      - "12"
+      - "6"
     status: 404 Not Found
     code: 404
     duration: ""
