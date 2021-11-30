@@ -55,12 +55,12 @@ func resourceDatadogMonitorJSON() *schema.Resource {
 			if !ok {
 				return true
 			}
-			
+
 			newType, ok := newAttrMap["type"].(string)
 			if !ok {
-                                return true
-                        }
-			
+				return true
+			}
+
 			return oldType != newType
 		}),
 		Schema: map[string]*schema.Schema{
