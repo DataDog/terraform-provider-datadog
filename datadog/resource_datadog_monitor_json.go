@@ -74,6 +74,16 @@ func resourceDatadogMonitorJSON() *schema.Resource {
 					for _, f := range monitorComputedFields {
 						utils.DeleteKeyInMap(attrMap, strings.Split(f, "."))
 					}
+					if name, ok := attrMap["name"]; ok {
+						if name, ok := name.(string); ok {
+							attrMap["name"] = strings.TrimSpace(name)
+						}
+					}
+					if msg, ok := attrMap["message"]; ok {
+						if msg, ok := msg.(string); ok {
+							attrMap["message"] = strings.TrimSpace(msg)
+						}
+					}
 
 					res, _ := structure.FlattenJsonToString(attrMap)
 					return res
