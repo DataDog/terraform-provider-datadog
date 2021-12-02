@@ -173,7 +173,7 @@ func resourceDatadogMonitor() *schema.Resource {
 			// refers to this terraform resource. In the API, setting new_group_delay
 			// to any value, including zero, causes it to override new_host_delay.
 			"new_group_delay": {
-				Description: "Time (in seconds) to skip evaluations for new groups.\n\n`new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.",
+				Description: "The time (in seconds) to skip evaluations for new groups.\n\n`new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 			},
@@ -184,7 +184,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				Default:     300,
-				Deprecated:  "Use `new_group_delay` (except when setting `new_host_delay` to zero).",
+				Deprecated:  "Use `new_group_delay` except when setting `new_host_delay` to zero.",
 			},
 			"evaluation_delay": {
 				Description: "(Only applies to metric alert) Time (in seconds) to delay evaluation, as a non-negative integer.\n\nFor example, if the value is set to `300` (5min), the `timeframe` is set to `last_5m` and the time is 7:00, the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor will always have data during evaluation.",
