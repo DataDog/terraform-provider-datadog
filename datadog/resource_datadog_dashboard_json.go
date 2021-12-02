@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sort"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -63,6 +64,12 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 					// 'restricted_roles' takes precedence over 'is_read_only'
 					if _, ok := attrMap["restricted_roles"].([]interface{}); ok {
 						delete(attrMap, "is_read_only")
+					}
+					// handle `notify_list` order
+					if notifyList, ok := attrMap["notify_list"].([]interface{}); ok {
+						sort.SliceStable(notifyList, func(i, j int) bool {
+							return notifyList[i].(string) < notifyList[j].(string)
+						})
 					}
 					res, _ := structure.FlattenJsonToString(attrMap)
 					return res
@@ -240,6 +247,13 @@ func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]inter
 	// 'restricted_roles' takes precedence over 'is_read_only'
 	if _, ok := dashboard["restricted_roles"].([]interface{}); ok {
 		delete(dashboard, "is_read_only")
+	}
+
+	// handle `notify_list` order
+	if notifyList, ok := dashboard["notify_list"].([]interface{}); ok {
+		sort.SliceStable(notifyList, func(i, j int) bool {
+			return notifyList[i].(string) < notifyList[j].(string)
+		})
 	}
 
 	dashboardString, err := structure.FlattenJsonToString(dashboard)
