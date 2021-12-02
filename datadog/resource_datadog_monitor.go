@@ -173,18 +173,18 @@ func resourceDatadogMonitor() *schema.Resource {
 			// refers to this terraform resource. In the API, setting new_group_delay
 			// to any value, including zero, causes it to override new_host_delay.
 			"new_group_delay": {
-				Description: "Time (in seconds) to skip evaluations for new groups.\n\n`new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.\n\nTo disable group delay for monitors grouped by host, `new_host_delay` must be set to zero due to the default value of `300` for that field (`new_group_delay` defaults to zero, so setting it to zero is not required).",
+				Description: "Time (in seconds) to skip evaluations for new groups.\n\n`new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 			},
 			"new_host_delay": {
 				// Removing the default requires removing the default in the API as well (possibly only for
 				// terraform user agents)
-				Description: "Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. Defaults to `300` (this default will be removed in a major version release and `new_host_delay` will be removed entirely in a subsequent major version release).",
+				Description: "**Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. Defaults to `300`. The only case when this should be used is to override the default and `new_host_delay` to zero for monitors grouped by host.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 				Default:     300,
-				Deprecated:  "Prefer using new_group_delay (except when setting `new_host_delay` to zero).",
+				Deprecated:  "Use `new_group_delay` (except when setting `new_host_delay` to zero).",
 			},
 			"evaluation_delay": {
 				Description: "(Only applies to metric alert) Time (in seconds) to delay evaluation, as a non-negative integer.\n\nFor example, if the value is set to `300` (5min), the `timeframe` is set to `last_5m` and the time is 7:00, the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor will always have data during evaluation.",
