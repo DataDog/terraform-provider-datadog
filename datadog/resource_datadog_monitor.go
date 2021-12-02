@@ -180,7 +180,7 @@ func resourceDatadogMonitor() *schema.Resource {
 			"new_host_delay": {
 				// Removing the default requires removing the default in the API as well (possibly only for
 				// terraform user agents)
-				Description: "**Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. Defaults to `300`. The only case when this should be used is to override the default and `new_host_delay` to zero for monitors grouped by host.",
+				Description: "**Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. Defaults to `300`. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 				Default:     300,
