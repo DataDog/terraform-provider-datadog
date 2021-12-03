@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sort"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -51,19 +52,8 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 				Required:     true,
 				ValidateFunc: validation.StringIsJSON,
 				StateFunc: func(v interface{}) string {
-					// Remove computed fields when comparing diffs
 					attrMap, _ := structure.ExpandJsonFromString(v.(string))
-					for _, f := range computedFields {
-						delete(attrMap, f)
-					}
-					// Remove every widget id too
-					if widgets, ok := attrMap["widgets"].([]interface{}); ok {
-						deleteWidgetID(widgets)
-					}
-					// 'restricted_roles' takes precedence over 'is_read_only'
-					if _, ok := attrMap["restricted_roles"].([]interface{}); ok {
-						delete(attrMap, "is_read_only")
-					}
+					prepResource(attrMap)
 					res, _ := structure.FlattenJsonToString(attrMap)
 					return res
 				},
@@ -229,18 +219,7 @@ func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]inter
 		}
 	}
 
-	// Remove computed fields from the object
-	for _, f := range computedFields {
-		delete(dashboard, f)
-	}
-
-	// Remove every widget id too
-	deleteWidgetID(dashboard["widgets"].([]interface{}))
-
-	// 'restricted_roles' takes precedence over 'is_read_only'
-	if _, ok := dashboard["restricted_roles"].([]interface{}); ok {
-		delete(dashboard, "is_read_only")
-	}
+	prepResource(dashboard)
 
 	dashboardString, err := structure.FlattenJsonToString(dashboard)
 	if err != nil {
@@ -251,4 +230,27 @@ func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]inter
 		return diag.FromErr(err)
 	}
 	return nil
+}
+
+func prepResource(attrMap map[string]interface{}) map[string]interface{} {
+	// Remove computed fields when comparing diffs
+	for _, f := range computedFields {
+		delete(attrMap, f)
+	}
+	// Remove every widget id too
+	if widgets, ok := attrMap["widgets"].([]interface{}); ok {
+		deleteWidgetID(widgets)
+	}
+	// 'restricted_roles' takes precedence over 'is_read_only'
+	if _, ok := attrMap["restricted_roles"].([]interface{}); ok {
+		delete(attrMap, "is_read_only")
+	}
+	// handle `notify_list` order
+	if notifyList, ok := attrMap["notify_list"].([]interface{}); ok {
+		sort.SliceStable(notifyList, func(i, j int) bool {
+			return notifyList[i].(string) < notifyList[j].(string)
+		})
+	}
+
+	return attrMap
 }
