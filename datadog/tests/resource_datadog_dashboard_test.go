@@ -1745,3 +1745,60 @@ func TestAccDatadogDashboardMultiSizeLayout_createAuto(t *testing.T) {
 		},
 	})
 }
+
+func datadogDashboardNotifyListConfig(uniqueDashboardName string) string {
+	return fmt.Sprintf(`
+resource "datadog_user" "one" {
+  email     = "z-user@example.com"
+  name      = "Test User"
+}
+resource "datadog_user" "two" {
+  email     = "a-user@example.com"
+  name      = "Test User"
+}
+resource "datadog_user" "three" {
+  email     = "k-user@example.com"
+  name      = "Test User"
+}
+
+resource "datadog_dashboard" "ordered_dashboard" {
+  title        = "%s"
+  description  = "Created using the Datadog provider in Terraform"
+  layout_type  = "ordered"
+  is_read_only = true
+  notify_list = [datadog_user.one.email, datadog_user.two.email, datadog_user.three.email]
+  
+  depends_on = [
+    datadog_user.one,
+    datadog_user.two,
+    datadog_user.three,
+  ]
+}`, uniqueDashboardName)
+}
+
+var notifyListDashboardAsserts = []string{
+	"notify_list.# = 3",
+	"notify_list.TypeSet = z-user@example.com",
+	"notify_list.TypeSet = a-user@example.com",
+	"notify_list.TypeSet = k-user@example.com",
+}
+
+func TestAccDatadogDashboardNotifyListDiff(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	boardName := uniqueEntityName(ctx, t)
+	asserts := notifyListDashboardAsserts
+	accProvider := testAccProvider(t, accProviders)
+	checks := testCheckResourceAttrs("datadog_dashboard.ordered_dashboard", checkDashboardExists(accProvider), asserts)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: datadogDashboardNotifyListConfig(boardName),
+				Check:  resource.ComposeTestCheckFunc(checks...),
+			},
+		},
+	})
+}
