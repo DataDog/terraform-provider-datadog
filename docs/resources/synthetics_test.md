@@ -297,7 +297,7 @@ resource "datadog_synthetics_test" "test_browser" {
 - **request_headers** (Map of String) Header name and value map.
 - **request_query** (Map of String) Query arguments name and value map.
 - **set_cookie** (String) Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.
-- **subtype** (String) The subtype of the Synthetic API test. Defaults to `http`. Valid values are `http`, `ssl`, `tcp`, `dns`, `multi`, `icmp`, `udp`.
+- **subtype** (String) The subtype of the Synthetic API test. Defaults to `http`. Valid values are `http`, `ssl`, `tcp`, `dns`, `multi`, `icmp`, `udp`, `websocket`.
 - **tags** (List of String) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).
 
 ### Read-Only
