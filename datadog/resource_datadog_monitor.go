@@ -363,10 +363,11 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	}
 	if attr, ok := d.GetOk("new_group_delay"); ok {
 		o.SetNewGroupDelay(int64(attr.(int)))
+	} else {
+		// Don't check with GetOk, doesn't work with 0 (we can't do the same for
+		// new_group_delay because it would always override new_host_delay).
+		o.SetNewHostDelay(int64(d.Get("new_host_delay").(int)))
 	}
-	// Don't check with GetOk, doesn't work with 0 (we can't do the same for
-	// new_group_delay because it would always override new_host_delay).
-	o.SetNewHostDelay(int64(d.Get("new_host_delay").(int)))
 	if attr, ok := d.GetOk("evaluation_delay"); ok {
 		o.SetEvaluationDelay(int64(attr.(int)))
 	}
@@ -564,11 +565,16 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		}
 	}
 
-	if err := d.Set("new_group_delay", m.Options.GetNewGroupDelay()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("new_host_delay", m.Options.GetNewHostDelay()); err != nil {
-		return diag.FromErr(err)
+	// Set `new_host_delay` only if `new_group_delay` is 0, never set both
+	newGroupDelay := m.Options.GetNewGroupDelay()
+	if newGroupDelay != 0 {
+		if err := d.Set("new_group_delay", newGroupDelay); err != nil {
+			return diag.FromErr(err)
+		}
+	} else {
+		if err := d.Set("new_host_delay", m.Options.GetNewHostDelay()); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	if err := d.Set("evaluation_delay", m.Options.GetEvaluationDelay()); err != nil {
 		return diag.FromErr(err)

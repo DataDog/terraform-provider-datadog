@@ -227,8 +227,6 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "new_group_delay", "500"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "new_host_delay", "300"),
-					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "evaluation_delay", "700"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
@@ -376,8 +374,6 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "new_group_delay", "500"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "new_host_delay", "300"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "evaluation_delay", "700"),
 					resource.TestCheckResourceAttr(
