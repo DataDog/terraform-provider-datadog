@@ -1766,7 +1766,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
   description  = "Created using the Datadog provider in Terraform"
   layout_type  = "ordered"
   is_read_only = true
-  notify_list = [datadog_user.one.email, datadog_user.two.email, datadog_user.three.email]
+  notify_list  = [datadog_user.one.email, datadog_user.two.email, datadog_user.three.email]
   
   depends_on = [
     datadog_user.one,
