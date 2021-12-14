@@ -150,8 +150,7 @@ func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schem
 
 	d.SetId(getSyntheticsGlobalVariableResponse.GetId())
 
-	// Return the read function to ensure the state is reflected in the terraform.state file
-	return resourceDatadogSyntheticsGlobalVariableRead(ctx, d, meta)
+	return updateSyntheticsGlobalVariableLocalState(d, syntheticsGlobalVariable)
 }
 
 func resourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -187,8 +186,7 @@ func resourceDatadogSyntheticsGlobalVariableUpdate(ctx context.Context, d *schem
 		utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics global variable")
 	}
 
-	// Return the read function to ensure the state is reflected in the terraform.state file
-	return resourceDatadogSyntheticsGlobalVariableRead(ctx, d, meta)
+	return updateSyntheticsGlobalVariableLocalState(d, syntheticsGlobalVariable)
 }
 
 func resourceDatadogSyntheticsGlobalVariableDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {

@@ -396,13 +396,15 @@ func testSyntheticsResourceIsDestroyed(accProvider func() (*schema.Provider, err
 				return fmt.Errorf("synthetics test still exists")
 			}
 
-			if _, _, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, r.Primary.ID); err != nil {
-				if strings.Contains(err.Error(), "404 Not Found") {
-					continue
+			if r.Type == "datadog_synthetics_global_variable" {
+				if _, _, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, r.Primary.ID); err != nil {
+					if strings.Contains(err.Error(), "404 Not Found") {
+						continue
+					}
+					return fmt.Errorf("received an error retrieving synthetics global variable %s", err)
 				}
-				return fmt.Errorf("received an error retrieving synthetics global variable %s", err)
+				return fmt.Errorf("synthetics global variable still exists")
 			}
-			return fmt.Errorf("synthetics global variable still exists")
 		}
 		return nil
 	}
