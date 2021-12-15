@@ -6,6 +6,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -387,23 +389,35 @@ func testSyntheticsResourceIsDestroyed(accProvider func() (*schema.Provider, err
 			}
 
 			if r.Type == "datadog_synthetics_test" {
-				if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID); err != nil {
-					if strings.Contains(err.Error(), "404 Not Found") {
-						continue
+				err := utils.Retry(2, 5, func() error {
+					if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID); err != nil {
+						if strings.Contains(err.Error(), "404 Not Found") {
+							return nil
+						}
+						return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving synthetics test %s", err)}
 					}
-					return fmt.Errorf("received an error retrieving synthetics test %s", err)
+					return &utils.RetryableError{Prob: fmt.Sprintf("synthetics test still exists")}
+				})
+				if err != nil {
+					return err
 				}
-				return fmt.Errorf("synthetics test still exists")
+				continue
 			}
 
 			if r.Type == "datadog_synthetics_global_variable" {
-				if _, _, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, r.Primary.ID); err != nil {
-					if strings.Contains(err.Error(), "404 Not Found") {
-						continue
+				err := utils.Retry(2, 5, func() error {
+					if _, _, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, r.Primary.ID); err != nil {
+						if strings.Contains(err.Error(), "404 Not Found") {
+							return nil
+						}
+						return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving synthetics global variable %s", err)}
 					}
-					return fmt.Errorf("received an error retrieving synthetics global variable %s", err)
+					return &utils.RetryableError{Prob: fmt.Sprintf("synthetics global variable still exists")}
+				})
+				if err != nil {
+					return err
 				}
-				return fmt.Errorf("synthetics global variable still exists")
+				continue
 			}
 		}
 		return nil
