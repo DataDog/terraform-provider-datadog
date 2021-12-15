@@ -36,7 +36,7 @@ resource "datadog_slo_correction" "example_slo_correction" {
   description = "correction example"
   start       = 1735707000
   end         = 1735718600
-  slo_id      = "${datadog_service_level_objective.example_slo.id}"
+  slo_id      = datadog_service_level_objective.example_slo.id
   timezone    = "UTC"
 }
 resource "datadog_slo_correction" "example_slo_correction_with_recurrence" {
@@ -45,7 +45,7 @@ resource "datadog_slo_correction" "example_slo_correction_with_recurrence" {
   start       = 1735707000
   rrule       = "FREQ=DAILY;INTERVAL=3"
   duration    = 3600
-  slo_id      = "${datadog_service_level_objective.example_slo.id}"
+  slo_id      = datadog_service_level_objective.example_slo.id
   timezone    = "UTC"
 }
 ```
