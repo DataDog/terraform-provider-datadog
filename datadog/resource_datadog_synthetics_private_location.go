@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	_nethttp "net/http"
+	"net/http"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -67,7 +67,7 @@ func resourceDatadogSyntheticsPrivateLocationCreate(ctx context.Context, d *sche
 	}
 
 	var getSyntheticsPrivateLocationRespone datadogV1.SyntheticsPrivateLocation
-	var httpResponseGet *_nethttp.Response
+	var httpResponseGet *http.Response
 	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
 		getSyntheticsPrivateLocationRespone, httpResponseGet, err = datadogClientV1.SyntheticsApi.GetPrivateLocation(authV1, *createdSyntheticsPrivateLocationResponse.PrivateLocation.Id)
 		if err != nil {

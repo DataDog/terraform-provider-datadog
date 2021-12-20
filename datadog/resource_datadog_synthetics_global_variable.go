@@ -3,7 +3,7 @@ package datadog
 import (
 	"context"
 	"fmt"
-	_nethttp "net/http"
+	"net/http"
 	"regexp"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -128,7 +128,7 @@ func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schem
 	}
 
 	var getSyntheticsGlobalVariableResponse datadogV1.SyntheticsGlobalVariable
-	var httpResponseGet *_nethttp.Response
+	var httpResponseGet *http.Response
 	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
 		getSyntheticsGlobalVariableResponse, httpResponseGet, err = datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, createdSyntheticsGlobalVariable.GetId())
 		if err != nil {
