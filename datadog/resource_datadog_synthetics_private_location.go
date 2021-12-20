@@ -3,11 +3,14 @@ package datadog
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	_nethttp "net/http"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -63,10 +66,28 @@ func resourceDatadogSyntheticsPrivateLocationCreate(ctx context.Context, d *sche
 		return diag.FromErr(err)
 	}
 
-	createdSyntheticsPrivateLocation := createdSyntheticsPrivateLocationResponse.GetPrivateLocation()
-	// If the Create callback returns with or without an error without an ID set using SetId,
-	// the resource is assumed to not be created, and no state is saved.
-	d.SetId(createdSyntheticsPrivateLocation.GetId())
+	var getSyntheticsPrivateLocationRespone datadogV1.SyntheticsPrivateLocation
+	var httpResponseGet *_nethttp.Response
+	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		getSyntheticsPrivateLocationRespone, httpResponseGet, err = datadogClientV1.SyntheticsApi.GetPrivateLocation(authV1, *createdSyntheticsPrivateLocationResponse.PrivateLocation.Id)
+		if err != nil {
+			if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
+				return resource.RetryableError(fmt.Errorf("synthetics private location not created yet"))
+			}
+
+			return resource.NonRetryableError(err)
+		}
+		if err := utils.CheckForUnparsed(getSyntheticsPrivateLocationRespone); err != nil {
+			return resource.NonRetryableError(err)
+		}
+
+		return nil
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	d.SetId(getSyntheticsPrivateLocationRespone.GetId())
 
 	// set the config that is only returned when creating the private location
 	conf, _ := json.Marshal(createdSyntheticsPrivateLocationResponse.GetConfig())

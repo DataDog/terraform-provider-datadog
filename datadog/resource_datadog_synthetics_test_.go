@@ -17,6 +17,7 @@ import (
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -812,20 +813,39 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 
 	if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
 		syntheticsTest := buildSyntheticsAPITestStruct(d)
-		createdSyntheticsTest, httpResponse, err := datadogClientV1.SyntheticsApi.CreateSyntheticsAPITest(authV1, *syntheticsTest)
+		createdSyntheticsTest, httpResponseCreate, err := datadogClientV1.SyntheticsApi.CreateSyntheticsAPITest(authV1, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
-			return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics API test")
+			return utils.TranslateClientErrorDiag(err, httpResponseCreate, "error creating synthetics API test")
 		}
 		if err := utils.CheckForUnparsed(createdSyntheticsTest); err != nil {
 			return diag.FromErr(err)
 		}
 
-		// If the Create callback returns with or without an error without an ID set using SetId,
-		// the resource is assumed to not be created, and no state is saved.
-		d.SetId(createdSyntheticsTest.GetPublicId())
+		var getSyntheticsApiTestResponse datadogV1.SyntheticsAPITest
+		var httpResponseGet *_nethttp.Response
+		err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+			getSyntheticsApiTestResponse, httpResponseGet, err = datadogClientV1.SyntheticsApi.GetAPITest(authV1, createdSyntheticsTest.GetPublicId())
+			if err != nil {
+				if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
+					return resource.RetryableError(fmt.Errorf("synthetics api test not created yet"))
+				}
 
-		return updateSyntheticsAPITestLocalState(d, &createdSyntheticsTest)
+				return resource.NonRetryableError(err)
+			}
+			if err := utils.CheckForUnparsed(getSyntheticsApiTestResponse); err != nil {
+				return resource.NonRetryableError(err)
+			}
+
+			return nil
+		})
+		if err != nil {
+			return diag.FromErr(err)
+		}
+
+		d.SetId(getSyntheticsApiTestResponse.GetPublicId())
+
+		return updateSyntheticsAPITestLocalState(d, &getSyntheticsApiTestResponse)
 	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
 		createdSyntheticsTest, httpResponse, err := datadogClientV1.SyntheticsApi.CreateSyntheticsBrowserTest(authV1, *syntheticsTest)
@@ -837,11 +857,30 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 			return diag.FromErr(err)
 		}
 
-		// If the Create callback returns with or without an error without an ID set using SetId,
-		// the resource is assumed to not be created, and no state is saved.
-		d.SetId(createdSyntheticsTest.GetPublicId())
+		var getSyntheticsBrowserTestResponse datadogV1.SyntheticsBrowserTest
+		var httpResponseGet *_nethttp.Response
+		err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+			getSyntheticsBrowserTestResponse, httpResponseGet, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, createdSyntheticsTest.GetPublicId())
+			if err != nil {
+				if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
+					return resource.RetryableError(fmt.Errorf("synthetics browser test not created yet"))
+				}
 
-		return updateSyntheticsBrowserTestLocalState(d, &createdSyntheticsTest)
+				return resource.NonRetryableError(err)
+			}
+			if err := utils.CheckForUnparsed(getSyntheticsBrowserTestResponse); err != nil {
+				return resource.NonRetryableError(err)
+			}
+
+			return nil
+		})
+		if err != nil {
+			return diag.FromErr(err)
+		}
+
+		d.SetId(getSyntheticsBrowserTestResponse.GetPublicId())
+
+		return updateSyntheticsBrowserTestLocalState(d, &getSyntheticsBrowserTestResponse)
 	}
 
 	return diag.Errorf("unrecognized synthetics test type %v", testType)
