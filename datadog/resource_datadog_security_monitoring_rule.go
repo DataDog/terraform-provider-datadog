@@ -32,7 +32,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Type:        schema.TypeList,
 			Required:    true,
 			Description: "Cases for generating signals.",
-			MaxItems:    5,
+			MaxItems:    10,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"name": {
