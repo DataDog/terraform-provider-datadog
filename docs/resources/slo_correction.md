@@ -43,7 +43,7 @@ resource "datadog_slo_correction" "example_slo_correction_with_recurrence" {
   category    = "Scheduled Maintenance"
   description = "correction example with recurrence"
   start       = 1735707000
-  rrule       = "FREQ=DAILY;INTERVAL=3"
+  rrule       = "FREQ=DAILY;INTERVAL=3;COUNT=3"
   duration    = 3600
   slo_id      = datadog_service_level_objective.example_slo.id
   timezone    = "UTC"
