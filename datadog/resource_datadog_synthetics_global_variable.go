@@ -2,6 +2,8 @@ package datadog
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 	"regexp"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -9,6 +11,7 @@ import (
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -124,9 +127,28 @@ func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schem
 		return diag.FromErr(err)
 	}
 
-	// If the Create callback returns with or without an error without an ID set using SetId,
-	// the resource is assumed to not be created, and no state is saved.
-	d.SetId(createdSyntheticsGlobalVariable.GetId())
+	var getSyntheticsGlobalVariableResponse datadogV1.SyntheticsGlobalVariable
+	var httpResponseGet *http.Response
+	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		getSyntheticsGlobalVariableResponse, httpResponseGet, err = datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, createdSyntheticsGlobalVariable.GetId())
+		if err != nil {
+			if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
+				return resource.RetryableError(fmt.Errorf("synthetics global variable not created yet"))
+			}
+
+			return resource.NonRetryableError(err)
+		}
+		if err := utils.CheckForUnparsed(getSyntheticsGlobalVariableResponse); err != nil {
+			return resource.NonRetryableError(err)
+		}
+
+		return nil
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	d.SetId(getSyntheticsGlobalVariableResponse.GetId())
 
 	// Return the read function to ensure the state is reflected in the terraform.state file
 	return resourceDatadogSyntheticsGlobalVariableRead(ctx, d, meta)
