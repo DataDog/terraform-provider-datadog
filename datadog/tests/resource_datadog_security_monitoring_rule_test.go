@@ -350,10 +350,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		query = "@agent.rule_id:(%s_random_id OR random_id)"
 		aggregation = "count"
 		group_by_fields = ["host"]
-		agent_rule {
-			agent_rule_id = "random_id"
-			expression = "open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0"
-		}
 	}
 
 	case {
@@ -393,10 +389,6 @@ func testAccCheckDatadogSecurityMonitoringCreatedCheckCwsRule(accProvider func()
 			tfSecurityRuleName, "query.0.aggregation", "count"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "host"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.0.agent_rule.0.agent_rule_id", "random_id"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.0.agent_rule.0.expression", "open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.name", "high case"),
 		resource.TestCheckResourceAttr(
@@ -615,10 +607,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         aggregation = "count"
         group_by_fields = ["service"]
         metric = "@network.bytes_read"
-		agent_rule {
-			agent_rule_id = "random_id"
-			expression = "open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0"
-		}
     }
 
     case {
@@ -661,10 +649,6 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckCwsRule(accProvider func() 
 			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.metric", "@network.bytes_read"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.0.agent_rule.0.agent_rule_id", "random_id"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.0.agent_rule.0.expression", "open.filename =~ \"/etc/ssl/certs/*\" && open.flags & (O_CREAT | O_RDWR | O_WRONLY) > 0"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.name", "high case (updated)"),
 		resource.TestCheckResourceAttr(
