@@ -339,6 +339,30 @@ func syntheticsAPIAssertion() *schema.Schema {
 	}
 }
 
+func syntheticsTestOptionsRetry() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		MaxItems: 1,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"count": {
+					Description: "Number of retries needed to consider a location as failed before sending a notification alert.",
+					Type:        schema.TypeInt,
+					Default:     0,
+					Optional:    true,
+				},
+				"interval": {
+					Description: "Interval between a failed test and the next retry in milliseconds.",
+					Type:        schema.TypeInt,
+					Default:     300,
+					Optional:    true,
+				},
+			},
+		},
+	}
+}
+
 func syntheticsTestOptionsList() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
@@ -395,27 +419,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:     true,
 					ValidateFunc: validation.IntBetween(1, 5),
 				},
-				"retry": {
-					Type:     schema.TypeList,
-					MaxItems: 1,
-					Optional: true,
-					Elem: &schema.Resource{
-						Schema: map[string]*schema.Schema{
-							"count": {
-								Description: "Number of retries needed to consider a location as failed before sending a notification alert.",
-								Type:        schema.TypeInt,
-								Default:     0,
-								Optional:    true,
-							},
-							"interval": {
-								Description: "Interval between a failed test and the next retry in milliseconds.",
-								Type:        schema.TypeInt,
-								Default:     300,
-								Optional:    true,
-							},
-						},
-					},
-				},
+				"retry": syntheticsTestOptionsRetry(),
 				"no_screenshot": {
 					Description: "Prevents saving screenshots of the steps.",
 					Type:        schema.TypeBool,
@@ -515,6 +519,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
+				"retry": syntheticsTestOptionsRetry(),
 			},
 		},
 	}
@@ -1142,6 +1147,17 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 			step.SetAllowFailure(stepMap["allow_failure"].(bool))
 			step.SetIsCritical(stepMap["is_critical"].(bool))
+
+			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
+			retry := stepMap["retry"].([]interface{})[0]
+
+			if count, ok := retry.(map[string]interface{})["count"]; ok {
+				optionsRetry.SetCount(int64(count.(int)))
+			}
+			if interval, ok := retry.(map[string]interface{})["interval"]; ok {
+				optionsRetry.SetInterval(float64(interval.(int)))
+			}
+			step.SetRetry(optionsRetry)
 
 			steps = append(steps, step)
 		}
@@ -2182,6 +2198,17 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 			localStep["allow_failure"] = step.GetAllowFailure()
 			localStep["is_critical"] = step.GetIsCritical()
+
+			if retry, ok := step.GetRetryOk(); ok {
+				localRetry := make(map[string]interface{})
+				if count, ok := retry.GetCountOk(); ok {
+					localRetry["count"] = *count
+				}
+				if interval, ok := retry.GetIntervalOk(); ok {
+					localRetry["interval"] = *interval
+				}
+				localStep["retry"] = []map[string]interface{}{localRetry}
+			}
 
 			localSteps[i] = localStep
 		}
