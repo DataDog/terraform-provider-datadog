@@ -46,7 +46,8 @@ func buildDatadogApplicationKeyCreateV2Struct(d *schema.ResourceData) *datadogV2
 }
 
 func buildDatadogApplicationKeyUpdateV2Struct(d *schema.ResourceData) *datadogV2.ApplicationKeyUpdateRequest {
-	applicationKeyAttributes := datadogV2.NewApplicationKeyUpdateAttributes(d.Get("name").(string))
+	applicationKeyAttributes := datadogV2.NewApplicationKeyUpdateAttributes()
+	applicationKeyAttributes.SetName(d.Get("name").(string))
 	applicationKeyData := datadogV2.NewApplicationKeyUpdateData(*applicationKeyAttributes, d.Id(), datadogV2.APPLICATIONKEYSTYPE_APPLICATION_KEYS)
 	applicationKeyRequest := datadogV2.NewApplicationKeyUpdateRequest(*applicationKeyData)
 
