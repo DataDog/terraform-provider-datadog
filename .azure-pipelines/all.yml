@@ -51,3 +51,4 @@ jobs:
                 DD_SERVICE: terraform-provider-datadog
                 DD_VERSION: $(Build.SourceVersion)
                 DD_TAGS: "team:integration-tools-and-libraries"
+                TF_ACC_TERRAFORM_VERSION: "1.1.2"
