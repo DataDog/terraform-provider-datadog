@@ -1148,6 +1148,17 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			step.SetAllowFailure(stepMap["allow_failure"].(bool))
 			step.SetIsCritical(stepMap["is_critical"].(bool))
 
+			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
+			retry := stepMap["retry"].([]interface{})[0]
+
+			if count, ok := retry.(map[string]interface{})["count"]; ok {
+				optionsRetry.SetCount(int64(count.(int)))
+			}
+			if interval, ok := retry.(map[string]interface{})["interval"]; ok {
+				optionsRetry.SetInterval(float64(interval.(int)))
+			}
+			step.SetRetry(optionsRetry)
+
 			steps = append(steps, step)
 		}
 
@@ -2187,6 +2198,17 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 			localStep["allow_failure"] = step.GetAllowFailure()
 			localStep["is_critical"] = step.GetIsCritical()
+
+			if retry, ok := step.GetRetryOk(); ok {
+				localRetry := make(map[string]interface{})
+				if count, ok := retry.GetCountOk(); ok {
+					localRetry["count"] = *count
+				}
+				if interval, ok := retry.GetIntervalOk(); ok {
+					localRetry["interval"] = *interval
+				}
+				localStep["retry"] = []map[string]interface{}{localRetry}
+			}
 
 			localSteps[i] = localStep
 		}
