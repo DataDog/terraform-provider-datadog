@@ -596,13 +596,6 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 	return tfOptions
 }
 
-func extractTfAgentRule(agentRule datadogV2.SecurityMonitoringRuntimeAgentRule) []map[string]interface{} {
-	tfAgentRule := make(map[string]interface{})
-	tfAgentRule["agent_rule_id"] = agentRule.GetAgentRuleId()
-	tfAgentRule["expression"] = agentRule.GetExpression()
-	return []map[string]interface{}{tfAgentRule}
-}
-
 func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
