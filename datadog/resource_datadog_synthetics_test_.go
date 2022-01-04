@@ -339,6 +339,30 @@ func syntheticsAPIAssertion() *schema.Schema {
 	}
 }
 
+func syntheticsTestOptionsRetry() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		MaxItems: 1,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"count": {
+					Description: "Number of retries needed to consider a location as failed before sending a notification alert.",
+					Type:        schema.TypeInt,
+					Default:     0,
+					Optional:    true,
+				},
+				"interval": {
+					Description: "Interval between a failed test and the next retry in milliseconds.",
+					Type:        schema.TypeInt,
+					Default:     300,
+					Optional:    true,
+				},
+			},
+		},
+	}
+}
+
 func syntheticsTestOptionsList() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
@@ -395,27 +419,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:     true,
 					ValidateFunc: validation.IntBetween(1, 5),
 				},
-				"retry": {
-					Type:     schema.TypeList,
-					MaxItems: 1,
-					Optional: true,
-					Elem: &schema.Resource{
-						Schema: map[string]*schema.Schema{
-							"count": {
-								Description: "Number of retries needed to consider a location as failed before sending a notification alert.",
-								Type:        schema.TypeInt,
-								Default:     0,
-								Optional:    true,
-							},
-							"interval": {
-								Description: "Interval between a failed test and the next retry in milliseconds.",
-								Type:        schema.TypeInt,
-								Default:     300,
-								Optional:    true,
-							},
-						},
-					},
-				},
+				"retry": syntheticsTestOptionsRetry(),
 				"no_screenshot": {
 					Description: "Prevents saving screenshots of the steps.",
 					Type:        schema.TypeBool,
@@ -515,6 +519,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
+				"retry": syntheticsTestOptionsRetry(),
 			},
 		},
 	}
