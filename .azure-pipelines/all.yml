@@ -52,3 +52,4 @@ jobs:
                 DD_VERSION: $(Build.SourceVersion)
                 DD_TAGS: "team:integration-tools-and-libraries"
                 TF_ACC_TERRAFORM_VERSION: "1.1.2"
+                TF_ACC_TEMP_DIR: "/tmp"
