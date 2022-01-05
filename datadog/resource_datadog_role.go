@@ -11,6 +11,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -118,14 +119,36 @@ func resourceDatadogRoleCreate(ctx context.Context, d *schema.ResourceData, meta
 	auth := meta.(*ProviderConfiguration).AuthV2
 
 	roleReq := buildRoleCreateRequest(d)
-	resp, httpResponse, err := client.RolesApi.CreateRole(auth, roleReq)
+	createResp, httpResponse, err := client.RolesApi.CreateRole(auth, roleReq)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating role")
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
+	if err := utils.CheckForUnparsed(createResp); err != nil {
 		return diag.FromErr(err)
 	}
-	roleData := resp.GetData()
+
+	var getRoleResponse datadog.RoleResponse
+	var httpResponseGet *http.Response
+	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		getRoleResponse, httpResponseGet, err = client.RolesApi.GetRole(auth, createResp.Data.GetId())
+		if err != nil {
+			if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
+				return resource.RetryableError(fmt.Errorf("role not created yet"))
+			}
+
+			return resource.NonRetryableError(err)
+		}
+		if err := utils.CheckForUnparsed(getRoleResponse); err != nil {
+			return resource.NonRetryableError(err)
+		}
+
+		return nil
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	roleData := getRoleResponse.GetData()
 	d.SetId(roleData.GetId())
 
 	return updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, client)

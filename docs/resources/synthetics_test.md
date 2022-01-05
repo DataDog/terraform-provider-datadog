@@ -323,6 +323,7 @@ Optional:
 - **request_definition** (Block List, Max: 1) The request for the api step. (see [below for nested schema](#nestedblock--api_step--request_definition))
 - **request_headers** (Map of String) Header name and value map.
 - **request_query** (Map of String) Query arguments name and value map.
+- **retry** (Block List, Max: 1) (see [below for nested schema](#nestedblock--api_step--retry))
 - **subtype** (String) The subtype of the Synthetic multistep API test step. Valid values are `http`.
 
 <a id="nestedblock--api_step--assertion"></a>
@@ -438,6 +439,15 @@ Optional:
 - **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.
+
+
+<a id="nestedblock--api_step--retry"></a>
+### Nested Schema for `api_step.retry`
+
+Optional:
+
+- **count** (Number) Number of retries needed to consider a location as failed before sending a notification alert.
+- **interval** (Number) Interval between a failed test and the next retry in milliseconds.
 
 
 
