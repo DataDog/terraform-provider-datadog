@@ -1,3 +1,30 @@
+## 3.7.0 (December 15, 2021)
+
+IMPROVEMENTS:
+
+-   `datadog_dashboard`: Implement support for formulas and functions in Scatterplot Widgets ([#1275](https://github.com/DataDog/terraform-provider-datadog/pull/1275))
+-   `datadog_webhook`: Use mutex in webhook to prevent concurrent modifications ([#1279](https://github.com/DataDog/terraform-provider-datadog/pull/1279))
+-   `datadog_webhook_custom_variable`: Use mutex in webhook to prevent concurrent modifications ([#1279](https://github.com/DataDog/terraform-provider-datadog/pull/1279))
+-   `datadog_monitor`: Fix invalid monitor `timeout_h` example ([#1281](https://github.com/DataDog/terraform-provider-datadog/pull/1281))
+-   `datadog_service_level_objective`: Mark `target_display` and `warning_display display` values as computed ([#1286](https://github.com/DataDog/terraform-provider-datadog/pull/1286))
+-   `datadog_synthetics_test`: Add support for UDP tests ([#1277](https://github.com/DataDog/terraform-provider-datadog/pull/1277))
+-   `datadog_dashboard`: Implement support for Change widgets using formulas and functions ([#1191](https://github.com/DataDog/terraform-provider-datadog/pull/1191))
+-   `datadog_monitor`: Update `new_group_delay` and `new_host_delay` docs ([#1281](https://github.com/DataDog/terraform-provider-datadog/pull/1281))
+
+BUGFIXES:
+
+-   `datadog_dashboard_json`: Handle perpetual diff when both `is_read_only` and `restricted_roles` is set ([#1280](https://github.com/DataDog/terraform-provider-datadog/pull/1280))
+-   `datadog_monitor_json`: Fix panic on resource name change ([#1278](https://github.com/DataDog/terraform-provider-datadog/pull/1278))
+-   `datadog_monitor_json`: Fix perpetual diff on some monitor JSON fields ([#1291](https://github.com/DataDog/terraform-provider-datadog/pull/1291))
+-   `datadog_dashboard_json`: Handle `notify_list` diffs for dashboard resource ([#1295](https://github.com/DataDog/terraform-provider-datadog/pull/1295))
+-   `datadog_monitor`: Don't set `new_host_delay` if it's not returned by api ([#1281](https://github.com/DataDog/terraform-provider-datadog/pull/1281))
+-   `datadog_dashboard`: Handle perpetual diff in `notify_list` attribute ([#1295](https://github.com/DataDog/terraform-provider-datadog/pull/1295))
+
+NOTES:
+
+-   Update Datadog client to [v1.7.0](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.7.0)
+-   Update `terraform-plugin-sdk` to [v2.10.0](https://github.com/hashicorp/terraform-plugin-sdk/releases/tag/v2.10.0)
+
 ## 3.6.0 (November 10, 2021)
 
 IMPROVEMENTS:

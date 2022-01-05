@@ -2958,6 +2958,12 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.is_critical", "false"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.retry.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.retry.0.count", "5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.retry.0.interval", "1000"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.name", "VARIABLE_NAME"),
@@ -3041,6 +3047,11 @@ resource "datadog_synthetics_test" "multi" {
                }
                allow_failure = true
                is_critical = false
+
+               retry {
+                   count = 5
+                   interval = 1000
+               }
        }
 }
 `, testName, variableName)

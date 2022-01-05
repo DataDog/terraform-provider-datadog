@@ -64,7 +64,7 @@ resource "datadog_slo_correction" "example_slo_correction_with_recurrence" {
 - **description** (String) Description of the correction being made.
 - **duration** (Number) Length of time in seconds for a specified `rrule` recurring SLO correction (required if specifying `rrule`)
 - **end** (Number) Ending time of the correction in epoch seconds. Required for one time corrections, but optional if `rrule` is specified
-- **rrule** (String) Recurrence rules as defined in the iCalendar RFC 5545.
+- **rrule** (String) Recurrence rules as defined in the iCalendar RFC 5545. Supported rules for SLO corrections are `FREQ`, `INTERVAL`, `COUNT` and `UNTIL`.
 - **timezone** (String) The timezone to display in the UI for the correction times (defaults to "UTC")
 
 ### Read-Only

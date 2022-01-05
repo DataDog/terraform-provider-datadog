@@ -297,7 +297,7 @@ resource "datadog_synthetics_test" "test_browser" {
 - **request_headers** (Map of String) Header name and value map.
 - **request_query** (Map of String) Query arguments name and value map.
 - **set_cookie** (String) Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.
-- **subtype** (String) The subtype of the Synthetic API test. Defaults to `http`. Valid values are `http`, `ssl`, `tcp`, `dns`, `multi`, `icmp`, `udp`.
+- **subtype** (String) The subtype of the Synthetic API test. Defaults to `http`. Valid values are `http`, `ssl`, `tcp`, `dns`, `multi`, `icmp`, `udp`, `websocket`.
 - **tags** (List of String) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).
 
 ### Read-Only
@@ -323,6 +323,7 @@ Optional:
 - **request_definition** (Block List, Max: 1) The request for the api step. (see [below for nested schema](#nestedblock--api_step--request_definition))
 - **request_headers** (Map of String) Header name and value map.
 - **request_query** (Map of String) Query arguments name and value map.
+- **retry** (Block List, Max: 1) (see [below for nested schema](#nestedblock--api_step--retry))
 - **subtype** (String) The subtype of the Synthetic multistep API test step. Valid values are `http`.
 
 <a id="nestedblock--api_step--assertion"></a>
@@ -438,6 +439,15 @@ Optional:
 - **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.
+
+
+<a id="nestedblock--api_step--retry"></a>
+### Nested Schema for `api_step.retry`
+
+Optional:
+
+- **count** (Number) Number of retries needed to consider a location as failed before sending a notification alert.
+- **interval** (Number) Interval between a failed test and the next retry in milliseconds.
 
 
 

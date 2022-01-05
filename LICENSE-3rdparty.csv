@@ -206,3 +206,6 @@ go.sum,github.com/DataDog/dd-sdk-go-testing,Apache-2.0 OR BSD-3-Clause,"2016-Pre
 go.sum,github.com/DataDog/gostackparse,Apache-2.0 OR BSD-3-Clause,2021-Present Datadog
 go.sum,github.com/DataDog/sketches-go,Apache-2.0,2021 DataDog Inc
 go.sum,github.com/google/gofuzz,Apache-2.0,
+go.sum,github.com/hashicorp/hc-install,MPL-2.0,
+go.sum,github.com/hashicorp/terraform-plugin-log,MPL-2.0,
+go.sum,github.com/hashicorp/terraform-registry-address,MPL-2.0,

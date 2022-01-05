@@ -32,7 +32,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Type:        schema.TypeList,
 			Required:    true,
 			Description: "Cases for generating signals.",
-			MaxItems:    5,
+			MaxItems:    10,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"name": {
@@ -159,19 +159,20 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 				Schema: map[string]*schema.Schema{
 					"agent_rule": {
 						Type:        schema.TypeList,
+						Deprecated:  "`agent_rule` has been deprecated in favor of new Agent Rule resource.",
 						Optional:    true,
-						Description: "The agent rule.",
+						Description: "**Deprecated**. It won't be applied anymore.",
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
 								"agent_rule_id": {
 									Type:        schema.TypeString,
 									Required:    true,
-									Description: "The Agent rule ID. Must be unique within the rule.",
+									Description: "**Deprecated**. It won't be applied anymore.",
 								},
 								"expression": {
 									Type:        schema.TypeString,
 									Required:    true,
-									Description: "A Runtime Security expression determines what activity should be collected by the Datadog Agent. These logical expressions can use predefined operators and attributes. Tags cannot be used in Runtime Security expressions. Instead, allow or deny based on tags under the advanced option.",
+									Description: "**Deprecated**. It won't be applied anymore.",
 								},
 							},
 						},
@@ -409,13 +410,6 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 		query := tfQuery.(map[string]interface{})
 		payloadQuery := datadogV2.SecurityMonitoringRuleQueryCreate{}
 
-		if v, ok := query["agent_rule"]; ok {
-			tfAgentRuleList := v.([]interface{})
-			if payloadAgentRule, ok := buildPayloadAgentRule(tfAgentRuleList); ok {
-				payloadQuery.AgentRule = payloadAgentRule
-			}
-		}
-
 		if v, ok := query["aggregation"]; ok {
 			aggregation := datadogV2.SecurityMonitoringRuleQueryAggregation(v.(string))
 			payloadQuery.Aggregation = &aggregation
@@ -454,23 +448,6 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 		payloadQueries[idx] = payloadQuery
 	}
 	return payloadQueries
-}
-
-func buildPayloadAgentRule(tfAgentRuleList []interface{}) (*datadogV2.SecurityMonitoringRuntimeAgentRule, bool) {
-	payloadAgentRule := datadogV2.NewSecurityMonitoringRuntimeAgentRule()
-	tfAgentRule := extractMapFromInterface(tfAgentRuleList)
-	hasPayload := false
-	if v, ok := tfAgentRule["agent_rule_id"]; ok {
-		hasPayload = true
-		agentRuleId := v.(string)
-		payloadAgentRule.AgentRuleId = &agentRuleId
-	}
-	if v, ok := tfAgentRule["expression"]; ok {
-		hasPayload = true
-		expression := v.(string)
-		payloadAgentRule.Expression = &expression
-	}
-	return payloadAgentRule, hasPayload
 }
 
 func buildPayloadFilters(tfFilters []interface{}) []datadogV2.SecurityMonitoringFilter {
@@ -547,9 +524,6 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 		ruleQuery := make(map[string]interface{})
 		responseRuleQuery := ruleResponse.GetQueries()[idx]
 
-		if agentRule, ok := responseRuleQuery.GetAgentRuleOk(); ok {
-			ruleQuery["agent_rule"] = extractTfAgentRule(*agentRule)
-		}
 		if aggregation, ok := responseRuleQuery.GetAggregationOk(); ok {
 			ruleQuery["aggregation"] = *aggregation
 		}
@@ -620,13 +594,6 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 		tfOptions["new_value_options"] = []map[string]interface{}{tfNewValueOptions}
 	}
 	return tfOptions
-}
-
-func extractTfAgentRule(agentRule datadogV2.SecurityMonitoringRuntimeAgentRule) []map[string]interface{} {
-	tfAgentRule := make(map[string]interface{})
-	tfAgentRule["agent_rule_id"] = agentRule.GetAgentRuleId()
-	tfAgentRule["expression"] = agentRule.GetExpression()
-	return []map[string]interface{}{tfAgentRule}
 }
 
 func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -702,13 +669,6 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 		for idx, tfQuery := range tfQueries {
 			query := tfQuery.(map[string]interface{})
 			payloadQuery := datadogV2.SecurityMonitoringRuleQuery{}
-
-			if v, ok := query["agent_rule"]; ok {
-				tfAgentRuleList := v.([]interface{})
-				if payloadAgentRule, ok := buildPayloadAgentRule(tfAgentRuleList); ok {
-					payloadQuery.AgentRule = payloadAgentRule
-				}
-			}
 
 			if v, ok := query["aggregation"]; ok {
 				aggregation := datadogV2.SecurityMonitoringRuleQueryAggregation(v.(string))

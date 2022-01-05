@@ -62,7 +62,7 @@ func resourceDatadogSloCorrection() *schema.Resource {
 			"rrule": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "Recurrence rules as defined in the iCalendar RFC 5545.",
+				Description: "Recurrence rules as defined in the iCalendar RFC 5545. Supported rules for SLO corrections are `FREQ`, `INTERVAL`, `COUNT` and `UNTIL`.",
 			},
 		},
 	}

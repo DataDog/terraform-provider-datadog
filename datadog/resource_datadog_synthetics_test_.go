@@ -17,6 +17,7 @@ import (
 
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -338,6 +339,30 @@ func syntheticsAPIAssertion() *schema.Schema {
 	}
 }
 
+func syntheticsTestOptionsRetry() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		MaxItems: 1,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"count": {
+					Description: "Number of retries needed to consider a location as failed before sending a notification alert.",
+					Type:        schema.TypeInt,
+					Default:     0,
+					Optional:    true,
+				},
+				"interval": {
+					Description: "Interval between a failed test and the next retry in milliseconds.",
+					Type:        schema.TypeInt,
+					Default:     300,
+					Optional:    true,
+				},
+			},
+		},
+	}
+}
+
 func syntheticsTestOptionsList() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
@@ -394,27 +419,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:     true,
 					ValidateFunc: validation.IntBetween(1, 5),
 				},
-				"retry": {
-					Type:     schema.TypeList,
-					MaxItems: 1,
-					Optional: true,
-					Elem: &schema.Resource{
-						Schema: map[string]*schema.Schema{
-							"count": {
-								Description: "Number of retries needed to consider a location as failed before sending a notification alert.",
-								Type:        schema.TypeInt,
-								Default:     0,
-								Optional:    true,
-							},
-							"interval": {
-								Description: "Interval between a failed test and the next retry in milliseconds.",
-								Type:        schema.TypeInt,
-								Default:     300,
-								Optional:    true,
-							},
-						},
-					},
-				},
+				"retry": syntheticsTestOptionsRetry(),
 				"no_screenshot": {
 					Description: "Prevents saving screenshots of the steps.",
 					Type:        schema.TypeBool,
@@ -514,6 +519,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
+				"retry": syntheticsTestOptionsRetry(),
 			},
 		},
 	}
@@ -812,20 +818,39 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 
 	if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
 		syntheticsTest := buildSyntheticsAPITestStruct(d)
-		createdSyntheticsTest, httpResponse, err := datadogClientV1.SyntheticsApi.CreateSyntheticsAPITest(authV1, *syntheticsTest)
+		createdSyntheticsTest, httpResponseCreate, err := datadogClientV1.SyntheticsApi.CreateSyntheticsAPITest(authV1, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
-			return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics API test")
+			return utils.TranslateClientErrorDiag(err, httpResponseCreate, "error creating synthetics API test")
 		}
 		if err := utils.CheckForUnparsed(createdSyntheticsTest); err != nil {
 			return diag.FromErr(err)
 		}
 
-		// If the Create callback returns with or without an error without an ID set using SetId,
-		// the resource is assumed to not be created, and no state is saved.
-		d.SetId(createdSyntheticsTest.GetPublicId())
+		var getSyntheticsApiTestResponse datadogV1.SyntheticsAPITest
+		var httpResponseGet *_nethttp.Response
+		err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+			getSyntheticsApiTestResponse, httpResponseGet, err = datadogClientV1.SyntheticsApi.GetAPITest(authV1, createdSyntheticsTest.GetPublicId())
+			if err != nil {
+				if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
+					return resource.RetryableError(fmt.Errorf("synthetics api test not created yet"))
+				}
 
-		return updateSyntheticsAPITestLocalState(d, &createdSyntheticsTest)
+				return resource.NonRetryableError(err)
+			}
+			if err := utils.CheckForUnparsed(getSyntheticsApiTestResponse); err != nil {
+				return resource.NonRetryableError(err)
+			}
+
+			return nil
+		})
+		if err != nil {
+			return diag.FromErr(err)
+		}
+
+		d.SetId(getSyntheticsApiTestResponse.GetPublicId())
+
+		return updateSyntheticsAPITestLocalState(d, &getSyntheticsApiTestResponse)
 	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
 		createdSyntheticsTest, httpResponse, err := datadogClientV1.SyntheticsApi.CreateSyntheticsBrowserTest(authV1, *syntheticsTest)
@@ -837,11 +862,30 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 			return diag.FromErr(err)
 		}
 
-		// If the Create callback returns with or without an error without an ID set using SetId,
-		// the resource is assumed to not be created, and no state is saved.
-		d.SetId(createdSyntheticsTest.GetPublicId())
+		var getSyntheticsBrowserTestResponse datadogV1.SyntheticsBrowserTest
+		var httpResponseGet *_nethttp.Response
+		err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+			getSyntheticsBrowserTestResponse, httpResponseGet, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, createdSyntheticsTest.GetPublicId())
+			if err != nil {
+				if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
+					return resource.RetryableError(fmt.Errorf("synthetics browser test not created yet"))
+				}
 
-		return updateSyntheticsBrowserTestLocalState(d, &createdSyntheticsTest)
+				return resource.NonRetryableError(err)
+			}
+			if err := utils.CheckForUnparsed(getSyntheticsBrowserTestResponse); err != nil {
+				return resource.NonRetryableError(err)
+			}
+
+			return nil
+		})
+		if err != nil {
+			return diag.FromErr(err)
+		}
+
+		d.SetId(getSyntheticsBrowserTestResponse.GetPublicId())
+
+		return updateSyntheticsBrowserTestLocalState(d, &getSyntheticsBrowserTestResponse)
 	}
 
 	return diag.Errorf("unrecognized synthetics test type %v", testType)
@@ -1103,6 +1147,17 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 			step.SetAllowFailure(stepMap["allow_failure"].(bool))
 			step.SetIsCritical(stepMap["is_critical"].(bool))
+
+			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
+			retry := stepMap["retry"].([]interface{})[0]
+
+			if count, ok := retry.(map[string]interface{})["count"]; ok {
+				optionsRetry.SetCount(int64(count.(int)))
+			}
+			if interval, ok := retry.(map[string]interface{})["interval"]; ok {
+				optionsRetry.SetInterval(float64(interval.(int)))
+			}
+			step.SetRetry(optionsRetry)
 
 			steps = append(steps, step)
 		}
@@ -2143,6 +2198,17 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 			localStep["allow_failure"] = step.GetAllowFailure()
 			localStep["is_critical"] = step.GetIsCritical()
+
+			if retry, ok := step.GetRetryOk(); ok {
+				localRetry := make(map[string]interface{})
+				if count, ok := retry.GetCountOk(); ok {
+					localRetry["count"] = *count
+				}
+				if interval, ok := retry.GetIntervalOk(); ok {
+					localRetry["interval"] = *interval
+				}
+				localStep["retry"] = []map[string]interface{}{localRetry}
+			}
 
 			localSteps[i] = localStep
 		}

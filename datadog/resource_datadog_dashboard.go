@@ -105,7 +105,7 @@ func resourceDatadogDashboard() *schema.Resource {
 				},
 			},
 			"notify_list": {
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Optional:    true,
 				Description: "The list of handles for the users to notify when changes are made to this dashboard.",
 				Elem:        &schema.Schema{Type: schema.TypeString},
@@ -356,8 +356,8 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 	dashboard.SetWidgets(*datadogWidgets)
 
 	// Build NotifyList
-	notifyList := d.Get("notify_list").([]interface{})
-	dashboard.NotifyList = *buildDatadogNotifyList(&notifyList)
+	notifyList := d.Get("notify_list").(*schema.Set)
+	dashboard.NotifyList = *buildDatadogNotifyList(notifyList)
 
 	// Build TemplateVariables
 	templateVariables := d.Get("template_variable").([]interface{})
@@ -592,9 +592,9 @@ func buildTerraformRestrictedRoles(datadogRestrictedRoles *[]string) *[]string {
 // Notify List helpers
 //
 
-func buildDatadogNotifyList(terraformNotifyList *[]interface{}) *[]string {
-	datadogNotifyList := make([]string, len(*terraformNotifyList))
-	for i, authorHandle := range *terraformNotifyList {
+func buildDatadogNotifyList(terraformNotifyList *schema.Set) *[]string {
+	datadogNotifyList := make([]string, len(terraformNotifyList.List()))
+	for i, authorHandle := range terraformNotifyList.List() {
 		datadogNotifyList[i] = authorHandle.(string)
 	}
 	return &datadogNotifyList

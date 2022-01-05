@@ -46,7 +46,10 @@ jobs:
                 DD_PROFILER_API_KEY: $(ddAPIKey)
                 DD_TEST_CLIENT_API_KEY: $(datadogAPIKey)
                 DD_TEST_CLIENT_APP_KEY: $(datadogAPPKey)
+                DD_HTTP_CLIENT_RETRY_ENABLED: "true"
                 DD_ENV: prod
                 DD_SERVICE: terraform-provider-datadog
                 DD_VERSION: $(Build.SourceVersion)
                 DD_TAGS: "team:integration-tools-and-libraries"
+                TF_ACC_TERRAFORM_VERSION: "1.1.2"
+                TF_ACC_TEMP_DIR: "/tmp"

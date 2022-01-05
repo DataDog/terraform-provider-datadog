@@ -51,7 +51,7 @@ Email notifications can be sent to specific users by using the same `@username` 
 - **query** (String) The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.
 
 **Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).
-- **type** (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`.
+- **type** (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`.
 
 ### Optional
 
@@ -66,12 +66,10 @@ For example, if the value is set to `300` (5min), the `timeframe` is set to `las
 - **locked** (Boolean) A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.
 - **monitor_threshold_windows** (Block List, Max: 1) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors. (see [below for nested schema](#nestedblock--monitor_threshold_windows))
 - **monitor_thresholds** (Block List, Max: 1) Alert thresholds of the monitor. (see [below for nested schema](#nestedblock--monitor_thresholds))
-- **new_group_delay** (Number) Time (in seconds) to skip evaluations for new groups.
+- **new_group_delay** (Number) The time (in seconds) to skip evaluations for new groups.
 
 `new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.
-
-To disable group delay for monitors grouped by host, `new_host_delay` must be set to zero due to the default value of `300` for that field (`new_group_delay` defaults to zero, so setting it to zero is not required).
-- **new_host_delay** (Number, Deprecated) Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. Defaults to `300` (this default will be removed in a major version release and `new_host_delay` will be removed entirely in a subsequent major version release). **Deprecated.** Prefer using new_group_delay (except when setting `new_host_delay` to zero).
+- **new_host_delay** (Number, Deprecated) **Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. Defaults to `300`. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host. **Deprecated.** Use `new_group_delay` except when setting `new_host_delay` to zero.
 - **no_data_timeframe** (Number) The number of minutes before a monitor will notify when data stops reporting. Provider defaults to 10 minutes.
 
 We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.

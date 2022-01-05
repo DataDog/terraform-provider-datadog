@@ -29,7 +29,7 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "Cases of the rule, this is used to update notifications.",
-				MaxItems:    5,
+				MaxItems:    10,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"status": {
