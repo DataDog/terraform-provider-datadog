@@ -504,7 +504,7 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild, upd
 		}
 		if r.GetWeekDays() != nil {
 			weekDays := make([]string, 0, len(r.GetWeekDays()))
-			weekDays = append(weekDays, *r.WeekDays...)
+			weekDays = append(weekDays, r.WeekDays...)
 			recurrence["week_days"] = weekDays
 		}
 		if attr, ok := r.GetRruleOk(); ok {

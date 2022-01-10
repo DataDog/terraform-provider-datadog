@@ -331,6 +331,21 @@ func TestAccDatadogSyntheticsUDPTest_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsWebsocketTest_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsWebsocketTestStep(ctx, accProvider, t),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -1767,6 +1782,93 @@ resource "datadog_synthetics_test" "icmp" {
 }`, uniq)
 }
 
+func createSyntheticsWebsocketTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+	return resource.TestStep{
+		Config: createSyntheticsWebsocketTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "subtype", "websocket"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "request_definition.0.url", "wss://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "request_definition.0.message", "message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "assertion.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "assertion.0.type", "responseTime"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "assertion.0.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "assertion.0.target", "2000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "assertion.1.type", "receivedMessage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "assertion.1.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "assertion.1.target", "message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "locations.#", "1"),
+			resource.TestCheckTypeSetElemAttr(
+				"datadog_synthetics_test.websocket", "locations.*", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "options_list.0.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.websocket", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.websocket", "monitor_id"),
+		),
+	}
+}
+
+func createSyntheticsWebsocketTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "websocket" {
+	type = "api"
+	subtype = "websocket"
+
+	request_definition {
+		url = "wss://www.datadoghq.com"
+		message = "message"
+	}
+
+	assertion {
+		type = "responseTime"
+		operator = "lessThan"
+		target = "2000"
+	}
+	assertion {
+		type = "receivedMessage"
+		operator = "is"
+		target = "message"
+	}
+
+	locations = [ "aws:eu-central-1" ]
+	options_list {
+		tick_every = 60
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
+}`, uniq)
+}
+
 func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
@@ -2856,6 +2958,12 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.is_critical", "false"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.retry.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.retry.0.count", "5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.retry.0.interval", "1000"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.name", "VARIABLE_NAME"),
@@ -2939,6 +3047,11 @@ resource "datadog_synthetics_test" "multi" {
                }
                allow_failure = true
                is_critical = false
+
+               retry {
+                   count = 5
+                   interval = 1000
+               }
        }
 }
 `, testName, variableName)
