@@ -6476,7 +6476,7 @@ Optional:
 
 Required:
 
-- **type** (String) The type of legend (table or inline).
+- **type** (String) The type of legend (table or none). Valid values are `inline`, `automatic`.
 
 Optional:
 
@@ -6489,7 +6489,7 @@ Optional:
 
 Required:
 
-- **type** (String) The type of legend (table or inline).
+- **type** (String) The type of legend (automatic or inline). Valid values are `table`, `none`.
 
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request"></a>
@@ -11523,7 +11523,7 @@ Optional:
 
 Required:
 
-- **type** (String) The type of legend (table or inline).
+- **type** (String) The type of legend (table or none). Valid values are `inline`, `automatic`.
 
 Optional:
 
@@ -11536,7 +11536,7 @@ Optional:
 
 Required:
 
-- **type** (String) The type of legend (table or inline).
+- **type** (String) The type of legend (automatic or inline). Valid values are `table`, `none`.
 
 
 <a id="nestedblock--widget--sunburst_definition--request"></a>
