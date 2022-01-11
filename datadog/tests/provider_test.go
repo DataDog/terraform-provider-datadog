@@ -97,6 +97,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_scatterplot_test":                "dashboards",
 	"tests/resource_datadog_dashboard_service_map_test":                "dashboards",
 	"tests/resource_datadog_dashboard_slo_test":                        "dashboards",
+	"tests/resource_datadog_dashboard_sunburst_test":                   "dashboards",
 	"tests/resource_datadog_dashboard_test":                            "dashboards",
 	"tests/resource_datadog_dashboard_timeseries_test":                 "dashboards",
 	"tests/resource_datadog_dashboard_top_list_test":                   "dashboards",

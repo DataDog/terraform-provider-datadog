@@ -764,6 +764,7 @@ Optional:
 - **scatterplot_definition** (Block List, Max: 1) The definition for a Scatterplot widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition))
 - **service_level_objective_definition** (Block List, Max: 1) The definition for a Service Level Objective widget. (see [below for nested schema](#nestedblock--widget--service_level_objective_definition))
 - **servicemap_definition** (Block List, Max: 1) The definition for a Service Map widget. (see [below for nested schema](#nestedblock--widget--servicemap_definition))
+- **sunburst_definition** (Block List, Max: 1) The definition for a Sunburst widget (see [below for nested schema](#nestedblock--widget--sunburst_definition))
 - **timeseries_definition** (Block List, Max: 1) The definition for a Timeseries widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition))
 - **toplist_definition** (Block List, Max: 1) The definition for a Toplist widget. (see [below for nested schema](#nestedblock--widget--toplist_definition))
 - **trace_service_definition** (Block List, Max: 1) The definition for a Trace Service widget. (see [below for nested schema](#nestedblock--widget--trace_service_definition))
@@ -2102,6 +2103,7 @@ Optional:
 - **scatterplot_definition** (Block List, Max: 1) The definition for a Scatterplot widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition))
 - **service_level_objective_definition** (Block List, Max: 1) The definition for a Service Level Objective widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--service_level_objective_definition))
 - **servicemap_definition** (Block List, Max: 1) The definition for a Service Map widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition))
+- **sunburst_definition** (Block List, Max: 1) The definition for a Sunburst widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition))
 - **timeseries_definition** (Block List, Max: 1) The definition for a Timeseries widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition))
 - **toplist_definition** (Block List, Max: 1) The definition for a Toplist widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition))
 - **trace_service_definition** (Block List, Max: 1) The definition for a Trace Service widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition))
@@ -6440,6 +6442,660 @@ Optional:
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
 - **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition`
+
+Optional:
+
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--custom_link))
+- **hide_total** (Boolean) Whether or not to show the total value in the widget.
+- **legend_inline** (Block List) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_inline))
+- **legend_table** (Block List) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_table))
+- **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request))
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.custom_link`
+
+Optional:
+
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--legend_inline"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.legend_inline`
+
+Required:
+
+- **type** (String) The type of legend (table or inline).
+
+Optional:
+
+- **hide_percent** (Boolean) Whether to hide the percentages of the groups.
+- **hide_value** (Boolean) Whether to hide the values of the groups.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--legend_table"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.legend_table`
+
+Required:
+
+- **type** (String) The type of legend (table or inline).
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request`
+
+Optional:
+
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query))
+- **audit_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query))
+- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query))
+- **network_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **query** (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query))
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.apm_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.apm_query.compute_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.apm_query.group_by`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query--group_by--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.apm_query.group_by.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.apm_query.multi_compute`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.audit_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.audit_query.compute_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.audit_query.group_by`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query--group_by--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.audit_query.group_by.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.audit_query.multi_compute`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--formula"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.formula`
+
+Required:
+
+- **formula_expression** (String) A string expression built from queries, formulas, and functions.
+
+Optional:
+
+- **alias** (String) An expression alias.
+- **cell_display_mode** (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--conditional_formats))
+- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--limit))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--conditional_formats"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.formula.conditional_formats`
+
+Required:
+
+- **comparator** (String) The comparator to use. Valid values are `>`, `>=`, `<`, `<=`.
+- **palette** (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- **value** (Number) A value for the comparator.
+
+Optional:
+
+- **custom_bg_color** (String) The color palette to apply to the background, same values available as palette.
+- **custom_fg_color** (String) The color palette to apply to the foreground, same values available as palette.
+- **hide_value** (Boolean) Setting this to True hides values.
+- **image_url** (String) Displays an image as the background.
+- **metric** (String) The metric from the request to correlate with this conditional format.
+- **timeframe** (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--limit"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.formula.limit`
+
+Optional:
+
+- **count** (Number) The number of results to return
+- **order** (String) The direction of the sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.log_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.log_query.compute_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.log_query.group_by`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query--group_by--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.log_query.group_by.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.log_query.multi_compute`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.network_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.network_query.compute_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.network_query.group_by`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query--group_by--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.network_query.group_by.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.network_query.multi_compute`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.process_query`
+
+Required:
+
+- **metric** (String) Your chosen metric.
+
+Optional:
+
+- **filter_by** (List of String) A list of processes.
+- **limit** (Number) The max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query`
+
+Optional:
+
+- **apm_dependency_stats_query** (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_dependency_stats_query))
+- **apm_resource_stats_query** (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_resource_stats_query))
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--metric_query))
+- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--process_query))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.apm_dependency_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **operation_name** (String) Name of operation on service.
+- **resource_name** (String) APM resource.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- **is_upstream** (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- **group_by** (List of String) Array of fields to group results by.
+- **operation_name** (String) Name of operation on service.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- **resource_name** (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.event_query`
+
+Required:
+
+- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--compute))
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
+- **name** (String) The name of query for use in formulas.
+
+Optional:
+
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--group_by))
+- **indexes** (List of String) An array of index names to query in the stream.
+- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--search))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.event_query.compute`
+
+Required:
+
+- **aggregation** (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- **interval** (Number) A time interval in milliseconds.
+- **metric** (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.event_query.group_by`
+
+Required:
+
+- **facet** (String) The event facet.
+
+Optional:
+
+- **limit** (Number) The number of groups to return.
+- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.event_query.group_by.sort`
+
+Required:
+
+- **aggregation** (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- **metric** (String) The metric used for sorting group by results.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.event_query.search`
+
+Required:
+
+- **query** (String) The events search string.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.metric_query`
+
+Required:
+
+- **name** (String) The name of the query for use in formulas.
+- **query** (String) The metrics query definition.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- **data_source** (String) The data source for metrics queries.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.process_query`
+
+Required:
+
+- **data_source** (String) The data source for process queries. Valid values are `process`, `container`.
+- **metric** (String) The process metric name.
+- **name** (String) The name of query for use in formulas.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
+- **limit** (Number) The number of hits to return.
+- **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
+- **tag_filters** (List of String) An array of tags to filter by.
+- **text_filter** (String) The text to use as a filter.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.rum_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.rum_query.compute_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.rum_query.group_by`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query--group_by--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.rum_query.group_by.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.rum_query.multi_compute`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.security_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.security_query.compute_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.security_query.group_by`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query--group_by--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.security_query.group_by.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.security_query.multi_compute`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
 
 
 
@@ -10833,6 +11489,660 @@ Optional:
 - **label** (String) The label for the custom link URL.
 - **link** (String) The URL of the custom link.
 - **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
+
+
+
+<a id="nestedblock--widget--sunburst_definition"></a>
+### Nested Schema for `widget.sunburst_definition`
+
+Optional:
+
+- **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--custom_link))
+- **hide_total** (Boolean) Whether or not to show the total value in the widget.
+- **legend_inline** (Block List) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_inline))
+- **legend_table** (Block List) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_table))
+- **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--sunburst_definition--request))
+- **title** (String) The title of the widget.
+- **title_align** (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
+- **title_size** (String) The size of the widget's title. Default is 16.
+
+<a id="nestedblock--widget--sunburst_definition--custom_link"></a>
+### Nested Schema for `widget.sunburst_definition.custom_link`
+
+Optional:
+
+- **is_hidden** (Boolean) The flag for toggling context menu link visibility.
+- **label** (String) The label for the custom link URL.
+- **link** (String) The URL of the custom link.
+- **override_label** (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
+
+
+<a id="nestedblock--widget--sunburst_definition--legend_inline"></a>
+### Nested Schema for `widget.sunburst_definition.legend_inline`
+
+Required:
+
+- **type** (String) The type of legend (table or inline).
+
+Optional:
+
+- **hide_percent** (Boolean) Whether to hide the percentages of the groups.
+- **hide_value** (Boolean) Whether to hide the values of the groups.
+
+
+<a id="nestedblock--widget--sunburst_definition--legend_table"></a>
+### Nested Schema for `widget.sunburst_definition.legend_table`
+
+Required:
+
+- **type** (String) The type of legend (table or inline).
+
+
+<a id="nestedblock--widget--sunburst_definition--request"></a>
+### Nested Schema for `widget.sunburst_definition.request`
+
+Optional:
+
+- **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--apm_query))
+- **audit_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--audit_query))
+- **formula** (Block List) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula))
+- **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--log_query))
+- **network_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--network_query))
+- **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--process_query))
+- **q** (String) The metric query to use for this widget.
+- **query** (Block List) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query))
+- **rum_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--rum_query))
+- **security_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--security_query))
+
+<a id="nestedblock--widget--sunburst_definition--request--apm_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.apm_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--apm_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--apm_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--apm_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--sunburst_definition--request--apm_query--compute_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.apm_query.compute_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--apm_query--group_by"></a>
+### Nested Schema for `widget.sunburst_definition.request.apm_query.group_by`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--apm_query--group_by--sort_query))
+
+<a id="nestedblock--widget--sunburst_definition--request--apm_query--group_by--sort_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.apm_query.group_by.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--apm_query--multi_compute"></a>
+### Nested Schema for `widget.sunburst_definition.request.apm_query.multi_compute`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--audit_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.audit_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--audit_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--audit_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--audit_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--sunburst_definition--request--audit_query--compute_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.audit_query.compute_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--audit_query--group_by"></a>
+### Nested Schema for `widget.sunburst_definition.request.audit_query.group_by`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--audit_query--group_by--sort_query))
+
+<a id="nestedblock--widget--sunburst_definition--request--audit_query--group_by--sort_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.audit_query.group_by.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--audit_query--multi_compute"></a>
+### Nested Schema for `widget.sunburst_definition.request.audit_query.multi_compute`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--formula"></a>
+### Nested Schema for `widget.sunburst_definition.request.formula`
+
+Required:
+
+- **formula_expression** (String) A string expression built from queries, formulas, and functions.
+
+Optional:
+
+- **alias** (String) An expression alias.
+- **cell_display_mode** (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- **conditional_formats** (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--conditional_formats))
+- **limit** (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--limit))
+
+<a id="nestedblock--widget--sunburst_definition--request--formula--conditional_formats"></a>
+### Nested Schema for `widget.sunburst_definition.request.formula.conditional_formats`
+
+Required:
+
+- **comparator** (String) The comparator to use. Valid values are `>`, `>=`, `<`, `<=`.
+- **palette** (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- **value** (Number) A value for the comparator.
+
+Optional:
+
+- **custom_bg_color** (String) The color palette to apply to the background, same values available as palette.
+- **custom_fg_color** (String) The color palette to apply to the foreground, same values available as palette.
+- **hide_value** (Boolean) Setting this to True hides values.
+- **image_url** (String) Displays an image as the background.
+- **metric** (String) The metric from the request to correlate with this conditional format.
+- **timeframe** (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--formula--limit"></a>
+### Nested Schema for `widget.sunburst_definition.request.formula.limit`
+
+Optional:
+
+- **count** (Number) The number of results to return
+- **order** (String) The direction of the sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--log_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.log_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--log_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--log_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--log_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--sunburst_definition--request--log_query--compute_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.log_query.compute_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--log_query--group_by"></a>
+### Nested Schema for `widget.sunburst_definition.request.log_query.group_by`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--log_query--group_by--sort_query))
+
+<a id="nestedblock--widget--sunburst_definition--request--log_query--group_by--sort_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.log_query.group_by.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--log_query--multi_compute"></a>
+### Nested Schema for `widget.sunburst_definition.request.log_query.multi_compute`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--network_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.network_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--network_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--network_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--network_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--sunburst_definition--request--network_query--compute_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.network_query.compute_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--network_query--group_by"></a>
+### Nested Schema for `widget.sunburst_definition.request.network_query.group_by`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--network_query--group_by--sort_query))
+
+<a id="nestedblock--widget--sunburst_definition--request--network_query--group_by--sort_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.network_query.group_by.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--network_query--multi_compute"></a>
+### Nested Schema for `widget.sunburst_definition.request.network_query.multi_compute`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--process_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.process_query`
+
+Required:
+
+- **metric** (String) Your chosen metric.
+
+Optional:
+
+- **filter_by** (List of String) A list of processes.
+- **limit** (Number) The max number of items in the filter list.
+- **search_by** (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--query"></a>
+### Nested Schema for `widget.sunburst_definition.request.query`
+
+Optional:
+
+- **apm_dependency_stats_query** (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--apm_dependency_stats_query))
+- **apm_resource_stats_query** (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--apm_resource_stats_query))
+- **event_query** (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query))
+- **metric_query** (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--metric_query))
+- **process_query** (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--process_query))
+
+<a id="nestedblock--widget--sunburst_definition--request--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.apm_dependency_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **operation_name** (String) Name of operation on service.
+- **resource_name** (String) APM resource.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- **is_upstream** (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- **data_source** (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- **env** (String) APM Environment.
+- **name** (String) The name of query for use in formulas.
+- **service** (String) APM service.
+- **stat** (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- **group_by** (List of String) Array of fields to group results by.
+- **operation_name** (String) Name of operation on service.
+- **primary_tag_name** (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- **primary_tag_value** (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- **resource_name** (String) APM resource.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--query--event_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.event_query`
+
+Required:
+
+- **compute** (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--compute))
+- **data_source** (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`.
+- **name** (String) The name of query for use in formulas.
+
+Optional:
+
+- **group_by** (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--group_by))
+- **indexes** (List of String) An array of index names to query in the stream.
+- **search** (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--search))
+
+<a id="nestedblock--widget--sunburst_definition--request--query--event_query--compute"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.event_query.compute`
+
+Required:
+
+- **aggregation** (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- **interval** (Number) A time interval in milliseconds.
+- **metric** (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--query--event_query--group_by"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.event_query.group_by`
+
+Required:
+
+- **facet** (String) The event facet.
+
+Optional:
+
+- **limit** (Number) The number of groups to return.
+- **sort** (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--sunburst_definition--request--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.event_query.group_by.sort`
+
+Required:
+
+- **aggregation** (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- **metric** (String) The metric used for sorting group by results.
+- **order** (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--query--event_query--search"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.event_query.search`
+
+Required:
+
+- **query** (String) The events search string.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--query--metric_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.metric_query`
+
+Required:
+
+- **name** (String) The name of the query for use in formulas.
+- **query** (String) The metrics query definition.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- **data_source** (String) The data source for metrics queries.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--query--process_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.process_query`
+
+Required:
+
+- **data_source** (String) The data source for process queries. Valid values are `process`, `container`.
+- **metric** (String) The process metric name.
+- **name** (String) The name of query for use in formulas.
+
+Optional:
+
+- **aggregator** (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- **is_normalized_cpu** (Boolean) Whether to normalize the CPU percentages.
+- **limit** (Number) The number of hits to return.
+- **sort** (String) The direction of the sort. Valid values are `asc`, `desc`.
+- **tag_filters** (List of String) An array of tags to filter by.
+- **text_filter** (String) The text to use as a filter.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--rum_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.rum_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--rum_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--rum_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--rum_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--sunburst_definition--request--rum_query--compute_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.rum_query.compute_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--rum_query--group_by"></a>
+### Nested Schema for `widget.sunburst_definition.request.rum_query.group_by`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--rum_query--group_by--sort_query))
+
+<a id="nestedblock--widget--sunburst_definition--request--rum_query--group_by--sort_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.rum_query.group_by.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.sunburst_definition.request.rum_query.multi_compute`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--security_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.security_query`
+
+Required:
+
+- **index** (String) The name of the index to query.
+
+Optional:
+
+- **compute_query** (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--security_query--compute_query))
+- **group_by** (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--security_query--group_by))
+- **multi_compute** (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--security_query--multi_compute))
+- **search_query** (String) The search query to use.
+
+<a id="nestedblock--widget--sunburst_definition--request--security_query--compute_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.security_query.compute_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--security_query--group_by"></a>
+### Nested Schema for `widget.sunburst_definition.request.security_query.group_by`
+
+Optional:
+
+- **facet** (String) The facet name.
+- **limit** (Number) The maximum number of items in the group.
+- **sort_query** (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--security_query--group_by--sort_query))
+
+<a id="nestedblock--widget--sunburst_definition--request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.security_query.group_by.sort_query`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- **facet** (String) The facet name.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.sunburst_definition.request.security_query.multi_compute`
+
+Required:
+
+- **aggregation** (String) The aggregation method.
+
+Optional:
+
+- **facet** (String) The facet name.
+- **interval** (Number) Define the time interval in seconds.
+
+
 
 
 
