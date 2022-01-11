@@ -102,7 +102,7 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "type", "service check"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "query", `"custom.check".over("environment:foo").last(2).count_by_status()`),
+						"datadog_monitor.foo", "query", `"custom.check".by("environment:foo").last(2).count_by_status()`),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
@@ -904,7 +904,7 @@ resource "datadog_monitor" "foo" {
   escalation_message = "the situation has escalated @pagerduty"
   priority = 3
 
-  query = "\"custom.check\".over(\"environment:foo\").last(2).count_by_status()"
+  query = "\"custom.check\".by(\"environment:foo\").last(2).count_by_status()"
 
   monitor_thresholds {
 	warning = 1

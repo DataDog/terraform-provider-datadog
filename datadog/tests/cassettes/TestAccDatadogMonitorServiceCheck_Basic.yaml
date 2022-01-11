@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"ok":1,"unknown":1,"warning":1},"timeout_h":60},"priority":3,"query":"\"custom.check\".over(\"environment:foo\").last(2).count_by_status()","tags":["baz","foo:bar"],"type":"service check"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"ok":1,"unknown":1,"warning":1},"timeout_h":60},"priority":3,"query":"\"custom.check\".by(\"environment:foo\").last(2).count_by_status()","tags":["baz","foo:bar"],"type":"service check"}
     form: {}
     headers:
       Accept:
@@ -46,7 +46,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"ok":1,"unknown":1,"warning":1},"timeout_h":60},"priority":3,"query":"\"custom.check\".over(\"environment:foo\").last(2).count_by_status()","tags":["baz","foo:bar"],"type":"service check"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"ok":1,"unknown":1,"warning":1},"timeout_h":60},"priority":3,"query":"\"custom.check\".by(\"environment:foo\").last(2).count_by_status()","tags":["baz","foo:bar"],"type":"service check"}
     form: {}
     headers:
       Accept:
@@ -89,7 +89,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"ok":1,"unknown":1,"warning":1},"timeout_h":60},"priority":3,"query":"\"custom.check\".over(\"environment:foo\").last(2).count_by_status()","tags":["baz","foo:bar"],"type":"service check"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"ok":1,"unknown":1,"warning":1},"timeout_h":60},"priority":3,"query":"\"custom.check\".by(\"environment:foo\").last(2).count_by_status()","tags":["baz","foo:bar"],"type":"service check"}
     form: {}
     headers:
       Accept:
@@ -132,7 +132,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"ok":1,"unknown":1,"warning":1},"timeout_h":60},"priority":3,"query":"\"custom.check\".over(\"environment:foo\").last(2).count_by_status()","tags":["baz","foo:bar"],"type":"service check"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"ok":1,"unknown":1,"warning":1},"timeout_h":60},"priority":3,"query":"\"custom.check\".by(\"environment:foo\").last(2).count_by_status()","tags":["baz","foo:bar"],"type":"service check"}
     form: {}
     headers:
       Accept:
@@ -148,7 +148,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/monitor
     method: POST
   response:
-    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"\"custom.check\".over(\"environment:foo\").last(2).count_by_status()","message":"some message Notify: @hipchat-channel","id":51392424,"multi":true,"name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","created":"2021-10-22T18:15:46.280952+00:00","created_at":1634926546000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-22T18:15:46.280952+00:00","priority":3,"overall_state_modified":null,"overall_state":"No Data","type":"service check","options":{"notify_audit":false,"renotify_statuses":["alert","warn"],"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"unknown":1,"warning":1,"ok":1,"critical":1},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"evaluation_delay":700,"escalation_message":"the situation has escalated @pagerduty","renotify_occurrences":5}}'
+    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"\"custom.check\".by(\"environment:foo\").last(2).count_by_status()","message":"some message Notify: @hipchat-channel","id":51392424,"multi":true,"name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","created":"2021-10-22T18:15:46.280952+00:00","created_at":1634926546000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-22T18:15:46.280952+00:00","priority":3,"overall_state_modified":null,"overall_state":"No Data","type":"service check","options":{"notify_audit":false,"renotify_statuses":["alert","warn"],"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"unknown":1,"warning":1,"ok":1,"critical":1},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"evaluation_delay":700,"escalation_message":"the situation has escalated @pagerduty","renotify_occurrences":5}}'
     headers:
       Cache-Control:
       - no-cache
@@ -194,7 +194,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/monitor/51392424
     method: GET
   response:
-    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"\"custom.check\".over(\"environment:foo\").last(2).count_by_status()","message":"some message Notify: @hipchat-channel","id":51392424,"multi":true,"name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","created":"2021-10-22T18:15:46.280952+00:00","created_at":1634926546000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-22T18:15:46.280952+00:00","priority":3,"overall_state_modified":null,"overall_state":"No Data","type":"service check","options":{"notify_audit":false,"renotify_statuses":["alert","warn"],"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"unknown":1,"warning":1,"ok":1,"critical":1},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"evaluation_delay":700,"escalation_message":"the situation has escalated @pagerduty","renotify_occurrences":5}}'
+    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"\"custom.check\".by(\"environment:foo\").last(2).count_by_status()","message":"some message Notify: @hipchat-channel","id":51392424,"multi":true,"name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","created":"2021-10-22T18:15:46.280952+00:00","created_at":1634926546000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-22T18:15:46.280952+00:00","priority":3,"overall_state_modified":null,"overall_state":"No Data","type":"service check","options":{"notify_audit":false,"renotify_statuses":["alert","warn"],"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"unknown":1,"warning":1,"ok":1,"critical":1},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"evaluation_delay":700,"escalation_message":"the situation has escalated @pagerduty","renotify_occurrences":5}}'
     headers:
       Cache-Control:
       - no-cache
@@ -229,7 +229,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"ok":1,"unknown":1,"warning":1},"timeout_h":60},"priority":3,"query":"\"custom.check\".over(\"environment:foo\").last(2).count_by_status()","tags":["baz","foo:bar"],"type":"service check"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"ok":1,"unknown":1,"warning":1},"timeout_h":60},"priority":3,"query":"\"custom.check\".by(\"environment:foo\").last(2).count_by_status()","tags":["baz","foo:bar"],"type":"service check"}
     form: {}
     headers:
       Accept:
@@ -283,7 +283,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/monitor/51392424
     method: GET
   response:
-    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"\"custom.check\".over(\"environment:foo\").last(2).count_by_status()","message":"some message Notify: @hipchat-channel","id":51392424,"multi":true,"name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","created":"2021-10-22T18:15:46.280952+00:00","created_at":1634926546000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-22T18:15:46.280952+00:00","priority":3,"overall_state_modified":null,"overall_state":"No Data","type":"service check","options":{"notify_audit":false,"renotify_statuses":["alert","warn"],"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"unknown":1,"warning":1,"ok":1,"critical":1},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"evaluation_delay":700,"escalation_message":"the situation has escalated @pagerduty","renotify_occurrences":5}}'
+    body: '{"restricted_roles":null,"tags":["baz","foo:bar"],"deleted":null,"query":"\"custom.check\".by(\"environment:foo\").last(2).count_by_status()","message":"some message Notify: @hipchat-channel","id":51392424,"multi":true,"name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","created":"2021-10-22T18:15:46.280952+00:00","created_at":1634926546000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2021-10-22T18:15:46.280952+00:00","priority":3,"overall_state_modified":null,"overall_state":"No Data","type":"service check","options":{"notify_audit":false,"renotify_statuses":["alert","warn"],"timeout_h":60,"silenced":{},"include_tags":true,"thresholds":{"unknown":1,"warning":1,"ok":1,"critical":1},"new_host_delay":600,"require_full_window":true,"notify_no_data":false,"renotify_interval":60,"evaluation_delay":700,"escalation_message":"the situation has escalated @pagerduty","renotify_occurrences":5}}'
     headers:
       Cache-Control:
       - no-cache
@@ -318,7 +318,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"ok":1,"unknown":1,"warning":1},"timeout_h":60},"priority":3,"query":"\"custom.check\".over(\"environment:foo\").last(2).count_by_status()","tags":["baz","foo:bar"],"type":"service check"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"ok":1,"unknown":1,"warning":1},"timeout_h":60},"priority":3,"query":"\"custom.check\".by(\"environment:foo\").last(2).count_by_status()","tags":["baz","foo:bar"],"type":"service check"}
     form: {}
     headers:
       Accept:
@@ -361,7 +361,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"ok":1,"unknown":1,"warning":1},"timeout_h":60},"priority":3,"query":"\"custom.check\".over(\"environment:foo\").last(2).count_by_status()","tags":["baz","foo:bar"],"type":"service check"}
+      {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogMonitorServiceCheck_Basic-local-1634926544","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":5,"renotify_statuses":["alert","warn"],"require_full_window":true,"thresholds":{"critical":1,"ok":1,"unknown":1,"warning":1},"timeout_h":60},"priority":3,"query":"\"custom.check\".by(\"environment:foo\").last(2).count_by_status()","tags":["baz","foo:bar"],"type":"service check"}
     form: {}
     headers:
       Accept:
