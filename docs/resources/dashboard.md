@@ -764,7 +764,7 @@ Optional:
 - **scatterplot_definition** (Block List, Max: 1) The definition for a Scatterplot widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition))
 - **service_level_objective_definition** (Block List, Max: 1) The definition for a Service Level Objective widget. (see [below for nested schema](#nestedblock--widget--service_level_objective_definition))
 - **servicemap_definition** (Block List, Max: 1) The definition for a Service Map widget. (see [below for nested schema](#nestedblock--widget--servicemap_definition))
-- **sunburst_definition** (Block List, Max: 1) The definition for a Sunburst widget (see [below for nested schema](#nestedblock--widget--sunburst_definition))
+- **sunburst_definition** (Block List, Max: 1) The definition for a Sunburst widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition))
 - **timeseries_definition** (Block List, Max: 1) The definition for a Timeseries widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition))
 - **toplist_definition** (Block List, Max: 1) The definition for a Toplist widget. (see [below for nested schema](#nestedblock--widget--toplist_definition))
 - **trace_service_definition** (Block List, Max: 1) The definition for a Trace Service widget. (see [below for nested schema](#nestedblock--widget--trace_service_definition))
@@ -2103,7 +2103,7 @@ Optional:
 - **scatterplot_definition** (Block List, Max: 1) The definition for a Scatterplot widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition))
 - **service_level_objective_definition** (Block List, Max: 1) The definition for a Service Level Objective widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--service_level_objective_definition))
 - **servicemap_definition** (Block List, Max: 1) The definition for a Service Map widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition))
-- **sunburst_definition** (Block List, Max: 1) The definition for a Sunburst widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition))
+- **sunburst_definition** (Block List, Max: 1) The definition for a Sunburst widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition))
 - **timeseries_definition** (Block List, Max: 1) The definition for a Timeseries widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition))
 - **toplist_definition** (Block List, Max: 1) The definition for a Toplist widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition))
 - **trace_service_definition** (Block List, Max: 1) The definition for a Trace Service widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition))
@@ -7117,7 +7117,7 @@ Optional:
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
-- **yaxis** (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--yaxis))
+- **yaxis** (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--yaxis))
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--custom_link"></a>
 ### Nested Schema for `widget.group_definition.widget.timeseries_definition.custom_link`
@@ -12164,7 +12164,7 @@ Optional:
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
-- **yaxis** (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below (see [below for nested schema](#nestedblock--widget--timeseries_definition--yaxis))
+- **yaxis** (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--yaxis))
 
 <a id="nestedblock--widget--timeseries_definition--custom_link"></a>
 ### Nested Schema for `widget.timeseries_definition.custom_link`

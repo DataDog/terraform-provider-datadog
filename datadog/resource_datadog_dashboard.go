@@ -829,7 +829,7 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
-			Description: "The definition for a Sunburst widget",
+			Description: "The definition for a Sunburst widget.",
 			Elem: &schema.Resource{
 				Schema: getSunburstDefinitionschema(),
 			},
@@ -4842,7 +4842,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 		"yaxis": {
-			Description: "A nested block describing the Y-Axis Controls. The structure of this block is described below",
+			Description: "A nested block describing the Y-Axis Controls. The structure of this block is described below.",
 			Type:        schema.TypeList,
 			MaxItems:    1,
 			Optional:    true,
