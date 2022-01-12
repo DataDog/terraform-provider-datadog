@@ -5048,10 +5048,11 @@ func getSunburstDefinitionschema() map[string]*schema.Schema {
 			Description: "Used to configure the inline legend. Cannot be used in conjunction with legend_table.",
 			Type:        schema.TypeList,
 			Optional:    true,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"type": {
-						Description:      "The type of legend (table or none).",
+						Description:      "The type of legend (inline or automatic).",
 						Type:             schema.TypeString,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSunburstWidgetLegendInlineAutomaticTypeFromValue),
 						Required:         true,
@@ -5073,10 +5074,11 @@ func getSunburstDefinitionschema() map[string]*schema.Schema {
 			Description: "Used to configure the table legend. Cannot be used in conjunction with legend_inline.",
 			Type:        schema.TypeList,
 			Optional:    true,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"type": {
-						Description:      "The type of legend (automatic or inline).",
+						Description:      "The type of legend (table or none).",
 						Type:             schema.TypeString,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSunburstWidgetLegendTableTypeFromValue),
 						Required:         true,

@@ -6452,8 +6452,8 @@ Optional:
 
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--custom_link))
 - **hide_total** (Boolean) Whether or not to show the total value in the widget.
-- **legend_inline** (Block List) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_inline))
-- **legend_table** (Block List) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_table))
+- **legend_inline** (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_inline))
+- **legend_table** (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_table))
 - **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request))
 - **title** (String) The title of the widget.
@@ -6476,7 +6476,7 @@ Optional:
 
 Required:
 
-- **type** (String) The type of legend (table or none). Valid values are `inline`, `automatic`.
+- **type** (String) The type of legend (inline or automatic). Valid values are `inline`, `automatic`.
 
 Optional:
 
@@ -6489,7 +6489,7 @@ Optional:
 
 Required:
 
-- **type** (String) The type of legend (automatic or inline). Valid values are `table`, `none`.
+- **type** (String) The type of legend (table or none). Valid values are `table`, `none`.
 
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request"></a>
@@ -11499,8 +11499,8 @@ Optional:
 
 - **custom_link** (Block List) Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--custom_link))
 - **hide_total** (Boolean) Whether or not to show the total value in the widget.
-- **legend_inline** (Block List) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_inline))
-- **legend_table** (Block List) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_table))
+- **legend_inline** (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_inline))
+- **legend_table** (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_table))
 - **live_span** (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - **request** (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--sunburst_definition--request))
 - **title** (String) The title of the widget.
@@ -11523,7 +11523,7 @@ Optional:
 
 Required:
 
-- **type** (String) The type of legend (table or none). Valid values are `inline`, `automatic`.
+- **type** (String) The type of legend (inline or automatic). Valid values are `inline`, `automatic`.
 
 Optional:
 
@@ -11536,7 +11536,7 @@ Optional:
 
 Required:
 
-- **type** (String) The type of legend (automatic or inline). Valid values are `table`, `none`.
+- **type** (String) The type of legend (table or none). Valid values are `table`, `none`.
 
 
 <a id="nestedblock--widget--sunburst_definition--request"></a>
