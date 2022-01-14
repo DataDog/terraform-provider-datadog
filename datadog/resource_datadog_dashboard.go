@@ -1851,12 +1851,13 @@ func buildTerraformDistributionDefinition(datadogDefinition datadogV1.Distributi
 func getDistributionRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":              getMetricQuerySchema(),
-		"apm_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
-		"log_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
-		"rum_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
-		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
-		"process_query":  getProcessQuerySchema(),
+		"q":               getMetricQuerySchema(),
+		"apm_query":       getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"log_query":       getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"rum_query":       getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"security_query":  getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"process_query":   getProcessQuerySchema(),
+		"apm_stats_query": getApmStatsQuerySchema(),
 		// Settings specific to Distribution requests
 		"style": {
 			Description: "The style of the widget graph. One nested block is allowed using the structure below.",
@@ -1895,6 +1896,9 @@ func buildDatadogDistributionRequests(terraformRequests *[]interface{}) *[]datad
 		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
 			securityQuery := v[0].(map[string]interface{})
 			datadogDistributionRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
+		} else if v, ok := terraformRequest["apm_stats_query"].([]interface{}); ok && len(v) > 0 {
+			apmStatsQuery := v[0].(map[string]interface{})
+			datadogDistributionRequest.ApmStatsQuery = buildDatadogApmStatsQuery(apmStatsQuery)
 		}
 		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
 			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
@@ -1931,6 +1935,9 @@ func buildTerraformDistributionRequests(datadogDistributionRequests *[]datadogV1
 			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
 			k.Remove(fmt.Sprintf("%d.security_query.0", i))
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetApmStatsQueryOk(); ok {
+			terraformQuery := buildTerraformApmStatsQuery(*v)
+			terraformRequest["apm_stats_query"] = []map[string]interface{}{terraformQuery}
 		}
 		if datadogRequest.Style != nil {
 			style := buildTerraformWidgetStyle(*datadogRequest.Style)
