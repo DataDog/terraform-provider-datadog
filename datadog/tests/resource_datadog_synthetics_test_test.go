@@ -3136,9 +3136,9 @@ func editSyntheticsTestMML(accProvider func() (*schema.Provider, error)) resourc
 				return fmt.Errorf("failed to read synthetics test %s", err)
 			}
 
-			syntheticsTestUpdate := datadogV1.NewSyntheticsBrowserTest(syntheticsTest.GetMessage())
+			syntheticsTestUpdate := datadogV1.NewSyntheticsBrowserTestWithDefaults()
+			syntheticsTestUpdate.SetMessage(syntheticsTest.GetMessage())
 			syntheticsTestUpdate.SetName(syntheticsTest.GetName())
-			syntheticsTestUpdate.SetType(datadogV1.SYNTHETICSBROWSERTESTTYPE_BROWSER)
 			syntheticsTestUpdate.SetConfig(syntheticsTest.GetConfig())
 			syntheticsTestUpdate.SetStatus(syntheticsTest.GetStatus())
 			syntheticsTestUpdate.SetLocations(syntheticsTest.GetLocations())
