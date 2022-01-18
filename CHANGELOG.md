@@ -4,7 +4,6 @@ IMPROVEMENTS:
 
 -   `datadog_dashboard`: Implement support for sunburst widget ([#1324](https://github.com/DataDog/terraform-provider-datadog/pull/1324))
 -   `datadog_monitor`: Add support `ci-pipelines alert` monitor type ([#1315](https://github.com/DataDog/terraform-provider-datadog/pull/1315))
--   `datadog_monitor`: Fix failing monitor tests ([#1323](https://github.com/DataDog/terraform-provider-datadog/pull/1323))
 -   `datadog_security_monitoring_rules`: Raise the case limit in security rules ([#1313](https://github.com/DataDog/terraform-provider-datadog/pull/1313))
 -   `datadog_service_level_objective`: Fix SLO-correction examples ([#1307](https://github.com/DataDog/terraform-provider-datadog/pull/1307))
 -   `datadog_slo_correction`: Update documentation to list supported correction rules ([#1308](https://github.com/DataDog/terraform-provider-datadog/pull/1308))
