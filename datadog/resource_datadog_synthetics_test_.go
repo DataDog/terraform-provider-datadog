@@ -1272,7 +1272,7 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 			if requestBasicAuth["username"] != "" && requestBasicAuth["password"] != "" {
 				basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
 				basicAuth.SetPassword(requestBasicAuth["password"].(string))
-				basicAuth.SetPassword(requestBasicAuth["username"].(string))
+				basicAuth.SetUsername(requestBasicAuth["username"].(string))
 				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
 			}
 		}
