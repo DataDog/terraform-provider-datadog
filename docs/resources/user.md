@@ -39,6 +39,7 @@ resource "datadog_user" "foo" {
 - `name` (String) Name for user.
 - `roles` (Set of String) A list a role IDs to assign to the user.
 - `send_user_invitation` (Boolean) Whether an invitation email should be sent when the user is created.
+- `service_account` (Boolean) Whether the user is a service account.
 
 ### Read-Only
 

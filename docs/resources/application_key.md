@@ -26,6 +26,10 @@ resource "datadog_application_key" "foo" {
 
 - `name` (String) Name for Application Key.
 
+### Optional
+
+- **service_account** (String) ID of a service account that owns the Application Key.
+
 ### Read-Only
 
 - `id` (String) The ID of this resource.
