@@ -77,6 +77,8 @@ func TestAccDatadogUser_Invitation(t *testing.T) {
 						"datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "service_account", "false"),
 					resource.TestCheckResourceAttrSet(
 						"datadog_user.foo", "user_invitation_id"),
 				),
@@ -106,6 +108,39 @@ func TestAccDatadogUser_NoInvitation(t *testing.T) {
 						"datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "service_account", "false"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_user.foo", "user_invitation_id"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogUser_ServiceAccount(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogUserConfigRequiredServiceAccount(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "verified", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "service_account", "true"),
 					resource.TestCheckNoResourceAttr(
 						"datadog_user.foo", "user_invitation_id"),
 				),
@@ -334,6 +369,15 @@ resource "datadog_user" "foo" {
   email     = "%s"
   name      = "Test User"
   send_user_invitation = false
+}`, uniq)
+}
+
+func testAccCheckDatadogUserConfigRequiredServiceAccount(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_user" "foo" {
+  email     = "%s"
+  name      = "Test User"
+  service_account = true
 }`, uniq)
 }
 
