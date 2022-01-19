@@ -1148,15 +1148,18 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			step.SetIsCritical(stepMap["is_critical"].(bool))
 
 			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
-			retry := stepMap["retry"].([]interface{})[0]
+			retries := stepMap["retry"].([]interface{})
+			if len(retries) > 0 && retries[0] != nil {
+				retry := retries[0]
 
-			if count, ok := retry.(map[string]interface{})["count"]; ok {
-				optionsRetry.SetCount(int64(count.(int)))
+				if count, ok := retry.(map[string]interface{})["count"]; ok {
+					optionsRetry.SetCount(int64(count.(int)))
+				}
+				if interval, ok := retry.(map[string]interface{})["interval"]; ok {
+					optionsRetry.SetInterval(float64(interval.(int)))
+				}
+				step.SetRetry(optionsRetry)
 			}
-			if interval, ok := retry.(map[string]interface{})["interval"]; ok {
-				optionsRetry.SetInterval(float64(interval.(int)))
-			}
-			step.SetRetry(optionsRetry)
 
 			steps = append(steps, step)
 		}
