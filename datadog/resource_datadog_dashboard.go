@@ -861,6 +861,15 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getTraceServiceDefinitionSchema(),
 			},
 		},
+		"treemap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Treemap widget.",
+			Elem: &schema.Resource{
+				Schema: getTreemapDefinitionSchema(),
+			},
+		},
 		"geomap_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -992,6 +1001,10 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 	} else if def, ok := terraformWidget["trace_service_definition"].([]interface{}); ok && len(def) > 0 {
 		if traceServiceDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.ServiceSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogTraceServiceDefinition(traceServiceDefinition))
+		}
+	} else if def, ok := terraformWidget["treemap_definition"].([]interface{}); ok && len(def) > 0 {
+		if treemapDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.TreeMapWidgetDefinitionAsWidgetDefinition(buildDatadogTreemapDefinition(treemapDefinition))
 		}
 	} else if def, ok := terraformWidget["geomap_definition"].([]interface{}); ok && len(def) > 0 {
 		if geomapDefinition, ok := def[0].(map[string]interface{}); ok {
@@ -1140,7 +1153,11 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataK
 	} else if widgetDefinition.ServiceSummaryWidgetDefinition != nil {
 		terraformDefinition := buildTerraformTraceServiceDefinition(*widgetDefinition.ServiceSummaryWidgetDefinition, k.Add("trace_service_definition.0"))
 		k.Remove("trace_service_definition.0")
-		terraformWidget["trace_service_definition"] = []map[string]interface{}{terraformDefinition}
+		terraformWidget["treemap_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if widgetDefinition.TreeMapWidgetDefinition != nil {
+		terraformDefinition := buildTerraformTreemapDefinition(*widgetDefinition.TreeMapWidgetDefinition, k.Add("treemap_definition.0"))
+		k.Remove("treemap_definition.0")
+		terraformWidget["treemap_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.GeomapWidgetDefinition != nil {
 		terraformDefinition := buildTerraformGeomapDefinition(*widgetDefinition.GeomapWidgetDefinition, k.Add("geomap_definition.0"))
 		k.Remove("geomap_definition.0")
@@ -6647,6 +6664,114 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 	}
 
 	return datadogDefinition
+}
+
+//
+// Treemap Widget Definition Helpers
+//
+
+func getTreemapDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"request": {
+			Description: "Nested block describing the request to use when displaying the widget.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getTreemapRequestSchema(),
+			},
+		},
+		"title": {
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+	}
+}
+
+func getTreemapRequestSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getFormulaSchema(),
+	}
+}
+
+func buildDatadogTreemapDefinition(terraformDefinition map[string]interface{}) *datadogV1.TreeMapWidgetDefinition {
+	datadogDefinition := datadogV1.NewTreeMapWidgetDefinitionWithDefaults()
+	// Required params
+	terraformRequests := terraformDefinition["request"].([]interface{})
+	datadogDefinition.Requests = *buildDatadogTreemapRequests(&terraformRequests)
+
+	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitle(v)
+	}
+
+	return datadogDefinition
+}
+
+func buildDatadogTreemapRequests(terraformRequests *[]interface{}) *[]datadogV1.TreeMapWidgetRequest {
+	datadogRequests := make([]datadogV1.TreeMapWidgetRequest, len(*terraformRequests))
+	for i, r := range *terraformRequests {
+		if r == nil {
+			continue
+		}
+		terraformRequest := r.(map[string]interface{})
+		// Build Treemap request
+		datadogTreemapRequest := datadogV1.NewTreeMapWidgetRequest()
+		if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+			for i, q := range v {
+				query := q.(map[string]interface{})
+				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogEventQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				}
+			}
+			datadogTreemapRequest.SetQueries(queries)
+			datadogTreemapRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
+		}
+		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+			formulas := make([]datadogV1.WidgetFormula, len(v))
+			for i, formula := range v {
+				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
+			}
+			datadogTreemapRequest.SetFormulas(formulas)
+		}
+		datadogRequests[i] = *datadogTreemapRequest
+	}
+	return &datadogRequests
+}
+
+func buildTerraformTreemapRequests(datadogTreemapRequests *[]datadogV1.TreeMapWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+	terraformRequests := make([]map[string]interface{}, len(*datadogTreemapRequests))
+	for i, datadogRequest := range *datadogTreemapRequests {
+		terraformRequest := map[string]interface{}{}
+		if v, ok := datadogRequest.GetQueriesOk(); ok {
+			terraformRequest["query"] = buildTerraformQuery(*v)
+		}
+
+		if v, ok := datadogRequest.GetFormulasOk(); ok {
+			terraformRequest["formula"] = buildTerraformFormula(*v)
+		}
+		terraformRequests[i] = terraformRequest
+	}
+	return &terraformRequests
+}
+
+func buildTerraformTreemapDefinition(datadogDefinition datadogV1.TreeMapWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+	terraformDefinition := map[string]interface{}{}
+	// Required params
+	terraformDefinition["request"] = buildTerraformTreemapRequests(&datadogDefinition.Requests, k.Add("request"))
+	k.Remove("request")
+
+	if v, ok := datadogDefinition.GetTitleOk(); ok {
+		terraformDefinition["title"] = *v
+	}
+
+	return terraformDefinition
 }
 
 func buildTerraformGeomapDefinition(datadogDefinition datadogV1.GeomapWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
