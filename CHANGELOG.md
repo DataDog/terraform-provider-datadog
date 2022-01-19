@@ -1,3 +1,9 @@
+## 3.8.1 (January 19, 2022)
+
+BUGFIXES:
+
+-   `datadog_synthetics_test`: Handle empty `retry` option in API step ([#1332](https://github.com/DataDog/terraform-provider-datadog/pull/1332))
+
 ## 3.8.0 (January 18, 2022)
 
 IMPROVEMENTS:
