@@ -2921,7 +2921,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "status", "paused"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.#", "1"),
+				"datadog_synthetics_test.multi", "api_step.#", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
 			resource.TestCheckResourceAttr(
@@ -2993,6 +2993,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.retry.0.interval", "1000"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.name", "Second api step"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.name", "VARIABLE_NAME"),
@@ -3003,85 +3005,100 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 func createSyntheticsMultistepAPITestConfig(testName string, variableName string) string {
 	return fmt.Sprintf(`
 resource "datadog_synthetics_global_variable" "global_variable" {
-	name = "%[2]s"
-	description = "a global variable"
-	tags = ["foo:bar", "baz"]
-	value = "variable-value"
+  name        = "%[2]s"
+  description = "a global variable"
+  tags        = ["foo:bar", "baz"]
+  value       = "variable-value"
 }
 
 resource "datadog_synthetics_test" "multi" {
-       type = "api"
-       subtype = "multi"
-       locations = ["aws:eu-central-1"]
-       options_list {
-               tick_every = 900
-               min_failure_duration = 0
-               min_location_failed = 1
-       }
-       name = "%[1]s"
-       message = "Notify @datadog.user"
-       tags = ["multistep"]
-       status = "paused"
+  type      = "api"
+  subtype   = "multi"
+  locations = ["aws:eu-central-1"]
+  options_list {
+    tick_every           = 900
+    min_failure_duration = 0
+    min_location_failed  = 1
+  }
+  name    = "%[1]s"
+  message = "Notify @datadog.user"
+  tags    = ["multistep"]
+  status  = "paused"
 
-       config_variable {
-       	   id = datadog_synthetics_global_variable.global_variable.id
-       	   type = "global"
-           name = "VARIABLE_NAME"
-       }
+  config_variable {
+    id   = datadog_synthetics_global_variable.global_variable.id
+    type = "global"
+    name = "VARIABLE_NAME"
+  }
 
-       api_step {
-               name = "First api step"
-               request_definition {
-                       method = "GET"
-                       url = "https://www.datadoghq.com"
-                       body = "this is a body"
-                       timeout = 30
-                       allow_insecure = true
-                       follow_redirects = true
-               }
-               request_headers = {
-               	       Accept = "application/json"
-               	       X-Datadog-Trace-ID = "123456789"
-               }
-               request_query = {
-                       foo = "bar"
-               }
-               request_basicauth {
-                       username = "admin"
-               	       password = "secret"
-               }
-               request_client_certificate {
-               	       cert {
-               		           content = "content-certificate"
-               	       }
-               	       key {
-               		   	       content = "content-key"
-               			       filename = "key"
-               	       }
-               }
-               assertion {
-                       type = "statusCode"
-                       operator = "is"
-                       target = "200"
-               }
+  api_step {
+    name = "First api step"
+    request_definition {
+      method           = "GET"
+      url              = "https://www.datadoghq.com"
+      body             = "this is a body"
+      timeout          = 30
+      allow_insecure   = true
+      follow_redirects = true
+    }
+    request_headers = {
+      Accept             = "application/json"
+      X-Datadog-Trace-ID = "123456789"
+    }
+    request_query = {
+      foo = "bar"
+    }
+    request_basicauth {
+      username = "admin"
+      password = "secret"
+    }
+    request_client_certificate {
+      cert {
+        content = "content-certificate"
+      }
+      key {
+        content  = "content-key"
+        filename = "key"
+      }
+    }
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
 
-               extracted_value {
-               		   name = "VAR_EXTRACT"
-               		   field = "content-length"
-               		   type = "http_header"
-               		   parser {
-               		   		   type = "regex"
-               		   		   value = ".*"
-               		   }
-               }
-               allow_failure = true
-               is_critical = false
+    extracted_value {
+      name  = "VAR_EXTRACT"
+      field = "content-length"
+      type  = "http_header"
+      parser {
+        type  = "regex"
+        value = ".*"
+      }
+    }
+    allow_failure = true
+    is_critical   = false
 
-               retry {
-                   count = 5
-                   interval = 1000
-               }
-       }
+    retry {
+      count    = 5
+      interval = 1000
+    }
+  }
+  api_step {
+    name = "Second api step"
+    request_definition {
+      method           = "GET"
+      url              = "https://docs.datadoghq.com"
+      timeout          = 30
+      allow_insecure   = true
+      follow_redirects = true
+    }
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+  }
 }
 `, testName, variableName)
 }
