@@ -1018,9 +1018,8 @@ func getSyntheticsTestType(d *schema.ResourceData) datadogV1.SyntheticsTestDetai
 }
 
 func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsAPITest {
-	syntheticsTest := datadogV1.NewSyntheticsAPITest()
+	syntheticsTest := datadogV1.NewSyntheticsAPITestWithDefaults()
 	syntheticsTest.SetName(d.Get("name").(string))
-	syntheticsTest.SetType(datadogV1.SYNTHETICSAPITESTTYPE_API)
 
 	if attr, ok := d.GetOk("subtype"); ok {
 		syntheticsTest.SetSubtype(datadogV1.SyntheticsTestDetailsSubType(attr.(string)))
@@ -1271,8 +1270,10 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 	if len(basicAuth) > 0 {
 		if requestBasicAuth, ok := basicAuth[0].(map[string]interface{}); ok {
 			if requestBasicAuth["username"] != "" && requestBasicAuth["password"] != "" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuth(requestBasicAuth["password"].(string), requestBasicAuth["username"].(string))
-				request.SetBasicAuth(*basicAuth)
+				basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
+				basicAuth.SetPassword(requestBasicAuth["password"].(string))
+				basicAuth.SetUsername(requestBasicAuth["username"].(string))
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
 			}
 		}
 	}
@@ -1419,8 +1420,10 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 	if username, ok := d.GetOk("request_basicauth.0.username"); ok {
 		if password, ok := d.GetOk("request_basicauth.0.password"); ok {
-			basicAuth := datadogV1.NewSyntheticsBasicAuth(password.(string), username.(string))
-			request.SetBasicAuth(*basicAuth)
+			basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
+			basicAuth.SetPassword(password.(string))
+			basicAuth.SetUsername(username.(string))
+			request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
 		}
 	}
 	if attr, ok := d.GetOk("request_headers"); ok {
@@ -1588,9 +1591,9 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		config.SetSetCookie(attr.(string))
 	}
 
-	syntheticsTest := datadogV1.NewSyntheticsBrowserTest(d.Get("message").(string))
+	syntheticsTest := datadogV1.NewSyntheticsBrowserTestWithDefaults()
+	syntheticsTest.SetMessage(d.Get("message").(string))
 	syntheticsTest.SetName(d.Get("name").(string))
-	syntheticsTest.SetType(datadogV1.SYNTHETICSBROWSERTESTTYPE_BROWSER)
 	syntheticsTest.SetConfig(config)
 	syntheticsTest.SetOptions(*options)
 	syntheticsTest.SetStatus(datadogV1.SyntheticsTestPauseStatus(d.Get("status").(string)))
@@ -1816,10 +1819,10 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	if err := d.Set("request_query", actualRequest.GetQuery()); err != nil {
 		return diag.FromErr(err)
 	}
-	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok {
+	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok && basicAuth.SyntheticsBasicAuthWeb != nil {
 		localAuth := make(map[string]string)
-		localAuth["username"] = basicAuth.Username
-		localAuth["password"] = basicAuth.Password
+		localAuth["username"] = basicAuth.SyntheticsBasicAuthWeb.Username
+		localAuth["password"] = basicAuth.SyntheticsBasicAuthWeb.Password
 		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
 			return diag.FromErr(err)
 		}
@@ -2064,10 +2067,10 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	if err := d.Set("request_query", actualRequest.GetQuery()); err != nil {
 		return diag.FromErr(err)
 	}
-	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok {
+	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok && basicAuth.SyntheticsBasicAuthWeb != nil {
 		localAuth := make(map[string]string)
-		localAuth["username"] = basicAuth.Username
-		localAuth["password"] = basicAuth.Password
+		localAuth["username"] = basicAuth.SyntheticsBasicAuthWeb.Username
+		localAuth["password"] = basicAuth.SyntheticsBasicAuthWeb.Password
 		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
 			return diag.FromErr(err)
 		}
@@ -2164,10 +2167,10 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			localStep["request_headers"] = stepRequest.GetHeaders()
 			localStep["request_query"] = stepRequest.GetQuery()
 
-			if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok {
+			if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok && basicAuth.SyntheticsBasicAuthWeb != nil {
 				localAuth := make(map[string]string)
-				localAuth["username"] = basicAuth.Username
-				localAuth["password"] = basicAuth.Password
+				localAuth["username"] = basicAuth.SyntheticsBasicAuthWeb.Username
+				localAuth["password"] = basicAuth.SyntheticsBasicAuthWeb.Password
 				localStep["request_basicauth"] = []map[string]string{localAuth}
 			}
 
