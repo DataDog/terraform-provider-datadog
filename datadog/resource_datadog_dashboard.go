@@ -1153,7 +1153,7 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataK
 	} else if widgetDefinition.ServiceSummaryWidgetDefinition != nil {
 		terraformDefinition := buildTerraformTraceServiceDefinition(*widgetDefinition.ServiceSummaryWidgetDefinition, k.Add("trace_service_definition.0"))
 		k.Remove("trace_service_definition.0")
-		terraformWidget["treemap_definition"] = []map[string]interface{}{terraformDefinition}
+		terraformWidget["trace_service_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.TreeMapWidgetDefinition != nil {
 		terraformDefinition := buildTerraformTreemapDefinition(*widgetDefinition.TreeMapWidgetDefinition, k.Add("treemap_definition.0"))
 		k.Remove("treemap_definition.0")
