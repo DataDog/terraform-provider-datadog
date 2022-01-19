@@ -19,7 +19,7 @@ jobs:
                   echo "::error::Add 'changelog/*' label";
                   exit 1;
             - name: Check resource label
-              if: github.event.pull_request.draft == false && false == contains(join(github.event.pull_request.labels.*.name, ','), 'changelog/no-changelog') && false == contains(join(github.event.pull_request.labels.*.name, ','), 'resource/')
+              if: github.event.pull_request.draft == false && false == contains(join(github.event.pull_request.labels.*.name, ','), 'changelog/note') && false == contains(join(github.event.pull_request.labels.*.name, ','), 'changelog/no-changelog') && false == contains(join(github.event.pull_request.labels.*.name, ','), 'resource/')
               run: |-
                   echo "::error::Add 'resource/*' label";
                   exit 1;
