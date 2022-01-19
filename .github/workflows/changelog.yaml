@@ -16,12 +16,12 @@ jobs:
             - name: Check changelog label
               if: github.event.pull_request.draft == false && false == contains(join(github.event.pull_request.labels.*.name, ','), 'changelog/')
               run: |-
-                  echo "::error Add 'changelog/*' label";
+                  echo "::error::Add 'changelog/*' label";
                   exit 1;
             - name: Check resource label
               if: github.event.pull_request.draft == false && false == contains(join(github.event.pull_request.labels.*.name, ','), 'resource/')
               run: |-
-                  echo "::error Add 'resource/*' label";
+                  echo "::error::Add 'resource/*' label";
                   exit 1;
             - name: OK
               run: echo "Thank you!"
