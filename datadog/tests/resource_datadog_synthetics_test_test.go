@@ -641,7 +641,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.#", "7"),
+				"datadog_synthetics_test.bar", "assertion.#", "8"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
@@ -698,6 +698,18 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 				"datadog_synthetics_test.bar", "assertion.6.operator", "doesNotMatch"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.6.target", "20[04]"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.jsonpath", "$.mykey"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.operator", "moreThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.targetvalue", "{{ TEST }}"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -763,6 +775,13 @@ resource "datadog_synthetics_test" "bar" {
 		}
 	}
 
+	config_variable {
+		type = "text"
+		name = "TEST"
+		example = "1234"
+		pattern = "{{ numeric(4) }}"
+	}
+
 	assertion {
 		type = "header"
 		property = "content-type"
@@ -806,6 +825,16 @@ resource "datadog_synthetics_test" "bar" {
 		type = "statusCode"
 		operator = "doesNotMatch"
 		target = "20[04]"
+	}
+
+	assertion {
+		type     = "body"
+		operator = "validatesJSONPath"
+		targetjsonpath {
+			jsonpath    = "$.mykey"
+			operator    = "moreThan"
+			targetvalue = "{{ TEST }}"
+		}
 	}
 
 	locations = [ "aws:eu-central-1" ]
@@ -3107,9 +3136,9 @@ func editSyntheticsTestMML(accProvider func() (*schema.Provider, error)) resourc
 				return fmt.Errorf("failed to read synthetics test %s", err)
 			}
 
-			syntheticsTestUpdate := datadogV1.NewSyntheticsBrowserTest(syntheticsTest.GetMessage())
+			syntheticsTestUpdate := datadogV1.NewSyntheticsBrowserTestWithDefaults()
+			syntheticsTestUpdate.SetMessage(syntheticsTest.GetMessage())
 			syntheticsTestUpdate.SetName(syntheticsTest.GetName())
-			syntheticsTestUpdate.SetType(datadogV1.SYNTHETICSBROWSERTESTTYPE_BROWSER)
 			syntheticsTestUpdate.SetConfig(syntheticsTest.GetConfig())
 			syntheticsTestUpdate.SetStatus(syntheticsTest.GetStatus())
 			syntheticsTestUpdate.SetLocations(syntheticsTest.GetLocations())
