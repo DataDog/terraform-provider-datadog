@@ -463,6 +463,18 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_definition.0.no_saving_response_body", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_basicauth.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_basicauth.0.type", "ntlm"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_basicauth.0.username", "ntlm-username"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_basicauth.0.password", "ntlm-password"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_basicauth.0.domain", "ntlm-domain"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_basicauth.0.workstation", "ntlm-workstation"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.#", "4"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.0.type", "header"),
@@ -556,6 +568,14 @@ resource "datadog_synthetics_test" "foo" {
 		X-Datadog-Trace-ID = "1234566789"
 	}
 
+	request_basicauth {
+		type = "ntlm"
+		username = "ntlm-username"
+		password = "ntlm-password"
+		domain = "ntlm-domain"
+		workstation = "ntlm-workstation"
+	}
+
 	assertion {
 		type = "header"
 		property = "content-type"
@@ -628,6 +648,8 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 				"datadog_synthetics_test.bar", "request_query.foo", "bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_basicauth.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_basicauth.0.type", "web"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_basicauth.0.username", "admin"),
 			resource.TestCheckResourceAttr(
@@ -1921,6 +1943,14 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_headers.X-Datadog-Trace-ID", "123456789"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_basicauth.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_basicauth.0.type", "web"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_basicauth.0.username", "username"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_basicauth.0.password", "password"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "set_cookie", "name=value"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "device_ids.#", "2"),
@@ -2008,6 +2038,11 @@ resource "datadog_synthetics_test" "bar" {
 	request_headers = {
 		Accept = "application/json"
 		X-Datadog-Trace-ID = "123456789"
+	}
+
+	request_basicauth {
+		username = "username"
+		password = "password"
 	}
 
 	set_cookie = "name=value"
@@ -2230,6 +2265,18 @@ func createSyntheticsBrowserTestBrowserVariablesStep(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_basicauth.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_basicauth.0.type", "ntlm"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_basicauth.0.username", "ntlm-username"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_basicauth.0.password", "ntlm-password"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_basicauth.0.domain", "ntlm-domain"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_basicauth.0.workstation", "ntlm-workstation"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "device_ids.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "device_ids.0", "laptop_large"),
@@ -2289,6 +2336,14 @@ resource "datadog_synthetics_test" "bar" {
        request_definition {
                method = "GET"
                url = "https://www.datadoghq.com"
+       }
+
+       request_basicauth {
+		       type = "ntlm"
+		       username = "ntlm-username"
+		       password = "ntlm-password"
+		       domain = "ntlm-domain"
+			   workstation = "ntlm-workstation"
        }
 
        device_ids = [ "laptop_large" ]
@@ -2951,9 +3006,17 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.username", "admin"),
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.type", "sigv4"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.password", "secret"),
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.access_key", "sigv4-access-key"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.secret_key", "sigv4-secret-key"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.region", "sigv4-region"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.service_name", "sigv4-service-name"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.session_token", "sigv4-session-token"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
 			resource.TestCheckResourceAttr(
@@ -3047,8 +3110,12 @@ resource "datadog_synthetics_test" "multi" {
                        foo = "bar"
                }
                request_basicauth {
-                       username = "admin"
-               	       password = "secret"
+                       type = "sigv4"
+                       access_key = "sigv4-access-key"
+               	       secret_key = "sigv4-secret-key"
+               	       region = "sigv4-region"
+               	       service_name = "sigv4-service-name"
+               	       session_token = "sigv4-session-token"
                }
                request_client_certificate {
                	       cert {

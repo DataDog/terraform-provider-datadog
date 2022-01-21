@@ -222,16 +222,58 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 		MaxItems:    1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
+				"type": {
+					Description:  "The type of basic authentication to use when performing the test.",
+					Type:         schema.TypeString,
+					Optional:     true,
+					Default:      "web",
+					ValidateFunc: validation.StringInSlice([]string{"web", "sigv4", "ntlm"}, false),
+				},
 				"username": {
 					Description: "Username for authentication.",
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
 				},
 				"password": {
 					Description: "Password for authentication.",
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
 					Sensitive:   true,
+				},
+				"access_key": {
+					Type:        schema.TypeString,
+					Description: "Access key for the `SIGV4` authentication.",
+					Optional:    true,
+				},
+				"secret_key": {
+					Type:        schema.TypeString,
+					Description: "Secret key for the `SIGV4` authentication.",
+					Optional:    true,
+				},
+				"region": {
+					Type:        schema.TypeString,
+					Description: "Region for the `SIGV4` authentication.",
+					Optional:    true,
+				},
+				"service_name": {
+					Type:        schema.TypeString,
+					Description: "Service name for the `SIGV4` authentication.",
+					Optional:    true,
+				},
+				"session_token": {
+					Type:        schema.TypeString,
+					Description: "Session token for the `SIGV4` authentication.",
+					Optional:    true,
+				},
+				"domain": {
+					Type:        schema.TypeString,
+					Description: "Domain for the `ntlm` authentication.",
+					Optional:    true,
+				},
+				"workstation": {
+					Type:        schema.TypeString,
+					Description: "workstation for the `ntlm` authentication.",
+					Optional:    true,
 				},
 			},
 		},
@@ -1270,9 +1312,30 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 
 	if len(basicAuth) > 0 {
 		if requestBasicAuth, ok := basicAuth[0].(map[string]interface{}); ok {
-			if requestBasicAuth["username"] != "" && requestBasicAuth["password"] != "" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuth(requestBasicAuth["password"].(string), requestBasicAuth["username"].(string))
-				request.SetBasicAuth(*basicAuth)
+			if requestBasicAuth["type"] == "web" && requestBasicAuth["username"] != "" && requestBasicAuth["password"] != "" {
+				basicAuth := datadogV1.NewSyntheticsBasicAuthWeb(requestBasicAuth["password"].(string), datadogV1.SYNTHETICSBASICAUTHWEBTYPE_WEB, requestBasicAuth["username"].(string))
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
+			}
+
+			if requestBasicAuth["type"] == "sigv4" && requestBasicAuth["access_key"] != "" && requestBasicAuth["secret_key"] != "" {
+				basicAuth := datadogV1.NewSyntheticsBasicAuthSigv4(requestBasicAuth["access_key"].(string), requestBasicAuth["secret_key"].(string), datadogV1.SYNTHETICSBASICAUTHSIGV4TYPE_SIGV4)
+
+				basicAuth.SetRegion(requestBasicAuth["region"].(string))
+				basicAuth.SetServiceName(requestBasicAuth["service_name"].(string))
+				basicAuth.SetSessionToken(requestBasicAuth["session_token"].(string))
+
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthSigv4AsSyntheticsBasicAuth(basicAuth))
+			}
+
+			if requestBasicAuth["type"] == "ntlm" {
+				basicAuth := datadogV1.NewSyntheticsBasicAuthNTLM(datadogV1.SYNTHETICSBASICAUTHNTLMTYPE_NTLM)
+
+				basicAuth.SetUsername(requestBasicAuth["username"].(string))
+				basicAuth.SetPassword(requestBasicAuth["password"].(string))
+				basicAuth.SetDomain(requestBasicAuth["domain"].(string))
+				basicAuth.SetWorkstation(requestBasicAuth["workstation"].(string))
+
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthNTLMAsSyntheticsBasicAuth(basicAuth))
 			}
 		}
 	}
@@ -1417,12 +1480,17 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		}
 	}
 
-	if username, ok := d.GetOk("request_basicauth.0.username"); ok {
-		if password, ok := d.GetOk("request_basicauth.0.password"); ok {
-			basicAuth := datadogV1.NewSyntheticsBasicAuth(password.(string), username.(string))
-			request.SetBasicAuth(*basicAuth)
+	if basicAuthType, ok := d.GetOk("request_basicauth.0.type"); ok {
+		if basicAuthType == "web" {
+			if username, ok := d.GetOk("request_basicauth.0.username"); ok {
+				if password, ok := d.GetOk("request_basicauth.0.password"); ok {
+					basicAuth := datadogV1.NewSyntheticsBasicAuthWeb(password.(string), datadogV1.SYNTHETICSBASICAUTHWEBTYPE_WEB, username.(string))
+					request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
+				}
+			}
 		}
 	}
+
 	if attr, ok := d.GetOk("request_headers"); ok {
 		headers := attr.(map[string]interface{})
 		if len(headers) > 0 {
@@ -1746,6 +1814,39 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 	return localAssertions, nil
 }
 
+func buildLocalBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]string {
+	localAuth := make(map[string]string)
+
+	if basicAuth.SyntheticsBasicAuthWeb != nil {
+		basicAuthWeb := basicAuth.SyntheticsBasicAuthWeb
+
+		localAuth["username"] = basicAuthWeb.Username
+		localAuth["password"] = basicAuthWeb.Password
+		localAuth["type"] = "web"
+	}
+
+	if basicAuth.SyntheticsBasicAuthSigv4 != nil {
+		basicAuthSigv4 := basicAuth.SyntheticsBasicAuthSigv4
+		localAuth["access_key"] = basicAuthSigv4.AccessKey
+		localAuth["secret_key"] = basicAuthSigv4.SecretKey
+		localAuth["region"] = *basicAuthSigv4.Region
+		localAuth["session_token"] = *basicAuthSigv4.SessionToken
+		localAuth["service_name"] = *basicAuthSigv4.ServiceName
+		localAuth["type"] = "sigv4"
+	}
+
+	if basicAuth.SyntheticsBasicAuthNTLM != nil {
+		basicAuthNtlm := basicAuth.SyntheticsBasicAuthNTLM
+		localAuth["username"] = *basicAuthNtlm.Username
+		localAuth["password"] = *basicAuthNtlm.Password
+		localAuth["domain"] = *basicAuthNtlm.Domain
+		localAuth["workstation"] = *basicAuthNtlm.Workstation
+		localAuth["type"] = "ntlm"
+	}
+
+	return localAuth
+}
+
 func buildExtractedValues(stepExtractedValues []interface{}) []datadogV1.SyntheticsParsingOptions {
 	values := make([]datadogV1.SyntheticsParsingOptions, len(stepExtractedValues))
 
@@ -1817,9 +1918,8 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		return diag.FromErr(err)
 	}
 	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok {
-		localAuth := make(map[string]string)
-		localAuth["username"] = basicAuth.Username
-		localAuth["password"] = basicAuth.Password
+		localAuth := buildLocalBasicAuth(basicAuth)
+
 		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
 			return diag.FromErr(err)
 		}
@@ -2064,10 +2164,10 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	if err := d.Set("request_query", actualRequest.GetQuery()); err != nil {
 		return diag.FromErr(err)
 	}
+
 	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok {
-		localAuth := make(map[string]string)
-		localAuth["username"] = basicAuth.Username
-		localAuth["password"] = basicAuth.Password
+		localAuth := buildLocalBasicAuth(basicAuth)
+
 		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
 			return diag.FromErr(err)
 		}
@@ -2165,9 +2265,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			localStep["request_query"] = stepRequest.GetQuery()
 
 			if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok {
-				localAuth := make(map[string]string)
-				localAuth["username"] = basicAuth.Username
-				localAuth["password"] = basicAuth.Password
+				localAuth := buildLocalBasicAuth(basicAuth)
 				localStep["request_basicauth"] = []map[string]string{localAuth}
 			}
 
