@@ -62,6 +62,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			"request_headers":            syntheticsTestRequestHeaders(),
 			"request_query":              syntheticsTestRequestQuery(),
 			"request_basicauth":          syntheticsTestRequestBasicAuth(),
+			"request_proxy":              syntheticsTestRequestProxy(),
 			"request_client_certificate": syntheticsTestRequestClientCertificate(),
 			"assertion":                  syntheticsAPIAssertion(),
 			"browser_variable":           syntheticsBrowserVariable(),
@@ -275,6 +276,25 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 					Description: "workstation for the `ntlm` authentication.",
 					Optional:    true,
 				},
+			},
+		},
+	}
+}
+
+func syntheticsTestRequestProxy() *schema.Schema {
+	return &schema.Schema{
+		Description: "The proxy to perform the test.",
+		Type:        schema.TypeList,
+		Optional:    true,
+		MaxItems:    1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"url": {
+					Type:        schema.TypeString,
+					Description: "URL of the proxy to perform the test.",
+					Required:    true,
+				},
+				"headers": syntheticsTestRequestHeaders(),
 			},
 		},
 	}
@@ -549,6 +569,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 				"request_headers":            syntheticsTestRequestHeaders(),
 				"request_query":              syntheticsTestRequestQuery(),
 				"request_basicauth":          syntheticsTestRequestBasicAuth(),
+				"request_proxy":              syntheticsTestRequestProxy(),
 				"request_client_certificate": syntheticsTestRequestClientCertificate(),
 				"assertion":                  syntheticsAPIAssertion(),
 				"allow_failure": {
@@ -1116,7 +1137,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 	k.Remove(parts)
 
-	request = completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}))
+	request = completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}), d.Get("request_proxy").([]interface{}))
 
 	config := datadogV1.NewSyntheticsAPITestConfigWithDefaults()
 
@@ -1183,7 +1204,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 				request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
 			}
 
-			request = completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}))
+			request = completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}))
 
 			step.SetRequest(request)
 
@@ -1295,7 +1316,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	return syntheticsTest
 }
 
-func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, basicAuth []interface{}, requestClientCertificates []interface{}) datadogV1.SyntheticsTestRequest {
+func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, basicAuth []interface{}, requestClientCertificates []interface{}, requestProxy []interface{}) datadogV1.SyntheticsTestRequest {
 	if len(requestHeaders) > 0 {
 		headers := make(map[string]string, len(requestHeaders))
 
@@ -1379,6 +1400,23 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 		}
 
 		request.SetCertificate(requestClientCertificate)
+	}
+
+	if len(requestProxy) > 0 {
+		if proxy, ok := requestProxy[0].(map[string]interface{}); ok {
+			requestProxy := datadogV1.SyntheticsTestRequestProxy{}
+			requestProxy.SetUrl(proxy["url"].(string))
+
+			proxyHeaders := make(map[string]string, len(proxy["headers"].(map[string]interface{})))
+
+			for k, v := range proxy["headers"].(map[string]interface{}) {
+				proxyHeaders[k] = v.(string)
+			}
+
+			requestProxy.SetHeaders(proxyHeaders)
+
+			request.SetProxy(requestProxy)
+		}
 	}
 
 	return request
@@ -1525,6 +1563,26 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		}
 
 		request.SetCertificate(clientCertificate)
+	}
+
+	if _, ok := d.GetOk("request_proxy"); ok {
+		requestProxy := datadogV1.SyntheticsTestRequestProxy{}
+
+		if url, ok := d.GetOk("request_proxy.0.url"); ok {
+			requestProxy.SetUrl(url.(string))
+
+			if headers, ok := d.GetOk("request_proxy.0.headers"); ok {
+				proxyHeaders := make(map[string]string, len(headers.(map[string]interface{})))
+
+				for k, v := range headers.(map[string]interface{}) {
+					proxyHeaders[k] = v.(string)
+				}
+
+				requestProxy.SetHeaders(proxyHeaders)
+			}
+
+			request.SetProxy(requestProxy)
+		}
 	}
 
 	config := datadogV1.SyntheticsBrowserTestConfig{}
@@ -1953,6 +2011,14 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		}
 	}
 
+	if proxy, ok := actualRequest.GetProxyOk(); ok {
+		localProxy := make(map[string]interface{})
+		localProxy["url"] = proxy.GetUrl()
+		localProxy["headers"] = proxy.GetHeaders()
+
+		d.Set("request_proxy", []map[string]interface{}{localProxy})
+	}
+
 	// assertions are required but not used for browser tests
 	localAssertions := make([]map[string]interface{}, 0)
 
@@ -2201,6 +2267,14 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		}
 	}
 
+	if proxy, ok := actualRequest.GetProxyOk(); ok {
+		localProxy := make(map[string]interface{})
+		localProxy["url"] = proxy.GetUrl()
+		localProxy["headers"] = proxy.GetHeaders()
+
+		d.Set("request_proxy", []map[string]interface{}{localProxy})
+	}
+
 	actualAssertions := config.GetAssertions()
 	localAssertions, err := buildLocalAssertions(actualAssertions)
 
@@ -2296,6 +2370,14 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				}
 
 				localStep["request_client_certificate"] = []map[string][]map[string]string{localCertificate}
+			}
+
+			if proxy, ok := stepRequest.GetProxyOk(); ok {
+				localProxy := make(map[string]interface{})
+				localProxy["url"] = proxy.GetUrl()
+				localProxy["headers"] = proxy.GetHeaders()
+
+				localStep["request_proxy"] = []map[string]interface{}{localProxy}
 			}
 
 			localStep["allow_failure"] = step.GetAllowFailure()

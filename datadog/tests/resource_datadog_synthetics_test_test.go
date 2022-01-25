@@ -475,6 +475,16 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_basicauth.0.workstation", "ntlm-workstation"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_proxy.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_proxy.0.url", "https://proxy.url"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_proxy.0.headers.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_proxy.0.headers.Accept", "application/json"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_proxy.0.headers.X-Datadog-Trace-ID", "123456789"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.#", "4"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.0.type", "header"),
@@ -565,7 +575,7 @@ resource "datadog_synthetics_test" "foo" {
 	}
 	request_headers = {
 		Accept = "application/json"
-		X-Datadog-Trace-ID = "1234566789"
+		X-Datadog-Trace-ID = "123456789"
 	}
 
 	request_basicauth {
@@ -574,6 +584,14 @@ resource "datadog_synthetics_test" "foo" {
 		password = "ntlm-password"
 		domain = "ntlm-domain"
 		workstation = "ntlm-workstation"
+	}
+
+	request_proxy {
+		url = "https://proxy.url"
+		headers = {
+			Accept = "application/json"
+			X-Datadog-Trace-ID = "123456789"
+		}
 	}
 
 	assertion {
@@ -785,7 +803,7 @@ resource "datadog_synthetics_test" "bar" {
 	}
 	request_headers = {
 		Accept = "application/json"
-		X-Datadog-Trace-ID = "1234566789"
+		X-Datadog-Trace-ID = "123456789"
 	}
 	request_client_certificate {
 		cert {
@@ -1951,6 +1969,16 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_basicauth.0.password", "password"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_proxy.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_proxy.0.url", "https://proxy.url"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_proxy.0.headers.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_proxy.0.headers.Accept", "application/json"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_proxy.0.headers.X-Datadog-Trace-ID", "123456789"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "set_cookie", "name=value"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "device_ids.#", "2"),
@@ -2043,6 +2071,14 @@ resource "datadog_synthetics_test" "bar" {
 	request_basicauth {
 		username = "username"
 		password = "password"
+	}
+
+	request_proxy {
+		url = "https://proxy.url"
+		headers = {
+			Accept = "application/json"
+			X-Datadog-Trace-ID = "123456789"
+		}
 	}
 
 	set_cookie = "name=value"
@@ -3026,6 +3062,16 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.key.0.content", utils.ConvertToSha256("content-key")),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_proxy.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.url", "https://proxy.url"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.Accept", "application/json"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.X-Datadog-Trace-ID", "123456789"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.assertion.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.assertion.0.type", "statusCode"),
@@ -3124,6 +3170,13 @@ resource "datadog_synthetics_test" "multi" {
                	       key {
                		   	       content = "content-key"
                			       filename = "key"
+               	       }
+               }
+               request_proxy {
+                       url = "https://proxy.url"
+                       headers = {
+                           Accept = "application/json"
+               		       X-Datadog-Trace-ID = "123456789"
                	       }
                }
                assertion {
