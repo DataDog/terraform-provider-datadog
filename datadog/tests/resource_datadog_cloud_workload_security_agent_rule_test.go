@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
@@ -17,7 +18,7 @@ const tfAgentRuleName = "datadog_cloud_workload_security_agent_rule.acceptance_t
 func TestAccDatadogCloudWorkloadSecurityAgentRule(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
-	agentRuleName := uniqueEntityName(ctx, t)
+	agentRuleName := strings.Replace(uniqueEntityName(ctx, t), "-", "_", -1)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{

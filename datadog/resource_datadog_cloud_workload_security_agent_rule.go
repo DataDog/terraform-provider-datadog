@@ -138,7 +138,7 @@ func updateResourceDataAgentRuleFromResponse(d *schema.ResourceData, agentRuleRe
 
 	attributes := data.GetAttributes()
 
-	d.Set("description", attributes.GetName())
+	d.Set("description", attributes.GetDescription())
 	d.Set("enabled", attributes.GetEnabled())
 	d.Set("expression", attributes.GetExpression())
 	d.Set("name", attributes.GetName())
