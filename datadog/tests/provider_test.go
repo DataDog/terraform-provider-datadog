@@ -51,8 +51,8 @@ var isTestOrgC *bool
 var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_api_key_test":                             "api_keys",
 	"tests/data_source_datadog_application_key_test":                     "application_keys",
-	"tests/data_source_datadog_dashboard_test":                           "dashboard",
 	"tests/data_source_datadog_cloud_workload_security_agent_rules_test": "cloud-workload-security",
+	"tests/data_source_datadog_dashboard_test":                           "dashboard",
 	"tests/data_source_datadog_dashboard_list_test":                      "dashboard-lists",
 	"tests/data_source_datadog_ip_ranges_test":                           "ip-ranges",
 	"tests/data_source_datadog_logs_indexes_order_test":                  "logs-index",
@@ -137,6 +137,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_synthetics_global_variable_test":             "synthetics",
 	"tests/resource_datadog_synthetics_private_location_test":            "synthetics",
 	"tests/resource_datadog_timeboard_test":                              "dashboards",
+	"tests/resource_datadog_dashboard_treemap_test":                      "dashboards",
 	"tests/resource_datadog_user_test":                                   "users",
 	"tests/resource_datadog_webhook_custom_variable_test":                "webhook_custom_variable",
 	"tests/resource_datadog_webhook_test":                                "webhook",
