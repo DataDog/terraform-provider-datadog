@@ -19,16 +19,11 @@ jobs:
             (github.event_name == 'pull_request' && github.event.pull_request.draft == false && contains(github.event.pull_request.labels.*.name, 'ci/integrations')) || github.event_name == 'schedule'
 
 
-        services:
-            datadog-agent:
-                image: gcr.io/datadoghq/agent:latest
-                ports:
-                    - 8126:8126
-                env:
-                    DD_API_KEY: ${{ secrets.DD_API_KEY }}
-                    DD_HOSTNAME: "none"
-                    DD_INSIDE_CI: "true"
         steps:
+            - name: Start the Datadog Agent locally
+              uses: datadog/agent-github-action@v1
+              with:
+                  api_key: ${{ secrets.DD_API_KEY }}
             - name: Checkout code
               uses: actions/checkout@v2
             - name: Install Go
@@ -40,7 +35,7 @@ jobs:
               env:
                   RECORD: "none"
                   CI: "true"
-                  DD_AGENT_HOST: datadog-agent
+                  DD_AGENT_HOST: localhost
                   DD_PROFILER_API_KEY: ${{ secrets.DD_API_KEY }}
                   DD_TEST_CLIENT_API_KEY: ${{ secrets.DD_CLIENT_API_KEY }}
                   DD_TEST_CLIENT_APP_KEY: ${{ secrets.DD_CLIENT_APP_KEY }}
