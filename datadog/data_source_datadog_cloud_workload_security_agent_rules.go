@@ -13,7 +13,7 @@ import (
 func dataSourceDatadogCloudWorkloadSecurityAgentRules() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about existing cloud workload security agent rules for use in other resources.",
-		ReadContext: dataSourceDatadogCloudWorkloadSecurityAgentRuleRead,
+		ReadContext: dataSourceDatadogCloudWorkloadSecurityAgentRulesRead,
 
 		Schema: map[string]*schema.Schema{
 			// Computed
@@ -35,7 +35,7 @@ func dataSourceDatadogCloudWorkloadSecurityAgentRules() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogCloudWorkloadSecurityAgentRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogCloudWorkloadSecurityAgentRulesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
