@@ -3,12 +3,12 @@
 page_title: "datadog_cloud_workload_security_agent_rules Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about existing cloud workload security agent rules for use in other resources.
+  Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources.
 ---
 
 # datadog_cloud_workload_security_agent_rules (Data Source)
 
-Use this data source to retrieve information about existing cloud workload security agent rules for use in other resources.
+Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources.
 
 ## Example Usage
 
@@ -22,8 +22,7 @@ data "datadog_cloud_workload_security_agent_rules" "test" {
 
 ### Read-Only
 
-- **agent_rules** (List of Object) List of agent rules. (see [below for nested schema](#nestedatt--agent_rules))
-- **agent_rules_ids** (List of String) List of IDs of agent rules.
+- **agent_rules** (List of Object) List of Agent rules. (see [below for nested schema](#nestedatt--agent_rules))
 - **id** (String) The ID of this resource.
 
 <a id="nestedatt--agent_rules"></a>
@@ -34,6 +33,7 @@ Read-Only:
 - **description** (String)
 - **enabled** (Boolean)
 - **expression** (String)
+- **id** (String)
 - **name** (String)
 
 

@@ -11,7 +11,7 @@ import (
 
 func dataSourceDatadogCloudWorkloadSecurityAgentRules() *schema.Resource {
 	return &schema.Resource{
-		Description: "Use this data source to retrieve information about existing cloud workload security agent rules for use in other resources.",
+		Description: "Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources.",
 		ReadContext: dataSourceDatadogCloudWorkloadSecurityAgentRulesRead,
 
 		Schema: map[string]*schema.Schema{
