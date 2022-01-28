@@ -43,7 +43,7 @@ func testAccCheckDatadogCloudWorkloadSecurityAgentRuleCreated(name string) strin
 resource "datadog_cloud_workload_security_agent_rule" "acceptance_test" {
     name = "%s"
     description = "an agent rule"
-    enabled = true
+    enabled = "true"
 	expression = "exec.file.name == \"java\""
 }
 `, name)
@@ -68,7 +68,7 @@ func testAccCheckDatadogCloudWorkloadSecurityAgentRuleUpdated(name string) strin
 resource "datadog_cloud_workload_security_agent_rule" "acceptance_test" {
     name = "%s"
     description = "a new agent rule"
-    enabled = false
+    enabled = "true"
 	expression = "exec.file.name == \"go\""
 }
 `, name)
@@ -82,7 +82,7 @@ func testAccCheckDatadogCloudWorkloadSecurityAgentRuleUpdatedCheck(accProvider f
 		resource.TestCheckResourceAttr(
 			tfAgentRuleName, "description", "a new agent rule"),
 		resource.TestCheckResourceAttr(
-			tfAgentRuleName, "enabled", "false"),
+			tfAgentRuleName, "enabled", "true"),
 		resource.TestCheckResourceAttr(
 			tfAgentRuleName, "expression", "exec.file.name == \"go\""),
 	)

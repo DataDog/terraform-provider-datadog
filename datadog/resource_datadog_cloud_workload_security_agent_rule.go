@@ -30,6 +30,7 @@ func cloudWorkloadSecurityAgentRuleSchema() map[string]*schema.Schema {
 		"description": {
 			Type:        schema.TypeString,
 			Optional:    true,
+			Default:     "",
 			Description: "The description of the Agent rule.",
 		},
 		"enabled": {
@@ -125,6 +126,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleDelete(ctx context.Context, d 
 
 func updateCloudWorkloadSecurityAgentRuleState(d *schema.ResourceData, agentRuleResponse datadogV2.CloudWorkloadSecurityAgentRuleResponse) diag.Diagnostics {
 	data := agentRuleResponse.GetData()
+	d.SetId(data.GetId())
 
 	attributes := data.GetAttributes()
 
