@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"context"
-	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -17,18 +16,38 @@ func dataSourceDatadogCloudWorkloadSecurityAgentRules() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			// Computed
-			"agent_rules_ids": {
-				Description: "List of IDs of agent rules.",
-				Type:        schema.TypeList,
-				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
 			"agent_rules": {
-				Description: "List of agent rules.",
+				Description: "List of Agent rules.",
 				Type:        schema.TypeList,
 				Computed:    true,
 				Elem: &schema.Resource{
-					Schema: cloudWorkloadSecurityAgentRuleSchema(),
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:        schema.TypeString,
+							Computed:    true,
+							Description: "The id of the Agent rule.",
+						},
+						"description": {
+							Type:        schema.TypeString,
+							Computed:    true,
+							Description: "The description of the Agent rule.",
+						},
+						"enabled": {
+							Type:        schema.TypeBool,
+							Computed:    true,
+							Description: "Whether the Agent rule is enabled.",
+						},
+						"expression": {
+							Type:        schema.TypeString,
+							Computed:    true,
+							Description: "The SECL expression of the Agent rule.",
+						},
+						"name": {
+							Type:        schema.TypeString,
+							Computed:    true,
+							Description: "The name of the Agent rule.",
+						},
+					},
 				},
 			},
 		},
@@ -40,7 +59,6 @@ func dataSourceDatadogCloudWorkloadSecurityAgentRulesRead(ctx context.Context, d
 	datadogClientV2 := providerConf.DatadogClientV2
 	authV2 := providerConf.AuthV2
 
-	agentRulesIds := make([]string, 0)
 	agentRules := make([]map[string]interface{}, 0)
 
 	response, httpresp, err := datadogClientV2.CloudWorkloadSecurityApi.ListCloudWorkloadSecurityAgentRules(authV2)
@@ -53,13 +71,12 @@ func dataSourceDatadogCloudWorkloadSecurityAgentRulesRead(ctx context.Context, d
 	}
 
 	for _, agentRule := range response.GetData() {
-		// get agent rule id
-		agentRulesIds = append(agentRulesIds, agentRule.GetId())
 
 		// extract agent rule
 		agentRuleTF := make(map[string]interface{})
 		attributes := agentRule.GetAttributes()
 
+		agentRuleTF["id"] = agentRule.GetId()
 		agentRuleTF["name"] = attributes.GetName()
 		agentRuleTF["description"] = attributes.GetDescription()
 		agentRuleTF["expression"] = attributes.GetExpression()
@@ -68,9 +85,8 @@ func dataSourceDatadogCloudWorkloadSecurityAgentRulesRead(ctx context.Context, d
 		agentRules = append(agentRules, agentRuleTF)
 	}
 
-	d.SetId(strings.Join(agentRulesIds, "--"))
+	d.SetId("cloud-workload-security-agent-rules")
 	d.Set("agent_rules", agentRules)
-	d.Set("agent_rules_ids", agentRulesIds)
 
 	return nil
 }
