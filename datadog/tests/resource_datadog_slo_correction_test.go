@@ -68,7 +68,7 @@ func TestAccDatadogSloCorrection_Recurring(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_slo_correction.testing_slo_correction", "duration", "3600"),
 					resource.TestCheckResourceAttr(
-						"datadog_slo_correction.testing_slo_correction", "rrule", "RRULE:FREQ=DAILY;INTERVAL=10;COUNT=5"),
+						"datadog_slo_correction.testing_slo_correction", "rrule", "RRULE:FREQ=DAILY;INTERVAL=10"),
 					resource.TestCheckResourceAttr(
 						"datadog_slo_correction.testing_slo_correction", "category", "Scheduled Maintenance"),
 				),
