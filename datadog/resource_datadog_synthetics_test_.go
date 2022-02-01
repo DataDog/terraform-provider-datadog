@@ -224,7 +224,7 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"type": {
-					Description:  "The type of basic authentication to use when performing the test.",
+					Description:  "Type of basic authentication to use when performing the test.",
 					Type:         schema.TypeString,
 					Optional:     true,
 					Default:      "web",
@@ -243,37 +243,37 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 				},
 				"access_key": {
 					Type:        schema.TypeString,
-					Description: "Access key for the `SIGV4` authentication.",
+					Description: "Access key for `SIGV4` authentication.",
 					Optional:    true,
 				},
 				"secret_key": {
 					Type:        schema.TypeString,
-					Description: "Secret key for the `SIGV4` authentication.",
+					Description: "Secret key for `SIGV4` authentication.",
 					Optional:    true,
 				},
 				"region": {
 					Type:        schema.TypeString,
-					Description: "Region for the `SIGV4` authentication.",
+					Description: "Region for `SIGV4` authentication.",
 					Optional:    true,
 				},
 				"service_name": {
 					Type:        schema.TypeString,
-					Description: "Service name for the `SIGV4` authentication.",
+					Description: "Service name for `SIGV4` authentication.",
 					Optional:    true,
 				},
 				"session_token": {
 					Type:        schema.TypeString,
-					Description: "Session token for the `SIGV4` authentication.",
+					Description: "Session token for `SIGV4` authentication.",
 					Optional:    true,
 				},
 				"domain": {
 					Type:        schema.TypeString,
-					Description: "Domain for the `ntlm` authentication.",
+					Description: "Domain for `ntlm` authentication.",
 					Optional:    true,
 				},
 				"workstation": {
 					Type:        schema.TypeString,
-					Description: "workstation for the `ntlm` authentication.",
+					Description: "Workstation for `ntlm` authentication.",
 					Optional:    true,
 				},
 			},
