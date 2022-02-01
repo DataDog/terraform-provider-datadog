@@ -1,0 +1,459 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"description":"an agent rule","enabled":true,"expression":"exec.file.name == \"java\"","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377"},"type":"agent_rule"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Length:
+      - "207"
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - CreateCloudWorkloadSecurityAgentRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 1.0.3) datadog-api-client-go/1.8.0 (go go1.17.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules
+    method: POST
+  response:
+    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1643395393582,"creationDate":1643395393582,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"by9-ahe-vua"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 28 Jan 2022 18:43:13 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "1000"
+      X-Ratelimit-Name:
+      - security_analytics
+      X-Ratelimit-Period:
+      - "10"
+      X-Ratelimit-Remaining:
+      - "999"
+      X-Ratelimit-Reset:
+      - "7"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetCloudWorkloadSecurityAgentRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 1.0.3) datadog-api-client-go/1.8.0 (go go1.17.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    method: GET
+  response:
+    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1643395393582,"creationDate":1643395393582,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"by9-ahe-vua"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 28 Jan 2022 18:43:16 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "1000"
+      X-Ratelimit-Name:
+      - security_analytics
+      X-Ratelimit-Period:
+      - "10"
+      X-Ratelimit-Remaining:
+      - "998"
+      X-Ratelimit-Reset:
+      - "4"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetCloudWorkloadSecurityAgentRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 1.0.3) datadog-api-client-go/1.8.0 (go go1.17.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    method: GET
+  response:
+    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1643395393582,"creationDate":1643395393582,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"by9-ahe-vua"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 28 Jan 2022 18:43:23 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "1000"
+      X-Ratelimit-Name:
+      - security_analytics
+      X-Ratelimit-Period:
+      - "10"
+      X-Ratelimit-Remaining:
+      - "999"
+      X-Ratelimit-Reset:
+      - "7"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetCloudWorkloadSecurityAgentRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 1.0.3) datadog-api-client-go/1.8.0 (go go1.17.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    method: GET
+  response:
+    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1643395393582,"creationDate":1643395393582,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"by9-ahe-vua"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 28 Jan 2022 18:43:39 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "1000"
+      X-Ratelimit-Name:
+      - security_analytics
+      X-Ratelimit-Period:
+      - "10"
+      X-Ratelimit-Remaining:
+      - "999"
+      X-Ratelimit-Reset:
+      - "1"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"description":"a new agent rule","enabled":true,"expression":"exec.file.name == \"go\""},"type":"agent_rule"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Length:
+      - "134"
+      Content-Type:
+      - application/json
+      Dd-Operation-Id:
+      - UpdateCloudWorkloadSecurityAgentRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 1.0.3) datadog-api-client-go/1.8.0 (go go1.17.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    method: PATCH
+  response:
+    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377","creator":{"handle":"frog@datadoghq.com","name":null},"description":"a new agent rule","enabled":true,"defaultRule":false,"version":2,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1643395426565,"creationDate":1643395393582,"expression":"exec.file.name == \"go\""},"type":"agent_rule","id":"by9-ahe-vua"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 28 Jan 2022 18:43:46 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "1000"
+      X-Ratelimit-Name:
+      - security_analytics
+      X-Ratelimit-Period:
+      - "10"
+      X-Ratelimit-Remaining:
+      - "999"
+      X-Ratelimit-Reset:
+      - "4"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetCloudWorkloadSecurityAgentRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 1.0.3) datadog-api-client-go/1.8.0 (go go1.17.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    method: GET
+  response:
+    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377","creator":{"handle":"frog@datadoghq.com","name":null},"description":"a new agent rule","enabled":true,"defaultRule":false,"version":2,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1643395426565,"creationDate":1643395393582,"expression":"exec.file.name == \"go\""},"type":"agent_rule","id":"by9-ahe-vua"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 28 Jan 2022 18:43:48 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "1000"
+      X-Ratelimit-Name:
+      - security_analytics
+      X-Ratelimit-Period:
+      - "10"
+      X-Ratelimit-Remaining:
+      - "998"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetCloudWorkloadSecurityAgentRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 1.0.3) datadog-api-client-go/1.8.0 (go go1.17.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    method: GET
+  response:
+    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377","creator":{"handle":"frog@datadoghq.com","name":null},"description":"a new agent rule","enabled":true,"defaultRule":false,"version":2,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1643395426565,"creationDate":1643395393582,"expression":"exec.file.name == \"go\""},"type":"agent_rule","id":"by9-ahe-vua"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Fri, 28 Jan 2022 18:43:55 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "1000"
+      X-Ratelimit-Name:
+      - security_analytics
+      X-Ratelimit-Period:
+      - "10"
+      X-Ratelimit-Remaining:
+      - "999"
+      X-Ratelimit-Reset:
+      - "5"
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - DeleteCloudWorkloadSecurityAgentRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 1.0.3) datadog-api-client-go/1.8.0 (go go1.17.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Disposition:
+      - inline
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Date:
+      - Fri, 28 Jan 2022 18:44:05 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "1000"
+      X-Ratelimit-Name:
+      - security_analytics
+      X-Ratelimit-Period:
+      - "10"
+      X-Ratelimit-Remaining:
+      - "999"
+      X-Ratelimit-Reset:
+      - "5"
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Dd-Operation-Id:
+      - GetCloudWorkloadSecurityAgentRule
+      User-Agent:
+      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 1.0.3) datadog-api-client-go/1.8.0 (go go1.17.6; os darwin; arch amd64)
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    method: GET
+  response:
+    body: '{"errors":["not_found(Agent rule not found: agentRuleId=by9-ahe-vua)"]}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 28 Jan 2022 18:44:05 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - "1000"
+      X-Ratelimit-Name:
+      - security_analytics
+      X-Ratelimit-Period:
+      - "10"
+      X-Ratelimit-Remaining:
+      - "998"
+      X-Ratelimit-Reset:
+      - "5"
+    status: 404 Not Found
+    code: 404
+    duration: ""
