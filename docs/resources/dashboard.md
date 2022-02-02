@@ -1352,6 +1352,7 @@ Optional:
 Optional:
 
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query))
+- **apm_stats_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_stats_query))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query))
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--process_query))
 - **q** (String) The metric query to use for this widget.
@@ -1420,6 +1421,37 @@ Optional:
 
 - **facet** (String) The facet name.
 - **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--distribution_definition--request--apm_stats_query"></a>
+### Nested Schema for `widget.distribution_definition.request.apm_stats_query`
+
+Required:
+
+- **env** (String) The environment name.
+- **name** (String) The operation name associated with the service.
+- **primary_tag** (String) The organization's host group name and value.
+- **row_type** (String) The level of detail for the request. Valid values are `service`, `resource`, `span`.
+- **service** (String) The service name.
+
+Optional:
+
+- **columns** (Block List) Column properties used by the front end for display. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_stats_query--columns))
+- **resource** (String) The resource name.
+
+<a id="nestedblock--widget--distribution_definition--request--apm_stats_query--columns"></a>
+### Nested Schema for `widget.distribution_definition.request.apm_stats_query.columns`
+
+Required:
+
+- **name** (String) The column name.
+
+Optional:
+
+- **alias** (String) A user-assigned alias for the column.
+- **cell_display_mode** (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -2692,6 +2724,7 @@ Optional:
 Optional:
 
 - **apm_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query))
+- **apm_stats_query** (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_stats_query))
 - **log_query** (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query))
 - **process_query** (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--process_query))
 - **q** (String) The metric query to use for this widget.
@@ -2760,6 +2793,37 @@ Optional:
 
 - **facet** (String) The facet name.
 - **interval** (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--apm_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.apm_stats_query`
+
+Required:
+
+- **env** (String) The environment name.
+- **name** (String) The operation name associated with the service.
+- **primary_tag** (String) The organization's host group name and value.
+- **row_type** (String) The level of detail for the request. Valid values are `service`, `resource`, `span`.
+- **service** (String) The service name.
+
+Optional:
+
+- **columns** (Block List) Column properties used by the front end for display. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_stats_query--columns))
+- **resource** (String) The resource name.
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--apm_stats_query--columns"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.apm_stats_query.columns`
+
+Required:
+
+- **name** (String) The column name.
+
+Optional:
+
+- **alias** (String) A user-assigned alias for the column.
+- **cell_display_mode** (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- **order** (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 

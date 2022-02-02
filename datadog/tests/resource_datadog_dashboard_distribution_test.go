@@ -30,6 +30,35 @@ resource "datadog_dashboard" "distribution_dashboard" {
 }
 `
 
+const datadogDashboardDistributionApmStatsQueryConfig = `
+resource "datadog_dashboard" "distribution_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+	
+	widget {
+		distribution_definition {
+			title = "Avg of system.cpu.user over account:prod by service,account"
+			title_align = "left"
+			title_size = "16"
+			show_legend = "true"
+			legend_size = "2"
+			live_span = "1h"
+			request {
+				apm_stats_query {
+					service = "service"
+					env = "env"
+					primary_tag = "tag:*"
+					name = "name"
+					row_type = "resource"
+				}
+			}
+		}
+	}
+}
+`
+
 const datadogDashboardDistributionConfigImport = `
 resource "datadog_dashboard" "distribution_dashboard" {
 	title         = "{{uniq}}"
@@ -71,8 +100,21 @@ var datadogDashboardDistributionAsserts = []string{
 	"is_read_only = true",
 }
 
+var datadogDashboardDistributionApmStatsQueryAsserts = []string{
+	"title = {{uniq}}",
+	"widget.0.distribution_definition.0.request.0.apm_stats_query.0.service = service",
+	"widget.0.distribution_definition.0.request.0.apm_stats_query.0.env = env",
+	"widget.0.distribution_definition.0.request.0.apm_stats_query.0.primary_tag = tag:*",
+	"widget.0.distribution_definition.0.request.0.apm_stats_query.0.name = name",
+	"widget.0.distribution_definition.0.request.0.apm_stats_query.0.row_type = resource",
+}
+
 func TestAccDatadogDashboardDistribution(t *testing.T) {
 	testAccDatadogDashboardWidgetUtil(t, datadogDashboardDistributionConfig, "datadog_dashboard.distribution_dashboard", datadogDashboardDistributionAsserts)
+}
+
+func TestAccDatadogDashboardApmStatsQueryDistribution(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardDistributionApmStatsQueryConfig, "datadog_dashboard.distribution_dashboard", datadogDashboardDistributionApmStatsQueryAsserts)
 }
 
 func TestAccDatadogDashboardDistribution_import(t *testing.T) {
