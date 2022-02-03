@@ -83,6 +83,18 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 				ConflictsWith: []string{"account_id", "role_name"},
 				Optional:      true,
 			},
+			"metrics_collection_enabled": {
+				Description: "Whether Datadog collects metrics for this AWS accoun.",
+				Type:        schema.TypeBool,
+				Default:     false,
+				Optional:    true,
+			},
+			"resource_collection_enabled": {
+				Type:        schema.TypeBool,
+				Description: "Whether Datadog collects a standard set of resources from your AWS account.",
+				Default:     false,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -135,6 +147,14 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData) *datadogV1.AWSAcco
 		}
 	}
 	iaws.SetExcludedRegions(excludedRegions)
+
+	if v, ok := d.GetOk("metrics_collection_enabled"); ok {
+		iaws.SetMetricsCollectionEnabled(v.(bool))
+	}
+
+	if v, ok := d.GetOk("resource_collection_enabled"); ok {
+		iaws.SetResourceCollectionEnabled(v.(bool))
+	}
 
 	return iaws
 }
@@ -208,6 +228,8 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 			d.Set("host_tags", integration.GetHostTags())
 			d.Set("account_specific_namespace_rules", integration.GetAccountSpecificNamespaceRules())
 			d.Set("excluded_regions", integration.GetExcludedRegions())
+			d.Set("metrics_collection_enabled", integration.GetMetricsCollectionEnabled())
+			d.Set("resource_collection_enabled", integration.GetResourceCollectionEnabled())
 			return nil
 		}
 	}
