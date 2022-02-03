@@ -40,7 +40,7 @@ resource "datadog_integration_aws" "sandbox" {
 - **host_tags** (List of String) Array of tags (in the form `key:value`) to add to all hosts and metrics reporting through this integration.
 - **role_name** (String) Your Datadog role delegation name.
 - **secret_access_key** (String, Sensitive) Your AWS secret access key. Only required if your AWS account is a GovCloud or China account.
-- **metrics_collection_enabled** (Boolean) Whether Datadog collects metrics for this AWS accoun.
+- **metrics_collection_enabled** (Boolean) Whether Datadog collects metrics for this AWS account.
 - **resource_collection_enabled** (Boolean) Whether Datadog collects a standard set of resources from your AWS account.
 
 ### Read-Only
