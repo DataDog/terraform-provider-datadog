@@ -84,7 +84,7 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 				Optional:      true,
 			},
 			"metrics_collection_enabled": {
-				Description: "Whether Datadog collects metrics for this AWS accoun.",
+				Description: "Whether Datadog collects metrics for this AWS account.",
 				Type:        schema.TypeBool,
 				Default:     false,
 				Optional:    true,
