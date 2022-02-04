@@ -154,13 +154,9 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData) *datadogV1.AWSAcco
 	}
 	iaws.SetExcludedRegions(excludedRegions)
 
-	if v, ok := d.GetOk("metrics_collection_enabled"); ok {
-		iaws.SetMetricsCollectionEnabled(v.(bool))
-	}
-
-	if v, ok := d.GetOk("resource_collection_enabled"); ok {
-		iaws.SetResourceCollectionEnabled(v.(bool))
-	}
+	iaws.SetMetricsCollectionEnabled(d.Get("metrics_collection_enabled").(bool))
+	iaws.SetResourceCollectionEnabled(d.Get("resource_collection_enabled").(bool))
+	iaws.SetCspmResourceCollectionEnabled(d.Get("cspm_resource_collection_enabled").(bool))
 
 	return iaws
 }
@@ -236,6 +232,7 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 			d.Set("excluded_regions", integration.GetExcludedRegions())
 			d.Set("metrics_collection_enabled", integration.GetMetricsCollectionEnabled())
 			d.Set("resource_collection_enabled", integration.GetResourceCollectionEnabled())
+			d.Set("cspm_resource_collection_enabled", integration.GetCspmResourceCollectionEnabled())
 			return nil
 		}
 	}

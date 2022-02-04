@@ -98,8 +98,8 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 						"datadog_integration_aws.account",
 						"resource_collection_enabled", "true"),
 					resource.TestCheckResourceAttr(
-						"cspm_resource_collection_enabled",
-						"resource_collection_enabled", "true"),
+						"datadog_integration_aws.account",
+						"cspm_resource_collection_enabled", "true"),
 				),
 			},
 			{
