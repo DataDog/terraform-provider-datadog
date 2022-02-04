@@ -122,7 +122,7 @@ func dataSourceDatadogLogsIndexesRead(ctx context.Context, d *schema.ResourceDat
 	if err := d.Set("logs_indexes", tfLogsIndexes); err != nil {
 		return diag.FromErr(err)
 	}
-	
+
 	d.SetId("log-indexes")
 
 	return nil
