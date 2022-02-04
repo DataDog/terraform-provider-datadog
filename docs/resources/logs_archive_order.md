@@ -15,8 +15,8 @@ Provides a Datadog [Logs Archive API](https://docs.datadoghq.com/api/v2/logs-arc
 ```terraform
 resource "datadog_logs_archive_order" "sample_archive_order" {
   archive_ids = [
-    "${datadog_logs_archive.sample_archive_1.id}",
-    "${datadog_logs_archive.sample_archive_2.id}"
+    datadog_logs_archive.sample_archive_1.id,
+    datadog_logs_archive.sample_archive_2.id
   ]
 }
 ```
