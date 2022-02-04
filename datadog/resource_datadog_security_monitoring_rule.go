@@ -106,7 +106,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 					"evaluation_window": {
 						Type:             schema.TypeInt,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleEvaluationWindowFromValue),
-						Required:         true,
+						Optional:         true,
 						Description:      "A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time.",
 					},
 
