@@ -109,8 +109,6 @@ func dataSourceDatadogLogsIndexesRead(ctx context.Context, d *schema.ResourceDat
 		return diag.FromErr(err)
 	}
 
-	d.SetId("log-indexes")
-
 	tfLogsIndexes := make([]map[string]interface{}, len(logsIndexes.GetIndexes()))
 	for i, l := range logsIndexes.GetIndexes() {
 		tfLogsIndexes[i] = map[string]interface{}{
@@ -124,6 +122,8 @@ func dataSourceDatadogLogsIndexesRead(ctx context.Context, d *schema.ResourceDat
 	if err := d.Set("logs_indexes", tfLogsIndexes); err != nil {
 		return diag.FromErr(err)
 	}
+	
+	d.SetId("log-indexes")
 
 	return nil
 }
