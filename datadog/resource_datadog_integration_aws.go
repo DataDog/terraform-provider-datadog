@@ -95,6 +95,12 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 				Default:     false,
 				Optional:    true,
 			},
+			"cspm_resource_collection_enabled": {
+				Type:        schema.TypeBool,
+				Description: "Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource_collection.",
+				Default:     false,
+				Optional:    true,
+			},
 		},
 	}
 }

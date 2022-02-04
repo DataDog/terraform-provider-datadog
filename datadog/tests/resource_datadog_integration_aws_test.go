@@ -33,8 +33,9 @@ resource "datadog_integration_aws" "account" {
     	    opsworks = true
   	}
   	excluded_regions                 = ["us-east-1", "us-west-2"]
-	metrics_collection_enabled       = true
+	metrics_collection_enabled       = false
 	resource_collection_enabled      = true
+	cspm_resource_collection_enabled = true
 }`, uniq)
 }
 
@@ -92,9 +93,12 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 						"excluded_regions.1", "us-west-2"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
-						"metrics_collection_enabled", "true"),
+						"metrics_collection_enabled", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
+						"resource_collection_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"cspm_resource_collection_enabled",
 						"resource_collection_enabled", "true"),
 				),
 			},
@@ -122,10 +126,13 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 						"account_specific_namespace_rules.#", "0"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
-						"metrics_collection_enabled", "false"),
+						"metrics_collection_enabled", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"resource_collection_enabled", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"cspm_resource_collection_enabled", "false"),
 				),
 			},
 		},

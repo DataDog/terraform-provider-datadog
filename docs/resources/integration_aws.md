@@ -42,6 +42,7 @@ resource "datadog_integration_aws" "sandbox" {
 - **secret_access_key** (String, Sensitive) Your AWS secret access key. Only required if your AWS account is a GovCloud or China account.
 - **metrics_collection_enabled** (Boolean) Whether Datadog collects metrics for this AWS account.
 - **resource_collection_enabled** (Boolean) Whether Datadog collects a standard set of resources from your AWS account.
+- **cspm_resource_collection_enabled** (Boolean) Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource_collection.
 
 ### Read-Only
 
