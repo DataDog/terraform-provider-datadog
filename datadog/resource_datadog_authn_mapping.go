@@ -15,7 +15,7 @@ import (
 
 func resourceDatadogAuthnMapping() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog SAML Role Mappings resource. This can be used to create and manage Datadog SAML Role Mappings.",
+		Description:   "Provides a Datadog AuthN Mappings resource. This can be used to create and manage Datadog SAML Mappings.",
 		CreateContext: resourceDatadogAuthnMappingCreate,
 		ReadContext:   resourceDatadogAuthnMappingRead,
 		UpdateContext: resourceDatadogAuthnMappingUpdate,
