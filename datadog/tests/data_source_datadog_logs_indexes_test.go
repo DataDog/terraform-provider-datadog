@@ -58,7 +58,7 @@ func dataLogsIndexesCountCheck(accProvider func() (*schema.Provider, error)) fun
 		logIndexesCount, _ := strconv.Atoi(resourceAttributes["logs_indexes.#"])
 
 		if logIndexesCount != len(logsIndexes.GetIndexes()) {
-			return fmt.Errorf("expected %d agent rules got %d agent rules",
+			return fmt.Errorf("expected %d indexes got %d indexes",
 				logIndexesCount, len(logsIndexes.GetIndexes()))
 		}
 

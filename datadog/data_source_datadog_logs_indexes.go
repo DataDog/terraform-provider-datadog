@@ -11,7 +11,7 @@ import (
 
 func dataSourceDatadogLogsIndexes() *schema.Resource {
 	return &schema.Resource{
-		Description: "Use this data source to list several existing monitors for use in other resources.",
+		Description: "Use this data source to list several existing logs indexes for use in other resources.",
 		ReadContext: dataSourceDatadogLogsIndexesRead,
 		Schema: map[string]*schema.Schema{
 			// Computed values
