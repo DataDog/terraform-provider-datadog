@@ -245,11 +245,13 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 					Type:        schema.TypeString,
 					Description: "Access key for `SIGV4` authentication.",
 					Optional:    true,
+					Sensitive:   true,
 				},
 				"secret_key": {
 					Type:        schema.TypeString,
 					Description: "Secret key for `SIGV4` authentication.",
 					Optional:    true,
+					Sensitive:   true,
 				},
 				"region": {
 					Type:        schema.TypeString,
@@ -1408,8 +1410,8 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 
 	if len(requestProxy) > 0 {
 		if proxy, ok := requestProxy[0].(map[string]interface{}); ok {
-			requestProxy := datadogV1.SyntheticsTestRequestProxy{}
-			requestProxy.SetUrl(proxy["url"].(string))
+			testRequestProxy := datadogV1.SyntheticsTestRequestProxy{}
+			testRequestProxy.SetUrl(proxy["url"].(string))
 
 			proxyHeaders := make(map[string]string, len(proxy["headers"].(map[string]interface{})))
 
@@ -1417,9 +1419,9 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 				proxyHeaders[k] = v.(string)
 			}
 
-			requestProxy.SetHeaders(proxyHeaders)
+			testRequestProxy.SetHeaders(proxyHeaders)
 
-			request.SetProxy(requestProxy)
+			request.SetProxy(testRequestProxy)
 		}
 	}
 

@@ -2305,9 +2305,9 @@ func createSyntheticsBrowserTestBrowserVariablesStep(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_basicauth.0.type", "web"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_basicauth.0.username", "ntlm-username"),
+				"datadog_synthetics_test.bar", "request_basicauth.0.username", "web-username"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_basicauth.0.password", "ntlm-password"),
+				"datadog_synthetics_test.bar", "request_basicauth.0.password", "web-password"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "device_ids.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -2371,8 +2371,8 @@ resource "datadog_synthetics_test" "bar" {
        }
 
        request_basicauth {
-		       username = "ntlm-username"
-		       password = "ntlm-password"
+		       username = "web-username"
+		       password = "web-password"
        }
 
        device_ids = [ "laptop_large" ]
