@@ -3,12 +3,12 @@
 page_title: "datadog_logs_indexes Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to list several existing monitors for use in other resources.
+  Use this data source to list several existing logs indexes for use in other resources.
 ---
 
 # datadog_logs_indexes (Data Source)
 
-Use this data source to list several existing monitors for use in other resources.
+Use this data source to list several existing logs indexes for use in other resources.
 
 ## Example Usage
 
