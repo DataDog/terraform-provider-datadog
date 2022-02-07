@@ -384,16 +384,16 @@ Optional:
 
 Optional:
 
-- **access_key** (String) Access key for the `SIGV4` authentication.
-- **domain** (String) Domain for the `ntlm` authentication.
+- **access_key** (String, Sensitive) Access key for `SIGV4` authentication.
+- **domain** (String) Domain for `ntlm` authentication.
 - **password** (String, Sensitive) Password for authentication.
-- **region** (String) Region for the `SIGV4` authentication.
-- **secret_key** (String) Secret key for the `SIGV4` authentication.
-- **service_name** (String) Service name for the `SIGV4` authentication.
-- **session_token** (String) Session token for the `SIGV4` authentication.
-- **type** (String) The type of basic authentication to use when performing the test.
+- **region** (String) Region for `SIGV4` authentication.
+- **secret_key** (String, Sensitive) Secret key for `SIGV4` authentication.
+- **service_name** (String) Service name for `SIGV4` authentication.
+- **session_token** (String) Session token for `SIGV4` authentication.
+- **type** (String) Type of basic authentication to use when performing the test.
 - **username** (String) Username for authentication.
-- **workstation** (String) workstation for the `ntlm` authentication.
+- **workstation** (String) Workstation for `ntlm` authentication.
 
 
 <a id="nestedblock--api_step--request_client_certificate"></a>
@@ -621,16 +621,16 @@ Optional:
 
 Optional:
 
-- **access_key** (String) Access key for the `SIGV4` authentication.
-- **domain** (String) Domain for the `ntlm` authentication.
+- **access_key** (String, Sensitive) Access key for `SIGV4` authentication.
+- **domain** (String) Domain for `ntlm` authentication.
 - **password** (String, Sensitive) Password for authentication.
-- **region** (String) Region for the `SIGV4` authentication.
-- **secret_key** (String) Secret key for the `SIGV4` authentication.
-- **service_name** (String) Service name for the `SIGV4` authentication.
-- **session_token** (String) Session token for the `SIGV4` authentication.
-- **type** (String) The type of basic authentication to use when performing the test.
+- **region** (String) Region for `SIGV4` authentication.
+- **secret_key** (String, Sensitive) Secret key for `SIGV4` authentication.
+- **service_name** (String) Service name for `SIGV4` authentication.
+- **session_token** (String) Session token for `SIGV4` authentication.
+- **type** (String) Type of basic authentication to use when performing the test.
 - **username** (String) Username for authentication.
-- **workstation** (String) workstation for the `ntlm` authentication.
+- **workstation** (String) Workstation for `ntlm` authentication.
 
 
 <a id="nestedblock--request_client_certificate"></a>
