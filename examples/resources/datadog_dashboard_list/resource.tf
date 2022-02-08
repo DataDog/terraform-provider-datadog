@@ -1,10 +1,5 @@
 # Create a new Dashboard List with two Dashboards
 resource "datadog_dashboard_list" "new_list" {
-  depends_on = [
-    datadog_dashboard.screen,
-    datadog_dashboard.time
-  ]
-
   name = "Terraform Created List"
   dash_item {
     type    = "custom_timeboard"
