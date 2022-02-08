@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -98,7 +97,22 @@ func resourceDatadogAuthnMappingRead(ctx context.Context, d *schema.ResourceData
 }
 
 func resourceDatadogAuthnMappingUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return nil
+	client := meta.(*ProviderConfiguration).DatadogClientV2
+	auth := meta.(*ProviderConfiguration).AuthV2
+
+	req := buildAuthNMappingUpdateRequest(d)
+	resp, httpResponse, err := client.AuthNMappingsApi.UpdateAuthNMapping(auth, d.Id(), req)
+
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating role mapping")
+	}
+
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		return diag.FromErr(err)
+	}
+
+	authNMappingData := resp.GetData()
+	return updateAuthNMappingState(d, &authNMappingData)
 }
 
 func resourceDatadogAuthnMappingDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -110,12 +124,15 @@ func updateAuthNMappingState(d *schema.ResourceData, authNMapping *datadog.AuthN
 	authNMappingRelations := authNMapping.GetRelationships()
 	authNMappingRoleRelation := authNMappingRelations.GetRole()
 	authNRole := authNMappingRoleRelation.GetData()
+
 	if err := d.Set("key", authNMappingAttributes.GetAttributeKey()); err != nil {
 		return diag.FromErr(err)
 	}
+
 	if err := d.Set("value", authNMappingAttributes.GetAttributeValue()); err != nil {
 		return diag.FromErr(err)
 	}
+
 	if err := d.Set("role", authNRole.GetId()); err != nil {
 		return diag.FromErr(err)
 	}
@@ -133,10 +150,7 @@ func buildAuthNMappingCreateRequest(d *schema.ResourceData) datadog.AuthNMapping
 	authNMappingCreateAttrs.SetAttributeValue(d.Get("value").(string))
 
 	// Set AuthN mapping Relationships
-	roleRelations := datadog.NewRelationshipToRoleWithDefaults()
-	roleRelationsData := datadog.NewRelationshipToRoleDataWithDefaults()
-	roleRelationsData.SetId(d.Get("role").(string))
-	roleRelations.SetData(*roleRelationsData)
+	roleRelations := buildRoleRelations(d)
 	authNMappingRelations.SetRole(*roleRelations)
 
 	// Set AuthN mapping create data
@@ -146,4 +160,36 @@ func buildAuthNMappingCreateRequest(d *schema.ResourceData) datadog.AuthNMapping
 	// Set AuthN mapping create request
 	authNMappingCreateRequest.SetData(*authNMappingCreateData)
 	return *authNMappingCreateRequest
+}
+
+func buildAuthNMappingUpdateRequest(d *schema.ResourceData) datadog.AuthNMappingUpdateRequest {
+	authNMappingUpdateRequest := datadog.NewAuthNMappingUpdateRequestWithDefaults()
+	authNMappingUpdateData := datadog.NewAuthNMappingUpdateDataWithDefaults()
+	authNMappingUpdateAttrs := datadog.NewAuthNMappingUpdateAttributesWithDefaults()
+	authNMappingRelations := datadog.NewAuthNMappingUpdateRelationshipsWithDefaults()
+
+	// Set AuthN mapping Attributes
+	authNMappingUpdateAttrs.SetAttributeKey(d.Get("key").(string))
+	authNMappingUpdateAttrs.SetAttributeValue(d.Get("value").(string))
+
+	// Set AuthN mapping Relationships
+	roleRelations := buildRoleRelations(d)
+	authNMappingRelations.SetRole(*roleRelations)
+
+	// Set AuthN mapping update data
+	authNMappingUpdateData.SetAttributes(*authNMappingUpdateAttrs)
+	authNMappingUpdateData.SetRelationships(*authNMappingRelations)
+	authNMappingUpdateData.SetId(d.Id())
+
+	// Set AuthN mapping update request
+	authNMappingUpdateRequest.SetData(*authNMappingUpdateData)
+	return *authNMappingUpdateRequest
+}
+
+func buildRoleRelations(d *schema.ResourceData) *datadog.RelationshipToRole {
+	roleRelations := datadog.NewRelationshipToRoleWithDefaults()
+	roleRelationsData := datadog.NewRelationshipToRoleDataWithDefaults()
+	roleRelationsData.SetId(d.Get("role").(string))
+	roleRelations.SetData(*roleRelationsData)
+	return roleRelations
 }

@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -15,10 +14,8 @@ import (
 )
 
 // TODO: Modify CheckDestroy function to testAccCheckDatadogAuthNMappingDestroy after Delete Context is available
-func TestAccDatadogAuthNMapping_Create(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	attrKey := strings.ToLower(uniqueEntityName(ctx, t))
-	attrVal := strings.ToLower(uniqueEntityName(ctx, t))
+func TestAccDatadogAuthNMapping_CreateUpdate(t *testing.T) {
+	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -27,12 +24,21 @@ func TestAccDatadogAuthNMapping_Create(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogAuthNMappingDestroyDummy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogAuthNMappingConfig(attrKey, attrVal),
+				Config: testAccCheckDatadogAuthNMappingConfig("key_1", "value_1"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAuthNMappingExists(accProvider, "datadog_authn_mapping.foo"),
-					resource.TestCheckResourceAttr("datadog_authn_mapping.foo", "key", attrKey),
-					resource.TestCheckResourceAttr("datadog_authn_mapping.foo", "value", attrVal),
+					resource.TestCheckResourceAttr("datadog_authn_mapping.foo", "key", "key_1"),
+					resource.TestCheckResourceAttr("datadog_authn_mapping.foo", "value", "value_1"),
 					testCheckAuthNMappingHasRole("datadog_authn_mapping.foo", "data.datadog_role.ro_role"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogAuthNMappingConfigUpdated("key_2", "value_2"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogAuthNMappingExists(accProvider, "datadog_authn_mapping.foo"),
+					resource.TestCheckResourceAttr("datadog_authn_mapping.foo", "key", "key_2"),
+					resource.TestCheckResourceAttr("datadog_authn_mapping.foo", "value", "value_2"),
+					testCheckAuthNMappingHasRole("datadog_authn_mapping.foo", "data.datadog_role.standard_role"),
 				),
 			},
 		},
@@ -51,6 +57,20 @@ func testAccCheckDatadogAuthNMappingConfig(key string, val string) string {
 	  key   = "%s"
 	  value = "%s"
 	  role  = data.datadog_role.ro_role.id
+	}`, key, val)
+}
+
+// Update Terraform Config for AuthN Mapping
+func testAccCheckDatadogAuthNMappingConfigUpdated(key string, val string) string {
+	return fmt.Sprintf(`
+	data "datadog_role" "standard_role" {
+		filter = "Datadog Standard Role"
+	}
+
+	resource "datadog_authn_mapping" "foo" {
+	  key   = "%s"
+	  value = "%s"
+	  role  = data.datadog_role.standard_role.id
 	}`, key, val)
 }
 
