@@ -47,7 +47,7 @@ func resourceDatadogAuthnMappingCreate(ctx context.Context, d *schema.ResourceDa
 	authNMapReq := buildAuthNMappingCreateRequest(d)
 	createResp, httpResponse, err := client.AuthNMappingsApi.CreateAuthNMapping(auth, authNMapReq)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating role")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating authn mapping")
 	}
 	if err := utils.CheckForUnparsed(createResp); err != nil {
 		return diag.FromErr(err)
@@ -77,7 +77,7 @@ func resourceDatadogAuthnMappingCreate(ctx context.Context, d *schema.ResourceDa
 
 	authNMappingData := getAuthNMappingResponse.GetData()
 	d.SetId(authNMappingData.GetId())
-	updateAuthNMappingState(auth, d, &authNMappingData, client)
+	updateAuthNMappingState(d, &authNMappingData)
 	return nil
 }
 
@@ -101,7 +101,7 @@ func resourceDatadogAuthnMappingDelete(ctx context.Context, d *schema.ResourceDa
 	return nil
 }
 
-func updateAuthNMappingState(ctx context.Context, d *schema.ResourceData, authNMapping *datadog.AuthNMapping, client *datadog.APIClient) diag.Diagnostics {
+func updateAuthNMappingState(d *schema.ResourceData, authNMapping *datadog.AuthNMapping) diag.Diagnostics {
 	authNMappingAttributes := authNMapping.GetAttributes()
 	authNMappingRelations := authNMapping.GetRelationships()
 	authNMappingRoleRelation := authNMappingRelations.GetRole()
