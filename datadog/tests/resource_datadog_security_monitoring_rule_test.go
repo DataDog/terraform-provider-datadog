@@ -282,7 +282,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 
     options {
 		detection_method = "new_value"
-        evaluation_window = 300
         keep_alive = 600
         max_signal_duration = 900
 		new_value_options {
@@ -319,8 +318,6 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckNewValueRule(accProvider func
 			tfSecurityRuleName, "case.0.status", "high"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.notifications.0", "@user"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "options.0.evaluation_window", "300"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.keep_alive", "600"),
 		resource.TestCheckResourceAttr(
@@ -536,7 +533,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 
      options {
 		detection_method = "new_value"
-        evaluation_window = 300
         keep_alive = 600
         max_signal_duration = 900
 		new_value_options {
@@ -575,8 +571,6 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRule(accProvider fu
 			tfSecurityRuleName, "case.0.status", "medium"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.notifications.0", "@user"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "options.0.evaluation_window", "300"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.keep_alive", "600"),
 		resource.TestCheckResourceAttr(
