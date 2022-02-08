@@ -295,6 +295,7 @@ resource "datadog_synthetics_test" "test_browser" {
 - **request_client_certificate** (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
 - **request_definition** (Block List, Max: 1) Required if `type = "api"`. The synthetics test request. (see [below for nested schema](#nestedblock--request_definition))
 - **request_headers** (Map of String) Header name and value map.
+- **request_proxy** (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--request_proxy))
 - **request_query** (Map of String) Query arguments name and value map.
 - **set_cookie** (String) Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.
 - **subtype** (String) The subtype of the Synthetic API test. Defaults to `http`. Valid values are `http`, `ssl`, `tcp`, `dns`, `multi`, `icmp`, `udp`, `websocket`.
@@ -322,6 +323,7 @@ Optional:
 - **request_client_certificate** (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_client_certificate))
 - **request_definition** (Block List, Max: 1) The request for the api step. (see [below for nested schema](#nestedblock--api_step--request_definition))
 - **request_headers** (Map of String) Header name and value map.
+- **request_proxy** (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--api_step--request_proxy))
 - **request_query** (Map of String) Query arguments name and value map.
 - **retry** (Block List, Max: 1) (see [below for nested schema](#nestedblock--api_step--retry))
 - **subtype** (String) The subtype of the Synthetic multistep API test step. Valid values are `http`.
@@ -380,10 +382,18 @@ Optional:
 <a id="nestedblock--api_step--request_basicauth"></a>
 ### Nested Schema for `api_step.request_basicauth`
 
-Required:
+Optional:
 
+- **access_key** (String, Sensitive) Access key for `SIGV4` authentication.
+- **domain** (String) Domain for `ntlm` authentication.
 - **password** (String, Sensitive) Password for authentication.
+- **region** (String) Region for `SIGV4` authentication.
+- **secret_key** (String, Sensitive) Secret key for `SIGV4` authentication.
+- **service_name** (String) Service name for `SIGV4` authentication.
+- **session_token** (String) Session token for `SIGV4` authentication.
+- **type** (String) Type of basic authentication to use when performing the test.
 - **username** (String) Username for authentication.
+- **workstation** (String) Workstation for `ntlm` authentication.
 
 
 <a id="nestedblock--api_step--request_client_certificate"></a>
@@ -439,6 +449,18 @@ Optional:
 - **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.
+
+
+<a id="nestedblock--api_step--request_proxy"></a>
+### Nested Schema for `api_step.request_proxy`
+
+Required:
+
+- **url** (String) URL of the proxy to perform the test.
+
+Optional:
+
+- **headers** (Map of String) Header name and value map.
 
 
 <a id="nestedblock--api_step--retry"></a>
@@ -597,10 +619,18 @@ Optional:
 <a id="nestedblock--request_basicauth"></a>
 ### Nested Schema for `request_basicauth`
 
-Required:
+Optional:
 
+- **access_key** (String, Sensitive) Access key for `SIGV4` authentication.
+- **domain** (String) Domain for `ntlm` authentication.
 - **password** (String, Sensitive) Password for authentication.
+- **region** (String) Region for `SIGV4` authentication.
+- **secret_key** (String, Sensitive) Secret key for `SIGV4` authentication.
+- **service_name** (String) Service name for `SIGV4` authentication.
+- **session_token** (String) Session token for `SIGV4` authentication.
+- **type** (String) Type of basic authentication to use when performing the test.
 - **username** (String) Username for authentication.
+- **workstation** (String) Workstation for `ntlm` authentication.
 
 
 <a id="nestedblock--request_client_certificate"></a>
@@ -654,6 +684,18 @@ Optional:
 - **should_track_hops** (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - **timeout** (Number) Timeout in seconds for the test. Defaults to `60`.
 - **url** (String) The URL to send the request to.
+
+
+<a id="nestedblock--request_proxy"></a>
+### Nested Schema for `request_proxy`
+
+Required:
+
+- **url** (String) URL of the proxy to perform the test.
+
+Optional:
+
+- **headers** (Map of String) Header name and value map.
 
 ## Import
 

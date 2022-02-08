@@ -62,6 +62,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 			"request_headers":            syntheticsTestRequestHeaders(),
 			"request_query":              syntheticsTestRequestQuery(),
 			"request_basicauth":          syntheticsTestRequestBasicAuth(),
+			"request_proxy":              syntheticsTestRequestProxy(),
 			"request_client_certificate": syntheticsTestRequestClientCertificate(),
 			"assertion":                  syntheticsAPIAssertion(),
 			"browser_variable":           syntheticsBrowserVariable(),
@@ -222,17 +223,80 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 		MaxItems:    1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
+				"type": {
+					Description:  "Type of basic authentication to use when performing the test.",
+					Type:         schema.TypeString,
+					Optional:     true,
+					Default:      "web",
+					ValidateFunc: validation.StringInSlice([]string{"web", "sigv4", "ntlm"}, false),
+				},
 				"username": {
 					Description: "Username for authentication.",
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
 				},
 				"password": {
 					Description: "Password for authentication.",
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
 					Sensitive:   true,
 				},
+				"access_key": {
+					Type:        schema.TypeString,
+					Description: "Access key for `SIGV4` authentication.",
+					Optional:    true,
+					Sensitive:   true,
+				},
+				"secret_key": {
+					Type:        schema.TypeString,
+					Description: "Secret key for `SIGV4` authentication.",
+					Optional:    true,
+					Sensitive:   true,
+				},
+				"region": {
+					Type:        schema.TypeString,
+					Description: "Region for `SIGV4` authentication.",
+					Optional:    true,
+				},
+				"service_name": {
+					Type:        schema.TypeString,
+					Description: "Service name for `SIGV4` authentication.",
+					Optional:    true,
+				},
+				"session_token": {
+					Type:        schema.TypeString,
+					Description: "Session token for `SIGV4` authentication.",
+					Optional:    true,
+				},
+				"domain": {
+					Type:        schema.TypeString,
+					Description: "Domain for `ntlm` authentication.",
+					Optional:    true,
+				},
+				"workstation": {
+					Type:        schema.TypeString,
+					Description: "Workstation for `ntlm` authentication.",
+					Optional:    true,
+				},
+			},
+		},
+	}
+}
+
+func syntheticsTestRequestProxy() *schema.Schema {
+	return &schema.Schema{
+		Description: "The proxy to perform the test.",
+		Type:        schema.TypeList,
+		Optional:    true,
+		MaxItems:    1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"url": {
+					Type:        schema.TypeString,
+					Description: "URL of the proxy to perform the test.",
+					Required:    true,
+				},
+				"headers": syntheticsTestRequestHeaders(),
 			},
 		},
 	}
@@ -507,6 +571,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 				"request_headers":            syntheticsTestRequestHeaders(),
 				"request_query":              syntheticsTestRequestQuery(),
 				"request_basicauth":          syntheticsTestRequestBasicAuth(),
+				"request_proxy":              syntheticsTestRequestProxy(),
 				"request_client_certificate": syntheticsTestRequestClientCertificate(),
 				"assertion":                  syntheticsAPIAssertion(),
 				"allow_failure": {
@@ -1073,7 +1138,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 	k.Remove(parts)
 
-	request = completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}))
+	request = completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}), d.Get("request_proxy").([]interface{}))
 
 	config := datadogV1.NewSyntheticsAPITestConfigWithDefaults()
 
@@ -1140,7 +1205,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 				request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
 			}
 
-			request = completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}))
+			request = completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}))
 
 			step.SetRequest(request)
 
@@ -1255,7 +1320,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	return syntheticsTest
 }
 
-func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, basicAuth []interface{}, requestClientCertificates []interface{}) datadogV1.SyntheticsTestRequest {
+func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, basicAuth []interface{}, requestClientCertificates []interface{}, requestProxy []interface{}) datadogV1.SyntheticsTestRequest {
 	if len(requestHeaders) > 0 {
 		headers := make(map[string]string, len(requestHeaders))
 
@@ -1272,11 +1337,32 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 
 	if len(basicAuth) > 0 {
 		if requestBasicAuth, ok := basicAuth[0].(map[string]interface{}); ok {
-			if requestBasicAuth["username"] != "" && requestBasicAuth["password"] != "" {
+			if requestBasicAuth["type"] == "web" && requestBasicAuth["username"] != "" && requestBasicAuth["password"] != "" {
 				basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
 				basicAuth.SetPassword(requestBasicAuth["password"].(string))
 				basicAuth.SetUsername(requestBasicAuth["username"].(string))
 				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
+			}
+
+			if requestBasicAuth["type"] == "sigv4" && requestBasicAuth["access_key"] != "" && requestBasicAuth["secret_key"] != "" {
+				basicAuth := datadogV1.NewSyntheticsBasicAuthSigv4(requestBasicAuth["access_key"].(string), requestBasicAuth["secret_key"].(string), datadogV1.SYNTHETICSBASICAUTHSIGV4TYPE_SIGV4)
+
+				basicAuth.SetRegion(requestBasicAuth["region"].(string))
+				basicAuth.SetServiceName(requestBasicAuth["service_name"].(string))
+				basicAuth.SetSessionToken(requestBasicAuth["session_token"].(string))
+
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthSigv4AsSyntheticsBasicAuth(basicAuth))
+			}
+
+			if requestBasicAuth["type"] == "ntlm" {
+				basicAuth := datadogV1.NewSyntheticsBasicAuthNTLM(datadogV1.SYNTHETICSBASICAUTHNTLMTYPE_NTLM)
+
+				basicAuth.SetUsername(requestBasicAuth["username"].(string))
+				basicAuth.SetPassword(requestBasicAuth["password"].(string))
+				basicAuth.SetDomain(requestBasicAuth["domain"].(string))
+				basicAuth.SetWorkstation(requestBasicAuth["workstation"].(string))
+
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthNTLMAsSyntheticsBasicAuth(basicAuth))
 			}
 		}
 	}
@@ -1320,6 +1406,23 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 		}
 
 		request.SetCertificate(requestClientCertificate)
+	}
+
+	if len(requestProxy) > 0 {
+		if proxy, ok := requestProxy[0].(map[string]interface{}); ok {
+			testRequestProxy := datadogV1.SyntheticsTestRequestProxy{}
+			testRequestProxy.SetUrl(proxy["url"].(string))
+
+			proxyHeaders := make(map[string]string, len(proxy["headers"].(map[string]interface{})))
+
+			for k, v := range proxy["headers"].(map[string]interface{}) {
+				proxyHeaders[k] = v.(string)
+			}
+
+			testRequestProxy.SetHeaders(proxyHeaders)
+
+			request.SetProxy(testRequestProxy)
+		}
 	}
 
 	return request
@@ -1429,6 +1532,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
 		}
 	}
+
 	if attr, ok := d.GetOk("request_headers"); ok {
 		headers := attr.(map[string]interface{})
 		if len(headers) > 0 {
@@ -1463,6 +1567,26 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		}
 
 		request.SetCertificate(clientCertificate)
+	}
+
+	if _, ok := d.GetOk("request_proxy"); ok {
+		requestProxy := datadogV1.SyntheticsTestRequestProxy{}
+
+		if url, ok := d.GetOk("request_proxy.0.url"); ok {
+			requestProxy.SetUrl(url.(string))
+
+			if headers, ok := d.GetOk("request_proxy.0.headers"); ok {
+				proxyHeaders := make(map[string]string, len(headers.(map[string]interface{})))
+
+				for k, v := range headers.(map[string]interface{}) {
+					proxyHeaders[k] = v.(string)
+				}
+
+				requestProxy.SetHeaders(proxyHeaders)
+			}
+
+			request.SetProxy(requestProxy)
+		}
 	}
 
 	config := datadogV1.SyntheticsBrowserTestConfig{}
@@ -1752,6 +1876,39 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 	return localAssertions, nil
 }
 
+func buildLocalBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]string {
+	localAuth := make(map[string]string)
+
+	if basicAuth.SyntheticsBasicAuthWeb != nil {
+		basicAuthWeb := basicAuth.SyntheticsBasicAuthWeb
+
+		localAuth["username"] = basicAuthWeb.Username
+		localAuth["password"] = basicAuthWeb.Password
+		localAuth["type"] = "web"
+	}
+
+	if basicAuth.SyntheticsBasicAuthSigv4 != nil {
+		basicAuthSigv4 := basicAuth.SyntheticsBasicAuthSigv4
+		localAuth["access_key"] = basicAuthSigv4.AccessKey
+		localAuth["secret_key"] = basicAuthSigv4.SecretKey
+		localAuth["region"] = *basicAuthSigv4.Region
+		localAuth["session_token"] = *basicAuthSigv4.SessionToken
+		localAuth["service_name"] = *basicAuthSigv4.ServiceName
+		localAuth["type"] = "sigv4"
+	}
+
+	if basicAuth.SyntheticsBasicAuthNTLM != nil {
+		basicAuthNtlm := basicAuth.SyntheticsBasicAuthNTLM
+		localAuth["username"] = *basicAuthNtlm.Username
+		localAuth["password"] = *basicAuthNtlm.Password
+		localAuth["domain"] = *basicAuthNtlm.Domain
+		localAuth["workstation"] = *basicAuthNtlm.Workstation
+		localAuth["type"] = "ntlm"
+	}
+
+	return localAuth
+}
+
 func buildExtractedValues(stepExtractedValues []interface{}) []datadogV1.SyntheticsParsingOptions {
 	values := make([]datadogV1.SyntheticsParsingOptions, len(stepExtractedValues))
 
@@ -1822,10 +1979,10 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	if err := d.Set("request_query", actualRequest.GetQuery()); err != nil {
 		return diag.FromErr(err)
 	}
+
 	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok && basicAuth.SyntheticsBasicAuthWeb != nil {
-		localAuth := make(map[string]string)
-		localAuth["username"] = basicAuth.SyntheticsBasicAuthWeb.Username
-		localAuth["password"] = basicAuth.SyntheticsBasicAuthWeb.Password
+		localAuth := buildLocalBasicAuth(basicAuth)
+
 		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
 			return diag.FromErr(err)
 		}
@@ -1857,6 +2014,14 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		if err := d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate}); err != nil {
 			return diag.FromErr(err)
 		}
+	}
+
+	if proxy, ok := actualRequest.GetProxyOk(); ok {
+		localProxy := make(map[string]interface{})
+		localProxy["url"] = proxy.GetUrl()
+		localProxy["headers"] = proxy.GetHeaders()
+
+		d.Set("request_proxy", []map[string]interface{}{localProxy})
 	}
 
 	// assertions are required but not used for browser tests
@@ -2070,10 +2235,10 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	if err := d.Set("request_query", actualRequest.GetQuery()); err != nil {
 		return diag.FromErr(err)
 	}
-	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok && basicAuth.SyntheticsBasicAuthWeb != nil {
-		localAuth := make(map[string]string)
-		localAuth["username"] = basicAuth.SyntheticsBasicAuthWeb.Username
-		localAuth["password"] = basicAuth.SyntheticsBasicAuthWeb.Password
+
+	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok {
+		localAuth := buildLocalBasicAuth(basicAuth)
+
 		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
 			return diag.FromErr(err)
 		}
@@ -2105,6 +2270,14 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		if err := d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate}); err != nil {
 			return diag.FromErr(err)
 		}
+	}
+
+	if proxy, ok := actualRequest.GetProxyOk(); ok {
+		localProxy := make(map[string]interface{})
+		localProxy["url"] = proxy.GetUrl()
+		localProxy["headers"] = proxy.GetHeaders()
+
+		d.Set("request_proxy", []map[string]interface{}{localProxy})
 	}
 
 	actualAssertions := config.GetAssertions()
@@ -2170,10 +2343,8 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			localStep["request_headers"] = stepRequest.GetHeaders()
 			localStep["request_query"] = stepRequest.GetQuery()
 
-			if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok && basicAuth.SyntheticsBasicAuthWeb != nil {
-				localAuth := make(map[string]string)
-				localAuth["username"] = basicAuth.SyntheticsBasicAuthWeb.Username
-				localAuth["password"] = basicAuth.SyntheticsBasicAuthWeb.Password
+			if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok {
+				localAuth := buildLocalBasicAuth(basicAuth)
 				localStep["request_basicauth"] = []map[string]string{localAuth}
 			}
 
@@ -2204,6 +2375,14 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				}
 
 				localStep["request_client_certificate"] = []map[string][]map[string]string{localCertificate}
+			}
+
+			if proxy, ok := stepRequest.GetProxyOk(); ok {
+				localProxy := make(map[string]interface{})
+				localProxy["url"] = proxy.GetUrl()
+				localProxy["headers"] = proxy.GetHeaders()
+
+				localStep["request_proxy"] = []map[string]interface{}{localProxy}
 			}
 
 			localStep["allow_failure"] = step.GetAllowFailure()
