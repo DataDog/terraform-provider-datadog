@@ -621,7 +621,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					},
 				},
 				"element_user_locator": {
-					Description: "Custom user selector to use for the step",
+					Description: "Custom user selector to use for the step.",
 					Type:        schema.TypeList,
 					MaxItems:    1,
 					Optional:    true,

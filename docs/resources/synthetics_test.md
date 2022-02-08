@@ -492,7 +492,7 @@ Optional:
 - **code** (String) Javascript code to use for the step.
 - **delay** (Number) Delay between each key stroke for a "type test" step.
 - **element** (String) Element to use for the step, json encoded string.
-- **element_user_locator** (Block List, Max: 1) Custom user selector to use for the step (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator))
+- **element_user_locator** (Block List, Max: 1) Custom user selector to use for the step. (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator))
 - **email** (String) Details of the email for an "assert email" step.
 - **file** (String) For an "assert download" step.
 - **files** (String) Details of the files for an "upload files" step, json encoded string.
