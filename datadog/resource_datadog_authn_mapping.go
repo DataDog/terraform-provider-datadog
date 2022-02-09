@@ -82,7 +82,19 @@ func resourceDatadogAuthnMappingCreate(ctx context.Context, d *schema.ResourceDa
 }
 
 func resourceDatadogAuthnMappingRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return nil
+	client := meta.(*ProviderConfiguration).DatadogClientV2
+	auth := meta.(*ProviderConfiguration).AuthV2
+
+	resp, httpResponse, err := client.AuthNMappingsApi.GetAuthNMapping(auth, d.Id())
+	if err != nil {
+		if httpResponse != nil && httpResponse.StatusCode == 404 {
+			d.SetId((""))
+			return nil
+		}
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting authn mapping")
+	}
+	authNMappingData := resp.GetData()
+	return updateAuthNMappingState(d, &authNMappingData)
 }
 
 func resourceDatadogAuthnMappingUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
