@@ -24,7 +24,7 @@ func TestAccDatadogAuthNMapping_Create(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogAuthNMappingDestroyDummy(accProvider),
+		CheckDestroy:      testAccCheckDatadogAuthNMappingDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogAuthNMappingConfig(attrKey, attrVal),
@@ -95,11 +95,6 @@ func testAccCheckDatadogAuthNMappingDestroy(accProvider func() (*schema.Provider
 		}
 		return nil
 	}
-}
-
-// Remove after DeleteContext is availoable for AuthN Mappings
-func testAccCheckDatadogAuthNMappingDestroyDummy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
-	return nil
 }
 
 func testCheckAuthNMappingHasRole(authNMappingName string, roleSource string) resource.TestCheckFunc {

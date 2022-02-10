@@ -102,6 +102,14 @@ func resourceDatadogAuthnMappingUpdate(ctx context.Context, d *schema.ResourceDa
 }
 
 func resourceDatadogAuthnMappingDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	client := meta.(*ProviderConfiguration).DatadogClientV2
+	auth := meta.(*ProviderConfiguration).AuthV2
+
+	httpResponse, err := client.AuthNMappingsApi.DeleteAuthNMapping(auth, d.Id())
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting authn mapping")
+	}
+
 	return nil
 }
 
