@@ -81,6 +81,7 @@ We highly recommend you set this to `false` for sparse metrics, otherwise some e
 - `tags` (Set of String) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
 - `timeout_h` (Number) The number of hours of the monitor not reporting data before it automatically resolves from a triggered state. The minimum allowed value is 0 hours. The maximum allowed value is 24 hours.
 - `validate` (Boolean) If set to `false`, skip the validation call done during plan.
+- `variables` (Block List, Max: 1) (see [below for nested schema](#nestedblock--variables))
 
 ### Read-Only
 
@@ -106,6 +107,75 @@ Optional:
 - `unknown` (String) The monitor `UNKNOWN` threshold. Only supported in monitor type `service check`. Must be a number.
 - `warning` (String) The monitor `WARNING` threshold. Must be a number.
 - `warning_recovery` (String) The monitor `WARNING` recovery threshold. Must be a number.
+
+
+<a id="nestedblock--variables"></a>
+### Nested Schema for `variables`
+
+Optional:
+
+- `event_query` (Block List) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--variables--event_query))
+
+<a id="nestedblock--variables--event_query"></a>
+### Nested Schema for `variables.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--variables--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--variables--event_query--group_by))
+- `indexes` (List of String) An array of index names to query in the stream.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--event_query--search))
+
+<a id="nestedblock--variables--event_query--compute"></a>
+### Nested Schema for `variables.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--variables--event_query--group_by"></a>
+### Nested Schema for `variables.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--variables--event_query--group_by--sort))
+
+<a id="nestedblock--variables--event_query--group_by--sort"></a>
+### Nested Schema for `variables.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--variables--event_query--search"></a>
+### Nested Schema for `variables.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
 
 ## Import
 
