@@ -511,6 +511,7 @@ Optional:
 
 - **allow_failure** (Boolean) Determines if the step should be allowed to fail.
 - **force_element_update** (Boolean) Force update of the "element" parameter for the step
+- **is_critical** (Boolean) Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.
 - **timeout** (Number) Used to override the default timeout of a step.
 
 <a id="nestedblock--browser_step--params"></a>
