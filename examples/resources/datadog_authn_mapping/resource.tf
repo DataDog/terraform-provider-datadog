@@ -4,7 +4,7 @@ data "datadog_role" "ro_role" {
 }
 
 # Create a new AuthN mapping
-resource "datadog_authn_mapping" "foo" {
+resource "datadog_authn_mapping" "dev_ro_role_mapping" {
   key   = "Member-of"
   value = "Development"
   role  = data.datadog_role.ro_role.id

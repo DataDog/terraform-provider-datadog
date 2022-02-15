@@ -14,7 +14,7 @@ import (
 
 func resourceDatadogAuthnMapping() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog AuthN Mappings resource. This can be used to create and manage Datadog SAML Mappings.",
+		Description:   "Provides a Datadog AuthN Mappings resource. This feature lets you automatically assign roles to users based on their SAML attributes.",
 		CreateContext: resourceDatadogAuthnMappingCreate,
 		ReadContext:   resourceDatadogAuthnMappingRead,
 		UpdateContext: resourceDatadogAuthnMappingUpdate,
@@ -32,7 +32,7 @@ func resourceDatadogAuthnMapping() *schema.Resource {
 				Required:    true,
 			},
 			"role": {
-				Description: "The role to assign for key:value mapping.",
+				Description: "The ID of a role to attach to all users with the corresponding key and value.",
 				Type:        schema.TypeString,
 				Required:    true,
 			},

@@ -13,7 +13,6 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-// TODO: Modify CheckDestroy function to testAccCheckDatadogAuthNMappingDestroy after Delete Context is available
 func TestAccDatadogAuthNMapping_CreateUpdate(t *testing.T) {
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
@@ -91,6 +90,7 @@ func testAccCheckDatadogAuthNMappingExists(accProvider func() (*schema.Provider,
 	}
 }
 
+// Verify that AuthNMapping is destroyed after test run
 func testAccCheckDatadogAuthNMappingDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
