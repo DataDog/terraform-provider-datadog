@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -19,6 +20,9 @@ func resourceDatadogAuthnMapping() *schema.Resource {
 		ReadContext:   resourceDatadogAuthnMappingRead,
 		UpdateContext: resourceDatadogAuthnMappingUpdate,
 		DeleteContext: resourceDatadogAuthnMappingDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"key": {

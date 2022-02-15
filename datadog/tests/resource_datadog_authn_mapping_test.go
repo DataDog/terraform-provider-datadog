@@ -44,6 +44,27 @@ func TestAccDatadogAuthNMapping_CreateUpdate(t *testing.T) {
 	})
 }
 
+func TestAccDatadogAuthNMapping_import(t *testing.T) {
+	_, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogAuthNMappingDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogAuthNMappingConfig("key_1", "value_1"),
+			},
+			{
+				ResourceName:      "datadog_authn_mapping.foo",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 // Create Terraform Config for AuthN Mapping
 func testAccCheckDatadogAuthNMappingConfig(key string, val string) string {
 	return fmt.Sprintf(`

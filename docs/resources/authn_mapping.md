@@ -3,12 +3,12 @@
 page_title: "datadog_authn_mapping Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog AuthN Mappings resource. This can be used to create and manage Datadog SAML Mappings.
+  Provides a Datadog AuthN Mappings resource. This feature lets you automatically assign roles to users based on their SAML attributes.
 ---
 
 # datadog_authn_mapping (Resource)
 
-Provides a Datadog AuthN Mappings resource. This can be used to create and manage Datadog SAML Mappings.
+Provides a Datadog AuthN Mappings resource. This feature lets you automatically assign roles to users based on their SAML attributes.
 
 ## Example Usage
 
@@ -19,7 +19,7 @@ data "datadog_role" "ro_role" {
 }
 
 # Create a new AuthN mapping
-resource "datadog_authn_mapping" "foo" {
+resource "datadog_authn_mapping" "dev_ro_role_mapping" {
   key   = "Member-of"
   value = "Development"
   role  = data.datadog_role.ro_role.id
@@ -32,11 +32,18 @@ resource "datadog_authn_mapping" "foo" {
 ### Required
 
 - **key** (String) Identity provider key.
-- **role** (String) The role to assign for key:value mapping.
+- **role** (String) The ID of a role to attach to all users with the corresponding key and value.
 - **value** (String) Identity provider value.
 
 ### Read-Only
 
 - **id** (String) The ID of this resource.
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+# AuthN mappings can be imported using their ID, e.g.
+terraform import datadog_authn_mapping.dev_ro_mapping 000000-0000-0000-0000-000000000000
+```
