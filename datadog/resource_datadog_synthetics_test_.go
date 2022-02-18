@@ -690,6 +690,40 @@ func syntheticsBrowserStepParams() schema.Schema {
 						return true
 					},
 				},
+				"element_user_locator": {
+					Description: "Custom user selector to use for the step.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"fail_test_on_cannot_locate": {
+								Type:     schema.TypeBool,
+								Optional: true,
+								Default:  false,
+							},
+							"value": {
+								Type:     schema.TypeList,
+								MaxItems: 1,
+								Required: true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"type": {
+											Type:         schema.TypeString,
+											Optional:     true,
+											Default:      "css",
+											ValidateFunc: validation.StringInSlice([]string{"css", "xpath"}, false),
+										},
+										"value": {
+											Type:     schema.TypeString,
+											Required: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
 				"email": {
 					Description: `Details of the email for an "assert email" step.`,
 					Type:        schema.TypeString,
@@ -1764,6 +1798,24 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 				}
 			}
 
+			if stepParamsMap, ok := stepParams.(map[string]interface{}); ok && stepParamsMap["element_user_locator"] != "" {
+				userLocatorsParams := stepParamsMap["element_user_locator"].([]interface{})
+
+				if len(userLocatorsParams) != 0 {
+					userLocatorParams := userLocatorsParams[0].(map[string]interface{})
+					values := userLocatorParams["value"].([]interface{})
+					userLocator := map[string]interface{}{
+						"failTestOnCannotLocate": userLocatorParams["fail_test_on_cannot_locate"],
+						"values":                 []map[string]interface{}{values[0].(map[string]interface{})},
+					}
+
+					var stepElement interface{}
+					utils.GetMetadataFromJSON([]byte(stepParamsMap["element"].(string)), &stepElement)
+					stepElement.(map[string]interface{})["userLocator"] = userLocator
+					params["element"] = stepElement
+				}
+			}
+
 			step.SetParams(params)
 
 			steps = append(steps, step)
@@ -2177,6 +2229,26 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 
 		for key, value := range paramsMap {
 			localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
+		}
+
+		if elementParams, ok := localParams["element"]; ok {
+			var stepElement interface{}
+			utils.GetMetadataFromJSON([]byte(elementParams.(string)), &stepElement)
+
+			if elementUserLocator, ok := stepElement.(map[string]interface{})["userLocator"]; ok {
+				userLocator := elementUserLocator.(map[string]interface{})
+				values := userLocator["values"]
+				value := values.([]interface{})[0]
+
+				localElementUserLocator := map[string]interface{}{
+					"fail_test_on_cannot_locate": userLocator["failTestOnCannotLocate"],
+					"value": []map[string]interface{}{
+						value.(map[string]interface{}),
+					},
+				}
+
+				localParams["element_user_locator"] = []map[string]interface{}{localElementUserLocator}
+			}
 		}
 
 		localStep["params"] = []interface{}{localParams}

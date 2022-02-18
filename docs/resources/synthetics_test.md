@@ -524,6 +524,7 @@ Optional:
 - **code** (String) Javascript code to use for the step.
 - **delay** (Number) Delay between each key stroke for a "type test" step.
 - **element** (String) Element to use for the step, json encoded string.
+- **element_user_locator** (Block List, Max: 1) Custom user selector to use for the step. (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator))
 - **email** (String) Details of the email for an "assert email" step.
 - **file** (String) For an "assert download" step.
 - **files** (String) Details of the files for an "upload files" step, json encoded string.
@@ -536,6 +537,30 @@ Optional:
 - **with_click** (Boolean) For "file upload" steps.
 - **x** (Number) X coordinates for a "scroll step".
 - **y** (Number) Y coordinates for a "scroll step".
+
+<a id="nestedblock--browser_step--params--element_user_locator"></a>
+### Nested Schema for `browser_step.params.element_user_locator`
+
+Required:
+
+- **value** (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator--value))
+
+Optional:
+
+- **fail_test_on_cannot_locate** (Boolean)
+
+<a id="nestedblock--browser_step--params--element_user_locator--value"></a>
+### Nested Schema for `browser_step.params.element_user_locator.value`
+
+Required:
+
+- **value** (String)
+
+Optional:
+
+- **type** (String)
+
+
 
 <a id="nestedblock--browser_step--params--variable"></a>
 ### Nested Schema for `browser_step.params.variable`
