@@ -33,6 +33,9 @@ resource "datadog_integration_aws" "account" {
     	    opsworks = true
   	}
   	excluded_regions                 = ["us-east-1", "us-west-2"]
+	metrics_collection_enabled       = false
+	resource_collection_enabled      = true
+	cspm_resource_collection_enabled = true
 }`, uniq)
 }
 
@@ -56,6 +59,15 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"role_name", "1234@testacc-datadog-integration-role"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"metrics_collection_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"resource_collection_enabled", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"cspm_resource_collection_enabled", "false"),
 				),
 			}, {
 				Config: testAccDatadogIntegrationAWSUpdateConfig(accountID),
@@ -88,6 +100,15 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"excluded_regions.1", "us-west-2"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"metrics_collection_enabled", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"resource_collection_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"cspm_resource_collection_enabled", "true"),
 				),
 			},
 			{
@@ -112,6 +133,15 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"account_specific_namespace_rules.#", "0"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"metrics_collection_enabled", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"resource_collection_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"cspm_resource_collection_enabled", "true"),
 				),
 			},
 		},
