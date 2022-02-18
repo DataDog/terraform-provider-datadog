@@ -77,6 +77,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/provider_test":                                                "terraform",
 	"tests/resource_datadog_api_key_test":                                "api_keys",
 	"tests/resource_datadog_application_key_test":                        "application_keys",
+	"tests/resource_datadog_authn_mapping_test":                          "authn_mapping",
 	"tests/resource_datadog_child_organization_test":                     "organization",
 	"tests/resource_datadog_cloud_workload_security_agent_rule_test":     "cloud_workload_security",
 	"tests/resource_datadog_dashboard_alert_graph_test":                  "dashboards",
@@ -142,7 +143,6 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_user_test":                                   "users",
 	"tests/resource_datadog_webhook_custom_variable_test":                "webhook_custom_variable",
 	"tests/resource_datadog_webhook_test":                                "webhook",
-	"tests/resource_datadog_authn_mapping_test":                          "authn_mapping",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;

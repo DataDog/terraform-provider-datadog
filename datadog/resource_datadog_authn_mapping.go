@@ -80,8 +80,7 @@ func resourceDatadogAuthnMappingCreate(ctx context.Context, d *schema.ResourceDa
 
 	authNMappingData := getAuthNMappingResponse.GetData()
 	d.SetId(authNMappingData.GetId())
-	updateAuthNMappingState(d, &authNMappingData)
-	return nil
+	return updateAuthNMappingState(d, &authNMappingData)
 }
 
 func resourceDatadogAuthnMappingRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
