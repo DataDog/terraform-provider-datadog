@@ -5,7 +5,7 @@ changelog:
   categories:
     - title: BUGFIXES
       labels:
-        - changelog/bufix
+        - changelog/bugfix
     - title: IMPROVEMENTS
       labels:
         - changelog/improvement
