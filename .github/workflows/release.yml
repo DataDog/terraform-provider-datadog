@@ -1,32 +1,63 @@
 # Copied from https://github.com/hashicorp/terraform-provider-scaffolding/blob/master/.github/workflows/release.yml
 name: release
+
 on:
-    push:
-        tags:
-            - "v*"
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+
 jobs:
-    goreleaser:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v2
-            - name: Unshallow
-              run: git fetch --prune --unshallow
-            - name: Set up Go
-              uses: actions/setup-go@v2
-              with:
-                  go-version: 1.16
-            - name: Import GPG key
-              id: import_gpg
-              uses: paultyng/ghaction-import-gpg@v2.1.0
-              env:
-                  GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-                  PASSPHRASE: ${{ secrets.PASSPHRASE }}
-            - name: Run GoReleaser
-              uses: goreleaser/goreleaser-action@v2
-              with:
-                  version: latest
-                  args: release --rm-dist
-              env:
-                  GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  create_release:
+    name: Create release
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/')
+    steps:
+      - name: Get GitHub App token
+        id: get_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.PIPELINE_GITHUB_APP_ID }}
+          private_key: ${{ secrets.PIPELINE_GITHUB_APP_PRIVATE_KEY }}
+
+      - name: Create tag
+        id: create_tag
+        uses: actions/github-script@v5
+        env:
+          RELEASE_BRANCH: ${{ github.head_ref }}
+        with:
+          github-token: ${{ steps.get_token.outputs.token }}
+          script: |
+            const tagName = `v${process.env.RELEASE_BRANCH.split("/")[1]}`;
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${tagName}`,
+              sha: context.payload.pull_request.merge_commit_sha,
+            });
+            core.setOutput("tag_name", tagName);
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.create_tag.outputs.tag_name }}
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+      - name: Import GPG key
+        id: import_gpg
+        uses: paultyng/ghaction-import-gpg@v2.1.0
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          PASSPHRASE: ${{ secrets.PASSPHRASE }}
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          version: latest
+          args: release --rm-dist
+        env:
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
