@@ -45,12 +45,7 @@ jobs:
               .toString("utf-8")
               .split("\n");
             const newContent = changes.concat(rawContent.slice(1)).join("\n");
-            const { data: head } = await github.rest.git.getRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: `heads/release/${process.env.RELEASE_VERSION}`,
-            });
-            const { data: commit } = await github.rest.repos.createOrUpdateFileContents({
+            await github.rest.repos.createOrUpdateFileContents({
               owner: context.repo.owner,
               repo: context.repo.repo,
               message: "Update CHANGELOG",
