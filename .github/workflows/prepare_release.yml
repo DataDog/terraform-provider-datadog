@@ -33,9 +33,10 @@ jobs:
               repo: context.repo.repo,
               tag_name: `v${process.env.RELEASE_VERSION}`,
             });
-            const today = const today = new Date().toLocaleDateString('en-US', {"month": "long", "day": "numeric", "year": "numeric"});
+            const today = new Date().toLocaleDateString('en-US', {"month": "long", "day": "numeric", "year": "numeric"});
             const header = [`## ${process.env.RELEASE_VERSION} (${today})\n`];
             const changes = header.concat(notes.body.split("\n").slice(3));
+            changes.push("");
             const { data: content } = await github.rest.repos.getContent({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -44,7 +45,7 @@ jobs:
             const rawContent = Buffer.from(content.content, "base64")
               .toString("utf-8")
               .split("\n");
-            const newContent = changes.concat(rawContent.slice(1)).join("\n");
+            const newContent = changes.concat(rawContent).join("\n");
             await github.rest.repos.createOrUpdateFileContents({
               owner: context.repo.owner,
               repo: context.repo.repo,
