@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -9,6 +10,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+var integrationGcpMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationGcp() *schema.Resource {
 	return &schema.Resource{
@@ -81,6 +84,9 @@ func resourceDatadogIntegrationGcpCreate(ctx context.Context, d *schema.Resource
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
+	integrationGcpMutex.Lock()
+	defer integrationGcpMutex.Unlock()
+
 	projectID := d.Get("project_id").(string)
 
 	if _, httpresp, err := datadogClientV1.GCPIntegrationApi.CreateGCPIntegration(authV1,
@@ -139,6 +145,9 @@ func resourceDatadogIntegrationGcpUpdate(ctx context.Context, d *schema.Resource
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
+	integrationGcpMutex.Lock()
+	defer integrationGcpMutex.Unlock()
+
 	if _, httpresp, err := datadogClientV1.GCPIntegrationApi.UpdateGCPIntegration(authV1,
 		datadogV1.GCPAccount{
 			ProjectId:   datadogV1.PtrString(d.Id()),
@@ -157,6 +166,9 @@ func resourceDatadogIntegrationGcpDelete(ctx context.Context, d *schema.Resource
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
+
+	integrationGcpMutex.Lock()
+	defer integrationGcpMutex.Unlock()
 
 	if _, httpresp, err := datadogClientV1.GCPIntegrationApi.DeleteGCPIntegration(authV1,
 		datadogV1.GCPAccount{
