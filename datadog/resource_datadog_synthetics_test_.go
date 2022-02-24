@@ -489,6 +489,11 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
+				"check_certificate_revocation": {
+					Description: "For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 			},
 		},
 	}
@@ -1274,6 +1279,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		}
 		if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
 			options.SetAcceptSelfSigned(attr.(bool))
+		}
+		if attr, ok := d.GetOk("options_list.0.check_certificate_revocation"); ok {
+			options.SetCheckCertificateRevocation(attr.(bool))
 		}
 		if attr, ok := d.GetOk("options_list.0.min_location_failed"); ok {
 			options.SetMinLocationFailed(int64(attr.(int)))
@@ -2148,39 +2156,30 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 
 	actualOptions := syntheticsTest.GetOptions()
 	localOptionsList := make(map[string]interface{})
-	localOption := make(map[string]string)
 	if actualOptions.HasFollowRedirects() {
-		localOption["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
 		localOptionsList["follow_redirects"] = actualOptions.GetFollowRedirects()
 	}
 	if actualOptions.HasMinFailureDuration() {
-		localOption["min_failure_duration"] = convertToString(actualOptions.GetMinFailureDuration())
 		localOptionsList["min_failure_duration"] = actualOptions.GetMinFailureDuration()
 	}
 	if actualOptions.HasMinLocationFailed() {
-		localOption["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
 		localOptionsList["min_location_failed"] = actualOptions.GetMinLocationFailed()
 	}
 	if actualOptions.HasTickEvery() {
-		localOption["tick_every"] = convertToString(actualOptions.GetTickEvery())
 		localOptionsList["tick_every"] = actualOptions.GetTickEvery()
 	}
 	if actualOptions.HasAcceptSelfSigned() {
-		localOption["accept_self_signed"] = convertToString(actualOptions.GetAcceptSelfSigned())
 		localOptionsList["accept_self_signed"] = actualOptions.GetAcceptSelfSigned()
 	}
 	if actualOptions.HasAllowInsecure() {
-		localOption["allow_insecure"] = convertToString(actualOptions.GetAllowInsecure())
 		localOptionsList["allow_insecure"] = actualOptions.GetAllowInsecure()
 	}
 	if actualOptions.HasRetry() {
 		retry := actualOptions.GetRetry()
 		optionsListRetry := make(map[string]interface{})
-		localOption["retry_count"] = convertToString(retry.GetCount())
 		optionsListRetry["count"] = retry.GetCount()
 
 		if interval, ok := retry.GetIntervalOk(); ok {
-			localOption["retry_interval"] = convertToString(interval)
 			optionsListRetry["interval"] = interval
 		}
 
@@ -2489,39 +2488,33 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 	actualOptions := syntheticsTest.GetOptions()
 	localOptionsList := make(map[string]interface{})
-	localOption := make(map[string]string)
 	if actualOptions.HasFollowRedirects() {
-		localOption["follow_redirects"] = convertToString(actualOptions.GetFollowRedirects())
 		localOptionsList["follow_redirects"] = actualOptions.GetFollowRedirects()
 	}
 	if actualOptions.HasMinFailureDuration() {
-		localOption["min_failure_duration"] = convertToString(actualOptions.GetMinFailureDuration())
 		localOptionsList["min_failure_duration"] = actualOptions.GetMinFailureDuration()
 	}
 	if actualOptions.HasMinLocationFailed() {
-		localOption["min_location_failed"] = convertToString(actualOptions.GetMinLocationFailed())
 		localOptionsList["min_location_failed"] = actualOptions.GetMinLocationFailed()
 	}
 	if actualOptions.HasTickEvery() {
-		localOption["tick_every"] = convertToString(actualOptions.GetTickEvery())
 		localOptionsList["tick_every"] = actualOptions.GetTickEvery()
 	}
 	if actualOptions.HasAcceptSelfSigned() {
-		localOption["accept_self_signed"] = convertToString(actualOptions.GetAcceptSelfSigned())
 		localOptionsList["accept_self_signed"] = actualOptions.GetAcceptSelfSigned()
 	}
+	if actualOptions.HasCheckCertificateRevocation() {
+		localOptionsList["check_certificate_revocation"] = actualOptions.GetCheckCertificateRevocation()
+	}
 	if actualOptions.HasAllowInsecure() {
-		localOption["allow_insecure"] = convertToString(actualOptions.GetAllowInsecure())
 		localOptionsList["allow_insecure"] = actualOptions.GetAllowInsecure()
 	}
 	if actualOptions.HasRetry() {
 		retry := actualOptions.GetRetry()
 		optionsListRetry := make(map[string]interface{})
-		localOption["retry_count"] = convertToString(retry.GetCount())
 		optionsListRetry["count"] = retry.GetCount()
 
 		if interval, ok := retry.GetIntervalOk(); ok {
-			localOption["retry_interval"] = convertToString(interval)
 			optionsListRetry["interval"] = interval
 		}
 

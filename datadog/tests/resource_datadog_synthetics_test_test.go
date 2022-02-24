@@ -1177,6 +1177,8 @@ func createSyntheticsSSLTestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options_list.0.accept_self_signed", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options_list.0.check_certificate_revocation", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "message", "Notify @datadog.user"),
@@ -1212,6 +1214,7 @@ resource "datadog_synthetics_test" "ssl" {
 	options_list {
 		tick_every = 60
 		accept_self_signed = true
+		check_certificate_revocation = true
 	}
 
 	name = "%s"
@@ -1327,6 +1330,8 @@ func updateSyntheticsSSLTestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "options_list.0.accept_self_signed", "false"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.ssl", "options_list.0.check_certificate_revocation", "false"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.ssl", "message", "Notify @pagerduty"),
@@ -1368,6 +1373,7 @@ resource "datadog_synthetics_test" "ssl" {
 	options_list {
 		tick_every = 60
 		accept_self_signed = false
+		check_certificate_revocation = false
 	}
 
 	name = "%s"
