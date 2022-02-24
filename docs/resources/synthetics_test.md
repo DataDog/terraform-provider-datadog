@@ -614,6 +614,7 @@ Optional:
 
 - **accept_self_signed** (Boolean) For SSL test, whether or not the test should allow self signed certificates.
 - **allow_insecure** (Boolean) Allows loading insecure content for an HTTP test.
+- **check_certificate_revocation** (Boolean) For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.
 - **follow_redirects** (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - **min_failure_duration** (Number) Minimum amount of time in failure required to trigger an alert. Default is `0`.
 - **min_location_failed** (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`.
