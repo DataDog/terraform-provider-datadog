@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -12,6 +13,7 @@ import (
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 var integrationAwsMutex = sync.Mutex{}
@@ -83,6 +85,27 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 				ConflictsWith: []string{"account_id", "role_name"},
 				Optional:      true,
 			},
+			"metrics_collection_enabled": {
+				Description:  "Whether Datadog collects metrics for this AWS account.",
+				Type:         schema.TypeString,
+				Computed:     true,
+				Optional:     true,
+				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
+			},
+			"resource_collection_enabled": {
+				Type:         schema.TypeString,
+				Description:  "Whether Datadog collects a standard set of resources from your AWS account.",
+				Computed:     true,
+				Optional:     true,
+				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
+			},
+			"cspm_resource_collection_enabled": {
+				Type:         schema.TypeString,
+				Description:  "Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource_collection.",
+				Computed:     true,
+				Optional:     true,
+				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
+			},
 		},
 	}
 }
@@ -135,6 +158,21 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData) *datadogV1.AWSAcco
 		}
 	}
 	iaws.SetExcludedRegions(excludedRegions)
+
+	if v, ok := d.GetOk("metrics_collection_enabled"); ok && v.(string) != "" {
+		vBool, _ := strconv.ParseBool(v.(string))
+		iaws.SetMetricsCollectionEnabled(vBool)
+	}
+
+	if v, ok := d.GetOk("resource_collection_enabled"); ok && v.(string) != "" {
+		vBool, _ := strconv.ParseBool(v.(string))
+		iaws.SetResourceCollectionEnabled(vBool)
+	}
+
+	if v, ok := d.GetOk("cspm_resource_collection_enabled"); ok && v.(string) != "" {
+		vBool, _ := strconv.ParseBool(v.(string))
+		iaws.SetCspmResourceCollectionEnabled(vBool)
+	}
 
 	return iaws
 }
@@ -208,6 +246,9 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 			d.Set("host_tags", integration.GetHostTags())
 			d.Set("account_specific_namespace_rules", integration.GetAccountSpecificNamespaceRules())
 			d.Set("excluded_regions", integration.GetExcludedRegions())
+			d.Set("metrics_collection_enabled", strconv.FormatBool(integration.GetMetricsCollectionEnabled()))
+			d.Set("resource_collection_enabled", strconv.FormatBool(integration.GetResourceCollectionEnabled()))
+			d.Set("cspm_resource_collection_enabled", strconv.FormatBool(integration.GetCspmResourceCollectionEnabled()))
 			return nil
 		}
 	}

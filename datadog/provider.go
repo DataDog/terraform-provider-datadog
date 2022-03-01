@@ -131,6 +131,7 @@ func Provider() *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{
 			"datadog_api_key":                              resourceDatadogApiKey(),
 			"datadog_application_key":                      resourceDatadogApplicationKey(),
+			"datadog_authn_mapping":                        resourceDatadogAuthnMapping(),
 			"datadog_child_organization":                   resourceDatadogChildOrganization(),
 			"datadog_cloud_workload_security_agent_rule":   resourceDatadogCloudWorkloadSecurityAgentRule(),
 			"datadog_dashboard":                            resourceDatadogDashboard(),
@@ -180,6 +181,7 @@ func Provider() *schema.Provider {
 			"datadog_dashboard":                           dataSourceDatadogDashboard(),
 			"datadog_dashboard_list":                      dataSourceDatadogDashboardList(),
 			"datadog_ip_ranges":                           dataSourceDatadogIPRanges(),
+			"datadog_logs_indexes":                        dataSourceDatadogLogsIndexes(),
 			"datadog_logs_indexes_order":                  dataSourceDatadogLogsIndexesOrder(),
 			"datadog_monitor":                             dataSourceDatadogMonitor(),
 			"datadog_monitors":                            dataSourceDatadogMonitors(),
