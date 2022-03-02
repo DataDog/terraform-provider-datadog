@@ -619,6 +619,11 @@ func syntheticsTestBrowserStep() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
+				"is_critical": {
+					Description: "Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 				"timeout": {
 					Description: "Used to override the default timeout of a step.",
 					Type:        schema.TypeInt,
@@ -1793,6 +1798,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			step.SetName(stepMap["name"].(string))
 			step.SetType(datadogV1.SyntheticsStepType(stepMap["type"].(string)))
 			step.SetAllowFailure(stepMap["allow_failure"].(bool))
+			step.SetIsCritical(stepMap["is_critical"].(bool))
 			step.SetTimeout(int64(stepMap["timeout"].(int)))
 
 			params := make(map[string]interface{})
@@ -2220,6 +2226,10 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 
 		if allowFailure, ok := step.GetAllowFailureOk(); ok {
 			localStep["allow_failure"] = allowFailure
+		}
+
+		if isCritical, ok := step.GetIsCriticalOk(); ok {
+			localStep["is_critical"] = isCritical
 		}
 
 		localParams := make(map[string]interface{})
