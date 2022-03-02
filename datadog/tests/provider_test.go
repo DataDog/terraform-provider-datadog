@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"github.com/hashicorp/go-cleanhttp"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -26,7 +27,6 @@ import (
 	ddtesting "github.com/DataDog/dd-sdk-go-testing"
 	"github.com/dnaeon/go-vcr/cassette"
 	"github.com/dnaeon/go-vcr/recorder"
-	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -47,6 +47,8 @@ const testAPPKeyEnvName = "DD_TEST_CLIENT_APP_KEY"
 const testOrgEnvName = "DD_TEST_ORG"
 
 var isTestOrgC *bool
+
+var allowedHeaders = map[string]string{"Accept": "", "Content-Type": ""}
 
 var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_api_key_test":                             "api_keys",
@@ -366,11 +368,28 @@ func initRecorder(t *testing.T) *recorder.Recorder {
 			return err
 		}
 		i.URL = removeURLSecrets(u).String()
-		i.Request.Headers.Del("Dd-Api-Key")
-		i.Request.Headers.Del("Dd-Application-Key")
+
+		filterHeaders(i)
 		return nil
 	})
 	return rec
+}
+
+// filterHeaders filter out headers
+func filterHeaders(i *cassette.Interaction) {
+	requestHeadersCopy := i.Request.Headers.Clone()
+	responseHeadersCopy := i.Response.Headers.Clone()
+
+	for k, _ := range requestHeadersCopy {
+		if _, ok := allowedHeaders[k]; !ok {
+			i.Request.Headers.Del(k)
+		}
+	}
+	for k, _ := range responseHeadersCopy {
+		if _, ok := allowedHeaders[k]; !ok {
+			i.Response.Headers.Del(k)
+		}
+	}
 }
 
 // matchInteraction checks if the request matches a store request in the given cassette.
