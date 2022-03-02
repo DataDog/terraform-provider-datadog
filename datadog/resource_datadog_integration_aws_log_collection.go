@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -57,12 +58,20 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *sc
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
+	// shared with datadog_integration_aws resource
+	integrationAwsMutex.Lock()
+	defer integrationAwsMutex.Unlock()
+
 	accountID := d.Get("account_id").(string)
 
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
-	_, httpresp, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1, *enableLogCollectionServices)
+	response, httpresp, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1, *enableLogCollectionServices)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error enabling log collection services for Amazon Web Services integration account")
+	}
+	res := response.(map[string]interface{})
+	if status, ok := res["status"]; ok && status == "error" {
+		return diag.FromErr(fmt.Errorf("error creating aws log collection: %s", httpresp.Body))
 	}
 
 	d.SetId(accountID)
@@ -74,6 +83,10 @@ func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *sc
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
+
+	// shared with datadog_integration_aws resource
+	integrationAwsMutex.Lock()
+	defer integrationAwsMutex.Unlock()
 
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
 	_, httpresp, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1, *enableLogCollectionServices)
@@ -114,6 +127,10 @@ func resourceDatadogIntegrationAwsLogCollectionDelete(ctx context.Context, d *sc
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
+
+	// shared with datadog_integration_aws resource
+	integrationAwsMutex.Lock()
+	defer integrationAwsMutex.Unlock()
 
 	accountID := d.Id()
 	services := []string{}
