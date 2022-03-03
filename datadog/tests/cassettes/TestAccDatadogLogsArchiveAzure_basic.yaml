@@ -8,39 +8,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "212"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateAzureIntegration
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: POST
   response:
     body: '{}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "2"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Mon, 01 Nov 2021 20:22:43 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -50,35 +26,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAzureIntegration
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
     body: '[{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1635798160","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Mon, 01 Nov 2021 20:22:43 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -89,47 +43,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "393"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateLogsArchive
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archives
     method: POST
   response:
     body: '{"data":{"type":"archives","id":"EKb3-dVIS-KPD2tuPjavSg","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1635798160","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}},"rehydration_tags":[],"include_tags":false}}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Mon, 01 Nov 2021 20:22:44 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "30"
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "29"
-      X-Ratelimit-Reset:
-      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -139,43 +61,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetLogsArchive
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archives/EKb3-dVIS-KPD2tuPjavSg
     method: GET
   response:
     body: '{"data":{"type":"archives","id":"EKb3-dVIS-KPD2tuPjavSg","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1635798160","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}},"rehydration_tags":[],"include_tags":false}}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Mon, 01 Nov 2021 20:22:44 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "30"
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "29"
-      X-Ratelimit-Reset:
-      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -185,35 +77,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAzureIntegration
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
     body: '[{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1635798160","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Mon, 01 Nov 2021 20:22:45 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -223,43 +93,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetLogsArchive
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archives/EKb3-dVIS-KPD2tuPjavSg
     method: GET
   response:
     body: '{"data":{"type":"archives","id":"EKb3-dVIS-KPD2tuPjavSg","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"tf-TestAccDatadogLogsArchiveAzure_basic-local-1635798160","client_id":"testc7f6-1234-5678-9101-3fcbf464test"}},"rehydration_tags":[],"include_tags":false}}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Mon, 01 Nov 2021 20:22:45 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "30"
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "28"
-      X-Ratelimit-Reset:
-      - "5"
     status: 200 OK
     code: 200
     duration: ""
@@ -269,41 +109,11 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - DeleteLogsArchive
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archives/EKb3-dVIS-KPD2tuPjavSg
     method: DELETE
   response:
     body: ""
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "0"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Date:
-      - Mon, 01 Nov 2021 20:22:46 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "30"
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "28"
-      X-Ratelimit-Reset:
-      - "4"
     status: 204 No Content
     code: 204
     duration: ""
@@ -314,39 +124,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "212"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - DeleteAzureIntegration
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: DELETE
   response:
     body: '{}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "2"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Mon, 01 Nov 2021 20:22:47 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -356,43 +142,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetLogsArchive
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/logs/config/archives/EKb3-dVIS-KPD2tuPjavSg
     method: GET
   response:
     body: '{"errors": ["Archive EKb3-dVIS-KPD2tuPjavSg not found"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Mon, 01 Nov 2021 20:22:47 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "30"
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "27"
-      X-Ratelimit-Reset:
-      - "3"
     status: 404 Not Found
     code: 404
     duration: ""
@@ -402,35 +158,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAzureIntegration
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.5.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
     body: '{"errors": ["Azure Integration not yet installed. Please install before performing this action."]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "98"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Mon, 01 Nov 2021 20:22:47 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 400 Bad Request
     code: 400
     duration: ""

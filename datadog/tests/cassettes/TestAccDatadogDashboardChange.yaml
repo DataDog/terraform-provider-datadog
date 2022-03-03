@@ -8,41 +8,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "954"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":"Hippolyte Henry","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bvv-eke-dnt","title":"tf-TestAccDatadogDashboardChange-local-1637759483","url":"/dashboard/bvv-eke-dnt/tf-testaccdatadogdashboardchange-local-1637759483","created_at":"2021-11-24T13:11:33.187370+00:00","modified_at":"2021-11-24T13:11:33.187370+00:00","author_handle":"hippolyte.henry@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*} by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":4861750625386599},{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","title":"Sum of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*} by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":5623884993388437}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Wed, 24 Nov 2021 13:11:38 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "4983"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -52,37 +26,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/bvv-eke-dnt
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":"Hippolyte Henry","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bvv-eke-dnt","title":"tf-TestAccDatadogDashboardChange-local-1637759483","url":"/dashboard/bvv-eke-dnt/tf-testaccdatadogdashboardchange-local-1637759483","created_at":"2021-11-24T13:11:33.187370+00:00","modified_at":"2021-11-24T13:11:33.187370+00:00","author_handle":"hippolyte.henry@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*} by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":4861750625386599},{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","title":"Sum of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*} by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":5623884993388437}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Wed, 24 Nov 2021 13:11:38 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "77"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -92,37 +42,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/bvv-eke-dnt
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":"Hippolyte Henry","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bvv-eke-dnt","title":"tf-TestAccDatadogDashboardChange-local-1637759483","url":"/dashboard/bvv-eke-dnt/tf-testaccdatadogdashboardchange-local-1637759483","created_at":"2021-11-24T13:11:33.187370+00:00","modified_at":"2021-11-24T13:11:33.187370+00:00","author_handle":"hippolyte.henry@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*} by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":4861750625386599},{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","title":"Sum of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*} by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":5623884993388437}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Wed, 24 Nov 2021 13:11:39 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "86"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -132,37 +58,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/bvv-eke-dnt
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":"Hippolyte Henry","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bvv-eke-dnt","title":"tf-TestAccDatadogDashboardChange-local-1637759483","url":"/dashboard/bvv-eke-dnt/tf-testaccdatadogdashboardchange-local-1637759483","created_at":"2021-11-24T13:11:33.187370+00:00","modified_at":"2021-11-24T13:11:33.187370+00:00","author_handle":"hippolyte.henry@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*} by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":4861750625386599},{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","title":"Sum of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*} by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":5623884993388437}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Wed, 24 Nov 2021 13:11:42 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "78"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -172,37 +74,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - DeleteDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/bvv-eke-dnt
     method: DELETE
   response:
     body: '{"deleted_dashboard_id":"bvv-eke-dnt"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Wed, 24 Nov 2021 13:11:44 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "213"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -212,37 +90,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.6.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/bvv-eke-dnt
     method: GET
   response:
     body: '{"errors": ["Dashboard with ID bvv-eke-dnt not found"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Wed, 24 Nov 2021 13:11:44 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "51"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 404 Not Found
     code: 404
     duration: ""

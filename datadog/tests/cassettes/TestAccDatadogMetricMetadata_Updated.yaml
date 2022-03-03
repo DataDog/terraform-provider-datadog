@@ -10,47 +10,13 @@ interactions:
       - application/json
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - UpdateMetricMetadata
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: PUT
   response:
     body: '{"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 12 Mar 2021 22:12:04 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - E+1VETRHejJtZU2J4RKwTITCVJud3d6AfD2N6ITXOWwbuRBfIAeHdqJVTyTstMc7
-      X-Dd-Version:
-      - "35.4088130"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "2000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "1998"
-      X-Ratelimit-Reset:
-      - "56"
     status: 200 OK
     code: 200
     duration: ""
@@ -60,29 +26,13 @@ interactions:
     headers:
       Content-Type:
       - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/go-datadog-api (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/series
     method: POST
   response:
     body: '{"status": "ok"}'
     headers:
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "16"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - text/json
-      Date:
-      - Fri, 12 Mar 2021 22:12:04 GMT
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 202 Accepted
     code: 202
     duration: ""
@@ -92,39 +42,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetMetricMetadata
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
     body: '{"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 12 Mar 2021 22:12:04 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - Slfd7EQ+iaUr68gMF4Wevg1YeynmFd00Ip8u0r10nxghAjG3Z4J7Vily2m11tJTZ
-      X-Dd-Version:
-      - "35.4088130"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -134,39 +58,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetMetricMetadata
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
     body: '{"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 12 Mar 2021 22:12:05 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - Wc/Ep2sab8gerQUoP4aNzYJ/CkbJ9cGZXKf0AQoXNQakZH0hTqKwiThRHWgaxUCj
-      X-Dd-Version:
-      - "35.4088130"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -176,39 +74,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetMetricMetadata
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
     body: '{"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 12 Mar 2021 22:12:05 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - GaBrMp9hG62dX6k8YEI10yL1utZ779uo3r2arahiBdRifYlH17HMqEEnAT7O3yNi
-      X-Dd-Version:
-      - "35.4088130"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -221,47 +93,13 @@ interactions:
       - application/json
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - UpdateMetricMetadata
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: PUT
   response:
     body: '{"description":"a different description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 12 Mar 2021 22:12:06 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 3j0u2GTfQFgb2EI58bre0n8B3mGgD5fDMymGtXFH6VojGXuCGLuQFPAl8Vx6fpNK
-      X-Dd-Version:
-      - "35.4088130"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "2000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "1997"
-      X-Ratelimit-Reset:
-      - "54"
     status: 200 OK
     code: 200
     duration: ""
@@ -271,39 +109,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetMetricMetadata
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
     body: '{"description":"a different description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 12 Mar 2021 22:12:06 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - ap4u79DStmmUaZZKftsKVSCatJwzXQobFKbE6QNwYRTAqaaJhfQIZxiNyELpTVRT
-      X-Dd-Version:
-      - "35.4088130"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -313,39 +125,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetMetricMetadata
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/metrics/foo
     method: GET
   response:
     body: '{"description":"a different description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 12 Mar 2021 22:12:06 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 3D9FJIDKlXJbOW5I4xmTHke7dEGyl6YmfhwBbIfTKq1A+ePdmIVops+3OhJ98ybm
-      X-Dd-Version:
-      - "35.4088130"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""

@@ -10,10 +10,6 @@ interactions:
       - application/json
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
@@ -51,35 +47,13 @@ interactions:
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
       Title","type":"query_table","time":{"live_span":"1h"}},"id":2421614161405600}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 18 Jun 2020 17:58:05 GMT
       Dd-Pool:
       - dogweb
-      Pragma:
-      - no-cache
       Set-Cookie:
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 25-Jun-2020 17:58:05 GMT;
         secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - EE74ncTR989SomsonUvABJWdGDkXBs7Emqj3HVDpp6NYddpvHp95kXsnHux1Es9E
-      X-Dd-Version:
-      - "35.2638647"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -89,10 +63,6 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/fnq-rus-yfz
     method: GET
   response:
@@ -130,35 +100,13 @@ interactions:
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
       Title","type":"query_table","time":{"live_span":"1h"}},"id":2421614161405600}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 18 Jun 2020 17:58:05 GMT
       Dd-Pool:
       - dogweb
-      Pragma:
-      - no-cache
       Set-Cookie:
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 25-Jun-2020 17:58:05 GMT;
         secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - kg+/Cls6zaJcT2blJLlU62BwgGePGdpqSwWrJ0xEIvzmSMWHXxGNsiyEzBPJ1a96
-      X-Dd-Version:
-      - "35.2638647"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -168,10 +116,6 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/fnq-rus-yfz
     method: GET
   response:
@@ -209,35 +153,13 @@ interactions:
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
       Title","type":"query_table","time":{"live_span":"1h"}},"id":2421614161405600}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 18 Jun 2020 17:58:06 GMT
       Dd-Pool:
       - dogweb
-      Pragma:
-      - no-cache
       Set-Cookie:
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 25-Jun-2020 17:58:05 GMT;
         secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - IkXBg4ZNMRmDsobzMjEa2v35+NuPiQI0gFmho/o6e7+hfyyJl3rjuklsE4uVJo7l
-      X-Dd-Version:
-      - "35.2638647"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -247,10 +169,6 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/fnq-rus-yfz
     method: GET
   response:
@@ -288,35 +206,13 @@ interactions:
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
       Title","type":"query_table","time":{"live_span":"1h"}},"id":2421614161405600}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 18 Jun 2020 17:58:12 GMT
       Dd-Pool:
       - dogweb
-      Pragma:
-      - no-cache
       Set-Cookie:
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 25-Jun-2020 17:58:12 GMT;
         secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - 6qTaw+brNWWnKD6ULH8747/TVkPK0wedRsruOmMITJcYBkJ/Eac9bUO9jP1Btfl5
-      X-Dd-Version:
-      - "35.2638647"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -326,10 +222,6 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/fnq-rus-yfz
     method: GET
   response:
@@ -367,35 +259,13 @@ interactions:
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
       Title","type":"query_table","time":{"live_span":"1h"}},"id":2421614161405600}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 18 Jun 2020 17:58:13 GMT
       Dd-Pool:
       - dogweb
-      Pragma:
-      - no-cache
       Set-Cookie:
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 25-Jun-2020 17:58:13 GMT;
         secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - BsieYxalcMaIS+cTbK9YL1FxnAIiDF/6CFe3/lefzTTUruWB5XaSb08KP3lTATlu
-      X-Dd-Version:
-      - "35.2638647"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -405,10 +275,6 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/fnq-rus-yfz
     method: GET
   response:
@@ -446,35 +312,13 @@ interactions:
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
       Title","type":"query_table","time":{"live_span":"1h"}},"id":2421614161405600}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 18 Jun 2020 17:58:18 GMT
       Dd-Pool:
       - dogweb
-      Pragma:
-      - no-cache
       Set-Cookie:
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 25-Jun-2020 17:58:18 GMT;
         secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - xuqj9hdWDkSD9EtpcqPe+eGtJAYYHPEMbUsHJUlu4ckBMffeXAIJAOyY354PYCG0
-      X-Dd-Version:
-      - "35.2638647"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -484,10 +328,6 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/fnq-rus-yfz
     method: GET
   response:
@@ -525,35 +365,13 @@ interactions:
       by {account}","aggregator":"sum","conditional_formats":[{"palette":"white_on_green","hide_value":false,"value":2,"comparator":"<"},{"palette":"white_on_red","hide_value":false,"value":2.2,"comparator":">"}],"limit":10}],"title":"Widget
       Title","type":"query_table","time":{"live_span":"1h"}},"id":2421614161405600}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 18 Jun 2020 17:58:18 GMT
       Dd-Pool:
       - dogweb
-      Pragma:
-      - no-cache
       Set-Cookie:
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 25-Jun-2020 17:58:18 GMT;
         secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - j9H0Mt41m875GBjR2i9r831ZILGOU6+Jata5+JJkOQgIsO+SrMkmgWN80SCun0Sk
-      X-Dd-Version:
-      - "35.2638647"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -563,44 +381,18 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - DeleteDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/fnq-rus-yfz
     method: DELETE
   response:
     body: '{"deleted_dashboard_id":"fnq-rus-yfz"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 18 Jun 2020 17:58:33 GMT
       Dd-Pool:
       - dogweb
-      Pragma:
-      - no-cache
       Set-Cookie:
       - DD-PSHARD=233; Max-Age=604800; Path=/; expires=Thu, 25-Jun-2020 17:58:20 GMT;
         secure; HttpOnly
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Debug:
-      - HTCsbjwqQM0jTFHFq9ukWObBv4f/yxvHIxzrANPhzJkr6s3+rN5uCN3TcZuK2V2B
-      X-Dd-Version:
-      - "35.2638647"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -610,39 +402,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - datadog-api-client-go/1.0.0-beta.4 (go go1.13; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/fnq-rus-yfz
     method: GET
   response:
     body: '{"errors": ["Dashboard with ID fnq-rus-yfz not found"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 18 Jun 2020 17:58:33 GMT
       Dd-Pool:
       - dogweb
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Dd-Version:
-      - "35.2638647"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 404 Not Found
     code: 404
     duration: ""

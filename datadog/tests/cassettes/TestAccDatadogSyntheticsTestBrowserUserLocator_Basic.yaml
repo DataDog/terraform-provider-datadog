@@ -8,49 +8,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "1447"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateSyntheticsBrowserTest
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.8.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/browser
     method: POST
   response:
     body: '{"status":"paused","public_id":"zqx-3eq-e7q","tags":["foo:bar"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_Basic-local-1646210751","monitor_id":65154480,"type":"browser","created_at":"2022-03-02T08:45:53.280782+00:00","modified_at":"2022-03-02T08:45:53.280782+00:00","steps":[{"name":"click step","allowFailure":false,"params":{"element":{"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/config-updated","multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","co":"","cl":"/descendant::*[contains(concat('''''''', normalize-space(@class), '''' ''''), \" dog \")]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","clt":"/descendant::*[contains(concat('''''''', normalize-space(@class), '''' ''''), \" dog \")]/*[local-name()=\"img\"][1]","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"userLocator":{"values":[{"type":"css","value":"user-locator-test"}],"failTestOnCannotLocate":true}}},"timeout":0,"isCritical":false,"type":"click"}],"config":{"variables":[],"request":{"url":"https://www.datadoghq.com","method":"GET"},"assertions":[],"configVariables":[]},"options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Wed, 02 Mar 2022 08:45:53 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Name:
-      - global_org
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11999"
-      X-Ratelimit-Reset:
-      - "7"
     status: 200 OK
     code: 200
     duration: ""
@@ -60,45 +26,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetBrowserTest
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.8.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/zqx-3eq-e7q
     method: GET
   response:
     body: '{"status":"paused","public_id":"zqx-3eq-e7q","tags":["foo:bar"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_Basic-local-1646210751","monitor_id":65154480,"type":"browser","steps":[{"name":"click step","allowFailure":false,"params":{"element":{"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/config-updated","multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","co":"","cl":"/descendant::*[contains(concat('''''''', normalize-space(@class), '''' ''''), \" dog \")]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","clt":"/descendant::*[contains(concat('''''''', normalize-space(@class), '''' ''''), \" dog \")]/*[local-name()=\"img\"][1]","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"userLocator":{"values":[{"type":"css","value":"user-locator-test"}],"failTestOnCannotLocate":true}}},"timeout":0,"isCritical":false,"type":"click"}],"config":{"variables":[],"request":{"url":"https://www.datadoghq.com","method":"GET"},"assertions":[],"configVariables":[]},"options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Wed, 02 Mar 2022 08:45:53 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "999"
-      X-Ratelimit-Reset:
-      - "7"
     status: 200 OK
     code: 200
     duration: ""
@@ -108,45 +42,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetTest
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.8.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/zqx-3eq-e7q
     method: GET
   response:
     body: '{"status":"paused","public_id":"zqx-3eq-e7q","tags":["foo:bar"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_Basic-local-1646210751","monitor_id":65154480,"type":"browser","config":{"variables":[],"request":{"url":"https://www.datadoghq.com","method":"GET"},"assertions":[],"configVariables":[]},"options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Wed, 02 Mar 2022 08:45:53 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "998"
-      X-Ratelimit-Reset:
-      - "7"
     status: 200 OK
     code: 200
     duration: ""
@@ -156,45 +58,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetTest
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.8.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/zqx-3eq-e7q
     method: GET
   response:
     body: '{"status":"paused","public_id":"zqx-3eq-e7q","tags":["foo:bar"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_Basic-local-1646210751","monitor_id":65154480,"type":"browser","config":{"variables":[],"request":{"url":"https://www.datadoghq.com","method":"GET"},"assertions":[],"configVariables":[]},"options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Wed, 02 Mar 2022 08:45:54 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "997"
-      X-Ratelimit-Reset:
-      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -204,45 +74,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetBrowserTest
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.8.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/zqx-3eq-e7q
     method: GET
   response:
     body: '{"status":"paused","public_id":"zqx-3eq-e7q","tags":["foo:bar"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_Basic-local-1646210751","monitor_id":65154480,"type":"browser","steps":[{"name":"click step","allowFailure":false,"params":{"element":{"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/config-updated","multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","co":"","cl":"/descendant::*[contains(concat('''''''', normalize-space(@class), '''' ''''), \" dog \")]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","clt":"/descendant::*[contains(concat('''''''', normalize-space(@class), '''' ''''), \" dog \")]/*[local-name()=\"img\"][1]","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"userLocator":{"values":[{"type":"css","value":"user-locator-test"}],"failTestOnCannotLocate":true}}},"timeout":0,"isCritical":false,"type":"click"}],"config":{"variables":[],"request":{"url":"https://www.datadoghq.com","method":"GET"},"assertions":[],"configVariables":[]},"options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Wed, 02 Mar 2022 08:45:54 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "996"
-      X-Ratelimit-Reset:
-      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -253,49 +91,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "31"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - DeleteTests
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.8.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
     method: POST
   response:
     body: '{"deleted_tests":[{"deleted_at":"2022-03-02T08:45:55.361593+00:00","public_id":"zqx-3eq-e7q"}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Wed, 02 Mar 2022 08:45:55 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Name:
-      - global_org
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11998"
-      X-Ratelimit-Reset:
-      - "5"
     status: 200 OK
     code: 200
     duration: ""
@@ -305,45 +109,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetTest
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.8.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/zqx-3eq-e7q
     method: GET
   response:
     body: '{"errors": ["Synthetics test not found"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Wed, 02 Mar 2022 08:45:55 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "995"
-      X-Ratelimit-Reset:
-      - "5"
     status: 404 Not Found
     code: 404
     duration: ""

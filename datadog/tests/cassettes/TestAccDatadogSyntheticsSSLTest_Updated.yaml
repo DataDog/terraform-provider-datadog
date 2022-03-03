@@ -8,47 +8,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "489"
       Content-Type:
       - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.9.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api
     method: POST
   response:
     body: '{"status":"paused","public_id":"kvu-27k-ysy","tags":[],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1645697492","monitor_id":64785182,"type":"api","created_at":"2022-02-24T10:11:34.819397+00:00","modified_at":"2022-02-24T10:11:34.819397+00:00","subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443,"servername":"datadoghq.com"},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}],"configVariables":[]},"options":{"accept_self_signed":true,"checkCertificateRevocation":true,"min_location_failed":1,"tick_every":60}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 24 Feb 2022 10:11:34 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Name:
-      - global_org
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11997"
-      X-Ratelimit-Reset:
-      - "26"
     status: 200 OK
     code: 200
     duration: ""
@@ -58,43 +26,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.9.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kvu-27k-ysy
     method: GET
   response:
     body: '{"status":"paused","public_id":"kvu-27k-ysy","tags":[],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1645697492","monitor_id":64785182,"type":"api","subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443,"servername":"datadoghq.com"},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}],"configVariables":[]},"options":{"accept_self_signed":true,"checkCertificateRevocation":true,"min_location_failed":1,"tick_every":60}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 24 Feb 2022 10:11:35 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "994"
-      X-Ratelimit-Reset:
-      - "26"
     status: 200 OK
     code: 200
     duration: ""
@@ -104,43 +42,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.9.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/kvu-27k-ysy
     method: GET
   response:
     body: '{"status":"paused","public_id":"kvu-27k-ysy","tags":[],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1645697492","monitor_id":64785182,"type":"api","subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443,"servername":"datadoghq.com"},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}],"configVariables":[]},"options":{"accept_self_signed":true,"checkCertificateRevocation":true,"min_location_failed":1,"tick_every":60}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 24 Feb 2022 10:11:35 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "993"
-      X-Ratelimit-Reset:
-      - "25"
     status: 200 OK
     code: 200
     duration: ""
@@ -150,43 +58,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.9.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/kvu-27k-ysy
     method: GET
   response:
     body: '{"status":"paused","public_id":"kvu-27k-ysy","tags":[],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1645697492","monitor_id":64785182,"type":"api","subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443,"servername":"datadoghq.com"},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}],"configVariables":[]},"options":{"accept_self_signed":true,"checkCertificateRevocation":true,"min_location_failed":1,"tick_every":60}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 24 Feb 2022 10:11:35 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "992"
-      X-Ratelimit-Reset:
-      - "25"
     status: 200 OK
     code: 200
     duration: ""
@@ -196,43 +74,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.9.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kvu-27k-ysy
     method: GET
   response:
     body: '{"status":"paused","public_id":"kvu-27k-ysy","tags":[],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1645697492","monitor_id":64785182,"type":"api","subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443,"servername":"datadoghq.com"},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}],"configVariables":[]},"options":{"accept_self_signed":true,"checkCertificateRevocation":true,"min_location_failed":1,"tick_every":60}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 24 Feb 2022 10:11:36 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "991"
-      X-Ratelimit-Reset:
-      - "24"
     status: 200 OK
     code: 200
     duration: ""
@@ -242,43 +90,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.9.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/kvu-27k-ysy
     method: GET
   response:
     body: '{"status":"paused","public_id":"kvu-27k-ysy","tags":[],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1645697492","monitor_id":64785182,"type":"api","subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443,"servername":"datadoghq.com"},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}],"configVariables":[]},"options":{"accept_self_signed":true,"checkCertificateRevocation":true,"min_location_failed":1,"tick_every":60}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 24 Feb 2022 10:11:36 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "990"
-      X-Ratelimit-Reset:
-      - "24"
     status: 200 OK
     code: 200
     duration: ""
@@ -288,43 +106,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.9.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kvu-27k-ysy
     method: GET
   response:
     body: '{"status":"paused","public_id":"kvu-27k-ysy","tags":[],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1645697492","monitor_id":64785182,"type":"api","subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443,"servername":"datadoghq.com"},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}],"configVariables":[]},"options":{"accept_self_signed":true,"checkCertificateRevocation":true,"min_location_failed":1,"tick_every":60}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 24 Feb 2022 10:11:37 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "989"
-      X-Ratelimit-Reset:
-      - "23"
     status: 200 OK
     code: 200
     duration: ""
@@ -335,47 +123,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "429"
       Content-Type:
       - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.9.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kvu-27k-ysy
     method: PUT
   response:
     body: '{"status":"live","public_id":"kvu-27k-ysy","tags":["foo:bar","foo","env:test"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1645697492-updated","monitor_id":64785182,"type":"api","created_at":"2022-02-24T10:11:34.819397+00:00","modified_at":"2022-02-24T10:11:37.845800+00:00","subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":60}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 24 Feb 2022 10:11:38 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "500"
-      X-Ratelimit-Name:
-      - synthetics_edit_test
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "499"
-      X-Ratelimit-Reset:
-      - "23"
     status: 200 OK
     code: 200
     duration: ""
@@ -385,43 +141,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.9.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/kvu-27k-ysy
     method: GET
   response:
     body: '{"status":"live","public_id":"kvu-27k-ysy","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1645697492-updated","monitor_id":64785182,"type":"api","subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":60}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 24 Feb 2022 10:11:39 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "988"
-      X-Ratelimit-Reset:
-      - "21"
     status: 200 OK
     code: 200
     duration: ""
@@ -431,43 +157,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.9.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/kvu-27k-ysy
     method: GET
   response:
     body: '{"status":"live","public_id":"kvu-27k-ysy","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1645697492-updated","monitor_id":64785182,"type":"api","subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":60}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 24 Feb 2022 10:11:39 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "987"
-      X-Ratelimit-Reset:
-      - "21"
     status: 200 OK
     code: 200
     duration: ""
@@ -477,43 +173,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.9.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kvu-27k-ysy
     method: GET
   response:
     body: '{"status":"live","public_id":"kvu-27k-ysy","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogSyntheticsSSLTest_Updated-local-1645697492-updated","monitor_id":64785182,"type":"api","subtype":"ssl","config":{"request":{"host":"datadoghq.com","port":443},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":60}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 24 Feb 2022 10:11:39 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "986"
-      X-Ratelimit-Reset:
-      - "21"
     status: 200 OK
     code: 200
     duration: ""
@@ -524,47 +190,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "31"
       Content-Type:
       - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.9.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
     method: POST
   response:
     body: '{"deleted_tests":[{"deleted_at":"2022-02-24T10:11:40.765708+00:00","public_id":"kvu-27k-ysy"}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 24 Feb 2022 10:11:41 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Name:
-      - global_org
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11996"
-      X-Ratelimit-Reset:
-      - "20"
     status: 200 OK
     code: 200
     duration: ""
@@ -574,43 +208,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.13.3) datadog-api-client-go/1.9.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/synthetics/tests/kvu-27k-ysy
     method: GET
   response:
     body: '{"errors": ["Synthetics test not found"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 24 Feb 2022 10:11:41 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - synthetics_export
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "985"
-      X-Ratelimit-Reset:
-      - "19"
     status: 404 Not Found
     code: 404
     duration: ""

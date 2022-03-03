@@ -10,45 +10,13 @@ interactions:
       - application/json
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateSecurityFilter
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters
     method: POST
   response:
     body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Fri, 01 Oct 2021 08:50:46 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "600"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "570"
-      X-Ratelimit-Reset:
-      - "14"
     status: 200 OK
     code: 200
     duration: ""
@@ -58,45 +26,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityFilter
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: GET
   response:
     body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Fri, 01 Oct 2021 08:50:50 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "600"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "564"
-      X-Ratelimit-Reset:
-      - "10"
     status: 200 OK
     code: 200
     duration: ""
@@ -106,45 +42,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityFilter
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: GET
   response:
     body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Fri, 01 Oct 2021 08:51:00 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "600"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "599"
-      X-Ratelimit-Reset:
-      - "60"
     status: 200 OK
     code: 200
     duration: ""
@@ -154,45 +58,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityFilter
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: GET
   response:
     body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Fri, 01 Oct 2021 08:51:17 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "600"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "583"
-      X-Ratelimit-Reset:
-      - "43"
     status: 200 OK
     code: 200
     duration: ""
@@ -205,45 +77,13 @@ interactions:
       - application/json
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - UpdateSecurityFilter
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: PATCH
   response:
     body: '{"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Fri, 01 Oct 2021 08:51:28 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "600"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "577"
-      X-Ratelimit-Reset:
-      - "32"
     status: 200 OK
     code: 200
     duration: ""
@@ -253,45 +93,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityFilter
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: GET
   response:
     body: '{"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Fri, 01 Oct 2021 08:51:31 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "600"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "571"
-      X-Ratelimit-Reset:
-      - "29"
     status: 200 OK
     code: 200
     duration: ""
@@ -301,45 +109,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityFilter
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: GET
   response:
     body: '{"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Fri, 01 Oct 2021 08:51:40 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "600"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "564"
-      X-Ratelimit-Reset:
-      - "20"
     status: 200 OK
     code: 200
     duration: ""
@@ -349,43 +125,11 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - DeleteSecurityFilter
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: DELETE
   response:
     body: ""
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Length:
-      - "0"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Date:
-      - Fri, 01 Oct 2021 08:51:53 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "600"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "559"
-      X-Ratelimit-Reset:
-      - "7"
     status: 204 No Content
     code: 204
     duration: ""
@@ -395,43 +139,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityFilter
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.4.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
     method: GET
   response:
     body: '{"errors":["not_found(Security filter with id ''as1-no6-k6b'' not found)"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 01 Oct 2021 08:51:54 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "600"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "557"
-      X-Ratelimit-Reset:
-      - "6"
     status: 404 Not Found
     code: 404
     duration: ""

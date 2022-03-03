@@ -8,51 +8,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "638"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.15.4) datadog-api-client-go/1.7.1+dev (go go1.17.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules
     method: POST
   response:
     body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1641297079274,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1641297058_random_id OR random_id)"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"oji-nib-gy5","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1641297058"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Tue, 04 Jan 2022 11:51:19 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "999"
-      X-Ratelimit-Reset:
-      - "1"
     status: 200 OK
     code: 200
     duration: ""
@@ -62,47 +26,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.15.4) datadog-api-client-go/1.7.1+dev (go go1.17.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/oji-nib-gy5
     method: GET
   response:
     body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1641297079274,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1641297058_random_id OR random_id)"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"oji-nib-gy5","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1641297058"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Tue, 04 Jan 2022 11:51:21 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "999"
-      X-Ratelimit-Reset:
-      - "9"
     status: 200 OK
     code: 200
     duration: ""
@@ -112,47 +42,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.15.4) datadog-api-client-go/1.7.1+dev (go go1.17.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/oji-nib-gy5
     method: GET
   response:
     body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1641297079274,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1641297058_random_id OR random_id)"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"oji-nib-gy5","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1641297058"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Tue, 04 Jan 2022 11:51:27 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "998"
-      X-Ratelimit-Reset:
-      - "3"
     status: 200 OK
     code: 200
     duration: ""
@@ -162,47 +58,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.15.4) datadog-api-client-go/1.7.1+dev (go go1.17.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/oji-nib-gy5
     method: GET
   response:
     body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1641297079274,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1641297058_random_id OR random_id)"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"oji-nib-gy5","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1641297058"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Tue, 04 Jan 2022 11:51:42 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "999"
-      X-Ratelimit-Reset:
-      - "8"
     status: 200 OK
     code: 200
     duration: ""
@@ -213,51 +75,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "662"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - UpdateSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.15.4) datadog-api-client-go/1.7.1+dev (go go1.17.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/oji-nib-gy5
     method: PUT
   response:
     body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@network.bytes_read","aggregation":"count","groupByFields":["service"],"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1641297058_random_id OR random_id)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first > 10"}],"type":"workload_security","id":"oji-nib-gy5","createdAt":1641297079274,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1641297058"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Tue, 04 Jan 2022 11:51:50 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "999"
-      X-Ratelimit-Reset:
-      - "10"
     status: 200 OK
     code: 200
     duration: ""
@@ -267,47 +93,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.15.4) datadog-api-client-go/1.7.1+dev (go go1.17.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/oji-nib-gy5
     method: GET
   response:
     body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@network.bytes_read","aggregation":"count","groupByFields":["service"],"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1641297058_random_id OR random_id)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first > 10"}],"type":"workload_security","id":"oji-nib-gy5","createdAt":1641297079274,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1641297058"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Tue, 04 Jan 2022 11:51:52 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "998"
-      X-Ratelimit-Reset:
-      - "8"
     status: 200 OK
     code: 200
     duration: ""
@@ -317,47 +109,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.15.4) datadog-api-client-go/1.7.1+dev (go go1.17.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/oji-nib-gy5
     method: GET
   response:
     body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@network.bytes_read","aggregation":"count","groupByFields":["service"],"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1641297058_random_id OR random_id)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first > 10"}],"type":"workload_security","id":"oji-nib-gy5","createdAt":1641297079274,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1641297058"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Tue, 04 Jan 2022 11:52:00 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "999"
-      X-Ratelimit-Reset:
-      - "10"
     status: 200 OK
     code: 200
     duration: ""
@@ -367,45 +125,11 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - DeleteSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.15.4) datadog-api-client-go/1.7.1+dev (go go1.17.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/oji-nib-gy5
     method: DELETE
   response:
     body: ""
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Date:
-      - Tue, 04 Jan 2022 11:52:23 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "999"
-      X-Ratelimit-Reset:
-      - "7"
     status: 204 No Content
     code: 204
     duration: ""
@@ -415,45 +139,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.15.4) datadog-api-client-go/1.7.1+dev (go go1.17.3; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/oji-nib-gy5
     method: GET
   response:
     body: '{"errors":["Threat detection rule not found: oji-nib-gy5"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Tue, 04 Jan 2022 11:52:23 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "998"
-      X-Ratelimit-Reset:
-      - "7"
     status: 404 Not Found
     code: 404
     duration: ""
