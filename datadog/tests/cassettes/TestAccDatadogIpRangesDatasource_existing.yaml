@@ -7,10 +7,6 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetIPRanges
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli 0.14.7) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
@@ -410,28 +406,16 @@ interactions:
     headers:
       Age:
       - "185"
-      Connection:
-      - keep-alive
       Content-Type:
       - application/json
-      Date:
-      - Fri, 12 Mar 2021 22:10:55 GMT
       Etag:
       - W/"29cc59547e36a7ca6b49473b0d1ff4d8"
       Last-Modified:
       - Thu, 25 Feb 2021 17:42:52 GMT
       Server:
       - AmazonS3
-      Vary:
-      - Accept-Encoding
       Via:
       - 1.1 8726e9cde2774d888ce72f8ebf7f8d30.cloudfront.net (CloudFront)
-      X-Amz-Cf-Id:
-      - wIuExaMcSuuAdHvwFxvax1Rf0UJHpKmwMkZFTMaMqPGn334ROytAmQ==
-      X-Amz-Cf-Pop:
-      - EWR53-C3
-      X-Cache:
-      - Hit from cloudfront
     status: 200 OK
     code: 200
     duration: ""
@@ -441,10 +425,6 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetIPRanges
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
@@ -844,28 +824,16 @@ interactions:
     headers:
       Age:
       - "147"
-      Connection:
-      - keep-alive
       Content-Type:
       - application/json
-      Date:
-      - Fri, 12 Mar 2021 22:11:33 GMT
       Etag:
       - W/"29cc59547e36a7ca6b49473b0d1ff4d8"
       Last-Modified:
       - Thu, 25 Feb 2021 17:42:52 GMT
       Server:
       - AmazonS3
-      Vary:
-      - Accept-Encoding
       Via:
       - 1.1 8726e9cde2774d888ce72f8ebf7f8d30.cloudfront.net (CloudFront)
-      X-Amz-Cf-Id:
-      - QNlywqscNS15XzFsvYmGBj-pYcizLDA9jI-WAS4urbVJ96suqdRtdw==
-      X-Amz-Cf-Pop:
-      - EWR53-C3
-      X-Cache:
-      - Hit from cloudfront
     status: 200 OK
     code: 200
     duration: ""
@@ -875,10 +843,6 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetIPRanges
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
@@ -1278,28 +1242,16 @@ interactions:
     headers:
       Age:
       - "148"
-      Connection:
-      - keep-alive
       Content-Type:
       - application/json
-      Date:
-      - Fri, 12 Mar 2021 22:11:33 GMT
       Etag:
       - W/"29cc59547e36a7ca6b49473b0d1ff4d8"
       Last-Modified:
       - Thu, 25 Feb 2021 17:42:52 GMT
       Server:
       - AmazonS3
-      Vary:
-      - Accept-Encoding
       Via:
       - 1.1 8726e9cde2774d888ce72f8ebf7f8d30.cloudfront.net (CloudFront)
-      X-Amz-Cf-Id:
-      - JznUthl7oapUVlmNdcz-SP3beuu_8op5oZYkKu4t_lKEdH_tMggPDA==
-      X-Amz-Cf-Pop:
-      - EWR53-C3
-      X-Cache:
-      - Hit from cloudfront
     status: 200 OK
     code: 200
     duration: ""
@@ -1309,10 +1261,6 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetIPRanges
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
@@ -1712,28 +1660,16 @@ interactions:
     headers:
       Age:
       - "149"
-      Connection:
-      - keep-alive
       Content-Type:
       - application/json
-      Date:
-      - Fri, 12 Mar 2021 22:11:33 GMT
       Etag:
       - W/"29cc59547e36a7ca6b49473b0d1ff4d8"
       Last-Modified:
       - Thu, 25 Feb 2021 17:42:52 GMT
       Server:
       - AmazonS3
-      Vary:
-      - Accept-Encoding
       Via:
       - 1.1 8726e9cde2774d888ce72f8ebf7f8d30.cloudfront.net (CloudFront)
-      X-Amz-Cf-Id:
-      - Z4uKTEOCxCOc-R4SUsC4ckvXPoeP0tavK_4rKD84W-YmFo4ttbqoRQ==
-      X-Amz-Cf-Pop:
-      - EWR53-C3
-      X-Cache:
-      - Hit from cloudfront
     status: 200 OK
     code: 200
     duration: ""
@@ -1743,10 +1679,6 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetIPRanges
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.4.4; terraform-cli ) datadog-api-client-go/1.0.0-beta.16 (go go1.15.3; os darwin; arch amd64)
     url: https://ip-ranges.datadoghq.com/
     method: GET
   response:
@@ -2146,28 +2078,16 @@ interactions:
     headers:
       Age:
       - "149"
-      Connection:
-      - keep-alive
       Content-Type:
       - application/json
-      Date:
-      - Fri, 12 Mar 2021 22:11:33 GMT
       Etag:
       - W/"29cc59547e36a7ca6b49473b0d1ff4d8"
       Last-Modified:
       - Thu, 25 Feb 2021 17:42:52 GMT
       Server:
       - AmazonS3
-      Vary:
-      - Accept-Encoding
       Via:
       - 1.1 8726e9cde2774d888ce72f8ebf7f8d30.cloudfront.net (CloudFront)
-      X-Amz-Cf-Id:
-      - Fn2nmeKAb9Y3wgQ--KKOxE-MHip_qTPniutK7sA5F46dbuEZ6YzgPg==
-      X-Amz-Cf-Pop:
-      - EWR53-C3
-      X-Cache:
-      - Hit from cloudfront
     status: 200 OK
     code: 200
     duration: ""

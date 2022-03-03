@@ -10,35 +10,13 @@ interactions:
       - application/json
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"8ed-dsz-mtg","title":"tf-TestAccDatadogDashboardTimeseries-local-1627051062","url":"/dashboard/8ed-dsz-mtg/tf-testaccdatadogdashboardtimeseries-local-1627051062","created_at":"2021-07-23T14:37:44.869113+00:00","modified_at":"2021-07-23T14:37:44.869113+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","legend_columns":["value","min","max"],"title":"system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d...","title_align":"left","markers":[{"display_type":"error dashed","value":"y=500000","label":"y=500000"},{"display_type":"warning dashed","value":"y=400000","label":"y=400000"}],"yaxis":{"include_zero":true,"min":"0","max":"599999"},"legend_layout":"horizontal","show_legend":true,"right_yaxis":{"include_zero":false,"min":"1","max":"599998"},"time":{"live_span":"5m"},"legend_size":"2","requests":[{"q":"avg:system.cpu.user{env:prod} by {app}","on_right_yaxis":true,"style":{"line_width":"thin","palette":"dog_classic","line_type":"solid"},"display_type":"line","metadata":[{"expression":""}]},{"on_right_yaxis":false,"style":{"line_width":"normal","palette":"cool","line_type":"solid"},"display_type":"line","log_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}},{"on_right_yaxis":true,"style":{"line_width":"thick","palette":"warm","line_type":"dashed"},"apm_query":{"index":"trace-search","search":{"query":""},"group_by":[{"facet":"status","sort":{"facet":"env","aggregation":"cardinality","order":"desc"},"limit":10}],"compute":{"facet":"env","interval":1000,"aggregation":"cardinality"}},"display_type":"line"},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"purple","line_type":"solid"},"process_query":{"metric":"process.stat.cpu.total_pct","limit":10,"filter_by":["account:prod"]},"display_type":"line"},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"orange","line_type":"solid"},"display_type":"area","network_query":{"index":"netflow-search","search":{"query":"network.transport:udp network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"green","line_type":"solid"},"display_type":"line","audit_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"@metadata.api_key.id","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}}],"type":"timeseries","events":[{"q":"sources:test tags:1","tags_execution":"and"}]},"id":4334456373654818}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 23 Jul 2021 14:37:48 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -48,35 +26,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/8ed-dsz-mtg
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"8ed-dsz-mtg","title":"tf-TestAccDatadogDashboardTimeseries-local-1627051062","url":"/dashboard/8ed-dsz-mtg/tf-testaccdatadogdashboardtimeseries-local-1627051062","created_at":"2021-07-23T14:37:44.869113+00:00","modified_at":"2021-07-23T14:37:44.869113+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","legend_columns":["value","min","max"],"title":"system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d...","title_align":"left","markers":[{"display_type":"error dashed","value":"y=500000","label":"y=500000"},{"display_type":"warning dashed","value":"y=400000","label":"y=400000"}],"yaxis":{"include_zero":true,"min":"0","max":"599999"},"legend_layout":"horizontal","show_legend":true,"right_yaxis":{"include_zero":false,"min":"1","max":"599998"},"time":{"live_span":"5m"},"legend_size":"2","requests":[{"q":"avg:system.cpu.user{env:prod} by {app}","on_right_yaxis":true,"style":{"line_width":"thin","palette":"dog_classic","line_type":"solid"},"display_type":"line","metadata":[{"expression":""}]},{"on_right_yaxis":false,"style":{"line_width":"normal","palette":"cool","line_type":"solid"},"display_type":"line","log_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}},{"on_right_yaxis":true,"style":{"line_width":"thick","palette":"warm","line_type":"dashed"},"apm_query":{"index":"trace-search","search":{"query":""},"group_by":[{"facet":"status","sort":{"facet":"env","aggregation":"cardinality","order":"desc"},"limit":10}],"compute":{"facet":"env","interval":1000,"aggregation":"cardinality"}},"display_type":"line"},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"purple","line_type":"solid"},"process_query":{"metric":"process.stat.cpu.total_pct","limit":10,"filter_by":["account:prod"]},"display_type":"line"},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"orange","line_type":"solid"},"display_type":"area","network_query":{"index":"netflow-search","search":{"query":"network.transport:udp network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"green","line_type":"solid"},"display_type":"line","audit_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"@metadata.api_key.id","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}}],"type":"timeseries","events":[{"q":"sources:test tags:1","tags_execution":"and"}]},"id":4334456373654818}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 23 Jul 2021 14:37:48 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -86,35 +42,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/8ed-dsz-mtg
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"8ed-dsz-mtg","title":"tf-TestAccDatadogDashboardTimeseries-local-1627051062","url":"/dashboard/8ed-dsz-mtg/tf-testaccdatadogdashboardtimeseries-local-1627051062","created_at":"2021-07-23T14:37:44.869113+00:00","modified_at":"2021-07-23T14:37:44.869113+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","legend_columns":["value","min","max"],"title":"system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d...","title_align":"left","markers":[{"display_type":"error dashed","value":"y=500000","label":"y=500000"},{"display_type":"warning dashed","value":"y=400000","label":"y=400000"}],"yaxis":{"include_zero":true,"min":"0","max":"599999"},"legend_layout":"horizontal","show_legend":true,"right_yaxis":{"include_zero":false,"min":"1","max":"599998"},"time":{"live_span":"5m"},"legend_size":"2","requests":[{"q":"avg:system.cpu.user{env:prod} by {app}","on_right_yaxis":true,"style":{"line_width":"thin","palette":"dog_classic","line_type":"solid"},"display_type":"line","metadata":[{"expression":""}]},{"on_right_yaxis":false,"style":{"line_width":"normal","palette":"cool","line_type":"solid"},"display_type":"line","log_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}},{"on_right_yaxis":true,"style":{"line_width":"thick","palette":"warm","line_type":"dashed"},"apm_query":{"index":"trace-search","search":{"query":""},"group_by":[{"facet":"status","sort":{"facet":"env","aggregation":"cardinality","order":"desc"},"limit":10}],"compute":{"facet":"env","interval":1000,"aggregation":"cardinality"}},"display_type":"line"},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"purple","line_type":"solid"},"process_query":{"metric":"process.stat.cpu.total_pct","limit":10,"filter_by":["account:prod"]},"display_type":"line"},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"orange","line_type":"solid"},"display_type":"area","network_query":{"index":"netflow-search","search":{"query":"network.transport:udp network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"green","line_type":"solid"},"display_type":"line","audit_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"@metadata.api_key.id","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}}],"type":"timeseries","events":[{"q":"sources:test tags:1","tags_execution":"and"}]},"id":4334456373654818}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 23 Jul 2021 14:37:48 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -124,35 +58,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/8ed-dsz-mtg
     method: GET
   response:
     body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"8ed-dsz-mtg","title":"tf-TestAccDatadogDashboardTimeseries-local-1627051062","url":"/dashboard/8ed-dsz-mtg/tf-testaccdatadogdashboardtimeseries-local-1627051062","created_at":"2021-07-23T14:37:44.869113+00:00","modified_at":"2021-07-23T14:37:44.869113+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","legend_columns":["value","min","max"],"title":"system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d...","title_align":"left","markers":[{"display_type":"error dashed","value":"y=500000","label":"y=500000"},{"display_type":"warning dashed","value":"y=400000","label":"y=400000"}],"yaxis":{"include_zero":true,"min":"0","max":"599999"},"legend_layout":"horizontal","show_legend":true,"right_yaxis":{"include_zero":false,"min":"1","max":"599998"},"time":{"live_span":"5m"},"legend_size":"2","requests":[{"q":"avg:system.cpu.user{env:prod} by {app}","on_right_yaxis":true,"style":{"line_width":"thin","palette":"dog_classic","line_type":"solid"},"display_type":"line","metadata":[{"expression":""}]},{"on_right_yaxis":false,"style":{"line_width":"normal","palette":"cool","line_type":"solid"},"display_type":"line","log_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}},{"on_right_yaxis":true,"style":{"line_width":"thick","palette":"warm","line_type":"dashed"},"apm_query":{"index":"trace-search","search":{"query":""},"group_by":[{"facet":"status","sort":{"facet":"env","aggregation":"cardinality","order":"desc"},"limit":10}],"compute":{"facet":"env","interval":1000,"aggregation":"cardinality"}},"display_type":"line"},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"purple","line_type":"solid"},"process_query":{"metric":"process.stat.cpu.total_pct","limit":10,"filter_by":["account:prod"]},"display_type":"line"},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"orange","line_type":"solid"},"display_type":"area","network_query":{"index":"netflow-search","search":{"query":"network.transport:udp network.destination.ip:\"*\""},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"compute":{"facet":"network.bytes_read","aggregation":"sum"}}},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"grey","line_type":"solid"},"rum_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"service","sort":{"facet":"@duration","aggregation":"avg","order":"desc"},"limit":10}],"compute":{"facet":"@duration","interval":10,"aggregation":"avg"}},"display_type":"area"},{"on_right_yaxis":true,"style":{"line_width":"normal","palette":"green","line_type":"solid"},"display_type":"line","audit_query":{"index":"*","search":{"query":""},"group_by":[{"facet":"@metadata.api_key.id","sort":{"aggregation":"count","order":"desc"},"limit":10}],"compute":{"aggregation":"count"}}}],"type":"timeseries","events":[{"q":"sources:test tags:1","tags_execution":"and"}]},"id":4334456373654818}],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 23 Jul 2021 14:37:49 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -162,35 +74,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - DeleteDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/8ed-dsz-mtg
     method: DELETE
   response:
     body: '{"deleted_dashboard_id":"8ed-dsz-mtg"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 23 Jul 2021 14:37:51 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -200,35 +90,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.2) datadog-api-client-go/1.2.1+dev (go go1.16.5; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/8ed-dsz-mtg
     method: GET
   response:
     body: '{"errors": ["Dashboard with ID 8ed-dsz-mtg not found"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 23 Jul 2021 14:37:51 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 404 Not Found
     code: 404
     duration: ""

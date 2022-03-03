@@ -8,41 +8,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "127"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateUser
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/users
     method: POST
   response:
     body: '{"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"a-user@example.com","created_at":"2021-12-03T16:37:02.407801+00:00","modified_at":"2021-12-03T16:37:02.449074+00:00","email":"a-user@example.com","icon":"https://secure.gravatar.com/avatar/d3f689172d62d7bcc2e4698422091ecf?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 03 Dec 2021 16:37:02 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "149"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 201 Created
     code: 201
     duration: ""
@@ -53,41 +27,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "127"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateUser
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/users
     method: POST
   response:
     body: '{"data":{"type":"users","id":"3e342c0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"z-user@example.com","created_at":"2021-12-03T16:37:02.411004+00:00","modified_at":"2021-12-03T16:37:02.459957+00:00","email":"z-user@example.com","icon":"https://secure.gravatar.com/avatar/f96d6b5408696ed0088d9dd6a5840d9d?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 03 Dec 2021 16:37:02 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "166"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 201 Created
     code: 201
     duration: ""
@@ -98,41 +46,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "127"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateUser
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/users
     method: POST
   response:
     body: '{"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"k-user@example.com","created_at":"2021-12-03T16:37:02.412935+00:00","modified_at":"2021-12-03T16:37:02.468597+00:00","email":"k-user@example.com","icon":"https://secure.gravatar.com/avatar/98eadd67eaa2d8c224d446b2e88f0bf2?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 03 Dec 2021 16:37:02 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "174"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 201 Created
     code: 201
     duration: ""
@@ -143,41 +65,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "134"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - SendInvitations
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/user_invitations
     method: POST
   response:
     body: '{"data":[{"type":"user_invitations","id":"3e59ea48-5457-11ec-a8c2-da7ad0900002","attributes":{"uuid":"3e59ea48-5457-11ec-a8c2-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2021-12-03T16:37:02.660743+00:00","expires_at":"2021-12-05T16:37:02.584666+00:00"},"relationships":{"user":{"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002"}}}}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 03 Dec 2021 16:37:02 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "201"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 201 Created
     code: 201
     duration: ""
@@ -188,41 +84,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "134"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - SendInvitations
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/user_invitations
     method: POST
   response:
     body: '{"data":[{"type":"user_invitations","id":"3e5ba28e-5457-11ec-a8c2-da7ad0900002","attributes":{"uuid":"3e5ba28e-5457-11ec-a8c2-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2021-12-03T16:37:02.671419+00:00","expires_at":"2021-12-05T16:37:02.606551+00:00"},"relationships":{"user":{"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002"}}}}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 03 Dec 2021 16:37:02 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "185"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 201 Created
     code: 201
     duration: ""
@@ -233,41 +103,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "134"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - SendInvitations
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/user_invitations
     method: POST
   response:
     body: '{"data":[{"type":"user_invitations","id":"3e5c6a70-5457-11ec-a8c2-da7ad0900002","attributes":{"uuid":"3e5c6a70-5457-11ec-a8c2-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2021-12-03T16:37:02.676470+00:00","expires_at":"2021-12-05T16:37:02.601235+00:00"},"relationships":{"user":{"data":{"type":"users","id":"3e342c0e-5457-11ec-a8c2-da7ad0900002"}}}}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 03 Dec 2021 16:37:02 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "219"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 201 Created
     code: 201
     duration: ""
@@ -278,41 +122,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "333"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
     body: '{"notify_list":["z-user@example.com","k-user@example.com","a-user@example.com"],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"x58-uhn-d4v","title":"tf-TestAccDatadogDashboardNotifyListDiff-local-1638549420","url":"/dashboard/x58-uhn-d4v/tf-testaccdatadogdashboardnotifylistdiff-local-1638549420","created_at":"2021-12-03T16:37:03.087114+00:00","modified_at":"2021-12-03T16:37:03.087114+00:00","author_handle":"frog@datadoghq.com","widgets":[],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 03 Dec 2021 16:37:06 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "3155"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -322,37 +140,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/x58-uhn-d4v
     method: GET
   response:
     body: '{"notify_list":["z-user@example.com","k-user@example.com","a-user@example.com"],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"x58-uhn-d4v","title":"tf-TestAccDatadogDashboardNotifyListDiff-local-1638549420","url":"/dashboard/x58-uhn-d4v/tf-testaccdatadogdashboardnotifylistdiff-local-1638549420","created_at":"2021-12-03T16:37:03.087114+00:00","modified_at":"2021-12-03T16:37:03.087114+00:00","author_handle":"frog@datadoghq.com","widgets":[],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 03 Dec 2021 16:37:06 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "91"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -362,37 +156,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/x58-uhn-d4v
     method: GET
   response:
     body: '{"notify_list":["z-user@example.com","k-user@example.com","a-user@example.com"],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"x58-uhn-d4v","title":"tf-TestAccDatadogDashboardNotifyListDiff-local-1638549420","url":"/dashboard/x58-uhn-d4v/tf-testaccdatadogdashboardnotifylistdiff-local-1638549420","created_at":"2021-12-03T16:37:03.087114+00:00","modified_at":"2021-12-03T16:37:03.087114+00:00","author_handle":"frog@datadoghq.com","widgets":[],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 03 Dec 2021 16:37:06 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "105"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -402,37 +172,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetUser
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/users/3e3379ee-5457-11ec-a8c2-da7ad0900002
     method: GET
   response:
     body: '{"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"a-user@example.com","created_at":"2021-12-03T16:37:02.407801+00:00","modified_at":"2021-12-03T16:37:02.449074+00:00","email":"a-user@example.com","icon":"https://secure.gravatar.com/avatar/d3f689172d62d7bcc2e4698422091ecf?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 03 Dec 2021 16:37:07 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "47"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -442,37 +188,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetUser
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/users/3e344a0e-5457-11ec-a8c2-da7ad0900002
     method: GET
   response:
     body: '{"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"k-user@example.com","created_at":"2021-12-03T16:37:02.412935+00:00","modified_at":"2021-12-03T16:37:02.468597+00:00","email":"k-user@example.com","icon":"https://secure.gravatar.com/avatar/98eadd67eaa2d8c224d446b2e88f0bf2?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 03 Dec 2021 16:37:07 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "49"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -482,37 +204,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetUser
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/users/3e342c0e-5457-11ec-a8c2-da7ad0900002
     method: GET
   response:
     body: '{"data":{"type":"users","id":"3e342c0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"z-user@example.com","created_at":"2021-12-03T16:37:02.411004+00:00","modified_at":"2021-12-03T16:37:02.459957+00:00","email":"z-user@example.com","icon":"https://secure.gravatar.com/avatar/f96d6b5408696ed0088d9dd6a5840d9d?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 03 Dec 2021 16:37:07 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "51"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -522,37 +220,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/x58-uhn-d4v
     method: GET
   response:
     body: '{"notify_list":["z-user@example.com","k-user@example.com","a-user@example.com"],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"x58-uhn-d4v","title":"tf-TestAccDatadogDashboardNotifyListDiff-local-1638549420","url":"/dashboard/x58-uhn-d4v/tf-testaccdatadogdashboardnotifylistdiff-local-1638549420","created_at":"2021-12-03T16:37:03.087114+00:00","modified_at":"2021-12-03T16:37:03.087114+00:00","author_handle":"frog@datadoghq.com","widgets":[],"layout_type":"ordered"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 03 Dec 2021 16:37:07 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "73"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -562,37 +236,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - DeleteDashboard
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/dashboard/x58-uhn-d4v
     method: DELETE
   response:
     body: '{"deleted_dashboard_id":"x58-uhn-d4v"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 03 Dec 2021 16:37:08 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "213"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""
@@ -602,35 +252,11 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - DisableUser
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/users/3e3379ee-5457-11ec-a8c2-da7ad0900002
     method: DELETE
   response:
     body: ""
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Date:
-      - Fri, 03 Dec 2021 16:37:08 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "230"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 204 No Content
     code: 204
     duration: ""
@@ -640,35 +266,11 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - DisableUser
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/users/3e342c0e-5457-11ec-a8c2-da7ad0900002
     method: DELETE
   response:
     body: ""
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Date:
-      - Fri, 03 Dec 2021 16:37:08 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "240"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 204 No Content
     code: 204
     duration: ""
@@ -678,35 +280,11 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - DisableUser
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.6.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/users/3e344a0e-5457-11ec-a8c2-da7ad0900002
     method: DELETE
   response:
     body: ""
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Date:
-      - Fri, 03 Dec 2021 16:37:09 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "398"
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 204 No Content
     code: 204
     duration: ""

@@ -8,47 +8,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "285"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateAWSAccount
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: POST
   response:
     body: '{"external_id":"39d676766b0c4681b8cd3d1c31dcab9c"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 17 Feb 2022 19:39:52 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11950"
-      X-Ratelimit-Reset:
-      - "8"
     status: 200 OK
     code: 200
     duration: ""
@@ -58,43 +26,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAWSAccounts
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
     body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4910055555010048\nRegions affected: every region \nError was last seen 10m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"4910055555010048","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9751515450971011\nRegions affected: every region \nError was last seen 5m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9751515450971011","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9798545497995610\nRegions affected: every region \nError was last seen 2m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9798545497995610","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5456102989757975\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5456102989757975","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1638269304","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: Test-Go-TestCheckLambdaAsync-1638269304\nRegions affected: every region\nError was last seen 9m ago"],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5355535356524948\nRegions affected: every region \nError was last seen 18m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5355535356524948","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575355995049","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"979810153102","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979810153102\nRegions affected: every region\nError was last seen 8m ago"],"resource_collection_enabled":true,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"575649971014","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575649971014\nRegions affected: every region\nError was last seen 18m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5157991005253519\nRegions affected: every region \nError was last seen 3m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5157991005253519","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5357535652539810\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5357535652539810","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"481009856100","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 17 Feb 2022 19:39:52 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11949"
-      X-Ratelimit-Reset:
-      - "8"
     status: 200 OK
     code: 200
     duration: ""
@@ -104,43 +42,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAWSAccounts
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
     body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4910055555010048\nRegions affected: every region \nError was last seen 10m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"4910055555010048","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9751515450971011\nRegions affected: every region \nError was last seen 5m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9751515450971011","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9798545497995610\nRegions affected: every region \nError was last seen 2m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9798545497995610","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5456102989757975\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5456102989757975","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1638269304","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: Test-Go-TestCheckLambdaAsync-1638269304\nRegions affected: every region\nError was last seen 9m ago"],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5355535356524948\nRegions affected: every region \nError was last seen 18m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5355535356524948","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575355995049","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"979810153102","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979810153102\nRegions affected: every region\nError was last seen 8m ago"],"resource_collection_enabled":true,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"575649971014","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575649971014\nRegions affected: every region\nError was last seen 18m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5157991005253519\nRegions affected: every region \nError was last seen 3m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5157991005253519","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5357535652539810\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5357535652539810","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"481009856100","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 17 Feb 2022 19:39:52 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11948"
-      X-Ratelimit-Reset:
-      - "8"
     status: 200 OK
     code: 200
     duration: ""
@@ -150,43 +58,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAWSAccounts
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
     body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4910055555010048\nRegions affected: every region \nError was last seen 30m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"4910055555010048","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9751515450971011\nRegions affected: every region \nError was last seen 25m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9751515450971011","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9798545497995610\nRegions affected: every region \nError was last seen 22m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9798545497995610","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5456102989757975\nRegions affected: every region \nError was last seen 39m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5456102989757975","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1638269304","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: Test-Go-TestCheckLambdaAsync-1638269304\nRegions affected: every region\nError was last seen 30m ago"],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5355535356524948\nRegions affected: every region \nError was last seen 39m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5355535356524948","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575355995049","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575355995049\nRegions affected: every region\nError was last seen 30m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"979810153102","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979810153102\nRegions affected: every region\nError was last seen 28m ago"],"resource_collection_enabled":true,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"575649971014","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575649971014\nRegions affected: every region\nError was last seen 39m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5157991005253519\nRegions affected: every region \nError was last seen 23m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5157991005253519","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5357535652539810\nRegions affected: every region \nError was last seen 20m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5357535652539810","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"481009856100","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 17 Feb 2022 19:39:53 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11947"
-      X-Ratelimit-Reset:
-      - "7"
     status: 200 OK
     code: 200
     duration: ""
@@ -196,43 +74,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAWSAccounts
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
     body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4910055555010048\nRegions affected: every region \nError was last seen 10m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"4910055555010048","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9751515450971011\nRegions affected: every region \nError was last seen 5m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9751515450971011","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9798545497995610\nRegions affected: every region \nError was last seen 2m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9798545497995610","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5456102989757975\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5456102989757975","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1638269304","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: Test-Go-TestCheckLambdaAsync-1638269304\nRegions affected: every region\nError was last seen 9m ago"],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5355535356524948\nRegions affected: every region \nError was last seen 18m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5355535356524948","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575355995049","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"979810153102","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979810153102\nRegions affected: every region\nError was last seen 8m ago"],"resource_collection_enabled":true,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"575649971014","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575649971014\nRegions affected: every region\nError was last seen 18m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5157991005253519\nRegions affected: every region \nError was last seen 3m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5157991005253519","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5357535652539810\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5357535652539810","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"481009856100","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 17 Feb 2022 19:39:54 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11946"
-      X-Ratelimit-Reset:
-      - "7"
     status: 200 OK
     code: 200
     duration: ""
@@ -243,49 +91,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "379"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - UpdateAWSAccount
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws?account_id=481009856100&role_name=1234%40testacc-datadog-integration-role
     method: PUT
   response:
     body: '{}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Length:
-      - "2"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Thu, 17 Feb 2022 19:39:54 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11945"
-      X-Ratelimit-Reset:
-      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -295,43 +109,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAWSAccounts
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
     body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4910055555010048\nRegions affected: every region \nError was last seen 10m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"4910055555010048","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9751515450971011\nRegions affected: every region \nError was last seen 5m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9751515450971011","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9798545497995610\nRegions affected: every region \nError was last seen 2m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9798545497995610","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5456102989757975\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5456102989757975","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1638269304","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: Test-Go-TestCheckLambdaAsync-1638269304\nRegions affected: every region\nError was last seen 9m ago"],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5355535356524948\nRegions affected: every region \nError was last seen 18m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5355535356524948","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575355995049","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"979810153102","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979810153102\nRegions affected: every region\nError was last seen 8m ago"],"resource_collection_enabled":true,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"575649971014","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575649971014\nRegions affected: every region\nError was last seen 18m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5157991005253519\nRegions affected: every region \nError was last seen 3m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5157991005253519","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5357535652539810\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5357535652539810","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"481009856100","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":false,"errors":[],"resource_collection_enabled":true,"filter_tags":["key:value"]}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 17 Feb 2022 19:39:54 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11944"
-      X-Ratelimit-Reset:
-      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -341,43 +125,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAWSAccounts
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
     body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4910055555010048\nRegions affected: every region \nError was last seen 10m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"4910055555010048","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9751515450971011\nRegions affected: every region \nError was last seen 5m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9751515450971011","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9798545497995610\nRegions affected: every region \nError was last seen 2m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9798545497995610","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5456102989757975\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5456102989757975","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1638269304","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: Test-Go-TestCheckLambdaAsync-1638269304\nRegions affected: every region\nError was last seen 9m ago"],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5355535356524948\nRegions affected: every region \nError was last seen 18m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5355535356524948","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575355995049","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"979810153102","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979810153102\nRegions affected: every region\nError was last seen 8m ago"],"resource_collection_enabled":true,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"575649971014","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575649971014\nRegions affected: every region\nError was last seen 18m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5157991005253519\nRegions affected: every region \nError was last seen 3m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5157991005253519","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5357535652539810\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5357535652539810","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"481009856100","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":false,"errors":[],"resource_collection_enabled":true,"filter_tags":["key:value"]}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 17 Feb 2022 19:39:55 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11943"
-      X-Ratelimit-Reset:
-      - "5"
     status: 200 OK
     code: 200
     duration: ""
@@ -387,43 +141,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAWSAccounts
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
     body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4910055555010048\nRegions affected: every region \nError was last seen 10m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"4910055555010048","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9751515450971011\nRegions affected: every region \nError was last seen 5m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9751515450971011","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9798545497995610\nRegions affected: every region \nError was last seen 2m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9798545497995610","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5456102989757975\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5456102989757975","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1638269304","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: Test-Go-TestCheckLambdaAsync-1638269304\nRegions affected: every region\nError was last seen 9m ago"],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5355535356524948\nRegions affected: every region \nError was last seen 18m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5355535356524948","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575355995049","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"979810153102","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979810153102\nRegions affected: every region\nError was last seen 8m ago"],"resource_collection_enabled":true,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"575649971014","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575649971014\nRegions affected: every region\nError was last seen 18m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5157991005253519\nRegions affected: every region \nError was last seen 3m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5157991005253519","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5357535652539810\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5357535652539810","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"481009856100","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":false,"errors":[],"resource_collection_enabled":true,"filter_tags":["key:value"]}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 17 Feb 2022 19:39:55 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11942"
-      X-Ratelimit-Reset:
-      - "5"
     status: 200 OK
     code: 200
     duration: ""
@@ -433,43 +157,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAWSAccounts
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
     body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4910055555010048\nRegions affected: every region \nError was last seen 10m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"4910055555010048","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9751515450971011\nRegions affected: every region \nError was last seen 5m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9751515450971011","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9798545497995610\nRegions affected: every region \nError was last seen 2m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9798545497995610","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5456102989757975\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5456102989757975","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1638269304","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: Test-Go-TestCheckLambdaAsync-1638269304\nRegions affected: every region\nError was last seen 9m ago"],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5355535356524948\nRegions affected: every region \nError was last seen 18m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5355535356524948","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575355995049","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"979810153102","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979810153102\nRegions affected: every region\nError was last seen 8m ago"],"resource_collection_enabled":true,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"575649971014","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575649971014\nRegions affected: every region\nError was last seen 18m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5157991005253519\nRegions affected: every region \nError was last seen 3m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5157991005253519","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5357535652539810\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5357535652539810","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"481009856100","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":false,"errors":[],"resource_collection_enabled":true,"filter_tags":["key:value"]}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 17 Feb 2022 19:39:56 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11941"
-      X-Ratelimit-Reset:
-      - "4"
     status: 200 OK
     code: 200
     duration: ""
@@ -480,49 +174,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "284"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - UpdateAWSAccount
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws?account_id=481009856100&role_name=1234%40testacc-datadog-integration-role
     method: PUT
   response:
     body: '{}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Length:
-      - "2"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Thu, 17 Feb 2022 19:39:57 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11940"
-      X-Ratelimit-Reset:
-      - "4"
     status: 200 OK
     code: 200
     duration: ""
@@ -532,43 +192,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAWSAccounts
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
     body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4910055555010048\nRegions affected: every region \nError was last seen 10m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"4910055555010048","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9751515450971011\nRegions affected: every region \nError was last seen 5m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9751515450971011","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9798545497995610\nRegions affected: every region \nError was last seen 2m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9798545497995610","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5456102989757975\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5456102989757975","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1638269304","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: Test-Go-TestCheckLambdaAsync-1638269304\nRegions affected: every region\nError was last seen 9m ago"],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5355535356524948\nRegions affected: every region \nError was last seen 18m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5355535356524948","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575355995049","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"979810153102","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979810153102\nRegions affected: every region\nError was last seen 8m ago"],"resource_collection_enabled":true,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"575649971014","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575649971014\nRegions affected: every region\nError was last seen 18m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5157991005253519\nRegions affected: every region \nError was last seen 3m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5157991005253519","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5357535652539810\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5357535652539810","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"481009856100","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":false,"errors":[],"resource_collection_enabled":true,"filter_tags":[]}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 17 Feb 2022 19:39:57 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11939"
-      X-Ratelimit-Reset:
-      - "3"
     status: 200 OK
     code: 200
     duration: ""
@@ -578,43 +208,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAWSAccounts
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
     body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4910055555010048\nRegions affected: every region \nError was last seen 10m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"4910055555010048","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9751515450971011\nRegions affected: every region \nError was last seen 5m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9751515450971011","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9798545497995610\nRegions affected: every region \nError was last seen 2m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9798545497995610","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5456102989757975\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5456102989757975","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1638269304","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: Test-Go-TestCheckLambdaAsync-1638269304\nRegions affected: every region\nError was last seen 9m ago"],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5355535356524948\nRegions affected: every region \nError was last seen 18m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5355535356524948","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575355995049","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"979810153102","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979810153102\nRegions affected: every region\nError was last seen 8m ago"],"resource_collection_enabled":true,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"575649971014","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575649971014\nRegions affected: every region\nError was last seen 18m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5157991005253519\nRegions affected: every region \nError was last seen 3m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5157991005253519","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5357535652539810\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5357535652539810","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"481009856100","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":false,"errors":[],"resource_collection_enabled":true,"filter_tags":[]}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 17 Feb 2022 19:39:57 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11938"
-      X-Ratelimit-Reset:
-      - "3"
     status: 200 OK
     code: 200
     duration: ""
@@ -624,43 +224,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAWSAccounts
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
     body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4910055555010048\nRegions affected: every region \nError was last seen 10m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"4910055555010048","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9751515450971011\nRegions affected: every region \nError was last seen 5m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9751515450971011","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9798545497995610\nRegions affected: every region \nError was last seen 2m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9798545497995610","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5456102989757975\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5456102989757975","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1638269304","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: Test-Go-TestCheckLambdaAsync-1638269304\nRegions affected: every region\nError was last seen 9m ago"],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5355535356524948\nRegions affected: every region \nError was last seen 18m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5355535356524948","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575355995049","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"979810153102","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979810153102\nRegions affected: every region\nError was last seen 8m ago"],"resource_collection_enabled":true,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"575649971014","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575649971014\nRegions affected: every region\nError was last seen 18m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5157991005253519\nRegions affected: every region \nError was last seen 3m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5157991005253519","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5357535652539810\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5357535652539810","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"481009856100","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":false,"errors":[],"resource_collection_enabled":true,"filter_tags":[]}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 17 Feb 2022 19:39:58 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11937"
-      X-Ratelimit-Reset:
-      - "2"
     status: 200 OK
     code: 200
     duration: ""
@@ -671,47 +241,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "82"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - DeleteAWSAccount
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: DELETE
   response:
     body: '{}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Length:
-      - "2"
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 17 Feb 2022 19:39:59 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11936"
-      X-Ratelimit-Reset:
-      - "2"
     status: 200 OK
     code: 200
     duration: ""
@@ -721,43 +259,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListAWSAccounts
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
   response:
     body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4910055555010048\nRegions affected: every region \nError was last seen 10m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"4910055555010048","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9751515450971011\nRegions affected: every region \nError was last seen 5m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9751515450971011","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9798545497995610\nRegions affected: every region \nError was last seen 2m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"9798545497995610","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5456102989757975\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5456102989757975","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1638269304","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: Test-Go-TestCheckLambdaAsync-1638269304\nRegions affected: every region\nError was last seen 9m ago"],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5355535356524948\nRegions affected: every region \nError was last seen 18m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5355535356524948","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575355995049","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":true,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"979810153102","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979810153102\nRegions affected: every region\nError was last seen 8m ago"],"resource_collection_enabled":true,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":[],"account_id":"575649971014","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575649971014\nRegions affected: every region\nError was last seen 18m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5157991005253519\nRegions affected: every region \nError was last seen 3m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5157991005253519","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 5357535652539810\nRegions affected: every region \nError was last seen 1m ago"],"excluded_regions":[],"filter_tags":[],"access_key_id":"5357535652539810","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://logs.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pube4f163c23bbf91c16b8f57f56af9fc58&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=site%3Adatadoghq.com
       Content-Type:
       - application/json
-      Date:
-      - Thu, 17 Feb 2022 19:39:59 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "12000"
-      X-Ratelimit-Period:
-      - "60"
-      X-Ratelimit-Remaining:
-      - "11935"
-      X-Ratelimit-Reset:
-      - "1"
     status: 200 OK
     code: 200
     duration: ""

@@ -8,47 +8,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "138"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateLogsIndex
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/indexes
     method: POST
   response:
     body: '{"num_retention_days":15,"name":"tf-testaccdatadoglogsindexesorderdatasource-local-1635446801-sample","is_rate_limited":false,"filter":{"query":"project:sample"},"exclusion_filters":[],"daily_limit":null}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 28 Oct 2021 18:46:45 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Period:
-      - "300"
-      X-Ratelimit-Remaining:
-      - "8"
-      X-Ratelimit-Reset:
-      - "196"
     status: 200 OK
     code: 200
     duration: ""
@@ -58,43 +26,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetLogsIndexOrder
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/index-order
     method: GET
   response:
     body: '{"index_names":["main","asd"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 28 Oct 2021 18:46:45 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "420"
-      X-Ratelimit-Period:
-      - "300"
-      X-Ratelimit-Remaining:
-      - "419"
-      X-Ratelimit-Reset:
-      - "195"
     status: 200 OK
     code: 200
     duration: ""
@@ -104,43 +42,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetLogsIndexOrder
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/index-order
     method: GET
   response:
     body: '{"index_names":["main","asd"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 28 Oct 2021 18:46:45 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "420"
-      X-Ratelimit-Period:
-      - "300"
-      X-Ratelimit-Remaining:
-      - "418"
-      X-Ratelimit-Reset:
-      - "195"
     status: 200 OK
     code: 200
     duration: ""
@@ -150,45 +58,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetLogsIndex
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindexesorderdatasource-local-1635446801-sample
     method: GET
   response:
     body: '{"num_retention_days":15,"name":"tf-testaccdatadoglogsindexesorderdatasource-local-1635446801-sample","is_rate_limited":false,"filter":{"query":"project:sample"},"exclusion_filters":[],"daily_limit":null}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 28 Oct 2021 18:46:46 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Envoy-Upstream-Service-Time:
-      - "75"
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "420"
-      X-Ratelimit-Period:
-      - "300"
-      X-Ratelimit-Remaining:
-      - "417"
-      X-Ratelimit-Reset:
-      - "194"
     status: 200 OK
     code: 200
     duration: ""
@@ -198,43 +74,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetLogsIndexOrder
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/index-order
     method: GET
   response:
     body: '{"index_names":["main","asd","tf-testaccdatadoglogsindexesorderdatasource-local-1635446801-sample"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 28 Oct 2021 18:46:46 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "420"
-      X-Ratelimit-Period:
-      - "300"
-      X-Ratelimit-Remaining:
-      - "416"
-      X-Ratelimit-Reset:
-      - "194"
     status: 200 OK
     code: 200
     duration: ""
@@ -244,43 +90,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetLogsIndexOrder
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/index-order
     method: GET
   response:
     body: '{"index_names":["main","asd","tf-testaccdatadoglogsindexesorderdatasource-local-1635446801-sample"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 28 Oct 2021 18:46:46 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "420"
-      X-Ratelimit-Period:
-      - "300"
-      X-Ratelimit-Remaining:
-      - "415"
-      X-Ratelimit-Reset:
-      - "194"
     status: 200 OK
     code: 200
     duration: ""
@@ -290,43 +106,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetLogsIndexOrder
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/index-order
     method: GET
   response:
     body: '{"index_names":["main","asd","tf-testaccdatadoglogsindexesorderdatasource-local-1635446801-sample"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 28 Oct 2021 18:46:47 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "420"
-      X-Ratelimit-Period:
-      - "300"
-      X-Ratelimit-Remaining:
-      - "414"
-      X-Ratelimit-Reset:
-      - "193"
     status: 200 OK
     code: 200
     duration: ""
@@ -336,43 +122,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetLogsIndex
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindexesorderdatasource-local-1635446801-sample
     method: GET
   response:
     body: '{"num_retention_days":15,"name":"tf-testaccdatadoglogsindexesorderdatasource-local-1635446801-sample","is_rate_limited":false,"filter":{"query":"project:sample"},"exclusion_filters":[],"daily_limit":null}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 28 Oct 2021 18:46:47 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "420"
-      X-Ratelimit-Period:
-      - "300"
-      X-Ratelimit-Remaining:
-      - "413"
-      X-Ratelimit-Reset:
-      - "193"
     status: 200 OK
     code: 200
     duration: ""
@@ -382,43 +138,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetLogsIndexOrder
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/index-order
     method: GET
   response:
     body: '{"index_names":["main","asd","tf-testaccdatadoglogsindexesorderdatasource-local-1635446801-sample"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 28 Oct 2021 18:46:47 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "420"
-      X-Ratelimit-Period:
-      - "300"
-      X-Ratelimit-Remaining:
-      - "412"
-      X-Ratelimit-Reset:
-      - "193"
     status: 200 OK
     code: 200
     duration: ""
@@ -428,43 +154,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetLogsIndexOrder
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/index-order
     method: GET
   response:
     body: '{"index_names":["main","asd","tf-testaccdatadoglogsindexesorderdatasource-local-1635446801-sample"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 28 Oct 2021 18:46:48 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "420"
-      X-Ratelimit-Period:
-      - "300"
-      X-Ratelimit-Remaining:
-      - "411"
-      X-Ratelimit-Reset:
-      - "192"
     status: 200 OK
     code: 200
     duration: ""
@@ -474,43 +170,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetLogsIndexOrder
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/index-order
     method: GET
   response:
     body: '{"index_names":["main","asd","tf-testaccdatadoglogsindexesorderdatasource-local-1635446801-sample"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 28 Oct 2021 18:46:48 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "420"
-      X-Ratelimit-Period:
-      - "300"
-      X-Ratelimit-Remaining:
-      - "410"
-      X-Ratelimit-Reset:
-      - "192"
     status: 200 OK
     code: 200
     duration: ""
@@ -520,43 +186,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetLogsIndexOrder
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 0.14.7) datadog-api-client-go/1.4.1+dev (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/index-order
     method: GET
   response:
     body: '{"index_names":["main","asd","tf-testaccdatadoglogsindexesorderdatasource-local-1635446801-sample"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 28 Oct 2021 18:46:49 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "420"
-      X-Ratelimit-Period:
-      - "300"
-      X-Ratelimit-Remaining:
-      - "409"
-      X-Ratelimit-Reset:
-      - "191"
     status: 200 OK
     code: 200
     duration: ""

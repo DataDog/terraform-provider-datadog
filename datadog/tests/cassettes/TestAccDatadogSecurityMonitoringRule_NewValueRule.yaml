@@ -8,51 +8,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "610"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - CreateSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules
     method: POST
   response:
     body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":1,"forgetAfter":7},"keepAlive":600},"version":1,"createdAt":1643996394292,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"pxb-nia-2ht","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Fri, 04 Feb 2022 17:39:54 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "999"
-      X-Ratelimit-Reset:
-      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -62,47 +26,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
     method: GET
   response:
     body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":1,"forgetAfter":7},"keepAlive":600},"version":1,"createdAt":1643996394292,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"pxb-nia-2ht","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Fri, 04 Feb 2022 17:39:54 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "998"
-      X-Ratelimit-Reset:
-      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -112,47 +42,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
     method: GET
   response:
     body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":1,"forgetAfter":7},"keepAlive":600},"version":1,"createdAt":1643996394292,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"pxb-nia-2ht","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Fri, 04 Feb 2022 17:39:55 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "997"
-      X-Ratelimit-Reset:
-      - "5"
     status: 200 OK
     code: 200
     duration: ""
@@ -162,47 +58,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
     method: GET
   response:
     body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":1,"forgetAfter":7},"keepAlive":600},"version":1,"createdAt":1643996394292,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"pxb-nia-2ht","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Fri, 04 Feb 2022 17:39:55 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "996"
-      X-Ratelimit-Reset:
-      - "5"
     status: 200 OK
     code: 200
     duration: ""
@@ -213,51 +75,15 @@ interactions:
     headers:
       Accept:
       - application/json
-      Content-Length:
-      - "661"
       Content-Type:
       - application/json
-      Dd-Operation-Id:
-      - UpdateSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
     method: PUT
   response:
     body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":0,"forgetAfter":1},"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first_updated","metric":"@network.bytes_read","aggregation":"new_value","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"pxb-nia-2ht","createdAt":1643996394292,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392 - updated"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Fri, 04 Feb 2022 17:39:56 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "995"
-      X-Ratelimit-Reset:
-      - "4"
     status: 200 OK
     code: 200
     duration: ""
@@ -267,47 +93,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
     method: GET
   response:
     body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":0,"forgetAfter":1},"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first_updated","metric":"@network.bytes_read","aggregation":"new_value","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"pxb-nia-2ht","createdAt":1643996394292,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392 - updated"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Fri, 04 Feb 2022 17:39:56 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "994"
-      X-Ratelimit-Reset:
-      - "4"
     status: 200 OK
     code: 200
     duration: ""
@@ -317,47 +109,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
     method: GET
   response:
     body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":0,"forgetAfter":1},"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first_updated","metric":"@network.bytes_read","aggregation":"new_value","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"pxb-nia-2ht","createdAt":1643996394292,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392 - updated"}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json;charset=utf-8
-      Date:
-      - Fri, 04 Feb 2022 17:39:57 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "993"
-      X-Ratelimit-Reset:
-      - "3"
     status: 200 OK
     code: 200
     duration: ""
@@ -367,45 +125,11 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - DeleteSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
     method: DELETE
   response:
     body: ""
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Disposition:
-      - inline
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
-      Date:
-      - Fri, 04 Feb 2022 17:39:57 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "992"
-      X-Ratelimit-Reset:
-      - "3"
     status: 204 No Content
     code: 204
     duration: ""
@@ -415,45 +139,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - GetSecurityMonitoringRule
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
     method: GET
   response:
     body: '{"errors":["Threat detection rule not found: pxb-nia-2ht"]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 04 Feb 2022 17:39:58 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "1000"
-      X-Ratelimit-Name:
-      - security_analytics
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "991"
-      X-Ratelimit-Reset:
-      - "2"
     status: 404 Not Found
     code: 404
     duration: ""

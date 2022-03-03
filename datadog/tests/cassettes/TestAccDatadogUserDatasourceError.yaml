@@ -7,35 +7,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListUsers
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.7.0; terraform-cli 1.0.3) datadog-api-client-go/1.2.1+dev (go go1.16.6; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v2/users?filter=doesntexist01b0bb82-2000-4113-bb6b-e34b48ef37ff%40example.com%27
     method: GET
   response:
     body: '{"meta":{"page":{"total_filtered_count":0,"total_count":9426}},"data":[]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Fri, 06 Aug 2021 15:00:10 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
     status: 200 OK
     code: 200
     duration: ""

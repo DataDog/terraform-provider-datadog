@@ -7,45 +7,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListLogIndexes
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/indexes
     method: GET
   response:
     body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 03 Feb 2022 21:49:34 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "30"
-      X-Ratelimit-Name:
-      - logs_public_config_api_indexes_read
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "29"
-      X-Ratelimit-Reset:
-      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -55,45 +23,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListLogIndexes
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/indexes
     method: GET
   response:
     body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 03 Feb 2022 21:49:34 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "30"
-      X-Ratelimit-Name:
-      - logs_public_config_api_indexes_read
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "28"
-      X-Ratelimit-Reset:
-      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -103,45 +39,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListLogIndexes
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/indexes
     method: GET
   response:
     body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 03 Feb 2022 21:49:34 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "30"
-      X-Ratelimit-Name:
-      - logs_public_config_api_indexes_read
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "27"
-      X-Ratelimit-Reset:
-      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -151,45 +55,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListLogIndexes
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/indexes
     method: GET
   response:
     body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 03 Feb 2022 21:49:34 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "30"
-      X-Ratelimit-Name:
-      - logs_public_config_api_indexes_read
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "26"
-      X-Ratelimit-Reset:
-      - "6"
     status: 200 OK
     code: 200
     duration: ""
@@ -199,45 +71,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListLogIndexes
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/indexes
     method: GET
   response:
     body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 03 Feb 2022 21:49:35 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "30"
-      X-Ratelimit-Name:
-      - logs_public_config_api_indexes_read
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "25"
-      X-Ratelimit-Reset:
-      - "5"
     status: 200 OK
     code: 200
     duration: ""
@@ -247,45 +87,13 @@ interactions:
     headers:
       Accept:
       - application/json
-      Dd-Operation-Id:
-      - ListLogIndexes
-      User-Agent:
-      - terraform-provider-datadog/dev (terraform 2.10.0; terraform-cli 0.14.7) datadog-api-client-go/1.8.0 (go go1.17; os darwin; arch amd64)
     url: https://api.datadoghq.com/api/v1/logs/config/indexes
     method: GET
   response:
     body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
     headers:
-      Cache-Control:
-      - no-cache
-      Connection:
-      - keep-alive
-      Content-Security-Policy:
-      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
       Content-Type:
       - application/json
-      Date:
-      - Thu, 03 Feb 2022 21:49:35 GMT
-      Pragma:
-      - no-cache
-      Strict-Transport-Security:
-      - max-age=15724800;
-      Vary:
-      - Accept-Encoding
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Ratelimit-Limit:
-      - "30"
-      X-Ratelimit-Name:
-      - logs_public_config_api_indexes_read
-      X-Ratelimit-Period:
-      - "10"
-      X-Ratelimit-Remaining:
-      - "24"
-      X-Ratelimit-Reset:
-      - "5"
     status: 200 OK
     code: 200
     duration: ""
