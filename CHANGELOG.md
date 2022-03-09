@@ -1,3 +1,33 @@
+## 3.9.0 (March 9, 2022)
+
+IMPROVEMENTS:
+
+-   `datadog_dashboard`: Implement support for Treemap widget ([#1331](https://github.com/DataDog/terraform-provider-datadog/pull/1331))
+-   `datadog_dashboard`: Add support for `apm_stats_query` for distributions widget ([#1326](https://github.com/DataDog/terraform-provider-datadog/pull/1326))
+-   `datadog_synthetics_test`: Add support new authentication types and request proxy for Synthetics tests ([#1336](https://github.com/DataDog/terraform-provider-datadog/pull/1336))
+-   `datadog_synthetics_test`: Add element user locator field for browser steps ([#1346](https://github.com/DataDog/terraform-provider-datadog/pull/1346))
+-   `datadog_integration_aws`: Add support for `metrics`, `cspm_resource` and `resource` collections ([#1343](https://github.com/DataDog/terraform-provider-datadog/pull/1343)) Thanks [@nikohaa](https://github.com/nikohaa)
+-   `datadog_synthetics_test`: Add certificate check option for ssl tests ([#1368](https://github.com/DataDog/terraform-provider-datadog/pull/1368))
+-   `datadog_synthetics_test`: Add support for is_critical option on browser steps ([#1359](https://github.com/DataDog/terraform-provider-datadog/pull/1359))
+
+FEATURES:
+
+-   `datadog_cloud_workload_security_agent_rules`: Add terraform support for Cloud Workload Security Agent Rules ([#1338](https://github.com/DataDog/terraform-provider-datadog/pull/1338))
+-   `data_source_datadog_logs_indexes`: Add logs indexes datasource ([#1349](https://github.com/DataDog/terraform-provider-datadog/pull/1349))
+-   `datadog_authn_mapping`: Add new resource SAML AuthN Mappings ([#1349](https://github.com/DataDog/terraform-provider-datadog/pull/1349))
+
+BUGFIXES:
+
+-   `datadog_dashboard_json`: Handle perpetual diff when both `is_read_only` and `restricted_roles` is set ([#1280](https://github.com/DataDog/terraform-provider-datadog/pull/1280))
+-   `datadog_security_monitoring_rule`: Set evaluation_window to optional and fix tests ([#1347](https://github.com/DataDog/terraform-provider-datadog/pull/1347))
+-   `datadog_integration_gcp`: Use mutex in GCP resource to limit concurrent changes ([#1360](https://github.com/DataDog/terraform-provider-datadog/pull/1360))
+-   `datadog_integration_aws_lambda_arn`: Use mutex in aws lambda arn resource to limit concurrent changes ([#1370](https://github.com/DataDog/terraform-provider-datadog/pull/1370))
+-   `datadog_aws_log_collection`: Use mutex to limit concurrent changes ([#1370](https://github.com/DataDog/terraform-provider-datadog/pull/1370))
+
+NOTES:
+
+-   Update Datadog client to [v1.10.0](https://github.com/DataDog/datadog-api-client-go/releases/tag/v1.10.0)
+
 ## 3.8.1 (January 19, 2022)
 
 BUGFIXES:
