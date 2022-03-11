@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"data":{"attributes":{"description":"an agent rule","enabled":true,"expression":"exec.file.name == \"java\"","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377"},"type":"agent_rule"}}
+      {"data":{"attributes":{"description":"an agent rule","enabled":true,"expression":"exec.file.name == \"java\"","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483"},"type":"agent_rule"}}
     form: {}
     headers:
       Accept:
@@ -13,7 +13,7 @@ interactions:
     url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules
     method: POST
   response:
-    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1643395393582,"creationDate":1643395393582,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"by9-ahe-vua"}}'
+    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1647036484614,"creationDate":1647036484614,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"mfz-hni-gvr"}}'
     headers:
       Content-Type:
       - application/json;charset=utf-8
@@ -26,10 +26,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
     method: GET
   response:
-    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1643395393582,"creationDate":1643395393582,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"by9-ahe-vua"}}'
+    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1647036484614,"creationDate":1647036484614,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"mfz-hni-gvr"}}'
     headers:
       Content-Type:
       - application/json;charset=utf-8
@@ -42,10 +42,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
     method: GET
   response:
-    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1643395393582,"creationDate":1643395393582,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"by9-ahe-vua"}}'
+    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1647036484614,"creationDate":1647036484614,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"mfz-hni-gvr"}}'
     headers:
       Content-Type:
       - application/json;charset=utf-8
@@ -58,10 +58,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
     method: GET
   response:
-    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1643395393582,"creationDate":1643395393582,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"by9-ahe-vua"}}'
+    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483","creator":{"handle":"frog@datadoghq.com","name":null},"description":"an agent rule","enabled":true,"defaultRule":false,"version":1,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1647036484614,"creationDate":1647036484614,"expression":"exec.file.name == \"java\""},"type":"agent_rule","id":"mfz-hni-gvr"}}'
     headers:
       Content-Type:
       - application/json;charset=utf-8
@@ -70,17 +70,17 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"description":"a new agent rule","enabled":true,"expression":"exec.file.name == \"go\""},"type":"agent_rule"}}
+      {"data":{"attributes":{"description":"a new agent rule","enabled":false,"expression":"exec.file.name == \"go\""},"type":"agent_rule"}}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
     method: PATCH
   response:
-    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377","creator":{"handle":"frog@datadoghq.com","name":null},"description":"a new agent rule","enabled":true,"defaultRule":false,"version":2,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1643395426565,"creationDate":1643395393582,"expression":"exec.file.name == \"go\""},"type":"agent_rule","id":"by9-ahe-vua"}}'
+    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483","creator":{"handle":"frog@datadoghq.com","name":null},"description":"a new agent rule","enabled":false,"defaultRule":false,"version":2,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1647036486760,"creationDate":1647036484614,"expression":"exec.file.name == \"go\""},"type":"agent_rule","id":"mfz-hni-gvr"}}'
     headers:
       Content-Type:
       - application/json;charset=utf-8
@@ -93,10 +93,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
     method: GET
   response:
-    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377","creator":{"handle":"frog@datadoghq.com","name":null},"description":"a new agent rule","enabled":true,"defaultRule":false,"version":2,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1643395426565,"creationDate":1643395393582,"expression":"exec.file.name == \"go\""},"type":"agent_rule","id":"by9-ahe-vua"}}'
+    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483","creator":{"handle":"frog@datadoghq.com","name":null},"description":"a new agent rule","enabled":false,"defaultRule":false,"version":2,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1647036486760,"creationDate":1647036484614,"expression":"exec.file.name == \"go\""},"type":"agent_rule","id":"mfz-hni-gvr"}}'
     headers:
       Content-Type:
       - application/json;charset=utf-8
@@ -109,10 +109,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
     method: GET
   response:
-    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1643395377","creator":{"handle":"frog@datadoghq.com","name":null},"description":"a new agent rule","enabled":true,"defaultRule":false,"version":2,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1643395426565,"creationDate":1643395393582,"expression":"exec.file.name == \"go\""},"type":"agent_rule","id":"by9-ahe-vua"}}'
+    body: '{"data":{"attributes":{"category":"Process Activity","name":"tf_TestAccDatadogCloudWorkloadSecurityAgentRule_local_1647036483","creator":{"handle":"frog@datadoghq.com","name":null},"description":"a new agent rule","enabled":false,"defaultRule":false,"version":2,"updater":{"handle":"frog@datadoghq.com","name":null},"updateDate":1647036486760,"creationDate":1647036484614,"expression":"exec.file.name == \"go\""},"type":"agent_rule","id":"mfz-hni-gvr"}}'
     headers:
       Content-Type:
       - application/json;charset=utf-8
@@ -125,11 +125,13 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
     method: DELETE
   response:
     body: ""
     headers:
+      Content-Type:
+      - application/json;charset=utf-8
     status: 204 No Content
     code: 204
     duration: ""
@@ -139,10 +141,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/by9-ahe-vua
+    url: https://api.datadoghq.com/api/v2/security_monitoring/cloud_workload_security/agent_rules/mfz-hni-gvr
     method: GET
   response:
-    body: '{"errors":["not_found(Agent rule not found: agentRuleId=by9-ahe-vua)"]}'
+    body: '{"errors":["not_found(Agent rule not found: agentRuleId=mfz-hni-gvr)"]}'
     headers:
       Content-Type:
       - application/json
