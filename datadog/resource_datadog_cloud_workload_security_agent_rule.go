@@ -150,9 +150,7 @@ func buildCwsAgentRuleUpdatePayload(d *schema.ResourceData) *datadogV2.CloudWork
 		payload.Data.Attributes.SetExpression(attr.(string))
 	}
 
-	if attr, ok := d.GetOk("enabled"); ok {
-		payload.Data.Attributes.SetEnabled(attr.(bool))
-	}
+	payload.Data.Attributes.SetEnabled(d.Get("enabled").(bool))
 
 	return &payload
 }
