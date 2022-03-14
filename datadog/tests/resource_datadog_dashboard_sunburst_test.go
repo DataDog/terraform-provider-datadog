@@ -61,6 +61,35 @@ resource "datadog_dashboard" "sunburst_dashboard" {
       }
     }
   }
+  widget {
+    group_definition {
+      title       = "{{uniq}}"
+      layout_type = "ordered"
+      widget {
+        sunburst_definition {
+          request {
+            query {
+              event_query {
+                data_source = "rum"
+                indexes     = ["*"]
+                name        = "query1"
+                compute {
+                  aggregation = "count"
+                }
+                search {
+                  query = "abc"
+                }
+              }
+            }
+          }
+          hide_total = true
+          legend_table {
+            type = "table"
+          }
+        }
+      }
+    }
+  }
 }
 `
 
@@ -91,6 +120,14 @@ var datadogDashboardSunburstAsserts = []string{
 	"widget.1.sunburst_definition.0.request.0.query.0.event_query.0.search.0.query = abc",
 	"widget.1.sunburst_definition.0.hide_total = true",
 	"widget.1.sunburst_definition.0.legend_table.0.type = table",
+	"widget.2.group_definition.0.widget.0.sunburst_definition.0.request.0.query.0.event_query.0.data_source = rum",
+	"widget.2.group_definition.0.widget.0.sunburst_definition.0.request.0.query.0.event_query.0.indexes.# = 1",
+	"widget.2.group_definition.0.widget.0.sunburst_definition.0.request.0.query.0.event_query.0.indexes.0 = *",
+	"widget.2.group_definition.0.widget.0.sunburst_definition.0.request.0.query.0.event_query.0.name = query1",
+	"widget.2.group_definition.0.widget.0.sunburst_definition.0.request.0.query.0.event_query.0.compute.0.aggregation = count",
+	"widget.2.group_definition.0.widget.0.sunburst_definition.0.request.0.query.0.event_query.0.search.0.query = abc",
+	"widget.2.group_definition.0.widget.0.sunburst_definition.0.hide_total = true",
+	"widget.2.group_definition.0.widget.0.sunburst_definition.0.legend_table.0.type = table",
 }
 
 func TestAccDatadogDashboardSunburst(t *testing.T) {

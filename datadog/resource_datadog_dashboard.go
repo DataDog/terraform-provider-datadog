@@ -1141,6 +1141,7 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataK
 		terraformWidget["service_level_objective_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.SunburstWidgetDefinition != nil {
 		terraformDefinition := buildTerraformSunburstDefinition(*widgetDefinition.SunburstWidgetDefinition, k.Add("sunburst_definition.0"))
+		k.Remove("sunburst_definition.0")
 		terraformWidget["sunburst_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.TimeseriesWidgetDefinition != nil {
 		terraformDefinition := buildTerraformTimeseriesDefinition(*widgetDefinition.TimeseriesWidgetDefinition, k.Add("timeseries_definition.0"))
