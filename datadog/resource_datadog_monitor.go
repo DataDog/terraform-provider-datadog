@@ -600,10 +600,11 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return diag.FromErr(err)
 	}
 
-	var renotify_statuses []datadogV1.MonitorRenotifyStatusType
-	renotify_statuses = append(renotify_statuses, m.Options.GetRenotifyStatuses()...)
-	if err := d.Set("renotify_statuses", renotify_statuses); err != nil {
-		return diag.FromErr(err)
+	if renotifyStatuses, ok := m.Options.GetRenotifyStatusesOk(); ok && len(*renotifyStatuses) > 0 {
+		renotifyStatusesCopy := append([]datadogV1.MonitorRenotifyStatusType{}, *renotifyStatuses...)
+		if err := d.Set("renotify_statuses", renotifyStatusesCopy); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	var tags []string
@@ -618,10 +619,13 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("locked", m.Options.GetLocked()); err != nil {
 		return diag.FromErr(err)
 	}
-	// This helper function is defined in `resource_datadog_dashboard`
-	restrictedRoles := buildTerraformRestrictedRoles(&m.RestrictedRoles)
-	if err := d.Set("restricted_roles", restrictedRoles); err != nil {
-		return diag.FromErr(err)
+
+	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok && len(*restrictedRoles) > 0 {
+		// This helper function is defined in `resource_datadog_dashboard`
+		restrictedRolesCopy := buildTerraformRestrictedRoles(restrictedRoles)
+		if err := d.Set("restricted_roles", restrictedRolesCopy); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {
