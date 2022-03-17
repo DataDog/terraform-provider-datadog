@@ -31,7 +31,7 @@ jobs:
           github-token: ${{ steps.get_token.outputs.token }}
           script: |
             const re = new RegExp('\\[\\w+\\] \\w+');
-            const title = github.context.payload.pull_request.title;
+            const title = context.payload.pull_request.title;
             if (!re.test(title)) {
               throw new Error("Invalid title format: use '[resource_name] Description'");
             }
