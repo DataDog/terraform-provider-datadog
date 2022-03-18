@@ -1,0 +1,17 @@
+changelog:
+  exclude:
+    labels:
+      - changelog/no-changelog
+  categories:
+    - title: BUGFIXES
+      labels:
+        - changelog/bugfix
+    - title: IMPROVEMENTS
+      labels:
+        - changelog/improvement
+    - title: FEATURES
+      labels:
+        - changelog/feature
+    - title: NOTES
+      labels:
+        - changelog/note

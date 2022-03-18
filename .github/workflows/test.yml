@@ -1,83 +1,83 @@
 name: Run Tests
 
 on:
-    pull_request:
-        branches:
-            - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
-    pre-commit:
-        runs-on: ubuntu-latest
-        if: github.event.action != 'closed' && github.event.pull_request.merged != true
-        steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-python@v1
-            - name: Install pre-commit
-              run: python -m pip install pre-commit
-            - name: set PY
-              run: echo "PY=$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')" >> $GITHUB_ENV
-            - uses: actions/cache@v1
-              with:
-                  path: ~/.cache/pre-commit
-                  key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
-            - name: Run pre-commit
-              run: pre-commit run --all-files --show-diff-on-failure --color=always
+  pre-commit:
+    runs-on: ubuntu-latest
+    if: github.event.action != 'closed' && github.event.pull_request.merged != true
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+      - name: Install pre-commit
+        run: python -m pip install pre-commit
+      - name: set PY
+        run: echo "PY=$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')" >> $GITHUB_ENV
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
+      - name: Run pre-commit
+        run: pre-commit run --all-files --show-diff-on-failure --color=always
 
-    test:
-        strategy:
-            matrix:
-                terraform_version: ["1.1.2"]
-                platform: [ubuntu-latest, macos-latest, windows-latest]
-                # test old terraform versions only on ubuntu-latest
-                include:
-                    - terraform_version: "0.15.5"
-                      platform: ubuntu-latest
-                    - terraform_version: "0.13.7"
-                      platform: ubuntu-latest
+  test:
+    strategy:
+      matrix:
+        terraform_version: ["1.1.2"]
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+        # test old terraform versions only on ubuntu-latest
+        include:
+          - terraform_version: "0.15.5"
+            platform: ubuntu-latest
+          - terraform_version: "0.13.7"
+            platform: ubuntu-latest
 
-        runs-on: ${{ matrix.platform }}
-        steps:
-            # if we don't do this, `gofmt` will want to rewrite all Go files due to bad line endings,
-            # because Git will convert all line endings to CRLF when cloning on windows
-            - name: Set Git to use Linux-style line endings
-              run: |
-                  git config --global core.autocrlf false
-                  git config --global core.eol lf
-            - name: Install Go
-              uses: actions/setup-go@v2
-              with:
-                  go-version: 1.16
-            - name: Checkout code
-              uses: actions/checkout@v2
-            - uses: actions/cache@v2
-              with:
-                  path: |
-                      ~/go/pkg/mod
-                      ~/.cache/go-build
-                      ~/Library/Caches/go-build
-                      %LocalAppData%\go-build
-                  key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-                  restore-keys: |
-                      ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-                      ${{ runner.os }}-go-
-            - name: Vet
-              run: make vet
-            - name: License Check
-              run: make license-check
-            - name: Setup terraform CLI
-              uses: hashicorp/setup-terraform@v1
-              with:
-                  terraform_version: ${{ matrix.terraform_version }}
-                  terraform_wrapper: false
-            - name: Set TF_ACC_TERRAFORM_PATH env var on non-windows platform
-              if: ${{ matrix.platform != 'windows-latest' }}
-              run: echo "TF_ACC_TERRAFORM_PATH=$(which terraform)" >> $GITHUB_ENV
-            - name: Set TF_ACC_TERRAFORM_PATH env var on windows platform
-              if: ${{ matrix.platform == 'windows-latest' }}
-              run: echo ("TF_ACC_TERRAFORM_PATH=" + (Get-Command terraform).Path) >> $env:GITHUB_ENV
-            - name: Check Docs Are Up To Date
-              run: make check-docs
-            - name: Test
-              run: make testall
-              env:
-                  RECORD: false
+    runs-on: ${{ matrix.platform }}
+    steps:
+      # if we don't do this, `gofmt` will want to rewrite all Go files due to bad line endings,
+      # because Git will convert all line endings to CRLF when cloning on windows
+      - name: Set Git to use Linux-style line endings
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+            ~/Library/Caches/go-build
+            %LocalAppData%\go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+            ${{ runner.os }}-go-
+      - name: Vet
+        run: make vet
+      - name: License Check
+        run: make license-check
+      - name: Setup terraform CLI
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ matrix.terraform_version }}
+          terraform_wrapper: false
+      - name: Set TF_ACC_TERRAFORM_PATH env var on non-windows platform
+        if: ${{ matrix.platform != 'windows-latest' }}
+        run: echo "TF_ACC_TERRAFORM_PATH=$(which terraform)" >> $GITHUB_ENV
+      - name: Set TF_ACC_TERRAFORM_PATH env var on windows platform
+        if: ${{ matrix.platform == 'windows-latest' }}
+        run: echo ("TF_ACC_TERRAFORM_PATH=" + (Get-Command terraform).Path) >> $env:GITHUB_ENV
+      - name: Check Docs Are Up To Date
+        run: make check-docs
+      - name: Test
+        run: make testall
+        env:
+          RECORD: false

@@ -1,0 +1,71 @@
+name: Prepare release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: New version number (e.g. '1.2.3' without the 'v' prefix)
+        required: true
+
+jobs:
+  prepare_release:
+    name: Create release PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get GitHub App token
+        id: get_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.PIPELINE_GITHUB_APP_ID }}
+          private_key: ${{ secrets.PIPELINE_GITHUB_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@v2
+
+      - name: Create PR
+        uses: actions/github-script@v5
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.version }}
+          BASE: ${{ github.event.ref }}
+        with:
+          github-token: ${{ steps.get_token.outputs.token }}
+          script: |
+            const { data: notes } = await github.rest.repos.generateReleaseNotes({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: `v${process.env.RELEASE_VERSION}`,
+            });
+            const today = new Date().toLocaleDateString('en-US', {"month": "long", "day": "numeric", "year": "numeric"});
+            const header = [`## ${process.env.RELEASE_VERSION} (${today})\n`];
+            const changes = header.concat(notes.body.split("\n").slice(3));
+            changes.push("");
+            const { data: content } = await github.rest.repos.getContent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path: "CHANGELOG.md",
+            });
+            const rawContent = Buffer.from(content.content, "base64")
+              .toString("utf-8")
+              .split("\n");
+            const newContent = changes.concat(rawContent).join("\n");
+            await github.rest.repos.createOrUpdateFileContents({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              message: "Update CHANGELOG",
+              content: Buffer.from(newContent).toString("base64"),
+              path: "CHANGELOG.md",
+              branch: `release/${process.env.RELEASE_VERSION}`,
+              sha: content.sha,
+            });
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `release/${process.env.RELEASE_VERSION}`,
+              base: process.env.BASE,
+              title: `Release ${process.env.RELEASE_VERSION}`,
+              body: "Update CHANGELOG",
+            });
+            await github.rest.issues.addLabels({
+              issue_number: pr.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ["changelog/no-changelog"],
+            });
