@@ -1,3 +1,14 @@
+## 3.10.0 (March 18, 2022)
+
+### BUGFIXES
+* Fix `enabled` attribute reading by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1379
+* Fix `sunburst_definition` inside `group_definition` by @volnt in https://github.com/DataDog/terraform-provider-datadog/pull/1377
+
+## New Contributors
+* @volnt made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1377
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.9.0...v3.10.0
+
 ## 3.9.0 (March 9, 2022)
 
 IMPROVEMENTS:
