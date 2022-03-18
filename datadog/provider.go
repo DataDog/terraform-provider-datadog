@@ -194,6 +194,7 @@ func Provider() *schema.Provider {
 			"datadog_service_level_objectives":            dataSourceDatadogServiceLevelObjectives(),
 			"datadog_synthetics_locations":                dataSourceDatadogSyntheticsLocations(),
 			"datadog_synthetics_global_variable":          dataSourceDatadogSyntheticsGlobalVariable(),
+			"datadog_synthetics_test":                     dataSourceDatadogSyntheticsTest(),
 			"datadog_user":                                dataSourceDatadogUser(),
 		},
 
