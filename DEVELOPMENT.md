@@ -108,7 +108,7 @@ where:
 
 To help with changelog documentation, all pull requests must be labelled properly.
 
-It needs one changelog label (amount `improvement`, `feature`, `bugfix`, `note` and `no-changelog`), and one resource mentioned in the title as a prefix (if not `no-changelog`) corresponding to the resource being changed (For example `[datadog_dashboard] Fix issue`).
+It needs one changelog label (among `improvement`, `feature`, `bugfix`, `note` and `no-changelog`), and one resource mentioned in the title as a prefix (if not `no-changelog`) corresponding to the resource being changed (For example `[datadog_dashboard] Fix issue`).
 
 [1]: https://www.terraform.io/docs/extend/index.html
 [2]: https://www.terraform.io/downloads.html
