@@ -19,7 +19,6 @@ func dataSourceDatadogSyntheticsTest() *schema.Resource {
 				Description: "The synthetic test id to search for",
 				Type:        schema.TypeString,
 				Required:    true,
-				// ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[a-z]{3}-[a-z]{3}-[a-z]{3}$`), "must be of format abc-def-ghi"),
 			},
 			"name": {
 				Description: "The name of the synthetic test.",
