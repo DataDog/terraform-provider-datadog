@@ -47,22 +47,22 @@ func checkDatatogSyntheticsTest(accProvider func() (*schema.Provider, error), un
 func testAccDatatogSyntheticsTestConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_synthetics_test" "resource_test" {
-  name = "%s"
+	name = "%s"
 	status = "live"
 	locations = ["aws:ap-northeast-1"]
 	type = "api"
 	request_definition {
-    method = "GET"
-    url    = "https://www.example.com"
-  }
+		method = "GET"
+		url    = "https://www.example.com"
+	}
 	options_list {
 		tick_every = 900
 	}
 	assertion {
-    type     = "statusCode"
-    operator = "is"
-    target   = "200"
-  }
+		type     = "statusCode"
+		operator = "is"
+		target   = "200"
+	}
 	tags = ["env:prod", "foo"]
 }`, uniq)
 }

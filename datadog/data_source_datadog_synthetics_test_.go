@@ -3,8 +3,6 @@ package datadog
 import (
 	"context"
 
-	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -59,23 +57,17 @@ func dataSourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.Resource
 	}
 
 	searchedId := d.Get("test_id").(string)
-	var matchedTests []datadog.SyntheticsTestDetails
 
 	for _, test := range *tests.Tests {
 		if test.GetPublicId() == searchedId {
-			matchedTests = append(matchedTests, test)
+			d.SetId(test.GetPublicId())
+			d.Set("name", test.GetName())
+			d.Set("tags", test.GetTags())
+			d.Set("url", test.GetConfig().Request.GetUrl())
+
+			return nil
 		}
 	}
 
-	if len(matchedTests) == 0 {
-		return diag.Errorf("Couldn't find synthetic test with id %s", searchedId)
-	}
-
-	test := matchedTests[0]
-	d.SetId(test.GetPublicId())
-	d.Set("name", test.GetName())
-	d.Set("tags", test.GetTags())
-	d.Set("url", test.GetConfig().Request.GetUrl())
-
-	return nil
+	return diag.Errorf("Couldn't find synthetic test with id %s", searchedId)
 }
