@@ -170,6 +170,8 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 		}
 		email := d.Get("email").(string)
 		log.Printf("[INFO] Updating existing Datadog user %s", email)
+
+		var existingUser *datadogV2.User
 		// Find user ID by listing user and filtering by email
 		listResponse, _, err := datadogClientV2.UsersApi.ListUsers(authV2,
 			*datadogV2.NewListUsersOptionalParameters().WithFilter(email))
@@ -180,10 +182,21 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 			return diag.FromErr(err)
 		}
 		responseData := listResponse.GetData()
-		if len(responseData) != 1 {
-			return diag.Errorf("could not find single user with email %s", email)
+		if len(responseData) > 1 {
+			for _, user := range responseData {
+				if user.Attributes.GetEmail() == email {
+					existingUser = &user
+					break
+				}
+			}
+			if existingUser == nil {
+				return diag.Errorf("could not find single user with email %s", email)
+			}
+		} else {
+			existingUser = &responseData[0]
 		}
-		userID = responseData[0].GetId()
+
+		userID = existingUser.GetId()
 		userRequest := buildDatadogUserV2UpdateStruct(d, userID)
 
 		updatedUser, _, err := datadogClientV2.UsersApi.UpdateUser(authV2, userID, *userRequest)
