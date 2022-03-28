@@ -1,3 +1,20 @@
+## 3.10.0 (March 28, 2022)
+
+### BUGFIXES
+* [datadog_cloud_workload_security_agent_rule] Fix `enabled` attribute reading by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1379
+* [datadog_dashboard] Fix `sunburst_definition` inside `group_definition` by @volnt in https://github.com/DataDog/terraform-provider-datadog/pull/1377
+### IMPROVEMENTS
+* [datadog_user] Match existing users based on email by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1383
+### FEATURES
+* [datadog_synthetics_test] Add synthetics test data source by @sdeprez in https://github.com/DataDog/terraform-provider-datadog/pull/1391
+### NOTES
+* Update Datadog client to v1.11.0 by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/1393
+
+## New Contributors
+* @volnt made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1377
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.9.0...v3.10.0
+
 ## 3.9.0 (March 9, 2022)
 
 IMPROVEMENTS:
