@@ -1921,10 +1921,10 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 					localTarget["operator"] = string(*v)
 				}
 				if v, ok := target.GetTargetValueOk(); ok {
-					val := (*v).(*interface{})
-					if vAsString, ok := (*val).(string); ok {
+					val := (*v).(interface{})
+					if vAsString, ok := val.(string); ok {
 						localTarget["targetvalue"] = vAsString
-					} else if vAsFloat, ok := (*val).(float64); ok {
+					} else if vAsFloat, ok := val.(float64); ok {
 						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
 					} else {
 						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
