@@ -99,8 +99,8 @@ Optional:
 - **aggregation** (String) The aggregation type. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`.
 - **distinct_fields** (List of String) Field for which the cardinality is measured. Sent as an array.
 - **group_by_fields** (List of String) Fields to group by.
-- **metric** (String) The target field to aggregate over when using the sum or max aggregations.
-- **name** (String) Name of the query.
+- **metric** (String) The target field to aggregate over when using the `sum`, `max` or `new_value` aggregations.
+- **name** (String) Name of the query. Not compatible with `new_value` aggregations.
 
 <a id="nestedblock--query--agent_rule"></a>
 ### Nested schema for `query.agent_rule`
