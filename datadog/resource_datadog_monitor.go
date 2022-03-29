@@ -256,8 +256,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"restricted_roles": {
-				// Uncomment when generally available
-				// Description: "A list of role identifiers to associate with the monitor. Cannot be used with `locked`.",
+				Description:   "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.",
 				Type:          schema.TypeSet,
 				Optional:      true,
 				Elem:          &schema.Schema{Type: schema.TypeString},
