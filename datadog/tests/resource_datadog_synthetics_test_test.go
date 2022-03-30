@@ -765,7 +765,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.operator", "moreThan"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.targetvalue", "{{ TEST }}"),
+				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.targetvalue", "{{ TEST_VAR_1 }}"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -889,7 +889,7 @@ resource "datadog_synthetics_test" "bar" {
 		targetjsonpath {
 			jsonpath    = "$.mykey"
 			operator    = "moreThan"
-			targetvalue = "{{ TEST }}"
+			targetvalue = "{{ TEST_VAR_1 }}"
 		}
 	}
 

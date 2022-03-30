@@ -1504,7 +1504,7 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 							case
 								datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
 								datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
-								if match, _ := regexp.MatchString("{{\\s*[a-zA-Z0-9]+\\s*}}", v.(string)); match {
+								if match, _ := regexp.MatchString("{{\\s*([^{}]*?)\\s*}}", v.(string)); match {
 									subTarget.SetTargetValue(v)
 								} else {
 									setFloatTargetValue(subTarget, v.(string))
