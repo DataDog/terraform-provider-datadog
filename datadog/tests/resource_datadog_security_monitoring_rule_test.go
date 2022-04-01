@@ -65,6 +65,29 @@ func TestAccDatadogSecurityMonitoringRule_NewValueRule(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigImpossibleTravelRule(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitorCreatedCheckImpossibleTravelRule(accProvider, ruleName),
+			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfigImpossibleTravelRule(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvider, ruleName),
+			},
+		},
+	})
+}
+
 func TestAccDatadogSecurityMonitoringRule_CwsRule(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -328,6 +351,152 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckNewValueRule(accProvider func
 			tfSecurityRuleName, "options.0.new_value_options.0.forget_after", "7"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.new_value_options.0.learning_duration", "1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.0", "i:tomato"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.1", "u:tomato"),
+	)
+}
+
+func testAccCheckDatadogSecurityMonitoringCreatedConfigImpossibleTravelRule(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "impossible travel rule triggered"
+    enabled = false
+
+    query {
+        name = "my_query"
+        query = "*"
+        aggregation = "geo_data"
+		metric = "@usr.handle"
+        group_by_fields = ["@usr.handle"]
+    }
+
+    case {
+        name = ""
+        status = "high"
+        notifications = ["@user"]
+    }
+
+    options {
+		detection_method = "impossible_travel"
+        keep_alive = 600
+        max_signal_duration = 900
+		impossible_travel_options {
+			baseline_user_locations = true
+		}
+    }
+
+    tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitorCreatedCheckImpossibleTravelRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "impossible travel rule triggered"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "enabled", "false"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.name", "my_query"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.query", "*"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.aggregation", "geo_data"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.group_by_fields.0", "@usr.handle"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.name", ""),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.status", "high"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.notifications.0", "@user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.detection_method", "impossible_travel"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations", "true"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.0", "i:tomato"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.1", "u:tomato"),
+	)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdatedConfigImpossibleTravelRule(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "impossible travel rule triggered (updated)"
+    enabled = false
+
+    query {
+        name = "my_updated_query"
+        query = "*"
+        aggregation = "geo_data"
+		metric = "@usr.handle"
+		group_by_fields = ["@usr.handle"]
+    }
+
+    case {
+        name = "new case name (updated)"
+        status = "high"
+        notifications = ["@user"]
+    }
+
+    options {
+		detection_method = "impossible_travel"
+        keep_alive = 600
+        max_signal_duration = 900
+		impossible_travel_options {
+			baseline_user_locations = true
+		}
+    }
+
+    tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "impossible travel rule triggered (updated)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "enabled", "false"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.name", "my_updated_query"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.query", "*"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.aggregation", "geo_data"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.group_by_fields.0", "@usr.handle"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.name", "new case name (updated)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.status", "high"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.notifications.0", "@user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.detection_method", "impossible_travel"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations", "true"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "tags.0", "i:tomato"),
 		resource.TestCheckResourceAttr(

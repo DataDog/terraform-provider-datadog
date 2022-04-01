@@ -1,0 +1,153 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1648815916","options":{"detectionMethod":"impossible_travel","evaluationWindow":0,"impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","distinctFields":[],"groupByFields":["@usr.handle"],"metric":"@usr.handle","name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules
+    method: POST
+  response:
+    body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"detectionMethod":"impossible_travel","evaluationWindow":0,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1648815924442,"filters":[],"queries":[{"distinctFields":[],"name":"my_query","metric":"@usr.handle","aggregation":"geo_data","groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"t3n-fmu-mrn","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1648815916"}'
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/t3n-fmu-mrn
+    method: GET
+  response:
+    body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"detectionMethod":"impossible_travel","evaluationWindow":0,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1648815924442,"filters":[],"queries":[{"distinctFields":[],"name":"my_query","metric":"@usr.handle","aggregation":"geo_data","groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"t3n-fmu-mrn","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1648815916"}'
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/t3n-fmu-mrn
+    method: GET
+  response:
+    body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"detectionMethod":"impossible_travel","evaluationWindow":0,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1648815924442,"filters":[],"queries":[{"distinctFields":[],"name":"my_query","metric":"@usr.handle","aggregation":"geo_data","groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"t3n-fmu-mrn","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1648815916"}'
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/t3n-fmu-mrn
+    method: GET
+  response:
+    body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"detectionMethod":"impossible_travel","evaluationWindow":0,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1648815924442,"filters":[],"queries":[{"distinctFields":[],"name":"my_query","metric":"@usr.handle","aggregation":"geo_data","groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"t3n-fmu-mrn","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1648815916"}'
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"cases":[{"condition":"","name":"new case name (updated)","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1648815916","options":{"detectionMethod":"impossible_travel","evaluationWindow":0,"impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","distinctFields":[],"groupByFields":["@usr.handle"],"metric":"@usr.handle","name":"my_updated_query","query":"*"}],"tags":["i:tomato","u:tomato"]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/t3n-fmu-mrn
+    method: PUT
+  response:
+    body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered (updated)","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"detectionMethod":"impossible_travel","evaluationWindow":0,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"my_updated_query","metric":"@usr.handle","aggregation":"geo_data","groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"new case name (updated)","condition":""}],"type":"log_detection","id":"t3n-fmu-mrn","createdAt":1648815924442,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1648815916"}'
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/t3n-fmu-mrn
+    method: GET
+  response:
+    body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered (updated)","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"detectionMethod":"impossible_travel","evaluationWindow":0,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"my_updated_query","metric":"@usr.handle","aggregation":"geo_data","groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"new case name (updated)","condition":""}],"type":"log_detection","id":"t3n-fmu-mrn","createdAt":1648815924442,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1648815916"}'
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/t3n-fmu-mrn
+    method: GET
+  response:
+    body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered (updated)","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"detectionMethod":"impossible_travel","evaluationWindow":0,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"my_updated_query","metric":"@usr.handle","aggregation":"geo_data","groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"new case name (updated)","condition":""}],"type":"log_detection","id":"t3n-fmu-mrn","createdAt":1648815924442,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1648815916"}'
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/t3n-fmu-mrn
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - application/json;charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/t3n-fmu-mrn
+    method: GET
+  response:
+    body: '{"errors":["Threat detection rule not found: t3n-fmu-mrn"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
