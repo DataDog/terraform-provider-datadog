@@ -469,11 +469,22 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 	}
 	m, _ := buildMonitorStruct(diff)
 
+	has_id := false
+	id, err := strconv.ParseInt(diff.Id(), 10, 64)
+	if err == nil {
+		has_id = true
+	}
+
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	return resource.RetryContext(ctx, retryTimeout, func() *resource.RetryError {
-		_, httpresp, err := datadogClientV1.MonitorsApi.ValidateMonitor(authV1, *m)
+		var httpresp *http.Response
+		if has_id {
+			_, httpresp, err = datadogClientV1.MonitorsApi.ValidateExistingMonitor(authV1, id, *m)
+		} else {
+			_, httpresp, err = datadogClientV1.MonitorsApi.ValidateMonitor(authV1, *m)
+		}
 		if err != nil {
 			if httpresp != nil && (httpresp.StatusCode == 502 || httpresp.StatusCode == 504) {
 				return resource.RetryableError(utils.TranslateClientError(err, httpresp, "error validating monitor, retrying"))
