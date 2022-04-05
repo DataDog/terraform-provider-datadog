@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"end":1735765200,"message":"tf-TestAccDatadogDowntime_BasicUntilDateRecurrence-local-1615587251","monitor_tags":["*"],"recurrence":{"period":1,"type":"days","until_date":1736226000},"scope":["host:UntilDateRecurrence"],"start":1735707600,"timezone":"UTC"}
+      {"end":1735765200,"message":"tf-TestAccDatadogDowntime_BasicUntilDateRecurrence-local-1649185421","monitor_tags":["*"],"recurrence":{"period":1,"type":"days","until_date":1736226000},"scope":["host:UntilDateRecurrence"],"start":1735707600,"timezone":"UTC"}
     form: {}
     headers:
       Accept:
@@ -13,7 +13,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/downtime
     method: POST
   response:
-    body: '{"recurrence":{"until_date":1736226000,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:UntilDateRecurrence"],"message":"tf-TestAccDatadogDowntime_BasicUntilDateRecurrence-local-1615587251","downtime_type":1,"id":1176988609,"updater_id":null}'
+    body: '{"recurrence":{"until_date":1736226000,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"created":1649185469,"org_id":321813,"modified":1649185469,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:UntilDateRecurrence"],"message":"tf-TestAccDatadogDowntime_BasicUntilDateRecurrence-local-1649185421","downtime_type":1,"id":1857663507,"updater_id":null}'
     headers:
       Content-Type:
       - application/json
@@ -26,10 +26,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/downtime/1176988609
+    url: https://api.datadoghq.com/api/v1/downtime/1857663507
     method: GET
   response:
-    body: '{"recurrence":{"until_date":1736226000,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:UntilDateRecurrence"],"message":"tf-TestAccDatadogDowntime_BasicUntilDateRecurrence-local-1615587251","downtime_type":1,"id":1176988609,"updater_id":null}'
+    body: '{"recurrence":{"until_date":1736226000,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"created":1649185469,"org_id":321813,"modified":1649185469,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:UntilDateRecurrence"],"message":"tf-TestAccDatadogDowntime_BasicUntilDateRecurrence-local-1649185421","downtime_type":1,"id":1857663507,"updater_id":null}'
     headers:
       Content-Type:
       - application/json
@@ -42,10 +42,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/downtime/1176988609
+    url: https://api.datadoghq.com/api/v1/downtime/1857663507
     method: GET
   response:
-    body: '{"recurrence":{"until_date":1736226000,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:UntilDateRecurrence"],"message":"tf-TestAccDatadogDowntime_BasicUntilDateRecurrence-local-1615587251","downtime_type":1,"id":1176988609,"updater_id":null}'
+    body: '{"recurrence":{"until_date":1736226000,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"created":1649185469,"org_id":321813,"modified":1649185469,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:UntilDateRecurrence"],"message":"tf-TestAccDatadogDowntime_BasicUntilDateRecurrence-local-1649185421","downtime_type":1,"id":1857663507,"updater_id":null}'
     headers:
       Content-Type:
       - application/json
@@ -57,14 +57,12 @@ interactions:
     form: {}
     headers:
       Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/downtime/1176988609
+      - '*/*'
+    url: https://api.datadoghq.com/api/v1/downtime/1857663507
     method: DELETE
   response:
     body: ""
-    headers:
-      Content-Type:
-      - application/json
+    headers: {}
     status: 204 No Content
     code: 204
     duration: ""
@@ -74,10 +72,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/downtime/1176988609
+    url: https://api.datadoghq.com/api/v1/downtime/1857663507
     method: GET
   response:
-    body: '{"recurrence":{"until_date":1736226000,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":1615587255,"monitor_id":null,"org_id":321813,"disabled":true,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:UntilDateRecurrence"],"message":"tf-TestAccDatadogDowntime_BasicUntilDateRecurrence-local-1615587251","downtime_type":1,"id":1176988609,"updater_id":1445416}'
+    body: '{"recurrence":{"until_date":1736226000,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["*"],"child_id":null,"canceled":1649185529,"monitor_id":null,"created":1649185469,"org_id":321813,"modified":1649185529,"disabled":true,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:UntilDateRecurrence"],"message":"tf-TestAccDatadogDowntime_BasicUntilDateRecurrence-local-1649185421","downtime_type":1,"id":1857663507,"updater_id":1445416}'
     headers:
       Content-Type:
       - application/json
