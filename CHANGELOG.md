@@ -1,3 +1,16 @@
+## 3.11.0 (April 6, 2022)
+
+### BUGFIXES
+* [datadog_synthetics_test] Remove unparsed check in the data source by @sdeprez in https://github.com/DataDog/terraform-provider-datadog/pull/1403
+* [datadog_security_monitoring_rule] Add default for aggregation by @muffix in https://github.com/DataDog/terraform-provider-datadog/pull/1407
+### NOTES
+* [datadog_monitor] Mark locked as deprecated by @phillip-dd in https://github.com/DataDog/terraform-provider-datadog/pull/1400
+
+## New Contributors
+* @muffix made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1407
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.10.0...v3.11.0
+
 ## 3.10.0 (March 28, 2022)
 
 ### BUGFIXES
