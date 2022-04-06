@@ -182,6 +182,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleQueryAggregationFromValue),
 						Optional:         true,
 						Description:      "The aggregation type.",
+						Default:          datadogV2.SECURITYMONITORINGRULEQUERYAGGREGATION_COUNT,
 					},
 					"distinct_fields": {
 						Type:        schema.TypeList,
