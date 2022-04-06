@@ -42,3 +42,5 @@ resource "datadog_metric_metadata" "request_time" {
 ### Read-Only
 
 - **id** (String) The ID of this resource.
+
+
