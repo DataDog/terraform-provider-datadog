@@ -28,7 +28,7 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 				Required:    true,
 			},
 			"type": {
-				Description: "Type of the metric.",
+				Description: "Metric type such as `gauge` or `rate`.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
