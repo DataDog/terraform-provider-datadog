@@ -469,10 +469,10 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 	}
 	m, _ := buildMonitorStruct(diff)
 
-	has_id := false
+	hasID := false
 	id, err := strconv.ParseInt(diff.Id(), 10, 64)
 	if err == nil {
-		has_id = true
+		hasID = true
 	}
 
 	providerConf := meta.(*ProviderConfiguration)
@@ -480,7 +480,7 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 	authV1 := providerConf.AuthV1
 	return resource.RetryContext(ctx, retryTimeout, func() *resource.RetryError {
 		var httpresp *http.Response
-		if has_id {
+		if hasID {
 			_, httpresp, err = datadogClientV1.MonitorsApi.ValidateExistingMonitor(authV1, id, *m)
 		} else {
 			_, httpresp, err = datadogClientV1.MonitorsApi.ValidateMonitor(authV1, *m)
