@@ -380,12 +380,12 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     }
 
     options {
-		detection_method = "impossible_travel"
+        detection_method = "impossible_travel"
         keep_alive = 600
         max_signal_duration = 900
-		impossible_travel_options {
-			baseline_user_locations = true
-		}
+        impossible_travel_options {
+            baseline_user_locations = true
+        }
     }
 
     tags = ["i:tomato", "u:tomato"]
@@ -453,12 +453,12 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     }
 
     options {
-		detection_method = "impossible_travel"
+        detection_method = "impossible_travel"
         keep_alive = 600
         max_signal_duration = 900
-		impossible_travel_options {
-			baseline_user_locations = true
-		}
+        impossible_travel_options {
+            baseline_user_locations = true
+        }
     }
 
     tags = ["i:tomato", "u:tomato"]
