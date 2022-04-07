@@ -132,8 +132,9 @@ Required:
 
 Optional:
 
-- **detection_method** (String) The detection method. Valid values are `threshold`, `new_value`, `anomaly_detection`.
+- **detection_method** (String) The detection method. Valid values are `threshold`, `new_value`, `anomaly_detection`, `impossible_travel`.
 - **new_value_options** (Block List, Max: 1) New value rules specific options. (see [below for nested schema](#nestedblock--options--new_value_options))
+- **impossible_travel_options** (Block List, Max: 1) Options for rules using the impossible travel detection method. (see [below for nested schema](#nestedblock--options--impossible_travel_options))
 
 <a id="nestedblock--options--new_value_options"></a>
 ### Nested schema for `options.new_value_options`
@@ -142,6 +143,13 @@ Required:
 
 - **forget_after** (Number) The duration in days after which a learned value is forgotten. Valid values are `1`, `2`, `7`, `14`, `21`, `28`.
 - **learning_duration** (Number) The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned. Valid values are `0`, `1`, `7`.
+
+<a id="nestedblock--options--impossible_travel_options"></a>
+### Nested schema for `options.impossible_travel_options`
+
+Optional:
+
+- **baseline_user_locations** (Boolean) If true, signals are suppressed for the first 24 hours. Datadog uses this time to learn about the user's regular access locations. This is helpful to reduce noise and infer VPN usage or credentialed API access. Default is `false`.
 
 ## Import
 
