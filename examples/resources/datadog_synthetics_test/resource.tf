@@ -26,7 +26,7 @@ resource "datadog_synthetics_test" "test_api" {
     }
 
     monitor_options {
-      renotify_interval = 100
+      renotify_interval = 120
     }
   }
   name    = "An API test on example.org"

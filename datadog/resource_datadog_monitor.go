@@ -246,6 +246,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Description:   "A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.",
 				Type:          schema.TypeBool,
 				Optional:      true,
+				Deprecated:    "Use `restricted_roles`.",
 				ConflictsWith: []string{"restricted_roles"},
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 					// if restricted_roles is defined, ignore locked

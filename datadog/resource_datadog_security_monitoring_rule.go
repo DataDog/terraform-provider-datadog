@@ -147,6 +147,24 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 							},
 						},
 					},
+
+					"impossible_travel_options": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						MaxItems:    1,
+						Description: "Options for rules using the impossible travel detection method.",
+
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"baseline_user_locations": {
+									Type:        schema.TypeBool,
+									Optional:    true,
+									Default:     false,
+									Description: "If true, signals are suppressed for the first 24 hours. In that time, Datadog learns the user's regular access locations. This can be helpful to reduce noise and infer VPN usage or credentialed API access.",
+								},
+							},
+						},
+					},
 				},
 			},
 		},
@@ -182,6 +200,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleQueryAggregationFromValue),
 						Optional:         true,
 						Description:      "The aggregation type.",
+						Default:          datadogV2.SECURITYMONITORINGRULEQUERYAGGREGATION_COUNT,
 					},
 					"distinct_fields": {
 						Type:        schema.TypeList,
@@ -373,7 +392,29 @@ func buildPayloadOptions(tfOptionsList []interface{}) *datadogV2.SecurityMonitor
 		}
 	}
 
+	if v, ok := tfOptions["impossible_travel_options"]; ok {
+		tfImpossibleTravelOptionsList := v.([]interface{})
+		if payloadImpossibleTravelOptions, ok := buildPayloadImpossibleTravelOptions(tfImpossibleTravelOptionsList); ok {
+			payloadOptions.ImpossibleTravelOptions = payloadImpossibleTravelOptions
+		}
+	}
+
 	return payloadOptions
+}
+
+func buildPayloadImpossibleTravelOptions(tfOptionsList []interface{}) (*datadogV2.SecurityMonitoringRuleImpossibleTravelOptions, bool) {
+	options := datadogV2.NewSecurityMonitoringRuleImpossibleTravelOptions()
+	tfOptions := extractMapFromInterface(tfOptionsList)
+
+	hasPayload := false
+
+	if v, ok := tfOptions["baseline_user_locations"]; ok {
+		hasPayload = true
+		shouldBaselineUserLocations := v.(bool)
+		options.BaselineUserLocations = &shouldBaselineUserLocations
+	}
+
+	return options, hasPayload
 }
 
 func buildPayloadNewValueOptions(tfOptionsList []interface{}) (*datadogV2.SecurityMonitoringRuleNewValueOptions, bool) {
@@ -592,6 +633,11 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 		tfNewValueOptions["forget_after"] = int(newValueOptions.GetForgetAfter())
 		tfNewValueOptions["learning_duration"] = int(newValueOptions.GetLearningDuration())
 		tfOptions["new_value_options"] = []map[string]interface{}{tfNewValueOptions}
+	}
+	if impossibleTravelOptions, ok := options.GetImpossibleTravelOptionsOk(); ok {
+		tfImpossibleTravelOptions := make(map[string]interface{})
+		tfImpossibleTravelOptions["baseline_user_locations"] = impossibleTravelOptions.GetBaselineUserLocations()
+		tfOptions["impossible_travel_options"] = []map[string]interface{}{tfImpossibleTravelOptions}
 	}
 	return tfOptions
 }

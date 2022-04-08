@@ -36,7 +36,7 @@ resource "datadog_metric_metadata" "request_time" {
 - **per_unit** (String) Per unit of the metric such as `second` in `bytes per second`.
 - **short_name** (String) A short name of the metric.
 - **statsd_interval** (Number) If applicable, statsd flush interval in seconds for the metric.
-- **type** (String) Type of the metric.
+- **type** (String) Metric type such as `gauge` or `rate`.
 - **unit** (String) Primary unit of the metric such as `byte` or `operation`.
 
 ### Read-Only
