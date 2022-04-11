@@ -42,12 +42,10 @@ func SendRequest(ctx context.Context, client *datadogV1.APIClient, method, path 
 func buildRequest(ctx context.Context, client *datadogV1.APIClient, method, path string, body interface{}) (*http.Request, error) {
 	var (
 		localVarPostBody        interface{}
-		localVarFormFileName    string
-		localVarFileName        string
 		localVarPath            string
-		localVarFileBytes       []byte
 		localVarQueryParams     url.Values
 		localVarFormQueryParams url.Values
+		localVarFormFile        *datadogV1.FormFile
 	)
 
 	localBasePath, err := client.GetConfig().ServerURLWithContext(ctx, "")
@@ -93,7 +91,7 @@ func buildRequest(ctx context.Context, client *datadogV1.APIClient, method, path
 		}
 	}
 
-	req, err := client.PrepareRequest(ctx, localVarPath, method, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormQueryParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	req, err := client.PrepareRequest(ctx, localVarPath, method, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormQueryParams, localVarFormFile)
 	if err != nil {
 		return nil, err
 	}
