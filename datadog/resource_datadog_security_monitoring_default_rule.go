@@ -209,7 +209,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 
 			if !stringSliceEquals(tfNotifications, ruleCase.GetNotifications()) {
 				modifiedCases++
-				updatedRuleCase[i].Notifications = &tfNotifications
+				updatedRuleCase[i].Notifications = tfNotifications
 			}
 
 		} else {
@@ -220,7 +220,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 
 			if !stringSliceEquals(tfNotifications, ruleCase.GetNotifications()) {
 				modifiedCases++
-				updatedRuleCase[i].Notifications = &tfNotifications
+				updatedRuleCase[i].Notifications = tfNotifications
 			}
 		}
 
@@ -233,7 +233,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 	}
 
 	if modifiedCases > 0 {
-		payload.Cases = &updatedRuleCase
+		payload.Cases = updatedRuleCase
 	}
 
 	tfFilters := d.Get("filter").([]interface{})
@@ -254,7 +254,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 
 		payloadFilters[idx] = structRuleFilter
 	}
-	payload.Filters = &payloadFilters
+	payload.Filters = payloadFilters
 
 	return &payload, true, nil
 }

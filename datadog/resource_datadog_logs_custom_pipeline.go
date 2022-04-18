@@ -875,7 +875,7 @@ func buildDatadogNestedPipeline(tfProcessor map[string]interface{}) (*datadogV1.
 		if err != nil {
 			return ddNestedPipeline, err
 		}
-		ddNestedPipeline.Processors = ddProcessors
+		ddNestedPipeline.Processors = *ddProcessors
 	}
 	if tfName, exists := tfProcessor["name"].(string); exists {
 		ddNestedPipeline.SetName(tfName)
@@ -1000,7 +1000,7 @@ func buildDatadogStatusRemapper(tfProcessor map[string]interface{}) *datadogV1.L
 func buildDatadogTraceRemapper(tfProcessor map[string]interface{}) *datadogV1.LogsTraceRemapper {
 	ddRemapper := datadogV1.NewLogsTraceRemapperWithDefaults()
 	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
-		ddRemapper.Sources = &ddSources
+		ddRemapper.Sources = ddSources
 	}
 	if tfName, exists := tfProcessor["name"].(string); exists {
 		ddRemapper.SetName(tfName)

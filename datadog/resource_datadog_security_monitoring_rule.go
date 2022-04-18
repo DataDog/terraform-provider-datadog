@@ -316,7 +316,7 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 		for i, value := range tfTags {
 			tags[i] = value.(string)
 		}
-		payload.Tags = &tags
+		payload.Tags = tags
 	}
 
 	if v, ok := d.GetOk("filter"); ok {
@@ -462,7 +462,7 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 			for i, value := range tfGroupByFields {
 				groupByFields[i] = value.(string)
 			}
-			payloadQuery.GroupByFields = &groupByFields
+			payloadQuery.GroupByFields = groupByFields
 		}
 
 		if v, ok := query["distinct_fields"]; ok {
@@ -471,7 +471,7 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 			for i, value := range tfDistinctFields {
 				distinctFields[i] = value.(string)
 			}
-			payloadQuery.DistinctFields = &distinctFields
+			payloadQuery.DistinctFields = distinctFields
 		}
 
 		if v, ok := query["metric"]; ok {
@@ -690,7 +690,7 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 		}
 		payloadCases[idx] = structRuleCase
 	}
-	payload.Cases = &payloadCases
+	payload.Cases = payloadCases
 
 	payload.SetIsEnabled(d.Get("enabled").(bool))
 	payload.SetHasExtendedTitle(d.Get("has_extended_title").(bool))
@@ -727,7 +727,7 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 				for i, value := range tfGroupByFields {
 					groupByFields[i] = value.(string)
 				}
-				payloadQuery.GroupByFields = &groupByFields
+				payloadQuery.GroupByFields = groupByFields
 			}
 
 			if v, ok := query["distinct_fields"]; ok {
@@ -736,7 +736,7 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 				for i, field := range tfDistinctFields {
 					distinctFields[i] = field.(string)
 				}
-				payloadQuery.DistinctFields = &distinctFields
+				payloadQuery.DistinctFields = distinctFields
 			}
 
 			if v, ok := query["metric"]; ok {
@@ -754,7 +754,7 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 
 			payloadQueries[idx] = payloadQuery
 		}
-		payload.Queries = &payloadQueries
+		payload.Queries = payloadQueries
 	}
 
 	if v, ok := d.GetOk("tags"); ok {
@@ -763,7 +763,7 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 		for i, value := range tfTags {
 			tags[i] = value.(string)
 		}
-		payload.Tags = &tags
+		payload.Tags = tags
 	}
 
 	if v, ok := d.GetOk("filter"); ok {

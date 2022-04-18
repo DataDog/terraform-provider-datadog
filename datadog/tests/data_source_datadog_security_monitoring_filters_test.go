@@ -44,7 +44,7 @@ func securityMonitoringCheckFilterCount(accProvider func() (*schema.Provider, er
 		if err != nil {
 			return err
 		}
-		return securityMonitoringFilterCount(state, len(*filtersResponse.Data))
+		return securityMonitoringFilterCount(state, len(filtersResponse.Data))
 	}
 }
 

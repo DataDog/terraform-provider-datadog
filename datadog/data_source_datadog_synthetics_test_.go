@@ -54,7 +54,7 @@ func dataSourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.Resource
 
 	searchedId := d.Get("test_id").(string)
 
-	for _, test := range *tests.Tests {
+	for _, test := range tests.Tests {
 		if test.GetPublicId() == searchedId {
 			d.SetId(test.GetPublicId())
 			d.Set("name", test.GetName())
