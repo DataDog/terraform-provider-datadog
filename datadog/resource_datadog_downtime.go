@@ -36,6 +36,7 @@ type downtimeOrDowntimeChild interface {
 	GetActiveChild() datadogV1.DowntimeChild
 	GetActiveChildOk() (*datadogV1.DowntimeChild, bool)
 	GetCanceledOk() (*int64, bool)
+	GetMuteFirstRecoveryNotification() bool
 }
 
 // downtimeChild wraps the `datadogV1.DowntimeChild` struct via embedding to implement `downtimeOrDowntimeChild`
@@ -98,6 +99,10 @@ func (d *downtimeChild) GetActiveChildOk() (*datadogV1.DowntimeChild, bool) {
 
 func (d *downtimeChild) GetCanceledOk() (*int64, bool) {
 	return d.child.GetCanceledOk()
+}
+
+func (d *downtimeChild) GetMuteFirstRecoveryNotification() bool {
+	return d.child.GetMuteFirstRecoveryNotification()
 }
 
 func resourceDatadogDowntime() *schema.Resource {
@@ -262,6 +267,11 @@ func resourceDatadogDowntime() *schema.Resource {
 				Computed:    true,
 				Description: "The id corresponding to the downtime object definition of the active child for the original parent recurring downtime. This field will only exist on recurring downtimes.",
 			},
+			"mute_first_recovery_notification": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "When true the first recovery notification during the downtime will be muted",
+			},
 		},
 	}
 }
@@ -395,6 +405,10 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, client *da
 
 	if attr, ok := d.GetOk("timezone"); ok {
 		dt.SetTimezone(attr.(string))
+	}
+
+	if attr, ok := d.GetOk("mute_first_recovery_notification"); ok {
+		dt.SetMuteFirstRecoveryNotification(attr.(bool))
 	}
 
 	return &dt, nil
