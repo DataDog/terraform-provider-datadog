@@ -5088,6 +5088,7 @@ Optional:
 - **precision** (Number) The precision to use when displaying the tile.
 - **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request))
 - **text_align** (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
+- **timeseries_background** (Block List, Max: 1) Set a timeseries on the widget background. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--timeseries_background))
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
@@ -5662,6 +5663,30 @@ Optional:
 - **facet** (String) The facet name.
 - **interval** (Number) Define the time interval in seconds.
 
+
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--timeseries_background"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.timeseries_background`
+
+Required:
+
+- **type** (String) Whether the Timeseries is made using an area or bars. Valid values are `bars`, `area`.
+
+Optional:
+
+- **yaxis** (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--timeseries_background--yaxis))
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--timeseries_background--yaxis"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.timeseries_background.yaxis`
+
+Optional:
+
+- **include_zero** (Boolean) Always include zero or fit the axis to the data range.
+- **label** (String) The label of the axis to display on the graph.
+- **max** (String) Specify the maximum value to show on the Y-axis.
+- **min** (String) Specify the minimum value to show on the Y-axis.
+- **scale** (String) Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.
 
 
 
@@ -10344,6 +10369,7 @@ Optional:
 - **precision** (Number) The precision to use when displaying the tile.
 - **request** (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_value_definition--request))
 - **text_align** (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
+- **timeseries_background** (Block List, Max: 1) Set a timeseries on the widget background. (see [below for nested schema](#nestedblock--widget--query_value_definition--timeseries_background))
 - **title** (String) The title of the widget.
 - **title_align** (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - **title_size** (String) The size of the widget's title (defaults to 16).
@@ -10918,6 +10944,30 @@ Optional:
 - **facet** (String) The facet name.
 - **interval** (Number) Define the time interval in seconds.
 
+
+
+
+<a id="nestedblock--widget--query_value_definition--timeseries_background"></a>
+### Nested Schema for `widget.query_value_definition.timeseries_background`
+
+Required:
+
+- **type** (String) Whether the Timeseries is made using an area or bars. Valid values are `bars`, `area`.
+
+Optional:
+
+- **yaxis** (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--timeseries_background--yaxis))
+
+<a id="nestedblock--widget--query_value_definition--timeseries_background--yaxis"></a>
+### Nested Schema for `widget.query_value_definition.timeseries_background.yaxis`
+
+Optional:
+
+- **include_zero** (Boolean) Always include zero or fit the axis to the data range.
+- **label** (String) The label of the axis to display on the graph.
+- **max** (String) Specify the maximum value to show on the Y-axis.
+- **min** (String) Specify the minimum value to show on the Y-axis.
+- **scale** (String) Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.
 
 
 

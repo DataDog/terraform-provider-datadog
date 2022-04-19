@@ -3512,6 +3512,15 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
+		"timeseries_background": {
+			Description: "Set a timeseries on the widget background.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Elem: &schema.Resource{
+				Schema: getQueryValueTimeseriesBackgroundSchema(),
+			},
+		},
 		"title": {
 			Description: "The title of the widget.",
 			Type:        schema.TypeString,
@@ -3554,6 +3563,11 @@ func buildDatadogQueryValueDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["precision"].(int); ok {
 		datadogDefinition.SetPrecision(int64(v))
 	}
+	if timeseriesBackground, ok := terraformDefinition["timeseries_background"].([]interface{}); ok && len(timeseriesBackground) > 0 {
+		if v, ok := timeseriesBackground[0].(map[string]interface{}); ok && len(v) > 0 {
+			datadogDefinition.SetTimeseriesBackground(buildDatadogTimeseriesBackground(v))
+		}
+	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
 	}
@@ -3576,6 +3590,23 @@ func buildDatadogQueryValueDefinition(terraformDefinition map[string]interface{}
 	}
 	return datadogDefinition
 }
+
+func buildTerraformTimeseriesBackground(datadogTimeseriesBackground datadogV1.TimeseriesBackground) []map[string]interface{} {
+	terraformTimeseriesBackground := map[string]interface{}{}
+	if v, ok := datadogTimeseriesBackground.GetTypeOk(); ok {
+		terraformTimeseriesBackground["type"] = v
+	}
+
+	if v, ok := datadogTimeseriesBackground.GetYaxisOk(); ok {
+		axis := buildTerraformWidgetAxis(*v)
+		terraformTimeseriesBackground["yaxis"] = []map[string]interface{}{axis}
+	}
+
+	terraformTimeseriesBackgroundArray := []map[string]interface{}{terraformTimeseriesBackground}
+	return terraformTimeseriesBackgroundArray
+
+}
+
 func buildTerraformQueryValueDefinition(datadogDefinition datadogV1.QueryValueWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
@@ -3597,6 +3628,9 @@ func buildTerraformQueryValueDefinition(datadogDefinition datadogV1.QueryValueWi
 	if v, ok := datadogDefinition.GetTextAlignOk(); ok {
 		terraformDefinition["text_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetTimeseriesBackgroundOk(); ok {
+		terraformDefinition["timeseries_background"] = buildTerraformTimeseriesBackground(*v)
+	}
 	if v, ok := datadogDefinition.GetTitleSizeOk(); ok {
 		terraformDefinition["title_size"] = *v
 	}
@@ -3610,6 +3644,26 @@ func buildTerraformQueryValueDefinition(datadogDefinition datadogV1.QueryValueWi
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
 	}
 	return terraformDefinition
+}
+
+func getQueryValueTimeseriesBackgroundSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"type": {
+			Description:      "Whether the Timeseries is made using an area or bars.",
+			Type:             schema.TypeString,
+			Required:         true,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTimeseriesBackgroundTypeFromValue),
+		},
+		"yaxis": {
+			Description: "A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getWidgetAxisSchema(),
+			},
+		},
+	}
 }
 
 func getQueryValueRequestSchema() map[string]*schema.Schema {
@@ -7008,6 +7062,24 @@ func getWidgetCustomLinkSchema() map[string]*schema.Schema {
 		},
 	}
 }
+
+func buildDatadogTimeseriesBackground(terraformTimeseriesBackground map[string]interface{}) datadogV1.TimeseriesBackground {
+	datadogTimeseriesBackground := &datadogV1.TimeseriesBackground{}
+	if v, ok := terraformTimeseriesBackground["type"].(string); ok && len(v) != 0 {
+		timeseriesBackgroundType := datadogV1.TimeseriesBackgroundType(terraformTimeseriesBackground["type"].(string))
+		datadogTimeseriesBackground.SetType(timeseriesBackgroundType)
+	}
+
+	// Optional params
+	if axis, ok := terraformTimeseriesBackground["yaxis"].([]interface{}); ok && len(axis) > 0 {
+		if v, ok := axis[0].(map[string]interface{}); ok && len(v) > 0 {
+			datadogTimeseriesBackground.Yaxis = buildDatadogWidgetAxis(v)
+		}
+	}
+
+	return *datadogTimeseriesBackground
+}
+
 func buildDatadogWidgetCustomLinks(terraformWidgetCustomLinks *[]interface{}) *[]datadogV1.WidgetCustomLink {
 	datadogWidgetCustomLinks := make([]datadogV1.WidgetCustomLink, len(*terraformWidgetCustomLinks))
 	for i, customLink := range *terraformWidgetCustomLinks {
