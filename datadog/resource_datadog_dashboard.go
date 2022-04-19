@@ -4788,10 +4788,6 @@ func buildDatadogGeomapDefinition(terraformDefinition map[string]interface{}) *d
 	}
 
 	// Optional params
-	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
-		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
-	}
-
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
 	}
@@ -5265,10 +5261,6 @@ func buildDatadogSunburstDefinition(terraformDefinition map[string]interface{}) 
 
 	if hideTotal, ok := terraformDefinition["hide_total"].(bool); ok && hideTotal {
 		datadogDefinition.SetHideTotal(hideTotal)
-	}
-
-	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
-		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
 	}
 
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
