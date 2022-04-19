@@ -80,7 +80,7 @@ func securityMonitoringCheckRuleCountNoFilter(accProvider func() (*schema.Provid
 		if err != nil {
 			return err
 		}
-		return securityMonitoringCheckRuleCount(state, len(*rulesResponse.Data))
+		return securityMonitoringCheckRuleCount(state, len(rulesResponse.Data))
 	}
 }
 
@@ -98,7 +98,7 @@ func securityMonitoringCheckRuleCountNameFilter(accProvider func() (*schema.Prov
 		}
 
 		ruleCount := 0
-		for _, rule := range *rulesResponse.Data {
+		for _, rule := range rulesResponse.Data {
 			if strings.Contains(rule.GetName(), name) {
 				ruleCount++
 			}
@@ -121,7 +121,7 @@ func securityMonitoringCheckRuleCountTagsFilter(accProvider func() (*schema.Prov
 		}
 
 		ruleCount := 0
-		for _, rule := range *rulesResponse.Data {
+		for _, rule := range rulesResponse.Data {
 			for _, tag := range rule.GetTags() {
 				if strings.Contains(tag, filterTag) {
 					ruleCount++
@@ -145,7 +145,7 @@ func securityMonitoringCheckRuleCountDefaultFilter(accProvider func() (*schema.P
 		}
 
 		ruleCount := 0
-		for _, rule := range *rulesResponse.Data {
+		for _, rule := range rulesResponse.Data {
 			if rule.GetIsDefault() == isDefault {
 				ruleCount++
 			}

@@ -259,7 +259,7 @@ func matchesSecMonRuleFilters(
 	}
 	if tagFilter != nil {
 		matchedTagCount := 0
-		for _, tag := range *rule.Tags {
+		for _, tag := range rule.Tags {
 			if _, ok := tagFilter[tag]; ok {
 				matchedTagCount++
 			}

@@ -1092,7 +1092,7 @@ func resourceDatadogSyntheticsTestDelete(ctx context.Context, d *schema.Resource
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	syntheticsDeleteTestsPayload := datadogV1.SyntheticsDeleteTestsPayload{PublicIds: &[]string{d.Id()}}
+	syntheticsDeleteTestsPayload := datadogV1.SyntheticsDeleteTestsPayload{PublicIds: []string{d.Id()}}
 	if _, httpResponse, err := datadogClientV1.SyntheticsApi.DeleteTests(authV1, syntheticsDeleteTestsPayload); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting synthetics test")
@@ -1190,10 +1190,10 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		config.SetRequest(request)
 	}
 
-	config.Assertions = &[]datadogV1.SyntheticsAssertion{}
+	config.Assertions = []datadogV1.SyntheticsAssertion{}
 	if attr, ok := d.GetOk("assertion"); ok && attr != nil {
 		assertions := buildAssertions(attr.([]interface{}))
-		config.Assertions = &assertions
+		config.Assertions = assertions
 	}
 
 	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
@@ -1340,7 +1340,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		for _, s := range attr.([]interface{}) {
 			deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
 		}
-		options.DeviceIds = &deviceIds
+		options.DeviceIds = deviceIds
 	}
 
 	syntheticsTest.SetConfig(*config)
@@ -1758,7 +1758,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		for _, s := range attr.([]interface{}) {
 			deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
 		}
-		options.DeviceIds = &deviceIds
+		options.DeviceIds = deviceIds
 	}
 
 	if attr, ok := d.GetOk("set_cookie"); ok {

@@ -256,7 +256,7 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 	if err := d.Set("is_read_only", dashboard.GetIsReadOnly()); err != nil {
 		return diag.FromErr(err)
 	}
-	restrictedRoles := buildTerraformRestrictedRoles(dashboard.RestrictedRoles)
+	restrictedRoles := buildTerraformRestrictedRoles(&dashboard.RestrictedRoles)
 	if err := d.Set("restricted_roles", restrictedRoles); err != nil {
 		return diag.FromErr(err)
 	}
@@ -344,7 +344,7 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 	}
 	if v, ok := d.GetOk("restricted_roles"); ok && !dashboard.GetIsReadOnly() {
 		// do not set when 'is_read_only = true' because this takes priority on requests
-		dashboard.RestrictedRoles = buildDatadogRestrictedRoles(v.(*schema.Set))
+		dashboard.RestrictedRoles = *buildDatadogRestrictedRoles(v.(*schema.Set))
 	}
 
 	// Build Widgets
@@ -2424,7 +2424,7 @@ func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *
 		}
 	}
 	if v, ok := terraformDefinition["event"].([]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Events = buildDatadogWidgetEvents(&v)
+		datadogDefinition.Events = *buildDatadogWidgetEvents(&v)
 	}
 	if v, ok := terraformDefinition["show_legend"].(bool); ok {
 		datadogDefinition.SetShowLegend(v)
@@ -2731,7 +2731,7 @@ func buildDatadogHostmapDefinition(terraformDefinition map[string]interface{}) *
 		for i, group := range terraformGroups {
 			datadogGroups[i] = group.(string)
 		}
-		datadogDefinition.Group = &datadogGroups
+		datadogDefinition.Group = datadogGroups
 	}
 	if terraformScopes, ok := terraformDefinition["scope"].([]interface{}); ok && len(terraformScopes) > 0 {
 		datadogScopes := make([]string, len(terraformScopes))
@@ -3696,7 +3696,7 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 		}
 
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
-			datadogQueryValueRequest.ConditionalFormats = buildDatadogWidgetConditionalFormat(&v)
+			datadogQueryValueRequest.ConditionalFormats = *buildDatadogWidgetConditionalFormat(&v)
 		}
 		if v, ok := terraformRequest["aggregator"].(string); ok && len(v) != 0 {
 			datadogQueryValueRequest.SetAggregator(datadogV1.WidgetAggregator(v))
@@ -3744,7 +3744,7 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 		}
 
 		if datadogRequest.ConditionalFormats != nil {
-			terraformConditionalFormats := buildTerraformWidgetConditionalFormat(datadogRequest.ConditionalFormats)
+			terraformConditionalFormats := buildTerraformWidgetConditionalFormat(&datadogRequest.ConditionalFormats)
 			terraformRequest["conditional_formats"] = terraformConditionalFormats
 		}
 
@@ -3971,7 +3971,7 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 		}
 
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
-			datadogQueryTableRequest.ConditionalFormats = buildDatadogWidgetConditionalFormat(&v)
+			datadogQueryTableRequest.ConditionalFormats = *buildDatadogWidgetConditionalFormat(&v)
 		}
 		if v, ok := terraformRequest["aggregator"].(string); ok && len(v) != 0 {
 			datadogQueryTableRequest.SetAggregator(datadogV1.WidgetAggregator(v))
@@ -3991,7 +3991,7 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 			for i, cellDisplayMode := range v {
 				datadogCellDisplayMode[i] = datadogV1.TableWidgetCellDisplayMode(cellDisplayMode.(string))
 			}
-			datadogQueryTableRequest.CellDisplayMode = &datadogCellDisplayMode
+			datadogQueryTableRequest.CellDisplayMode = datadogCellDisplayMode
 		}
 		datadogRequests[i] = *datadogQueryTableRequest
 	}
@@ -4193,7 +4193,7 @@ func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{
 		for i, colorByGroup := range terraformColorByGroups {
 			datadogColorByGroups[i] = colorByGroup.(string)
 		}
-		datadogDefinition.ColorByGroups = &datadogColorByGroups
+		datadogDefinition.ColorByGroups = datadogColorByGroups
 	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
@@ -4581,7 +4581,7 @@ func buildDatadogServiceLevelObjectiveDefinition(terraformDefinition map[string]
 		for i, timeWindows := range terraformTimeWindows {
 			datadogTimeWindows[i] = datadogV1.WidgetTimeWindows(timeWindows.(string))
 		}
-		datadogDefinition.TimeWindows = &datadogTimeWindows
+		datadogDefinition.TimeWindows = datadogTimeWindows
 	}
 	if v, ok := terraformDefinition["global_time_target"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetGlobalTimeTarget(v)
@@ -4945,10 +4945,10 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	datadogDefinition.Requests = *buildDatadogTimeseriesRequests(&terraformRequests)
 	// Optional params
 	if v, ok := terraformDefinition["marker"].([]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Markers = buildDatadogWidgetMarkers(&v)
+		datadogDefinition.Markers = *buildDatadogWidgetMarkers(&v)
 	}
 	if v, ok := terraformDefinition["event"].([]interface{}); ok && len(v) > 0 {
-		datadogDefinition.Events = buildDatadogWidgetEvents(&v)
+		datadogDefinition.Events = *buildDatadogWidgetEvents(&v)
 	}
 	if v, ok := terraformDefinition["yaxis"].([]interface{}); ok && len(v) > 0 {
 		if axis, ok := v[0].(map[string]interface{}); ok && len(axis) > 0 {
@@ -5961,7 +5961,7 @@ func buildDatadogFormula(data map[string]interface{}) datadogV1.WidgetFormula {
 	}
 
 	if v, ok := data["conditional_formats"].([]interface{}); ok && len(v) != 0 {
-		formula.ConditionalFormats = buildDatadogWidgetConditionalFormat(&v)
+		formula.ConditionalFormats = *buildDatadogWidgetConditionalFormat(&v)
 	}
 
 	return formula
@@ -6481,7 +6481,7 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 			datadogToplistRequest.SetFormulas(formulas)
 		}
 		if v, ok := terraformRequest["conditional_formats"].([]interface{}); ok && len(v) != 0 {
-			datadogToplistRequest.ConditionalFormats = buildDatadogWidgetConditionalFormat(&v)
+			datadogToplistRequest.ConditionalFormats = *buildDatadogWidgetConditionalFormat(&v)
 		}
 		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
 			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
