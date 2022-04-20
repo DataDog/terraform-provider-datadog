@@ -13,7 +13,6 @@
 ### NOTES
 * [datadog_monitor] Mark locked as deprecated by @phillip-dd in https://github.com/DataDog/terraform-provider-datadog/pull/1400
 * Add debug mode for developers by @AlaricCalmette in https://github.com/DataDog/terraform-provider-datadog/pull/1399
-* Bump datadog-api-client-go to v1.12.0 by @jirikuncar in https://github.com/DataDog/terraform-provider-datadog/pull/1409
 * Bump datadog-api-client-go to v1.13.0 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1419
 
 ## New Contributors
