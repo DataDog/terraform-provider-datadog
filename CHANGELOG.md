@@ -1,3 +1,28 @@
+## 3.11.0 (April 20, 2022)
+
+### BUGFIXES
+* [datadog_synthetics_test] Remove unparsed check in the data source by @sdeprez in https://github.com/DataDog/terraform-provider-datadog/pull/1403
+* [datadog_security_monitoring_rule] Add default for aggregation by @muffix in https://github.com/DataDog/terraform-provider-datadog/pull/1407
+* [datadog_synthetics_test] Use a correct regex for variables by @AlaricCalmette in https://github.com/DataDog/terraform-provider-datadog/pull/1398
+* [datadog_monitor] Fix spurious "changes made outside of terraform" by @markadev in https://github.com/DataDog/terraform-provider-datadog/pull/1384
+### IMPROVEMENTS
+* [resource_datadog_monitor] Add separate validation for existing monitors by @gkharkwal in https://github.com/DataDog/terraform-provider-datadog/pull/1406
+* [datadog_resource_dashboard] Implement support for timeseries background in query value widgets by @DrkSephy in https://github.com/DataDog/terraform-provider-datadog/pull/1415
+### FEATURES
+* [datadog_security_monitoring_rule] Update provider for detection method impossible travel by @muffix in https://github.com/DataDog/terraform-provider-datadog/pull/1402
+### NOTES
+* [datadog_monitor] Mark locked as deprecated by @phillip-dd in https://github.com/DataDog/terraform-provider-datadog/pull/1400
+* Add debug mode for developers by @AlaricCalmette in https://github.com/DataDog/terraform-provider-datadog/pull/1399
+* Bump datadog-api-client-go to v1.12.0 by @jirikuncar in https://github.com/DataDog/terraform-provider-datadog/pull/1409
+* Bump datadog-api-client-go to v1.13.0 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1419
+
+## New Contributors
+* @muffix made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1407
+* @keisku made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1404
+* @markadev made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1384
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.10.0...v3.11.0
+
 ## 3.10.0 (March 28, 2022)
 
 ### BUGFIXES
