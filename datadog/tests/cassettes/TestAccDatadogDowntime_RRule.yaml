@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"end":1735732799,"message":"tf-TestAccDatadogDowntime_RRule-local-1649185529","monitor_tags":["*"],"recurrence":{"rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1","type":"rrule"},"scope":["RRuleRecurrence"],"start":1735646400,"timezone":"UTC"}
+      {"end":1735732799,"message":"tf-TestAccDatadogDowntime_RRule-local-1650558391","monitor_tags":["*"],"recurrence":{"rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1","type":"rrule"},"scope":["RRuleRecurrence"],"start":1735646400,"timezone":"UTC"}
     form: {}
     headers:
       Accept:
@@ -13,7 +13,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/downtime
     method: POST
   response:
-    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"created":1649185587,"org_id":321813,"modified":1649185587,"disabled":false,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1649185529","downtime_type":2,"id":1857667261,"updater_id":null}'
+    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558447,"org_id":321813,"modified":1650558447,"disabled":false,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1650558391","downtime_type":2,"id":1895964926,"updater_id":null}'
     headers:
       Content-Type:
       - application/json
@@ -26,10 +26,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/downtime/1857667261
+    url: https://api.datadoghq.com/api/v1/downtime/1895964926
     method: GET
   response:
-    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"created":1649185587,"org_id":321813,"modified":1649185587,"disabled":false,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1649185529","downtime_type":2,"id":1857667261,"updater_id":null}'
+    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558447,"org_id":321813,"modified":1650558447,"disabled":false,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1650558391","downtime_type":2,"id":1895964926,"updater_id":null}'
     headers:
       Content-Type:
       - application/json
@@ -42,10 +42,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/downtime/1857667261
+    url: https://api.datadoghq.com/api/v1/downtime/1895964926
     method: GET
   response:
-    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"created":1649185587,"org_id":321813,"modified":1649185587,"disabled":false,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1649185529","downtime_type":2,"id":1857667261,"updater_id":null}'
+    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":null,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558447,"org_id":321813,"modified":1650558447,"disabled":false,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1650558391","downtime_type":2,"id":1895964926,"updater_id":null}'
     headers:
       Content-Type:
       - application/json
@@ -58,7 +58,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v1/downtime/1857667261
+    url: https://api.datadoghq.com/api/v1/downtime/1895964926
     method: DELETE
   response:
     body: ""
@@ -72,10 +72,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/downtime/1857667261
+    url: https://api.datadoghq.com/api/v1/downtime/1895964926
     method: GET
   response:
-    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":1649185640,"monitor_id":null,"created":1649185587,"org_id":321813,"modified":1649185640,"disabled":true,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1649185529","downtime_type":2,"id":1857667261,"updater_id":1445416}'
+    body: '{"recurrence":{"type":"rrule","rrule":"FREQ=MONTHLY;BYSETPOS=3;BYDAY=WE;INTERVAL=1"},"end":1735732799,"monitor_tags":["*"],"child_id":null,"canceled":1650558518,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558447,"org_id":321813,"modified":1650558518,"disabled":true,"start":1735646400,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["RRuleRecurrence"],"message":"tf-TestAccDatadogDowntime_RRule-local-1650558391","downtime_type":2,"id":1895964926,"updater_id":1445416}'
     headers:
       Content-Type:
       - application/json
