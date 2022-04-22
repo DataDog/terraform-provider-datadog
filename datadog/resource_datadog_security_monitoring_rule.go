@@ -198,12 +198,12 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 					"metric": {
 						Type:        schema.TypeString,
 						Optional:    true,
-						Description: "The target field to aggregate over when using the sum or max aggregations.",
+						Description: "The target field to aggregate over when using the `sum`, `max`, or `new_value` aggregations.",
 					},
 					"name": {
 						Type:        schema.TypeString,
 						Optional:    true,
-						Description: "Name of the query.",
+						Description: "Name of the query. Not compatible with `new_value` aggregations.",
 					},
 					"query": {
 						Type:        schema.TypeString,

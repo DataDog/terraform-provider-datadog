@@ -99,8 +99,8 @@ Optional:
 - **aggregation** (String) The aggregation type. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`.
 - **distinct_fields** (List of String) Field for which the cardinality is measured. Sent as an array.
 - **group_by_fields** (List of String) Fields to group by.
-- **metric** (String) The target field to aggregate over when using the `sum`, `max`, or `new_value` aggregations.
-- **name** (String) Name of the query. Not compatible with `new_value` aggregations.
+- **metric** (String) The target field to aggregate over when using the sum or max aggregations.
+- **name** (String) Name of the query.
 
 <a id="nestedblock--query--agent_rule"></a>
 ### Nested schema for `query.agent_rule`
@@ -132,8 +132,9 @@ Required:
 
 Optional:
 
-- **detection_method** (String) The detection method. Valid values are `threshold`, `new_value`, `anomaly_detection`.
+- **detection_method** (String) The detection method. Valid values are `threshold`, `new_value`, `anomaly_detection`, `impossible_travel`.
 - **new_value_options** (Block List, Max: 1) New value rules specific options. (see [below for nested schema](#nestedblock--options--new_value_options))
+- **impossible_travel_options** (Block List, Max: 1) Options for rules using the impossible travel detection method. (see [below for nested schema](#nestedblock--options--impossible_travel_options))
 
 <a id="nestedblock--options--new_value_options"></a>
 ### Nested schema for `options.new_value_options`
@@ -142,6 +143,13 @@ Required:
 
 - **forget_after** (Number) The duration in days after which a learned value is forgotten. Valid values are `1`, `2`, `7`, `14`, `21`, `28`.
 - **learning_duration** (Number) The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned. Valid values are `0`, `1`, `7`.
+
+<a id="nestedblock--options--impossible_travel_options"></a>
+### Nested schema for `options.impossible_travel_options`
+
+Optional:
+
+- **baseline_user_locations** (Boolean) If true, signals are suppressed for the first 24 hours. Datadog uses this time to learn about the user's regular access locations. This is helpful to reduce noise and infer VPN usage or credentialed API access. Default is `false`.
 
 ## Import
 
