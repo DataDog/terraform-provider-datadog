@@ -84,7 +84,7 @@ func createSyntheticsPrivateLocationStep(ctx context.Context, accProvider func()
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_private_location.foo", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_private_location.foo", "metadata.restricted_roles.0", "abc"),
+				"datadog_synthetics_private_location.foo", "metadata.0.restricted_roles.0", "abc"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_private_location.foo", "config"),
 			resource.TestCheckResourceAttrSet(
@@ -99,7 +99,9 @@ resource "datadog_synthetics_private_location" "foo" {
 	name = "%s"
 	description = "a private location"
 	tags = ["foo:bar", "baz"]
-	metadata = {restricted_roles: ["abc"]}
+	metadata {
+		restricted_roles = ["abc"]
+	}
 }`, uniq)
 }
 
