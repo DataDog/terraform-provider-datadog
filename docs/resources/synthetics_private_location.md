@@ -30,12 +30,20 @@ resource "datadog_synthetics_private_location" "private_location" {
 ### Optional
 
 - **description** (String) Description of the private location.
+- **metadata** (Block List, Max: 1) The private location metadata (see [below for nested schema](#nestedblock--metadata))
 - **tags** (List of String) A list of tags to associate with your synthetics private location.
 
 ### Read-Only
 
 - **config** (String, Sensitive) Configuration skeleton for the private location. See installation instructions of the private location on how to use this configuration.
 - **id** (String) The ID of this resource.
+
+<a id="nestedblock--metadata"></a>
+### Nested Schema for `metadata`
+
+Optional:
+
+- **restricted_roles** (List of String) A list of role identifiers that can be pulled from the Roles API, for restricting read and write access.
 
 ## Import
 

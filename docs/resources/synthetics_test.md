@@ -623,6 +623,7 @@ Optional:
 - **monitor_options** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--monitor_options))
 - **monitor_priority** (Number)
 - **no_screenshot** (Boolean) Prevents saving screenshots of the steps.
+- **restricted_roles** (List of String) A list of role identifiers that can be pulled from the Roles API, for restricting read and write access.
 - **retry** (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--retry))
 
 <a id="nestedblock--options_list--monitor_options"></a>
