@@ -95,12 +95,16 @@ func createSyntheticsPrivateLocationStep(ctx context.Context, accProvider func()
 
 func createSyntheticsPrivateLocationConfig(uniq string) string {
 	return fmt.Sprintf(`
+resource "datadog_role" "rbac_role" {
+	name = "abc"
+}
+
 resource "datadog_synthetics_private_location" "foo" {
 	name = "%s"
 	description = "a private location"
 	tags = ["foo:bar", "baz"]
 	metadata {
-		restricted_roles = ["abc"]
+		restricted_roles = ["${datadog_role.rbac_role.id}"]
 	}
 }`, uniq)
 }
