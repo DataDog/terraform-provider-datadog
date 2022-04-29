@@ -485,7 +485,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 				},
 				"restricted_roles": {
 					Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
-					Type:        schema.TypeList,
+					Type:        schema.TypeSet,
 					Optional:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
