@@ -484,7 +484,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					ValidateFunc: validation.IntBetween(1, 5),
 				},
 				"restricted_roles": {
-					Description: "A list of role identifiers that can be pulled from the Roles API, for restricting read and write access.",
+					Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
 					Type:        schema.TypeList,
 					Optional:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
