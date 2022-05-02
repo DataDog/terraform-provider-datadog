@@ -485,7 +485,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 				},
 				"restricted_roles": {
 					Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
-					Type:        schema.TypeList,
+					Type:        schema.TypeSet,
 					Optional:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
@@ -1342,7 +1342,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 		if restricted_roles, ok := d.GetOk("options_list.0.restricted_roles"); ok {
 			roles := []string{}
-			for _, role := range restricted_roles.([]interface{}) {
+			for _, role := range restricted_roles.(*schema.Set).List() {
 				roles = append(roles, role.(string))
 			}
 			options.SetRestrictedRoles(roles)
@@ -1768,7 +1768,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 		if restricted_roles, ok := d.GetOk("options_list.0.restricted_roles"); ok {
 			roles := []string{}
-			for _, role := range restricted_roles.([]interface{}) {
+			for _, role := range restricted_roles.(*schema.Set).List() {
 				roles = append(roles, role.(string))
 			}
 			options.SetRestrictedRoles(roles)
