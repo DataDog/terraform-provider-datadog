@@ -232,7 +232,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional:    true,
 			},
 			"timeout_h": {
-				Description: "The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state.",
+				Description: "The number of hours of the monitor not reporting data before it automatically resolves from a triggered state. The minimum allowed value is 0 hours. The maximum allowed value is 24 hours.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 			},
