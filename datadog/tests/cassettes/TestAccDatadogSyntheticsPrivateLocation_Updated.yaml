@@ -19,7 +19,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651484497_role"},"relationships":{},"type":"roles"}}
+      {"data":{"attributes":{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916_role"},"relationships":{},"type":"roles"}}
     form: {}
     headers:
       Accept:
@@ -29,7 +29,7 @@ interactions:
     url: https://api.datadoghq.com/api/v2/roles
     method: POST
   response:
-    body: '{"data":{"type":"roles","id":"1885aeea-c9fc-11ec-ab63-da7ad0900002","attributes":{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651484497_role","created_at":"2022-05-02T09:41:52.199458+00:00","modified_at":"2022-05-02T09:41:52.252806+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"}]}}}}'
+    body: '{"data":{"type":"roles","id":"abffabd6-ca0f-11ec-ab66-da7ad0900002","attributes":{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916_role","created_at":"2022-05-02T12:02:00.061308+00:00","modified_at":"2022-05-02T12:02:00.130373+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"}]}}}}'
     headers:
       Content-Type:
       - application/json
@@ -42,10 +42,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/roles/1885aeea-c9fc-11ec-ab63-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/roles/abffabd6-ca0f-11ec-ab66-da7ad0900002
     method: GET
   response:
-    body: '{"data":{"type":"roles","id":"1885aeea-c9fc-11ec-ab63-da7ad0900002","attributes":{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651484497_role","created_at":"2022-05-02T09:41:52.199458+00:00","modified_at":"2022-05-02T09:41:52.252806+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"}]}}}}'
+    body: '{"data":{"type":"roles","id":"abffabd6-ca0f-11ec-ab66-da7ad0900002","attributes":{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916_role","created_at":"2022-05-02T12:02:00.061308+00:00","modified_at":"2022-05-02T12:02:00.130373+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"}]}}}}'
     headers:
       Content-Type:
       - application/json
@@ -54,7 +54,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"description":"a private location","metadata":{"restricted_roles":["1885aeea-c9fc-11ec-ab63-da7ad0900002"]},"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651484497","tags":["foo:bar","baz"]}
+      {"description":"a private location","metadata":{"restricted_roles":["abffabd6-ca0f-11ec-ab66-da7ad0900002"]},"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916","tags":["foo:bar","baz"]}
     form: {}
     headers:
       Accept:
@@ -64,7 +64,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/synthetics/private-locations
     method: POST
   response:
-    body: '{"private_location":{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651484497","tags":["foo:bar","baz"],"secrets":{"authentication":{"id":"dd5289fa8de5859a9c4a7d485464bb53","key":"dac758d5a424715e1bc7f56b9c7e20d37ad88d77c498506697793fe97f4b4b79"},"config_decryption":{"id":"0d46e8686202fb1ed790140b17216a05","key":"-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----"}},"modifiedAt":"2022-05-02T09:41:53.220272+00:00","createdBy":"frog@datadoghq.com","metadata":{"restricted_roles":["1885aeea-c9fc-11ec-ab63-da7ad0900002"]},"config":{"site":"datadoghq.com"},"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651484497-6d5d95a0c82e8b35a69063a86f27b2ba","createdAt":"2022-05-02T09:41:53.220272+00:00","description":"a private location"},"config":{"accessKey":"dd5289fa8de5859a9c4a7d485464bb53","privateKey":"-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----","site":"datadoghq.com","secretAccessKey":"dac758d5a424715e1bc7f56b9c7e20d37ad88d77c498506697793fe97f4b4b79","publicKey":{"pem":"-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA0yCGWhamEUB1Xyp8a0lI\nXIJX9xEGS4Os467tfjMXF8SJj2+47EqZNNB0SPbesethiTH/3zVvsFhzCtXOfuKG\nNZIN+6IWVEIsecgiFGYPnCdnOawzKTPHzE+sD/ipbJCkINvbbcgmxYE5Hw1Ju26n\nneFv25fKTAI/JHETBMQGxFbcJ4QU2IdJrQ6Er7mT6s1BT/HO7X7WAWs34FBGDPtg\nlM6erRoY5CSCP5/5x++xDzw4gfWOkawMBgS9GfBnfp3FWy9H33GwvPhBelRbxzOC\n3FMKx5dwngWRFJYekIdwFBEJt088EwyTS9MqYGyt+5AiJVEQ7LV6Hz6HH89sbyQB\n0QxrFQlQ38qeReA8QV6o4SVNa+JmvyHWHExX9Mnb2w1n86iYYinu1DcA+kuXvsG0\njGeym0Uz9l/ufZrhLmFDFOMpN1J6/FK8mHGtXz2weupflNNwWWgyD1jKPn9U1ZQP\ndYXjdBhTHU7H9beoUQ40eYpF4JGBQEu8ARgKYBGSwCsiu0zIykd9zAFndouakFSj\nqSq1h8kNY1Yp/1NZjPbvMTXt+hNPgBBKJ+aV3Z4tl+DB7HLKrWirAX6RNeFqH6Ys\n/CZk1xH3wTGuvBKsdEL93o8EoxhZxh0O4o7936aPYtpDucExXcqaao8jdXprs0q0\nqvDZkEI3/aUB3LclvfXjavMCAwEAAQ==\n-----END PUBLIC KEY-----\n","fingerprint":"sha256$base64$GA8WCOyWvWP6GJAGhywibAf0NuEeFgqJKZVjrCogbqU="},"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651484497-6d5d95a0c82e8b35a69063a86f27b2ba"},"result_encryption":{"id":"sha256$base64$GA8WCOyWvWP6GJAGhywibAf0NuEeFgqJKZVjrCogbqU=","key":"-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA0yCGWhamEUB1Xyp8a0lI\nXIJX9xEGS4Os467tfjMXF8SJj2+47EqZNNB0SPbesethiTH/3zVvsFhzCtXOfuKG\nNZIN+6IWVEIsecgiFGYPnCdnOawzKTPHzE+sD/ipbJCkINvbbcgmxYE5Hw1Ju26n\nneFv25fKTAI/JHETBMQGxFbcJ4QU2IdJrQ6Er7mT6s1BT/HO7X7WAWs34FBGDPtg\nlM6erRoY5CSCP5/5x++xDzw4gfWOkawMBgS9GfBnfp3FWy9H33GwvPhBelRbxzOC\n3FMKx5dwngWRFJYekIdwFBEJt088EwyTS9MqYGyt+5AiJVEQ7LV6Hz6HH89sbyQB\n0QxrFQlQ38qeReA8QV6o4SVNa+JmvyHWHExX9Mnb2w1n86iYYinu1DcA+kuXvsG0\njGeym0Uz9l/ufZrhLmFDFOMpN1J6/FK8mHGtXz2weupflNNwWWgyD1jKPn9U1ZQP\ndYXjdBhTHU7H9beoUQ40eYpF4JGBQEu8ARgKYBGSwCsiu0zIykd9zAFndouakFSj\nqSq1h8kNY1Yp/1NZjPbvMTXt+hNPgBBKJ+aV3Z4tl+DB7HLKrWirAX6RNeFqH6Ys\n/CZk1xH3wTGuvBKsdEL93o8EoxhZxh0O4o7936aPYtpDucExXcqaao8jdXprs0q0\nqvDZkEI3/aUB3LclvfXjavMCAwEAAQ==\n-----END PUBLIC KEY-----\n"}}'
+    body: '{"private_location":{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916","tags":["foo:bar","baz"],"secrets":{"authentication":{"id":"3b4d4b45e1fbdfe53f2a54d26ea8feae","key":"7e4ba9d36c828fd9383b2506f31f1932493d3a931f2dcc56715d8b9d2e4baa60"},"config_decryption":{"id":"bf95f2813b259c2ebe38ccb15acdfc0a","key":"-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----"}},"modifiedAt":"2022-05-02T12:02:01.554991+00:00","createdBy":"frog@datadoghq.com","metadata":{"restricted_roles":["abffabd6-ca0f-11ec-ab66-da7ad0900002"]},"config":{"site":"datadoghq.com"},"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0","createdAt":"2022-05-02T12:02:01.554991+00:00","description":"a private location"},"config":{"accessKey":"3b4d4b45e1fbdfe53f2a54d26ea8feae","privateKey":"-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----","site":"datadoghq.com","secretAccessKey":"7e4ba9d36c828fd9383b2506f31f1932493d3a931f2dcc56715d8b9d2e4baa60","publicKey":{"pem":"-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA0yCGWhamEUB1Xyp8a0lI\nXIJX9xEGS4Os467tfjMXF8SJj2+47EqZNNB0SPbesethiTH/3zVvsFhzCtXOfuKG\nNZIN+6IWVEIsecgiFGYPnCdnOawzKTPHzE+sD/ipbJCkINvbbcgmxYE5Hw1Ju26n\nneFv25fKTAI/JHETBMQGxFbcJ4QU2IdJrQ6Er7mT6s1BT/HO7X7WAWs34FBGDPtg\nlM6erRoY5CSCP5/5x++xDzw4gfWOkawMBgS9GfBnfp3FWy9H33GwvPhBelRbxzOC\n3FMKx5dwngWRFJYekIdwFBEJt088EwyTS9MqYGyt+5AiJVEQ7LV6Hz6HH89sbyQB\n0QxrFQlQ38qeReA8QV6o4SVNa+JmvyHWHExX9Mnb2w1n86iYYinu1DcA+kuXvsG0\njGeym0Uz9l/ufZrhLmFDFOMpN1J6/FK8mHGtXz2weupflNNwWWgyD1jKPn9U1ZQP\ndYXjdBhTHU7H9beoUQ40eYpF4JGBQEu8ARgKYBGSwCsiu0zIykd9zAFndouakFSj\nqSq1h8kNY1Yp/1NZjPbvMTXt+hNPgBBKJ+aV3Z4tl+DB7HLKrWirAX6RNeFqH6Ys\n/CZk1xH3wTGuvBKsdEL93o8EoxhZxh0O4o7936aPYtpDucExXcqaao8jdXprs0q0\nqvDZkEI3/aUB3LclvfXjavMCAwEAAQ==\n-----END PUBLIC KEY-----\n","fingerprint":"sha256$base64$GA8WCOyWvWP6GJAGhywibAf0NuEeFgqJKZVjrCogbqU="},"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0"},"result_encryption":{"id":"sha256$base64$GA8WCOyWvWP6GJAGhywibAf0NuEeFgqJKZVjrCogbqU=","key":"-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA0yCGWhamEUB1Xyp8a0lI\nXIJX9xEGS4Os467tfjMXF8SJj2+47EqZNNB0SPbesethiTH/3zVvsFhzCtXOfuKG\nNZIN+6IWVEIsecgiFGYPnCdnOawzKTPHzE+sD/ipbJCkINvbbcgmxYE5Hw1Ju26n\nneFv25fKTAI/JHETBMQGxFbcJ4QU2IdJrQ6Er7mT6s1BT/HO7X7WAWs34FBGDPtg\nlM6erRoY5CSCP5/5x++xDzw4gfWOkawMBgS9GfBnfp3FWy9H33GwvPhBelRbxzOC\n3FMKx5dwngWRFJYekIdwFBEJt088EwyTS9MqYGyt+5AiJVEQ7LV6Hz6HH89sbyQB\n0QxrFQlQ38qeReA8QV6o4SVNa+JmvyHWHExX9Mnb2w1n86iYYinu1DcA+kuXvsG0\njGeym0Uz9l/ufZrhLmFDFOMpN1J6/FK8mHGtXz2weupflNNwWWgyD1jKPn9U1ZQP\ndYXjdBhTHU7H9beoUQ40eYpF4JGBQEu8ARgKYBGSwCsiu0zIykd9zAFndouakFSj\nqSq1h8kNY1Yp/1NZjPbvMTXt+hNPgBBKJ+aV3Z4tl+DB7HLKrWirAX6RNeFqH6Ys\n/CZk1xH3wTGuvBKsdEL93o8EoxhZxh0O4o7936aPYtpDucExXcqaao8jdXprs0q0\nqvDZkEI3/aUB3LclvfXjavMCAwEAAQ==\n-----END PUBLIC KEY-----\n"}}'
     headers:
       Content-Type:
       - application/json
@@ -77,10 +77,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651484497-6d5d95a0c82e8b35a69063a86f27b2ba
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0
     method: GET
   response:
-    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651484497","tags":["foo:bar","baz"],"description":"a private location","modifiedAt":"2022-05-02T09:41:53.220272+00:00","createdBy":"frog@datadoghq.com","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651484497-6d5d95a0c82e8b35a69063a86f27b2ba","createdAt":"2022-05-02T09:41:53.220272+00:00","metadata":{"restricted_roles":["1885aeea-c9fc-11ec-ab63-da7ad0900002"]}}'
+    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916","tags":["foo:bar","baz"],"description":"a private location","modifiedAt":"2022-05-02T12:02:01.554991+00:00","createdBy":"frog@datadoghq.com","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0","createdAt":"2022-05-02T12:02:01.554991+00:00","metadata":{"restricted_roles":["abffabd6-ca0f-11ec-ab66-da7ad0900002"]}}'
     headers:
       Content-Type:
       - application/json
@@ -93,10 +93,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651484497-6d5d95a0c82e8b35a69063a86f27b2ba
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0
     method: GET
   response:
-    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651484497","tags":["foo:bar","baz"],"description":"a private location","modifiedAt":"2022-05-02T09:41:53.220272+00:00","createdBy":"frog@datadoghq.com","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651484497-6d5d95a0c82e8b35a69063a86f27b2ba","createdAt":"2022-05-02T09:41:53.220272+00:00","metadata":{"restricted_roles":["1885aeea-c9fc-11ec-ab63-da7ad0900002"]}}'
+    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916","tags":["foo:bar","baz"],"description":"a private location","modifiedAt":"2022-05-02T12:02:01.554991+00:00","createdBy":"frog@datadoghq.com","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0","createdAt":"2022-05-02T12:02:01.554991+00:00","metadata":{"restricted_roles":["abffabd6-ca0f-11ec-ab66-da7ad0900002"]}}'
     headers:
       Content-Type:
       - application/json
@@ -109,15 +109,181 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/1885aeea-c9fc-11ec-ab63-da7ad0900002
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0
     method: GET
   response:
-    body: '{"errors": ["Synthetics Private Location: 1885aeea-c9fc-11ec-ab63-da7ad0900002 not found"]}'
+    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916","tags":["foo:bar","baz"],"description":"a private location","modifiedAt":"2022-05-02T12:02:01.554991+00:00","createdBy":"frog@datadoghq.com","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0","createdAt":"2022-05-02T12:02:01.554991+00:00","metadata":{"restricted_roles":["abffabd6-ca0f-11ec-ab66-da7ad0900002"]}}'
     headers:
       Content-Type:
       - application/json
-    status: 404 Not Found
-    code: 404
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/roles/abffabd6-ca0f-11ec-ab66-da7ad0900002
+    method: GET
+  response:
+    body: '{"data":{"type":"roles","id":"abffabd6-ca0f-11ec-ab66-da7ad0900002","attributes":{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916_role","created_at":"2022-05-02T12:02:00.061308+00:00","modified_at":"2022-05-02T12:02:00.130373+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"}]}}}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0
+    method: GET
+  response:
+    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916","tags":["foo:bar","baz"],"description":"a private location","modifiedAt":"2022-05-02T12:02:01.554991+00:00","createdBy":"frog@datadoghq.com","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0","createdAt":"2022-05-02T12:02:01.554991+00:00","metadata":{"restricted_roles":["abffabd6-ca0f-11ec-ab66-da7ad0900002"]}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/roles/abffabd6-ca0f-11ec-ab66-da7ad0900002
+    method: GET
+  response:
+    body: '{"data":{"type":"roles","id":"abffabd6-ca0f-11ec-ab66-da7ad0900002","attributes":{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916_role","created_at":"2022-05-02T12:02:00.061308+00:00","modified_at":"2022-05-02T12:02:00.130373+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"}]}}}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0
+    method: GET
+  response:
+    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916","tags":["foo:bar","baz"],"description":"a private location","modifiedAt":"2022-05-02T12:02:01.554991+00:00","createdBy":"frog@datadoghq.com","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0","createdAt":"2022-05-02T12:02:01.554991+00:00","metadata":{"restricted_roles":["abffabd6-ca0f-11ec-ab66-da7ad0900002"]}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916_role_updated"},"id":"abffabd6-ca0f-11ec-ab66-da7ad0900002","type":"roles"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/roles/abffabd6-ca0f-11ec-ab66-da7ad0900002
+    method: PATCH
+  response:
+    body: '{"data":{"type":"roles","id":"abffabd6-ca0f-11ec-ab66-da7ad0900002","attributes":{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916_role_updated","created_at":"2022-05-02T12:02:00.061308+00:00","modified_at":"2022-05-02T12:02:05.052626+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"}]}}}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"description":"an updated private location","metadata":{"restricted_roles":["abffabd6-ca0f-11ec-ab66-da7ad0900002"]},"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916_updated","tags":["foo:bar","baz","env:test"]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0
+    method: PUT
+  response:
+    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916_updated","tags":["foo:bar","baz","env:test"],"modifiedAt":"2022-05-02T12:02:05.276921+00:00","createdBy":"frog@datadoghq.com","metadata":{"restricted_roles":["abffabd6-ca0f-11ec-ab66-da7ad0900002"]},"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0","createdAt":"2022-05-02T12:02:01.554991+00:00","description":"an updated private location"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0
+    method: GET
+  response:
+    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916_updated","tags":["foo:bar","baz","env:test"],"description":"an updated private location","modifiedAt":"2022-05-02T12:02:05.276921+00:00","createdBy":"frog@datadoghq.com","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0","createdAt":"2022-05-02T12:02:01.554991+00:00","metadata":{"restricted_roles":["abffabd6-ca0f-11ec-ab66-da7ad0900002"]}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0
+    method: GET
+  response:
+    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916_updated","tags":["foo:bar","baz","env:test"],"description":"an updated private location","modifiedAt":"2022-05-02T12:02:05.276921+00:00","createdBy":"frog@datadoghq.com","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0","createdAt":"2022-05-02T12:02:01.554991+00:00","metadata":{"restricted_roles":["abffabd6-ca0f-11ec-ab66-da7ad0900002"]}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/roles/abffabd6-ca0f-11ec-ab66-da7ad0900002
+    method: GET
+  response:
+    body: '{"data":{"type":"roles","id":"abffabd6-ca0f-11ec-ab66-da7ad0900002","attributes":{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916_role_updated","created_at":"2022-05-02T12:02:00.061308+00:00","modified_at":"2022-05-02T12:02:05.052626+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"}]}}}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0
+    method: GET
+  response:
+    body: '{"name":"tf-TestAccDatadogSyntheticsPrivateLocation_Updated-local-1651492916_updated","tags":["foo:bar","baz","env:test"],"description":"an updated private location","modifiedAt":"2022-05-02T12:02:05.276921+00:00","createdBy":"frog@datadoghq.com","id":"pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0","createdAt":"2022-05-02T12:02:01.554991+00:00","metadata":{"restricted_roles":["abffabd6-ca0f-11ec-ab66-da7ad0900002"]}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
     duration: ""
 - request:
     body: ""
@@ -125,7 +291,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651484497-6d5d95a0c82e8b35a69063a86f27b2ba
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0
     method: DELETE
   response:
     body: ""
@@ -139,7 +305,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/roles/1885aeea-c9fc-11ec-ab63-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/roles/abffabd6-ca0f-11ec-ab66-da7ad0900002
     method: DELETE
   response:
     body: ""
@@ -153,10 +319,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651484497-6d5d95a0c82e8b35a69063a86f27b2ba
+    url: https://api.datadoghq.com/api/v1/synthetics/private-locations/pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0
     method: GET
   response:
-    body: '{"errors": ["Synthetics Private Location: pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651484497-6d5d95a0c82e8b35a69063a86f27b2ba not found"]}'
+    body: '{"errors": ["Synthetics Private Location: pl:tf-testaccdatadogsyntheticsprivatelocation_updated-local-1651492916-473e866e5865c78ee5989c472f25a3f0 not found"]}'
     headers:
       Content-Type:
       - application/json
