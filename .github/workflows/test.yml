@@ -44,7 +44,7 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
       - name: Install Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: 1.16
       - name: Checkout code
