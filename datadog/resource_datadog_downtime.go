@@ -202,7 +202,7 @@ func resourceDatadogDowntime() *schema.Resource {
 							Type:         schema.TypeString,
 							Required:     true,
 							ValidateFunc: validators.ValidateDatadogDowntimeRecurrenceType,
-							Description:  "One of `days`, `weeks`, `months`, or `years`",
+							Description:  "One of `days`, `weeks`, `months`, `years`, or `rrule`.",
 						},
 						"until_date": {
 							Type:          schema.TypeInt,
@@ -226,7 +226,7 @@ func resourceDatadogDowntime() *schema.Resource {
 							},
 						},
 						"rrule": {
-							Description:   "The RRULE standard for defining recurring events. For example, to have a recurring event on the first day of each month, use `FREQ=MONTHLY;INTERVAL=1`. Most common rrule options from the iCalendar Spec are supported. Attributes specifying the duration in RRULE are not supported (for example, `DTSTART`, `DTEND`, `DURATION`).",
+							Description:   "The RRULE standard for defining recurring events. For example, to have a recurring event on the first day of each month, use `FREQ=MONTHLY;INTERVAL=1`. Most common rrule options from the iCalendar Spec are supported. Attributes specifying the duration in RRULE are not supported (for example, `DTSTART`, `DTEND`, `DURATION`). Only applicable when `type` is `rrule`.",
 							Type:          schema.TypeString,
 							Optional:      true,
 							ConflictsWith: []string{"recurrence.period", "recurrence.until_date", "recurrence.until_occurrences", "recurrence.week_days"},
