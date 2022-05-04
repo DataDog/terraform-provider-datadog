@@ -483,6 +483,12 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:     true,
 					ValidateFunc: validation.IntBetween(1, 5),
 				},
+				"restricted_roles": {
+					Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
 				"retry": syntheticsTestOptionsRetry(),
 				"no_screenshot": {
 					Description: "Prevents saving screenshots of the steps.",
@@ -1333,6 +1339,14 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		if monitorPriority, ok := d.GetOk("options_list.0.monitor_priority"); ok {
 			options.SetMonitorPriority(int32(monitorPriority.(int)))
 		}
+
+		if restricted_roles, ok := d.GetOk("options_list.0.restricted_roles"); ok {
+			roles := []string{}
+			for _, role := range restricted_roles.(*schema.Set).List() {
+				roles = append(roles, role.(string))
+			}
+			options.SetRestrictedRoles(roles)
+		}
 	}
 
 	if attr, ok := d.GetOk("device_ids"); ok {
@@ -1750,6 +1764,14 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 		if monitorPriority, ok := d.GetOk("options_list.0.monitor_priority"); ok {
 			options.SetMonitorPriority(int32(monitorPriority.(int)))
+		}
+
+		if restricted_roles, ok := d.GetOk("options_list.0.restricted_roles"); ok {
+			roles := []string{}
+			for _, role := range restricted_roles.(*schema.Set).List() {
+				roles = append(roles, role.(string))
+			}
+			options.SetRestrictedRoles(roles)
 		}
 	}
 
@@ -2208,6 +2230,9 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	if actualOptions.HasMonitorPriority() {
 		localOptionsList["monitor_priority"] = actualOptions.GetMonitorPriority()
 	}
+	if actualOptions.HasRestrictedRoles() {
+		localOptionsList["restricted_roles"] = actualOptions.GetRestrictedRoles()
+	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)
 	localOptionsLists[0] = localOptionsList
@@ -2543,6 +2568,9 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 	if actualOptions.HasMonitorPriority() {
 		localOptionsList["monitor_priority"] = actualOptions.GetMonitorPriority()
+	}
+	if actualOptions.HasRestrictedRoles() {
+		localOptionsList["restricted_roles"] = actualOptions.GetRestrictedRoles()
 	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)
