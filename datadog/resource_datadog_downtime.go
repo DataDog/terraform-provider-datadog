@@ -496,6 +496,9 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild, upd
 			return diag.FromErr(err)
 		}
 	}
+	if err := d.Set("mute_first_recovery_notification", dt.GetMuteFirstRecoveryNotification()); err != nil {
+		return diag.FromErr(err)
+	}
 	if err := d.Set("timezone", dt.GetTimezone()); err != nil {
 		return diag.FromErr(err)
 	}
