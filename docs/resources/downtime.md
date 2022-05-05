@@ -55,7 +55,7 @@ resource "datadog_downtime" "foo" {
 - **message** (String) An optional message to provide when creating the downtime, can include notification handles
 - **monitor_id** (Number) When specified, this downtime will only apply to this monitor
 - **monitor_tags** (Set of String) A list of monitor tags (up to 32) to base the scheduled downtime on. Only monitors that have all selected tags are silenced
-- **mute_first_recovery_notification** (Boolean) When true the first recovery notification during the downtime will be muted
+- **mute_first_recovery_notification** (Boolean) When true the first recovery notification during the downtime is muted
 - **recurrence** (Block List, Max: 1) Optional recurring schedule for this downtime (see [below for nested schema](#nestedblock--recurrence))
 - **start** (Number) Specify when this downtime should start
 - **start_date** (String) String representing date and time to start the downtime in RFC3339 format.
