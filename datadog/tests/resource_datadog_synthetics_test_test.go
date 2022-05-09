@@ -3075,37 +3075,7 @@ func createSyntheticsBrowserTestStepUserLocatorNoElement(ctx context.Context, ac
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "type", "browser"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_definition.0.url", "https://www.datadoghq.com"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "device_ids.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "device_ids.0", "laptop_large"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.tick_every", "900"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.min_failure_duration", "0"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "tags.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "status", "paused"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.0.name", "click step"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.0.type", "click"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.params.0.element", MMLCustomUserLocatorNoElement),
 		),
