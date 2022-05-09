@@ -1,0 +1,22 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1649937342","options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900},"status":"paused","steps":[{"allowFailure":false,"isCritical":false,"name":"click step","params":{"element":{"userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}},"timeout":0,"type":"click"}],"tags":["foo:bar"],"type":"browser"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/browser
+    method: POST
+  response:
+    body: '{"errors": ["Invalid steps data: Step 0 has invalid params: ''bucketKey'' is a required property"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 400 Bad Request
+    code: 400
+    duration: ""
