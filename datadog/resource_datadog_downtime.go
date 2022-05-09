@@ -271,6 +271,7 @@ func resourceDatadogDowntime() *schema.Resource {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Description: "When true the first recovery notification during the downtime will be muted",
+				Default:     false,
 			},
 		},
 	}
