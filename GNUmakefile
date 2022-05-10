@@ -67,8 +67,8 @@ update-go-client:
 	go mod tidy
 
 get-test-deps:
-	gotestsum --version || (cd `mktemp -d`; GO111MODULE=off GOFLAGS='' go get -u gotest.tools/gotestsum; cd -)
-	which goimports || (cd `mktemp -d`; GO111MODULE=off GOFLAGS='' go get -u golang.org/x/tools/cmd/goimports; cd -)
+	gotestsum --version || go install gotest.tools/gotestsum@latest
+	which goimports || go install golang.org/x/tools/cmd/goimports@latest
 
 license-check:
 	@sh -c "'$(CURDIR)/scripts/license-check.sh'"

@@ -47,6 +47,26 @@ func resourceDatadogSyntheticsPrivateLocation() *schema.Resource {
 				Computed:    true,
 				Sensitive:   true,
 			},
+			"metadata": {
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
+				Description: "The private location metadata",
+				Elem: &schema.Resource{
+					Schema: syntheticsPrivateLocationMetadata(),
+				},
+			},
+		},
+	}
+}
+
+func syntheticsPrivateLocationMetadata() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"restricted_roles": {
+			Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
+			Type:        schema.TypeSet,
+			Optional:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 	}
 }
@@ -157,6 +177,19 @@ func buildSyntheticsPrivateLocationStruct(d *schema.ResourceData) *datadogV1.Syn
 		syntheticsPrivateLocation.SetDescription(description.(string))
 	}
 
+	if metadata, ok := d.GetOk("metadata"); ok {
+		privateLocationMetadata := datadogV1.NewSyntheticsPrivateLocationMetadataWithDefaults()
+		// MaxItems is set to 1 so we are sure there is only one metadata to check
+		if roles, ok := metadata.([]interface{})[0].(map[string]interface{})["restricted_roles"].(*schema.Set); ok {
+			restricted_roles := []string{}
+			for _, role := range roles.List() {
+				restricted_roles = append(restricted_roles, role.(string))
+			}
+			privateLocationMetadata.SetRestrictedRoles(restricted_roles)
+		}
+		syntheticsPrivateLocation.SetMetadata(*privateLocationMetadata)
+	}
+
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
 		for _, s := range attr.([]interface{}) {
@@ -172,6 +205,11 @@ func updateSyntheticsPrivateLocationLocalState(d *schema.ResourceData, synthetic
 	d.Set("name", syntheticsPrivateLocation.GetName())
 	d.Set("description", syntheticsPrivateLocation.GetDescription())
 	d.Set("tags", syntheticsPrivateLocation.Tags)
+	localMetadata := make(map[string][]string)
+	metadata := syntheticsPrivateLocation.GetMetadata()
+	restrictedRoles := metadata.GetRestrictedRoles()
+	localMetadata["restricted_roles"] = restrictedRoles
+	d.Set("metadata", []map[string][]string{localMetadata})
 
 	return nil
 }

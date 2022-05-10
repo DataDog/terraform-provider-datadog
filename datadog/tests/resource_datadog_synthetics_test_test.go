@@ -551,6 +551,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0_list.#", "0"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.restricted_roles.0", "abc"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "message", "Notify @datadog.user"),
@@ -645,6 +647,7 @@ resource "datadog_synthetics_test" "foo" {
 		}
 		monitor_name = "%[1]s-monitor"
 		monitor_priority = 5
+		restricted_roles = ["abc"]
 	}
 
 	name = "%[1]s"
@@ -2033,6 +2036,8 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_priority", "5"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.restricted_roles.0", "abc"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
@@ -2126,6 +2131,7 @@ resource "datadog_synthetics_test" "bar" {
 		}
 		monitor_name = "%[1]s-monitor"
 		monitor_priority = 5
+		restricted_roles = ["abc"]
 
 		no_screenshot = true
 	}
@@ -3120,6 +3126,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "options_list.0.restricted_roles.0", "abc"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "message", "Notify @datadog.user"),
@@ -3246,6 +3254,7 @@ resource "datadog_synthetics_test" "multi" {
     tick_every           = 900
     min_failure_duration = 0
     min_location_failed  = 1
+	restricted_roles     = ["abc"]
   }
   name    = "%[1]s"
   message = "Notify @datadog.user"
