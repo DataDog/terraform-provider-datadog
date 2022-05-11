@@ -22,18 +22,18 @@ data "datadog_cloud_workload_security_agent_rules" "test" {
 
 ### Read-Only
 
-- **agent_rules** (List of Object) List of Agent rules. (see [below for nested schema](#nestedatt--agent_rules))
-- **id** (String) The ID of this resource.
+- `agent_rules` (List of Object) List of Agent rules. (see [below for nested schema](#nestedatt--agent_rules))
+- `id` (String) The ID of this resource.
 
 <a id="nestedatt--agent_rules"></a>
 ### Nested Schema for `agent_rules`
 
 Read-Only:
 
-- **description** (String)
-- **enabled** (Boolean)
-- **expression** (String)
-- **id** (String)
-- **name** (String)
+- `description` (String)
+- `enabled` (Boolean)
+- `expression` (String)
+- `id` (String)
+- `name` (String)
 
 

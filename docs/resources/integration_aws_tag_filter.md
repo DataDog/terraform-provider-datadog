@@ -26,13 +26,13 @@ resource "datadog_integration_aws_tag_filter" "foo" {
 
 ### Required
 
-- **account_id** (String) Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.
-- **namespace** (String) The namespace associated with the tag filter entry. Valid values are `elb`, `application_elb`, `sqs`, `rds`, `custom`, `network_elb`, `lambda`.
-- **tag_filter_str** (String) The tag filter string.
+- `account_id` (String) Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.
+- `namespace` (String) The namespace associated with the tag filter entry. Valid values are `elb`, `application_elb`, `sqs`, `rds`, `custom`, `network_elb`, `lambda`.
+- `tag_filter_str` (String) The tag filter string.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 ## Import
 
