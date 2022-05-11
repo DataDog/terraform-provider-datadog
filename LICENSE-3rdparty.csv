@@ -11,7 +11,7 @@ go.sum,github.com/agext/levenshtein,Apache-2.0,2016 ALRUX Inc.
 go.sum,github.com/agl/ed25519,BSD-3-Clause,2012 The Go Authors
 go.sum,github.com/apparentlymart/go-cidr,MIT,2015 Martin Atkins
 go.sum,github.com/apparentlymart/go-dump,MPL-2.0,
-go.sum,github.com/apparentlymart/go-textsegit g,MIT and Apache-2.0 and Unicode-DFS-2016,2017 Martin Atkins and 2014 Couchbase Inc. and 2016 Unicode Inc
+go.sum,github.com/apparentlymart/go-textseg,MIT and Apache-2.0 and Unicode-DFS-2016,2017 Martin Atkins and 2014 Couchbase Inc. and 2016 Unicode Inc
 go.sum,github.com/armon/go-radix,MIT,2014 Armon Dadgar
 go.sum,github.com/aslakhellesoy/gox,MPL-2.0,
 go.sum,github.com/aws/aws-sdk-go,Apache-2.0,2014-2015 Stripe Inc. and 2015 Amazon.com Inc.
