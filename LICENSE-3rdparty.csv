@@ -11,7 +11,7 @@ go.sum,github.com/agext/levenshtein,Apache-2.0,2016 ALRUX Inc.
 go.sum,github.com/agl/ed25519,BSD-3-Clause,2012 The Go Authors
 go.sum,github.com/apparentlymart/go-cidr,MIT,2015 Martin Atkins
 go.sum,github.com/apparentlymart/go-dump,MPL-2.0,
-go.sum,github.com/apparentlymart/go-textseg,MIT and Apache-2.0 and Unicode-DFS-2016,2017 Martin Atkins and 2014 Couchbase Inc. and 2016 Unicode Inc
+go.sum,github.com/apparentlymart/go-textsegit g,MIT and Apache-2.0 and Unicode-DFS-2016,2017 Martin Atkins and 2014 Couchbase Inc. and 2016 Unicode Inc
 go.sum,github.com/armon/go-radix,MIT,2014 Armon Dadgar
 go.sum,github.com/aslakhellesoy/gox,MPL-2.0,
 go.sum,github.com/aws/aws-sdk-go,Apache-2.0,2014-2015 Stripe Inc. and 2015 Amazon.com Inc.
@@ -181,7 +181,6 @@ go.sum,github.com/Masterminds/sprig,MIT,2013-2020 Masterminds
 go.sum,github.com/andybalholm/crlf,BSD-2-Clause,2015 Andy Balholm.
 go.sum,github.com/apparentlymart/go-textseg/v12,MIT,2017 Martin Atkins
 go.sum,github.com/hashicorp/terraform-plugin-docs,MPL-2.0,
-go.sum,github.com/zippolyte/terraform-plugin-docs,MPL-2.0,
 go.sum,github.com/huandu/xstrings,MIT,2015 Huan Du.
 go.sum,github.com/russross/blackfriday,BSD-2-Clause,2011 Russ Ross
 go.sum,github.com/vmihailenco/msgpack/v4,BSD-2-Clause,2013 The github.com/vmihailenco/msgpack Authors.
@@ -209,3 +208,16 @@ go.sum,github.com/google/gofuzz,Apache-2.0,
 go.sum,github.com/hashicorp/hc-install,MPL-2.0,
 go.sum,github.com/hashicorp/terraform-plugin-log,MPL-2.0,
 go.sum,github.com/hashicorp/terraform-registry-address,MPL-2.0,
+go.sum,github.com/Masterminds/semver/v3,MIT,Copyright (C) 2014-2019, Matt Butcher and Matt Farina
+go.sum,github.com/Masterminds/sprig/v3,MIT,Copyright (C) 2013-2020 Masterminds
+go.sum,github.com/antihax/optional,MIT,Copyright (c) 2016 Adam Hintz
+go.sum,github.com/cespare/xxhash/v2,MIT,Copyright (c) 2016 Caleb Spare
+go.sum,github.com/cncf/xds/go,Apache-2.0,
+go.sum,github.com/ghodss/yaml,MIT,Copyright (c) 2014 Sam Ghods
+go.sum,github.com/grpc-ecosystem/grpc-gateway,BSD-3-Clause,Copyright (c) 2015, Gengo, Inc.
+go.sum,github.com/rogpeppe/fastuuid,BSD-3-Clause,Copyright © 2014, Roger Peppe
+go.sum,github.com/shopspring/decimal,MIT,Copyright (c) 2015 Spring, Inc.
+go.sum,github.com/skarimo/terraform-plugin-docs,MPL-2.0,
+go.sum,github.com/spf13/cast,MIT,Copyright (c) 2014 Steve Francia
+go.sum,go.opentelemetry.io/proto/otlp,Apache-2.0,
+go.sum,google.golang.org/grpc/cmd/protoc-gen-go-grpc,Apache-2.0,
