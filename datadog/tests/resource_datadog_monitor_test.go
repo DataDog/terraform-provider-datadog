@@ -830,8 +830,8 @@ func TestAccDatadogMonitor_RestrictedRoles(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", monitorName),
-					resource.TestCheckNoResourceAttr(
-						"datadog_monitor.foo", "restricted_roles"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "restricted_roles.#", "0"),
 				),
 			},
 		},
