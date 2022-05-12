@@ -82,6 +82,11 @@ func resourceDatadogLogsArchive() *schema.Resource {
 				Optional:    true,
 				Default:     false,
 			},
+			"rehydration_max_scan_size_in_gb": {
+				Description: "To limit the rehydration scan size for the archive, set a value in GB.",
+				Type:        schema.TypeInt,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -131,6 +136,14 @@ func updateLogsArchiveState(d *schema.ResourceData, ddArchive *datadogV2.LogsArc
 	if err = d.Set("include_tags", ddArchive.Data.Attributes.IncludeTags); err != nil {
 		return diag.FromErr(err)
 	}
+
+	rehydrationMaxSizeValue := ddArchive.Data.Attributes.RehydrationMaxScanSizeInGb.Get()
+	if rehydrationMaxSizeValue != nil {
+		if err = d.Set("rehydration_max_scan_size_in_gb", rehydrationMaxSizeValue); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
 	return nil
 }
 
@@ -249,6 +262,14 @@ func buildDatadogArchiveCreateReq(d *schema.ResourceData) (*datadogV2.LogsArchiv
 	)
 	attributes.SetRehydrationTags(getRehydrationTags(d))
 	attributes.SetIncludeTags(d.Get("include_tags").(bool))
+
+	rehydrationMaxSizeValue, isRehydrationMaxSizeSet := d.GetOk("rehydration_max_scan_size_in_gb")
+	if isRehydrationMaxSizeSet {
+		attributes.SetRehydrationMaxScanSizeInGb(int64(rehydrationMaxSizeValue.(int)))
+	} else {
+		attributes.SetRehydrationMaxScanSizeInGbNil()
+	}
+
 	definition := datadogV2.NewLogsArchiveCreateRequestDefinitionWithDefaults()
 	definition.SetAttributes(*attributes)
 	archive.SetData(*definition)

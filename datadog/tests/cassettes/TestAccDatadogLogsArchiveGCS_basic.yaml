@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708@awesome-project-id.iam.gserviceaccount.com","host_filters":"foo:bar,buzz:lightyear","private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708","token_uri":"https://oauth2.googleapis.com/token","type":"service_account"}
+      {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491@awesome-project-id.iam.gserviceaccount.com","host_filters":"foo:bar,buzz:lightyear","private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491","token_uri":"https://oauth2.googleapis.com/token","type":"service_account"}
     form: {}
     headers:
       Accept:
@@ -29,7 +29,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Content-Type:
       - application/json
@@ -38,7 +38,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"destination":{"bucket":"dd-logs-test-datadog-api-client-go","integration":{"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708"},"path":"/path/blah","type":"gcs"},"include_tags":false,"name":"my first gcs archive","query":"service:tata","rehydration_tags":[]},"type":"archives"}}
+      {"data":{"attributes":{"destination":{"bucket":"dd-logs-test-datadog-api-client-go","integration":{"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491"},"path":"/path/blah","type":"gcs"},"include_tags":false,"name":"my first gcs archive","query":"service:tata","rehydration_max_scan_size_in_gb":null,"rehydration_tags":[]},"type":"archives"}}
     form: {}
     headers:
       Accept:
@@ -48,7 +48,7 @@ interactions:
     url: https://api.datadoghq.com/api/v2/logs/config/archives
     method: POST
   response:
-    body: '{"data":{"type":"archives","id":"HfE-fvJxSNK91EoyrbAsdw","attributes":{"name":"my first gcs archive","query":"service:tata","state":"UNKNOWN","destination":{"bucket":"dd-logs-test-datadog-api-client-go","path":"/path/blah","type":"gcs","integration":{"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708@awesome-project-id.iam.gserviceaccount.com"}},"rehydration_tags":[],"include_tags":false}}}'
+    body: '{"data":{"type":"archives","id":"ZoFv7q-jTbK6Gmf71THSag","attributes":{"name":"my first gcs archive","query":"service:tata","state":"UNKNOWN","destination":{"bucket":"dd-logs-test-datadog-api-client-go","path":"/path/blah","type":"gcs","integration":{"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491@awesome-project-id.iam.gserviceaccount.com"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null}}}'
     headers:
       Content-Type:
       - application/json
@@ -61,10 +61,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/HfE-fvJxSNK91EoyrbAsdw
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/ZoFv7q-jTbK6Gmf71THSag
     method: GET
   response:
-    body: '{"data":{"type":"archives","id":"HfE-fvJxSNK91EoyrbAsdw","attributes":{"name":"my first gcs archive","query":"service:tata","state":"UNKNOWN","destination":{"bucket":"dd-logs-test-datadog-api-client-go","path":"/path/blah","type":"gcs","integration":{"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708@awesome-project-id.iam.gserviceaccount.com"}},"rehydration_tags":[],"include_tags":false}}}'
+    body: '{"data":{"type":"archives","id":"ZoFv7q-jTbK6Gmf71THSag","attributes":{"name":"my first gcs archive","query":"service:tata","state":"UNKNOWN","destination":{"bucket":"dd-logs-test-datadog-api-client-go","path":"/path/blah","type":"gcs","integration":{"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491@awesome-project-id.iam.gserviceaccount.com"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null}}}'
     headers:
       Content-Type:
       - application/json
@@ -80,7 +80,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
+    body: '[{"automute":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491@awesome-project-id.iam.gserviceaccount.com","errors":[],"host_filters":"foo:bar,buzz:lightyear"}]'
     headers:
       Content-Type:
       - application/json
@@ -93,10 +93,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/HfE-fvJxSNK91EoyrbAsdw
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/ZoFv7q-jTbK6Gmf71THSag
     method: GET
   response:
-    body: '{"data":{"type":"archives","id":"HfE-fvJxSNK91EoyrbAsdw","attributes":{"name":"my first gcs archive","query":"service:tata","state":"UNKNOWN","destination":{"bucket":"dd-logs-test-datadog-api-client-go","path":"/path/blah","type":"gcs","integration":{"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708@awesome-project-id.iam.gserviceaccount.com"}},"rehydration_tags":[],"include_tags":false}}}'
+    body: '{"data":{"type":"archives","id":"ZoFv7q-jTbK6Gmf71THSag","attributes":{"name":"my first gcs archive","query":"service:tata","state":"UNKNOWN","destination":{"bucket":"dd-logs-test-datadog-api-client-go","path":"/path/blah","type":"gcs","integration":{"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491","client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491@awesome-project-id.iam.gserviceaccount.com"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null}}}'
     headers:
       Content-Type:
       - application/json
@@ -108,18 +108,18 @@ interactions:
     form: {}
     headers:
       Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/HfE-fvJxSNK91EoyrbAsdw
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/ZoFv7q-jTbK6Gmf71THSag
     method: DELETE
   response:
     body: ""
-    headers:
+    headers: {}
     status: 204 No Content
     code: 204
     duration: ""
 - request:
     body: |
-      {"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1632987708"}
+      {"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1652348491"}
     form: {}
     headers:
       Accept:
@@ -142,10 +142,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/HfE-fvJxSNK91EoyrbAsdw
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/ZoFv7q-jTbK6Gmf71THSag
     method: GET
   response:
-    body: '{"errors": ["Archive HfE-fvJxSNK91EoyrbAsdw not found"]}'
+    body: '{"errors": ["Archive ZoFv7q-jTbK6Gmf71THSag not found"]}'
     headers:
       Content-Type:
       - application/json
@@ -161,7 +161,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/gcp
     method: GET
   response:
-    body: '[{"automute":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"},{"automute":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","errors":[],"host_filters":"fake:tag,example:test"}]'
+    body: '[]'
     headers:
       Content-Type:
       - application/json

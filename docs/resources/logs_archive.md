@@ -38,6 +38,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
 - **azure_archive** (Block List, Max: 1) Definition of an azure archive. (see [below for nested schema](#nestedblock--azure_archive))
 - **gcs_archive** (Block List, Max: 1) Definition of a GCS archive. (see [below for nested schema](#nestedblock--gcs_archive))
 - **include_tags** (Boolean) To store the tags in the archive, set the value `true`. If it is set to `false`, the tags will be dropped when the logs are sent to the archive.
+- **rehydration_max_scan_size_in_gb** (Number) To limit the rehydration scan size for the archive, set a value in GB.
 - **rehydration_tags** (List of String) An array of tags to add to rehydrated logs from an archive.
 - **s3_archive** (Block List, Max: 1) Definition of an s3 archive. (see [below for nested schema](#nestedblock--s3_archive))
 
