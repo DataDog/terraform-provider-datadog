@@ -69,6 +69,8 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 						"datadog_logs_archive.my_azure_archive", "azure_archive.0.path", "/path/blou"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "include_tags", "false"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "rehydration_max_scan_size_in_gb"),
 				),
 			},
 		},
@@ -129,6 +131,8 @@ func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 						"datadog_logs_archive.my_gcs_archive", "gcs_archive.0.path", "/path/blah"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_gcs_archive", "include_tags", "false"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "rehydration_max_scan_size_in_gb"),
 				),
 			},
 		},
@@ -155,6 +159,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
   }
   rehydration_tags = ["team:intake", "team:app"]
   include_tags = true
+	rehydration_max_scan_size_in_gb = 123
 }`, uniq, uniq)
 }
 
@@ -191,6 +196,8 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 						"datadog_logs_archive.my_s3_archive", "rehydration_tags.1", "team:app"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "include_tags", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "123"),
 				),
 			},
 		},
@@ -216,6 +223,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
 	role_name    = "testacc-datadog-integration-role"
   }
   include_tags = false
+	rehydration_max_scan_size_in_gb = 345
 }`, uniq, uniq)
 }
 
@@ -242,6 +250,8 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.role_name", "testacc-datadog-integration-role"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.path", "/path/foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "123"),
 				),
 			},
 			{
@@ -261,6 +271,8 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.role_name", "testacc-datadog-integration-role"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.path", "/path/foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "345"),
 				),
 			},
 		},
