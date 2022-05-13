@@ -24,12 +24,12 @@ resource "datadog_application_key" "foo" {
 
 ### Required
 
-- **name** (String) Name for Application Key.
+- `name` (String) Name for Application Key.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
-- **key** (String, Sensitive) The value of the Application Key.
+- `id` (String) The ID of this resource.
+- `key` (String, Sensitive) The value of the Application Key.
 
 ## Import
 

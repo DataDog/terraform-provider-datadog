@@ -29,18 +29,18 @@ resource "datadog_webhook" "foo" {
 
 ### Required
 
-- **name** (String) The name of the webhook. It corresponds with `<WEBHOOK_NAME>`.
-- **url** (String) The URL of the webhook.
+- `name` (String) The name of the webhook. It corresponds with `<WEBHOOK_NAME>`.
+- `url` (String) The URL of the webhook.
 
 ### Optional
 
-- **custom_headers** (String) The headers attached to the webhook.
-- **encode_as** (String) Encoding type. Valid values are `json`, `form`.
-- **payload** (String) The payload of the webhook.
+- `custom_headers` (String) The headers attached to the webhook.
+- `encode_as` (String) Encoding type. Valid values are `json`, `form`.
+- `payload` (String) The payload of the webhook.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 ## Import
 

@@ -17,13 +17,13 @@ Use this data source to retrieve a Datadog Synthetic Test.
 
 ### Required
 
-- **test_id** (String) The synthetic test id to search for
+- `test_id` (String) The synthetic test id to search for
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
-- **name** (String) The name of the synthetic test.
-- **tags** (List of String) A list of tags assigned to the synthetic test.
-- **url** (String) The start URL of the synthetic test.
+- `id` (String) The ID of this resource.
+- `name` (String) The name of the synthetic test.
+- `tags` (List of String) A list of tags assigned to the synthetic test.
+- `url` (String) The start URL of the synthetic test.
 
 

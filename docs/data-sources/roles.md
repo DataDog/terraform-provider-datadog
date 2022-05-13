@@ -23,20 +23,20 @@ data "datadog_roles" "foo" {
 
 ### Optional
 
-- **filter** (String) Filter all roles by the given string.
+- `filter` (String) Filter all roles by the given string.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
-- **roles** (List of Object) List of Roles (see [below for nested schema](#nestedatt--roles))
+- `id` (String) The ID of this resource.
+- `roles` (List of Object) List of Roles (see [below for nested schema](#nestedatt--roles))
 
 <a id="nestedatt--roles"></a>
 ### Nested Schema for `roles`
 
 Read-Only:
 
-- **id** (String)
-- **name** (String)
-- **user_count** (Number)
+- `id` (String)
+- `name` (String)
+- `user_count` (Number)
 
 

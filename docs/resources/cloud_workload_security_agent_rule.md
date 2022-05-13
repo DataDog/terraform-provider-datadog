@@ -26,17 +26,17 @@ resource "datadog_cloud_workload_security_agent_rule" "my_agent_rule" {
 
 ### Required
 
-- **expression** (String) The SECL expression of the Agent rule.
-- **name** (String) The name of the Agent rule.
+- `expression` (String) The SECL expression of the Agent rule.
+- `name` (String) The name of the Agent rule.
 
 ### Optional
 
-- **description** (String) The description of the Agent rule.
-- **enabled** (Boolean) Whether the Agent rule is enabled.
+- `description` (String) The description of the Agent rule.
+- `enabled` (Boolean) Whether the Agent rule is enabled.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 ## Import
 
