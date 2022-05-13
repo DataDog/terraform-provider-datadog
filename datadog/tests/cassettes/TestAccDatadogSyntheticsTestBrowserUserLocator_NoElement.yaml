@@ -1,0 +1,121 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1652086110","options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900},"status":"paused","steps":[{"allowFailure":false,"isCritical":false,"name":"click step","params":{"element":{"userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}},"timeout":0,"type":"click"}],"tags":["foo:bar"],"type":"browser"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/browser
+    method: POST
+  response:
+    body: '{"status":"paused","public_id":"fgm-bin-itc","tags":["foo:bar"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1652086110","monitor_id":70988880,"type":"browser","created_at":"2022-05-09T08:48:50.814826+00:00","modified_at":"2022-05-09T08:48:50.814826+00:00","steps":[{"name":"click step","allowFailure":false,"params":{"element":{"userLocator":{"values":[{"type":"css","value":"user-locator-test"}],"failTestOnCannotLocate":true}}},"timeout":0,"isCritical":false,"type":"click"}],"config":{"variables":[],"request":{"url":"https://www.datadoghq.com","method":"GET"},"assertions":[],"configVariables":[]},"options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/fgm-bin-itc
+    method: GET
+  response:
+    body: '{"status":"paused","public_id":"fgm-bin-itc","tags":["foo:bar"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1652086110","monitor_id":70988880,"type":"browser","created_at":"2022-05-09T08:48:50.814826+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-05-09T08:48:50.814826+00:00","steps":[{"name":"click step","allowFailure":false,"params":{"element":{"userLocator":{"values":[{"type":"css","value":"user-locator-test"}],"failTestOnCannotLocate":true}}},"timeout":0,"isCritical":false,"type":"click"}],"config":{"variables":[],"request":{"url":"https://www.datadoghq.com","method":"GET"},"assertions":[],"configVariables":[]},"options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/fgm-bin-itc
+    method: GET
+  response:
+    body: '{"status":"paused","public_id":"fgm-bin-itc","tags":["foo:bar"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1652086110","monitor_id":70988880,"type":"browser","created_at":"2022-05-09T08:48:50.814826+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-05-09T08:48:50.814826+00:00","config":{"variables":[],"request":{"url":"https://www.datadoghq.com","method":"GET"},"assertions":[],"configVariables":[]},"options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/fgm-bin-itc
+    method: GET
+  response:
+    body: '{"status":"paused","public_id":"fgm-bin-itc","tags":["foo:bar"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1652086110","monitor_id":70988880,"type":"browser","created_at":"2022-05-09T08:48:50.814826+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-05-09T08:48:50.814826+00:00","config":{"variables":[],"request":{"url":"https://www.datadoghq.com","method":"GET"},"assertions":[],"configVariables":[]},"options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/fgm-bin-itc
+    method: GET
+  response:
+    body: '{"status":"paused","public_id":"fgm-bin-itc","tags":["foo:bar"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1652086110","monitor_id":70988880,"type":"browser","created_at":"2022-05-09T08:48:50.814826+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-05-09T08:48:50.814826+00:00","steps":[{"name":"click step","allowFailure":false,"params":{"element":{"userLocator":{"values":[{"type":"css","value":"user-locator-test"}],"failTestOnCannotLocate":true}}},"timeout":0,"isCritical":false,"type":"click"}],"config":{"variables":[],"request":{"url":"https://www.datadoghq.com","method":"GET"},"assertions":[],"configVariables":[]},"options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"public_ids":["fgm-bin-itc"]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+    method: POST
+  response:
+    body: '{"deleted_tests":[{"deleted_at":"2022-05-09T08:49:21.332632+00:00","public_id":"fgm-bin-itc"}]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/fgm-bin-itc
+    method: GET
+  response:
+    body: '{"errors": ["Synthetics test not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""

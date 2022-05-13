@@ -443,6 +443,22 @@ func TestAccDatadogSyntheticsTestBrowserUserLocator_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	testName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsBrowserTestStepUserLocatorNoElement(ctx, accProvider, t, testName),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -3051,6 +3067,21 @@ func createSyntheticsBrowserTestStepUserLocator(ctx context.Context, accProvider
 	}
 }
 
+const MMLCustomUserLocatorNoElement = `{"userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}`
+
+func createSyntheticsBrowserTestStepUserLocatorNoElement(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsBrowserTestUserLocatorNoElementConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.params.0.element", MMLCustomUserLocatorNoElement),
+		),
+	}
+}
+
 func createSyntheticsBrowserTestUserLocatorConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_synthetics_test" "bar" {
@@ -3091,6 +3122,46 @@ resource "datadog_synthetics_test" "bar" {
 				"targetOuterHTML": "img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...",
 				"url": "https://www.datadoghq.com/config-updated",
 			})
+			element_user_locator {
+				fail_test_on_cannot_locate = true
+				value {
+					type = "css"
+					value = "user-locator-test"
+				}
+			}
+		}
+	}
+}`, uniq)
+}
+
+func createSyntheticsBrowserTestUserLocatorNoElementConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+	type = "browser"
+
+	request_definition {
+		method = "GET"
+		url = "https://www.datadoghq.com"
+	}
+
+	device_ids = [ "laptop_large" ]
+	locations = [ "aws:eu-central-1" ]
+	options_list {
+		tick_every = 900
+		min_failure_duration = 0
+		min_location_failed = 1
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar"]
+
+	status = "paused"
+
+	browser_step {
+		name = "click step"
+		type = "click"
+		params {
 			element_user_locator {
 				fail_test_on_cannot_locate = true
 				value {

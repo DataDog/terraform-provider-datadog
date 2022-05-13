@@ -1845,9 +1845,11 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 						"values":                 []map[string]interface{}{values[0].(map[string]interface{})},
 					}
 
-					var stepElement interface{}
-					utils.GetMetadataFromJSON([]byte(stepParamsMap["element"].(string)), &stepElement)
-					stepElement.(map[string]interface{})["userLocator"] = userLocator
+					stepElement := make(map[string]interface{})
+					if stepParamsElement, ok := stepParamsMap["element"]; ok {
+						utils.GetMetadataFromJSON([]byte(stepParamsElement.(string)), &stepElement)
+					}
+					stepElement["userLocator"] = userLocator
 					params["element"] = stepElement
 				}
 			}
