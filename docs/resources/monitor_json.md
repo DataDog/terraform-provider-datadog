@@ -47,15 +47,15 @@ EOF
 
 ### Required
 
-- **monitor** (String) The JSON formatted definition of the monitor.
+- `monitor` (String) The JSON formatted definition of the monitor.
 
 ### Optional
 
-- **url** (String) The URL of the monitor.
+- `url` (String) The URL of the monitor.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 ## Import
 

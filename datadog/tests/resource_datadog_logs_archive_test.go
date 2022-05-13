@@ -53,7 +53,6 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 				Config: archiveAzureConfigForCreation(tenantName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckArchiveExists(accProvider),
-					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_azure_archive", "azure"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "name", "my first azure archive"),
 					resource.TestCheckResourceAttr(
@@ -241,7 +240,6 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 				Config: archiveS3ConfigForCreation(accountID),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckArchiveExists(accProvider),
-					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_s3_archive", "s3_archive"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive"),
 					resource.TestCheckResourceAttr(
@@ -259,7 +257,6 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 			{
 				Config: archiveS3ConfigForUpdate(accountID),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_s3_archive", "s3"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive after update"),
 					resource.TestCheckResourceAttr(

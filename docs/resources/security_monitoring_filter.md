@@ -36,27 +36,27 @@ resource "datadog_security_monitoring_filter" "my_filter" {
 
 ### Required
 
-- **is_enabled** (Boolean) Whether the security filter is enabled.
-- **name** (String) The name of the security filter.
-- **query** (String) The query of the security filter.
+- `is_enabled` (Boolean) Whether the security filter is enabled.
+- `name` (String) The name of the security filter.
+- `query` (String) The query of the security filter.
 
 ### Optional
 
-- **exclusion_filter** (Block List) Exclusion filters to exclude some logs from the security filter. (see [below for nested schema](#nestedblock--exclusion_filter))
-- **filtered_data_type** (String) The filtered data type. Valid values are `logs`.
+- `exclusion_filter` (Block List) Exclusion filters to exclude some logs from the security filter. (see [below for nested schema](#nestedblock--exclusion_filter))
+- `filtered_data_type` (String) The filtered data type. Valid values are `logs`.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
-- **version** (Number) The version of the security filter.
+- `id` (String) The ID of this resource.
+- `version` (Number) The version of the security filter.
 
 <a id="nestedblock--exclusion_filter"></a>
 ### Nested Schema for `exclusion_filter`
 
 Required:
 
-- **name** (String) Exclusion filter name.
-- **query** (String) Exclusion filter query. Logs that match this query are excluded from the security filter.
+- `name` (String) Exclusion filter name.
+- `query` (String) Exclusion filter query. Logs that match this query are excluded from the security filter.
 
 ## Import
 

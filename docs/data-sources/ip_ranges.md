@@ -21,22 +21,22 @@ data "datadog_ip_ranges" "test" {}
 
 ### Read-Only
 
-- **agents_ipv4** (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the Agent endpoint.
-- **agents_ipv6** (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the Agent endpoint.
-- **api_ipv4** (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the API endpoint.
-- **api_ipv6** (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the API endpoint.
-- **apm_ipv4** (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the APM endpoint.
-- **apm_ipv6** (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the APM endpoint.
-- **id** (String) The ID of this resource.
-- **logs_ipv4** (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the Logs endpoint.
-- **logs_ipv6** (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the Logs endpoint.
-- **process_ipv4** (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the Process endpoint.
-- **process_ipv6** (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the Process endpoint.
-- **synthetics_ipv4** (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the Synthetics endpoint.
-- **synthetics_ipv4_by_location** (Map of String) A map of IPv4 prefixes (string of concatenated IPs, delimited by ',') by location.
-- **synthetics_ipv6** (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the Synthetics endpoint.
-- **synthetics_ipv6_by_location** (Map of String) A map of IPv6 prefixes (string of concatenated IPs, delimited by ',') by location.
-- **webhooks_ipv4** (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the Webhooks endpoint.
-- **webhooks_ipv6** (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the Webhooks endpoint.
+- `agents_ipv4` (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the Agent endpoint.
+- `agents_ipv6` (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the Agent endpoint.
+- `api_ipv4` (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the API endpoint.
+- `api_ipv6` (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the API endpoint.
+- `apm_ipv4` (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the APM endpoint.
+- `apm_ipv6` (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the APM endpoint.
+- `id` (String) The ID of this resource.
+- `logs_ipv4` (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the Logs endpoint.
+- `logs_ipv6` (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the Logs endpoint.
+- `process_ipv4` (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the Process endpoint.
+- `process_ipv6` (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the Process endpoint.
+- `synthetics_ipv4` (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the Synthetics endpoint.
+- `synthetics_ipv4_by_location` (Map of String) A map of IPv4 prefixes (string of concatenated IPs, delimited by ',') by location.
+- `synthetics_ipv6` (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the Synthetics endpoint.
+- `synthetics_ipv6_by_location` (Map of String) A map of IPv6 prefixes (string of concatenated IPs, delimited by ',') by location.
+- `webhooks_ipv4` (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the Webhooks endpoint.
+- `webhooks_ipv6` (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the Webhooks endpoint.
 
 

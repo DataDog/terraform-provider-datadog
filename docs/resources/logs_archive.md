@@ -30,35 +30,35 @@ resource "datadog_logs_archive" "my_s3_archive" {
 
 ### Required
 
-- **name** (String) Your archive name.
-- **query** (String) The archive query/filter. Logs matching this query are included in the archive.
+- `name` (String) Your archive name.
+- `query` (String) The archive query/filter. Logs matching this query are included in the archive.
 
 ### Optional
 
-- **azure_archive** (Block List, Max: 1) Definition of an azure archive. (see [below for nested schema](#nestedblock--azure_archive))
-- **gcs_archive** (Block List, Max: 1) Definition of a GCS archive. (see [below for nested schema](#nestedblock--gcs_archive))
-- **include_tags** (Boolean) To store the tags in the archive, set the value `true`. If it is set to `false`, the tags will be dropped when the logs are sent to the archive.
-- **rehydration_max_scan_size_in_gb** (Number) To limit the rehydration scan size for the archive, set a value in GB.
-- **rehydration_tags** (List of String) An array of tags to add to rehydrated logs from an archive.
-- **s3_archive** (Block List, Max: 1) Definition of an s3 archive. (see [below for nested schema](#nestedblock--s3_archive))
+- `azure_archive` (Block List, Max: 1) Definition of an azure archive. (see [below for nested schema](#nestedblock--azure_archive))
+- `gcs_archive` (Block List, Max: 1) Definition of a GCS archive. (see [below for nested schema](#nestedblock--gcs_archive))
+- `include_tags` (Boolean) To store the tags in the archive, set the value `true`. If it is set to `false`, the tags will be dropped when the logs are sent to the archive.
+- `rehydration_max_scan_size_in_gb` (Number) To limit the rehydration scan size for the archive, set a value in GB.
+- `rehydration_tags` (List of String) An array of tags to add to rehydrated logs from an archive.
+- `s3_archive` (Block List, Max: 1) Definition of an s3 archive. (see [below for nested schema](#nestedblock--s3_archive))
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 <a id="nestedblock--azure_archive"></a>
 ### Nested Schema for `azure_archive`
 
 Required:
 
-- **client_id** (String) Your client id.
-- **container** (String) The container where the archive will be stored.
-- **storage_account** (String) The associated storage account.
-- **tenant_id** (String) Your tenant id.
+- `client_id` (String) Your client id.
+- `container` (String) The container where the archive will be stored.
+- `storage_account` (String) The associated storage account.
+- `tenant_id` (String) Your tenant id.
 
 Optional:
 
-- **path** (String) The path where the archive will be stored.
+- `path` (String) The path where the archive will be stored.
 
 
 <a id="nestedblock--gcs_archive"></a>
@@ -66,10 +66,10 @@ Optional:
 
 Required:
 
-- **bucket** (String) Name of your GCS bucket.
-- **client_email** (String) Your client email.
-- **path** (String) Path where the archive will be stored.
-- **project_id** (String) Your project id.
+- `bucket` (String) Name of your GCS bucket.
+- `client_email` (String) Your client email.
+- `path` (String) Path where the archive will be stored.
+- `project_id` (String) Your project id.
 
 
 <a id="nestedblock--s3_archive"></a>
@@ -77,10 +77,10 @@ Required:
 
 Required:
 
-- **account_id** (String) Your AWS account id.
-- **bucket** (String) Name of your s3 bucket.
-- **path** (String) Path where the archive will be stored.
-- **role_name** (String) Your AWS role name
+- `account_id` (String) Your AWS account id.
+- `bucket` (String) Name of your s3 bucket.
+- `path` (String) Path where the archive will be stored.
+- `role_name` (String) Your AWS role name
 
 ## Import
 
