@@ -45,15 +45,15 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
 
 ### Required
 
-- **subdomain** (String) Your PagerDuty account’s personalized subdomain name.
+- `subdomain` (String) Your PagerDuty account’s personalized subdomain name.
 
 ### Optional
 
-- **api_token** (String, Sensitive) Your PagerDuty API token.
-- **schedules** (List of String) Array of your schedule URLs.
+- `api_token` (String, Sensitive) Your PagerDuty API token.
+- `schedules` (List of String) Array of your schedule URLs.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 

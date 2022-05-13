@@ -21,36 +21,36 @@ data "datadog_logs_indexes" "test" {}
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
-- **logs_indexes** (List of Object) List of logs indexes (see [below for nested schema](#nestedatt--logs_indexes))
+- `id` (String) The ID of this resource.
+- `logs_indexes` (List of Object) List of logs indexes (see [below for nested schema](#nestedatt--logs_indexes))
 
 <a id="nestedatt--logs_indexes"></a>
 ### Nested Schema for `logs_indexes`
 
 Read-Only:
 
-- **daily_limit** (Number)
-- **exclusion_filter** (List of Object) (see [below for nested schema](#nestedobjatt--logs_indexes--exclusion_filter))
-- **filter** (List of Object) (see [below for nested schema](#nestedobjatt--logs_indexes--filter))
-- **name** (String)
-- **retention_days** (Number)
+- `daily_limit` (Number)
+- `exclusion_filter` (List of Object) (see [below for nested schema](#nestedobjatt--logs_indexes--exclusion_filter))
+- `filter` (List of Object) (see [below for nested schema](#nestedobjatt--logs_indexes--filter))
+- `name` (String)
+- `retention_days` (Number)
 
 <a id="nestedobjatt--logs_indexes--exclusion_filter"></a>
 ### Nested Schema for `logs_indexes.exclusion_filter`
 
 Read-Only:
 
-- **filter** (List of Object) (see [below for nested schema](#nestedobjatt--logs_indexes--exclusion_filter--filter))
-- **is_enabled** (Boolean)
-- **name** (String)
+- `filter` (List of Object) (see [below for nested schema](#nestedobjatt--logs_indexes--exclusion_filter--filter))
+- `is_enabled` (Boolean)
+- `name` (String)
 
 <a id="nestedobjatt--logs_indexes--exclusion_filter--filter"></a>
 ### Nested Schema for `logs_indexes.exclusion_filter.filter`
 
 Read-Only:
 
-- **query** (String)
-- **sample_rate** (Number)
+- `query` (String)
+- `sample_rate` (Number)
 
 
 
@@ -59,6 +59,6 @@ Read-Only:
 
 Read-Only:
 
-- **query** (String)
+- `query` (String)
 
 

@@ -28,14 +28,14 @@ data "datadog_service_level_objective" "api_slo" {
 
 ### Optional
 
-- **id** (String) A SLO ID to limit the search.
-- **metrics_query** (String) Filter results based on SLO numerator and denominator.
-- **name_query** (String) Filter results based on SLO names.
-- **tags_query** (String) Filter results based on a single SLO tag.
+- `id` (String) A SLO ID to limit the search.
+- `metrics_query` (String) Filter results based on SLO numerator and denominator.
+- `name_query` (String) Filter results based on SLO names.
+- `tags_query` (String) Filter results based on a single SLO tag.
 
 ### Read-Only
 
-- **name** (String) Name of the Datadog service level objective
-- **type** (String) The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object). Available values are: `metric` and `monitor`.
+- `name` (String) Name of the Datadog service level objective
+- `type` (String) The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object). Available values are: `metric` and `monitor`.
 
 
