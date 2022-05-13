@@ -740,6 +740,8 @@ resource "datadog_downtime" "foo" {
     period = 3
   }
 
+  mute_first_recovery_notification = true
+
   message = "%s"
   monitor_tags = ["*"]
 }`, uniq)
