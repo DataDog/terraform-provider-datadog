@@ -42,25 +42,25 @@ resource "datadog_metric_tag_configuration" "example_count_metric" {
 
 ### Required
 
-- **metric_name** (String) The metric name for this resource.
-- **metric_type** (String) The metric's type. This field can't be updated after creation. Valid values are `gauge`, `count`, `rate`, `distribution`.
-- **tags** (Set of String) A list of tag keys that will be queryable for your metric.
+- `metric_name` (String) The metric name for this resource.
+- `metric_type` (String) The metric's type. This field can't be updated after creation. Valid values are `gauge`, `count`, `rate`, `distribution`.
+- `tags` (Set of String) A list of tag keys that will be queryable for your metric.
 
 ### Optional
 
-- **aggregations** (Block Set) A list of queryable aggregation combinations for a count, rate, or gauge metric. By default, count and rate metrics require the (time: sum, space: sum) aggregation and gauge metrics require the (time: avg, space: avg) aggregation. Can only be applied to metrics that have a `metric_type` of count, rate, or gauge. (see [below for nested schema](#nestedblock--aggregations))
-- **include_percentiles** (Boolean) Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a `metric_type` of distribution.
+- `aggregations` (Block Set) A list of queryable aggregation combinations for a count, rate, or gauge metric. By default, count and rate metrics require the (time: sum, space: sum) aggregation and gauge metrics require the (time: avg, space: avg) aggregation. Can only be applied to metrics that have a `metric_type` of count, rate, or gauge. (see [below for nested schema](#nestedblock--aggregations))
+- `include_percentiles` (Boolean) Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a `metric_type` of distribution.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 <a id="nestedblock--aggregations"></a>
 ### Nested Schema for `aggregations`
 
 Required:
 
-- **space** (String) A space aggregation for use in query. Valid values are `avg`, `max`, `min`, `sum`.
-- **time** (String) A time aggregation for use in query. Valid values are `avg`, `count`, `max`, `min`, `sum`.
+- `space` (String) A space aggregation for use in query. Valid values are `avg`, `max`, `min`, `sum`.
+- `time` (String) A time aggregation for use in query. Valid values are `avg`, `count`, `max`, `min`, `sum`.
 
 

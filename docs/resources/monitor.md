@@ -44,60 +44,60 @@ resource "datadog_monitor" "foo" {
 
 ### Required
 
-- **message** (String) A message to include with notifications for this monitor.
+- `message` (String) A message to include with notifications for this monitor.
 
 Email notifications can be sent to specific users by using the same `@username` notation as events.
-- **name** (String) Name of Datadog monitor.
-- **query** (String) The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.
+- `name` (String) Name of Datadog monitor.
+- `query` (String) The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.
 
 **Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).
-- **type** (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`, `error-tracking alert`.
+- `type` (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`, `error-tracking alert`.
 
 ### Optional
 
-- **enable_logs_sample** (Boolean) A boolean indicating whether or not to include a list of log values which triggered the alert. This is only used by log monitors. Defaults to `false`.
-- **escalation_message** (String) A message to include with a re-notification. Supports the `@username` notification allowed elsewhere.
-- **evaluation_delay** (Number) (Only applies to metric alert) Time (in seconds) to delay evaluation, as a non-negative integer.
+- `enable_logs_sample` (Boolean) A boolean indicating whether or not to include a list of log values which triggered the alert. This is only used by log monitors. Defaults to `false`.
+- `escalation_message` (String) A message to include with a re-notification. Supports the `@username` notification allowed elsewhere.
+- `evaluation_delay` (Number) (Only applies to metric alert) Time (in seconds) to delay evaluation, as a non-negative integer.
 
 For example, if the value is set to `300` (5min), the `timeframe` is set to `last_5m` and the time is 7:00, the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor will always have data during evaluation.
-- **force_delete** (Boolean) A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).
-- **groupby_simple_monitor** (Boolean) Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.
-- **include_tags** (Boolean) A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`.
-- **locked** (Boolean, Deprecated) A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`. **Deprecated.** Use `restricted_roles`.
-- **monitor_threshold_windows** (Block List, Max: 1) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors. (see [below for nested schema](#nestedblock--monitor_threshold_windows))
-- **monitor_thresholds** (Block List, Max: 1) Alert thresholds of the monitor. (see [below for nested schema](#nestedblock--monitor_thresholds))
-- **new_group_delay** (Number) The time (in seconds) to skip evaluations for new groups.
+- `force_delete` (Boolean) A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).
+- `groupby_simple_monitor` (Boolean) Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.
+- `include_tags` (Boolean) A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`.
+- `locked` (Boolean, Deprecated) A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`. **Deprecated.** Use `restricted_roles`.
+- `monitor_threshold_windows` (Block List, Max: 1) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors. (see [below for nested schema](#nestedblock--monitor_threshold_windows))
+- `monitor_thresholds` (Block List, Max: 1) Alert thresholds of the monitor. (see [below for nested schema](#nestedblock--monitor_thresholds))
+- `new_group_delay` (Number) The time (in seconds) to skip evaluations for new groups.
 
 `new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.
-- **new_host_delay** (Number, Deprecated) **Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. Defaults to `300`. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host. **Deprecated.** Use `new_group_delay` except when setting `new_host_delay` to zero.
-- **no_data_timeframe** (Number) The number of minutes before a monitor will notify when data stops reporting. Provider defaults to 10 minutes.
+- `new_host_delay` (Number, Deprecated) **Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. Defaults to `300`. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host. **Deprecated.** Use `new_group_delay` except when setting `new_host_delay` to zero.
+- `no_data_timeframe` (Number) The number of minutes before a monitor will notify when data stops reporting. Provider defaults to 10 minutes.
 
 We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.
-- **notify_audit** (Boolean) A boolean indicating whether tagged users will be notified on changes to this monitor. Defaults to `false`.
-- **notify_no_data** (Boolean) A boolean indicating whether this monitor will notify when data stops reporting. Defaults to `false`.
-- **priority** (Number) Integer from 1 (high) to 5 (low) indicating alert severity.
-- **renotify_interval** (Number) The number of minutes after the last notification before a monitor will re-notify on the current status. It will only re-notify if it's not resolved.
-- **renotify_occurrences** (Number) The number of re-notification messages that should be sent on the current status.
-- **renotify_statuses** (Set of String) The types of statuses for which re-notification messages should be sent. Valid values are `alert`, `warn`, `no data`.
-- **require_full_window** (Boolean) A boolean indicating whether this monitor needs a full window of data before it's evaluated.
+- `notify_audit` (Boolean) A boolean indicating whether tagged users will be notified on changes to this monitor. Defaults to `false`.
+- `notify_no_data` (Boolean) A boolean indicating whether this monitor will notify when data stops reporting. Defaults to `false`.
+- `priority` (Number) Integer from 1 (high) to 5 (low) indicating alert severity.
+- `renotify_interval` (Number) The number of minutes after the last notification before a monitor will re-notify on the current status. It will only re-notify if it's not resolved.
+- `renotify_occurrences` (Number) The number of re-notification messages that should be sent on the current status.
+- `renotify_statuses` (Set of String) The types of statuses for which re-notification messages should be sent. Valid values are `alert`, `warn`, `no data`.
+- `require_full_window` (Boolean) A boolean indicating whether this monitor needs a full window of data before it's evaluated.
 
 We highly recommend you set this to `false` for sparse metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.
-- **restricted_roles** (Set of String) A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.
-- **tags** (Set of String) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
-- **timeout_h** (Number) The number of hours of the monitor not reporting data before it automatically resolves from a triggered state. The minimum allowed value is 0 hours. The maximum allowed value is 24 hours.
-- **validate** (Boolean) If set to `false`, skip the validation call done during plan.
+- `restricted_roles` (Set of String) A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.
+- `tags` (Set of String) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
+- `timeout_h` (Number) The number of hours of the monitor not reporting data before it automatically resolves from a triggered state. The minimum allowed value is 0 hours. The maximum allowed value is 24 hours.
+- `validate` (Boolean) If set to `false`, skip the validation call done during plan.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 <a id="nestedblock--monitor_threshold_windows"></a>
 ### Nested Schema for `monitor_threshold_windows`
 
 Optional:
 
-- **recovery_window** (String) Describes how long an anomalous metric must be normal before the alert recovers.
-- **trigger_window** (String) Describes how long a metric must be anomalous before an alert triggers.
+- `recovery_window` (String) Describes how long an anomalous metric must be normal before the alert recovers.
+- `trigger_window` (String) Describes how long a metric must be anomalous before an alert triggers.
 
 
 <a id="nestedblock--monitor_thresholds"></a>
@@ -105,12 +105,12 @@ Optional:
 
 Optional:
 
-- **critical** (String) The monitor `CRITICAL` threshold. Must be a number.
-- **critical_recovery** (String) The monitor `CRITICAL` recovery threshold. Must be a number.
-- **ok** (String) The monitor `OK` threshold. Must be a number.
-- **unknown** (String) The monitor `UNKNOWN` threshold. Must be a number.
-- **warning** (String) The monitor `WARNING` threshold. Must be a number.
-- **warning_recovery** (String) The monitor `WARNING` recovery threshold. Must be a number.
+- `critical` (String) The monitor `CRITICAL` threshold. Must be a number.
+- `critical_recovery` (String) The monitor `CRITICAL` recovery threshold. Must be a number.
+- `ok` (String) The monitor `OK` threshold. Must be a number.
+- `unknown` (String) The monitor `UNKNOWN` threshold. Must be a number.
+- `warning` (String) The monitor `WARNING` threshold. Must be a number.
+- `warning_recovery` (String) The monitor `WARNING` recovery threshold. Must be a number.
 
 ## Import
 

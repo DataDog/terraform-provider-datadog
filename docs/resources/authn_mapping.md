@@ -31,13 +31,13 @@ resource "datadog_authn_mapping" "dev_ro_role_mapping" {
 
 ### Required
 
-- **key** (String) Identity provider key.
-- **role** (String) The ID of a role to attach to all users with the corresponding key and value.
-- **value** (String) Identity provider value.
+- `key` (String) Identity provider key.
+- `role` (String) The ID of a role to attach to all users with the corresponding key and value.
+- `value` (String) Identity provider value.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 ## Import
 

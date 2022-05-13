@@ -23,11 +23,11 @@ data "datadog_api_key" "foo" {
 
 ### Optional
 
-- **id** (String) Id for API Key.
-- **name** (String) Name for API Key.
+- `id` (String) Id for API Key.
+- `name` (String) Name for API Key.
 
 ### Read-Only
 
-- **key** (String, Sensitive) The value of the API Key.
+- `key` (String, Sensitive) The value of the API Key.
 
 

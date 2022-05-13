@@ -22,28 +22,28 @@ data "datadog_security_monitoring_filters" "test" {
 
 ### Read-Only
 
-- **filters** (List of Object) List of filters. (see [below for nested schema](#nestedatt--filters))
-- **filters_ids** (List of String) List of IDs of filters.
-- **id** (String) The ID of this resource.
+- `filters` (List of Object) List of filters. (see [below for nested schema](#nestedatt--filters))
+- `filters_ids` (List of String) List of IDs of filters.
+- `id` (String) The ID of this resource.
 
 <a id="nestedatt--filters"></a>
 ### Nested Schema for `filters`
 
 Read-Only:
 
-- **exclusion_filter** (List of Object) (see [below for nested schema](#nestedobjatt--filters--exclusion_filter))
-- **filtered_data_type** (String)
-- **is_enabled** (Boolean)
-- **name** (String)
-- **query** (String)
-- **version** (Number)
+- `exclusion_filter` (List of Object) (see [below for nested schema](#nestedobjatt--filters--exclusion_filter))
+- `filtered_data_type` (String)
+- `is_enabled` (Boolean)
+- `name` (String)
+- `query` (String)
+- `version` (Number)
 
 <a id="nestedobjatt--filters--exclusion_filter"></a>
 ### Nested Schema for `filters.exclusion_filter`
 
 Read-Only:
 
-- **name** (String)
-- **query** (String)
+- `name` (String)
+- `query` (String)
 
 

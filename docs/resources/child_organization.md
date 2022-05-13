@@ -24,25 +24,25 @@ resource "datadog_child_organization" "organization" {
 
 ### Required
 
-- **name** (String) Name for Child Organization after creation.
+- `name` (String) Name for Child Organization after creation.
 
 ### Read-Only
 
-- **api_key** (List of Object) Datadog API key. (see [below for nested schema](#nestedatt--api_key))
-- **application_key** (List of Object) An application key with its associated metadata. (see [below for nested schema](#nestedatt--application_key))
-- **description** (String) Description of the organization.
-- **id** (String) The ID of this resource.
-- **public_id** (String) The `public_id` of the organization you are operating within.
-- **settings** (List of Object) Organization settings (see [below for nested schema](#nestedatt--settings))
-- **user** (List of Object) Information about a user (see [below for nested schema](#nestedatt--user))
+- `api_key` (List of Object) Datadog API key. (see [below for nested schema](#nestedatt--api_key))
+- `application_key` (List of Object) An application key with its associated metadata. (see [below for nested schema](#nestedatt--application_key))
+- `description` (String) Description of the organization.
+- `id` (String) The ID of this resource.
+- `public_id` (String) The `public_id` of the organization you are operating within.
+- `settings` (List of Object) Organization settings (see [below for nested schema](#nestedatt--settings))
+- `user` (List of Object) Information about a user (see [below for nested schema](#nestedatt--user))
 
 <a id="nestedatt--api_key"></a>
 ### Nested Schema for `api_key`
 
 Read-Only:
 
-- **key** (String)
-- **name** (String)
+- `key` (String)
+- `name` (String)
 
 
 <a id="nestedatt--application_key"></a>
@@ -50,9 +50,9 @@ Read-Only:
 
 Read-Only:
 
-- **hash** (String)
-- **name** (String)
-- **owner** (String)
+- `hash` (String)
+- `name` (String)
+- `owner` (String)
 
 
 <a id="nestedatt--settings"></a>
@@ -60,23 +60,23 @@ Read-Only:
 
 Read-Only:
 
-- **private_widget_share** (Boolean)
-- **saml** (List of Object) (see [below for nested schema](#nestedobjatt--settings--saml))
-- **saml_autocreate_access_role** (String)
-- **saml_autocreate_users_domains** (List of Object) (see [below for nested schema](#nestedobjatt--settings--saml_autocreate_users_domains))
-- **saml_can_be_enabled** (Boolean)
-- **saml_idp_endpoint** (String)
-- **saml_idp_initiated_login** (List of Object) (see [below for nested schema](#nestedobjatt--settings--saml_idp_initiated_login))
-- **saml_idp_metadata_uploaded** (Boolean)
-- **saml_login_url** (String)
-- **saml_strict_mode** (List of Object) (see [below for nested schema](#nestedobjatt--settings--saml_strict_mode))
+- `private_widget_share` (Boolean)
+- `saml` (List of Object) (see [below for nested schema](#nestedobjatt--settings--saml))
+- `saml_autocreate_access_role` (String)
+- `saml_autocreate_users_domains` (List of Object) (see [below for nested schema](#nestedobjatt--settings--saml_autocreate_users_domains))
+- `saml_can_be_enabled` (Boolean)
+- `saml_idp_endpoint` (String)
+- `saml_idp_initiated_login` (List of Object) (see [below for nested schema](#nestedobjatt--settings--saml_idp_initiated_login))
+- `saml_idp_metadata_uploaded` (Boolean)
+- `saml_login_url` (String)
+- `saml_strict_mode` (List of Object) (see [below for nested schema](#nestedobjatt--settings--saml_strict_mode))
 
 <a id="nestedobjatt--settings--saml"></a>
 ### Nested Schema for `settings.saml`
 
 Read-Only:
 
-- **enabled** (Boolean)
+- `enabled` (Boolean)
 
 
 <a id="nestedobjatt--settings--saml_autocreate_users_domains"></a>
@@ -84,8 +84,8 @@ Read-Only:
 
 Read-Only:
 
-- **domains** (List of String)
-- **enabled** (Boolean)
+- `domains` (List of String)
+- `enabled` (Boolean)
 
 
 <a id="nestedobjatt--settings--saml_idp_initiated_login"></a>
@@ -93,7 +93,7 @@ Read-Only:
 
 Read-Only:
 
-- **enabled** (Boolean)
+- `enabled` (Boolean)
 
 
 <a id="nestedobjatt--settings--saml_strict_mode"></a>
@@ -101,7 +101,7 @@ Read-Only:
 
 Read-Only:
 
-- **enabled** (Boolean)
+- `enabled` (Boolean)
 
 
 
@@ -110,8 +110,8 @@ Read-Only:
 
 Read-Only:
 
-- **access_role** (String)
-- **email** (String)
-- **name** (String)
+- `access_role` (String)
+- `email` (String)
+- `name` (String)
 
 
