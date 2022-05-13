@@ -38,28 +38,28 @@ resource "datadog_logs_metric" "testing_logs_metric" {
 
 ### Required
 
-- **compute** (Block List, Min: 1, Max: 1) The compute rule to compute the log-based metric. This field can't be updated after creation. (see [below for nested schema](#nestedblock--compute))
-- **filter** (Block List, Min: 1, Max: 1) The log-based metric filter. Logs matching this filter will be aggregated in this metric. (see [below for nested schema](#nestedblock--filter))
-- **name** (String) The name of the log-based metric. This field can't be updated after creation.
+- `compute` (Block List, Min: 1, Max: 1) The compute rule to compute the log-based metric. This field can't be updated after creation. (see [below for nested schema](#nestedblock--compute))
+- `filter` (Block List, Min: 1, Max: 1) The log-based metric filter. Logs matching this filter will be aggregated in this metric. (see [below for nested schema](#nestedblock--filter))
+- `name` (String) The name of the log-based metric. This field can't be updated after creation.
 
 ### Optional
 
-- **group_by** (Block List) The rules for the group by. (see [below for nested schema](#nestedblock--group_by))
+- `group_by` (Block List) The rules for the group by. (see [below for nested schema](#nestedblock--group_by))
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 <a id="nestedblock--compute"></a>
 ### Nested Schema for `compute`
 
 Required:
 
-- **aggregation_type** (String) The type of aggregation to use. This field can't be updated after creation. Valid values are `count`, `distribution`.
+- `aggregation_type` (String) The type of aggregation to use. This field can't be updated after creation. Valid values are `count`, `distribution`.
 
 Optional:
 
-- **path** (String) The path to the value the log-based metric will aggregate on (only used if the aggregation type is a "distribution"). This field can't be updated after creation.
+- `path` (String) The path to the value the log-based metric will aggregate on (only used if the aggregation type is a "distribution"). This field can't be updated after creation.
 
 
 <a id="nestedblock--filter"></a>
@@ -67,7 +67,7 @@ Optional:
 
 Required:
 
-- **query** (String) The search query - following the log search syntax.
+- `query` (String) The search query - following the log search syntax.
 
 
 <a id="nestedblock--group_by"></a>
@@ -75,8 +75,8 @@ Required:
 
 Required:
 
-- **path** (String) The path to the value the log-based metric will be aggregated over.
-- **tag_name** (String) Name of the tag that gets created.
+- `path` (String) The path to the value the log-based metric will be aggregated over.
+- `tag_name` (String) Name of the tag that gets created.
 
 ## Import
 

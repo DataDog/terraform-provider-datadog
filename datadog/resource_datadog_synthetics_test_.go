@@ -483,6 +483,12 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:     true,
 					ValidateFunc: validation.IntBetween(1, 5),
 				},
+				"restricted_roles": {
+					Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
 				"retry": syntheticsTestOptionsRetry(),
 				"no_screenshot": {
 					Description: "Prevents saving screenshots of the steps.",
@@ -1092,7 +1098,7 @@ func resourceDatadogSyntheticsTestDelete(ctx context.Context, d *schema.Resource
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 
-	syntheticsDeleteTestsPayload := datadogV1.SyntheticsDeleteTestsPayload{PublicIds: &[]string{d.Id()}}
+	syntheticsDeleteTestsPayload := datadogV1.SyntheticsDeleteTestsPayload{PublicIds: []string{d.Id()}}
 	if _, httpResponse, err := datadogClientV1.SyntheticsApi.DeleteTests(authV1, syntheticsDeleteTestsPayload); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting synthetics test")
@@ -1190,10 +1196,10 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		config.SetRequest(request)
 	}
 
-	config.Assertions = &[]datadogV1.SyntheticsAssertion{}
+	config.Assertions = []datadogV1.SyntheticsAssertion{}
 	if attr, ok := d.GetOk("assertion"); ok && attr != nil {
 		assertions := buildAssertions(attr.([]interface{}))
-		config.Assertions = &assertions
+		config.Assertions = assertions
 	}
 
 	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
@@ -1333,6 +1339,14 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		if monitorPriority, ok := d.GetOk("options_list.0.monitor_priority"); ok {
 			options.SetMonitorPriority(int32(monitorPriority.(int)))
 		}
+
+		if restricted_roles, ok := d.GetOk("options_list.0.restricted_roles"); ok {
+			roles := []string{}
+			for _, role := range restricted_roles.(*schema.Set).List() {
+				roles = append(roles, role.(string))
+			}
+			options.SetRestrictedRoles(roles)
+		}
 	}
 
 	if attr, ok := d.GetOk("device_ids"); ok {
@@ -1340,7 +1354,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		for _, s := range attr.([]interface{}) {
 			deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
 		}
-		options.DeviceIds = &deviceIds
+		options.DeviceIds = deviceIds
 	}
 
 	syntheticsTest.SetConfig(*config)
@@ -1504,7 +1518,7 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 							case
 								datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
 								datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
-								if match, _ := regexp.MatchString("{{\\s*[a-zA-Z0-9]+\\s*}}", v.(string)); match {
+								if match, _ := regexp.MatchString("{{\\s*([^{}]*?)\\s*}}", v.(string)); match {
 									subTarget.SetTargetValue(v)
 								} else {
 									setFloatTargetValue(subTarget, v.(string))
@@ -1751,6 +1765,14 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		if monitorPriority, ok := d.GetOk("options_list.0.monitor_priority"); ok {
 			options.SetMonitorPriority(int32(monitorPriority.(int)))
 		}
+
+		if restricted_roles, ok := d.GetOk("options_list.0.restricted_roles"); ok {
+			roles := []string{}
+			for _, role := range restricted_roles.(*schema.Set).List() {
+				roles = append(roles, role.(string))
+			}
+			options.SetRestrictedRoles(roles)
+		}
 	}
 
 	if attr, ok := d.GetOk("device_ids"); ok {
@@ -1758,7 +1780,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		for _, s := range attr.([]interface{}) {
 			deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
 		}
-		options.DeviceIds = &deviceIds
+		options.DeviceIds = deviceIds
 	}
 
 	if attr, ok := d.GetOk("set_cookie"); ok {
@@ -2208,6 +2230,9 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	if actualOptions.HasMonitorPriority() {
 		localOptionsList["monitor_priority"] = actualOptions.GetMonitorPriority()
 	}
+	if actualOptions.HasRestrictedRoles() {
+		localOptionsList["restricted_roles"] = actualOptions.GetRestrictedRoles()
+	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)
 	localOptionsLists[0] = localOptionsList
@@ -2543,6 +2568,9 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 	if actualOptions.HasMonitorPriority() {
 		localOptionsList["monitor_priority"] = actualOptions.GetMonitorPriority()
+	}
+	if actualOptions.HasRestrictedRoles() {
+		localOptionsList["restricted_roles"] = actualOptions.GetRestrictedRoles()
 	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)

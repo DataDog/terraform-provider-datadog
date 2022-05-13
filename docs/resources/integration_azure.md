@@ -27,18 +27,18 @@ resource "datadog_integration_azure" "sandbox" {
 
 ### Required
 
-- **client_id** (String) Your Azure web application ID.
-- **client_secret** (String, Sensitive) (Required for Initial Creation) Your Azure web application secret key.
-- **tenant_name** (String) Your Azure Active Directory ID.
+- `client_id` (String) Your Azure web application ID.
+- `client_secret` (String, Sensitive) (Required for Initial Creation) Your Azure web application secret key.
+- `tenant_name` (String) Your Azure Active Directory ID.
 
 ### Optional
 
-- **automute** (Boolean) Silence monitors for expected Azure VM shutdowns.
-- **host_filters** (String) String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. e.x. `env:production,deploymentgroup:red`
+- `automute` (Boolean) Silence monitors for expected Azure VM shutdowns.
+- `host_filters` (String) String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. e.x. `env:production,deploymentgroup:red`
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 ## Import
 

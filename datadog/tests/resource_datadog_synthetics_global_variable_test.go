@@ -322,7 +322,7 @@ resource "datadog_synthetics_test" "bar" {
 		min_location_failed = 1
 
 		monitor_options {
-			renotify_interval = 100
+			renotify_interval = 120
 		}
 	}
 

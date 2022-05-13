@@ -43,6 +43,12 @@ resource "datadog_dashboard" "query_value_dashboard" {
 				is_hidden = true
 				override_label = "logs"
 			}
+			timeseries_background {
+				type = "area"
+				yaxis {
+					include_zero = true
+				}
+			}
 		}
 	}
 }
@@ -81,6 +87,12 @@ resource "datadog_dashboard" "query_value_dashboard" {
 			custom_link {
 				link = "https://app.datadoghq.com/dashboard/lists"
 				label = "Test Custom Link label"
+			}
+			timeseries_background {
+				type = "area"
+				yaxis {
+					include_zero = true
+				}
 			}
 		}
 	}
@@ -187,6 +199,8 @@ var datadogDashboardQueryValueAsserts = []string{
 	"widget.0.query_value_definition.0.custom_link.1.override_label = logs",
 	"widget.0.query_value_definition.0.custom_link.1.link = https://app.datadoghq.com/dashboard/lists",
 	"widget.0.query_value_definition.0.custom_link.1.is_hidden = true",
+	"widget.0.query_value_definition.0.timeseries_background.0.type = area",
+	"widget.0.query_value_definition.0.timeseries_background.0.yaxis.0.include_zero = true",
 }
 
 var datadogDashboardQueryValueFormulaAsserts = []string{

@@ -52,7 +52,7 @@ func dataSourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schem
 	searchedName := d.Get("name").(string)
 	var matchedGlobalVariables []datadog.SyntheticsGlobalVariable
 
-	for _, globalVariable := range *globalVariables.Variables {
+	for _, globalVariable := range globalVariables.Variables {
 		if globalVariable.Name == searchedName {
 			matchedGlobalVariables = append(matchedGlobalVariables, globalVariable)
 		}

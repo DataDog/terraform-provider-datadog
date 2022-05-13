@@ -551,6 +551,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0_list.#", "0"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.restricted_roles.0", "abc"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "message", "Notify @datadog.user"),
@@ -645,6 +647,7 @@ resource "datadog_synthetics_test" "foo" {
 		}
 		monitor_name = "%[1]s-monitor"
 		monitor_priority = 5
+		restricted_roles = ["abc"]
 	}
 
 	name = "%[1]s"
@@ -765,7 +768,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.operator", "moreThan"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.targetvalue", "{{ TEST }}"),
+				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.targetvalue", "{{ TEST_VAR_1 }}"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -779,7 +782,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "100"),
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -889,7 +892,7 @@ resource "datadog_synthetics_test" "bar" {
 		targetjsonpath {
 			jsonpath    = "$.mykey"
 			operator    = "moreThan"
-			targetvalue = "{{ TEST }}"
+			targetvalue = "{{ TEST_VAR_1 }}"
 		}
 	}
 
@@ -901,7 +904,7 @@ resource "datadog_synthetics_test" "bar" {
 		min_location_failed = 1
 
 		monitor_options {
-			renotify_interval = 100
+			renotify_interval = 120
 		}
 	}
 
@@ -954,7 +957,7 @@ func updateSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.retry.0.interval", "500"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options_list.0.monitor_options.0.renotify_interval", "100"),
+				"datadog_synthetics_test.foo", "options_list.0.monitor_options.0.renotify_interval", "120"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -1007,7 +1010,7 @@ resource "datadog_synthetics_test" "foo" {
 		}
 
 		monitor_options {
-			renotify_interval = 100
+			renotify_interval = 120
 		}
 	}
 
@@ -2025,13 +2028,15 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.retry.0.interval", "300"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "100"),
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.no_screenshot", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_name", fmt.Sprintf(`%s-monitor`, testName)),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_priority", "5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.restricted_roles.0", "abc"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -2122,10 +2127,11 @@ resource "datadog_synthetics_test" "bar" {
 		}
 
 		monitor_options {
-			renotify_interval = 100
+			renotify_interval = 120
 		}
 		monitor_name = "%[1]s-monitor"
 		monitor_priority = 5
+		restricted_roles = ["abc"]
 
 		no_screenshot = true
 	}
@@ -2484,7 +2490,7 @@ func createSyntheticsBrowserTestStepNewBrowserStep(ctx context.Context, accProvi
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.retry.0.interval", "300"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "100"),
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -2588,7 +2594,7 @@ resource "datadog_synthetics_test" "subtest" {
 		}
 
 		monitor_options {
-			renotify_interval = 100
+			renotify_interval = 120
 		}
 	}
 
@@ -2626,7 +2632,7 @@ resource "datadog_synthetics_test" "bar" {
 		}
 
 		monitor_options {
-			renotify_interval = 100
+			renotify_interval = 120
 		}
 	}
 
@@ -2769,7 +2775,7 @@ func createSyntheticsBrowserTestStepMML(ctx context.Context, accProvider func() 
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.retry.0.interval", "300"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "100"),
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -2825,7 +2831,7 @@ resource "datadog_synthetics_test" "bar" {
 		}
 
 		monitor_options {
-			renotify_interval = 100
+			renotify_interval = 120
 		}
 	}
 
@@ -3120,6 +3126,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "options_list.0.restricted_roles.0", "abc"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "message", "Notify @datadog.user"),
@@ -3246,6 +3254,7 @@ resource "datadog_synthetics_test" "multi" {
     tick_every           = 900
     min_failure_duration = 0
     min_location_failed  = 1
+	restricted_roles     = ["abc"]
   }
   name    = "%[1]s"
   message = "Notify @datadog.user"

@@ -44,7 +44,7 @@ func cloudWorkloadSecurityCheckAgentRulesCount(accProvider func() (*schema.Provi
 		if err != nil {
 			return err
 		}
-		return cloudWorkloadSecurityAgentRulesCount(state, len(*agentRulesResponse.Data))
+		return cloudWorkloadSecurityAgentRulesCount(state, len(agentRulesResponse.Data))
 	}
 }
 

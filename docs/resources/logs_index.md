@@ -47,26 +47,26 @@ resource "datadog_logs_index" "sample_index" {
 
 ### Required
 
-- **filter** (Block List, Min: 1, Max: 1) Logs filter (see [below for nested schema](#nestedblock--filter))
-- **name** (String) The name of the index.
+- `filter` (Block List, Min: 1, Max: 1) Logs filter (see [below for nested schema](#nestedblock--filter))
+- `name` (String) The name of the index.
 
 ### Optional
 
-- **daily_limit** (Number) The number of log events you can send in this index per day before you are rate-limited.
-- **disable_daily_limit** (Boolean) If true, sets the daily_limit value to null and the index is not limited on a daily basis (any specified daily_limit value in the request is ignored). If false or omitted, the index's current daily_limit is maintained.
-- **exclusion_filter** (Block List) List of exclusion filters. (see [below for nested schema](#nestedblock--exclusion_filter))
-- **retention_days** (Number) The number of days before logs are deleted from this index.
+- `daily_limit` (Number) The number of log events you can send in this index per day before you are rate-limited.
+- `disable_daily_limit` (Boolean) If true, sets the daily_limit value to null and the index is not limited on a daily basis (any specified daily_limit value in the request is ignored). If false or omitted, the index's current daily_limit is maintained.
+- `exclusion_filter` (Block List) List of exclusion filters. (see [below for nested schema](#nestedblock--exclusion_filter))
+- `retention_days` (Number) The number of days before logs are deleted from this index.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 <a id="nestedblock--filter"></a>
 ### Nested Schema for `filter`
 
 Required:
 
-- **query** (String) Logs filter criteria. Only logs matching this filter criteria are considered for this index.
+- `query` (String) Logs filter criteria. Only logs matching this filter criteria are considered for this index.
 
 
 <a id="nestedblock--exclusion_filter"></a>
@@ -74,17 +74,17 @@ Required:
 
 Optional:
 
-- **filter** (Block List) (see [below for nested schema](#nestedblock--exclusion_filter--filter))
-- **is_enabled** (Boolean) A boolean stating if the exclusion is active or not.
-- **name** (String) The name of the exclusion filter.
+- `filter` (Block List) (see [below for nested schema](#nestedblock--exclusion_filter--filter))
+- `is_enabled` (Boolean) A boolean stating if the exclusion is active or not.
+- `name` (String) The name of the exclusion filter.
 
 <a id="nestedblock--exclusion_filter--filter"></a>
 ### Nested Schema for `exclusion_filter.filter`
 
 Optional:
 
-- **query** (String) Only logs matching the filter criteria and the query of the parent index will be considered for this exclusion filter.
-- **sample_rate** (Number) The fraction of logs excluded by the exclusion filter, when active.
+- `query` (String) Only logs matching the filter criteria and the query of the parent index will be considered for this exclusion filter.
+- `sample_rate` (Number) The fraction of logs excluded by the exclusion filter, when active.
 
 ## Import
 

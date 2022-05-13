@@ -31,23 +31,23 @@ resource "datadog_integration_slack_channel" "test_channel" {
 
 ### Required
 
-- **account_name** (String) Slack account name.
-- **channel_name** (String) Slack channel name.
-- **display** (Block List, Min: 1, Max: 1) Configuration options for what is shown in an alert event message. (see [below for nested schema](#nestedblock--display))
+- `account_name` (String) Slack account name.
+- `channel_name` (String) Slack channel name.
+- `display` (Block List, Min: 1, Max: 1) Configuration options for what is shown in an alert event message. (see [below for nested schema](#nestedblock--display))
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 <a id="nestedblock--display"></a>
 ### Nested Schema for `display`
 
 Optional:
 
-- **message** (Boolean) Show the main body of the alert event.
-- **notified** (Boolean) Show the list of @-handles in the alert event.
-- **snapshot** (Boolean) Show the alert event's snapshot image.
-- **tags** (Boolean) Show the scopes on which the monitor alerted.
+- `message` (Boolean) Show the main body of the alert event.
+- `notified` (Boolean) Show the list of @-handles in the alert event.
+- `snapshot` (Boolean) Show the alert event's snapshot image.
+- `tags` (Boolean) Show the scopes on which the monitor alerted.
 
 ## Import
 

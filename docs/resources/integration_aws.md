@@ -32,22 +32,22 @@ resource "datadog_integration_aws" "sandbox" {
 
 ### Optional
 
-- **access_key_id** (String) Your AWS access key ID. Only required if your AWS account is a GovCloud or China account.
-- **account_id** (String) Your AWS Account ID without dashes.
-- **account_specific_namespace_rules** (Map of Boolean) Enables or disables metric collection for specific AWS namespaces for this AWS account only. A list of namespaces can be found at the [available namespace rules API endpoint](https://docs.datadoghq.com/api/v1/aws-integration/#list-namespace-rules).
-- **cspm_resource_collection_enabled** (String) Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource_collection.
-- **excluded_regions** (List of String) An array of AWS regions to exclude from metrics collection.
-- **filter_tags** (List of String) Array of EC2 tags (in the form `key:value`) defines a filter that Datadog uses when collecting metrics from EC2. Wildcards, such as `?` (for single characters) and `*` (for multiple characters) can also be used. Only hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. Host matching a given tag can also be excluded by adding `!` before the tag. e.x. `env:production,instance-type:c1.*,!region:us-east-1`.
-- **host_tags** (List of String) Array of tags (in the form `key:value`) to add to all hosts and metrics reporting through this integration.
-- **metrics_collection_enabled** (String) Whether Datadog collects metrics for this AWS account.
-- **resource_collection_enabled** (String) Whether Datadog collects a standard set of resources from your AWS account.
-- **role_name** (String) Your Datadog role delegation name.
-- **secret_access_key** (String, Sensitive) Your AWS secret access key. Only required if your AWS account is a GovCloud or China account.
+- `access_key_id` (String) Your AWS access key ID. Only required if your AWS account is a GovCloud or China account.
+- `account_id` (String) Your AWS Account ID without dashes.
+- `account_specific_namespace_rules` (Map of Boolean) Enables or disables metric collection for specific AWS namespaces for this AWS account only. A list of namespaces can be found at the [available namespace rules API endpoint](https://docs.datadoghq.com/api/v1/aws-integration/#list-namespace-rules).
+- `cspm_resource_collection_enabled` (String) Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource_collection.
+- `excluded_regions` (List of String) An array of AWS regions to exclude from metrics collection.
+- `filter_tags` (List of String) Array of EC2 tags (in the form `key:value`) defines a filter that Datadog uses when collecting metrics from EC2. Wildcards, such as `?` (for single characters) and `*` (for multiple characters) can also be used. Only hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. Host matching a given tag can also be excluded by adding `!` before the tag. e.x. `env:production,instance-type:c1.*,!region:us-east-1`.
+- `host_tags` (List of String) Array of tags (in the form `key:value`) to add to all hosts and metrics reporting through this integration.
+- `metrics_collection_enabled` (String) Whether Datadog collects metrics for this AWS account.
+- `resource_collection_enabled` (String) Whether Datadog collects a standard set of resources from your AWS account.
+- `role_name` (String) Your Datadog role delegation name.
+- `secret_access_key` (String, Sensitive) Your AWS secret access key. Only required if your AWS account is a GovCloud or China account.
 
 ### Read-Only
 
-- **external_id** (String) AWS External ID. **NOTE** This provider will not be able to detect changes made to the `external_id` field from outside Terraform.
-- **id** (String) The ID of this resource.
+- `external_id` (String) AWS External ID. **NOTE** This provider will not be able to detect changes made to the `external_id` field from outside Terraform.
+- `id` (String) The ID of this resource.
 
 ## Import
 

@@ -40,7 +40,7 @@ func idFromDatasource(state *terraform.State) (string, error) {
 func testAccCheckDatadogSecurityMonitoringDefaultDatasource() string {
 	return `
 data "datadog_security_monitoring_rules" "bruteforce" {
-    name_filter = "brute"
+    name_filter = "docker"
 }
 `
 }
@@ -48,7 +48,7 @@ data "datadog_security_monitoring_rules" "bruteforce" {
 func testAccCheckDatadogSecurityMonitoringDefaultNoop() string {
 	return `
 data "datadog_security_monitoring_rules" "bruteforce" {
-    name_filter = "brute"
+    name_filter = "docker"
 }
 
 resource "datadog_security_monitoring_default_rule" "acceptance_test" {

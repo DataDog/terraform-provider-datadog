@@ -30,7 +30,6 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRoleExists(accProvider, "datadog_role.foo"),
 					resource.TestCheckResourceAttr("datadog_role.foo", "name", rolename),
-					resource.TestCheckResourceAttr("datadog_role.foo", "permission.#", "2"),
 					testCheckRolePermission(
 						"datadog_role.foo",
 						"data.datadog_permissions.foo",
@@ -48,7 +47,6 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRoleExists(accProvider, "datadog_role.foo"),
 					resource.TestCheckResourceAttr("datadog_role.foo", "name", rolename+"updated"),
-					resource.TestCheckResourceAttr("datadog_role.foo", "permission.#", "2"),
 					testCheckRolePermission(
 						"datadog_role.foo",
 						"data.datadog_permissions.foo",
@@ -151,6 +149,9 @@ resource "datadog_role" "foo" {
   }
   permission {
     id = "${data.datadog_permissions.foo.permissions.admin}"
+  }
+  permission {
+    id = "${data.datadog_permissions.foo.permissions.org_management}"
   }
 }`, uniq)
 }

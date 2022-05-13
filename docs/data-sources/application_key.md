@@ -23,11 +23,11 @@ data "datadog_application_key" "foo" {
 
 ### Optional
 
-- **id** (String) Id for Application Key.
-- **name** (String) Name for Application Key.
+- `id` (String) Id for Application Key.
+- `name` (String) Name for Application Key.
 
 ### Read-Only
 
-- **key** (String, Sensitive) The value of the Application Key.
+- `key` (String, Sensitive) The value of the Application Key.
 
 

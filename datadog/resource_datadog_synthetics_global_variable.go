@@ -256,7 +256,7 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 	if restrictedRolesSet, ok := d.GetOk("restricted_roles"); ok {
 		restrictedRoles := buildDatadogRestrictedRoles(restrictedRolesSet.(*schema.Set))
 		attributes := datadogV1.SyntheticsGlobalVariableAttributes{
-			RestrictedRoles: restrictedRoles,
+			RestrictedRoles: *restrictedRoles,
 		}
 		syntheticsGlobalVariable.SetAttributes(attributes)
 	}

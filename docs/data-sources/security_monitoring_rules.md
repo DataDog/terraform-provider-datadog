@@ -82,6 +82,7 @@ Read-only:
 - **keep_alive** (Number)
 - **max_signal_duration** (Number)
 - **new_value_options** (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--new_value_options))
+- **impossible_travel_options** (List of Object) (see [below for nested schema](#nestedblock--options--impossible_travel_options))
 
 <a id="nestedobjatt--rules--options--new_value_options"></a>
 ### Nested schema for `rules.options.new_value_options`
@@ -90,6 +91,15 @@ Read-only:
 
 - **forget_after** (Number)
 - **learning_duration** (Number)
+
+
+
+<a id="nestedblock--options--impossible_travel_options"></a>
+### Nested schema for `rules.options.impossible_travel_options`
+
+Read-only:
+
+- **baseline_user_locations** (Boolean)
 
 
 

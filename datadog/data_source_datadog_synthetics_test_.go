@@ -51,13 +51,10 @@ func dataSourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.Resource
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetic tests")
 	}
-	if err := utils.CheckForUnparsed(tests); err != nil {
-		return diag.FromErr(err)
-	}
 
 	searchedId := d.Get("test_id").(string)
 
-	for _, test := range *tests.Tests {
+	for _, test := range tests.Tests {
 		if test.GetPublicId() == searchedId {
 			d.SetId(test.GetPublicId())
 			d.Set("name", test.GetName())

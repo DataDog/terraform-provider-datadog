@@ -232,7 +232,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional:    true,
 			},
 			"timeout_h": {
-				Description: "The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state.",
+				Description: "The number of hours of the monitor not reporting data before it automatically resolves from a triggered state. The minimum allowed value is 0 hours. The maximum allowed value is 24 hours.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 			},
@@ -246,6 +246,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Description:   "A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.",
 				Type:          schema.TypeBool,
 				Optional:      true,
+				Deprecated:    "Use `restricted_roles`.",
 				ConflictsWith: []string{"restricted_roles"},
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 					// if restricted_roles is defined, ignore locked
@@ -256,8 +257,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"restricted_roles": {
-				// Uncomment when generally available
-				// Description: "A list of role identifiers to associate with the monitor. Cannot be used with `locked`.",
+				Description:   "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.",
 				Type:          schema.TypeSet,
 				Optional:      true,
 				Elem:          &schema.Schema{Type: schema.TypeString},
@@ -470,11 +470,22 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 	}
 	m, _ := buildMonitorStruct(diff)
 
+	hasID := false
+	id, err := strconv.ParseInt(diff.Id(), 10, 64)
+	if err == nil {
+		hasID = true
+	}
+
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
 	return resource.RetryContext(ctx, retryTimeout, func() *resource.RetryError {
-		_, httpresp, err := datadogClientV1.MonitorsApi.ValidateMonitor(authV1, *m)
+		var httpresp *http.Response
+		if hasID {
+			_, httpresp, err = datadogClientV1.MonitorsApi.ValidateExistingMonitor(authV1, id, *m)
+		} else {
+			_, httpresp, err = datadogClientV1.MonitorsApi.ValidateMonitor(authV1, *m)
+		}
 		if err != nil {
 			if httpresp != nil && (httpresp.StatusCode == 502 || httpresp.StatusCode == 504) {
 				return resource.RetryableError(utils.TranslateClientError(err, httpresp, "error validating monitor, retrying"))
@@ -600,10 +611,11 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return diag.FromErr(err)
 	}
 
-	var renotify_statuses []datadogV1.MonitorRenotifyStatusType
-	renotify_statuses = append(renotify_statuses, m.Options.GetRenotifyStatuses()...)
-	if err := d.Set("renotify_statuses", renotify_statuses); err != nil {
-		return diag.FromErr(err)
+	if renotifyStatuses, ok := m.Options.GetRenotifyStatusesOk(); ok && len(*renotifyStatuses) > 0 {
+		renotifyStatusesCopy := append([]datadogV1.MonitorRenotifyStatusType{}, *renotifyStatuses...)
+		if err := d.Set("renotify_statuses", renotifyStatusesCopy); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	var tags []string
@@ -618,10 +630,13 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("locked", m.Options.GetLocked()); err != nil {
 		return diag.FromErr(err)
 	}
-	// This helper function is defined in `resource_datadog_dashboard`
-	restrictedRoles := buildTerraformRestrictedRoles(&m.RestrictedRoles)
-	if err := d.Set("restricted_roles", restrictedRoles); err != nil {
-		return diag.FromErr(err)
+
+	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok && len(*restrictedRoles) > 0 {
+		// This helper function is defined in `resource_datadog_dashboard`
+		restrictedRolesCopy := buildTerraformRestrictedRoles(restrictedRoles)
+		if err := d.Set("restricted_roles", restrictedRolesCopy); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {

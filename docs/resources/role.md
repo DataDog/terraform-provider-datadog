@@ -33,27 +33,27 @@ resource "datadog_role" "foo" {
 
 ### Required
 
-- **name** (String) Name of the role.
+- `name` (String) Name of the role.
 
 ### Optional
 
-- **permission** (Block Set) Set of objects containing the permission ID and the name of the permissions granted to this role. (see [below for nested schema](#nestedblock--permission))
+- `permission` (Block Set) Set of objects containing the permission ID and the name of the permissions granted to this role. (see [below for nested schema](#nestedblock--permission))
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
-- **user_count** (Number) Number of users that have this role.
+- `id` (String) The ID of this resource.
+- `user_count` (Number) Number of users that have this role.
 
 <a id="nestedblock--permission"></a>
 ### Nested Schema for `permission`
 
 Required:
 
-- **id** (String) ID of the permission to assign.
+- `id` (String) ID of the permission to assign.
 
 Read-Only:
 
-- **name** (String) Name of the permission.
+- `name` (String) Name of the permission.
 
 ## Import
 

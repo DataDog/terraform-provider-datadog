@@ -28,12 +28,12 @@ resource "datadog_logs_pipeline_order" "sample_pipeline_order" {
 
 ### Required
 
-- **name** (String) The name attribute in the resource `datadog_logs_pipeline_order` needs to be unique. It's recommended to use the same value as the resource name. No related field is available in [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/#get-pipeline-order).
-- **pipelines** (List of String) The pipeline IDs list. The order of pipeline IDs in this attribute defines the overall pipeline order for logs.
+- `name` (String) The name attribute in the resource `datadog_logs_pipeline_order` needs to be unique. It's recommended to use the same value as the resource name. No related field is available in [Logs Pipeline API](https://docs.datadoghq.com/api/v1/logs-pipelines/#get-pipeline-order).
+- `pipelines` (List of String) The pipeline IDs list. The order of pipeline IDs in this attribute defines the overall pipeline order for logs.
 
 ### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 ## Import
 
