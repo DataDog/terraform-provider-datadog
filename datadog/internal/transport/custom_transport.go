@@ -4,21 +4,24 @@ import (
 	"bytes"
 	"context"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"strconv"
 	"time"
 )
 
 var (
-	defaultHTTPRetryDuration = 5 * time.Second
-	defaultHTTPRetryTimeout  = 60 * time.Second
-	rateLimitResetHeader     = "X-Ratelimit-Reset"
+	defaultBackOffMultiplier float64 = 2
+	defaultBackOffBase       float64 = 2
+	defaultHTTPRetryTimeout          = 60 * time.Second
+	rateLimitResetHeader             = "X-Ratelimit-Reset"
 )
 
 // CustomTransport holds DefaultTransport configuration and is used to for custom http error handling
 type CustomTransport struct {
+	backoffBase       float64
+	backOffMultiplier float64
 	defaultTransport  http.RoundTripper
-	httpRetryDuration time.Duration
 	httpRetryTimeout  time.Duration
 }
 
@@ -51,15 +54,9 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		}
 
 		// Check if request should be retried and get retry time
-		retryDuration, retry := t.retryRequest(resp)
+		retryDuration, retry := t.retryRequest(resp, retryCount)
 		if !retry {
 			return resp, respErr
-		}
-
-		// Calculate retryDuration if nil
-		if retryDuration == nil {
-			newRetryDurationVal := time.Duration(retryCount) * t.httpRetryDuration
-			retryDuration = &newRetryDurationVal
 		}
 
 		select {
@@ -85,7 +82,7 @@ func (t *CustomTransport) copyRequest(r *http.Request) *http.Request {
 	return &newRequest
 }
 
-func (t *CustomTransport) retryRequest(response *http.Response) (*time.Duration, bool) {
+func (t *CustomTransport) retryRequest(response *http.Response, retryCount int) (*time.Duration, bool) {
 	if v := response.Header.Get(rateLimitResetHeader); v != "" && response.StatusCode == 429 {
 		vInt, err := strconv.ParseInt(v, 10, 64)
 		if err != nil {
@@ -96,7 +93,12 @@ func (t *CustomTransport) retryRequest(response *http.Response) (*time.Duration,
 	}
 
 	if response.StatusCode >= 500 {
-		return nil, true
+		// Calculate the retry val (base * multiplier^2)
+		retryVal := t.backoffBase * math.Pow(t.backOffMultiplier, float64(retryCount))
+		// retry duration shouldn't exceed default timeout period
+		retryVal = math.Min(float64(t.httpRetryTimeout/time.Second), retryVal)
+		retryDuration := time.Duration(retryVal) * time.Second
+		return &retryDuration, true
 	}
 
 	return nil, false
@@ -111,7 +113,8 @@ func NewCustomTransport(t http.RoundTripper, opt CustomTransportOptions) *Custom
 
 	ct := CustomTransport{
 		defaultTransport:  t,
-		httpRetryDuration: defaultHTTPRetryDuration,
+		backoffBase:       defaultBackOffBase,
+		backOffMultiplier: defaultBackOffMultiplier,
 	}
 
 	if opt.Timeout != nil {
