@@ -73,7 +73,7 @@ resource "datadog_downtime" "foo" {
 
 Required:
 
-- `type` (String) One of `days`, `weeks`, `months`, or `years`
+- `type` (String) One of `days`, `weeks`, `months`, `years`, or `rrule`.
 
 Optional:
 
