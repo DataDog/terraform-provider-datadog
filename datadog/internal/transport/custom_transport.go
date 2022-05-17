@@ -19,10 +19,8 @@ var (
 
 // CustomTransport holds DefaultTransport configuration and is used to for custom http error handling
 type CustomTransport struct {
-	backoffBase       float64
-	backOffMultiplier float64
-	defaultTransport  http.RoundTripper
-	httpRetryTimeout  time.Duration
+	defaultTransport http.RoundTripper
+	httpRetryTimeout time.Duration
 }
 
 // CustomTransportOptions Set options for CustomTransport
@@ -94,7 +92,7 @@ func (t *CustomTransport) retryRequest(response *http.Response, retryCount int) 
 
 	if response.StatusCode >= 500 {
 		// Calculate the retry val (base * multiplier^2)
-		retryVal := t.backoffBase * math.Pow(t.backOffMultiplier, float64(retryCount))
+		retryVal := defaultBackOffBase * math.Pow(defaultBackOffMultiplier, float64(retryCount))
 		// retry duration shouldn't exceed default timeout period
 		retryVal = math.Min(float64(t.httpRetryTimeout/time.Second), retryVal)
 		retryDuration := time.Duration(retryVal) * time.Second
@@ -112,9 +110,7 @@ func NewCustomTransport(t http.RoundTripper, opt CustomTransportOptions) *Custom
 	}
 
 	ct := CustomTransport{
-		defaultTransport:  t,
-		backoffBase:       defaultBackOffBase,
-		backOffMultiplier: defaultBackOffMultiplier,
+		defaultTransport: t,
 	}
 
 	if opt.Timeout != nil {
