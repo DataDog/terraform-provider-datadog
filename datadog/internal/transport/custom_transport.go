@@ -11,6 +11,7 @@ import (
 )
 
 var (
+	maxRetries                       = 3
 	defaultBackOffMultiplier float64 = 2
 	defaultBackOffBase       float64 = 2
 	defaultHTTPRetryTimeout          = 60 * time.Second
@@ -39,6 +40,10 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 	retryCount := 0
 	for {
+		if retryCount == maxRetries {
+			ccancel()
+		}
+
 		newRequest := t.copyRequest(req)
 		resp, respErr := t.defaultTransport.RoundTrip(newRequest)
 		// Close the body so connection can be re-used
@@ -81,17 +86,18 @@ func (t *CustomTransport) copyRequest(r *http.Request) *http.Request {
 }
 
 func (t *CustomTransport) retryRequest(response *http.Response, retryCount int) (*time.Duration, bool) {
+	var err error
 	if v := response.Header.Get(rateLimitResetHeader); v != "" && response.StatusCode == 429 {
 		vInt, err := strconv.ParseInt(v, 10, 64)
-		if err != nil {
-			return nil, true
+		if err == nil {
+			retryDuration := time.Duration(vInt) * time.Second
+			return &retryDuration, true
 		}
-		retryDuration := time.Duration(vInt) * time.Second
-		return &retryDuration, true
 	}
 
-	if response.StatusCode >= 500 {
-		// Calculate the retry val (base * multiplier^2)
+	// Calculate retry for 5xx errors or if unable to parse value of rateLimitResetHeader
+	if response.StatusCode >= 500 || err != nil {
+		// Calculate the retry val (base * multiplier^retryCount)
 		retryVal := defaultBackOffBase * math.Pow(defaultBackOffMultiplier, float64(retryCount))
 		// retry duration shouldn't exceed default timeout period
 		retryVal = math.Min(float64(t.httpRetryTimeout/time.Second), retryVal)
