@@ -3,7 +3,7 @@
 page_title: "datadog_security_monitoring_default_rule Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Security Monitoring Rule API resource for default rules.
+  Provides a Datadog Security Monitoring Rule API resource for default rules. It can only be imported, you can't create a default rule.
 ---
 
 # datadog_security_monitoring_default_rule (Resource)
@@ -29,30 +29,30 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 
 ### Optional
 
-- **case** (Block List, Max: 5) Cases of the rule, this is used to update notifications. (see [below for nested schema](#nestedblock--case))
-- **enabled** (Boolean) Enable the rule.
-- **filter** (Block List) Additional queries to filter matched events before they are processed. (see [below for nested schema](#nestedblock--filter))
+- `case` (Block List, Max: 10) Cases of the rule, this is used to update notifications. (see [below for nested schema](#nestedblock--case))
+- `enabled` (Boolean) Enable the rule.
+- `filter` (Block List) Additional queries to filter matched events before they are processed. (see [below for nested schema](#nestedblock--filter))
 
-### Read-only
+### Read-Only
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 <a id="nestedblock--case"></a>
-### Nested schema for `case`
+### Nested Schema for `case`
 
 Required:
 
-- **notifications** (List of String) Notification targets for each rule case.
-- **status** (String) Status of the rule case to match. Valid values are `info`, `low`, `medium`, `high`, `critical`.
+- `notifications` (List of String) Notification targets for each rule case.
+- `status` (String) Status of the rule case to match. Valid values are `info`, `low`, `medium`, `high`, `critical`.
 
 
 <a id="nestedblock--filter"></a>
-### Nested schema for `filter`
+### Nested Schema for `filter`
 
 Required:
 
-- **action** (String) The type of filtering action. Allowed enum values: require, suppress Valid values are `require`, `suppress`.
-- **query** (String) Query for selecting logs to apply the filtering action.
+- `action` (String) The type of filtering action. Allowed enum values: require, suppress Valid values are `require`, `suppress`.
+- `query` (String) Query for selecting logs to apply the filtering action.
 
 ## Import
 
