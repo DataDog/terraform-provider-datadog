@@ -117,8 +117,8 @@ func Provider() *schema.Provider {
 			"http_client_retry_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_ENABLED", false),
-				Description: "Enables request retries on HTTP status codes 429 and 5xx.",
+				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_ENABLED", true),
+				Description: "Enables request retries on HTTP status codes 429 and 5xx. Defaults to `true`.",
 			},
 			"http_client_retry_timeout": {
 				Type:        schema.TypeInt,
