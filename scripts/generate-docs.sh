@@ -3,9 +3,6 @@
 
 # Add here the files to be excluded from the doc generation
 exclude_files=(
-  'docs/data-sources/security_monitoring_rules.md'
-  'docs/resources/security_monitoring_default_rule.md'
-  'docs/resources/security_monitoring_rule.md'
 )
 
 # Check if manual changes were made to any excluded files and exit
