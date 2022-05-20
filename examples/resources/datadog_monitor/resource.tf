@@ -1,4 +1,3 @@
-# Create a new Datadog monitor
 resource "datadog_monitor" "foo" {
   name               = "Name for monitor foo"
   type               = "metric alert"
@@ -8,17 +7,11 @@ resource "datadog_monitor" "foo" {
   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 4"
 
   monitor_thresholds {
-    warning           = 2
-    warning_recovery  = 1
-    critical          = 4
-    critical_recovery = 3
+    warning  = 2
+    critical = 4
   }
 
-  notify_no_data    = false
-  renotify_interval = 60
-
-  notify_audit = false
   include_tags = true
 
-  tags = ["foo:bar", "baz"]
+  tags = ["foo:bar", "team:fooBar"]
 }
