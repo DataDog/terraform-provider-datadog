@@ -38,6 +38,8 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		defer ccancel()
 	}
 
+	var resp *http.Response
+	var respErr error
 	retryCount := 0
 	for {
 		if retryCount == maxRetries {
@@ -45,7 +47,7 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		}
 
 		newRequest := t.copyRequest(req)
-		resp, respErr := t.defaultTransport.RoundTrip(newRequest)
+		resp, respErr = t.defaultTransport.RoundTrip(newRequest)
 		// Close the body so connection can be re-used
 		if resp != nil {
 			localVarBody, _ := ioutil.ReadAll(resp.Body)
