@@ -1,3 +1,29 @@
+## 3.12.0 (May 24, 2022)
+
+### BUGFIXES
+* [datadog_synthetics_test] Allow users to set user locator with no element by @AlaricCalmette in https://github.com/DataDog/terraform-provider-datadog/pull/1437
+### IMPROVEMENTS
+* [datadog_synthetics_test] [datadog_synthetics_private_location] Add support for restricted roles on private locations and synthetics tests by @dajofo in https://github.com/DataDog/terraform-provider-datadog/pull/1423
+* [datadog_logs_archive] Handle new rehydration_max_scan_size_in_gb field for Logs Archives by @corentinmarc in https://github.com/DataDog/terraform-provider-datadog/pull/1440
+* [datadog_downtime]: Update docs for rrule/type by @mikebryant in https://github.com/DataDog/terraform-provider-datadog/pull/1434
+* [datadog_monitor] Add documentation on limits for Monitors timeout_h option by @Dalje-et in https://github.com/DataDog/terraform-provider-datadog/pull/1432
+* [datadog_synthetics_test] Fix `config_variable` example by @ethan-lowman-dd in https://github.com/DataDog/terraform-provider-datadog/pull/1397
+### FEATURES
+* [mute_first_recovery_notification] add mute first recovery notification to monitor options by @JoannaYe-Datadog in https://github.com/DataDog/terraform-provider-datadog/pull/1417
+### NOTES
+* Exponential backoff period for `5xx` errors and enabled retries by default by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1444
+* Bump datadog-api-client to v1.14.0 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1448
+
+## New Contributors
+* @Dalje-et made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1432
+* @dajofo made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1423
+* @JoannaYe-Datadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1417
+* @corentinmarc made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1440
+* @ethan-lowman-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1397
+* @mikebryant made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1434
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.11.0...v3.12.0
+
 ## 3.11.0 (April 20, 2022)
 
 ### BUGFIXES
