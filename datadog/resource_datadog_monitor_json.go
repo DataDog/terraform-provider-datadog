@@ -85,6 +85,12 @@ func resourceDatadogMonitorJSON() *schema.Resource {
 						}
 					}
 
+					// restricted_roles is a special case and exporting the field from UI does not include this field. But the api
+					// returns a `null` value on creation. If null we remove the field from state to avoid unnecessary diffs.
+					if val := reflect.ValueOf(attrMap["restricted_roles"]); !val.IsValid() {
+						utils.DeleteKeyInMap(attrMap, []string{"restricted_roles"})
+					}
+
 					res, _ := structure.FlattenJsonToString(attrMap)
 					return res
 				},
