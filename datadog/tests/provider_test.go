@@ -119,6 +119,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_aws_test":                        "integration-aws",
 	"tests/resource_datadog_integration_azure_test":                      "integration-azure",
 	"tests/resource_datadog_integration_gcp_test":                        "integration-gcp",
+	"tests/resource_datadog_integration_opsgenie_service_object_test":    "integration-opsgenie-service",
 	"tests/resource_datadog_integration_pagerduty_service_object_test":   "integration-pagerduty",
 	"tests/resource_datadog_integration_pagerduty_test":                  "integration-pagerduty",
 	"tests/resource_datadog_integration_slack_channel_test":              "integration-slack-channel",
