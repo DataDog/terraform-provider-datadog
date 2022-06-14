@@ -500,6 +500,27 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
+				"rum_settings": {
+					Description: "The RUM data collection settings for the Synthetic browser test.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"application_id": {
+								Type:        schema.TypeString,
+								Description: "RUM application ID used to collect RUM data for the browser test.",
+								Required:    true,
+							},
+							"client_token_id": {
+								Type:        schema.TypeInt,
+								Description: "RUM application API key ID used to collect RUM data for the browser test.",
+								Sensitive:   true,
+								Required:    true,
+							},
+						},
+					},
+					Optional: true,
+				},
 			},
 		},
 	}
@@ -1773,6 +1794,19 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			}
 			options.SetRestrictedRoles(roles)
 		}
+
+		if rum_settings, ok := d.GetOk("options_list.0.rum_settings.0"); ok {
+			settings := rum_settings.(map[string]interface{})
+			applicationId := settings["application_id"]
+			clientTokenId := settings["client_token_id"]
+
+			rumSettings := datadogV1.SyntheticsBrowserTestRumSettings{}
+			rumSettings.SetIsEnabled(true)
+			rumSettings.SetApplicationId(applicationId.(string))
+			rumSettings.SetClientTokenId(int64(clientTokenId.(int)))
+
+			options.SetRumSettings(rumSettings)
+		}
 	}
 
 	if attr, ok := d.GetOk("device_ids"); ok {
@@ -2234,6 +2268,14 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	}
 	if actualOptions.HasRestrictedRoles() {
 		localOptionsList["restricted_roles"] = actualOptions.GetRestrictedRoles()
+	}
+
+	if rumSettings, ok := actualOptions.GetRumSettingsOk(); ok {
+		localRumSettings := make(map[string]interface{})
+		localRumSettings["application_id"] = rumSettings.GetApplicationId()
+		localRumSettings["client_token_id"] = rumSettings.GetClientTokenId()
+
+		localOptionsList["rum_settings"] = []map[string]interface{}{localRumSettings}
 	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)
