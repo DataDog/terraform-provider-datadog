@@ -17,7 +17,7 @@ import (
 func TestAccDatadogIntegrationOpsgenieServiceObject_Basic(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
-	reg, _ := regexp.Compile("[^a-zA-Z0-9\\u00a0-\\uffef.+\\-_]")
+	reg, _ := regexp.Compile("[^a-zA-Z0-9\u00a0-\uffef.+\\-_]")
 	serviceName := reg.ReplaceAllString(uniqueEntityName(ctx, t), "")
 
 	resource.Test(t, resource.TestCase{
@@ -129,13 +129,13 @@ func datadogIntegrationOpsgenieServiceObjectExistsHelper(ctx context.Context, s 
 func testAccCheckDatadogIntegrationOpsgenieServiceObjectConfigCreate(uniq string) string {
 	return fmt.Sprintf(`
 		resource "datadog_integration_opsgenie_service_object" "testing_foo" {
-			service_name = "%s_foo"
+			name = "%s_foo"
 			opsgenie_api_key  = "00000000-0000-0000-0000-000000000000"
 			region = "us"
 		}
 		
 		resource "datadog_integration_opsgenie_service_object" "testing_bar" {
-			service_name = "%s_bar"
+			name = "%s_bar"
 			opsgenie_api_key  = "11111111-1111-1111-1111-111111111111"
 			region = "custom"
 			custom_url = "https://example.com/custom"
