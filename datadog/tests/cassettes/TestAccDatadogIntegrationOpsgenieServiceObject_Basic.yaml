@@ -1,0 +1,43 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"custom_url":"https://example.com/custom","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655234363_bar","opsgenie_api_key":"11111111-1111-1111-1111-111111111111","region":"custom"},"type":"opsgenie-service"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services
+    method: POST
+  response:
+    body: |
+      {"status":"error","code":403,"errors":["Forbidden"],"statuspage":"http://status.datadoghq.com","twitter":"http://twitter.com/datadogops","email":"support@datadoghq.com"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 403 Forbidden
+    code: 403
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655234363_foo","opsgenie_api_key":"00000000-0000-0000-0000-000000000000","region":"us"},"type":"opsgenie-service"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services
+    method: POST
+  response:
+    body: |
+      {"status":"error","code":403,"errors":["Forbidden"],"statuspage":"http://status.datadoghq.com","twitter":"http://twitter.com/datadogops","email":"support@datadoghq.com"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 403 Forbidden
+    code: 403
+    duration: ""
