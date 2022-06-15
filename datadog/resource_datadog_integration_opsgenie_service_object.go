@@ -47,10 +47,7 @@ func resourceDatadogIntegrationOpsgenieService() *schema.Resource {
 }
 
 func buildOpsgenieServiceCreateRequest(d *schema.ResourceData) *datadogV2.OpsgenieServiceCreateRequest {
-	region, err := datadogV2.NewOpsgenieServiceRegionTypeFromValue(d.Get("region").(string))
-	if err != nil {
-		// figure out what to do :(
-	}
+	region, _ := datadogV2.NewOpsgenieServiceRegionTypeFromValue(d.Get("region").(string))
 	serviceAttributes := datadogV2.NewOpsgenieServiceCreateAttributes(d.Get("name").(string), d.Get("opsgenie_api_key").(string), *region)
 	if customUrl, ok := d.GetOk("custom_url"); ok {
 		serviceAttributes.SetCustomUrl(customUrl.(string))
@@ -62,10 +59,7 @@ func buildOpsgenieServiceCreateRequest(d *schema.ResourceData) *datadogV2.Opsgen
 }
 
 func buildOpsgenieServiceUpdateRequest(d *schema.ResourceData) *datadogV2.OpsgenieServiceUpdateRequest {
-	region, err := datadogV2.NewOpsgenieServiceRegionTypeFromValue(d.Get("region").(string))
-	if err != nil {
-		// figure out what to do :(
-	}
+	region, _ := datadogV2.NewOpsgenieServiceRegionTypeFromValue(d.Get("region").(string))
 	serviceAttributes := datadogV2.NewOpsgenieServiceUpdateAttributesWithDefaults()
 	serviceAttributes.SetName(d.Get("name").(string))
 	serviceAttributes.SetOpsgenieApiKey(d.Get("opsgenie_api_key").(string))
