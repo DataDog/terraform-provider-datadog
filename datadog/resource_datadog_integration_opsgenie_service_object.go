@@ -79,8 +79,12 @@ func updateOpsgenieServiceState(d *schema.ResourceData, serviceData *datadogV2.O
 	if err := d.Set("name", serviceAttributes.GetName()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("opsgenie_api_key", maskedSecret); err != nil {
-		return diag.FromErr(err)
+	// Only update opsgenie_api_key if not set on d - the API endpoints never return
+	// the keys, so this is how we recognize new values.
+	if _, ok := d.GetOk("opsgenie_api_key"); !ok {
+		if err := d.Set("opsgenie_api_key", maskedSecret); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	if err := d.Set("region", serviceAttributes.GetRegion()); err != nil {
 		return diag.FromErr(err)

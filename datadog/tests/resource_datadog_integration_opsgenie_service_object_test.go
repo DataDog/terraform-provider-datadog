@@ -31,13 +31,13 @@ func TestAccDatadogIntegrationOpsgenieServiceObject_Basic(t *testing.T) {
 					testAccCheckDatadogIntegrationOpsgenieServiceObjectExists(accProvider, "datadog_integration_opsgenie_service_object.testing_foo"),
 					testAccCheckDatadogIntegrationOpsgenieServiceObjectExists(accProvider, "datadog_integration_opsgenie_service_object.testing_bar"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_opsgenie_service_object.testing_foo", "service_name", serviceName+"_foo"),
+						"datadog_integration_opsgenie_service_object.testing_foo", "name", serviceName+"_foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_opsgenie_service_object.testing_foo", "opsgenie_api_key", "00000000-0000-0000-0000-000000000000"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_opsgenie_service_object.testing_foo", "region", "us"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_opsgenie_service_object.testing_bar", "service_name", serviceName+"_bar"),
+						"datadog_integration_opsgenie_service_object.testing_bar", "name", serviceName+"_bar"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_opsgenie_service_object.testing_bar", "opsgenie_api_key", "11111111-1111-1111-1111-111111111111"),
 					resource.TestCheckResourceAttr(
@@ -52,13 +52,13 @@ func TestAccDatadogIntegrationOpsgenieServiceObject_Basic(t *testing.T) {
 					testAccCheckDatadogIntegrationOpsgenieServiceObjectExists(accProvider, "datadog_integration_opsgenie_service_object.testing_foo"),
 					testAccCheckDatadogIntegrationOpsgenieServiceObjectExists(accProvider, "datadog_integration_opsgenie_service_object.testing_bar"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_opsgenie_service_object.testing_foo", "service_name", serviceName+"_foo_updated"),
+						"datadog_integration_opsgenie_service_object.testing_foo", "name", serviceName+"_foo_updated"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_opsgenie_service_object.testing_foo", "opsgenie_api_key", "11111111-1111-1111-1111-111111111111"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_opsgenie_service_object.testing_foo", "region", "eu"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_opsgenie_service_object.testing_bar", "service_name", serviceName+"_bar_updated"),
+						"datadog_integration_opsgenie_service_object.testing_bar", "name", serviceName+"_bar_updated"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_opsgenie_service_object.testing_bar", "opsgenie_api_key", "00000000-0000-0000-0000-000000000000"),
 					resource.TestCheckResourceAttr(
@@ -147,13 +147,13 @@ func testAccCheckDatadogIntegrationOpsgenieServiceObjectConfigCreate(uniq string
 func testAccCheckDatadogIntegrationOpsgenieServiceObjectConfigUpdate(uniq string) string {
 	return fmt.Sprintf(`
 		resource "datadog_integration_opsgenie_service_object" "testing_foo" {
-			service_name = "%s_foo_updated"
+			name = "%s_foo_updated"
 			opsgenie_api_key  = "11111111-1111-1111-1111-111111111111"
 			region = "eu"
 		}
 		
 		resource "datadog_integration_opsgenie_service_object" "testing_bar" {
-			service_name = "%s_bar_updated"
+			name = "%s_bar_updated"
 			opsgenie_api_key  = "00000000-0000-0000-0000-000000000000"
 			region = "custom"
 			custom_url = "https://example.com/custom/updated"
