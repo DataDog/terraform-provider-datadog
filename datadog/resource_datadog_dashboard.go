@@ -753,6 +753,15 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getImageDefinitionSchema(),
 			},
 		},
+		"list_stream_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a List Stream widget.",
+			Elem: &schema.Resource{
+				Schema: getListStreamDefinitionSchema(),
+			},
+		},
 		"log_stream_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -1010,6 +1019,10 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 		if geomapDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.GeomapWidgetDefinitionAsWidgetDefinition(buildDatadogGeomapDefinition(geomapDefinition))
 		}
+	} else if def, ok := terraformWidget["list_stream_definition"].([]interface{}); ok && len(def) > 0 {
+		if listStreamDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.ListStreamWidgetDefinitionAsWidgetDefinition(buildDatadogListStreamDefinition(listStreamDefinition))
+		}
 	} else {
 		return nil, fmt.Errorf("failed to find valid definition in widget configuration")
 	}
@@ -1115,6 +1128,10 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataK
 		terraformDefinition := buildTerraformLogStreamDefinition(*widgetDefinition.LogStreamWidgetDefinition, k.Add("log_stream_definition.0"))
 		k.Remove("log_stream_definition.0")
 		terraformWidget["log_stream_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if widgetDefinition.ListStreamWidgetDefinition != nil {
+		terraformDefinition := buildTerraformListStreamDefinition(*widgetDefinition.ListStreamWidgetDefinition, k.Add("list_stream_definition.0"))
+		k.Remove("list_stream_definition.0")
+		terraformWidget["list_stream_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.MonitorSummaryWidgetDefinition != nil {
 		terraformDefinition := buildTerraformManageStatusDefinition(*widgetDefinition.MonitorSummaryWidgetDefinition)
 		terraformWidget["manage_status_definition"] = []map[string]interface{}{terraformDefinition}
@@ -4682,6 +4699,165 @@ func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition datadogV1.S
 }
 
 //
+// List Stream Widget Definition helpers
+//
+
+func getListStreamDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"request": {
+			Description: "Nested block describing the requests to use when displaying the widget. Multiple `request` blocks are allowed with the structure below.",
+			Type:        schema.TypeList,
+			Required:    true,
+			MinItems:    1,
+			Elem: &schema.Resource{
+				Schema: getListStreamRequestSchema(),
+			},
+		},
+		"title": {
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"title_size": {
+			Description: "The size of the widget's title. Default is 16.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"title_align": {
+			Description:      "The alignment of the widget's title.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
+		},
+	}
+}
+
+func getListStreamRequestSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"columns": {
+			Description: "Widget columns.",
+			Type:        schema.TypeList,
+			Required:    true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"width": {
+						Description:      "Widget column width.",
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewListStreamColumnWidthFromValue),
+						Required:         true,
+					},
+					"field": {
+						Description: "Widget column field.",
+						Type:        schema.TypeString,
+						Required:    true,
+					},
+				},
+			},
+		},
+		"response_format": {
+			Description:      "Widget response format.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewListStreamResponseFormatFromValue),
+			Required:         true,
+		},
+		"query": {
+			Description: "Updated list stream widget.",
+			Type:        schema.TypeList,
+			Required:    true,
+			MaxItems:    1,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"data_source": {
+						Description:      "Source from which to query items to display in the stream.",
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewListStreamSourceFromValue),
+						Required:         true,
+					},
+					"query_string": {
+						Description: "Widget query.",
+						Type:        schema.TypeString,
+						Optional:    true,
+					},
+					"indexes": {
+						Description: "List of indexes.",
+						Type:        schema.TypeList,
+						Optional:    true,
+						Elem:        &schema.Schema{Type: schema.TypeString},
+					},
+				},
+			},
+		},
+	}
+}
+
+func buildDatadogListStreamDefinition(terraformDefinition map[string]interface{}) *datadogV1.ListStreamWidgetDefinition {
+	datadogDefinition := datadogV1.NewListStreamWidgetDefinitionWithDefaults()
+	// Required params
+	terraformRequest := terraformDefinition["request"].([]interface{})
+	datadogDefinition.SetRequests(*buildDatadogListStreamRequests(&terraformRequest))
+	// Optional params
+	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitle(v)
+	}
+	if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleSize(v)
+	}
+	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
+	}
+	return datadogDefinition
+}
+
+func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadogV1.ListStreamWidgetRequest {
+	datadogRequests := make([]datadogV1.ListStreamWidgetRequest, len(*terraformRequests))
+	for i, r := range *terraformRequests {
+		terraformRequest := r.(map[string]interface{})
+		// Build ListStream Request
+		datadogListStreamRequest := datadogV1.NewListStreamWidgetRequestWithDefaults()
+
+		datadogQuery := datadogV1.NewListStreamQueryWithDefaults()
+
+		if terraformQuery, ok := terraformRequest["query"].([]interface{}); ok && len(terraformQuery) > 0 {
+			q := terraformQuery[0].(map[string]interface{})
+			if v, ok := q["data_source"].(string); ok && len(v) > 0 {
+				ds := datadogV1.ListStreamSource(v)
+				datadogQuery.SetDataSource(ds)
+			}
+			if v, ok := q["query_string"].(string); ok {
+				datadogQuery.SetQueryString(v)
+			}
+			if v, ok := q["indexes"].([]interface{}); ok {
+				var indexes []string
+				for _, s := range v {
+					indexes = append(indexes, s.(string))
+				}
+				datadogQuery.SetIndexes(indexes)
+			}
+			datadogListStreamRequest.SetQuery(*datadogQuery)
+
+			if v, ok := terraformRequest["response_format"].(string); ok && len(v) != 0 {
+				rf := datadogV1.ListStreamResponseFormat(v)
+				datadogListStreamRequest.SetResponseFormat(rf)
+			}
+		}
+
+		terraformColumns := terraformRequest["columns"].([]interface{})
+		var datadogColumns []datadogV1.ListStreamColumn
+		for _, c := range terraformColumns {
+			column := c.(map[string]interface{})
+			width := datadogV1.ListStreamColumnWidth(column["width"].(string))
+			field := column["field"].(string)
+			streamColumn := datadogV1.NewListStreamColumn(field, width)
+			datadogColumns = append(datadogColumns, *streamColumn)
+		}
+		datadogListStreamRequest.SetColumns(datadogColumns)
+
+		datadogRequests[i] = *datadogListStreamRequest
+	}
+	return &datadogRequests
+}
+
+//
 // Geomap Widget Definition helpers
 //
 func getGeomapDefinitionSchema() map[string]*schema.Schema {
@@ -6865,6 +7041,56 @@ func buildTerraformGeomapDefinition(datadogDefinition datadogV1.GeomapWidgetDefi
 	}
 
 	return terraformDefinition
+}
+
+func buildTerraformListStreamDefinition(datadogDefinition datadogV1.ListStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+	terraformDefinition := map[string]interface{}{}
+	// Required params
+	terraformDefinition["request"] = buildTerraformListStreamWidgetRequests(datadogDefinition.Requests, k)
+	// Optional params
+	if datadogDefinition.Title != nil {
+		terraformDefinition["title"] = *datadogDefinition.Title
+	}
+	if datadogDefinition.TitleSize != nil {
+		terraformDefinition["title_size"] = *datadogDefinition.TitleSize
+	}
+	if datadogDefinition.TitleAlign != nil {
+		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
+	}
+	return terraformDefinition
+}
+
+func buildTerraformListStreamWidgetRequests(datadogListStreamRequests []datadogV1.ListStreamWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+	terraformRequests := make([]map[string]interface{}, len(datadogListStreamRequests))
+	for i, d := range datadogListStreamRequests {
+		terraformRequest := map[string]interface{}{}
+
+		terraformRequest["response_format"] = string(d.GetResponseFormat())
+
+		terraformColumns := make([]interface{}, len(d.GetColumns()))
+		for i, c := range d.GetColumns() {
+			column := map[string]interface{}{
+				"field": c.GetField(),
+				"width": string(c.GetWidth()),
+			}
+			terraformColumns[i] = column
+		}
+		terraformRequest["columns"] = terraformColumns
+
+		q := d.GetQuery()
+		queryRequest := map[string]interface{}{}
+		if indexes, ok := q.GetIndexesOk(); ok && indexes != nil && len(*indexes) > 0 {
+			queryRequest["indexes"] = *indexes
+		}
+		if queryString, ok := q.GetQueryStringOk(); ok {
+			queryRequest["query_string"] = queryString
+		}
+		queryRequest["data_source"] = string(q.GetDataSource())
+		terraformRequest["query"] = []map[string]interface{}{queryRequest}
+
+		terraformRequests[i] = terraformRequest
+	}
+	return &terraformRequests
 }
 
 func buildTerraformTraceServiceDefinition(datadogDefinition datadogV1.ServiceSummaryWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
