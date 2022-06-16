@@ -3,6 +3,8 @@ package datadog
 import (
 	"context"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+
 	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -33,9 +35,10 @@ func resourceDatadogIntegrationOpsgenieService() *schema.Resource {
 				Sensitive:   true,
 			},
 			"region": {
-				Description: "The region for the Opsgenie service.",
-				Type:        schema.TypeString,
-				Required:    true,
+				Description:      "The region for the Opsgenie service.",
+				Type:             schema.TypeString,
+				Required:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewOpsgenieServiceRegionTypeFromValue),
 			},
 			"custom_url": {
 				Description: "The custom url for a custom region.",
@@ -47,8 +50,8 @@ func resourceDatadogIntegrationOpsgenieService() *schema.Resource {
 }
 
 func buildOpsgenieServiceCreateRequest(d *schema.ResourceData) *datadogV2.OpsgenieServiceCreateRequest {
-	region, _ := datadogV2.NewOpsgenieServiceRegionTypeFromValue(d.Get("region").(string))
-	serviceAttributes := datadogV2.NewOpsgenieServiceCreateAttributes(d.Get("name").(string), d.Get("opsgenie_api_key").(string), *region)
+	region := datadogV2.OpsgenieServiceRegionType(d.Get("region").(string))
+	serviceAttributes := datadogV2.NewOpsgenieServiceCreateAttributes(d.Get("name").(string), d.Get("opsgenie_api_key").(string), region)
 	if customUrl, ok := d.GetOk("custom_url"); ok {
 		serviceAttributes.SetCustomUrl(customUrl.(string))
 	}
@@ -59,11 +62,11 @@ func buildOpsgenieServiceCreateRequest(d *schema.ResourceData) *datadogV2.Opsgen
 }
 
 func buildOpsgenieServiceUpdateRequest(d *schema.ResourceData) *datadogV2.OpsgenieServiceUpdateRequest {
-	region, _ := datadogV2.NewOpsgenieServiceRegionTypeFromValue(d.Get("region").(string))
+	region := datadogV2.OpsgenieServiceRegionType(d.Get("region").(string))
 	serviceAttributes := datadogV2.NewOpsgenieServiceUpdateAttributesWithDefaults()
 	serviceAttributes.SetName(d.Get("name").(string))
 	serviceAttributes.SetOpsgenieApiKey(d.Get("opsgenie_api_key").(string))
-	serviceAttributes.SetRegion(*region)
+	serviceAttributes.SetRegion(region)
 	if customUrl, ok := d.GetOk("custom_url"); ok {
 		serviceAttributes.SetCustomUrl(customUrl.(string))
 	}
