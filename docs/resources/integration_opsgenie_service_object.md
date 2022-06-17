@@ -14,15 +14,15 @@ Resource for interacting with Datadog Opsgenie Service API.
 
 ```terraform
 resource "datadog_integration_opsgenie_service_object" "fake_service_name" {
-  name = "fake_service_name"
-  opsgenie_api_key  = "00000000-0000-0000-0000-000000000000"
-  region = "us"
+  name             = "fake_service_name"
+  opsgenie_api_key = "00000000-0000-0000-0000-000000000000"
+  region           = "us"
 }
 
 resource "datadog_integration_opsgenie_service_object" "fake_service_name_2" {
-  name = "fake_service_name_2"
-  opsgenie_api_key  = "11111111-1111-1111-1111-111111111111"
-  region = "eu"
+  name             = "fake_service_name_2"
+  opsgenie_api_key = "11111111-1111-1111-1111-111111111111"
+  region           = "eu"
 }
 ```
 
@@ -33,7 +33,7 @@ resource "datadog_integration_opsgenie_service_object" "fake_service_name_2" {
 
 - `name` (String) The name for the Opsgenie service.
 - `opsgenie_api_key` (String, Sensitive) The Opsgenie API key for the Opsgenie service. Note: Since the Datadog API never returns Opsgenie API keys, it is impossible to detect [drifts](https://www.hashicorp.com/blog/detecting-and-managing-drift-with-terraform). The best way to solve a drift is to manually mark the Service Object resource with [terraform taint](https://www.terraform.io/docs/commands/taint.html) to have it destroyed and recreated.
-- `region` (String) The region for the Opsgenie service.
+- `region` (String) The region for the Opsgenie service. Valid values are `us`, `eu`, `custom`.
 
 ### Optional
 
