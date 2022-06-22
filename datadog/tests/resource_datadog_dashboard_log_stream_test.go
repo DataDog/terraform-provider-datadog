@@ -39,7 +39,7 @@ resource "datadog_dashboard" "log_stream_dashboard" {
 `
 
 const datadogDashboardLogStreamConfigImport = `
-resource "datadog_dashboard" "list_stream_dashboard" {
+resource "datadog_dashboard" "log_stream_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
