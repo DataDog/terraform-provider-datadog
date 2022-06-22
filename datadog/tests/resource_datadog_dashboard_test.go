@@ -734,6 +734,7 @@ resource "datadog_dashboard" "simple_dashboard" {
 }`, uniq)
 }
 
+// REMOVE THIS COMMENT
 var datadogSimpleOrderedDashboardAsserts = []string{
 	// Dashboard metadata
 	"description = Created using the Datadog provider in Terraform",
