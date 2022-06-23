@@ -2583,7 +2583,7 @@ Optional:
 
 Optional:
 
-- `is_template` (Boolean) Indicates whether the timeframe should be shifted to end at the current time.
+- `is_template` (Boolean) Whether or not the notebook is a template.
 - `take_snapshots` (Boolean) Whether or not the notebook takes snapshot image backups of the notebook's fixed-time graphs.
 - `type` (String) Metadata type of the notebook. Valid values are `postmortem`, `runbook`, `investigation`, `documentation`, `report`.
 
