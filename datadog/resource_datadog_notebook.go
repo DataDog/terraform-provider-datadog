@@ -64,14 +64,12 @@ func getWidgetBasedNotebookCellSchema(definitionSchema map[string]*schema.Schema
 					"keys": {
 						Type:        schema.TypeList,
 						Required:    true,
-						MaxItems:    1,
 						Description: "Keys to split on.",
 						Elem:        &schema.Schema{Type: schema.TypeString},
 					},
 					"tags": {
-						Type:        schema.TypeList,
+						Type:        schema.TypeSet,
 						Required:    true,
-						MaxItems:    1,
 						Description: "Tags to split on.",
 						Elem:        &schema.Schema{Type: schema.TypeString},
 					},
@@ -246,7 +244,7 @@ func resourceDatadogNotebook() *schema.Resource {
 			"cells": {
 				Description: "List of cells to display in the notebook.",
 				Type:        schema.TypeList,
-				Optional:    true,
+				Required:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
@@ -276,7 +274,7 @@ func resourceDatadogNotebook() *schema.Resource {
 			"time": {
 				Description: "Notebook global timeframe.",
 				Type:        schema.TypeList,
-				Optional:    true,
+				Required:    true,
 				MaxItems:    1,
 				Elem: &schema.Resource{
 					Schema: getTimeSchema(),
@@ -521,7 +519,7 @@ func buildDatadogNotebookUpdate(d *schema.ResourceData) (*datadogV1.NotebookUpda
 		notebookUpdateDataAttributes.SetCells(*ddCells)
 	}
 
-	if tfNotebookTime, ok := d.Get("time").([]interface{}); ok {
+	if tfNotebookTime, ok := d.Get("time").([]interface{}); ok && len(tfNotebookTime) > 0 {
 		ddTime := buildDatadogNotebookTime(tfNotebookTime[0].(map[string]interface{}))
 		notebookUpdateDataAttributes.SetTime(*ddTime)
 	}
@@ -531,7 +529,7 @@ func buildDatadogNotebookUpdate(d *schema.ResourceData) (*datadogV1.NotebookUpda
 		notebookUpdateDataAttributes.SetStatus(*ddStatus)
 	}
 
-	if tfNotebookMetadata, ok := d.Get("metadata").([]interface{}); ok {
+	if tfNotebookMetadata, ok := d.Get("metadata").([]interface{}); ok && len(tfNotebookMetadata) > 0 {
 		ddMetadata := buildDatadogNotebookMetadata(tfNotebookMetadata[0].(map[string]interface{}))
 		notebookUpdateDataAttributes.SetMetadata(*ddMetadata)
 	}
@@ -679,7 +677,7 @@ func buildDDSplitBy(tfSplitBy map[string]interface{}) *datadogV1.NotebookSplitBy
 	var keys []string
 	var tags []string
 
-	for _, tag := range tfSplitBy["tags"].([]interface{}) {
+	for _, tag := range tfSplitBy["tags"].(*schema.Set).List() {
 		tags = append(tags, tag.(string))
 	}
 
@@ -1101,7 +1099,7 @@ func buildCreateDatadogNotebook(d *schema.ResourceData) (*datadogV1.NotebookCrea
 		notebookCreateDataAttributes.SetCells(*ddCells)
 	}
 
-	if tfNotebookTime, ok := d.Get("time").([]interface{}); ok {
+	if tfNotebookTime, ok := d.Get("time").([]interface{}); ok && len(tfNotebookTime) > 0 {
 		ddTime := buildDatadogNotebookTime(tfNotebookTime[0].(map[string]interface{}))
 		notebookCreateDataAttributes.SetTime(*ddTime)
 	}
@@ -1111,7 +1109,7 @@ func buildCreateDatadogNotebook(d *schema.ResourceData) (*datadogV1.NotebookCrea
 		notebookCreateDataAttributes.SetStatus(*ddStatus)
 	}
 
-	if tfNotebookMetadata, ok := d.Get("metadata").([]interface{}); ok {
+	if tfNotebookMetadata, ok := d.Get("metadata").([]interface{}); ok && len(tfNotebookMetadata) > 0 {
 		ddMetadata := buildDatadogNotebookMetadata(tfNotebookMetadata[0].(map[string]interface{}))
 		notebookCreateDataAttributes.SetMetadata(*ddMetadata)
 	}
