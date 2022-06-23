@@ -6,14 +6,12 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 var timeFormat = "2006-01-02T15:04:05Z07:00"
