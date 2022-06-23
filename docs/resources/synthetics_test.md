@@ -647,10 +647,11 @@ Optional:
 <a id="nestedblock--options_list--rum_settings"></a>
 ### Nested Schema for `options_list.rum_settings`
 
-Required:
+Optional:
 
 - `application_id` (String) RUM application ID used to collect RUM data for the browser test.
 - `client_token_id` (Number, Sensitive) RUM application API key ID used to collect RUM data for the browser test.
+- `is_enabled` (Boolean) Determines whether RUM data is collected during test runs.
 
 
 
