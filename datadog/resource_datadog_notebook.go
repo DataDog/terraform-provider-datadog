@@ -142,7 +142,7 @@ func getNotebookCellAttributesSchema() map[string]*schema.Schema {
 				Schema: getWidgetBasedNotebookCellSchema(getHeatmapDefinitionSchema()),
 			},
 		},
-		"logstream_cell": {
+		"log_stream_cell": {
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
@@ -292,6 +292,7 @@ func resourceDatadogNotebook() *schema.Resource {
 				Description: "Metadata associated with the notebook.",
 				MaxItems:    1,
 				Optional:    true,
+				Computed:    true,
 				Elem: &schema.Resource{
 					Schema: getMetadataSchema(),
 				},
@@ -462,10 +463,10 @@ func buildDatadogUpdateNotebookCellAttributes(tfAttributes map[string]interface{
 			ddDistributionCellAttribute := datadogV1.NotebookDistributionCellAttributesAsNotebookCellUpdateRequestAttributes(buildDatadogDistributionCellDefinition(tfDistributionCellAttributes))
 			definition = ddDistributionCellAttribute
 		}
-	} else if logstream, ok := tfAttributes["logstream_cell"].([]interface{}); ok && len(logstream) > 0 {
-		if tfLogstreamCellAttributes, ok := logstream[0].(map[string]interface{}); ok {
-			ddLogstreamCellAttribute := datadogV1.NotebookLogStreamCellAttributesAsNotebookCellUpdateRequestAttributes(buildDatadogLogstreamCellDefinition(tfLogstreamCellAttributes))
-			definition = ddLogstreamCellAttribute
+	} else if logstream, ok := tfAttributes["log_stream_cell"].([]interface{}); ok && len(logstream) > 0 {
+		if tfLogStreamCellAttributes, ok := logstream[0].(map[string]interface{}); ok {
+			ddLogStreamCellAttribute := datadogV1.NotebookLogStreamCellAttributesAsNotebookCellUpdateRequestAttributes(buildDatadogLogStreamCellDefinition(tfLogStreamCellAttributes))
+			definition = ddLogStreamCellAttribute
 		}
 	}
 
@@ -654,7 +655,7 @@ func buildDatadogDistributionCellDefinition(tfCellAttribute map[string]interface
 	return &cellAttributes
 }
 
-func buildDatadogLogstreamCellDefinition(tfCellAttribute map[string]interface{}) *datadogV1.NotebookLogStreamCellAttributes {
+func buildDatadogLogStreamCellDefinition(tfCellAttribute map[string]interface{}) *datadogV1.NotebookLogStreamCellAttributes {
 	cellAttributes := datadogV1.NotebookLogStreamCellAttributes{}
 
 	tfDefinition := tfCellAttribute["definition"].([]interface{})[0].(map[string]interface{})
@@ -720,10 +721,10 @@ func buildDatadogCreateNotebookCellAttributes(tfAttributes map[string]interface{
 			ddDistributionCellAttribute := datadogV1.NotebookDistributionCellAttributesAsNotebookCellCreateRequestAttributes(buildDatadogDistributionCellDefinition(tfDistributionCellAttributes))
 			definition = ddDistributionCellAttribute
 		}
-	} else if logstream, ok := tfAttributes["logstream_cell"].([]interface{}); ok && len(logstream) > 0 {
-		if tfLogstreamCellAttributes, ok := logstream[0].(map[string]interface{}); ok {
-			ddLogstreamCellAttribute := datadogV1.NotebookLogStreamCellAttributesAsNotebookCellCreateRequestAttributes(buildDatadogLogstreamCellDefinition(tfLogstreamCellAttributes))
-			definition = ddLogstreamCellAttribute
+	} else if logstream, ok := tfAttributes["log_stream_cell"].([]interface{}); ok && len(logstream) > 0 {
+		if tfLogStreamCellAttributes, ok := logstream[0].(map[string]interface{}); ok {
+			ddLogStreamCellAttribute := datadogV1.NotebookLogStreamCellAttributesAsNotebookCellCreateRequestAttributes(buildDatadogLogStreamCellDefinition(tfLogStreamCellAttributes))
+			definition = ddLogStreamCellAttribute
 		}
 	}
 
@@ -967,7 +968,7 @@ func buildTerraformNotebookDistributionCellAttributes(attribute datadogV1.Notebo
 	return tfAttributes
 }
 
-func buildTerraformNotebookLogstreamCellAttributes(attribute datadogV1.NotebookLogStreamCellAttributes) []map[string]interface{} {
+func buildTerraformNotebookLogStreamCellAttributes(attribute datadogV1.NotebookLogStreamCellAttributes) []map[string]interface{} {
 	tCell := map[string]interface{}{}
 
 	definition := []interface{}{
@@ -984,7 +985,7 @@ func buildTerraformNotebookLogstreamCellAttributes(attribute datadogV1.NotebookL
 	}
 
 	tfAttributes := []map[string]interface{}{{
-		"logstream_cell": []map[string]interface{}{tCell},
+		"log_stream_cell": []map[string]interface{}{tCell},
 	}}
 
 	return tfAttributes
@@ -1012,7 +1013,7 @@ func buildTerraformNotebookCell(datadogDefinition datadogV1.NotebookCellResponse
 		terraformAttributeDefinition := buildTerraformNotebookDistributionCellAttributes(*datadogDefinition.Attributes.NotebookDistributionCellAttributes)
 		terraformNotebookCell["attributes"] = terraformAttributeDefinition
 	} else if datadogDefinition.Attributes.NotebookLogStreamCellAttributes != nil {
-		terraformAttributeDefinition := buildTerraformNotebookLogstreamCellAttributes(*datadogDefinition.Attributes.NotebookLogStreamCellAttributes)
+		terraformAttributeDefinition := buildTerraformNotebookLogStreamCellAttributes(*datadogDefinition.Attributes.NotebookLogStreamCellAttributes)
 		terraformNotebookCell["attributes"] = terraformAttributeDefinition
 	}
 

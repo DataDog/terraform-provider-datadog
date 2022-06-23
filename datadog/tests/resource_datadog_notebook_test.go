@@ -146,7 +146,7 @@ func TestAccDatadogNotebookTimeseriesCell(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_notebook.timeseries", "cells.0.attributes.0.timeseries_cell.0.definition.0.request.0.q", "avg:system.cpu.user{app:general} by {env}"),
 					resource.TestCheckResourceAttr("datadog_notebook.timeseries", "cells.0.attributes.0.timeseries_cell.0.split_by.0.keys.#", "1"),
 					resource.TestCheckResourceAttr("datadog_notebook.timeseries", "cells.0.attributes.0.timeseries_cell.0.split_by.0.tags.#", "2"),
-					resource.TestCheckResourceAttr("datadog_notebook.timeseries", "cells.0.attributes.0.timeseries_cell.0.graph_size", "m"),
+					resource.TestCheckResourceAttr("datadog_notebook.timeseries", "cells.0.attributes.0.timeseries_cell.0.graph_size", "s"),
 				),
 			},
 		},
@@ -184,7 +184,7 @@ resource "datadog_notebook" "timeseries" {
             live_span = "5m"
           }
         }
-        graph_size = "m"
+        graph_size = "s"
       }
     }
   }
@@ -225,7 +225,7 @@ func TestAccDatadogNotebookToplistCell(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_notebook.toplist", "cells.0.type", "notebook_cells"),
 					resource.TestCheckResourceAttr("datadog_notebook.toplist", "cells.0.attributes.#", "1"),
 					resource.TestCheckResourceAttr("datadog_notebook.toplist", "cells.0.attributes.0.toplist_cell.0.definition.0.request.0.q", "avg:system.cpu.user{app:general} by {env}"),
-					resource.TestCheckResourceAttr("datadog_notebook.toplist", "cells.0.attributes.0.toplist_cell.0.graph_size", "s"),
+					resource.TestCheckResourceAttr("datadog_notebook.toplist", "cells.0.attributes.0.toplist_cell.0.graph_size", "m"),
 				),
 			},
 		},
@@ -260,6 +260,184 @@ resource "datadog_notebook" "toplist" {
 	  }
     }
   }
+  time {
+    notebook_absolute_time {
+	  start = "2021-02-24T11:18:28Z"
+	  end   = "2021-02-24T11:20:28Z"
+      live  = false
+    }
+  }
+  
+  name = "%s"
+  status = "published"
+}
+`, uniq)
+}
+
+func TestAccDatadogNotebookHeatmapCell(t *testing.T) {
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogNotebookDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: notebookHeatmapCellConfig(name),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogNotebookExists(accProvider, "datadog_notebook.toplist"),
+					resource.TestCheckResourceAttr("datadog_notebook.heatmap", "name", name),
+					resource.TestCheckResourceAttr("datadog_notebook.heatmap", "cells.0.type", "notebook_cells"),
+					resource.TestCheckResourceAttr("datadog_notebook.heatmap", "cells.0.attributes.#", "1"),
+					resource.TestCheckResourceAttr("datadog_notebook.heatmap", "cells.0.attributes.0.heatmap_cell.0.definition.0.request.0.q", "avg:system.load.1{env:staging} by {account}"),
+					resource.TestCheckResourceAttr("datadog_notebook.heatmap", "cells.0.attributes.0.heatmap_cell.0.graph_size", "m"),
+				),
+			},
+		},
+	})
+}
+
+func notebookHeatmapCellConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_notebook" "heatmap" {  
+  cells {
+    attributes {
+	  heatmap_cell {
+		  definition {
+		  request {
+		    q = "avg:system.load.1{env:staging} by {account}"
+		    style {
+		  	  palette = "warm"
+		    }
+	  	  }
+	    }
+	    graph_size = "m"
+	  }
+    }
+  }
+
+  time {
+    notebook_absolute_time {
+	  start = "2021-02-24T11:18:28Z"
+	  end   = "2021-02-24T11:20:28Z"
+      live  = false
+    }
+  }
+  
+  name = "%s"
+  status = "published"
+}
+`, uniq)
+}
+
+func TestAccDatadogNotebookDistributionCell(t *testing.T) {
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogNotebookDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: notebookDistributionCellConfig(name),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogNotebookExists(accProvider, "datadog_notebook.distribution"),
+					resource.TestCheckResourceAttr("datadog_notebook.distribution", "name", name),
+					resource.TestCheckResourceAttr("datadog_notebook.distribution", "cells.0.type", "notebook_cells"),
+					resource.TestCheckResourceAttr("datadog_notebook.distribution", "cells.0.attributes.#", "1"),
+					resource.TestCheckResourceAttr("datadog_notebook.distribution", "cells.0.attributes.0.distribution_cell.0.definition.0.request.0.q", "avg:system.load.1{env:staging} by {account}"),
+					resource.TestCheckResourceAttr("datadog_notebook.distribution", "cells.0.attributes.0.distribution_cell.0.graph_size", "m"),
+				),
+			},
+		},
+	})
+}
+
+func notebookDistributionCellConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_notebook" "distribution" {
+  cells {
+    attributes {
+	  distribution_cell {
+		  definition {
+		  request {
+		    q = "avg:system.load.1{env:staging} by {account}"
+		    style {
+		  	  palette = "warm"
+		    }
+	  	  }
+	    }
+	    graph_size = "m"
+	  }
+    }
+  }
+
+  time {
+    notebook_absolute_time {
+	  start = "2021-02-24T11:18:28Z"
+	  end   = "2021-02-24T11:20:28Z"
+      live  = false
+    }
+  }
+  
+  name = "%s"
+  status = "published"
+}
+`, uniq)
+}
+
+func TestAccDatadogNotebookLogStreamCell(t *testing.T) {
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogNotebookDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: notebookLogStreamCellConfig(name),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogNotebookExists(accProvider, "datadog_notebook.log_stream"),
+					resource.TestCheckResourceAttr("datadog_notebook.log_stream", "name", name),
+					resource.TestCheckResourceAttr("datadog_notebook.log_stream", "cells.0.type", "notebook_cells"),
+					resource.TestCheckResourceAttr("datadog_notebook.log_stream", "cells.0.attributes.#", "1"),
+					resource.TestCheckResourceAttr("datadog_notebook.log_stream", "cells.0.attributes.0.log_stream_cell.0.definition.0.query", "error"),
+					resource.TestCheckResourceAttr("datadog_notebook.log_stream", "cells.0.attributes.0.log_stream_cell.0.graph_size", "m"),
+				),
+			},
+		},
+	})
+}
+
+func notebookLogStreamCellConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_notebook" "log_stream" {
+  cells {
+    attributes {
+	  log_stream_cell {
+        definition {
+          indexes             = ["main"]
+          query               = "error"
+          columns             = ["core_host", "core_service", "tag_source"]
+          show_date_column    = true
+          show_message_column = true
+          message_display     = "expanded-md"
+          sort {
+            column = "time"
+            order  = "desc"
+          }
+        }
+        graph_size = "m"
+      }
+    }
+  }
+
   time {
     notebook_absolute_time {
 	  start = "2021-02-24T11:18:28Z"
