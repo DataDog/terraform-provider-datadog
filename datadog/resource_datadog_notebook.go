@@ -211,7 +211,8 @@ func getMetadataSchema() map[string]*schema.Schema {
 			Type:        schema.TypeBool,
 			Optional:    true,
 			Default:     false,
-			Description: "Indicates whether the timeframe should be shifted to end at the current time.",
+			ForceNew:    true,
+			Description: "Whether or not the notebook is a template.",
 		},
 		"take_snapshots": {
 			Type:        schema.TypeBool,
@@ -850,7 +851,7 @@ func buildTerraformNotebookTimeseriesCellAttributes(attribute datadogV1.Notebook
 	tCell := map[string]interface{}{}
 
 	definition := []interface{}{
-		buildTerraformTimeseriesDefinition(attribute.Definition, utils.NewResourceDataKey(&schema.ResourceData{}, fmt.Sprintf(""))),
+		buildTerraformTimeseriesDefinition(attribute.Definition, &utils.ResourceDataKey{}),
 	}
 	tCell["definition"] = definition
 
@@ -880,7 +881,7 @@ func buildTerraformNotebookToplistCellAttributes(attribute datadogV1.NotebookTop
 	tCell := map[string]interface{}{}
 
 	definition := []interface{}{
-		buildTerraformToplistDefinition(attribute.Definition, utils.NewResourceDataKey(&schema.ResourceData{}, fmt.Sprintf(""))),
+		buildTerraformToplistDefinition(attribute.Definition, &utils.ResourceDataKey{}),
 	}
 	tCell["definition"] = definition
 
@@ -910,7 +911,7 @@ func buildTerraformNotebookHeatmapCellAttributes(attribute datadogV1.NotebookHea
 	tCell := map[string]interface{}{}
 
 	definition := []interface{}{
-		buildTerraformHeatmapDefinition(attribute.Definition, utils.NewResourceDataKey(&schema.ResourceData{}, fmt.Sprintf(""))),
+		buildTerraformHeatmapDefinition(attribute.Definition, &utils.ResourceDataKey{}),
 	}
 	tCell["definition"] = definition
 
@@ -940,7 +941,7 @@ func buildTerraformNotebookDistributionCellAttributes(attribute datadogV1.Notebo
 	tCell := map[string]interface{}{}
 
 	definition := []interface{}{
-		buildTerraformDistributionDefinition(attribute.Definition, utils.NewResourceDataKey(&schema.ResourceData{}, fmt.Sprintf(""))),
+		buildTerraformDistributionDefinition(attribute.Definition, &utils.ResourceDataKey{}),
 	}
 	tCell["definition"] = definition
 
@@ -970,7 +971,7 @@ func buildTerraformNotebookLogStreamCellAttributes(attribute datadogV1.NotebookL
 	tCell := map[string]interface{}{}
 
 	definition := []interface{}{
-		buildTerraformLogStreamDefinition(attribute.Definition, utils.NewResourceDataKey(&schema.ResourceData{}, fmt.Sprintf(""))),
+		buildTerraformLogStreamDefinition(attribute.Definition, &utils.ResourceDataKey{}),
 	}
 	tCell["definition"] = definition
 
