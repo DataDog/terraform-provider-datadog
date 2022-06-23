@@ -506,16 +506,21 @@ func syntheticsTestOptionsList() *schema.Schema {
 					MaxItems:    1,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
+							"is_enabled": {
+								Type:        schema.TypeBool,
+								Description: "Determines whether RUM data is collected during test runs.",
+								Optional:    true,
+							},
 							"application_id": {
 								Type:        schema.TypeString,
 								Description: "RUM application ID used to collect RUM data for the browser test.",
-								Required:    true,
+								Optional:    true,
 							},
 							"client_token_id": {
 								Type:        schema.TypeInt,
 								Description: "RUM application API key ID used to collect RUM data for the browser test.",
 								Sensitive:   true,
-								Required:    true,
+								Optional:    true,
 							},
 						},
 					},
@@ -1797,13 +1802,23 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 		if rum_settings, ok := d.GetOk("options_list.0.rum_settings.0"); ok {
 			settings := rum_settings.(map[string]interface{})
-			applicationId := settings["application_id"]
-			clientTokenId := settings["client_token_id"]
+			isEnabled := settings["is_enabled"]
 
 			rumSettings := datadogV1.SyntheticsBrowserTestRumSettings{}
-			rumSettings.SetIsEnabled(true)
-			rumSettings.SetApplicationId(applicationId.(string))
-			rumSettings.SetClientTokenId(int64(clientTokenId.(int)))
+
+			if isEnabled == true {
+				rumSettings.SetIsEnabled(true)
+
+				if applicationId, ok := settings["application_id"]; ok {
+					rumSettings.SetApplicationId(applicationId.(string))
+				}
+
+				if clientTokenId, ok := settings["client_token_id"]; ok {
+					rumSettings.SetClientTokenId(int64(clientTokenId.(int)))
+				}
+			} else {
+				rumSettings.SetIsEnabled(false)
+			}
 
 			options.SetRumSettings(rumSettings)
 		}
@@ -2272,8 +2287,15 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 
 	if rumSettings, ok := actualOptions.GetRumSettingsOk(); ok {
 		localRumSettings := make(map[string]interface{})
-		localRumSettings["application_id"] = rumSettings.GetApplicationId()
-		localRumSettings["client_token_id"] = rumSettings.GetClientTokenId()
+		localRumSettings["is_enabled"] = rumSettings.GetIsEnabled()
+
+		if rumSettings.HasApplicationId() {
+			localRumSettings["application_id"] = rumSettings.GetApplicationId()
+		}
+
+		if rumSettings.HasClientTokenId() {
+			localRumSettings["client_token_id"] = rumSettings.GetClientTokenId()
+		}
 
 		localOptionsList["rum_settings"] = []map[string]interface{}{localRumSettings}
 	}
