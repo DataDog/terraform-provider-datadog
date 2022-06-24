@@ -24,8 +24,8 @@ docs/resources/metric*                    @DataDog/integrations-tools-and-librar
 datadog/*datadog_monitor*                 @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
 docs/data-sources/monitor*                @DataDog/integrations-tools-and-libraries @DataDog/monitor-app @DataDog/documentation
 docs/resources/monitor*                   @DataDog/integrations-tools-and-libraries @DataDog/monitor-app @DataDog/documentation
-datadog/*datadog_screenboard*             @DataDog/integrations-tools-and-libraries @DataDog/dashboards
-docs/resources/screenboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards @DataDog/documentation
+datadog/*datadog_notebook*                @DataDog/integrations-tools-and-libraries @DataDog/notebooks
+docs/resources/notebook*                  @DataDog/integrations-tools-and-libraries @DataDog/notebooks @DataDog/documentation
 datadog/*security_monitoring*             @DataDog/integrations-tools-and-libraries @DataDog/security-monitoring
 docs/data-sources/security_monitoring*    @DataDog/integrations-tools-and-libraries @DataDog/security-monitoring @DataDog/documentation
 docs/resources/security_monitoring*       @DataDog/integrations-tools-and-libraries @DataDog/security-monitoring @DataDog/documentation
@@ -33,7 +33,5 @@ datadog/*datadog_service_level_objective* @DataDog/integrations-tools-and-librar
 docs/resources/service_level_objective*   @DataDog/integrations-tools-and-libraries @DataDog/monitor-app @DataDog/documentation
 datadog/*datadog_synthetics*              @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app
 docs/resources/synthetics*                @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app @DataDog/documentation
-datadog/*datadog_timeboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards
-docs/resources/timeboard*                 @DataDog/integrations-tools-and-libraries @DataDog/dashboards @DataDog/documentation
 datadog/*datadog_user*                    @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
 docs/resources/user*                      @DataDog/integrations-tools-and-libraries @DataDog/team-aaa @DataDog/documentation

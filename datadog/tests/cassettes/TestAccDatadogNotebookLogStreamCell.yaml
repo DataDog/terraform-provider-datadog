@@ -1,0 +1,84 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"cells":[{"attributes":{"definition":{"columns":["core_host","core_service","tag_source"],"indexes":["main"],"message_display":"expanded-md","query":"error","show_date_column":true,"show_message_column":true,"sort":{"column":"time","order":"desc"},"type":"log_stream"},"graph_size":"m"},"type":"notebook_cells"}],"name":"tf-TestAccDatadogNotebookLogStreamCell-local-1655988298","status":"published","time":{"end":"2021-02-24T11:20:28Z","live":false,"start":"2021-02-24T11:18:28Z"}},"type":"notebooks"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/notebooks
+    method: POST
+  response:
+    body: '{"data":{"type":"notebooks","id":2741557,"attributes":{"name":"tf-TestAccDatadogNotebookLogStreamCell-local-1655988298","cells":[{"attributes":{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":["main"],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"graph_size":"m"},"type":"notebook_cells","id":"2gq44ax4"}],"time":{"start":"2021-02-24T11:18:28+00:00","live":false,"end":"2021-02-24T11:20:28+00:00"},"metadata":{"is_favorite":false,"is_template":false,"type":null,"take_snapshots":false},"template_variables":[],"status":"published","modified":"2022-06-23T12:44:59.414473+00:00","created":"2022-06-23T12:44:59.414473+00:00","author":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro","title":null,"verified":true,"disabled":false,"status":"Active"}}}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/notebooks/2741557
+    method: GET
+  response:
+    body: '{"data":{"type":"notebooks","id":2741557,"attributes":{"name":"tf-TestAccDatadogNotebookLogStreamCell-local-1655988298","cells":[{"attributes":{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":["main"],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"graph_size":"m"},"type":"notebook_cells","id":"2gq44ax4"}],"time":{"start":"2021-02-24T11:18:28+00:00","live":false,"end":"2021-02-24T11:20:28+00:00"},"metadata":{"is_favorite":false,"is_template":false,"type":null,"take_snapshots":false},"template_variables":[],"status":"published","modified":"2022-06-23T12:44:59.414473+00:00","created":"2022-06-23T12:44:59.414473+00:00","author":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro","title":null,"verified":true,"disabled":false,"status":"Active"}}}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/notebooks/2741557
+    method: GET
+  response:
+    body: '{"data":{"type":"notebooks","id":2741557,"attributes":{"name":"tf-TestAccDatadogNotebookLogStreamCell-local-1655988298","cells":[{"attributes":{"definition":{"sort":{"column":"time","order":"desc"},"show_message_column":true,"show_date_column":true,"message_display":"expanded-md","indexes":["main"],"query":"error","type":"log_stream","columns":["core_host","core_service","tag_source"]},"graph_size":"m"},"type":"notebook_cells","id":"2gq44ax4"}],"time":{"start":"2021-02-24T11:18:28+00:00","live":false,"end":"2021-02-24T11:20:28+00:00"},"metadata":{"is_favorite":false,"is_template":false,"type":null,"take_snapshots":false},"template_variables":[],"status":"published","modified":"2022-06-23T12:44:59.414473+00:00","created":"2022-06-23T12:44:59.414473+00:00","author":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro","title":null,"verified":true,"disabled":false,"status":"Active"}}}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v1/notebooks/2741557
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/notebooks/2741557
+    method: GET
+  response:
+    body: '{"errors": ["Notebook not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
