@@ -313,7 +313,10 @@ func resourceDatadogNotebook() *schema.Resource {
 }
 
 func updateNotebookState(d *schema.ResourceData, resource *datadogV1.NotebookResponseData) diag.Diagnostics {
-	cells := buildTerraformCells(&resource.Attributes.Cells)
+	cells, err := buildTerraformCells(&resource.Attributes.Cells)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	if err := d.Set("cells", cells); err != nil {
 		return diag.FromErr(err)
 	}
@@ -467,6 +470,8 @@ func buildDatadogUpdateNotebookCellAttributes(tfAttributes map[string]interface{
 			ddLogStreamCellAttribute := datadogV1.NotebookLogStreamCellAttributesAsNotebookCellUpdateRequestAttributes(buildDatadogLogStreamCellDefinition(tfLogStreamCellAttributes))
 			definition = ddLogStreamCellAttribute
 		}
+	} else {
+		return nil, fmt.Errorf("failed to find valid definition in cells configuration")
 	}
 
 	return &definition, nil
@@ -479,12 +484,18 @@ func buildDatadogUpdateNotebookCell(tfNotebookCell map[string]interface{}) (*dat
 
 		ddNotebookUpdateCell.SetId(cellId)
 		if tfCellType, ok := tfNotebookCell["type"].(string); ok {
-			ddCellType, _ := datadogV1.NewNotebookCellResourceTypeFromValue(tfCellType)
+			ddCellType, err := datadogV1.NewNotebookCellResourceTypeFromValue(tfCellType)
+			if err != nil {
+				return nil, err
+			}
 			ddNotebookUpdateCell.SetType(*ddCellType)
 		}
 
 		if tfCellAttributes, ok := tfNotebookCell["attributes"].([]interface{}); ok {
-			ddCellAttributes, _ := buildDatadogUpdateNotebookCellAttributes(tfCellAttributes[0].(map[string]interface{}))
+			ddCellAttributes, err := buildDatadogUpdateNotebookCellAttributes(tfCellAttributes[0].(map[string]interface{}))
+			if err != nil {
+				return nil, err
+			}
 			ddNotebookUpdateCell.SetAttributes(*ddCellAttributes)
 		}
 
@@ -515,22 +526,34 @@ func buildDatadogNotebookUpdate(d *schema.ResourceData) (*datadogV1.NotebookUpda
 	notebookUpdateDataAttributes := datadogV1.NotebookUpdateDataAttributes{}
 
 	if tfNotebookCells, ok := d.Get("cells").([]interface{}); ok {
-		ddCells, _ := buildDatadogUpdateNotebookCells(tfNotebookCells)
+		ddCells, err := buildDatadogUpdateNotebookCells(tfNotebookCells)
+		if err != nil {
+			return nil, err
+		}
 		notebookUpdateDataAttributes.SetCells(*ddCells)
 	}
 
 	if tfNotebookTime, ok := d.Get("time").([]interface{}); ok && len(tfNotebookTime) > 0 {
-		ddTime := buildDatadogNotebookTime(tfNotebookTime[0].(map[string]interface{}))
+		ddTime, err := buildDatadogNotebookTime(tfNotebookTime[0].(map[string]interface{}))
+		if err != nil {
+			return nil, err
+		}
 		notebookUpdateDataAttributes.SetTime(*ddTime)
 	}
 
 	if tfNotebookStatus, ok := d.Get("status").(string); ok {
-		ddStatus, _ := datadogV1.NewNotebookStatusFromValue(tfNotebookStatus)
+		ddStatus, err := datadogV1.NewNotebookStatusFromValue(tfNotebookStatus)
+		if err != nil {
+			return nil, err
+		}
 		notebookUpdateDataAttributes.SetStatus(*ddStatus)
 	}
 
 	if tfNotebookMetadata, ok := d.Get("metadata").([]interface{}); ok && len(tfNotebookMetadata) > 0 {
-		ddMetadata := buildDatadogNotebookMetadata(tfNotebookMetadata[0].(map[string]interface{}))
+		ddMetadata, err := buildDatadogNotebookMetadata(tfNotebookMetadata[0].(map[string]interface{}))
+		if err != nil {
+			return nil, err
+		}
 		notebookUpdateDataAttributes.SetMetadata(*ddMetadata)
 	}
 
@@ -725,6 +748,8 @@ func buildDatadogCreateNotebookCellAttributes(tfAttributes map[string]interface{
 			ddLogStreamCellAttribute := datadogV1.NotebookLogStreamCellAttributesAsNotebookCellCreateRequestAttributes(buildDatadogLogStreamCellDefinition(tfLogStreamCellAttributes))
 			definition = ddLogStreamCellAttribute
 		}
+	} else {
+		return nil, fmt.Errorf("failed to find valid definition in notebook cells configuration")
 	}
 
 	return &definition, nil
@@ -760,7 +785,7 @@ func buildDatadogCreateNotebookCells(terraformNotebookCells []interface{}) (*[]d
 	return &ddCells, nil
 }
 
-func buildDatadogNotebookTime(tfTime map[string]interface{}) *datadogV1.NotebookGlobalTime {
+func buildDatadogNotebookTime(tfTime map[string]interface{}) (*datadogV1.NotebookGlobalTime, error) {
 	var notebookGlobalTime datadogV1.NotebookGlobalTime
 	if tfNotebookRelativeTime, ok := tfTime["notebook_relative_time"].([]interface{}); ok && len(tfNotebookRelativeTime) > 0 {
 		tfRelativeTime := tfNotebookRelativeTime[0].(map[string]interface{})
@@ -771,8 +796,15 @@ func buildDatadogNotebookTime(tfTime map[string]interface{}) *datadogV1.Notebook
 		notebookGlobalTime = datadogV1.NotebookRelativeTimeAsNotebookGlobalTime(&ddRelativeTime)
 	} else if tfNotebookAbsoluteTime, ok := tfTime["notebook_absolute_time"].([]interface{}); ok && len(tfNotebookAbsoluteTime) > 0 {
 		tfAbsoluteTime := tfNotebookAbsoluteTime[0].(map[string]interface{})
-		start, _ := time.Parse(timeFormat, tfAbsoluteTime["start"].(string))
-		end, _ := time.Parse(timeFormat, tfAbsoluteTime["end"].(string))
+		start, err := time.Parse(timeFormat, tfAbsoluteTime["start"].(string))
+		if err != nil {
+			return nil, err
+		}
+
+		end, err := time.Parse(timeFormat, tfAbsoluteTime["end"].(string))
+		if err != nil {
+			return nil, err
+		}
 
 		ddAbsoluteTime := datadogV1.NotebookAbsoluteTime{
 			Start: start,
@@ -787,7 +819,7 @@ func buildDatadogNotebookTime(tfTime map[string]interface{}) *datadogV1.Notebook
 
 	}
 
-	return &notebookGlobalTime
+	return &notebookGlobalTime, nil
 }
 
 func buildDatadogNotebookCellTime(tfTime map[string]interface{}) *datadogV1.NotebookCellTime {
@@ -820,18 +852,21 @@ func buildDatadogNotebookCellTime(tfTime map[string]interface{}) *datadogV1.Note
 	return &notebookGlobalTime
 }
 
-func buildDatadogNotebookMetadata(tfMetadata map[string]interface{}) *datadogV1.NotebookMetadata {
+func buildDatadogNotebookMetadata(tfMetadata map[string]interface{}) (*datadogV1.NotebookMetadata, error) {
 	notebookMetadata := datadogV1.NotebookMetadata{
 		IsTemplate:    datadogV1.PtrBool(tfMetadata["is_template"].(bool)),
 		TakeSnapshots: datadogV1.PtrBool(tfMetadata["take_snapshots"].(bool)),
 	}
 
 	if metadataType, ok := tfMetadata["type"].(string); ok {
-		ddType, _ := datadogV1.NewNotebookMetadataTypeFromValue(metadataType)
+		ddType, err := datadogV1.NewNotebookMetadataTypeFromValue(metadataType)
+		if err != nil {
+			return nil, err
+		}
 		notebookMetadata.SetType(*ddType)
 	}
 
-	return &notebookMetadata
+	return &notebookMetadata, nil
 }
 
 func buildTerraformNotebookMarkdownCellAttributes(attribute datadogV1.NotebookMarkdownCellAttributes) []map[string]interface{} {
@@ -990,7 +1025,7 @@ func buildTerraformNotebookLogStreamCellAttributes(attribute datadogV1.NotebookL
 	return tfAttributes
 }
 
-func buildTerraformNotebookCell(datadogDefinition datadogV1.NotebookCellResponse) *map[string]interface{} {
+func buildTerraformNotebookCell(datadogDefinition datadogV1.NotebookCellResponse) (*map[string]interface{}, error) {
 	terraformNotebookCell := map[string]interface{}{}
 
 	terraformNotebookCell["id"] = datadogDefinition.GetId()
@@ -1014,18 +1049,23 @@ func buildTerraformNotebookCell(datadogDefinition datadogV1.NotebookCellResponse
 	} else if datadogDefinition.Attributes.NotebookLogStreamCellAttributes != nil {
 		terraformAttributeDefinition := buildTerraformNotebookLogStreamCellAttributes(*datadogDefinition.Attributes.NotebookLogStreamCellAttributes)
 		terraformNotebookCell["attributes"] = terraformAttributeDefinition
+	} else {
+		return nil, fmt.Errorf("unsupported widget cell: %s", datadogDefinition.Attributes.GetActualInstance())
 	}
 
-	return &terraformNotebookCell
+	return &terraformNotebookCell, nil
 }
 
-func buildTerraformCells(datadogNotebookCells *[]datadogV1.NotebookCellResponse) []map[string]interface{} {
+func buildTerraformCells(datadogNotebookCells *[]datadogV1.NotebookCellResponse) ([]map[string]interface{}, error) {
 	terraformNotebookCell := make([]map[string]interface{}, len(*datadogNotebookCells))
 	for i, datadogCell := range *datadogNotebookCells {
-		terraformWidget := buildTerraformNotebookCell(datadogCell)
+		terraformWidget, err := buildTerraformNotebookCell(datadogCell)
+		if err != nil {
+			return nil, err
+		}
 		terraformNotebookCell[i] = *terraformWidget
 	}
-	return terraformNotebookCell
+	return terraformNotebookCell, nil
 
 }
 
@@ -1095,22 +1135,34 @@ func buildCreateDatadogNotebook(d *schema.ResourceData) (*datadogV1.NotebookCrea
 	notebookCreateDataAttributes := datadogV1.NotebookCreateDataAttributes{}
 
 	if tfNotebookCells, ok := d.Get("cells").([]interface{}); ok {
-		ddCells, _ := buildDatadogCreateNotebookCells(tfNotebookCells)
+		ddCells, err := buildDatadogCreateNotebookCells(tfNotebookCells)
+		if err != nil {
+			return nil, err
+		}
 		notebookCreateDataAttributes.SetCells(*ddCells)
 	}
 
 	if tfNotebookTime, ok := d.Get("time").([]interface{}); ok && len(tfNotebookTime) > 0 {
-		ddTime := buildDatadogNotebookTime(tfNotebookTime[0].(map[string]interface{}))
+		ddTime, err := buildDatadogNotebookTime(tfNotebookTime[0].(map[string]interface{}))
+		if err != nil {
+			return nil, err
+		}
 		notebookCreateDataAttributes.SetTime(*ddTime)
 	}
 
 	if tfNotebookStatus, ok := d.Get("status").(string); ok {
-		ddStatus, _ := datadogV1.NewNotebookStatusFromValue(tfNotebookStatus)
+		ddStatus, err := datadogV1.NewNotebookStatusFromValue(tfNotebookStatus)
+		if err != nil {
+			return nil, err
+		}
 		notebookCreateDataAttributes.SetStatus(*ddStatus)
 	}
 
 	if tfNotebookMetadata, ok := d.Get("metadata").([]interface{}); ok && len(tfNotebookMetadata) > 0 {
-		ddMetadata := buildDatadogNotebookMetadata(tfNotebookMetadata[0].(map[string]interface{}))
+		ddMetadata, err := buildDatadogNotebookMetadata(tfNotebookMetadata[0].(map[string]interface{}))
+		if err != nil {
+			return nil, err
+		}
 		notebookCreateDataAttributes.SetMetadata(*ddMetadata)
 	}
 
