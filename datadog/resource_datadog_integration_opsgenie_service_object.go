@@ -19,9 +19,9 @@ func resourceDatadogIntegrationOpsgenieService() *schema.Resource {
 		ReadContext:   resourceDatadogIntegrationOpsgenieServiceRead,
 		UpdateContext: resourceDatadogIntegrationOpsgenieServiceUpdate,
 		DeleteContext: resourceDatadogIntegrationOpsgenieServiceDelete,
-		// since the API never returns opsgenie_api_key, it's impossible to meaningfully import resources
-		Importer: nil,
-
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Description: "The name for the Opsgenie service.",
