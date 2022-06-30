@@ -509,7 +509,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 							"is_enabled": {
 								Type:        schema.TypeBool,
 								Description: "Determines whether RUM data is collected during test runs.",
-								Optional:    true,
+								Required:    true,
 							},
 							"application_id": {
 								Type:        schema.TypeString,
