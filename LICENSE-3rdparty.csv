@@ -221,3 +221,4 @@ go.sum,github.com/skarimo/terraform-plugin-docs,MPL-2.0,
 go.sum,github.com/spf13/cast,MIT,Copyright (c) 2014 Steve Francia
 go.sum,go.opentelemetry.io/proto/otlp,Apache-2.0,
 go.sum,google.golang.org/grpc/cmd/protoc-gen-go-grpc,Apache-2.0,
+go.sum,github.com/DataDog/zstd,BSD-3-Clause,Copyright (c) 2016, Datadog <info@datadoghq.com>
