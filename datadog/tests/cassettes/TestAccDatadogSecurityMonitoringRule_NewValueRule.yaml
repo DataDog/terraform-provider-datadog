@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392","options":{"detectionMethod":"new_value","evaluationWindow":0,"keepAlive":600,"maxSignalDuration":900,"newValueOptions":{"forgetAfter":7,"learningDuration":1}},"queries":[{"aggregation":"new_value","distinctFields":[],"groupByFields":["host"],"metric":"@value","name":"first","query":"does not really match much"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+      {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1656674908","options":{"detectionMethod":"new_value","evaluationWindow":0,"keepAlive":600,"maxSignalDuration":900,"newValueOptions":{"forgetAfter":7,"learningDuration":1,"learningMethod":"duration","learningThreshold":0}},"queries":[{"aggregation":"new_value","distinctFields":[],"groupByFields":["host"],"metric":"@value","name":"first","query":"does not really match much"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
     form: {}
     headers:
       Accept:
@@ -13,10 +13,11 @@ interactions:
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules
     method: POST
   response:
-    body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":1,"forgetAfter":7},"keepAlive":600},"version":1,"createdAt":1643996394292,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"pxb-nia-2ht","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392"}'
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":1,"learningMethod":"duration","forgetAfter":7,"learningThreshold":0},"keepAlive":600},"version":1,"createdAt":1656674922338,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"m2x-efm-rpd","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1656674908"}
     headers:
       Content-Type:
-      - application/json;charset=utf-8
+      - application/json
     status: 200 OK
     code: 200
     duration: ""
@@ -26,13 +27,14 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m2x-efm-rpd
     method: GET
   response:
-    body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":1,"forgetAfter":7},"keepAlive":600},"version":1,"createdAt":1643996394292,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"pxb-nia-2ht","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392"}'
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":1,"learningMethod":"duration","forgetAfter":7,"learningThreshold":0},"keepAlive":600},"version":1,"createdAt":1656674922338,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"m2x-efm-rpd","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1656674908"}
     headers:
       Content-Type:
-      - application/json;charset=utf-8
+      - application/json
     status: 200 OK
     code: 200
     duration: ""
@@ -42,13 +44,14 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m2x-efm-rpd
     method: GET
   response:
-    body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":1,"forgetAfter":7},"keepAlive":600},"version":1,"createdAt":1643996394292,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"pxb-nia-2ht","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392"}'
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":1,"learningMethod":"duration","forgetAfter":7,"learningThreshold":0},"keepAlive":600},"version":1,"createdAt":1656674922338,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"m2x-efm-rpd","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1656674908"}
     headers:
       Content-Type:
-      - application/json;charset=utf-8
+      - application/json
     status: 200 OK
     code: 200
     duration: ""
@@ -58,32 +61,34 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m2x-efm-rpd
     method: GET
   response:
-    body: '{"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":1,"forgetAfter":7},"keepAlive":600},"version":1,"createdAt":1643996394292,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"pxb-nia-2ht","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392"}'
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":1,"learningMethod":"duration","forgetAfter":7,"learningThreshold":0},"keepAlive":600},"version":1,"createdAt":1656674922338,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"m2x-efm-rpd","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1656674908"}
     headers:
       Content-Type:
-      - application/json;charset=utf-8
+      - application/json
     status: 200 OK
     code: 200
     duration: ""
 - request:
     body: |
-      {"cases":[{"condition":"","name":"high case (updated)","notifications":["@user"],"status":"medium"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392 - updated","options":{"detectionMethod":"new_value","evaluationWindow":0,"keepAlive":600,"maxSignalDuration":900,"newValueOptions":{"forgetAfter":1,"learningDuration":0}},"queries":[{"aggregation":"new_value","distinctFields":[],"groupByFields":["service"],"metric":"@network.bytes_read","name":"first_updated","query":"does not really match much (updated)"}],"tags":["u:tomato","i:tomato"]}
+      {"cases":[{"condition":"","name":"high case (updated)","notifications":["@user"],"status":"medium"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1656674908 - updated","options":{"detectionMethod":"new_value","evaluationWindow":0,"keepAlive":600,"maxSignalDuration":900,"newValueOptions":{"forgetAfter":1,"learningDuration":0,"learningMethod":"duration","learningThreshold":0}},"queries":[{"aggregation":"new_value","distinctFields":[],"groupByFields":["service"],"metric":"@network.bytes_read","name":"first_updated","query":"does not really match much (updated)"}],"tags":["u:tomato","i:tomato"]}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m2x-efm-rpd
     method: PUT
   response:
-    body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":0,"forgetAfter":1},"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first_updated","metric":"@network.bytes_read","aggregation":"new_value","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"pxb-nia-2ht","createdAt":1643996394292,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392 - updated"}'
+    body: |
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":0,"learningMethod":"duration","forgetAfter":1,"learningThreshold":0},"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first_updated","metric":"@network.bytes_read","aggregation":"new_value","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"m2x-efm-rpd","createdAt":1656674922338,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1656674908 - updated"}
     headers:
       Content-Type:
-      - application/json;charset=utf-8
+      - application/json
     status: 200 OK
     code: 200
     duration: ""
@@ -93,13 +98,14 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m2x-efm-rpd
     method: GET
   response:
-    body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":0,"forgetAfter":1},"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first_updated","metric":"@network.bytes_read","aggregation":"new_value","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"pxb-nia-2ht","createdAt":1643996394292,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392 - updated"}'
+    body: |
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":0,"learningMethod":"duration","forgetAfter":1,"learningThreshold":0},"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first_updated","metric":"@network.bytes_read","aggregation":"new_value","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"m2x-efm-rpd","createdAt":1656674922338,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1656674908 - updated"}
     headers:
       Content-Type:
-      - application/json;charset=utf-8
+      - application/json
     status: 200 OK
     code: 200
     duration: ""
@@ -109,13 +115,14 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m2x-efm-rpd
     method: GET
   response:
-    body: '{"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":0,"forgetAfter":1},"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first_updated","metric":"@network.bytes_read","aggregation":"new_value","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"pxb-nia-2ht","createdAt":1643996394292,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1643996392 - updated"}'
+    body: |
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"new_value","evaluationWindow":0,"maxSignalDuration":900,"newValueOptions":{"learningDuration":0,"learningMethod":"duration","forgetAfter":1,"learningThreshold":0},"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first_updated","metric":"@network.bytes_read","aggregation":"new_value","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"m2x-efm-rpd","createdAt":1656674922338,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1656674908 - updated"}
     headers:
       Content-Type:
-      - application/json;charset=utf-8
+      - application/json
     status: 200 OK
     code: 200
     duration: ""
@@ -124,12 +131,12 @@ interactions:
     form: {}
     headers:
       Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m2x-efm-rpd
     method: DELETE
   response:
     body: ""
-    headers:
+    headers: {}
     status: 204 No Content
     code: 204
     duration: ""
@@ -139,10 +146,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pxb-nia-2ht
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m2x-efm-rpd
     method: GET
   response:
-    body: '{"errors":["Threat detection rule not found: pxb-nia-2ht"]}'
+    body: |
+      {"errors":["Threat detection rule not found: m2x-efm-rpd"]}
     headers:
       Content-Type:
       - application/json

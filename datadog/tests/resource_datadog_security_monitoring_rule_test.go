@@ -350,7 +350,11 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckNewValueRule(accProvider func
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.new_value_options.0.forget_after", "7"),
 		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.learning_method", "duration"),
+		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.new_value_options.0.learning_duration", "1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.learning_threshold", "0"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "tags.0", "i:tomato"),
 		resource.TestCheckResourceAttr(
@@ -749,7 +753,11 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRule(accProvider fu
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.new_value_options.0.forget_after", "1"),
 		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.learning_method", "duration"),
+		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.new_value_options.0.learning_duration", "0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.learning_threshold", "0"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "tags.0", "u:tomato"),
 		resource.TestCheckResourceAttr(
