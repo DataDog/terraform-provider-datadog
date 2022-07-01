@@ -99,6 +99,8 @@ Read-Only:
 
 - `forget_after` (Number)
 - `learning_duration` (Number)
+- `learning_method` (String)
+- `learning_threshold` (Number)
 
 
 
