@@ -1,0 +1,319 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_foo","opsgenie_api_key":"00000000-0000-0000-0000-000000000000","region":"us"},"type":"opsgenie-service"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services
+    method: POST
+  response:
+    body: |
+      {"data":{"attributes":{"region":"us","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_foo","custom_url":null},"type":"opsgenie-service","id":"e44c6e87-2a18-43dc-a6d9-f2ef87195a42"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"custom_url":"https://example.com/custom","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_bar","opsgenie_api_key":"11111111-1111-1111-1111-111111111111","region":"custom"},"type":"opsgenie-service"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services
+    method: POST
+  response:
+    body: |
+      {"data":{"attributes":{"region":"custom","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_bar","custom_url":"https://example.com/custom"},"type":"opsgenie-service","id":"dc928b9a-24bc-43ab-9d83-830acd98ead3"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/e44c6e87-2a18-43dc-a6d9-f2ef87195a42
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"region":"us","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_foo","custom_url":null},"type":"opsgenie-service","id":"e44c6e87-2a18-43dc-a6d9-f2ef87195a42"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/dc928b9a-24bc-43ab-9d83-830acd98ead3
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"region":"custom","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_bar","custom_url":"https://example.com/custom"},"type":"opsgenie-service","id":"dc928b9a-24bc-43ab-9d83-830acd98ead3"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/e44c6e87-2a18-43dc-a6d9-f2ef87195a42
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"region":"us","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_foo","custom_url":null},"type":"opsgenie-service","id":"e44c6e87-2a18-43dc-a6d9-f2ef87195a42"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/dc928b9a-24bc-43ab-9d83-830acd98ead3
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"region":"custom","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_bar","custom_url":"https://example.com/custom"},"type":"opsgenie-service","id":"dc928b9a-24bc-43ab-9d83-830acd98ead3"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/e44c6e87-2a18-43dc-a6d9-f2ef87195a42
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"region":"us","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_foo","custom_url":null},"type":"opsgenie-service","id":"e44c6e87-2a18-43dc-a6d9-f2ef87195a42"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/dc928b9a-24bc-43ab-9d83-830acd98ead3
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"region":"custom","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_bar","custom_url":"https://example.com/custom"},"type":"opsgenie-service","id":"dc928b9a-24bc-43ab-9d83-830acd98ead3"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"custom_url":"https://example.com/custom/updated","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_bar_updated","opsgenie_api_key":"00000000-0000-0000-0000-000000000000","region":"custom"},"id":"dc928b9a-24bc-43ab-9d83-830acd98ead3","type":"opsgenie-service"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/dc928b9a-24bc-43ab-9d83-830acd98ead3
+    method: PATCH
+  response:
+    body: |
+      {"data":{"attributes":{"region":"custom","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_bar_updated","custom_url":"https://example.com/custom/updated"},"type":"opsgenie-service","id":"dc928b9a-24bc-43ab-9d83-830acd98ead3"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_foo_updated","opsgenie_api_key":"11111111-1111-1111-1111-111111111111","region":"eu"},"id":"e44c6e87-2a18-43dc-a6d9-f2ef87195a42","type":"opsgenie-service"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/e44c6e87-2a18-43dc-a6d9-f2ef87195a42
+    method: PATCH
+  response:
+    body: |
+      {"data":{"attributes":{"region":"eu","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_foo_updated","custom_url":null},"type":"opsgenie-service","id":"e44c6e87-2a18-43dc-a6d9-f2ef87195a42"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/e44c6e87-2a18-43dc-a6d9-f2ef87195a42
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"region":"eu","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_foo_updated","custom_url":null},"type":"opsgenie-service","id":"e44c6e87-2a18-43dc-a6d9-f2ef87195a42"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/dc928b9a-24bc-43ab-9d83-830acd98ead3
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"region":"custom","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_bar_updated","custom_url":"https://example.com/custom/updated"},"type":"opsgenie-service","id":"dc928b9a-24bc-43ab-9d83-830acd98ead3"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/dc928b9a-24bc-43ab-9d83-830acd98ead3
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"region":"custom","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_bar_updated","custom_url":"https://example.com/custom/updated"},"type":"opsgenie-service","id":"dc928b9a-24bc-43ab-9d83-830acd98ead3"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/e44c6e87-2a18-43dc-a6d9-f2ef87195a42
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"region":"eu","name":"tf-TestAccDatadogIntegrationOpsgenieServiceObject_Basic-local-1655332222_foo_updated","custom_url":null},"type":"opsgenie-service","id":"e44c6e87-2a18-43dc-a6d9-f2ef87195a42"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/dc928b9a-24bc-43ab-9d83-830acd98ead3
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/e44c6e87-2a18-43dc-a6d9-f2ef87195a42
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/e44c6e87-2a18-43dc-a6d9-f2ef87195a42
+    method: GET
+  response:
+    body: |
+      {"errors":["Service not found."]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/opsgenie/services/dc928b9a-24bc-43ab-9d83-830acd98ead3
+    method: GET
+  response:
+    body: |
+      {"errors":["Service not found."]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""

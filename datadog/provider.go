@@ -144,6 +144,7 @@ func Provider() *schema.Provider {
 			"datadog_integration_aws_log_collection":       resourceDatadogIntegrationAwsLogCollection(),
 			"datadog_integration_azure":                    resourceDatadogIntegrationAzure(),
 			"datadog_integration_gcp":                      resourceDatadogIntegrationGcp(),
+			"datadog_integration_opsgenie_service_object":  resourceDatadogIntegrationOpsgenieService(),
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
 			"datadog_integration_pagerduty_service_object": resourceDatadogIntegrationPagerdutySO(),
 			"datadog_integration_slack_channel":            resourceDatadogIntegrationSlackChannel(),
