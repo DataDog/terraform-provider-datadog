@@ -180,6 +180,13 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 							},
 						},
 					},
+
+					"decrease_criticality_based_on_env": {
+						Type:        schema.TypeBool,
+						Optional:    true,
+						Default:     false,
+						Description: "If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`.",
+					},
 				},
 			},
 		},
@@ -325,7 +332,7 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 
 	if v, ok := d.GetOk("options"); ok {
 		tfOptionsList := v.([]interface{})
-		payloadOptions := buildPayloadOptions(tfOptionsList)
+		payloadOptions := buildPayloadOptions(tfOptionsList, d.Get("type").(string))
 		payload.Options = *payloadOptions
 	}
 
@@ -385,7 +392,7 @@ func buildCreatePayloadCases(d *schema.ResourceData) []datadogV2.SecurityMonitor
 	return payloadCases
 }
 
-func buildPayloadOptions(tfOptionsList []interface{}) *datadogV2.SecurityMonitoringRuleOptions {
+func buildPayloadOptions(tfOptionsList []interface{}, ruleType string) *datadogV2.SecurityMonitoringRuleOptions {
 	payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
 	tfOptions := extractMapFromInterface(tfOptionsList)
 
@@ -404,6 +411,9 @@ func buildPayloadOptions(tfOptionsList []interface{}) *datadogV2.SecurityMonitor
 	if v, ok := tfOptions["max_signal_duration"]; ok {
 		maxSignalDuration := datadogV2.SecurityMonitoringRuleMaxSignalDuration(v.(int))
 		payloadOptions.MaxSignalDuration = &maxSignalDuration
+	}
+	if v, ok := tfOptions["decrease_criticality_based_on_env"]; ok && ruleType == string(datadogV2.SECURITYMONITORINGRULETYPECREATE_LOG_DETECTION) {
+		payloadOptions.SetDecreaseCriticalityBasedOnEnv(v.(bool))
 	}
 
 	if v, ok := tfOptions["new_value_options"]; ok {
@@ -668,6 +678,9 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 	if maxSignalDuration, ok := options.GetMaxSignalDurationOk(); ok {
 		tfOptions["max_signal_duration"] = *maxSignalDuration
 	}
+	if decreaseCriticalityBasedOnEnv, ok := options.GetDecreaseCriticalityBasedOnEnvOk(); ok {
+		tfOptions["decrease_criticality_based_on_env"] = *decreaseCriticalityBasedOnEnv
+	}
 	if detectionMethod, ok := options.GetDetectionMethodOk(); ok {
 		tfOptions["detection_method"] = *detectionMethod
 	}
@@ -751,7 +764,7 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 	}
 
 	if v, ok := d.GetOk("options"); ok {
-		payload.Options = buildPayloadOptions(v.([]interface{}))
+		payload.Options = buildPayloadOptions(v.([]interface{}), d.Get("type").(string))
 	}
 
 	if v, ok := d.GetOk("query"); ok {
