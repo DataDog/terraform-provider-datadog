@@ -251,7 +251,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_audit", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "timeout_h", "60"),
+						"datadog_monitor.foo", "timeout_h", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "include_tags", "true"),
 					resource.TestCheckResourceAttr(
@@ -309,7 +309,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_audit", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "timeout_h", "70"),
+						"datadog_monitor.foo", "timeout_h", "10"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "include_tags", "false"),
 					resource.TestCheckResourceAttr(
@@ -401,7 +401,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_audit", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "timeout_h", "60"),
+						"datadog_monitor.foo", "timeout_h", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "include_tags", "true"),
 					resource.TestCheckResourceAttr(
@@ -457,7 +457,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_audit", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "timeout_h", "70"),
+						"datadog_monitor.foo", "timeout_h", "10"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "include_tags", "false"),
 					resource.TestCheckResourceAttr(
@@ -707,7 +707,7 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_audit", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "timeout_h", "60"),
+						"datadog_monitor.foo", "timeout_h", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "include_tags", "true"),
 					resource.TestCheckResourceAttr(
@@ -861,7 +861,7 @@ resource "datadog_monitor" "foo" {
   renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
-  timeout_h = 60
+  timeout_h = 1
   new_group_delay = 500
   evaluation_delay = 700
   include_tags = true
@@ -887,7 +887,7 @@ resource "datadog_monitor" "foo" {
   renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
-  timeout_h = 60
+  timeout_h = 1
   include_tags = true
   require_full_window = true
   locked = false
@@ -918,7 +918,7 @@ resource "datadog_monitor" "foo" {
   renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
-  timeout_h = 60
+  timeout_h = 1
   new_host_delay = 600
   evaluation_delay = 700
   include_tags = true
@@ -951,7 +951,7 @@ resource "datadog_monitor" "foo" {
   renotify_statuses = ["alert", "warn"]
 
   notify_audit        = false
-  timeout_h           = 60
+  timeout_h           = 1
   include_tags        = true
   require_full_window = true
   locked              = false
@@ -983,7 +983,7 @@ resource "datadog_monitor" "foo" {
   renotify_statuses = ["alert", "warn"]
 
   notify_audit        = false
-  timeout_h           = 60
+  timeout_h           = 1
   include_tags        = true
   require_full_window = true
   locked              = false
@@ -1017,7 +1017,7 @@ resource "datadog_monitor" "foo" {
   no_data_timeframe = 20
   renotify_interval = 40
   notify_audit = true
-  timeout_h = 70
+  timeout_h = 10
   include_tags = false
   require_full_window = false
   locked = true
@@ -1049,7 +1049,7 @@ resource "datadog_monitor" "foo" {
   no_data_timeframe = 20
   renotify_interval = 40
   notify_audit = true
-  timeout_h = 70
+  timeout_h = 10
   include_tags = false
   require_full_window = false
   locked = true
@@ -1108,7 +1108,7 @@ EOF
   renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
-  timeout_h = 60
+  timeout_h = 1
   include_tags = true
 }`, uniq)
 }
@@ -1133,7 +1133,7 @@ resource "datadog_monitor" "foo" {
   renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
-  timeout_h = 60
+  timeout_h = 1
   new_host_delay = 600
   evaluation_delay = 700
   include_tags = true
@@ -1166,7 +1166,7 @@ resource "datadog_monitor" "foo" {
 	renotify_statuses = ["alert", "warn"]
 
 	notify_audit = false
-	timeout_h = 60
+	timeout_h = 1
 	include_tags = true
 }`, uniq)
 }
@@ -1193,7 +1193,7 @@ resource "datadog_monitor" "foo" {
 	renotify_statuses = ["alert", "warn"]
 
 	notify_audit = false
-	timeout_h = 60
+	timeout_h = 1
 	include_tags = true
 
 	monitor_threshold_windows {
