@@ -1,7 +1,7 @@
 ## 3.13.0 (July 5, 2022)
 
 ### IMPROVEMENTS
-* [monitors] Add ci-tests alert to terraform monitor docs. by @liashenko in https://github.com/DataDog/terraform-provider-datadog/pull/1451
+* [datadog_monitor] Add ci-tests alert to terraform monitor docs. by @liashenko in https://github.com/DataDog/terraform-provider-datadog/pull/1451
 * [datadog_monitor_json] Avoid unnecessary restricted_roles diff by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1457
 * [datadog_dashboard] Add list_stream_definition resource type by @luisvalini in https://github.com/DataDog/terraform-provider-datadog/pull/1470
 * [datadog_synthetics_test] Add rum settings by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1464
