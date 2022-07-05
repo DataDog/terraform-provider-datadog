@@ -27,6 +27,12 @@ func TestAccDatadogSecurityMonitoringDefaultRule_Basic(t *testing.T) {
 				ImportState:       true,
 				ImportStateIdFunc: idFromDatasource,
 			},
+			{
+				Config:            testAccCheckDatadogSecurityMonitoringDefaultDynamicCriticality(),
+				ResourceName:      tfSecurityDefaultRuleName,
+				ImportState:       true,
+				ImportStateIdFunc: idFromDatasource,
+			},
 		},
 	})
 }
@@ -54,4 +60,21 @@ data "datadog_security_monitoring_rules" "bruteforce" {
 resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 }
 `
+}
+
+func testAccCheckDatadogSecurityMonitoringDefaultDynamicCriticality() string {
+	return `
+resource "datadog_security_monitoring_default_rule" "acceptance_test" {
+    options {
+        decrease_criticality_based_on_env = true
+    }
+}
+`
+}
+
+func testAccCheckDatadogSecurityMonitoringDefaultDynamicCriticalityCheck() resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "options.0.decrease_criticality_based_on_env", "true"),
+	)
 }

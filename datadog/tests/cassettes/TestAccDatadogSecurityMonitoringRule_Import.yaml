@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1658322175","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","metrics":[],"name":"","query":"does not really match much"}],"type":"log_detection"}
+      {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1658514020","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","metrics":[],"name":"","query":"does not really match much"}],"type":"log_detection"}
     form: {}
     headers:
       Accept:
@@ -14,11 +14,11 @@ interactions:
     method: POST
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1658322177336,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","metrics":[],"groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"7y8-fsk-gpm","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1658322175"}
+      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1658514021277,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","metrics":[],"groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"ulh-oxy-ima","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1658514020"}
     headers:
       Content-Type:
       - application/json
-    status: '200 '
+    status: 200 OK
     code: 200
     duration: ""
 - request:
@@ -27,15 +27,15 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7y8-fsk-gpm
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ulh-oxy-ima
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1658322177336,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","metrics":[],"groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"7y8-fsk-gpm","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1658322175"}
+      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1658514021277,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","metrics":[],"groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"ulh-oxy-ima","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1658514020"}
     headers:
       Content-Type:
       - application/json
-    status: '200 '
+    status: 200 OK
     code: 200
     duration: ""
 - request:
@@ -44,15 +44,15 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7y8-fsk-gpm
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ulh-oxy-ima
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1658322177336,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","metrics":[],"groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"7y8-fsk-gpm","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1658322175"}
+      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1658514021277,"filters":[],"queries":[{"distinctFields":[],"name":"","metric":"","aggregation":"count","metrics":[],"groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"ulh-oxy-ima","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1658514020"}
     headers:
       Content-Type:
       - application/json
-    status: '200 '
+    status: 200 OK
     code: 200
     duration: ""
 - request:
@@ -61,12 +61,12 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7y8-fsk-gpm
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ulh-oxy-ima
     method: DELETE
   response:
     body: ""
     headers: {}
-    status: '204 '
+    status: 204 No Content
     code: 204
     duration: ""
 - request:
@@ -75,14 +75,14 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7y8-fsk-gpm
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ulh-oxy-ima
     method: GET
   response:
     body: |
-      {"errors":["Threat detection rule not found: 7y8-fsk-gpm"]}
+      {"errors":["Threat detection rule not found: ulh-oxy-ima"]}
     headers:
       Content-Type:
       - application/json
-    status: '404 '
+    status: 404 Not Found
     code: 404
     duration: ""
