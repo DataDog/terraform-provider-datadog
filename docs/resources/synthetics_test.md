@@ -626,6 +626,7 @@ Optional:
 - `no_screenshot` (Boolean) Prevents saving screenshots of the steps.
 - `restricted_roles` (Set of String) A list of role identifiers pulled from the Roles API to restrict read and write access.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--retry))
+- `rum_settings` (Block List, Max: 1) The RUM data collection settings for the Synthetic browser test. (see [below for nested schema](#nestedblock--options_list--rum_settings))
 
 <a id="nestedblock--options_list--ci"></a>
 ### Nested Schema for `options_list.ci`
@@ -650,6 +651,19 @@ Optional:
 
 - `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert.
 - `interval` (Number) Interval between a failed test and the next retry in milliseconds.
+
+
+<a id="nestedblock--options_list--rum_settings"></a>
+### Nested Schema for `options_list.rum_settings`
+
+Required:
+
+- `is_enabled` (Boolean) Determines whether RUM data is collected during test runs.
+
+Optional:
+
+- `application_id` (String) RUM application ID used to collect RUM data for the browser test.
+- `client_token_id` (Number, Sensitive) RUM application API key ID used to collect RUM data for the browser test.
 
 
 
