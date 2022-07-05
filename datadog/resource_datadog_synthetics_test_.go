@@ -500,6 +500,22 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
+				"ci": {
+					Description: "CI/CD options for a Synthetic test.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"execution_rule": {
+								Type:             schema.TypeString,
+								Description:      "Execution rule for a Synthetics test.",
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestExecutionRuleFromValue),
+								Optional:         true,
+							},
+						},
+					},
+				},
 				"rum_settings": {
 					Description: "The RUM data collection settings for the Synthetic browser test.",
 					Type:        schema.TypeList,
@@ -1373,6 +1389,16 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			}
 			options.SetRestrictedRoles(roles)
 		}
+
+		if ciRaw, ok := d.GetOk("options_list.0.ci"); ok {
+			ci := ciRaw.([]interface{})[0]
+			testCiOptions := ci.(map[string]interface{})
+
+			ciOptions := datadogV1.SyntheticsTestCiOptions{}
+			ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(testCiOptions["execution_rule"].(string)))
+
+			options.SetCi(ciOptions)
+		}
 	}
 
 	if attr, ok := d.GetOk("device_ids"); ok {
@@ -1798,6 +1824,15 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 				roles = append(roles, role.(string))
 			}
 			options.SetRestrictedRoles(roles)
+		}
+
+		if ciRaw, ok := d.GetOk("options_list.0.ci"); ok {
+			ci := ciRaw.(map[string]interface{})
+
+			ciOptions := datadogV1.SyntheticsTestCiOptions{}
+			ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(ci["execution_rule"].(string)))
+
+			options.SetCi(ciOptions)
 		}
 
 		if rum_settings, ok := d.GetOk("options_list.0.rum_settings.0"); ok {
@@ -2284,6 +2319,13 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	if actualOptions.HasRestrictedRoles() {
 		localOptionsList["restricted_roles"] = actualOptions.GetRestrictedRoles()
 	}
+	if actualOptions.HasCi() {
+		actualCi := actualOptions.GetCi()
+		ciOptions := make(map[string]interface{})
+		ciOptions["execution_rule"] = actualCi.GetExecutionRule()
+
+		localOptionsList["ci"] = ciOptions
+	}
 
 	if rumSettings, ok := actualOptions.GetRumSettingsOk(); ok {
 		localRumSettings := make(map[string]interface{})
@@ -2637,6 +2679,13 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 	if actualOptions.HasRestrictedRoles() {
 		localOptionsList["restricted_roles"] = actualOptions.GetRestrictedRoles()
+	}
+	if actualOptions.HasCi() {
+		actualCi := actualOptions.GetCi()
+		ciOptions := make(map[string]interface{})
+		ciOptions["execution_rule"] = actualCi.GetExecutionRule()
+
+		localOptionsList["ci"] = []map[string]interface{}{ciOptions}
 	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)
