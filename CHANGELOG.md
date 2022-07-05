@@ -1,3 +1,22 @@
+## 3.13.0 (July 5, 2022)
+
+### IMPROVEMENTS
+* [monitors] Add ci-tests alert to terraform monitor docs. by @liashenko in https://github.com/DataDog/terraform-provider-datadog/pull/1451
+* [datadog_monitor_json] Avoid unnecessary restricted_roles diff by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1457
+* [datadog_dashboard] Add list_stream_definition resource type by @luisvalini in https://github.com/DataDog/terraform-provider-datadog/pull/1470
+* [datadog_synthetics_test] Add rum settings by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1464
+* [datadog_synthetics_test] Add support for ci execution rule option by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1474
+### FEATURES
+* [datadog_integration_opsgenie_service_object] Add support for Opsgenie service resource by @abravo3641 in https://github.com/DataDog/terraform-provider-datadog/pull/1466
+
+## New Contributors
+* @liashenko made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1451
+* @NouemanKHAL made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1463
+* @luisvalini made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1470
+* @abravo3641 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1466
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.12.0...v3.13.0
+
 ## 3.12.0 (May 24, 2022)
 
 ### BUGFIXES
