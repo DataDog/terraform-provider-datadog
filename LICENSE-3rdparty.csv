@@ -7,6 +7,7 @@ go.sum,github.com/BurntSushi/xgb,BSD-3-Clause,2009 The XGB Authors
 go.sum,github.com/DataDog/datadog-api-client-go,Apache-2.0,"2019-Present Datadog, Inc."
 go.sum,github.com/DataDog/datadog-go,MIT,"2015 Datadog, Inc"
 go.sum,github.com/DataDog/dd-trace-go,Apache-2.0 OR BSD-3-Clause,"2016-Present Datadog, Inc."
+go.sum,github.com/DataDog/zstd,BSD-2-Clause,"2016-Present Datadog, Inc."
 go.sum,github.com/agext/levenshtein,Apache-2.0,2016 ALRUX Inc.
 go.sum,github.com/agl/ed25519,BSD-3-Clause,2012 The Go Authors
 go.sum,github.com/apparentlymart/go-cidr,MIT,2015 Martin Atkins
