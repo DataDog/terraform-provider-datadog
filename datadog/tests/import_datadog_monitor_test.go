@@ -105,7 +105,7 @@ resource "datadog_monitor" "foo" {
   renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
-  timeout_h = 60
+  timeout_h = 10
   include_tags = true
   require_full_window = true
   locked = false
@@ -136,7 +136,7 @@ resource "datadog_monitor" "foo" {
   renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
-  timeout_h = 60
+  timeout_h = 10
   include_tags = true
   require_full_window = true
   locked = false
@@ -170,7 +170,7 @@ resource "datadog_monitor" "foo" {
   renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
-  timeout_h = 60
+  timeout_h = 10
   include_tags = true
   require_full_window = true
   locked = false

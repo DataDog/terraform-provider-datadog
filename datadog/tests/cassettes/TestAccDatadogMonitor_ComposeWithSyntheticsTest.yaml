@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
@@ -22,7 +22,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
@@ -41,7 +41,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
@@ -60,7 +60,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
@@ -70,7 +70,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/monitor
     method: POST
   response:
-    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_5m):max:system.load.1{*} by {host} > 100","message":"test","id":67976782,"multi":true,"name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774","created":"2022-04-05T18:53:49.124202+00:00","created_at":1649184829000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2022-04-05T18:53:49.124202+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"metric alert","options":{"notify_audit":false,"silenced":{},"include_tags":true,"thresholds":{"critical":100.0},"require_full_window":true,"new_host_delay":300,"notify_no_data":false}}'
+    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_5m):max:system.load.1{*} by {host} > 100","message":"test","id":75989579,"multi":true,"name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804","created":"2022-07-05T13:13:26.613609+00:00","created_at":1657026806000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2022-07-05T13:13:26.613609+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"metric alert","options":{"notify_audit":false,"silenced":{},"include_tags":true,"thresholds":{"critical":100.0},"require_full_window":true,"new_host_delay":300,"notify_no_data":false}}'
     headers:
       Content-Type:
       - application/json
@@ -79,7 +79,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"config":{"assertions":[{"operator":"isNot","target":500,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://docs.datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774","options":{"min_failure_duration":10,"min_location_failed":1,"tick_every":900},"status":"live","subtype":"http","tags":["foo:bar","foo","env:test"],"type":"api"}
+      {"config":{"assertions":[{"operator":"isNot","target":500,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://docs.datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804","options":{"min_failure_duration":10,"min_location_failed":1,"tick_every":900},"status":"live","subtype":"http","tags":["foo:bar","foo","env:test"],"type":"api"}
     form: {}
     headers:
       Accept:
@@ -89,7 +89,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api
     method: POST
   response:
-    body: '{"status":"live","public_id":"ry2-vyi-s9a","tags":["foo:bar","foo","env:test"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","deleted_at":null,"name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774","monitor_id":67976783,"type":"api","created_at":"2022-04-05T18:53:49.165169+00:00","modified_at":"2022-04-05T18:53:49.165169+00:00","subtype":"http","config":{"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"isNot","type":"statusCode","target":500}],"configVariables":[]},"options":{"min_failure_duration":10,"min_location_failed":1,"tick_every":900}}'
+    body: '{"status":"live","public_id":"pjr-b9x-shr","tags":["foo:bar","foo","env:test"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","deleted_at":null,"name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804","monitor_id":75989580,"type":"api","created_at":"2022-07-05T13:13:26.740899+00:00","modified_at":"2022-07-05T13:13:26.740899+00:00","subtype":"http","config":{"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"isNot","type":"statusCode","target":500}],"configVariables":[]},"options":{"min_failure_duration":10,"min_location_failed":1,"tick_every":900}}'
     headers:
       Content-Type:
       - application/json
@@ -102,10 +102,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/ry2-vyi-s9a
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/pjr-b9x-shr
     method: GET
   response:
-    body: '{"status":"live","public_id":"ry2-vyi-s9a","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774","monitor_id":67976783,"type":"api","created_at":"2022-04-05T18:53:49.165169+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-04-05T18:53:49.165169+00:00","subtype":"http","config":{"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"isNot","type":"statusCode","target":500}],"configVariables":[]},"options":{"min_failure_duration":10,"min_location_failed":1,"tick_every":900}}'
+    body: '{"status":"live","public_id":"pjr-b9x-shr","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804","monitor_id":75989580,"type":"api","created_at":"2022-07-05T13:13:26.740899+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-07-05T13:13:26.740899+00:00","subtype":"http","config":{"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"isNot","type":"statusCode","target":500}],"configVariables":[]},"options":{"min_failure_duration":10,"min_location_failed":1,"tick_every":900}}'
     headers:
       Content-Type:
       - application/json
@@ -114,7 +114,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774-composite","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{}},"priority":0,"query":"67976782 || 67976783","tags":[],"type":"composite"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804-composite","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{}},"priority":0,"query":"75989579 || 75989580","tags":[],"type":"composite"}
     form: {}
     headers:
       Accept:
@@ -133,7 +133,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774-composite","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{}},"priority":0,"query":"67976782 || 67976783","tags":[],"type":"composite"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804-composite","options":{"include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{}},"priority":0,"query":"75989579 || 75989580","tags":[],"type":"composite"}
     form: {}
     headers:
       Accept:
@@ -143,7 +143,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/monitor
     method: POST
   response:
-    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"67976782 || 67976783","message":"test","id":67976798,"multi":false,"name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774-composite","created":"2022-04-05T18:53:50.414083+00:00","created_at":1649184830000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2022-04-05T18:53:50.414083+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"composite","options":{"notify_audit":false,"silenced":{},"include_tags":true,"require_full_window":true,"new_host_delay":300,"notify_no_data":false}}'
+    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"75989579 || 75989580","message":"test","id":75989581,"multi":false,"name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804-composite","created":"2022-07-05T13:13:27.635366+00:00","created_at":1657026807000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2022-07-05T13:13:27.635366+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"composite","options":{"notify_audit":false,"silenced":{},"include_tags":true,"require_full_window":true,"new_host_delay":300,"notify_no_data":false}}'
     headers:
       Content-Type:
       - application/json
@@ -152,14 +152,14 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v1/monitor/67976782/validate
+    url: https://api.datadoghq.com/api/v1/monitor/75989579/validate
     method: POST
   response:
     body: '{}'
@@ -171,14 +171,14 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774-composite","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{}},"priority":0,"query":"67976782 || 67976783","tags":[],"type":"composite"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804-composite","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{}},"priority":0,"query":"75989579 || 75989580","tags":[],"type":"composite"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v1/monitor/67976798/validate
+    url: https://api.datadoghq.com/api/v1/monitor/75989581/validate
     method: POST
   response:
     body: '{}'
@@ -194,10 +194,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/monitor/67976782
+    url: https://api.datadoghq.com/api/v1/monitor/75989579
     method: GET
   response:
-    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_5m):max:system.load.1{*} by {host} > 100","message":"test","id":67976782,"multi":true,"name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774","created":"2022-04-05T18:53:49.124202+00:00","created_at":1649184829000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2022-04-05T18:53:49.124202+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"metric alert","options":{"notify_audit":false,"silenced":{},"include_tags":true,"thresholds":{"critical":100.0},"require_full_window":true,"new_host_delay":300,"notify_no_data":false}}'
+    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"avg(last_5m):max:system.load.1{*} by {host} > 100","message":"test","id":75989579,"multi":true,"name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804","created":"2022-07-05T13:13:26.613609+00:00","created_at":1657026806000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2022-07-05T13:13:26.613609+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"metric alert","options":{"notify_audit":false,"silenced":{},"include_tags":true,"thresholds":{"critical":100.0},"require_full_window":true,"new_host_delay":300,"notify_no_data":false}}'
     headers:
       Content-Type:
       - application/json
@@ -210,10 +210,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/ry2-vyi-s9a
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/pjr-b9x-shr
     method: GET
   response:
-    body: '{"status":"live","public_id":"ry2-vyi-s9a","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774","monitor_id":67976783,"type":"api","created_at":"2022-04-05T18:53:49.165169+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-04-05T18:53:49.165169+00:00","subtype":"http","config":{"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"isNot","type":"statusCode","target":500}],"configVariables":[]},"options":{"min_failure_duration":10,"min_location_failed":1,"tick_every":900}}'
+    body: '{"status":"live","public_id":"pjr-b9x-shr","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804","monitor_id":75989580,"type":"api","created_at":"2022-07-05T13:13:26.740899+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-07-05T13:13:26.740899+00:00","subtype":"http","config":{"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"isNot","type":"statusCode","target":500}],"configVariables":[]},"options":{"min_failure_duration":10,"min_location_failed":1,"tick_every":900}}'
     headers:
       Content-Type:
       - application/json
@@ -222,14 +222,14 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v1/monitor/67976782/validate
+    url: https://api.datadoghq.com/api/v1/monitor/75989579/validate
     method: POST
   response:
     body: '{}'
@@ -245,10 +245,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/ry2-vyi-s9a
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/pjr-b9x-shr
     method: GET
   response:
-    body: '{"status":"live","public_id":"ry2-vyi-s9a","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774","monitor_id":67976783,"type":"api","created_at":"2022-04-05T18:53:49.165169+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-04-05T18:53:49.165169+00:00","subtype":"http","config":{"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"isNot","type":"statusCode","target":500}],"configVariables":[]},"options":{"min_failure_duration":10,"min_location_failed":1,"tick_every":900}}'
+    body: '{"status":"live","public_id":"pjr-b9x-shr","tags":["foo:bar","foo","env:test"],"locations":["aws:eu-central-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804","monitor_id":75989580,"type":"api","created_at":"2022-07-05T13:13:26.740899+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-07-05T13:13:26.740899+00:00","subtype":"http","config":{"request":{"url":"https://docs.datadoghq.com","method":"GET","timeout":60},"assertions":[{"operator":"isNot","type":"statusCode","target":500}],"configVariables":[]},"options":{"min_failure_duration":10,"min_location_failed":1,"tick_every":900}}'
     headers:
       Content-Type:
       - application/json
@@ -261,10 +261,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/monitor/67976798
+    url: https://api.datadoghq.com/api/v1/monitor/75989581
     method: GET
   response:
-    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"67976782 || 67976783","message":"test","id":67976798,"multi":false,"name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774-composite","created":"2022-04-05T18:53:50.414083+00:00","created_at":1649184830000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2022-04-05T18:53:50.414083+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"composite","options":{"notify_audit":false,"silenced":{},"include_tags":true,"require_full_window":true,"new_host_delay":300,"notify_no_data":false}}'
+    body: '{"restricted_roles":null,"tags":[],"deleted":null,"query":"75989579 || 75989580","message":"test","id":75989581,"multi":false,"name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804-composite","created":"2022-07-05T13:13:27.635366+00:00","created_at":1657026807000,"creator":{"id":1445416,"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"org_id":321813,"modified":"2022-07-05T13:13:27.635366+00:00","priority":null,"overall_state_modified":null,"overall_state":"No Data","type":"composite","options":{"notify_audit":false,"silenced":{},"include_tags":true,"require_full_window":true,"new_host_delay":300,"notify_no_data":false}}'
     headers:
       Content-Type:
       - application/json
@@ -273,14 +273,14 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774-composite","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{}},"priority":0,"query":"67976782 || 67976783","tags":[],"type":"composite"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804-composite","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{}},"priority":0,"query":"75989579 || 75989580","tags":[],"type":"composite"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v1/monitor/67976798/validate
+    url: https://api.datadoghq.com/api/v1/monitor/75989581/validate
     method: POST
   response:
     body: '{}'
@@ -292,14 +292,14 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":100}},"priority":0,"query":"avg(last_5m):max:system.load.1{*} by {host} \u003e 100","tags":[],"type":"metric alert"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v1/monitor/67976782/validate
+    url: https://api.datadoghq.com/api/v1/monitor/75989579/validate
     method: POST
   response:
     body: '{}'
@@ -311,14 +311,14 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1649184774-composite","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{}},"priority":0,"query":"67976782 || 67976783","tags":[],"type":"composite"}
+      {"message":"test","name":"tf-TestAccDatadogMonitor_ComposeWithSyntheticsTest-local-1657026804-composite","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{}},"priority":0,"query":"75989579 || 75989580","tags":[],"type":"composite"}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v1/monitor/67976798/validate
+    url: https://api.datadoghq.com/api/v1/monitor/75989581/validate
     method: POST
   response:
     body: '{}'
@@ -334,10 +334,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/monitor/67976798
+    url: https://api.datadoghq.com/api/v1/monitor/75989581
     method: DELETE
   response:
-    body: '{"deleted_monitor_id":67976798}'
+    body: '{"deleted_monitor_id":75989581}'
     headers:
       Content-Type:
       - application/json
@@ -350,10 +350,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/monitor/67976782
+    url: https://api.datadoghq.com/api/v1/monitor/75989579
     method: DELETE
   response:
-    body: '{"deleted_monitor_id":67976782}'
+    body: '{"deleted_monitor_id":75989579}'
     headers:
       Content-Type:
       - application/json
@@ -362,7 +362,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"public_ids":["ry2-vyi-s9a"]}
+      {"public_ids":["pjr-b9x-shr"]}
     form: {}
     headers:
       Accept:
@@ -372,7 +372,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
     method: POST
   response:
-    body: '{"deleted_tests":[{"deleted_at":"2022-04-05T18:54:59.526518+00:00","public_id":"ry2-vyi-s9a"}]}'
+    body: '{"deleted_tests":[{"deleted_at":"2022-07-05T13:13:36.740471+00:00","public_id":"pjr-b9x-shr"}]}'
     headers:
       Content-Type:
       - application/json
@@ -385,13 +385,14 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/monitor/67976798
+    url: https://api.datadoghq.com/api/v1/monitor/75989581
     method: GET
   response:
-    body: '{"errors": ["Monitor not found"]}'
+    body: |
+      {"status":"error","code":404,"errors":["Not found"],"statuspage":"http://status.datadoghq.com","twitter":"http://twitter.com/datadogops","email":"support@datadoghq.com"}
     headers:
       Content-Type:
       - application/json
-    status: 404 Not Found
+    status: 404 Not found
     code: 404
     duration: ""
