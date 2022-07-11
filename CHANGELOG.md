@@ -1,3 +1,11 @@
+## 3.13.1 (July 11, 2022)
+
+### BUGFIXES
+* [provider] Update client by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/1488
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.13.0...v3.13.1
+
 ## 3.13.0 (July 5, 2022)
 
 ### IMPROVEMENTS
