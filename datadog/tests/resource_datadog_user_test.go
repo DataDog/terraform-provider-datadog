@@ -151,6 +151,67 @@ func TestAccDatadogUser_ServiceAccount(t *testing.T) {
 	})
 }
 
+func TestAccDatadogUser_ServiceAccountForceNew(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogUserConfigRequiredDisabled(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "verified", "false"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogUserConfigRequiredServiceAccountForceNew(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "service_account", "true"),
+					// NOTE: it's not possible ATM to update email of another user
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "name", "Updated User"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "send_user_invitation", "false"),
+					// Service accounts are automatically verified
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "verified", "true"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogUserConfigRequiredDisabled(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					// NOTE: it's not possible ATM to update email of another user
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "name", "Test User"),
+					// Converting a user from a service account to a user account seems to skip verification
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "service_account", "false"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogUser_Existing(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -365,6 +426,15 @@ resource "datadog_user" "foo" {
 }`, uniq)
 }
 
+func testAccCheckDatadogUserConfigRequiredDisabled(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_user" "foo" {
+  email     = "%s"
+  name      = "Test User"
+  send_user_invitation = true
+}`, uniq)
+}
+
 func testAccCheckDatadogUserConfigRequiredNoInvitation(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_user" "foo" {
@@ -434,6 +504,16 @@ resource "datadog_user" "foo" {
   // NOTE: it's not possible ATM to update email of another user
   email       = "%s"
   name        = "Updated User"
+}`, uniq)
+}
+
+func testAccCheckDatadogUserConfigRequiredServiceAccountForceNew(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_user" "foo" {
+  // NOTE: it's not possible ATM to update email of another user
+  email           = "%s"
+  name            = "Updated User"
+  service_account = true
 }`, uniq)
 }
 
