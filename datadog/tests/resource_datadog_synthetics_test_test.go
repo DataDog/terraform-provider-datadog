@@ -2070,6 +2070,8 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.client_token_id", "12345"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.ci.0.execution_rule", "blocking"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
@@ -2172,6 +2174,10 @@ resource "datadog_synthetics_test" "bar" {
 			application_id = "rum-app-id"
 			client_token_id = "12345"
 		}
+
+		ci {
+			execution_rule = "blocking"
+		}
 	}
 
 	name = "%[1]s"
@@ -2258,6 +2264,8 @@ func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.is_enabled", "false"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.ci.0.execution_rule", "skipped"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
@@ -2331,6 +2339,10 @@ resource "datadog_synthetics_test" "bar" {
 
 		rum_settings {
 			is_enabled = false
+		}
+
+		ci {
+			execution_rule = "skipped"
 		}
 	}
 	name = "%s"

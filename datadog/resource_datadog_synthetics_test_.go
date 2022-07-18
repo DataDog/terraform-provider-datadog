@@ -1827,10 +1827,11 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		}
 
 		if ciRaw, ok := d.GetOk("options_list.0.ci"); ok {
-			ci := ciRaw.(map[string]interface{})
+			ci := ciRaw.([]interface{})[0]
+			testCiOptions := ci.(map[string]interface{})
 
 			ciOptions := datadogV1.SyntheticsTestCiOptions{}
-			ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(ci["execution_rule"].(string)))
+			ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(testCiOptions["execution_rule"].(string)))
 
 			options.SetCi(ciOptions)
 		}
@@ -2324,7 +2325,7 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		ciOptions := make(map[string]interface{})
 		ciOptions["execution_rule"] = actualCi.GetExecutionRule()
 
-		localOptionsList["ci"] = ciOptions
+		localOptionsList["ci"] = []map[string]interface{}{ciOptions}
 	}
 
 	if rumSettings, ok := actualOptions.GetRumSettingsOk(); ok {
