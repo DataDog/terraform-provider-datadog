@@ -569,6 +569,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.restricted_roles.0", "abc"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.ci.0.execution_rule", "blocking"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "message", "Notify @datadog.user"),
@@ -664,6 +666,9 @@ resource "datadog_synthetics_test" "foo" {
 		monitor_name = "%[1]s-monitor"
 		monitor_priority = 5
 		restricted_roles = ["abc"]
+		ci {
+			execution_rule = "blocking"
+		}
 	}
 
 	name = "%[1]s"
@@ -975,6 +980,8 @@ func updateSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.monitor_options.0.renotify_interval", "120"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.ci.0.execution_rule", "non_blocking"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "message", "Notify @pagerduty"),
@@ -1027,6 +1034,9 @@ resource "datadog_synthetics_test" "foo" {
 
 		monitor_options {
 			renotify_interval = 120
+		}
+		ci {
+			execution_rule = "non_blocking"
 		}
 	}
 
@@ -2054,6 +2064,14 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.restricted_roles.0", "abc"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.is_enabled", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.application_id", "rum-app-id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.client_token_id", "12345"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.ci.0.execution_rule", "blocking"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
@@ -2150,6 +2168,16 @@ resource "datadog_synthetics_test" "bar" {
 		restricted_roles = ["abc"]
 
 		no_screenshot = true
+
+		rum_settings {
+			is_enabled = true
+			application_id = "rum-app-id"
+			client_token_id = "12345"
+		}
+
+		ci {
+			execution_rule = "blocking"
+		}
 	}
 
 	name = "%[1]s"
@@ -2234,6 +2262,10 @@ func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.no_screenshot", "false"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.is_enabled", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.ci.0.execution_rule", "skipped"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
@@ -2304,6 +2336,14 @@ resource "datadog_synthetics_test" "bar" {
 		}
 
 		no_screenshot = false
+
+		rum_settings {
+			is_enabled = false
+		}
+
+		ci {
+			execution_rule = "skipped"
+		}
 	}
 	name = "%s"
 	message = "Notify @pagerduty"

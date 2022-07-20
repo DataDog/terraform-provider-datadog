@@ -616,6 +616,7 @@ Optional:
 - `accept_self_signed` (Boolean) For SSL test, whether or not the test should allow self signed certificates.
 - `allow_insecure` (Boolean) Allows loading insecure content for an HTTP test.
 - `check_certificate_revocation` (Boolean) For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.
+- `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--options_list--ci))
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert. Default is `0`.
 - `min_location_failed` (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`.
@@ -625,6 +626,15 @@ Optional:
 - `no_screenshot` (Boolean) Prevents saving screenshots of the steps.
 - `restricted_roles` (Set of String) A list of role identifiers pulled from the Roles API to restrict read and write access.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--retry))
+- `rum_settings` (Block List, Max: 1) The RUM data collection settings for the Synthetic browser test. (see [below for nested schema](#nestedblock--options_list--rum_settings))
+
+<a id="nestedblock--options_list--ci"></a>
+### Nested Schema for `options_list.ci`
+
+Optional:
+
+- `execution_rule` (String) Execution rule for a Synthetics test. Valid values are `blocking`, `non_blocking`, `skipped`.
+
 
 <a id="nestedblock--options_list--monitor_options"></a>
 ### Nested Schema for `options_list.monitor_options`
@@ -641,6 +651,19 @@ Optional:
 
 - `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert.
 - `interval` (Number) Interval between a failed test and the next retry in milliseconds.
+
+
+<a id="nestedblock--options_list--rum_settings"></a>
+### Nested Schema for `options_list.rum_settings`
+
+Required:
+
+- `is_enabled` (Boolean) Determines whether RUM data is collected during test runs.
+
+Optional:
+
+- `application_id` (String) RUM application ID used to collect RUM data for the browser test.
+- `client_token_id` (Number, Sensitive) RUM application API key ID used to collect RUM data for the browser test.
 
 
 

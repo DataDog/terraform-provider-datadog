@@ -134,7 +134,7 @@ resource "datadog_monitor" "foo" {
   renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
-  timeout_h = 60
+  timeout_h = 10
   new_group_delay = 500
   evaluation_delay = 700
   include_tags = true
@@ -175,7 +175,7 @@ resource "datadog_monitor" "foo" {
   renotify_statuses = ["alert", "warn"]
 
   notify_audit = false
-  timeout_h = 60
+  timeout_h = 10
   new_group_delay = 500
   evaluation_delay = 700
   include_tags = true
