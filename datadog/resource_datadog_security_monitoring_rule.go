@@ -234,6 +234,12 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						Optional:    true,
 						Description: "The target field to aggregate over when using the `sum`, `max`, or `new_value` aggregations.",
 					},
+					"metrics": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						Description: "Group of target fields to aggregate over when using the new value aggregations.",
+						Elem:        &schema.Schema{Type: schema.TypeString},
+					},
 					"name": {
 						Type:        schema.TypeString,
 						Optional:    true,
@@ -504,6 +510,15 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 			payloadQuery.Metric = &metric
 		}
 
+		if v, ok := query["metrics"]; ok {
+			tfMetrics := v.([]interface{})
+			metrics := make([]string, len(tfMetrics))
+			for i, value := range tfMetrics {
+				metrics[i] = value.(string)
+			}
+			payloadQuery.Metrics = metrics
+		}
+
 		if v, ok := query["name"]; ok {
 			name := v.(string)
 			payloadQuery.Name = &name
@@ -601,6 +616,9 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 		}
 		if metric, ok := responseRuleQuery.GetMetricOk(); ok {
 			ruleQuery["metric"] = *metric
+		}
+		if metrics, ok := responseRuleQuery.GetMetricsOk(); ok {
+			ruleQuery["metrics"] = *metrics
 		}
 		if name, ok := responseRuleQuery.GetNameOk(); ok {
 			ruleQuery["name"] = *name
@@ -769,6 +787,15 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 			if v, ok := query["metric"]; ok {
 				metric := v.(string)
 				payloadQuery.Metric = &metric
+			}
+
+			if v, ok := query["metrics"]; ok {
+				tfMetrics := v.([]interface{})
+				metrics := make([]string, len(tfMetrics))
+				for i, value := range tfMetrics {
+					metrics[i] = value.(string)
+				}
+				payloadQuery.Metrics = metrics
 			}
 
 			if v, ok := query["name"]; ok {
