@@ -114,6 +114,7 @@ Read-Only:
 - `distinct_fields` (List of String)
 - `group_by_fields` (List of String)
 - `metric` (String)
+- `metrics` (List of String)
 - `name` (String)
 - `query` (String)
 
