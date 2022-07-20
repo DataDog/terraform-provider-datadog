@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"}],"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1656675213","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"@network.bytes_read","name":"second","query":"does not really match much either"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+      {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"}],"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1658321980","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"@network.bytes_read","metrics":[],"name":"second","query":"does not really match much either"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
     form: {}
     headers:
       Accept:
@@ -14,11 +14,11 @@ interactions:
     method: POST
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1656675227505,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"}],"type":"log_detection","id":"zuu-u9i-nra","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1656675213"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1658321983299,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","metrics":[],"groupByFields":["host"],"query":"does not really match much"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","metrics":[],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"}],"type":"log_detection","id":"srp-xvp-wtt","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1658321980"}
     headers:
       Content-Type:
       - application/json
-    status: 200 OK
+    status: '200 '
     code: 200
     duration: ""
 - request:
@@ -27,15 +27,15 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zuu-u9i-nra
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/srp-xvp-wtt
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1656675227505,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"}],"type":"log_detection","id":"zuu-u9i-nra","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1656675213"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1658321983299,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","metrics":[],"groupByFields":["host"],"query":"does not really match much"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","metrics":[],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"}],"type":"log_detection","id":"srp-xvp-wtt","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1658321980"}
     headers:
       Content-Type:
       - application/json
-    status: 200 OK
+    status: '200 '
     code: 200
     duration: ""
 - request:
@@ -44,15 +44,15 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zuu-u9i-nra
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/srp-xvp-wtt
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1656675227505,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"}],"type":"log_detection","id":"zuu-u9i-nra","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1656675213"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1658321983299,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","metrics":[],"groupByFields":["host"],"query":"does not really match much"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","metrics":[],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"}],"type":"log_detection","id":"srp-xvp-wtt","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1658321980"}
     headers:
       Content-Type:
       - application/json
-    status: 200 OK
+    status: '200 '
     code: 200
     duration: ""
 - request:
@@ -61,35 +61,35 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zuu-u9i-nra
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/srp-xvp-wtt
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1656675227505,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","groupByFields":["host"],"query":"does not really match much"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"}],"type":"log_detection","id":"zuu-u9i-nra","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1656675213"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1658321983299,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"distinctFields":[],"name":"first","metric":"","aggregation":"count","metrics":[],"groupByFields":["host"],"query":"does not really match much"},{"distinctFields":["@orgId"],"name":"second","metric":"@network.bytes_read","aggregation":"cardinality","metrics":[],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"}],"type":"log_detection","id":"srp-xvp-wtt","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1658321980"}
     headers:
       Content-Type:
       - application/json
-    status: 200 OK
+    status: '200 '
     code: 200
     duration: ""
 - request:
     body: |
-      {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1656675213 - updated","options":{"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["service"],"metric":"@network.bytes_read","name":"first_updated","query":"does not really match much (updated)"}],"tags":["u:tomato","i:tomato"]}
+      {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1658321980 - updated","options":{"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["service"],"metric":"@network.bytes_read","metrics":[],"name":"first_updated","query":"does not really match much (updated)"}],"tags":["u:tomato","i:tomato"]}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zuu-u9i-nra
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/srp-xvp-wtt
     method: PUT
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"zuu-u9i-nra","createdAt":1656675227505,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1656675213 - updated"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","metrics":[],"groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"srp-xvp-wtt","createdAt":1658321983299,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1658321980 - updated"}
     headers:
       Content-Type:
       - application/json
-    status: 200 OK
+    status: '200 '
     code: 200
     duration: ""
 - request:
@@ -98,15 +98,15 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zuu-u9i-nra
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/srp-xvp-wtt
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"zuu-u9i-nra","createdAt":1656675227505,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1656675213 - updated"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","metrics":[],"groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"srp-xvp-wtt","createdAt":1658321983299,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1658321980 - updated"}
     headers:
       Content-Type:
       - application/json
-    status: 200 OK
+    status: '200 '
     code: 200
     duration: ""
 - request:
@@ -115,15 +115,15 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zuu-u9i-nra
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/srp-xvp-wtt
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"zuu-u9i-nra","createdAt":1656675227505,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1656675213 - updated"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","metrics":[],"groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"srp-xvp-wtt","createdAt":1658321983299,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1658321980 - updated"}
     headers:
       Content-Type:
       - application/json
-    status: 200 OK
+    status: '200 '
     code: 200
     duration: ""
 - request:
@@ -132,15 +132,15 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zuu-u9i-nra
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/srp-xvp-wtt
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"zuu-u9i-nra","createdAt":1656675227505,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1656675213 - updated"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","metrics":[],"groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"srp-xvp-wtt","createdAt":1658321983299,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1658321980 - updated"}
     headers:
       Content-Type:
       - application/json
-    status: 200 OK
+    status: '200 '
     code: 200
     duration: ""
 - request:
@@ -149,15 +149,15 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zuu-u9i-nra
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/srp-xvp-wtt
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"zuu-u9i-nra","createdAt":1656675227505,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1656675213 - updated"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","metrics":[],"groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"srp-xvp-wtt","createdAt":1658321983299,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1658321980 - updated"}
     headers:
       Content-Type:
       - application/json
-    status: 200 OK
+    status: '200 '
     code: 200
     duration: ""
 - request:
@@ -166,15 +166,15 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zuu-u9i-nra
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/srp-xvp-wtt
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"zuu-u9i-nra","createdAt":1656675227505,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1656675213 - updated"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":["@orgId"],"name":"first_updated","metric":"@network.bytes_read","aggregation":"cardinality","metrics":[],"groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"srp-xvp-wtt","createdAt":1658321983299,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1658321980 - updated"}
     headers:
       Content-Type:
       - application/json
-    status: 200 OK
+    status: '200 '
     code: 200
     duration: ""
 - request:
@@ -183,12 +183,12 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zuu-u9i-nra
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/srp-xvp-wtt
     method: DELETE
   response:
     body: ""
     headers: {}
-    status: 204 No Content
+    status: '204 '
     code: 204
     duration: ""
 - request:
@@ -197,14 +197,14 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zuu-u9i-nra
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/srp-xvp-wtt
     method: GET
   response:
     body: |
-      {"errors":["Threat detection rule not found: zuu-u9i-nra"]}
+      {"errors":["Threat detection rule not found: srp-xvp-wtt"]}
     headers:
       Content-Type:
       - application/json
-    status: 404 Not Found
+    status: '404 '
     code: 404
     duration: ""
