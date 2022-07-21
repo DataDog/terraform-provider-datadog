@@ -192,7 +192,7 @@ func updateDatadogIntegrationGCPState(d *schema.ResourceData, meta interface{}, 
 	}
 
 	d.SetId("")
-	return diag.FromErr(fmt.Errorf("unable to find GCP integration with project id: %s and client email: %s", projectID, clientEmail))
+	return nil
 }
 
 func getProjectIdAndClientEmailFromIDHelper(d *schema.ResourceData) (string, string) {
