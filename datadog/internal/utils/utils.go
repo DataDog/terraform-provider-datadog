@@ -132,6 +132,15 @@ func AccountNameAndChannelNameFromID(id string) (string, string, error) {
 	return result[0], result[1], nil
 }
 
+// ProjectIdAndClientEmailFromID returns project id and client email from an ID
+func ProjectIdAndClientEmailFromID(id string) (string, string, error) {
+	result := strings.SplitN(id, ":", 2)
+	if len(result) != 2 {
+		return "", "", fmt.Errorf("error extracting project ID and client email from an GCP integration id: %s", id)
+	}
+	return result[0], result[1], nil
+}
+
 // ConvertResponseByteToMap converts JSON []byte to map[string]interface{}
 func ConvertResponseByteToMap(b []byte) (map[string]interface{}, error) {
 	convertedMap := make(map[string]interface{})

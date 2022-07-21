@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -154,9 +155,9 @@ func checkIntegrationGCPExists(accProvider func() (*schema.Provider, error)) fun
 			return err
 		}
 		for _, r := range s.RootModule().Resources {
-			projectID := r.Primary.ID
+			projectID, clientEmail, _ := utils.ProjectIdAndClientEmailFromID(r.Primary.ID)
 			for _, integration := range integrations {
-				if integration.GetProjectId() == projectID {
+				if integration.GetProjectId() == projectID && integration.GetClientEmail() == clientEmail {
 					return nil
 				}
 			}
@@ -178,9 +179,9 @@ func checkIntegrationGCPDestroy(accProvider func() (*schema.Provider, error)) fu
 			return err
 		}
 		for _, r := range s.RootModule().Resources {
-			projectID := r.Primary.ID
+			projectID, clientEmail, _ := utils.ProjectIdAndClientEmailFromID(r.Primary.ID)
 			for _, integration := range integrations {
-				if integration.GetProjectId() == projectID {
+				if integration.GetProjectId() == projectID && integration.GetClientEmail() == clientEmail {
 					return fmt.Errorf("the Google Cloud Platform integration still exist: projectID=%s", projectID)
 				}
 			}
