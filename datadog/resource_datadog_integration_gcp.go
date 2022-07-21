@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -112,11 +113,21 @@ func resourceDatadogIntegrationGcpCreate(ctx context.Context, d *schema.Resource
 
 	d.SetId(fmt.Sprintf("%s:%s", projectID, clientEmail))
 
-	return resourceDatadogIntegrationGcpRead(ctx, d, meta)
+	return updateDatadogIntegrationGCPState(d, meta)
 }
 
 func resourceDatadogIntegrationGcpRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return updateDatadogIntegrationGCPState(d, meta, false)
+	diagErr := updateDatadogIntegrationGCPState(d, meta)
+	if diagErr != nil {
+		if strings.Contains(diagErr[0].Summary, "unable to find gcp integration") {
+			d.SetId("")
+			return nil
+		}
+
+		return diagErr
+	}
+
+	return nil
 }
 
 func resourceDatadogIntegrationGcpUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -139,7 +150,8 @@ func resourceDatadogIntegrationGcpUpdate(ctx context.Context, d *schema.Resource
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating GCP integration")
 	}
 
-	return updateDatadogIntegrationGCPState(d, meta, true)
+	d.SetId(fmt.Sprintf("%s:%s", projectID, clientEmail))
+	return updateDatadogIntegrationGCPState(d, meta)
 }
 
 func resourceDatadogIntegrationGcpDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -163,7 +175,7 @@ func resourceDatadogIntegrationGcpDelete(ctx context.Context, d *schema.Resource
 	return nil
 }
 
-func updateDatadogIntegrationGCPState(d *schema.ResourceData, meta interface{}, updating bool) diag.Diagnostics {
+func updateDatadogIntegrationGCPState(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -184,15 +196,11 @@ func updateDatadogIntegrationGCPState(d *schema.ResourceData, meta interface{}, 
 			d.Set("host_filters", integration.GetHostFilters())
 			d.Set("automute", integration.GetAutomute())
 
-			if updating {
-				d.SetId(fmt.Sprintf("%s:%s", integration.GetProjectId(), integration.GetClientEmail()))
-			}
 			return nil
 		}
 	}
 
-	d.SetId("")
-	return nil
+	return diag.FromErr(fmt.Errorf("unable to find gcp integration with project id %s, and client email %s", projectID, clientEmail))
 }
 
 func getProjectIdAndClientEmailFromIDHelper(d *schema.ResourceData) (string, string) {
