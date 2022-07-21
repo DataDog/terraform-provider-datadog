@@ -147,6 +147,7 @@ func syntheticsTestRequest() *schema.Resource {
 				Description: "Timeout in seconds for the test. Defaults to `60`.",
 				Type:        schema.TypeInt,
 				Optional:    true,
+				Default:     60,
 			},
 			"host": {
 				Description: "Host name to perform the test with.",

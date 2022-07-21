@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"message","type":"receivedMessage"}],"configVariables":[],"request":{"message":"message","url":"wss://www.datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1641430181","options":{"min_location_failed":1,"tick_every":60},"status":"paused","subtype":"websocket","tags":["foo:bar","baz"],"type":"api"}
+      {"config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"message","type":"receivedMessage"}],"configVariables":[],"request":{"message":"message","timeout":60,"url":"wss://www.datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1658393226","options":{"min_location_failed":1,"tick_every":60},"status":"paused","subtype":"websocket","tags":["foo:bar","baz"],"type":"api"}
     form: {}
     headers:
       Accept:
@@ -13,7 +13,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api
     method: POST
   response:
-    body: '{"status":"paused","public_id":"9zj-uxa-7bt","tags":["foo:bar","baz"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1641430181","monitor_id":59800009,"type":"api","created_at":"2022-01-06T00:49:58.778040+00:00","modified_at":"2022-01-06T00:49:58.778040+00:00","subtype":"websocket","config":{"request":{"url":"wss://www.datadoghq.com","message":"message"},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000},{"operator":"is","type":"receivedMessage","target":"message"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"uub-iaq-xdj","tags":["foo:bar","baz"],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1658393226","monitor_id":77757520,"type":"api","created_at":"2022-07-21T08:47:24.942829+00:00","modified_at":"2022-07-21T08:47:24.942829+00:00","subtype":"websocket","config":{"request":{"url":"wss://www.datadoghq.com","message":"message","timeout":60},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000},{"operator":"is","type":"receivedMessage","target":"message"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Content-Type:
       - application/json
@@ -26,10 +26,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/9zj-uxa-7bt
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/uub-iaq-xdj
     method: GET
   response:
-    body: '{"status":"paused","public_id":"9zj-uxa-7bt","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1641430181","monitor_id":59800009,"type":"api","subtype":"websocket","config":{"request":{"url":"wss://www.datadoghq.com","message":"message"},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000},{"operator":"is","type":"receivedMessage","target":"message"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"uub-iaq-xdj","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1658393226","monitor_id":77757520,"type":"api","created_at":"2022-07-21T08:47:24.942829+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-07-21T08:47:24.942829+00:00","subtype":"websocket","config":{"request":{"url":"wss://www.datadoghq.com","message":"message","timeout":60},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000},{"operator":"is","type":"receivedMessage","target":"message"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Content-Type:
       - application/json
@@ -42,10 +42,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/9zj-uxa-7bt
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/uub-iaq-xdj
     method: GET
   response:
-    body: '{"status":"paused","public_id":"9zj-uxa-7bt","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1641430181","monitor_id":59800009,"type":"api","subtype":"websocket","config":{"request":{"url":"wss://www.datadoghq.com","message":"message"},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000},{"operator":"is","type":"receivedMessage","target":"message"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"uub-iaq-xdj","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1658393226","monitor_id":77757520,"type":"api","created_at":"2022-07-21T08:47:24.942829+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-07-21T08:47:24.942829+00:00","subtype":"websocket","config":{"request":{"url":"wss://www.datadoghq.com","message":"message","timeout":60},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000},{"operator":"is","type":"receivedMessage","target":"message"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Content-Type:
       - application/json
@@ -58,10 +58,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/9zj-uxa-7bt
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/uub-iaq-xdj
     method: GET
   response:
-    body: '{"status":"paused","public_id":"9zj-uxa-7bt","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1641430181","monitor_id":59800009,"type":"api","subtype":"websocket","config":{"request":{"url":"wss://www.datadoghq.com","message":"message"},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000},{"operator":"is","type":"receivedMessage","target":"message"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"uub-iaq-xdj","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1658393226","monitor_id":77757520,"type":"api","created_at":"2022-07-21T08:47:24.942829+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-07-21T08:47:24.942829+00:00","subtype":"websocket","config":{"request":{"url":"wss://www.datadoghq.com","message":"message","timeout":60},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000},{"operator":"is","type":"receivedMessage","target":"message"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Content-Type:
       - application/json
@@ -74,10 +74,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/9zj-uxa-7bt
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/uub-iaq-xdj
     method: GET
   response:
-    body: '{"status":"paused","public_id":"9zj-uxa-7bt","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1641430181","monitor_id":59800009,"type":"api","subtype":"websocket","config":{"request":{"url":"wss://www.datadoghq.com","message":"message"},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000},{"operator":"is","type":"receivedMessage","target":"message"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
+    body: '{"status":"paused","public_id":"uub-iaq-xdj","tags":["foo:bar","baz"],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1658393226","monitor_id":77757520,"type":"api","created_at":"2022-07-21T08:47:24.942829+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-07-21T08:47:24.942829+00:00","subtype":"websocket","config":{"request":{"url":"wss://www.datadoghq.com","message":"message","timeout":60},"assertions":[{"operator":"lessThan","type":"responseTime","target":2000},{"operator":"is","type":"receivedMessage","target":"message"}],"configVariables":[]},"options":{"min_location_failed":1,"tick_every":60}}'
     headers:
       Content-Type:
       - application/json
@@ -86,7 +86,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"public_ids":["9zj-uxa-7bt"]}
+      {"public_ids":["uub-iaq-xdj"]}
     form: {}
     headers:
       Accept:
@@ -96,7 +96,7 @@ interactions:
     url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
     method: POST
   response:
-    body: '{"deleted_tests":[{"deleted_at":"2022-01-06T00:50:30.574073+00:00","public_id":"9zj-uxa-7bt"}]}'
+    body: '{"deleted_tests":[{"deleted_at":"2022-07-21T08:47:51.167747+00:00","public_id":"uub-iaq-xdj"}]}'
     headers:
       Content-Type:
       - application/json
@@ -109,7 +109,7 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/9zj-uxa-7bt
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/uub-iaq-xdj
     method: GET
   response:
     body: '{"errors": ["Synthetics test not found"]}'
