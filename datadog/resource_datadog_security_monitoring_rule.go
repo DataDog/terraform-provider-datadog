@@ -151,7 +151,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleNewValueOptionsLearningThresholdFromValue),
 									Optional:         true,
 									Default:          0,
-									Description:      "A number of occurrences after which signals will be generated for values that weren't learned.",
+									Description:      "A number of occurrences after which signals are generated for values that weren't learned.",
 								},
 								"forget_after": {
 									Type:             schema.TypeInt,
