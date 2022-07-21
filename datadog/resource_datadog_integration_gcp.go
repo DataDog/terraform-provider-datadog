@@ -113,11 +113,11 @@ func resourceDatadogIntegrationGcpCreate(ctx context.Context, d *schema.Resource
 
 	d.SetId(fmt.Sprintf("%s:%s", projectID, clientEmail))
 
-	return updateDatadogIntegrationGCPState(d, meta)
+	return updateDatadogIntegrationGcpState(d, meta)
 }
 
 func resourceDatadogIntegrationGcpRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	diagErr := updateDatadogIntegrationGCPState(d, meta)
+	diagErr := updateDatadogIntegrationGcpState(d, meta)
 	if diagErr != nil {
 		if strings.Contains(diagErr[0].Summary, "unable to find gcp integration") {
 			d.SetId("")
@@ -151,7 +151,7 @@ func resourceDatadogIntegrationGcpUpdate(ctx context.Context, d *schema.Resource
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", projectID, clientEmail))
-	return updateDatadogIntegrationGCPState(d, meta)
+	return updateDatadogIntegrationGcpState(d, meta)
 }
 
 func resourceDatadogIntegrationGcpDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -175,7 +175,7 @@ func resourceDatadogIntegrationGcpDelete(ctx context.Context, d *schema.Resource
 	return nil
 }
 
-func updateDatadogIntegrationGCPState(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func updateDatadogIntegrationGcpState(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1

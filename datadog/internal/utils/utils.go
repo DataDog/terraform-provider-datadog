@@ -136,7 +136,7 @@ func AccountNameAndChannelNameFromID(id string) (string, string, error) {
 func ProjectIdAndClientEmailFromID(id string) (string, string, error) {
 	result := strings.SplitN(id, ":", 2)
 	if len(result) != 2 {
-		return "", "", fmt.Errorf("error extracting project ID and client email from an GCP integration id: %s", id)
+		return "", "", fmt.Errorf("error extracting project ID and client email from a GCP integration id: %s", id)
 	}
 	return result[0], result[1], nil
 }
