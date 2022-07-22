@@ -287,17 +287,16 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 
 func buildDefaultRulePayloadOptions(d *schema.ResourceData) *datadogV2.SecurityMonitoringRuleOptions {
 	tfOptions := extractMapFromInterface(d.Get("options").([]interface{}))
+
+	if len(tfOptions) == 0 {
+		return nil
+	}
+
 	payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
-	emptyOptions := true
 	ruleType := d.Get("type").(string)
 
 	if v, ok := tfOptions["decrease_criticality_based_on_env"]; ok && ruleType == string(datadogV2.SECURITYMONITORINGRULETYPECREATE_LOG_DETECTION) {
 		payloadOptions.SetDecreaseCriticalityBasedOnEnv(v.(bool))
-		emptyOptions = false
-	}
-
-	if emptyOptions {
-		return nil
 	}
 
 	return payloadOptions
