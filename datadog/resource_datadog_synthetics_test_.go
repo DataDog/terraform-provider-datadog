@@ -196,6 +196,11 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"service": {
+				Description: "For gRPC tests, service to target for healthcheck.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -1159,6 +1164,7 @@ func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertio
 		datadogV1.SYNTHETICSASSERTIONTYPE_PACKET_LOSS_PERCENTAGE,
 		datadogV1.SYNTHETICSASSERTIONTYPE_PACKETS_RECEIVED,
 		datadogV1.SYNTHETICSASSERTIONTYPE_NETWORK_HOP,
+		datadogV1.SYNTHETICSASSERTIONTYPE_GRPC_HEALTHCHECK_STATUS,
 	} {
 		if assertionType == intTargetAssertionType {
 			return true
@@ -1228,6 +1234,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 	if attr, ok := k.GetOkWith("message"); ok {
 		request.SetMessage(attr.(string))
+	}
+	if attr, ok := k.GetOkWith("service"); ok {
+		request.SetService(attr.(string))
 	}
 	k.Remove(parts)
 
@@ -1991,6 +2000,9 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	}
 	if request.HasMessage() {
 		localRequest["message"] = request.GetMessage()
+	}
+	if request.HasService() {
+		localRequest["service"] = request.GetService()
 	}
 
 	return localRequest
