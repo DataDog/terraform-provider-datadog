@@ -199,6 +199,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         evaluation_window = 300
         keep_alive = 600
         max_signal_duration = 900
+        decrease_criticality_based_on_env = true
     }
 
 	filter {
@@ -267,6 +268,8 @@ func testAccCheckDatadogSecurityMonitorCreatedCheck(accProvider func() (*schema.
 			tfSecurityRuleName, "options.0.keep_alive", "600"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.decrease_criticality_based_on_env", "true"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "filter.0.action", "suppress"),
 		resource.TestCheckResourceAttr(
@@ -671,6 +674,8 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider func() (*schem
 			tfSecurityRuleName, "options.0.keep_alive", "300"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.max_signal_duration", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.decrease_criticality_based_on_env", "false"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "filter.0.action", "suppress"),
 		resource.TestCheckResourceAttr(

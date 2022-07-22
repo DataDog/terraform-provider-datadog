@@ -132,6 +132,7 @@ Required:
 
 Optional:
 
+- `decrease_criticality_based_on_env` (Boolean) If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`.
 - `detection_method` (String) The detection method. Valid values are `threshold`, `new_value`, `anomaly_detection`, `impossible_travel`, `hardcoded`.
 - `evaluation_window` (Number) A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`.
 - `impossible_travel_options` (Block List, Max: 1) Options for rules using the impossible travel detection method. (see [below for nested schema](#nestedblock--options--impossible_travel_options))

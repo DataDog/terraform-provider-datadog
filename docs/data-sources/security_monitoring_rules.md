@@ -77,6 +77,7 @@ Read-Only:
 
 Read-Only:
 
+- `decrease_criticality_based_on_env` (Boolean)
 - `detection_method` (String)
 - `evaluation_window` (Number)
 - `impossible_travel_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--impossible_travel_options))

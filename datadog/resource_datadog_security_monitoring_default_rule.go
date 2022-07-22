@@ -75,6 +75,23 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 					},
 				},
 			},
+
+			"options": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				MaxItems:    1,
+				Description: "Options on default rules. Note that only a subset of fields can be updated on default rule options.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"decrease_criticality_based_on_env": {
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Default:     false,
+							Description: "If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`.",
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -132,6 +149,13 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 	}
 
 	d.Set("filter", ruleFilters)
+
+	responseOptions := ruleResponse.GetOptions()
+	ruleOptions := []map[string]interface{}{{
+		"decrease_criticality_based_on_env": responseOptions.GetDecreaseCriticalityBasedOnEnv(),
+	}}
+
+	d.Set("options", &ruleOptions)
 
 	return nil
 }
@@ -256,7 +280,26 @@ func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitori
 	}
 	payload.Filters = payloadFilters
 
+	payload.Options = buildDefaultRulePayloadOptions(d)
+
 	return &payload, true, nil
+}
+
+func buildDefaultRulePayloadOptions(d *schema.ResourceData) *datadogV2.SecurityMonitoringRuleOptions {
+	tfOptions := extractMapFromInterface(d.Get("options").([]interface{}))
+
+	if len(tfOptions) == 0 {
+		return nil
+	}
+
+	payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
+	ruleType := d.Get("type").(string)
+
+	if v, ok := tfOptions["decrease_criticality_based_on_env"]; ok && ruleType == string(datadogV2.SECURITYMONITORINGRULETYPECREATE_LOG_DETECTION) {
+		payloadOptions.SetDecreaseCriticalityBasedOnEnv(v.(bool))
+	}
+
+	return payloadOptions
 }
 
 func stringSliceEquals(left []string, right []string) bool {
