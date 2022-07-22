@@ -100,6 +100,7 @@ Optional:
 - `distinct_fields` (List of String) Field for which the cardinality is measured. Sent as an array.
 - `group_by_fields` (List of String) Fields to group by.
 - `metric` (String) The target field to aggregate over when using the `sum`, `max`, or `new_value` aggregations.
+- `metrics` (List of String) Group of target fields to aggregate over when using the new value aggregations.
 - `name` (String) Name of the query. Not compatible with `new_value` aggregations.
 
 <a id="nestedblock--query--agent_rule"></a>
@@ -150,7 +151,12 @@ Optional:
 Required:
 
 - `forget_after` (Number) The duration in days after which a learned value is forgotten. Valid values are `1`, `2`, `7`, `14`, `21`, `28`.
+
+Optional:
+
 - `learning_duration` (Number) The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned. Valid values are `0`, `1`, `7`.
+- `learning_method` (String) The learning method used to determine when signals should be generated for values that weren't learned. Valid values are `duration`, `threshold`.
+- `learning_threshold` (Number) A number of occurrences after which signals are generated for values that weren't learned. Valid values are `0`, `1`.
 
 ## Import
 

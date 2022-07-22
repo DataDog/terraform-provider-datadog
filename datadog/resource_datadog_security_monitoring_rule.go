@@ -132,11 +132,26 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
+								"learning_method": {
+									Type:             schema.TypeString,
+									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleNewValueOptionsLearningMethodFromValue),
+									Optional:         true,
+									Default:          "duration",
+									Description:      "The learning method used to determine when signals should be generated for values that weren't learned.",
+								},
 								"learning_duration": {
 									Type:             schema.TypeInt,
 									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleNewValueOptionsLearningDurationFromValue),
-									Required:         true,
+									Optional:         true,
+									Default:          1,
 									Description:      "The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned.",
+								},
+								"learning_threshold": {
+									Type:             schema.TypeInt,
+									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleNewValueOptionsLearningThresholdFromValue),
+									Optional:         true,
+									Default:          0,
+									Description:      "A number of occurrences after which signals are generated for values that weren't learned.",
 								},
 								"forget_after": {
 									Type:             schema.TypeInt,
@@ -218,6 +233,12 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						Type:        schema.TypeString,
 						Optional:    true,
 						Description: "The target field to aggregate over when using the `sum`, `max`, or `new_value` aggregations.",
+					},
+					"metrics": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						Description: "Group of target fields to aggregate over when using the new value aggregations.",
+						Elem:        &schema.Schema{Type: schema.TypeString},
 					},
 					"name": {
 						Type:        schema.TypeString,
@@ -421,10 +442,20 @@ func buildPayloadNewValueOptions(tfOptionsList []interface{}) (*datadogV2.Securi
 	payloadNewValueRulesOptions := datadogV2.NewSecurityMonitoringRuleNewValueOptions()
 	tfOptions := extractMapFromInterface(tfOptionsList)
 	hasPayload := false
+	if v, ok := tfOptions["learning_method"]; ok {
+		hasPayload = true
+		learningMethod := datadogV2.SecurityMonitoringRuleNewValueOptionsLearningMethod(v.(string))
+		payloadNewValueRulesOptions.LearningMethod = &learningMethod
+	}
 	if v, ok := tfOptions["learning_duration"]; ok {
 		hasPayload = true
 		learningDuration := datadogV2.SecurityMonitoringRuleNewValueOptionsLearningDuration(v.(int))
 		payloadNewValueRulesOptions.LearningDuration = &learningDuration
+	}
+	if v, ok := tfOptions["learning_threshold"]; ok {
+		hasPayload = true
+		learningThreshold := datadogV2.SecurityMonitoringRuleNewValueOptionsLearningThreshold(v.(int))
+		payloadNewValueRulesOptions.LearningThreshold = &learningThreshold
 	}
 	if v, ok := tfOptions["forget_after"]; ok {
 		hasPayload = true
@@ -477,6 +508,15 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 		if v, ok := query["metric"]; ok {
 			metric := v.(string)
 			payloadQuery.Metric = &metric
+		}
+
+		if v, ok := query["metrics"]; ok {
+			tfMetrics := v.([]interface{})
+			metrics := make([]string, len(tfMetrics))
+			for i, value := range tfMetrics {
+				metrics[i] = value.(string)
+			}
+			payloadQuery.Metrics = metrics
 		}
 
 		if v, ok := query["name"]; ok {
@@ -577,6 +617,9 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse datadog
 		if metric, ok := responseRuleQuery.GetMetricOk(); ok {
 			ruleQuery["metric"] = *metric
 		}
+		if metrics, ok := responseRuleQuery.GetMetricsOk(); ok {
+			ruleQuery["metrics"] = *metrics
+		}
 		if name, ok := responseRuleQuery.GetNameOk(); ok {
 			ruleQuery["name"] = *name
 		}
@@ -631,7 +674,9 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 	if newValueOptions, ok := options.GetNewValueOptionsOk(); ok {
 		tfNewValueOptions := make(map[string]interface{})
 		tfNewValueOptions["forget_after"] = int(newValueOptions.GetForgetAfter())
+		tfNewValueOptions["learning_method"] = string(newValueOptions.GetLearningMethod())
 		tfNewValueOptions["learning_duration"] = int(newValueOptions.GetLearningDuration())
+		tfNewValueOptions["learning_threshold"] = int(newValueOptions.GetLearningThreshold())
 		tfOptions["new_value_options"] = []map[string]interface{}{tfNewValueOptions}
 	}
 	if impossibleTravelOptions, ok := options.GetImpossibleTravelOptionsOk(); ok {
@@ -742,6 +787,15 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 			if v, ok := query["metric"]; ok {
 				metric := v.(string)
 				payloadQuery.Metric = &metric
+			}
+
+			if v, ok := query["metrics"]; ok {
+				tfMetrics := v.([]interface{})
+				metrics := make([]string, len(tfMetrics))
+				for i, value := range tfMetrics {
+					metrics[i] = value.(string)
+				}
+				payloadQuery.Metrics = metrics
 			}
 
 			if v, ok := query["name"]; ok {

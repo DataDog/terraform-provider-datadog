@@ -99,6 +99,8 @@ Read-Only:
 
 - `forget_after` (Number)
 - `learning_duration` (Number)
+- `learning_method` (String)
+- `learning_threshold` (Number)
 
 
 
@@ -112,6 +114,7 @@ Read-Only:
 - `distinct_fields` (List of String)
 - `group_by_fields` (List of String)
 - `metric` (String)
+- `metrics` (List of String)
 - `name` (String)
 - `query` (String)
 
