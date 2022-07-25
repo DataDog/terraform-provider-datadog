@@ -446,6 +446,7 @@ Optional:
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - `port` (Number) Port to use when performing the test.
 - `servername` (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
+- `service` (String) For gRPC tests, service to target for healthcheck.
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - `timeout` (Number) Timeout in seconds for the test. Defaults to `60`.
 - `url` (String) The URL to send the request to.
@@ -732,6 +733,7 @@ Optional:
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - `port` (Number) Port to use when performing the test.
 - `servername` (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
+- `service` (String) For gRPC tests, service to target for healthcheck.
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - `timeout` (Number) Timeout in seconds for the test. Defaults to `60`.
 - `url` (String) The URL to send the request to.

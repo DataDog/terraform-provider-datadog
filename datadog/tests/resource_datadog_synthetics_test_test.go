@@ -346,6 +346,21 @@ func TestAccDatadogSyntheticsWebsocketTest_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsGRPCTest_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsGRPCTestStep(ctx, accProvider, t),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -1974,6 +1989,98 @@ resource "datadog_synthetics_test" "websocket" {
 		type = "receivedMessage"
 		operator = "is"
 		target = "message"
+	}
+
+	locations = [ "aws:eu-central-1" ]
+	options_list {
+		tick_every = 60
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
+}`, uniq)
+}
+
+func createSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+	return resource.TestStep{
+		Config: createSyntheticsGRPCTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "subtype", "grpc"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_definition.0.host", "google.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_definition.0.port", "50050"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_definition.0.service", "Hello"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "assertion.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "assertion.0.type", "responseTime"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "assertion.0.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "assertion.0.target", "2000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "assertion.1.type", "grpcHealthcheckStatus"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "assertion.1.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "assertion.1.target", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "locations.#", "1"),
+			resource.TestCheckTypeSetElemAttr(
+				"datadog_synthetics_test.grpc", "locations.*", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "options_list.0.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.grpc", "monitor_id"),
+		),
+	}
+}
+
+func createSyntheticsGRPCTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "grpc" {
+	type = "api"
+	subtype = "grpc"
+
+	request_definition {
+		method = "GET"
+		host   = "google.com"
+		port   = 50050
+		service = "Hello"
+	}
+
+	assertion {
+		type = "responseTime"
+		operator = "lessThan"
+		target = "2000"
+	}
+
+	assertion {
+		operator = "is"
+		type     = "grpcHealthcheckStatus"
+		target   = 1
 	}
 
 	locations = [ "aws:eu-central-1" ]
