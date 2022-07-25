@@ -1,3 +1,21 @@
+## 3.14.0 (July 25, 2022)
+
+### BUGFIXES
+* [datadog_synthetics_test] Fix ci execution rule options for browser tests by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1491
+* [datadog_synthetics_test] defaults api_step timeout to 60 to avoid it defaulting to 0 by @AlaricCalmette in https://github.com/DataDog/terraform-provider-datadog/pull/1497
+### FEATURES
+* [datadog_security_monitoring_rule] NewValue detection type supports threshold learning duration and metrics by @juliendoutre in https://github.com/DataDog/terraform-provider-datadog/pull/1479
+* [datadog_security_monitoring_rule] Dynamic Criticality Support by @pietrodll in https://github.com/DataDog/terraform-provider-datadog/pull/1483
+* [datadog_synthetics_test] Add support for grpc subtype by @AlaricCalmette in https://github.com/DataDog/terraform-provider-datadog/pull/1500
+### NOTES
+* [provider] Update go client by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/1501
+
+## New Contributors
+* @juliendoutre made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1479
+* @pietrodll made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1483
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.13.1...v3.14.0
+
 ## 3.13.1 (July 11, 2022)
 
 ### BUGFIXES
