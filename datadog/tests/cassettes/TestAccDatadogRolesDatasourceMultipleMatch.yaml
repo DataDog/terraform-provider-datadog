@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"data":{"attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main"},"relationships":{},"type":"roles"}}
+      {"data":{"attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main"},"relationships":{},"type":"roles"}}
     form: {}
     headers:
       Accept:
@@ -13,7 +13,8 @@ interactions:
     url: https://api.datadoghq.com/api/v2/roles
     method: POST
   response:
-    body: '{"data":{"type":"roles","id":"c7d84112-61c1-11ec-aeee-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main","created_at":"2021-12-20T18:22:25.106139+00:00","modified_at":"2021-12-20T18:22:25.184341+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"}]}}}}'
+    body: |
+      {"data":{"type":"roles","id":"3f10dd18-0cf1-11ed-ad25-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main","created_at":"2022-07-26T14:43:00.306400+00:00","modified_at":"2022-07-26T14:43:00.361253+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"}]}}}}
     headers:
       Content-Type:
       - application/json
@@ -22,7 +23,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main cloned"},"relationships":{},"type":"roles"}}
+      {"data":{"attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main cloned"},"relationships":{},"type":"roles"}}
     form: {}
     headers:
       Accept:
@@ -32,7 +33,8 @@ interactions:
     url: https://api.datadoghq.com/api/v2/roles
     method: POST
   response:
-    body: '{"data":{"type":"roles","id":"c7d9a5d4-61c1-11ec-aeee-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main cloned","created_at":"2021-12-20T18:22:25.115266+00:00","modified_at":"2021-12-20T18:22:25.195718+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"}]}}}}'
+    body: |
+      {"data":{"type":"roles","id":"3f100e24-0cf1-11ed-ad25-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main cloned","created_at":"2022-07-26T14:43:00.300882+00:00","modified_at":"2022-07-26T14:43:00.364652+00:00"},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"}]}}}}
     headers:
       Content-Type:
       - application/json
@@ -45,10 +47,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/roles/c7d84112-61c1-11ec-aeee-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/roles/3f100e24-0cf1-11ed-ad25-da7ad0900002
     method: GET
   response:
-    body: '{"data":{"type":"roles","id":"c7d84112-61c1-11ec-aeee-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main","created_at":"2021-12-20T18:22:25.106139+00:00","modified_at":"2021-12-20T18:22:25.184341+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"}]}}}}'
+    body: |
+      {"data":{"type":"roles","id":"3f100e24-0cf1-11ed-ad25-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main cloned","created_at":"2022-07-26T14:43:00.300882+00:00","modified_at":"2022-07-26T14:43:00.364652+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"}]}}}}
     headers:
       Content-Type:
       - application/json
@@ -61,10 +64,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/roles/c7d9a5d4-61c1-11ec-aeee-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/roles/3f10dd18-0cf1-11ed-ad25-da7ad0900002
     method: GET
   response:
-    body: '{"data":{"type":"roles","id":"c7d9a5d4-61c1-11ec-aeee-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main cloned","created_at":"2021-12-20T18:22:25.115266+00:00","modified_at":"2021-12-20T18:22:25.195718+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"}]}}}}'
+    body: |
+      {"data":{"type":"roles","id":"3f10dd18-0cf1-11ed-ad25-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main","created_at":"2022-07-26T14:43:00.306400+00:00","modified_at":"2022-07-26T14:43:00.361253+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"}]}}}}
     headers:
       Content-Type:
       - application/json
@@ -77,10 +81,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/roles?filter=tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544&page%5Bnumber%5D=0&page%5Bsize%5D=100
+    url: https://api.datadoghq.com/api/v2/roles?filter=tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579&page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":2,"total_count":4312}},"data":[{"type":"roles","id":"c7d84112-61c1-11ec-aeee-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main","created_at":"2021-12-20T18:22:25.106139+00:00","modified_at":"2021-12-20T18:22:25.184341+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"}]}}},{"type":"roles","id":"c7d9a5d4-61c1-11ec-aeee-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main cloned","created_at":"2021-12-20T18:22:25.115266+00:00","modified_at":"2021-12-20T18:22:25.195718+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"}]}}}]}'
+    body: |
+      {"meta":{"page":{"total_filtered_count":2,"total_count":4389}},"data":[{"type":"roles","id":"3f10dd18-0cf1-11ed-ad25-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main","created_at":"2022-07-26T14:43:00.306400+00:00","modified_at":"2022-07-26T14:43:00.361253+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"}]}}},{"type":"roles","id":"3f100e24-0cf1-11ed-ad25-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main cloned","created_at":"2022-07-26T14:43:00.300882+00:00","modified_at":"2022-07-26T14:43:00.364652+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"}]}}}]}
     headers:
       Content-Type:
       - application/json
@@ -93,10 +98,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/roles?filter=tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544&page%5Bnumber%5D=0&page%5Bsize%5D=100
+    url: https://api.datadoghq.com/api/v2/roles?filter=tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579&page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":2,"total_count":4312}},"data":[{"type":"roles","id":"c7d84112-61c1-11ec-aeee-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main","created_at":"2021-12-20T18:22:25.106139+00:00","modified_at":"2021-12-20T18:22:25.184341+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"}]}}},{"type":"roles","id":"c7d9a5d4-61c1-11ec-aeee-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main cloned","created_at":"2021-12-20T18:22:25.115266+00:00","modified_at":"2021-12-20T18:22:25.195718+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"}]}}}]}'
+    body: |
+      {"meta":{"page":{"total_filtered_count":2,"total_count":4389}},"data":[{"type":"roles","id":"3f10dd18-0cf1-11ed-ad25-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main","created_at":"2022-07-26T14:43:00.306400+00:00","modified_at":"2022-07-26T14:43:00.361253+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"}]}}},{"type":"roles","id":"3f100e24-0cf1-11ed-ad25-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main cloned","created_at":"2022-07-26T14:43:00.300882+00:00","modified_at":"2022-07-26T14:43:00.364652+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"}]}}}]}
     headers:
       Content-Type:
       - application/json
@@ -109,10 +115,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/roles/c7d84112-61c1-11ec-aeee-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/roles/3f10dd18-0cf1-11ed-ad25-da7ad0900002
     method: GET
   response:
-    body: '{"data":{"type":"roles","id":"c7d84112-61c1-11ec-aeee-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main","created_at":"2021-12-20T18:22:25.106139+00:00","modified_at":"2021-12-20T18:22:25.184341+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"}]}}}}'
+    body: |
+      {"data":{"type":"roles","id":"3f10dd18-0cf1-11ed-ad25-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main","created_at":"2022-07-26T14:43:00.306400+00:00","modified_at":"2022-07-26T14:43:00.361253+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"}]}}}}
     headers:
       Content-Type:
       - application/json
@@ -125,10 +132,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/roles/c7d9a5d4-61c1-11ec-aeee-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/roles/3f100e24-0cf1-11ed-ad25-da7ad0900002
     method: GET
   response:
-    body: '{"data":{"type":"roles","id":"c7d9a5d4-61c1-11ec-aeee-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main cloned","created_at":"2021-12-20T18:22:25.115266+00:00","modified_at":"2021-12-20T18:22:25.195718+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"}]}}}}'
+    body: |
+      {"data":{"type":"roles","id":"3f100e24-0cf1-11ed-ad25-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main cloned","created_at":"2022-07-26T14:43:00.300882+00:00","modified_at":"2022-07-26T14:43:00.364652+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"}]}}}}
     headers:
       Content-Type:
       - application/json
@@ -141,10 +149,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/roles?filter=tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544&page%5Bnumber%5D=0&page%5Bsize%5D=100
+    url: https://api.datadoghq.com/api/v2/roles?filter=tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579&page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":2,"total_count":4312}},"data":[{"type":"roles","id":"c7d84112-61c1-11ec-aeee-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main","created_at":"2021-12-20T18:22:25.106139+00:00","modified_at":"2021-12-20T18:22:25.184341+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"}]}}},{"type":"roles","id":"c7d9a5d4-61c1-11ec-aeee-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main cloned","created_at":"2021-12-20T18:22:25.115266+00:00","modified_at":"2021-12-20T18:22:25.195718+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"}]}}}]}'
+    body: |
+      {"meta":{"page":{"total_filtered_count":2,"total_count":4389}},"data":[{"type":"roles","id":"3f10dd18-0cf1-11ed-ad25-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main","created_at":"2022-07-26T14:43:00.306400+00:00","modified_at":"2022-07-26T14:43:00.361253+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"}]}}},{"type":"roles","id":"3f100e24-0cf1-11ed-ad25-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main cloned","created_at":"2022-07-26T14:43:00.300882+00:00","modified_at":"2022-07-26T14:43:00.364652+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"}]}}}]}
     headers:
       Content-Type:
       - application/json
@@ -157,10 +166,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/roles?filter=tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544&page%5Bnumber%5D=0&page%5Bsize%5D=100
+    url: https://api.datadoghq.com/api/v2/roles?filter=tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579&page%5Bnumber%5D=0&page%5Bsize%5D=100
     method: GET
   response:
-    body: '{"meta":{"page":{"total_filtered_count":2,"total_count":4312}},"data":[{"type":"roles","id":"c7d84112-61c1-11ec-aeee-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main","created_at":"2021-12-20T18:22:25.106139+00:00","modified_at":"2021-12-20T18:22:25.184341+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"}]}}},{"type":"roles","id":"c7d9a5d4-61c1-11ec-aeee-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1640024544 main cloned","created_at":"2021-12-20T18:22:25.115266+00:00","modified_at":"2021-12-20T18:22:25.195718+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"}]}}}]}'
+    body: |
+      {"meta":{"page":{"total_filtered_count":2,"total_count":4389}},"data":[{"type":"roles","id":"3f10dd18-0cf1-11ed-ad25-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main","created_at":"2022-07-26T14:43:00.306400+00:00","modified_at":"2022-07-26T14:43:00.361253+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"}]}}},{"type":"roles","id":"3f100e24-0cf1-11ed-ad25-da7ad0900002","attributes":{"name":"tf-testaccdatadogrolesdatasourcemultiplematch-local-1658846579 main cloned","created_at":"2022-07-26T14:43:00.300882+00:00","modified_at":"2022-07-26T14:43:00.364652+00:00","user_count":0},"relationships":{"permissions":{"data":[{"type":"permissions","id":"d90f6830-d3d8-11e9-a77a-b3404e5e9ee2"},{"type":"permissions","id":"4441648c-d8b1-11e9-a77a-1b899a04b304"},{"type":"permissions","id":"417ba636-2dce-11eb-84c0-6bce5b0d9de0"},{"type":"permissions","id":"12efc20e-d36c-11eb-a9b8-da7ad0900002"},{"type":"permissions","id":"97971c1c-e895-11eb-b13c-da7ad0900002"},{"type":"permissions","id":"7605ef24-f376-11eb-b90b-da7ad0900002"},{"type":"permissions","id":"b6bf9ac6-9a59-11ec-8480-da7ad0900002"},{"type":"permissions","id":"f8e941cf-e746-11ec-b22d-da7ad0900002"}]}}}]}
     headers:
       Content-Type:
       - application/json
@@ -172,12 +182,30 @@ interactions:
     form: {}
     headers:
       Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/roles/c7d84112-61c1-11ec-aeee-da7ad0900002
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/roles/3f10dd18-0cf1-11ed-ad25-da7ad0900002
     method: DELETE
   response:
     body: ""
     headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/roles/3f100e24-0cf1-11ed-ad25-da7ad0900002
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
     status: 204 No Content
     code: 204
     duration: ""
@@ -187,24 +215,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/roles/c7d9a5d4-61c1-11ec-aeee-da7ad0900002
-    method: DELETE
-  response:
-    body: ""
-    headers:
-    status: 204 No Content
-    code: 204
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/roles/c7d9a5d4-61c1-11ec-aeee-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/roles/3f100e24-0cf1-11ed-ad25-da7ad0900002
     method: GET
   response:
-    body: '{"errors": ["The role c7d9a5d4-61c1-11ec-aeee-da7ad0900002 does not exist not found"]}'
+    body: |
+      {"errors":["3f100e24-0cf1-11ed-ad25-da7ad0900002 not found"]}
     headers:
       Content-Type:
       - application/json
@@ -217,10 +232,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/roles/c7d84112-61c1-11ec-aeee-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/roles/3f10dd18-0cf1-11ed-ad25-da7ad0900002
     method: GET
   response:
-    body: '{"errors": ["The role c7d84112-61c1-11ec-aeee-da7ad0900002 does not exist not found"]}'
+    body: |
+      {"errors":["3f10dd18-0cf1-11ed-ad25-da7ad0900002 not found"]}
     headers:
       Content-Type:
       - application/json
