@@ -1443,13 +1443,19 @@ func createSyntheticsTCPTestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "request_definition.0.port", "443"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.tcp", "assertion.#", "1"),
+				"datadog_synthetics_test.tcp", "assertion.#", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "assertion.0.type", "responseTime"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "assertion.0.operator", "lessThan"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "assertion.0.target", "2000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "assertion.1.type", "connection"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "assertion.1.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.tcp", "assertion.1.target", "established"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.tcp", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -1489,6 +1495,12 @@ resource "datadog_synthetics_test" "tcp" {
 		type = "responseTime"
 		operator = "lessThan"
 		target = 2000
+	}
+
+	assertion {
+		type = "connection"
+		operator = "is"
+		target = "established"
 	}
 
 	locations = [ "aws:eu-central-1" ]
