@@ -3,6 +3,8 @@ package test
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
+	"strings"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
@@ -41,7 +43,7 @@ func testAccCheckDatadogSecurityMonitoringFilterCreated(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_filter" "acceptance_test" {
     name = "%s"
-    query = "first query"
+    query = "first query - %[1]s"
     is_enabled = true
 
     exclusion_filter {
@@ -63,7 +65,7 @@ func testAccCheckDatadogSecurityMonitorFilterCreatedCheck(accProvider func() (*s
 		resource.TestCheckResourceAttr(
 			tfSecurityFilterName, "name", filterName),
 		resource.TestCheckResourceAttr(
-			tfSecurityFilterName, "query", "first query"),
+			tfSecurityFilterName, "query", "first query - "+filterName),
 		resource.TestCheckResourceAttr(
 			tfSecurityFilterName, "is_enabled", "true"),
 		resource.TestCheckResourceAttr(
@@ -83,7 +85,7 @@ func testAccCheckDatadogSecurityMonitoringFilterUpdated(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_filter" "acceptance_test" {
     name = "%s"
-    query = "new query"
+    query = "new query - %[1]s"
     is_enabled = false
 
     exclusion_filter {
@@ -105,7 +107,7 @@ func testAccCheckDatadogSecurityMonitorFilterUpdatedCheck(accProvider func() (*s
 		resource.TestCheckResourceAttr(
 			tfSecurityFilterName, "name", filterName),
 		resource.TestCheckResourceAttr(
-			tfSecurityFilterName, "query", "new query"),
+			tfSecurityFilterName, "query", "new query - "+filterName),
 		resource.TestCheckResourceAttr(
 			tfSecurityFilterName, "is_enabled", "false"),
 		resource.TestCheckResourceAttr(
@@ -154,7 +156,14 @@ func testAccCheckDatadogSecurityMonitoringFilterDestroy(accProvider func() (*sch
 					}
 					return fmt.Errorf("received an error deleting security monitoring filter: %s", err)
 				}
-				return fmt.Errorf("monitor still exists")
+				body, err := ioutil.ReadAll(httpResponse.Body)
+				if err == nil {
+					if strings.Contains(string(body), "not found") {
+						continue
+					}
+				}
+
+				return fmt.Errorf("security monitoring filter still exists")
 			}
 		}
 		return nil
