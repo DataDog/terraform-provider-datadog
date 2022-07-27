@@ -520,7 +520,7 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 			payloadQuery.Metric = &metric
 		}
 
-		if v, ok := query["metrics"]; ok {
+		if v, ok := query["metrics"]; ok && v != nil {
 			tfMetrics := v.([]interface{})
 			metrics := make([]string, len(tfMetrics))
 			for i, value := range tfMetrics {
