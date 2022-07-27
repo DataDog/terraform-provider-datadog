@@ -243,6 +243,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 					},
 					"metrics": {
 						Type:        schema.TypeList,
+						Computed:    true,
 						Optional:    true,
 						Description: "Group of target fields to aggregate over when using the new value aggregations.",
 						Elem:        &schema.Schema{Type: schema.TypeString},
@@ -520,13 +521,14 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 			payloadQuery.Metric = &metric
 		}
 
-		if v, ok := query["metrics"]; ok {
-			tfMetrics := v.([]interface{})
-			metrics := make([]string, len(tfMetrics))
-			for i, value := range tfMetrics {
-				metrics[i] = value.(string)
+		if v, ok := query["metrics"]; ok && v != nil {
+			if tfMetrics, ok := v.([]interface{}); ok && len(tfMetrics) > 0 {
+				metrics := make([]string, len(tfMetrics))
+				for i, value := range tfMetrics {
+					metrics[i] = value.(string)
+				}
+				payloadQuery.Metrics = metrics
 			}
-			payloadQuery.Metrics = metrics
 		}
 
 		if v, ok := query["name"]; ok {
