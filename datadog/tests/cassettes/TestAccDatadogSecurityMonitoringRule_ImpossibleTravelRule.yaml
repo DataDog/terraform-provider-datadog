@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658514020","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","evaluationWindow":0,"impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","distinctFields":[],"groupByFields":["@usr.handle"],"metric":"@usr.handle","metrics":[],"name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+      {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658927192","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","evaluationWindow":0,"impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","distinctFields":[],"groupByFields":["@usr.handle"],"metric":"@usr.handle","name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"impossible_travel","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1658514021267,"filters":[],"queries":[{"distinctFields":[],"name":"my_query","metric":"@usr.handle","aggregation":"geo_data","metrics":[],"groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"4om-peo-y6o","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658514020"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"impossible_travel","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1658927194414,"filters":[],"queries":[{"distinctFields":[],"name":"my_query","metric":"@usr.handle","aggregation":"geo_data","groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"fjv-nf5-9wl","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658927192"}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4om-peo-y6o
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fjv-nf5-9wl
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"impossible_travel","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1658514021267,"filters":[],"queries":[{"distinctFields":[],"name":"my_query","metric":"@usr.handle","aggregation":"geo_data","metrics":[],"groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"4om-peo-y6o","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658514020"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"impossible_travel","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1658927194414,"filters":[],"queries":[{"distinctFields":[],"name":"my_query","metric":"@usr.handle","aggregation":"geo_data","metrics":["@usr.handle"],"groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"fjv-nf5-9wl","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658927192"}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4om-peo-y6o
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fjv-nf5-9wl
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"impossible_travel","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1658514021267,"filters":[],"queries":[{"distinctFields":[],"name":"my_query","metric":"@usr.handle","aggregation":"geo_data","metrics":[],"groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"4om-peo-y6o","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658514020"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"impossible_travel","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1658927194414,"filters":[],"queries":[{"distinctFields":[],"name":"my_query","metric":"@usr.handle","aggregation":"geo_data","metrics":["@usr.handle"],"groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"fjv-nf5-9wl","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658927192"}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4om-peo-y6o
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fjv-nf5-9wl
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"impossible_travel","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1658514021267,"filters":[],"queries":[{"distinctFields":[],"name":"my_query","metric":"@usr.handle","aggregation":"geo_data","metrics":[],"groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"4om-peo-y6o","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658514020"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"impossible_travel","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1658927194414,"filters":[],"queries":[{"distinctFields":[],"name":"my_query","metric":"@usr.handle","aggregation":"geo_data","metrics":["@usr.handle"],"groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"fjv-nf5-9wl","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658927192"}
     headers:
       Content-Type:
       - application/json
@@ -74,18 +74,18 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"cases":[{"condition":"","name":"new case name (updated)","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658514020","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","evaluationWindow":0,"impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","distinctFields":[],"groupByFields":["@usr.handle"],"metric":"@usr.handle","metrics":[],"name":"my_updated_query","query":"*"}],"tags":["i:tomato","u:tomato"]}
+      {"cases":[{"condition":"","name":"new case name (updated)","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658927192","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","evaluationWindow":0,"impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","distinctFields":[],"groupByFields":["@usr.handle"],"metric":"@usr.handle","metrics":["@usr.handle"],"name":"my_updated_query","query":"*"}],"tags":["i:tomato","u:tomato"]}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4om-peo-y6o
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fjv-nf5-9wl
     method: PUT
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered (updated)","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"impossible_travel","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"my_updated_query","metric":"@usr.handle","aggregation":"geo_data","metrics":[],"groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"new case name (updated)","condition":""}],"type":"log_detection","id":"4om-peo-y6o","createdAt":1658514021267,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658514020"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered (updated)","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"impossible_travel","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"my_updated_query","metric":"@usr.handle","aggregation":"geo_data","metrics":["@usr.handle"],"groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"new case name (updated)","condition":""}],"type":"log_detection","id":"fjv-nf5-9wl","createdAt":1658927194414,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658927192"}
     headers:
       Content-Type:
       - application/json
@@ -98,11 +98,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4om-peo-y6o
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fjv-nf5-9wl
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered (updated)","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"impossible_travel","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"my_updated_query","metric":"@usr.handle","aggregation":"geo_data","metrics":[],"groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"new case name (updated)","condition":""}],"type":"log_detection","id":"4om-peo-y6o","createdAt":1658514021267,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658514020"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered (updated)","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"impossible_travel","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"my_updated_query","metric":"@usr.handle","aggregation":"geo_data","metrics":["@usr.handle"],"groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"new case name (updated)","condition":""}],"type":"log_detection","id":"fjv-nf5-9wl","createdAt":1658927194414,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658927192"}
     headers:
       Content-Type:
       - application/json
@@ -115,11 +115,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4om-peo-y6o
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fjv-nf5-9wl
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered (updated)","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"impossible_travel","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"my_updated_query","metric":"@usr.handle","aggregation":"geo_data","metrics":[],"groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"new case name (updated)","condition":""}],"type":"log_detection","id":"4om-peo-y6o","createdAt":1658514021267,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658514020"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"impossible travel rule triggered (updated)","options":{"impossibleTravelOptions":{"baselineUserLocations":true},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"impossible_travel","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"my_updated_query","metric":"@usr.handle","aggregation":"geo_data","metrics":["@usr.handle"],"groupByFields":["@usr.handle"],"query":"*"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"new case name (updated)","condition":""}],"type":"log_detection","id":"fjv-nf5-9wl","createdAt":1658927194414,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1658927192"}
     headers:
       Content-Type:
       - application/json
@@ -132,7 +132,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4om-peo-y6o
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fjv-nf5-9wl
     method: DELETE
   response:
     body: ""
@@ -146,11 +146,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4om-peo-y6o
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fjv-nf5-9wl
     method: GET
   response:
     body: |
-      {"errors":["Threat detection rule not found: 4om-peo-y6o"]}
+      {"errors":["Threat detection rule not found: fjv-nf5-9wl"]}
     headers:
       Content-Type:
       - application/json

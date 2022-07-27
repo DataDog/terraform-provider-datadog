@@ -243,6 +243,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 					},
 					"metrics": {
 						Type:        schema.TypeList,
+						Computed:    true,
 						Optional:    true,
 						Description: "Group of target fields to aggregate over when using the new value aggregations.",
 						Elem:        &schema.Schema{Type: schema.TypeString},
