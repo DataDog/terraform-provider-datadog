@@ -156,13 +156,6 @@ func testAccCheckDatadogSecurityMonitoringFilterDestroy(accProvider func() (*sch
 					}
 					return fmt.Errorf("received an error deleting security monitoring filter: %s", err)
 				}
-				body, err := ioutil.ReadAll(httpResponse.Body)
-				if err == nil {
-					if strings.Contains(string(body), "not found") {
-						continue
-					}
-				}
-
 				return fmt.Errorf("security monitoring filter still exists")
 			}
 		}
