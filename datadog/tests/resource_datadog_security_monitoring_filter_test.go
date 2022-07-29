@@ -3,8 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
-	"strings"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
