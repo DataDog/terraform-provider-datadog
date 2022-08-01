@@ -67,7 +67,7 @@ var (
 
 // GetAuthenticationApiV1 get instance of AuthenticationApi
 func GetAuthenticationApiV1(client *common.APIClient) *datadogV1.AuthenticationApi {
-	if authenticationApiV1 == nil {
+	if authenticationApiV1 == nil || authenticationApiV1.Client != client {
 		authenticationApiV1 = datadogV1.NewAuthenticationApi(client)
 	}
 	return authenticationApiV1
@@ -75,7 +75,7 @@ func GetAuthenticationApiV1(client *common.APIClient) *datadogV1.AuthenticationA
 
 // GetAWSIntegrationApiV1 get instance of AWSIntegrationApi
 func GetAWSIntegrationApiV1(client *common.APIClient) *datadogV1.AWSIntegrationApi {
-	if awsIntegrationApiV1 == nil {
+	if awsIntegrationApiV1 == nil || awsIntegrationApiV1.Client != client {
 		awsIntegrationApiV1 = datadogV1.NewAWSIntegrationApi(client)
 	}
 	return awsIntegrationApiV1
@@ -83,7 +83,7 @@ func GetAWSIntegrationApiV1(client *common.APIClient) *datadogV1.AWSIntegrationA
 
 // GetAWSLogsIntegrationApiV1 get instance of AwsLogsIntegrationApi
 func GetAWSLogsIntegrationApiV1(client *common.APIClient) *datadogV1.AWSLogsIntegrationApi {
-	if awsLogsIntegrationApiV1 == nil {
+	if awsLogsIntegrationApiV1 == nil || awsLogsIntegrationApiV1.Client != client {
 		awsLogsIntegrationApiV1 = datadogV1.NewAWSLogsIntegrationApi(client)
 	}
 	return awsLogsIntegrationApiV1
@@ -91,7 +91,7 @@ func GetAWSLogsIntegrationApiV1(client *common.APIClient) *datadogV1.AWSLogsInte
 
 // GetAzureIntegrationApiV1 get instance of AzureIntegrationApi
 func GetAzureIntegrationApiV1(client *common.APIClient) *datadogV1.AzureIntegrationApi {
-	if azureIntegrationApiV1 == nil {
+	if azureIntegrationApiV1 == nil || azureIntegrationApiV1.Client != client {
 		azureIntegrationApiV1 = datadogV1.NewAzureIntegrationApi(client)
 	}
 	return azureIntegrationApiV1
@@ -99,7 +99,7 @@ func GetAzureIntegrationApiV1(client *common.APIClient) *datadogV1.AzureIntegrat
 
 // GetDashboardListsApiV1 get instance of DashboardListsApi
 func GetDashboardListsApiV1(client *common.APIClient) *datadogV1.DashboardListsApi {
-	if dashboardListsApiV1 == nil {
+	if dashboardListsApiV1 == nil || dashboardListsApiV1.Client != client {
 		dashboardListsApiV1 = datadogV1.NewDashboardListsApi(client)
 	}
 	return dashboardListsApiV1
@@ -107,7 +107,7 @@ func GetDashboardListsApiV1(client *common.APIClient) *datadogV1.DashboardListsA
 
 // GetDashboardsApiV1 get instance of DashboardsApi
 func GetDashboardsApiV1(client *common.APIClient) *datadogV1.DashboardsApi {
-	if dashboardsApiV1 == nil {
+	if dashboardsApiV1 == nil || dashboardsApiV1.Client != client {
 		dashboardsApiV1 = datadogV1.NewDashboardsApi(client)
 	}
 	return dashboardsApiV1
@@ -115,7 +115,7 @@ func GetDashboardsApiV1(client *common.APIClient) *datadogV1.DashboardsApi {
 
 // GetDowntimesApiV1 get instance of DowntimesApi
 func GetDowntimesApiV1(client *common.APIClient) *datadogV1.DowntimesApi {
-	if downtimesApiV1 == nil {
+	if downtimesApiV1 == nil || downtimesApiV1.Client != client {
 		downtimesApiV1 = datadogV1.NewDowntimesApi(client)
 	}
 	return downtimesApiV1
@@ -123,7 +123,7 @@ func GetDowntimesApiV1(client *common.APIClient) *datadogV1.DowntimesApi {
 
 // GetEventsApiV1 get instance of EventsApi
 func GetEventsApiV1(client *common.APIClient) *datadogV1.EventsApi {
-	if eventsApiV1 == nil {
+	if eventsApiV1 == nil || eventsApiV1.Client != client {
 		eventsApiV1 = datadogV1.NewEventsApi(client)
 	}
 	return eventsApiV1
@@ -131,7 +131,7 @@ func GetEventsApiV1(client *common.APIClient) *datadogV1.EventsApi {
 
 // GetGCPIntegrationApiV1 get instance of GcpIntegrationApi
 func GetGCPIntegrationApiV1(client *common.APIClient) *datadogV1.GCPIntegrationApi {
-	if gcpIntegrationApiV1 == nil {
+	if gcpIntegrationApiV1 == nil || gcpIntegrationApiV1.Client != client {
 		gcpIntegrationApiV1 = datadogV1.NewGCPIntegrationApi(client)
 	}
 	return gcpIntegrationApiV1
@@ -139,7 +139,7 @@ func GetGCPIntegrationApiV1(client *common.APIClient) *datadogV1.GCPIntegrationA
 
 // GetHostsApiV1 get instance of HostsApi
 func GetHostsApiV1(client *common.APIClient) *datadogV1.HostsApi {
-	if hostsApiV1 == nil {
+	if hostsApiV1 == nil || hostsApiV1.Client != client {
 		hostsApiV1 = datadogV1.NewHostsApi(client)
 	}
 	return hostsApiV1
@@ -147,7 +147,7 @@ func GetHostsApiV1(client *common.APIClient) *datadogV1.HostsApi {
 
 // GetIPRangesApiV1 get instance of IPRangesApi
 func GetIPRangesApiV1(client *common.APIClient) *datadogV1.IPRangesApi {
-	if ipRangesApiV1 == nil {
+	if ipRangesApiV1 == nil || ipRangesApiV1.Client != client {
 		ipRangesApiV1 = datadogV1.NewIPRangesApi(client)
 	}
 	return ipRangesApiV1
@@ -155,7 +155,7 @@ func GetIPRangesApiV1(client *common.APIClient) *datadogV1.IPRangesApi {
 
 // GetKeyManagementApiV1 get instance of KeyManagementApi
 func GetKeyManagementApiV1(client *common.APIClient) *datadogV1.KeyManagementApi {
-	if keyManagementApiV1 == nil {
+	if keyManagementApiV1 == nil || keyManagementApiV1.Client != client {
 		keyManagementApiV1 = datadogV1.NewKeyManagementApi(client)
 	}
 	return keyManagementApiV1
@@ -163,7 +163,7 @@ func GetKeyManagementApiV1(client *common.APIClient) *datadogV1.KeyManagementApi
 
 // GetLogsApiV1 get instance of LogsApi
 func GetLogsApiV1(client *common.APIClient) *datadogV1.LogsApi {
-	if logsApiV1 == nil {
+	if logsApiV1 == nil || logsApiV1.Client != client {
 		logsApiV1 = datadogV1.NewLogsApi(client)
 	}
 	return logsApiV1
@@ -171,7 +171,7 @@ func GetLogsApiV1(client *common.APIClient) *datadogV1.LogsApi {
 
 // GetLogsIndexesApiV1 get instance of LogsIndexesApi
 func GetLogsIndexesApiV1(client *common.APIClient) *datadogV1.LogsIndexesApi {
-	if logsIndexesApiV1 == nil {
+	if logsIndexesApiV1 == nil || logsIndexesApiV1.Client != client {
 		logsIndexesApiV1 = datadogV1.NewLogsIndexesApi(client)
 	}
 	return logsIndexesApiV1
@@ -179,7 +179,7 @@ func GetLogsIndexesApiV1(client *common.APIClient) *datadogV1.LogsIndexesApi {
 
 // GetLogsPipelinesApiV1 get instance of LogsPipelinesApi
 func GetLogsPipelinesApiV1(client *common.APIClient) *datadogV1.LogsPipelinesApi {
-	if logsPipelinesApiV1 == nil {
+	if logsPipelinesApiV1 == nil || logsPipelinesApiV1.Client != client {
 		logsPipelinesApiV1 = datadogV1.NewLogsPipelinesApi(client)
 	}
 	return logsPipelinesApiV1
@@ -187,7 +187,7 @@ func GetLogsPipelinesApiV1(client *common.APIClient) *datadogV1.LogsPipelinesApi
 
 // GetMetricsApiV1 get instance of MetricsApi
 func GetMetricsApiV1(client *common.APIClient) *datadogV1.MetricsApi {
-	if metricsApiV1 == nil {
+	if metricsApiV1 == nil || metricsApiV1.Client != client {
 		metricsApiV1 = datadogV1.NewMetricsApi(client)
 	}
 	return metricsApiV1
@@ -195,7 +195,7 @@ func GetMetricsApiV1(client *common.APIClient) *datadogV1.MetricsApi {
 
 // GetMonitorsApiV1 get instance of MonitorsApi
 func GetMonitorsApiV1(client *common.APIClient) *datadogV1.MonitorsApi {
-	if monitorsApiV1 == nil {
+	if monitorsApiV1 == nil || monitorsApiV1.Client != client {
 		monitorsApiV1 = datadogV1.NewMonitorsApi(client)
 	}
 	return monitorsApiV1
@@ -203,7 +203,7 @@ func GetMonitorsApiV1(client *common.APIClient) *datadogV1.MonitorsApi {
 
 // GetNotebooksApiV1 get instance of NotebooksApi
 func GetNotebooksApiV1(client *common.APIClient) *datadogV1.NotebooksApi {
-	if notebooksApiV1 == nil {
+	if notebooksApiV1 == nil || notebooksApiV1.Client != client {
 		notebooksApiV1 = datadogV1.NewNotebooksApi(client)
 	}
 	return notebooksApiV1
@@ -211,7 +211,7 @@ func GetNotebooksApiV1(client *common.APIClient) *datadogV1.NotebooksApi {
 
 // GetOrganizationsApiV1 get instance of OrganizationsApi
 func GetOrganizationsApiV1(client *common.APIClient) *datadogV1.OrganizationsApi {
-	if organizationsApiV1 == nil {
+	if organizationsApiV1 == nil || organizationsApiV1.Client != client {
 		organizationsApiV1 = datadogV1.NewOrganizationsApi(client)
 	}
 	return organizationsApiV1
@@ -219,7 +219,7 @@ func GetOrganizationsApiV1(client *common.APIClient) *datadogV1.OrganizationsApi
 
 // GetPagerDutyIntegrationApiV1 get instance of PagerDutyIntegrationApi
 func GetPagerDutyIntegrationApiV1(client *common.APIClient) *datadogV1.PagerDutyIntegrationApi {
-	if pagerDutyIntegrationApiV1 == nil {
+	if pagerDutyIntegrationApiV1 == nil || pagerDutyIntegrationApiV1.Client != client {
 		pagerDutyIntegrationApiV1 = datadogV1.NewPagerDutyIntegrationApi(client)
 	}
 	return pagerDutyIntegrationApiV1
@@ -227,7 +227,7 @@ func GetPagerDutyIntegrationApiV1(client *common.APIClient) *datadogV1.PagerDuty
 
 // GetSecurityMonitoringApiV1 get instance of SecurityMonitoringApi
 func GetSecurityMonitoringApiV1(client *common.APIClient) *datadogV1.SecurityMonitoringApi {
-	if securityMonitoringApiV1 == nil {
+	if securityMonitoringApiV1 == nil || securityMonitoringApiV1.Client != client {
 		securityMonitoringApiV1 = datadogV1.NewSecurityMonitoringApi(client)
 	}
 	return securityMonitoringApiV1
@@ -235,7 +235,7 @@ func GetSecurityMonitoringApiV1(client *common.APIClient) *datadogV1.SecurityMon
 
 // GetServiceChecksApiV1 get instance of ServiceChecksApi
 func GetServiceChecksApiV1(client *common.APIClient) *datadogV1.ServiceChecksApi {
-	if serviceChecksApiV1 == nil {
+	if serviceChecksApiV1 == nil || serviceChecksApiV1.Client != client {
 		serviceChecksApiV1 = datadogV1.NewServiceChecksApi(client)
 	}
 	return serviceChecksApiV1
@@ -243,7 +243,7 @@ func GetServiceChecksApiV1(client *common.APIClient) *datadogV1.ServiceChecksApi
 
 // GetServiceLevelObjectiveCorrectionsApiV1 get instance of ServiceLevelObjectiveCorrectionsApi
 func GetServiceLevelObjectiveCorrectionsApiV1(client *common.APIClient) *datadogV1.ServiceLevelObjectiveCorrectionsApi {
-	if serviceLevelObjectiveCorrectionsApiV1 == nil {
+	if serviceLevelObjectiveCorrectionsApiV1 == nil || serviceLevelObjectiveCorrectionsApiV1.Client != client {
 		serviceLevelObjectiveCorrectionsApiV1 = datadogV1.NewServiceLevelObjectiveCorrectionsApi(client)
 	}
 	return serviceLevelObjectiveCorrectionsApiV1
@@ -251,7 +251,7 @@ func GetServiceLevelObjectiveCorrectionsApiV1(client *common.APIClient) *datadog
 
 // GetServiceLevelObjectivesApiV1 get instance of ServiceLevelObjectivesApi
 func GetServiceLevelObjectivesApiV1(client *common.APIClient) *datadogV1.ServiceLevelObjectivesApi {
-	if serviceLevelObjectivesApiV1 == nil {
+	if serviceLevelObjectivesApiV1 == nil || serviceLevelObjectivesApiV1.Client != client {
 		serviceLevelObjectivesApiV1 = datadogV1.NewServiceLevelObjectivesApi(client)
 	}
 	return serviceLevelObjectivesApiV1
@@ -259,7 +259,7 @@ func GetServiceLevelObjectivesApiV1(client *common.APIClient) *datadogV1.Service
 
 // GetSlackIntegrationApiV1 get instance of SlackIntegrationApi
 func GetSlackIntegrationApiV1(client *common.APIClient) *datadogV1.SlackIntegrationApi {
-	if slackIntegrationApiV1 == nil {
+	if slackIntegrationApiV1 == nil || slackIntegrationApiV1.Client != client {
 		slackIntegrationApiV1 = datadogV1.NewSlackIntegrationApi(client)
 	}
 	return slackIntegrationApiV1
@@ -267,7 +267,7 @@ func GetSlackIntegrationApiV1(client *common.APIClient) *datadogV1.SlackIntegrat
 
 // GetSnapshotsApiV1 get instance of SnapshotsApi
 func GetSnapshotsApiV1(client *common.APIClient) *datadogV1.SnapshotsApi {
-	if snapshotsApiV1 == nil {
+	if snapshotsApiV1 == nil || snapshotsApiV1.Client != client {
 		snapshotsApiV1 = datadogV1.NewSnapshotsApi(client)
 	}
 	return snapshotsApiV1
@@ -275,7 +275,7 @@ func GetSnapshotsApiV1(client *common.APIClient) *datadogV1.SnapshotsApi {
 
 // GetSyntheticsApiV1 get instance of SyntheticsApi
 func GetSyntheticsApiV1(client *common.APIClient) *datadogV1.SyntheticsApi {
-	if syntheticsApiV1 == nil {
+	if syntheticsApiV1 == nil || syntheticsApiV1.Client != client {
 		syntheticsApiV1 = datadogV1.NewSyntheticsApi(client)
 	}
 	return syntheticsApiV1
@@ -283,7 +283,7 @@ func GetSyntheticsApiV1(client *common.APIClient) *datadogV1.SyntheticsApi {
 
 // GetTagsApiV1 get instance of TagsApi
 func GetTagsApiV1(client *common.APIClient) *datadogV1.TagsApi {
-	if tagsApiV1 == nil {
+	if tagsApiV1 == nil || tagsApiV1.Client != client {
 		tagsApiV1 = datadogV1.NewTagsApi(client)
 	}
 	return tagsApiV1
@@ -291,7 +291,7 @@ func GetTagsApiV1(client *common.APIClient) *datadogV1.TagsApi {
 
 // GetUsageMeteringApiV1 get instance of UsageMeteringApi
 func GetUsageMeteringApiV1(client *common.APIClient) *datadogV1.UsageMeteringApi {
-	if usageMeteringApiV1 == nil {
+	if usageMeteringApiV1 == nil || usageMeteringApiV1.Client != client {
 		usageMeteringApiV1 = datadogV1.NewUsageMeteringApi(client)
 	}
 	return usageMeteringApiV1
@@ -299,7 +299,7 @@ func GetUsageMeteringApiV1(client *common.APIClient) *datadogV1.UsageMeteringApi
 
 // GetUsersApiV1 get instance of UsersApi
 func GetUsersApiV1(client *common.APIClient) *datadogV1.UsersApi {
-	if usersApiV1 == nil {
+	if usersApiV1 == nil || usersApiV1.Client != client {
 		usersApiV1 = datadogV1.NewUsersApi(client)
 	}
 	return usersApiV1
@@ -307,7 +307,7 @@ func GetUsersApiV1(client *common.APIClient) *datadogV1.UsersApi {
 
 // GetWebhooksIntegrationApiV1 get instance of WebhooksIntegrationApi
 func GetWebhooksIntegrationApiV1(client *common.APIClient) *datadogV1.WebhooksIntegrationApi {
-	if webhooksIntegrationApiV1 == nil {
+	if webhooksIntegrationApiV1 == nil || webhooksIntegrationApiV1.Client != client {
 		webhooksIntegrationApiV1 = datadogV1.NewWebhooksIntegrationApi(client)
 	}
 	return webhooksIntegrationApiV1
@@ -315,7 +315,7 @@ func GetWebhooksIntegrationApiV1(client *common.APIClient) *datadogV1.WebhooksIn
 
 // GetAuditApiV2 get instance of AuditApi
 func GetAuditApiV2(client *common.APIClient) *datadogV2.AuditApi {
-	if auditApiV2 == nil {
+	if auditApiV2 == nil || auditApiV2.Client != client {
 		auditApiV2 = datadogV2.NewAuditApi(client)
 	}
 	return auditApiV2
@@ -323,7 +323,7 @@ func GetAuditApiV2(client *common.APIClient) *datadogV2.AuditApi {
 
 // GetAuthNMappingsApiV2 get instance of AuthNMappingsApi
 func GetAuthNMappingsApiV2(client *common.APIClient) *datadogV2.AuthNMappingsApi {
-	if authNMappingsApiV2 == nil {
+	if authNMappingsApiV2 == nil || authNMappingsApiV2.Client != client {
 		authNMappingsApiV2 = datadogV2.NewAuthNMappingsApi(client)
 	}
 	return authNMappingsApiV2
@@ -331,7 +331,7 @@ func GetAuthNMappingsApiV2(client *common.APIClient) *datadogV2.AuthNMappingsApi
 
 // GetCloudWorkloadSecurityApiV2 get instance of CloudWorkloadSecurityApi
 func GetCloudWorkloadSecurityApiV2(client *common.APIClient) *datadogV2.CloudWorkloadSecurityApi {
-	if cloudWorkloadSecurityApiV2 == nil {
+	if cloudWorkloadSecurityApiV2 == nil || cloudWorkloadSecurityApiV2.Client != client {
 		cloudWorkloadSecurityApiV2 = datadogV2.NewCloudWorkloadSecurityApi(client)
 	}
 	return cloudWorkloadSecurityApiV2
@@ -339,7 +339,7 @@ func GetCloudWorkloadSecurityApiV2(client *common.APIClient) *datadogV2.CloudWor
 
 // GetDashboardListsApiV2 get instance of DashboardListsApi
 func GetDashboardListsApiV2(client *common.APIClient) *datadogV2.DashboardListsApi {
-	if dashboardListsApiV2 == nil {
+	if dashboardListsApiV2 == nil || dashboardListsApiV2.Client != client {
 		dashboardListsApiV2 = datadogV2.NewDashboardListsApi(client)
 	}
 	return dashboardListsApiV2
@@ -347,7 +347,7 @@ func GetDashboardListsApiV2(client *common.APIClient) *datadogV2.DashboardListsA
 
 // GetEventsApiV2 get instance of EventsApi
 func GetEventsApiV2(client *common.APIClient) *datadogV2.EventsApi {
-	if eventsApiV2 == nil {
+	if eventsApiV2 == nil || eventsApiV2.Client != client {
 		eventsApiV2 = datadogV2.NewEventsApi(client)
 	}
 	return eventsApiV2
@@ -355,7 +355,7 @@ func GetEventsApiV2(client *common.APIClient) *datadogV2.EventsApi {
 
 // GetIncidentServicesApiV2 get instance of IncidentServicesApi
 func GetIncidentServicesApiV2(client *common.APIClient) *datadogV2.IncidentServicesApi {
-	if incidentServicesApiV2 == nil {
+	if incidentServicesApiV2 == nil || incidentServicesApiV2.Client != client {
 		incidentServicesApiV2 = datadogV2.NewIncidentServicesApi(client)
 	}
 	return incidentServicesApiV2
@@ -363,7 +363,7 @@ func GetIncidentServicesApiV2(client *common.APIClient) *datadogV2.IncidentServi
 
 // GetIncidentTeamsApiV2 get instance of IncidentTeamsApi
 func GetIncidentTeamsApiV2(client *common.APIClient) *datadogV2.IncidentTeamsApi {
-	if incidentTeamsApiV2 == nil {
+	if incidentTeamsApiV2 == nil || incidentTeamsApiV2.Client != client {
 		incidentTeamsApiV2 = datadogV2.NewIncidentTeamsApi(client)
 	}
 	return incidentTeamsApiV2
@@ -371,7 +371,7 @@ func GetIncidentTeamsApiV2(client *common.APIClient) *datadogV2.IncidentTeamsApi
 
 // GetIncidentsApiV2 get instance of IncidentsApi
 func GetIncidentsApiV2(client *common.APIClient) *datadogV2.IncidentsApi {
-	if incidentsApiV2 == nil {
+	if incidentsApiV2 == nil || incidentsApiV2.Client != client {
 		incidentsApiV2 = datadogV2.NewIncidentsApi(client)
 	}
 	return incidentsApiV2
@@ -379,7 +379,7 @@ func GetIncidentsApiV2(client *common.APIClient) *datadogV2.IncidentsApi {
 
 // GetKeyManagementApiV2 get instance of KeyManagementApi
 func GetKeyManagementApiV2(client *common.APIClient) *datadogV2.KeyManagementApi {
-	if keyManagementApiV2 == nil {
+	if keyManagementApiV2 == nil || keyManagementApiV2.Client != client {
 		keyManagementApiV2 = datadogV2.NewKeyManagementApi(client)
 	}
 	return keyManagementApiV2
@@ -387,7 +387,7 @@ func GetKeyManagementApiV2(client *common.APIClient) *datadogV2.KeyManagementApi
 
 // GetLogsApiV2 get instance of LogsApi
 func GetLogsApiV2(client *common.APIClient) *datadogV2.LogsApi {
-	if logsApiV2 == nil {
+	if logsApiV2 == nil || logsApiV2.Client != client {
 		logsApiV2 = datadogV2.NewLogsApi(client)
 	}
 	return logsApiV2
@@ -395,7 +395,7 @@ func GetLogsApiV2(client *common.APIClient) *datadogV2.LogsApi {
 
 // GetLogsArchivesApiV2 get instance of LogsArchivesApi
 func GetLogsArchivesApiV2(client *common.APIClient) *datadogV2.LogsArchivesApi {
-	if logsArchivesApiV2 == nil {
+	if logsArchivesApiV2 == nil || logsArchivesApiV2.Client != client {
 		logsArchivesApiV2 = datadogV2.NewLogsArchivesApi(client)
 	}
 	return logsArchivesApiV2
@@ -403,7 +403,7 @@ func GetLogsArchivesApiV2(client *common.APIClient) *datadogV2.LogsArchivesApi {
 
 // GetLogsMetricsApiV2 get instance of LogsMetricsApi
 func GetLogsMetricsApiV2(client *common.APIClient) *datadogV2.LogsMetricsApi {
-	if logsMetricsApiV2 == nil {
+	if logsMetricsApiV2 == nil || logsMetricsApiV2.Client != client {
 		logsMetricsApiV2 = datadogV2.NewLogsMetricsApi(client)
 	}
 	return logsMetricsApiV2
@@ -411,7 +411,7 @@ func GetLogsMetricsApiV2(client *common.APIClient) *datadogV2.LogsMetricsApi {
 
 // GetMetricsApiV2 get instance of MetricsApi
 func GetMetricsApiV2(client *common.APIClient) *datadogV2.MetricsApi {
-	if metricsApiV2 == nil {
+	if metricsApiV2 == nil || metricsApiV2.Client != client {
 		metricsApiV2 = datadogV2.NewMetricsApi(client)
 	}
 	return metricsApiV2
@@ -419,7 +419,7 @@ func GetMetricsApiV2(client *common.APIClient) *datadogV2.MetricsApi {
 
 // GetOpsgenieIntegrationApiV2 get instance of OpsgenieIntegrationApi
 func GetOpsgenieIntegrationApiV2(client *common.APIClient) *datadogV2.OpsgenieIntegrationApi {
-	if opsgenieIntegrationApiV2 == nil {
+	if opsgenieIntegrationApiV2 == nil || opsgenieIntegrationApiV2.Client != client {
 		opsgenieIntegrationApiV2 = datadogV2.NewOpsgenieIntegrationApi(client)
 	}
 	return opsgenieIntegrationApiV2
@@ -427,7 +427,7 @@ func GetOpsgenieIntegrationApiV2(client *common.APIClient) *datadogV2.OpsgenieIn
 
 // GetOrganizationsApiV2 get instance of OrganizationsApi
 func GetOrganizationsApiV2(client *common.APIClient) *datadogV2.OrganizationsApi {
-	if organizationsApiV2 == nil {
+	if organizationsApiV2 == nil || organizationsApiV2.Client != client {
 		organizationsApiV2 = datadogV2.NewOrganizationsApi(client)
 	}
 	return organizationsApiV2
@@ -435,7 +435,7 @@ func GetOrganizationsApiV2(client *common.APIClient) *datadogV2.OrganizationsApi
 
 // GetProcessesApiV2 get instance of ProcessesApi
 func GetProcessesApiV2(client *common.APIClient) *datadogV2.ProcessesApi {
-	if processesApiV2 == nil {
+	if processesApiV2 == nil || processesApiV2.Client != client {
 		processesApiV2 = datadogV2.NewProcessesApi(client)
 	}
 	return processesApiV2
@@ -443,7 +443,7 @@ func GetProcessesApiV2(client *common.APIClient) *datadogV2.ProcessesApi {
 
 // GetRolesApiV2 get instance of RolesApi
 func GetRolesApiV2(client *common.APIClient) *datadogV2.RolesApi {
-	if rolesApiV2 == nil {
+	if rolesApiV2 == nil || rolesApiV2.Client != client {
 		rolesApiV2 = datadogV2.NewRolesApi(client)
 	}
 	return rolesApiV2
@@ -451,7 +451,7 @@ func GetRolesApiV2(client *common.APIClient) *datadogV2.RolesApi {
 
 // GetRumApiV2 get instance of RumApi
 func GetRumApiV2(client *common.APIClient) *datadogV2.RUMApi {
-	if rumApiV2 == nil {
+	if rumApiV2 == nil || rumApiV2.Client != client {
 		rumApiV2 = datadogV2.NewRUMApi(client)
 	}
 	return rumApiV2
@@ -459,7 +459,7 @@ func GetRumApiV2(client *common.APIClient) *datadogV2.RUMApi {
 
 // GetSecurityMonitoringApiV2 get instance of SecurityMonitoringApi
 func GetSecurityMonitoringApiV2(client *common.APIClient) *datadogV2.SecurityMonitoringApi {
-	if securityMonitoringApiV2 == nil {
+	if securityMonitoringApiV2 == nil || securityMonitoringApiV2.Client != client {
 		securityMonitoringApiV2 = datadogV2.NewSecurityMonitoringApi(client)
 	}
 	return securityMonitoringApiV2
@@ -467,7 +467,7 @@ func GetSecurityMonitoringApiV2(client *common.APIClient) *datadogV2.SecurityMon
 
 // GetServiceAccountsApiV2 get instance of ServiceAccountsApi
 func GetServiceAccountsApiV2(client *common.APIClient) *datadogV2.ServiceAccountsApi {
-	if serviceAccountsApiV2 == nil {
+	if serviceAccountsApiV2 == nil || serviceAccountsApiV2.Client != client {
 		serviceAccountsApiV2 = datadogV2.NewServiceAccountsApi(client)
 	}
 	return serviceAccountsApiV2
@@ -475,7 +475,7 @@ func GetServiceAccountsApiV2(client *common.APIClient) *datadogV2.ServiceAccount
 
 // GetUsageMeteringApiV2 get instance of UsageMeteringApi
 func GetUsageMeteringApiV2(client *common.APIClient) *datadogV2.UsageMeteringApi {
-	if usageMeteringApiV2 == nil {
+	if usageMeteringApiV2 == nil || usageMeteringApiV2.Client != client {
 		usageMeteringApiV2 = datadogV2.NewUsageMeteringApi(client)
 	}
 	return usageMeteringApiV2
@@ -483,7 +483,7 @@ func GetUsageMeteringApiV2(client *common.APIClient) *datadogV2.UsageMeteringApi
 
 // GetUsersApiV2 get instance of UsersApi
 func GetUsersApiV2(client *common.APIClient) *datadogV2.UsersApi {
-	if usersApiV2 == nil {
+	if usersApiV2 == nil || usersApiV2.Client != client {
 		usersApiV2 = datadogV2.NewUsersApi(client)
 	}
 	return usersApiV2
