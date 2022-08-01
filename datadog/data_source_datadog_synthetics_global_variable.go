@@ -4,7 +4,7 @@ import (
 	"context"
 	"regexp"
 
-	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 

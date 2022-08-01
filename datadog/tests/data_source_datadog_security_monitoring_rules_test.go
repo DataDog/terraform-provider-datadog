@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 

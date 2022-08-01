@@ -21,8 +21,8 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
+	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
 	ddtesting "github.com/DataDog/dd-sdk-go-testing"
 	"github.com/dnaeon/go-vcr/cassette"
 	"github.com/dnaeon/go-vcr/recorder"

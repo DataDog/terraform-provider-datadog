@@ -11,8 +11,7 @@ import (
 	"strings"
 	"time"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/v2/api/common"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -208,10 +207,8 @@ func Provider() *schema.Provider {
 // ProviderConfiguration contains the initialized API clients to communicate with the Datadog API
 type ProviderConfiguration struct {
 	CommunityClient *datadogCommunity.Client
-	DatadogClientV1 *datadogV1.APIClient
-	DatadogClientV2 *datadogV2.APIClient
-	AuthV1          context.Context
-	AuthV2          context.Context
+	DatadogClient   *common.APIClient
+	Auth            context.Context
 
 	Now func() time.Time
 }
@@ -261,25 +258,22 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
 	// Initialize http.Client for the Datadog API Clients
-	httpClientV1 := http.DefaultClient
-	httpClientV2 := http.DefaultClient
+	httpClient := http.DefaultClient
 	if httpRetryEnabled {
 		ctOptions := transport.CustomTransportOptions{}
 		if v, ok := d.GetOk("http_client_retry_timeout"); ok {
 			timeout := time.Duration(int64(v.(int))) * time.Second
 			ctOptions.Timeout = &timeout
 		}
-		customTransportV1 := transport.NewCustomTransport(httpClientV1.Transport, ctOptions)
-		customTransportV2 := transport.NewCustomTransport(httpClientV2.Transport, ctOptions)
-		httpClientV1.Transport = customTransportV1
-		httpClientV2.Transport = customTransportV2
+		customTransport := transport.NewCustomTransport(httpClient.Transport, ctOptions)
+		httpClient.Transport = customTransport
 	}
 
 	// Initialize the official Datadog V1 API client
-	authV1 := context.WithValue(
+	auth := context.WithValue(
 		context.Background(),
-		datadogV1.ContextAPIKeys,
-		map[string]datadogV1.APIKey{
+		common.ContextAPIKeys,
+		map[string]common.APIKey{
 			"apiKeyAuth": {
 				Key: apiKey,
 			},
@@ -288,15 +282,20 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			},
 		},
 	)
-	configV1 := datadogV1.NewConfiguration()
-	configV1.HTTPClient = httpClientV1
+	config := common.NewConfiguration()
+	config.HTTPClient = httpClient
 	// Enable unstable operations
-	configV1.SetUnstableOperationEnabled("CreateSLOCorrection", true)
-	configV1.SetUnstableOperationEnabled("GetSLOCorrection", true)
-	configV1.SetUnstableOperationEnabled("UpdateSLOCorrection", true)
-	configV1.SetUnstableOperationEnabled("DeleteSLOCorrection", true)
-	configV1.UserAgent = utils.GetUserAgent(configV1.UserAgent)
-	configV1.Debug = logging.IsDebugOrHigher()
+	config.SetUnstableOperationEnabled("v1.CreateSLOCorrection", true)
+	config.SetUnstableOperationEnabled("v1.GetSLOCorrection", true)
+	config.SetUnstableOperationEnabled("v1.UpdateSLOCorrection", true)
+	config.SetUnstableOperationEnabled("v1.DeleteSLOCorrection", true)
+	config.SetUnstableOperationEnabled("v2.CreateTagConfiguration", true)
+	config.SetUnstableOperationEnabled("v2.DeleteTagConfiguration", true)
+	config.SetUnstableOperationEnabled("v2.ListTagConfigurationByName", true)
+	config.SetUnstableOperationEnabled("v2.UpdateTagConfiguration", true)
+
+	config.UserAgent = utils.GetUserAgent(config.UserAgent)
+	config.Debug = logging.IsDebugOrHigher()
 	if apiURL := d.Get("api_url").(string); apiURL != "" {
 		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
@@ -306,8 +305,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			return nil, diag.Errorf(`missing protocol or host : %v`, apiURL)
 		}
 		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
-		authV1 = context.WithValue(authV1, datadogV1.ContextServerIndex, 1)
-		authV1 = context.WithValue(authV1, datadogV1.ContextServerVariables, map[string]string{
+		auth = context.WithValue(auth, common.ContextServerIndex, 1)
+		auth = context.WithValue(auth, common.ContextServerVariables, map[string]string{
 			"name":     parsedAPIURL.Host,
 			"protocol": parsedAPIURL.Scheme,
 		})
@@ -321,65 +320,22 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		}
 		ipRangesDNSNameArr = append([]string{baseIPRangesSubdomain}, ipRangesDNSNameArr...)
 
-		authV1 = context.WithValue(authV1, datadogV1.ContextOperationServerIndices, map[string]int{
+		auth = context.WithValue(auth, common.ContextOperationServerIndices, map[string]int{
 			"IPRangesApiService.GetIPRanges": 1,
 		})
-		authV1 = context.WithValue(authV1, datadogV1.ContextOperationServerVariables, map[string]map[string]string{
+		auth = context.WithValue(auth, common.ContextOperationServerVariables, map[string]map[string]string{
 			"IPRangesApiService.GetIPRanges": {
 				"name": strings.Join(ipRangesDNSNameArr, "."),
 			},
 		})
 	}
 
-	datadogClientV1 := datadogV1.NewAPIClient(configV1)
-
-	// Initialize the official Datadog V2 API client
-	authV2 := context.WithValue(
-		context.Background(),
-		datadogV2.ContextAPIKeys,
-		map[string]datadogV2.APIKey{
-			"apiKeyAuth": {
-				Key: d.Get("api_key").(string),
-			},
-			"appKeyAuth": {
-				Key: d.Get("app_key").(string),
-			},
-		},
-	)
-	configV2 := datadogV2.NewConfiguration()
-	configV2.HTTPClient = httpClientV2
-	// Enable unstable operations
-	configV2.SetUnstableOperationEnabled("CreateTagConfiguration", true)
-	configV2.SetUnstableOperationEnabled("DeleteTagConfiguration", true)
-	configV2.SetUnstableOperationEnabled("ListTagConfigurationByName", true)
-	configV2.SetUnstableOperationEnabled("UpdateTagConfiguration", true)
-
-	configV2.UserAgent = utils.GetUserAgent(configV2.UserAgent)
-	configV2.Debug = logging.IsDebugOrHigher()
-	if apiURL := d.Get("api_url").(string); apiURL != "" {
-		parsedAPIURL, parseErr := url.Parse(apiURL)
-		if parseErr != nil {
-			return nil, diag.Errorf(`invalid API URL : %v`, parseErr)
-		}
-		if parsedAPIURL.Host == "" || parsedAPIURL.Scheme == "" {
-			return nil, diag.Errorf(`missing protocol or host : %v`, apiURL)
-		}
-		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
-		authV2 = context.WithValue(authV2, datadogV2.ContextServerIndex, 1)
-		authV2 = context.WithValue(authV2, datadogV2.ContextServerVariables, map[string]string{
-			"name":     parsedAPIURL.Host,
-			"protocol": parsedAPIURL.Scheme,
-		})
-	}
-
-	datadogClientV2 := datadogV2.NewAPIClient(configV2)
+	datadogClient := common.NewAPIClient(config)
 
 	return &ProviderConfiguration{
 		CommunityClient: communityClient,
-		DatadogClientV1: datadogClientV1,
-		DatadogClientV2: datadogClientV2,
-		AuthV1:          authV1,
-		AuthV2:          authV2,
+		DatadogClient:   datadogClient,
+		Auth:            auth,
 
 		Now: time.Now,
 	}, nil

@@ -3,7 +3,7 @@ package datadog
 import (
 	"context"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
