@@ -118,14 +118,14 @@ func resourceDatadogLogsIndex() *schema.Resource {
 
 func resourceDatadogLogsIndexCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	logsIndexMutex.Lock()
 	defer logsIndexMutex.Unlock()
 
 	ddIndex := buildDatadogIndexCreateRequest(d)
-	createdIndex, httpResponse, err := datadogClientV1.LogsIndexesApi.CreateLogsIndex(authV1, *ddIndex)
+	createdIndex, httpResponse, err := utils.GetLogsIndexesApiV1(datadogClient).CreateLogsIndex(auth, *ddIndex)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating logs index")
 	}
@@ -161,10 +161,10 @@ func updateLogsIndexState(d *schema.ResourceData, index *datadogV1.LogsIndex) di
 
 func resourceDatadogLogsIndexRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
-	ddIndex, httpresp, err := datadogClientV1.LogsIndexesApi.GetLogsIndex(authV1, d.Id())
+	ddIndex, httpresp, err := utils.GetLogsIndexesApiV1(datadogClient).GetLogsIndex(auth, d.Id())
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -180,15 +180,15 @@ func resourceDatadogLogsIndexRead(ctx context.Context, d *schema.ResourceData, m
 
 func resourceDatadogLogsIndexUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	logsIndexMutex.Lock()
 	defer logsIndexMutex.Unlock()
 
 	ddIndex := buildDatadogIndexUpdateRequest(d)
 	tfName := d.Get("name").(string)
-	updatedIndex, httpResponse, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndex(authV1, tfName, *ddIndex)
+	updatedIndex, httpResponse, err := utils.GetLogsIndexesApiV1(datadogClient).UpdateLogsIndex(auth, tfName, *ddIndex)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs index")
 	}

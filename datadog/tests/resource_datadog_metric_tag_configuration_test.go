@@ -74,8 +74,8 @@ func testAccCheckDatadogMetricTagConfigurationDestroy(accProvider func() (*schem
 		provider, _ := accProvider()
 		meta := provider.Meta()
 		providerConf := meta.(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClientV2
-		auth := providerConf.AuthV2
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_metric_tag_configuration" {
 				continue
@@ -85,7 +85,7 @@ func testAccCheckDatadogMetricTagConfigurationDestroy(accProvider func() (*schem
 
 			id := r.Primary.ID
 
-			_, resp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, id)
+			_, resp, err := utils.GetMetricsApiV1(datadogClient).ListTagConfigurationByName(auth, id)
 
 			if err != nil {
 				if resp.StatusCode == 404 {

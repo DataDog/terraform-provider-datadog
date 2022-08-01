@@ -268,10 +268,10 @@ func testAccCheckUserIsDisabled(accProvider func() (*schema.Provider, error), us
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
-		resp, _, err := datadogClientV2.UsersApi.ListUsers(authV2, datadogV2.ListUsersOptionalParameters{Filter: &username, FilterStatus: datadogV2.PtrString("Disabled")})
+		resp, _, err := utils.GetUsersApiV2(datadogClient).ListUsers(auth, datadogV2.ListUsersOptionalParameters{Filter: &username, FilterStatus: datadogV2.PtrString("Disabled")})
 		if err != nil {
 			return fmt.Errorf("received an error listing users %s", err)
 		}
@@ -295,10 +295,10 @@ func testAccCheckDatadogUserV2Destroy(accProvider func() (*schema.Provider, erro
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
-		if err := datadogUserV2DestroyHelper(authV2, s, datadogClientV2); err != nil {
+		if err := datadogUserV2DestroyHelper(auth, s, datadogClient); err != nil {
 			return err
 		}
 		return nil
@@ -309,10 +309,10 @@ func testAccCheckDatadogUserV2Exists(accProvider func() (*schema.Provider, error
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
-		if err := datadogUserV2ExistsHelper(authV2, s, datadogClientV2, n); err != nil {
+		if err := datadogUserV2ExistsHelper(auth, s, datadogClient, n); err != nil {
 			return err
 		}
 		return nil

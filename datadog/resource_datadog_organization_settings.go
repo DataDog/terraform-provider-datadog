@@ -252,10 +252,10 @@ func buildDatadogOrganizationUpdateV1Struct(d *schema.ResourceData) *datadogV1.O
 
 func resourceDatadogOrganizationSettingsCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
-	resp, httpResponse, err := datadogClientV1.OrganizationsApi.ListOrgs(authV1)
+	resp, httpResponse, err := utils.GetOrganizationsApiV1(datadogClient).ListOrgs(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting organization")
 	}
@@ -273,10 +273,10 @@ func resourceDatadogOrganizationSettingsCreate(ctx context.Context, d *schema.Re
 
 func resourceDatadogOrganizationSettingsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
-	resp, httpResponse, err := datadogClientV1.OrganizationsApi.GetOrg(authV1, d.Id())
+	resp, httpResponse, err := utils.GetOrganizationsApiV1(datadogClient).GetOrg(auth, d.Id())
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
@@ -293,10 +293,10 @@ func resourceDatadogOrganizationSettingsRead(ctx context.Context, d *schema.Reso
 
 func resourceDatadogOrganizationSettingsUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
-	resp, httpResponse, err := datadogClientV1.OrganizationsApi.UpdateOrg(authV1, d.Id(), *buildDatadogOrganizationUpdateV1Struct(d))
+	resp, httpResponse, err := utils.GetOrganizationsApiV1(datadogClient).UpdateOrg(auth, d.Id(), *buildDatadogOrganizationUpdateV1Struct(d))
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating organization")
 	}

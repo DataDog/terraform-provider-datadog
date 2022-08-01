@@ -38,10 +38,10 @@ func dataSourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 func dataSourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
-	globalVariables, httpresp, err := datadogClientV1.SyntheticsApi.ListGlobalVariables(authV1)
+	globalVariables, httpresp, err := utils.GetSyntheticsApiV1(datadogClient).ListGlobalVariables(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetics global variables")
 	}

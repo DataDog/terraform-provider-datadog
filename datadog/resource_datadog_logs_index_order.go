@@ -53,10 +53,10 @@ func resourceDatadogLogsIndexOrderUpdate(ctx context.Context, d *schema.Resource
 		tfID = name.(string)
 	}
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
-	updatedOrder, httpResponse, err := datadogClientV1.LogsIndexesApi.UpdateLogsIndexOrder(authV1, ddIndexList)
+	updatedOrder, httpResponse, err := utils.GetLogsIndexesApiV1(datadogClient).UpdateLogsIndexOrder(auth, ddIndexList)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs index list")
 	}
@@ -76,9 +76,9 @@ func updateLogsIndexOrderState(d *schema.ResourceData, order *datadogV1.LogsInde
 
 func resourceDatadogLogsIndexOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.DatadogClientV1
-	auth := providerConf.AuthV1
-	ddIndexList, httpResponse, err := client.LogsIndexesApi.GetLogsIndexOrder(auth)
+	client := providerConf.DatadogClient
+	auth := providerConf.Auth
+	ddIndexList, httpResponse, err := utils.GetLogsIndexesApiV1(client).GetLogsIndexOrder(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs index list")
 	}

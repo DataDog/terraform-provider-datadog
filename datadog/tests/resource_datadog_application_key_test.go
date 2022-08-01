@@ -87,10 +87,10 @@ func testAccCheckDatadogApplicationKeyExists(accProvider func() (*schema.Provide
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
-		if err := datadogApplicationKeyExistsHelper(authV2, s, datadogClientV2, n); err != nil {
+		if err := datadogApplicationKeyExistsHelper(auth, s, datadogClient, n); err != nil {
 			return err
 		}
 		return nil
@@ -109,10 +109,10 @@ func testAccCheckDatadogApplicationKeyValueMatches(accProvider func() (*schema.P
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
-		if err := datadogApplicationKeyValueMatches(authV2, s, datadogClientV2, n); err != nil {
+		if err := datadogApplicationKeyValueMatches(auth, s, datadogClient, n); err != nil {
 			return err
 		}
 		return nil
@@ -138,10 +138,10 @@ func testAccCheckDatadogApplicationKeyDestroy(accProvider func() (*schema.Provid
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
-		if err := datadogApplicationKeyDestroyHelper(authV2, s, datadogClientV2); err != nil {
+		if err := datadogApplicationKeyDestroyHelper(auth, s, datadogClient); err != nil {
 			return err
 		}
 		return nil

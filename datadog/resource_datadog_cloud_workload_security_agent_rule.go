@@ -55,12 +55,12 @@ func cloudWorkloadSecurityAgentRuleSchema() map[string]*schema.Schema {
 
 func resourceDatadogCloudWorkloadSecurityAgentRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	agentRuleCreate := buildCwsAgentRuleCreatePayload(d)
 
-	response, httpResponse, err := datadogClientV2.CloudWorkloadSecurityApi.CreateCloudWorkloadSecurityAgentRule(authV2, *agentRuleCreate)
+	response, httpResponse, err := utils.GetCloudWorkloadSecurityApiV2(datadogClient).CreateCloudWorkloadSecurityAgentRule(auth, *agentRuleCreate)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating cloud workload security agent rule")
 	}
@@ -73,11 +73,11 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleCreate(ctx context.Context, d 
 
 func resourceDatadogCloudWorkloadSecurityAgentRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	id := d.Id()
-	agentRuleResponse, httpResponse, err := datadogClientV2.CloudWorkloadSecurityApi.GetCloudWorkloadSecurityAgentRule(authV2, id)
+	agentRuleResponse, httpResponse, err := utils.GetCloudWorkloadSecurityApiV2(datadogClient).GetCloudWorkloadSecurityAgentRule(auth, id)
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
@@ -94,14 +94,14 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleRead(ctx context.Context, d *s
 
 func resourceDatadogCloudWorkloadSecurityAgentRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	agentRuleId := d.Id()
 
 	agentRuleUpdate := buildCwsAgentRuleUpdatePayload(d)
 
-	agentRuleResponse, httpResponse, err := datadogClientV2.CloudWorkloadSecurityApi.UpdateCloudWorkloadSecurityAgentRule(authV2, agentRuleId, *agentRuleUpdate)
+	agentRuleResponse, httpResponse, err := utils.GetCloudWorkloadSecurityApiV2(datadogClient).UpdateCloudWorkloadSecurityAgentRule(auth, agentRuleId, *agentRuleUpdate)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating cloud workload security agent rule")
@@ -112,12 +112,12 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleUpdate(ctx context.Context, d 
 
 func resourceDatadogCloudWorkloadSecurityAgentRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	agentRuleId := d.Id()
 
-	if httpResponse, err := datadogClientV2.CloudWorkloadSecurityApi.DeleteCloudWorkloadSecurityAgentRule(authV2, agentRuleId); err != nil {
+	if httpResponse, err := utils.GetCloudWorkloadSecurityApiV2(datadogClient).DeleteCloudWorkloadSecurityAgentRule(auth, agentRuleId); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting cloud workload security agent rule")
 	}
 

@@ -302,14 +302,14 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 
 func resourceDatadogSecurityMonitoringRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	ruleCreate, err := buildCreatePayload(d)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.CreateSecurityMonitoringRule(authV2, ruleCreate)
+	response, httpResponse, err := utils.GetSecurityMonitoringApiV2(datadogClient).CreateSecurityMonitoringRule(auth, ruleCreate)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating security monitoring rule")
 	}
@@ -561,11 +561,11 @@ func buildPayloadFilters(tfFilters []interface{}) []datadogV2.SecurityMonitoring
 
 func resourceDatadogSecurityMonitoringRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	id := d.Id()
-	ruleResponse, httpResponse, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, id)
+	ruleResponse, httpResponse, err := utils.GetSecurityMonitoringApiV2(datadogClient).GetSecurityMonitoringRule(auth, id)
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
@@ -704,11 +704,11 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 
 func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	ruleUpdate := buildUpdatePayload(d)
-	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, d.Id(), ruleUpdate)
+	response, httpResponse, err := utils.GetSecurityMonitoringApiV2(datadogClient).UpdateSecurityMonitoringRule(auth, d.Id(), ruleUpdate)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating security monitoring rule")
 	}
@@ -845,10 +845,10 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 
 func resourceDatadogSecurityMonitoringRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
-	if httpResponse, err := datadogClientV2.SecurityMonitoringApi.DeleteSecurityMonitoringRule(authV2, d.Id()); err != nil {
+	if httpResponse, err := utils.GetSecurityMonitoringApiV2(datadogClient).DeleteSecurityMonitoringRule(auth, d.Id()); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting security monitoring rule")
 	}
 

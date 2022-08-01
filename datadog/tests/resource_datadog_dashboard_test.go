@@ -1301,14 +1301,14 @@ func checkDashboardExists(accProvider func() (*schema.Provider, error)) resource
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_json" {
 				continue
 			}
-			if _, _, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID); err != nil {
+			if _, _, err := utils.GetDashboardsApiV1(datadogClient).GetDashboard(auth, r.Primary.ID); err != nil {
 				return fmt.Errorf("received an error retrieving dashboard1 %s", err)
 			}
 		}
@@ -1320,15 +1320,15 @@ func checkDashboardDestroy(accProvider func() (*schema.Provider, error)) resourc
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
 		err := utils.Retry(2, 10, func() error {
 			for _, r := range s.RootModule().Resources {
 				if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_json" {
 					continue
 				}
-				if _, httpResp, err := datadogClientV1.DashboardsApi.GetDashboard(authV1, r.Primary.ID); err != nil {
+				if _, httpResp, err := utils.GetDashboardsApiV1(datadogClient).GetDashboard(auth, r.Primary.ID); err != nil {
 					if httpResp != nil && httpResp.StatusCode == 404 {
 						return nil
 					}

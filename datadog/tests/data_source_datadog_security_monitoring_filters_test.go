@@ -37,10 +37,10 @@ func securityMonitoringCheckFilterCount(accProvider func() (*schema.Provider, er
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
+		auth := providerConf.Auth
+		client := providerConf.DatadogClient
 
-		filtersResponse, _, err := client.SecurityMonitoringApi.ListSecurityFilters(authV2)
+		filtersResponse, _, err := client.SecurityMonitoringApi.ListSecurityFilters(auth)
 		if err != nil {
 			return err
 		}

@@ -75,10 +75,10 @@ func testAccCheckDatadogIntegrationOpsgenieServiceDestroy(accProvider func() (*s
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
-		if err := datadogIntegrationOpsgenieServiceObjectDestroyHelper(authV2, s, datadogClientV2); err != nil {
+		if err := datadogIntegrationOpsgenieServiceObjectDestroyHelper(auth, s, datadogClient); err != nil {
 			return err
 		}
 		return nil
@@ -108,10 +108,10 @@ func testAccCheckDatadogIntegrationOpsgenieServiceObjectExists(accProvider func(
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
-		if err := datadogIntegrationOpsgenieServiceObjectExistsHelper(authV2, s, datadogClientV2, resourceName); err != nil {
+		if err := datadogIntegrationOpsgenieServiceObjectExistsHelper(auth, s, datadogClient, resourceName); err != nil {
 			return err
 		}
 		return nil

@@ -37,10 +37,10 @@ func cloudWorkloadSecurityCheckAgentRulesCount(accProvider func() (*schema.Provi
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
+		auth := providerConf.Auth
+		client := providerConf.DatadogClient
 
-		agentRulesResponse, _, err := client.CloudWorkloadSecurityApi.ListCloudWorkloadSecurityAgentRules(authV2)
+		agentRulesResponse, _, err := client.CloudWorkloadSecurityApi.ListCloudWorkloadSecurityAgentRules(auth)
 		if err != nil {
 			return err
 		}

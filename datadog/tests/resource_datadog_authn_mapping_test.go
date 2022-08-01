@@ -99,11 +99,11 @@ func testAccCheckDatadogAuthNMappingExists(accProvider func() (*schema.Provider,
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		client := providerConf.DatadogClientV2
-		auth := providerConf.AuthV2
+		client := providerConf.DatadogClient
+		auth := providerConf.Auth
 
 		id := s.RootModule().Resources[authNMappingName].Primary.ID
-		_, httpresp, err := client.AuthNMappingsApi.GetAuthNMapping(auth, id)
+		_, httpresp, err := utils.GetAuthNMappingsApiV2(client).GetAuthNMapping(auth, id)
 		if err != nil {
 			return utils.TranslateClientError(err, httpresp, "error checking authn mapping existence")
 		}
@@ -116,15 +116,15 @@ func testAccCheckDatadogAuthNMappingDestroy(accProvider func() (*schema.Provider
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		client := providerConf.DatadogClientV2
-		auth := providerConf.AuthV2
+		client := providerConf.DatadogClient
+		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_authn_mapping" {
 				// Only care about authn mappings
 				continue
 			}
-			_, httpresp, err := client.AuthNMappingsApi.GetAuthNMapping(auth, r.Primary.ID)
+			_, httpresp, err := utils.GetAuthNMappingsApiV2(client).GetAuthNMapping(auth, r.Primary.ID)
 			if err != nil {
 				if !(httpresp != nil && httpresp.StatusCode == 404) {
 					return utils.TranslateClientError(err, httpresp, "error getting authn mapping")

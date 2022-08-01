@@ -73,16 +73,16 @@ func GetAuthenticationApiV1(client *common.APIClient) *datadogV1.AuthenticationA
 	return authenticationApiV1
 }
 
-// GetAwsIntegrationApiV1 get instance of AwsIntegrationApi
-func GetAwsIntegrationApiV1(client *common.APIClient) *datadogV1.AWSIntegrationApi {
+// GetAWSIntegrationApiV1 get instance of AWSIntegrationApi
+func GetAWSIntegrationApiV1(client *common.APIClient) *datadogV1.AWSIntegrationApi {
 	if awsIntegrationApiV1 == nil {
 		awsIntegrationApiV1 = datadogV1.NewAWSIntegrationApi(client)
 	}
 	return awsIntegrationApiV1
 }
 
-// GetAwsLogsIntegrationApiV1 get instance of AwsLogsIntegrationApi
-func GetAwsLogsIntegrationApiV1(client *common.APIClient) *datadogV1.AWSLogsIntegrationApi {
+// GetAWSLogsIntegrationApiV1 get instance of AwsLogsIntegrationApi
+func GetAWSLogsIntegrationApiV1(client *common.APIClient) *datadogV1.AWSLogsIntegrationApi {
 	if awsLogsIntegrationApiV1 == nil {
 		awsLogsIntegrationApiV1 = datadogV1.NewAWSLogsIntegrationApi(client)
 	}
@@ -129,8 +129,8 @@ func GetEventsApiV1(client *common.APIClient) *datadogV1.EventsApi {
 	return eventsApiV1
 }
 
-// GetGcpIntegrationApiV1 get instance of GcpIntegrationApi
-func GetGcpIntegrationApiV1(client *common.APIClient) *datadogV1.GCPIntegrationApi {
+// GetGCPIntegrationApiV1 get instance of GcpIntegrationApi
+func GetGCPIntegrationApiV1(client *common.APIClient) *datadogV1.GCPIntegrationApi {
 	if gcpIntegrationApiV1 == nil {
 		gcpIntegrationApiV1 = datadogV1.NewGCPIntegrationApi(client)
 	}
@@ -145,8 +145,8 @@ func GetHostsApiV1(client *common.APIClient) *datadogV1.HostsApi {
 	return hostsApiV1
 }
 
-// GetIpRangesApiV1 get instance of IpRangesApi
-func GetIpRangesApiV1(client *common.APIClient) *datadogV1.IPRangesApi {
+// GetIPRangesApiV1 get instance of IPRangesApi
+func GetIPRangesApiV1(client *common.APIClient) *datadogV1.IPRangesApi {
 	if ipRangesApiV1 == nil {
 		ipRangesApiV1 = datadogV1.NewIPRangesApi(client)
 	}

@@ -6,7 +6,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
+	datadog "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -42,11 +42,11 @@ func dataSourceDatadogDashboard() *schema.Resource {
 
 func dataSourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	err := resource.RetryContext(ctx, d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
-		dashResponse, httpresp, err := datadogClientV1.DashboardsApi.ListDashboards(authV1)
+		dashResponse, httpresp, err := utils.GetDashboardsApiV1(datadogClient).ListDashboards(auth)
 		if err != nil {
 			if httpresp != nil && (httpresp.StatusCode == 504 || httpresp.StatusCode == 502) {
 				return resource.RetryableError(utils.TranslateClientError(err, httpresp, "error querying dashboard, retrying"))
@@ -58,7 +58,7 @@ func dataSourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData,
 		}
 
 		searchedName := d.Get("name")
-		var foundDashes []datadogV1.DashboardSummaryDefinition
+		var foundDashes []datadog.DashboardSummaryDefinition
 
 		for _, dash := range dashResponse.GetDashboards() {
 			if dash.GetTitle() == searchedName {

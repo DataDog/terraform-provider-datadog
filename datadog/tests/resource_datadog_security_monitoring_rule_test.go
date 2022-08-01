@@ -1002,11 +1002,11 @@ func testAccCheckDatadogSecurityMonitoringRuleExists(accProvider func() (*schema
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
+		auth := providerConf.Auth
+		client := providerConf.DatadogClient
 
 		for _, rule := range s.RootModule().Resources {
-			_, _, err := client.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, rule.Primary.ID)
+			_, _, err := client.SecurityMonitoringApi.GetSecurityMonitoringRule(auth, rule.Primary.ID)
 			if err != nil {
 				return fmt.Errorf("received an error retrieving security monitoring rule: %s", err)
 			}
@@ -1019,12 +1019,12 @@ func testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider func() (*schem
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
+		auth := providerConf.Auth
+		client := providerConf.DatadogClient
 
 		for _, resource := range s.RootModule().Resources {
 			if resource.Type == "datadog_security_monitoring_rule" {
-				_, httpResponse, err := client.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, resource.Primary.ID)
+				_, httpResponse, err := client.SecurityMonitoringApi.GetSecurityMonitoringRule(auth, resource.Primary.ID)
 				if err != nil {
 					if httpResponse != nil && httpResponse.StatusCode == 404 {
 						continue

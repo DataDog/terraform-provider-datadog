@@ -3584,11 +3584,11 @@ func testSyntheticsTestExists(accProvider func() (*schema.Provider, error)) reso
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
-			if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID); err != nil {
+			if _, _, err := utils.GetSyntheticsApiV1(datadogClient).GetTest(auth, r.Primary.ID); err != nil {
 				return fmt.Errorf("received an error retrieving synthetics test %s", err)
 			}
 		}
@@ -3600,11 +3600,11 @@ func testSyntheticsTestIsDestroyed(accProvider func() (*schema.Provider, error))
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
-			if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID); err != nil {
+			if _, _, err := utils.GetSyntheticsApiV1(datadogClient).GetTest(auth, r.Primary.ID); err != nil {
 				if strings.Contains(err.Error(), "404 Not Found") {
 					continue
 				}
@@ -3621,10 +3621,10 @@ func editSyntheticsTestMML(accProvider func() (*schema.Provider, error)) resourc
 		for _, r := range s.RootModule().Resources {
 			provider, _ := accProvider()
 			providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-			datadogClientV1 := providerConf.DatadogClientV1
-			authV1 := providerConf.AuthV1
+			datadogClient := providerConf.DatadogClient
+			auth := providerConf.Auth
 
-			syntheticsTest, _, err := datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, r.Primary.ID)
+			syntheticsTest, _, err := utils.GetSyntheticsApiV1(datadogClient).GetBrowserTest(auth, r.Primary.ID)
 
 			if err != nil {
 				return fmt.Errorf("failed to read synthetics test %s", err)
@@ -3650,7 +3650,7 @@ func editSyntheticsTestMML(accProvider func() (*schema.Provider, error)) resourc
 			steps := []datadogV1.SyntheticsStep{step}
 			syntheticsTestUpdate.SetSteps(steps)
 
-			if _, _, err := datadogClientV1.SyntheticsApi.UpdateBrowserTest(authV1, r.Primary.ID, *syntheticsTestUpdate); err != nil {
+			if _, _, err := utils.GetSyntheticsApiV1(datadogClient).UpdateBrowserTest(auth, r.Primary.ID, *syntheticsTestUpdate); err != nil {
 				return fmt.Errorf("failed to manually update synthetics test %s", err)
 			}
 		}

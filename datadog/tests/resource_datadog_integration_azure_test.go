@@ -105,7 +105,7 @@ func TestAccDatadogIntegrationAzure(t *testing.T) {
 	)
 }
 
-func checkIntegrationAzureExistsHelper(ctx context.Context, s *terraform.State, client *datadogV1.APIClient) error {
+func checkIntegrationAzureExistsHelper(ctx context.Context, s *terraform.State, client *common.APIClient) error {
 	integrations, _, err := client.AzureIntegrationApi.ListAzureIntegration(ctx)
 	if err != nil {
 		return err
@@ -129,17 +129,17 @@ func checkIntegrationAzureExists(accProvider func() (*schema.Provider, error)) r
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
-		if err := checkIntegrationAzureExistsHelper(authV1, s, datadogClientV1); err != nil {
+		if err := checkIntegrationAzureExistsHelper(auth, s, datadogClient); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func checkIntegrationAzureDestroyHelper(ctx context.Context, s *terraform.State, client *datadogV1.APIClient) error {
+func checkIntegrationAzureDestroyHelper(ctx context.Context, s *terraform.State, client *common.APIClient) error {
 	integrations, _, err := client.AzureIntegrationApi.ListAzureIntegration(ctx)
 	if err != nil && !strings.Contains(string(err.(datadogV1.GenericOpenAPIError).Body()), "Azure Integration not yet installed.") {
 		return fmt.Errorf("Error listing Azure Accounts: Response %s: %v", err.(datadogV1.GenericOpenAPIError).Body(), err)
@@ -164,10 +164,10 @@ func checkIntegrationAzureDestroy(accProvider func() (*schema.Provider, error)) 
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
-		if err := checkIntegrationAzureDestroyHelper(authV1, s, datadogClientV1); err != nil {
+		if err := checkIntegrationAzureDestroyHelper(auth, s, datadogClient); err != nil {
 			return err
 		}
 		return nil

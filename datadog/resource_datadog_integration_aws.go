@@ -179,14 +179,14 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData) *datadogV1.AWSAcco
 
 func resourceDatadogIntegrationAwsCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
 	iaws := buildDatadogIntegrationAwsStruct(d)
-	response, httpresp, err := datadogClientV1.AWSIntegrationApi.CreateAWSAccount(authV1, *iaws)
+	response, httpresp, err := utils.GetAWSIntegrationApiV1(datadogClient).CreateAWSAccount(auth, *iaws)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating AWS integration")
 	}
@@ -209,8 +209,8 @@ func resourceDatadogIntegrationAwsCreate(ctx context.Context, d *schema.Resource
 
 func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	var accountID, roleName, accessKeyID string
 	var err error
@@ -223,7 +223,7 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 		accessKeyID = d.Id()
 	}
 
-	integrations, httpresp, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(authV1)
+	integrations, httpresp, err := utils.GetAWSIntegrationApiV1(datadogClient).ListAWSAccounts(auth)
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 400 {
 			// API returns 400 if integration is not installed
@@ -259,15 +259,15 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 
 func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
 	iaws := buildDatadogIntegrationAwsStruct(d)
 
 	if !accountAndRoleNameIDRegex.MatchString(d.Id()) {
-		_, httpresp, err := datadogClientV1.AWSIntegrationApi.UpdateAWSAccount(authV1, *iaws,
+		_, httpresp, err := utils.GetAWSIntegrationApiV1(datadogClient).UpdateAWSAccount(auth, *iaws,
 			*datadogV1.NewUpdateAWSAccountOptionalParameters().
 				WithAccessKeyId(d.Id()),
 		)
@@ -285,7 +285,7 @@ func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.Resource
 		return diag.FromErr(err)
 	}
 
-	_, httpresp, err := datadogClientV1.AWSIntegrationApi.UpdateAWSAccount(authV1, *iaws,
+	_, httpresp, err := utils.GetAWSIntegrationApiV1(datadogClient).UpdateAWSAccount(auth, *iaws,
 		*datadogV1.NewUpdateAWSAccountOptionalParameters().
 			WithAccountId(existingAccountID).
 			WithRoleName(existingRoleName),
@@ -316,14 +316,14 @@ func buildDatadogIntegrationAwsDeleteStruct(d *schema.ResourceData) *datadogV1.A
 
 func resourceDatadogIntegrationAwsDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
 	iaws := buildDatadogIntegrationAwsDeleteStruct(d)
 
-	_, httpresp, err := datadogClientV1.AWSIntegrationApi.DeleteAWSAccount(authV1, *iaws)
+	_, httpresp, err := utils.GetAWSIntegrationApiV1(datadogClient).DeleteAWSAccount(auth, *iaws)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting AWS integration")
 	}

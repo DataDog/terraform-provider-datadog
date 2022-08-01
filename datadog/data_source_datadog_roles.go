@@ -56,8 +56,8 @@ func dataSourceDatadogRoles() *schema.Resource {
 
 func dataSourceDatadogRolesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	var filterPtr *string
 
@@ -74,7 +74,7 @@ func dataSourceDatadogRolesRead(ctx context.Context, d *schema.ResourceData, met
 
 	var roles []datadog.Role
 	for remaining > int64(0) {
-		rolesResp, httpresp, err := datadogClientV2.RolesApi.ListRoles(authV2, *reqParams.
+		rolesResp, httpresp, err := utils.GetRolesApiV2(datadogClient).ListRoles(auth, *reqParams.
 			WithPageSize(pageSize).
 			WithPageNumber(pageNumber))
 		if err != nil {

@@ -84,12 +84,12 @@ func securityMonitoringFilterSchema() map[string]*schema.Schema {
 
 func resourceDatadogSecurityMonitoringFilterCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	filterCreate := buildSecMonFilterCreatePayload(d)
 
-	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.CreateSecurityFilter(authV2, *filterCreate)
+	response, httpResponse, err := utils.GetSecurityMonitoringApiV2(datadogClient).CreateSecurityFilter(auth, *filterCreate)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating security monitoring filter")
 	}
@@ -105,11 +105,11 @@ func resourceDatadogSecurityMonitoringFilterCreate(ctx context.Context, d *schem
 
 func resourceDatadogSecurityMonitoringFilterRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	id := d.Id()
-	filterResponse, httpResponse, err := datadogClientV2.SecurityMonitoringApi.GetSecurityFilter(authV2, id)
+	filterResponse, httpResponse, err := utils.GetSecurityMonitoringApiV2(datadogClient).GetSecurityFilter(auth, id)
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
@@ -135,14 +135,14 @@ func resourceDatadogSecurityMonitoringFilterRead(ctx context.Context, d *schema.
 
 func resourceDatadogSecurityMonitoringFilterUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	filterId := d.Id()
 
 	filterUpdate := buildSecMonFilterUpdatePayload(d)
 
-	if _, httpResponse, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityFilter(authV2, filterId, *filterUpdate); err != nil {
+	if _, httpResponse, err := utils.GetSecurityMonitoringApiV2(datadogClient).UpdateSecurityFilter(auth, filterId, *filterUpdate); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating security monitoring filter")
 	}
 
@@ -151,12 +151,12 @@ func resourceDatadogSecurityMonitoringFilterUpdate(ctx context.Context, d *schem
 
 func resourceDatadogSecurityMonitoringFilterDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	filterId := d.Id()
 
-	if httpResponse, err := datadogClientV2.SecurityMonitoringApi.DeleteSecurityFilter(authV2, filterId); err != nil {
+	if httpResponse, err := utils.GetSecurityMonitoringApiV2(datadogClient).DeleteSecurityFilter(auth, filterId); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting security monitoring filter")
 	}
 

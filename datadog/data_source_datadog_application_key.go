@@ -40,11 +40,11 @@ func dataSourceDatadogApplicationKey() *schema.Resource {
 
 func dataSourceDatadogApplicationKeyRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	if id := d.Get("id").(string); id != "" {
-		resp, httpResponse, err := datadogClientV2.KeyManagementApi.GetCurrentUserApplicationKey(authV2, id)
+		resp, httpResponse, err := utils.GetKeyManagementApiV2(datadogClient).GetCurrentUserApplicationKey(auth, id)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error getting application key")
 		}
@@ -55,7 +55,7 @@ func dataSourceDatadogApplicationKeyRead(ctx context.Context, d *schema.Resource
 		optionalParams := datadogV2.NewListCurrentUserApplicationKeysOptionalParameters()
 		optionalParams.WithFilter(name)
 
-		applicationKeysResponse, httpResponse, err := datadogClientV2.KeyManagementApi.ListCurrentUserApplicationKeys(authV2, *optionalParams)
+		applicationKeysResponse, httpResponse, err := utils.GetKeyManagementApiV2(datadogClient).ListCurrentUserApplicationKeys(auth, *optionalParams)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error getting application keys")
 		}
@@ -72,7 +72,7 @@ func dataSourceDatadogApplicationKeyRead(ctx context.Context, d *schema.Resource
 		applicationKeyPartialData := applicationKeysData[0]
 
 		id := applicationKeyPartialData.GetId()
-		applicationKeyResponse, httpResponse, err := datadogClientV2.KeyManagementApi.GetCurrentUserApplicationKey(authV2, id)
+		applicationKeyResponse, httpResponse, err := utils.GetKeyManagementApiV2(datadogClient).GetCurrentUserApplicationKey(auth, id)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error getting application key")
 		}

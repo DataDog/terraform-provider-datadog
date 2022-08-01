@@ -59,15 +59,15 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 
 func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	tenantName, clientId, err := utils.TenantAndClientFromID(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	integrations, httpresp, err := datadogClientV1.AzureIntegrationApi.ListAzureIntegration(authV1)
+	integrations, httpresp, err := utils.GetAzureIntegrationApiV1(datadogClient).ListAzureIntegration(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error listing azure integration")
 	}
@@ -91,8 +91,8 @@ func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.Resource
 
 func resourceDatadogIntegrationAzureCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	integrationAzureMutex.Lock()
 	defer integrationAzureMutex.Unlock()
@@ -102,7 +102,7 @@ func resourceDatadogIntegrationAzureCreate(ctx context.Context, d *schema.Resour
 
 	iazure := buildDatadogAzureIntegrationDefinition(d, tenantName, clientID, false)
 
-	if _, httpresp, err := datadogClientV1.AzureIntegrationApi.CreateAzureIntegration(authV1, *iazure); err != nil {
+	if _, httpresp, err := utils.GetAzureIntegrationApiV1(datadogClient).CreateAzureIntegration(auth, *iazure); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating an Azure integration")
 	}
 
@@ -113,8 +113,8 @@ func resourceDatadogIntegrationAzureCreate(ctx context.Context, d *schema.Resour
 
 func resourceDatadogIntegrationAzureUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	integrationAzureMutex.Lock()
 	defer integrationAzureMutex.Unlock()
@@ -126,7 +126,7 @@ func resourceDatadogIntegrationAzureUpdate(ctx context.Context, d *schema.Resour
 
 	iazure := buildDatadogAzureIntegrationDefinition(d, existingTenantName, existingClientID, true)
 
-	if _, httpresp, err := datadogClientV1.AzureIntegrationApi.UpdateAzureIntegration(authV1, *iazure); err != nil {
+	if _, httpresp, err := utils.GetAzureIntegrationApiV1(datadogClient).UpdateAzureIntegration(auth, *iazure); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating an Azure integration")
 	}
 
@@ -137,8 +137,8 @@ func resourceDatadogIntegrationAzureUpdate(ctx context.Context, d *schema.Resour
 
 func resourceDatadogIntegrationAzureDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	integrationAzureMutex.Lock()
 	defer integrationAzureMutex.Unlock()
@@ -149,7 +149,7 @@ func resourceDatadogIntegrationAzureDelete(ctx context.Context, d *schema.Resour
 	}
 	iazure := buildDatadogAzureIntegrationDefinition(d, tenantName, clientID, false)
 
-	if _, httpresp, err := datadogClientV1.AzureIntegrationApi.DeleteAzureIntegration(authV1, *iazure); err != nil {
+	if _, httpresp, err := utils.GetAzureIntegrationApiV1(datadogClient).DeleteAzureIntegration(auth, *iazure); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting an Azure integration")
 	}
 

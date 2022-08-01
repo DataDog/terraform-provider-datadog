@@ -72,8 +72,8 @@ func dataSourceDatadogServiceLevelObjectives() *schema.Resource {
 
 func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	var idsPtr *string
 	var nameQueryPtr *string
@@ -102,7 +102,7 @@ func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.
 		reqParams.WithMetricsQuery(metricsQuery)
 	}
 
-	slosResp, httpresp, err := datadogClientV1.ServiceLevelObjectivesApi.ListSLOs(authV1, *reqParams)
+	slosResp, httpresp, err := utils.GetServiceLevelObjectivesApiV1(datadogClient).ListSLOs(auth, *reqParams)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying service level objectives")
 	}

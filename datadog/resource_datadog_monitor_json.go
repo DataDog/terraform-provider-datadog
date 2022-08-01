@@ -108,11 +108,11 @@ func resourceDatadogMonitorJSON() *schema.Resource {
 
 func resourceDatadogMonitorJSONRead(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	id := d.Id()
-	respByte, httpResp, err := utils.SendRequest(authV1, datadogClientV1, "GET", monitorPath+"/"+id, nil)
+	respByte, httpResp, err := utils.SendRequest(auth, datadogClient, "GET", monitorPath+"/"+id, nil)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			d.SetId("")
@@ -131,12 +131,12 @@ func resourceDatadogMonitorJSONRead(_ context.Context, d *schema.ResourceData, m
 
 func resourceDatadogMonitorJSONCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	monitor := d.Get("monitor").(string)
 
-	respByte, httpresp, err := utils.SendRequest(authV1, datadogClientV1, "POST", monitorPath, &monitor)
+	respByte, httpresp, err := utils.SendRequest(auth, datadogClient, "POST", monitorPath, &monitor)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating resource")
 	}
@@ -158,13 +158,13 @@ func resourceDatadogMonitorJSONCreate(ctx context.Context, d *schema.ResourceDat
 
 func resourceDatadogMonitorJSONUpdate(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	monitor := d.Get("monitor").(string)
 	id := d.Id()
 
-	respByte, httpresp, err := utils.SendRequest(authV1, datadogClientV1, "PUT", monitorPath+"/"+id, &monitor)
+	respByte, httpresp, err := utils.SendRequest(auth, datadogClient, "PUT", monitorPath+"/"+id, &monitor)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating monitor")
 	}
@@ -179,12 +179,12 @@ func resourceDatadogMonitorJSONUpdate(_ context.Context, d *schema.ResourceData,
 
 func resourceDatadogMonitorJSONDelete(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	id := d.Id()
 
-	_, httpresp, err := utils.SendRequest(authV1, datadogClientV1, "DELETE", monitorPath+"/"+id, nil)
+	_, httpresp, err := utils.SendRequest(auth, datadogClient, "DELETE", monitorPath+"/"+id, nil)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting monitor")
 	}

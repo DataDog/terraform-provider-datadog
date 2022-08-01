@@ -318,10 +318,10 @@ func updateOrganizationUserState(d *schema.ResourceData, apiKey *datadogV1.User)
 
 func resourceDatadogChildOrganizationCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
-	resp, httpResponse, err := datadogClientV1.OrganizationsApi.CreateChildOrg(authV1, *buildDatadogOrganizationCreateV1Struct(d))
+	resp, httpResponse, err := utils.GetOrganizationsApiV1(datadogClient).CreateChildOrg(auth, *buildDatadogOrganizationCreateV1Struct(d))
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating organization")
 	}

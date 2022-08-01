@@ -43,10 +43,10 @@ func dataLogsIndexesCountCheck(accProvider func() (*schema.Provider, error)) fun
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV1 := providerConf.AuthV1
-		client := providerConf.DatadogClientV1
+		auth := providerConf.Auth
+		client := providerConf.DatadogClient
 
-		logsIndexes, _, err := client.LogsIndexesApi.ListLogIndexes(authV1)
+		logsIndexes, _, err := utils.GetLogsIndexesApiV1(client).ListLogIndexes(auth)
 		if err != nil {
 			return err
 		}

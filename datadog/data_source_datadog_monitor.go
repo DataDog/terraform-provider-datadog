@@ -217,8 +217,8 @@ func dataSourceDatadogMonitor() *schema.Resource {
 
 func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	optionalParams := datadogV1.NewListMonitorsOptionalParameters()
 	if v, ok := d.GetOk("name_filter"); ok {
@@ -231,7 +231,7 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 		optionalParams = optionalParams.WithMonitorTags(strings.Join(expandStringList(v.([]interface{})), ","))
 	}
 
-	monitors, httpresp, err := datadogClientV1.MonitorsApi.ListMonitors(authV1, *optionalParams)
+	monitors, httpresp, err := utils.GetMonitorsApiV1(datadogClient).ListMonitors(auth, *optionalParams)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying monitors")
 	}

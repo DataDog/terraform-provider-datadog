@@ -38,14 +38,14 @@ func dataSourceDatadogUser() *schema.Resource {
 
 func dataSourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 	filter := d.Get("filter").(string) // string | Filter all users by the given string. Defaults to no filtering. (optional) // string | Filter on status attribute. Comma separated list, with possible values `Active`, `Pending`, and `Disabled`. Defaults to no filtering. (optional)
 	optionalParams := datadogV2.ListUsersOptionalParameters{
 		Filter: &filter,
 	}
 
-	res, httpresp, err := datadogClientV2.UsersApi.ListUsers(authV2, optionalParams)
+	res, httpresp, err := utils.GetUsersApiV2(datadogClient).ListUsers(auth, optionalParams)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying user")
 	}

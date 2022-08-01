@@ -160,15 +160,15 @@ func testSyntheticsPrivateLocationExists(accProvider func() (*schema.Provider, e
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type == "datadog_role" {
 				continue
 			}
 
-			if _, _, err := datadogClientV1.SyntheticsApi.GetPrivateLocation(authV1, r.Primary.ID); err != nil {
+			if _, _, err := utils.GetSyntheticsApiV1(datadogClient).GetPrivateLocation(auth, r.Primary.ID); err != nil {
 				return fmt.Errorf("received an error retrieving synthetics private location %s", err)
 			}
 		}
@@ -180,15 +180,15 @@ func testSyntheticsPrivateLocationIsDestroyed(accProvider func() (*schema.Provid
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type == "datadog_role" {
 				continue
 			}
 
-			if _, httpresp, err := datadogClientV1.SyntheticsApi.GetPrivateLocation(authV1, r.Primary.ID); err != nil {
+			if _, httpresp, err := utils.GetSyntheticsApiV1(datadogClient).GetPrivateLocation(auth, r.Primary.ID); err != nil {
 				if httpresp != nil && httpresp.StatusCode == 404 {
 					continue
 				}

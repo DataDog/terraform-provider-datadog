@@ -361,8 +361,8 @@ func resourceDatadogLogsCustomPipeline() *schema.Resource {
 
 func resourceDatadogLogsPipelineCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	logCustomPipelineMutex.Lock()
 	defer logCustomPipelineMutex.Unlock()
@@ -371,7 +371,7 @@ func resourceDatadogLogsPipelineCreate(ctx context.Context, d *schema.ResourceDa
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	createdPipeline, httpResponse, err := datadogClientV1.LogsPipelinesApi.CreateLogsPipeline(authV1, *ddPipeline)
+	createdPipeline, httpResponse, err := utils.GetLogsPipelinesApiV1(datadogClient).CreateLogsPipeline(auth, *ddPipeline)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "failed to create logs pipeline using Datadog API")
 	}
@@ -404,10 +404,10 @@ func updateLogsCustomPipelineState(d *schema.ResourceData, pipeline *datadogV1.L
 
 func resourceDatadogLogsPipelineRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
-	ddPipeline, httpresp, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, d.Id())
+	ddPipeline, httpresp, err := utils.GetLogsPipelinesApiV1(datadogClient).GetLogsPipeline(auth, d.Id())
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 400 {
 			d.SetId("")
@@ -423,8 +423,8 @@ func resourceDatadogLogsPipelineRead(ctx context.Context, d *schema.ResourceData
 
 func resourceDatadogLogsPipelineUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	logCustomPipelineMutex.Lock()
 	defer logCustomPipelineMutex.Unlock()
@@ -433,7 +433,7 @@ func resourceDatadogLogsPipelineUpdate(ctx context.Context, d *schema.ResourceDa
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	updatedPipeline, httpResponse, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipeline(authV1, d.Id(), *ddPipeline)
+	updatedPipeline, httpResponse, err := utils.GetLogsPipelinesApiV1(datadogClient).UpdateLogsPipeline(auth, d.Id(), *ddPipeline)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs pipeline")
 	}
@@ -445,13 +445,13 @@ func resourceDatadogLogsPipelineUpdate(ctx context.Context, d *schema.ResourceDa
 
 func resourceDatadogLogsPipelineDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	logCustomPipelineMutex.Lock()
 	defer logCustomPipelineMutex.Unlock()
 
-	if httpResponse, err := datadogClientV1.LogsPipelinesApi.DeleteLogsPipeline(authV1, d.Id()); err != nil {
+	if httpResponse, err := utils.GetLogsPipelinesApiV1(datadogClient).DeleteLogsPipeline(auth, d.Id()); err != nil {
 		// API returns 400 when the specific pipeline id doesn't exist through DELETE request.
 		if strings.Contains(err.Error(), "400 Bad Request") {
 			return nil

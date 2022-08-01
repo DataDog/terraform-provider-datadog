@@ -99,8 +99,8 @@ func testAccCheckDatadogWebhookExists(accProvider func() (*schema.Provider, erro
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		client := providerConf.DatadogClientV1
-		auth := providerConf.AuthV1
+		client := providerConf.DatadogClient
+		auth := providerConf.Auth
 
 		id := s.RootModule().Resources[name].Primary.ID
 		_, httpresp, err := client.WebhooksIntegrationApi.GetWebhooksIntegration(auth, id)
@@ -116,14 +116,14 @@ func testAccCheckDatadogWebhookDestroy(accProvider func() (*schema.Provider, err
 		provider, _ := accProvider()
 		meta := provider.Meta()
 		providerConf := meta.(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClientV1
-		auth := providerConf.AuthV1
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 		for _, r := range s.RootModule().Resources {
 			var err error
 
 			id := r.Primary.ID
 
-			_, httpResp, err := datadogClient.WebhooksIntegrationApi.GetWebhooksIntegration(auth, id)
+			_, httpResp, err := utils.GetWebhooksIntegrationApiV1(datadogClient).GetWebhooksIntegration(auth, id)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					continue

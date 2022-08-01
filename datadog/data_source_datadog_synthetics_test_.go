@@ -44,10 +44,10 @@ func dataSourceDatadogSyntheticsTest() *schema.Resource {
 
 func dataSourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
-	tests, httpresp, err := datadogClientV1.SyntheticsApi.ListTests(authV1)
+	tests, httpresp, err := utils.GetSyntheticsApiV1(datadogClient).ListTests(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetic tests")
 	}

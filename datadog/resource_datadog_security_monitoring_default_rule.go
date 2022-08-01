@@ -102,11 +102,11 @@ func resourceDatadogSecurityMonitoringDefaultRuleCreate(ctx context.Context, d *
 
 func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	id := d.Id()
-	ruleResponse, _, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, id)
+	ruleResponse, _, err := utils.GetSecurityMonitoringApiV2(datadogClient).GetSecurityMonitoringRule(auth, id)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -162,12 +162,12 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 
 func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	ruleID := d.Id()
 
-	response, httpResponse, err := datadogClientV2.SecurityMonitoringApi.GetSecurityMonitoringRule(authV2, ruleID)
+	response, httpResponse, err := utils.GetSecurityMonitoringApiV2(datadogClient).GetSecurityMonitoringRule(auth, ruleID)
 
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
@@ -191,7 +191,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *
 	}
 
 	if shouldUpdate {
-		if _, httpResponse, err := datadogClientV2.SecurityMonitoringApi.UpdateSecurityMonitoringRule(authV2, ruleID, *ruleUpdate); err != nil {
+		if _, httpResponse, err := utils.GetSecurityMonitoringApiV2(datadogClient).UpdateSecurityMonitoringRule(auth, ruleID, *ruleUpdate); err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating security monitoring rule on resource creation")
 		}
 	}

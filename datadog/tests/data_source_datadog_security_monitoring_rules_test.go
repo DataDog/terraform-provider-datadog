@@ -70,10 +70,10 @@ func securityMonitoringCheckRuleCountNoFilter(accProvider func() (*schema.Provid
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
+		auth := providerConf.Auth
+		client := providerConf.DatadogClient
 
-		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
+		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(auth,
 			*datadogV2.NewListSecurityMonitoringRulesOptionalParameters().
 				WithPageNumber(0).
 				WithPageSize(1000))
@@ -88,10 +88,10 @@ func securityMonitoringCheckRuleCountNameFilter(accProvider func() (*schema.Prov
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
+		auth := providerConf.Auth
+		client := providerConf.DatadogClient
 
-		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
+		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(auth,
 			*datadogV2.NewListSecurityMonitoringRulesOptionalParameters().WithPageSize(1000))
 		if err != nil {
 			return err
@@ -112,9 +112,9 @@ func securityMonitoringCheckRuleCountTagsFilter(accProvider func() (*schema.Prov
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
-		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
+		auth := providerConf.Auth
+		client := providerConf.DatadogClient
+		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(auth,
 			*datadogV2.NewListSecurityMonitoringRulesOptionalParameters().WithPageSize(1000))
 		if err != nil {
 			return err
@@ -136,9 +136,9 @@ func securityMonitoringCheckRuleCountDefaultFilter(accProvider func() (*schema.P
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
-		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
+		auth := providerConf.Auth
+		client := providerConf.DatadogClient
+		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(auth,
 			*datadogV2.NewListSecurityMonitoringRulesOptionalParameters().WithPageSize(1000))
 		if err != nil {
 			return err

@@ -40,14 +40,14 @@ func dataSourceDatadogRole() *schema.Resource {
 
 func dataSourceDatadogRoleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	optionalParams := datadogV2.NewListRolesOptionalParameters()
 	filter := d.Get("filter").(string)
 	optionalParams = optionalParams.WithFilter(filter)
 
-	res, httpresp, err := datadogClientV2.RolesApi.ListRoles(authV2, *optionalParams)
+	res, httpresp, err := utils.GetRolesApiV2(datadogClient).ListRoles(auth, *optionalParams)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying roles")
 	}

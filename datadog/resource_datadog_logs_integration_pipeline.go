@@ -43,9 +43,10 @@ func updateLogsIntegrationPipelineState(d *schema.ResourceData, pipeline *datado
 
 func resourceDatadogLogsIntegrationPipelineRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-	ddPipeline, httpresp, err := datadogClientV1.LogsPipelinesApi.GetLogsPipeline(authV1, d.Id())
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
+	ddPipeline, httpresp, err := utils.GetLogsPipelinesApiV1(datadogClient).
+	GetLogsPipeline(auth, d.Id())
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 400 {
 			d.SetId("")
@@ -67,9 +68,10 @@ func resourceDatadogLogsIntegrationPipelineUpdate(ctx context.Context, d *schema
 	var ddPipeline datadogV1.LogsPipeline
 	ddPipeline.SetIsEnabled(d.Get("is_enabled").(bool))
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
-	updatedPipeline, httpResponse, err := datadogClientV1.LogsPipelinesApi.UpdateLogsPipeline(authV1, d.Id(), ddPipeline)
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
+	updatedPipeline, httpResponse, err := utils.GetLogsPipelinesApiV1(datadogClient).
+	UpdateLogsPipeline(auth, d.Id(), ddPipeline)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs integration pipeline")
 	}

@@ -154,8 +154,8 @@ func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider func() (*sche
 func listFiltersHelper(accProvider func() (*schema.Provider, error), resourceID string) (*[]datadogV1.AWSTagFilter, error) {
 	provider, _ := accProvider()
 	providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-	datadogClient := providerConf.DatadogClientV1
-	auth := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	filters := []datadogV1.AWSTagFilter{}
 	accountID, _, err := utils.AccountAndNamespaceFromID(resourceID)
@@ -163,7 +163,7 @@ func listFiltersHelper(accProvider func() (*schema.Provider, error), resourceID 
 		return nil, err
 	}
 
-	resp, _, err := datadogClient.AWSIntegrationApi.ListAWSTagFilters(auth, accountID)
+	resp, _, err := utils.GetAWSIntegrationApiV1(datadogClient).ListAWSTagFilters(auth, accountID)
 	if err != nil {
 		return nil, err
 	}

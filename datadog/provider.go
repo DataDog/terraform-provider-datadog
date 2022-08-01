@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/DataDog/datadog-api-client-go/v2/v2/api/common"
+	"github.com/DataDog/datadog-api-client-go/v2/api/common"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"

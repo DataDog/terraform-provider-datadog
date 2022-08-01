@@ -125,11 +125,11 @@ func testAccCheckDatadogSecurityMonitoringFilterExists(accProvider func() (*sche
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
+		auth := providerConf.Auth
+		client := providerConf.DatadogClient
 
 		for _, filter := range s.RootModule().Resources {
-			_, _, err := client.SecurityMonitoringApi.GetSecurityFilter(authV2, filter.Primary.ID)
+			_, _, err := client.SecurityMonitoringApi.GetSecurityFilter(auth, filter.Primary.ID)
 			if err != nil {
 				return fmt.Errorf("received an error retrieving security monitoring filter: %s", err)
 			}
@@ -142,12 +142,12 @@ func testAccCheckDatadogSecurityMonitoringFilterDestroy(accProvider func() (*sch
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
+		auth := providerConf.Auth
+		client := providerConf.DatadogClient
 
 		for _, resource := range s.RootModule().Resources {
 			if resource.Type == "datadog_security_monitoring_filter" {
-				_, httpResponse, err := client.SecurityMonitoringApi.GetSecurityFilter(authV2, resource.Primary.ID)
+				_, httpResponse, err := client.SecurityMonitoringApi.GetSecurityFilter(auth, resource.Primary.ID)
 				if err != nil {
 					if httpResponse != nil && httpResponse.StatusCode == 404 {
 						continue

@@ -517,7 +517,7 @@ func buildContext(ctx context.Context, apiKey string, appKey string, apiURL stri
 	return ctx, nil
 }
 
-func buildDatadogClientV1(httpClient *http.Client) *datadogV1.APIClient {
+func buildDatadogClientV1(httpClient *http.Client) *common.APIClient {
 	//Datadog V1 API config.HTTPClient
 	configV1 := datadogV1.NewConfiguration()
 	configV1.SetUnstableOperationEnabled("CreateSLOCorrection", true)
@@ -530,7 +530,7 @@ func buildDatadogClientV1(httpClient *http.Client) *datadogV1.APIClient {
 	return datadogV1.NewAPIClient(configV1)
 }
 
-func buildDatadogClientV2(httpClient *http.Client) *datadogV2.APIClient {
+func buildDatadogClient(httpClient *http.Client) *datadogV2.APIClient {
 	//Datadog V2 API config.HTTPClient
 	configV2 := datadogV2.NewConfiguration()
 	configV2.SetUnstableOperationEnabled("CreateTagConfiguration", true)
@@ -569,9 +569,9 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 		return &datadog.ProviderConfiguration{
 			CommunityClient: communityClient,
 			DatadogClientV1: buildDatadogClientV1(c),
-			DatadogClientV2: buildDatadogClientV2(c),
-			AuthV1:          ctx,
-			AuthV2:          ctx,
+			DatadogClient:   buildDatadogClient(c),
+			Auth:            ctx,
+			Auth:            ctx,
 
 			Now: clock.Now,
 		}, nil

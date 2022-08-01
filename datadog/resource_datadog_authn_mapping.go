@@ -45,10 +45,10 @@ func resourceDatadogAuthnMapping() *schema.Resource {
 }
 
 func resourceDatadogAuthnMappingCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*ProviderConfiguration).DatadogClientV2
-	auth := meta.(*ProviderConfiguration).AuthV2
+	client := meta.(*ProviderConfiguration).DatadogClient
+	auth := meta.(*ProviderConfiguration).Auth
 	authNMapReq := buildAuthNMappingCreateRequest(d)
-	createResp, httpResponse, err := client.AuthNMappingsApi.CreateAuthNMapping(auth, authNMapReq)
+	createResp, httpResponse, err := utils.GetAuthNMappingsApiV2(client).CreateAuthNMapping(auth, authNMapReq)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating authn mapping")
 	}
@@ -60,7 +60,7 @@ func resourceDatadogAuthnMappingCreate(ctx context.Context, d *schema.ResourceDa
 	var httpResponseGet *http.Response
 
 	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
-		getAuthNMappingResponse, httpResponseGet, err = client.AuthNMappingsApi.GetAuthNMapping(auth, createResp.Data.GetId())
+		getAuthNMappingResponse, httpResponseGet, err = utils.GetAuthNMappingsApiV2(client).GetAuthNMapping(auth, createResp.Data.GetId())
 		if err != nil {
 			if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
 				return resource.RetryableError(fmt.Errorf("SAML role mapping not created yet"))
@@ -84,10 +84,10 @@ func resourceDatadogAuthnMappingCreate(ctx context.Context, d *schema.ResourceDa
 }
 
 func resourceDatadogAuthnMappingRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*ProviderConfiguration).DatadogClientV2
-	auth := meta.(*ProviderConfiguration).AuthV2
+	client := meta.(*ProviderConfiguration).DatadogClient
+	auth := meta.(*ProviderConfiguration).Auth
 
-	resp, httpResponse, err := client.AuthNMappingsApi.GetAuthNMapping(auth, d.Id())
+	resp, httpResponse, err := utils.GetAuthNMappingsApiV2(client).GetAuthNMapping(auth, d.Id())
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId((""))
@@ -100,11 +100,11 @@ func resourceDatadogAuthnMappingRead(ctx context.Context, d *schema.ResourceData
 }
 
 func resourceDatadogAuthnMappingUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*ProviderConfiguration).DatadogClientV2
-	auth := meta.(*ProviderConfiguration).AuthV2
+	client := meta.(*ProviderConfiguration).DatadogClient
+	auth := meta.(*ProviderConfiguration).Auth
 
 	req := buildAuthNMappingUpdateRequest(d)
-	resp, httpResponse, err := client.AuthNMappingsApi.UpdateAuthNMapping(auth, d.Id(), req)
+	resp, httpResponse, err := utils.GetAuthNMappingsApiV2(client).UpdateAuthNMapping(auth, d.Id(), req)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating role mapping")
@@ -119,10 +119,10 @@ func resourceDatadogAuthnMappingUpdate(ctx context.Context, d *schema.ResourceDa
 }
 
 func resourceDatadogAuthnMappingDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*ProviderConfiguration).DatadogClientV2
-	auth := meta.(*ProviderConfiguration).AuthV2
+	client := meta.(*ProviderConfiguration).DatadogClient
+	auth := meta.(*ProviderConfiguration).Auth
 
-	httpResponse, err := client.AuthNMappingsApi.DeleteAuthNMapping(auth, d.Id())
+	httpResponse, err := utils.GetAuthNMappingsApiV2(client).DeleteAuthNMapping(auth, d.Id())
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting authn mapping")
 	}

@@ -73,11 +73,11 @@ func syntheticsPrivateLocationMetadata() map[string]*schema.Schema {
 
 func resourceDatadogSyntheticsPrivateLocationCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	syntheticsPrivateLocation := buildSyntheticsPrivateLocationStruct(d)
-	createdSyntheticsPrivateLocationResponse, httpResponse, err := datadogClientV1.SyntheticsApi.CreatePrivateLocation(authV1, *syntheticsPrivateLocation)
+	createdSyntheticsPrivateLocationResponse, httpResponse, err := utils.GetSyntheticsApiV1(datadogClient).CreatePrivateLocation(auth, *syntheticsPrivateLocation)
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics private location")
@@ -89,7 +89,7 @@ func resourceDatadogSyntheticsPrivateLocationCreate(ctx context.Context, d *sche
 	var getSyntheticsPrivateLocationRespone datadogV1.SyntheticsPrivateLocation
 	var httpResponseGet *http.Response
 	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
-		getSyntheticsPrivateLocationRespone, httpResponseGet, err = datadogClientV1.SyntheticsApi.GetPrivateLocation(authV1, *createdSyntheticsPrivateLocationResponse.PrivateLocation.Id)
+		getSyntheticsPrivateLocationRespone, httpResponseGet, err = utils.GetSyntheticsApiV1(datadogClient).GetPrivateLocation(auth, *createdSyntheticsPrivateLocationResponse.PrivateLocation.Id)
 		if err != nil {
 			if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
 				return resource.RetryableError(fmt.Errorf("synthetics private location not created yet"))
@@ -119,10 +119,10 @@ func resourceDatadogSyntheticsPrivateLocationCreate(ctx context.Context, d *sche
 
 func resourceDatadogSyntheticsPrivateLocationRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
-	syntheticsPrivateLocation, httpresp, err := datadogClientV1.SyntheticsApi.GetPrivateLocation(authV1, d.Id())
+	syntheticsPrivateLocation, httpresp, err := utils.GetSyntheticsApiV1(datadogClient).GetPrivateLocation(auth, d.Id())
 
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
@@ -141,11 +141,11 @@ func resourceDatadogSyntheticsPrivateLocationRead(ctx context.Context, d *schema
 
 func resourceDatadogSyntheticsPrivateLocationUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	syntheticsPrivateLocation := buildSyntheticsPrivateLocationStruct(d)
-	if _, httpResponse, err := datadogClientV1.SyntheticsApi.UpdatePrivateLocation(authV1, d.Id(), *syntheticsPrivateLocation); err != nil {
+	if _, httpResponse, err := utils.GetSyntheticsApiV1(datadogClient).UpdatePrivateLocation(auth, d.Id(), *syntheticsPrivateLocation); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics private location")
 	}
@@ -156,10 +156,10 @@ func resourceDatadogSyntheticsPrivateLocationUpdate(ctx context.Context, d *sche
 
 func resourceDatadogSyntheticsPrivateLocationDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
-	if httpResponse, err := datadogClientV1.SyntheticsApi.DeletePrivateLocation(authV1, d.Id()); err != nil {
+	if httpResponse, err := utils.GetSyntheticsApiV1(datadogClient).DeletePrivateLocation(auth, d.Id()); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting synthetics private location")
 	}

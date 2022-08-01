@@ -40,13 +40,13 @@ func resourceDatadogLogsArchiveOrderCreate(ctx context.Context, d *schema.Resour
 	}
 
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
 
 	if len(ddArchiveList.Data.Attributes.GetArchiveIds()) > 0 {
 		return resourceDatadogLogsArchiveOrderUpdate(ctx, d, meta)
 	}
-	order, httpResponse, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2, *ddArchiveList)
+	order, httpResponse, err := utils.GetLogsArchivesApiV2(datadogClient).UpdateLogsArchiveOrder(auth, *ddArchiveList)
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 422 {
 			fmt.Printf("cannot map archives to existing ones, will try to import it with Id `archiveOrderID`\n")
@@ -64,9 +64,9 @@ func resourceDatadogLogsArchiveOrderCreate(ctx context.Context, d *schema.Resour
 
 func resourceDatadogLogsArchiveOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
-	order, httpResponse, err := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2)
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
+	order, httpResponse, err := utils.GetLogsArchivesApiV2(datadogClient).GetLogsArchiveOrder(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs archive order")
 	}
@@ -91,13 +91,13 @@ func resourceDatadogLogsArchiveOrderUpdate(ctx context.Context, d *schema.Resour
 	}
 
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
-	updatedOrder, httpResponse, err := datadogClientV2.LogsArchivesApi.UpdateLogsArchiveOrder(authV2, *ddArchiveList)
+	datadogClient := providerConf.DatadogClient
+	auth := providerConf.Auth
+	updatedOrder, httpResponse, err := utils.GetLogsArchivesApiV2(datadogClient).UpdateLogsArchiveOrder(auth, *ddArchiveList)
 	if err != nil {
 		// Cannot map archives to existing ones
 		if httpResponse != nil && httpResponse.StatusCode == 422 {
-			ddArchiveOrder, _, getErr := datadogClientV2.LogsArchivesApi.GetLogsArchiveOrder(authV2)
+			ddArchiveOrder, _, getErr := utils.GetLogsArchivesApiV2(datadogClient).GetLogsArchiveOrder(auth)
 			if getErr != nil {
 				return utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs archive order")
 			}

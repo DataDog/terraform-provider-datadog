@@ -9,7 +9,6 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -99,15 +98,15 @@ func checkIntegrationAWSLambdaArnExists(accProvider func() (*schema.Provider, er
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
-		return checkIntegrationAwsLambdaArnExistsHelper(authV1, s, datadogClientV1)
+		return checkIntegrationAwsLambdaArnExistsHelper(auth, s, datadogClient)
 	}
 }
 
-func checkIntegrationAwsLambdaArnExistsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
-	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(ctx)
+func checkIntegrationAwsLambdaArnExistsHelper(ctx context.Context, s *terraform.State, datadogClient *common.APIClient) error {
+	logCollections, _, err := utils.GetAWSLogsIntegrationApiV1(datadogClient).ListAWSLogsIntegrations(ctx)
 	if err != nil {
 		return err
 	}
@@ -133,15 +132,15 @@ func checkIntegrationAWSLambdaArnDestroy(accProvider func() (*schema.Provider, e
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		datadogClient := providerConf.DatadogClient
+		auth := providerConf.Auth
 
-		return checkIntegrationAWSLambdaArnDestroyHelper(authV1, s, datadogClientV1)
+		return checkIntegrationAWSLambdaArnDestroyHelper(auth, s, datadogClient)
 	}
 }
 
-func checkIntegrationAWSLambdaArnDestroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
-	logCollections, _, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(ctx)
+func checkIntegrationAWSLambdaArnDestroyHelper(ctx context.Context, s *terraform.State, datadogClient *common.APIClient) error {
+	logCollections, _, err := utils.GetAWSLogsIntegrationApiV1(datadogClient).ListAWSLogsIntegrations(ctx)
 	if err != nil {
 		return err
 	}
