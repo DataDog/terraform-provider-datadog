@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -1006,7 +1007,7 @@ func testAccCheckDatadogSecurityMonitoringRuleExists(accProvider func() (*schema
 		client := providerConf.DatadogClient
 
 		for _, rule := range s.RootModule().Resources {
-			_, _, err := client.SecurityMonitoringApi.GetSecurityMonitoringRule(auth, rule.Primary.ID)
+			_, _, err := utils.GetSecurityMonitoringApiV2(client).GetSecurityMonitoringRule(auth, rule.Primary.ID)
 			if err != nil {
 				return fmt.Errorf("received an error retrieving security monitoring rule: %s", err)
 			}
@@ -1024,7 +1025,7 @@ func testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider func() (*schem
 
 		for _, resource := range s.RootModule().Resources {
 			if resource.Type == "datadog_security_monitoring_rule" {
-				_, httpResponse, err := client.SecurityMonitoringApi.GetSecurityMonitoringRule(auth, resource.Primary.ID)
+				_, httpResponse, err := utils.GetSecurityMonitoringApiV2(client).GetSecurityMonitoringRule(auth, resource.Primary.ID)
 				if err != nil {
 					if httpResponse != nil && httpResponse.StatusCode == 404 {
 						continue

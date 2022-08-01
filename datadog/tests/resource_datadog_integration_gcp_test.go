@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -149,7 +150,7 @@ func checkIntegrationGCPExists(accProvider func() (*schema.Provider, error)) fun
 		datadogClient := providerConf.DatadogClient
 		auth := providerConf.Auth
 
-		integrations, _, err := utils.GetGCPIntegrationApi(datadogClient).ListGCPIntegration(auth)
+		integrations, _, err := utils.GetGCPIntegrationApiV1(datadogClient).ListGCPIntegration(auth)
 		if err != nil {
 			return err
 		}
@@ -173,7 +174,7 @@ func checkIntegrationGCPDestroy(accProvider func() (*schema.Provider, error)) fu
 		datadogClient := providerConf.DatadogClient
 		auth := providerConf.Auth
 
-		integrations, _, err := utils.GetGCPIntegrationApi(datadogClient).ListGCPIntegration(auth)
+		integrations, _, err := utils.GetGCPIntegrationApiV1(datadogClient).ListGCPIntegration(auth)
 		if err != nil {
 			return err
 		}

@@ -2,10 +2,10 @@ package datadog
 
 import (
 	"context"
-	"github.com/DataDog/datadog-api-client-go/v2/api/common"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/common"
 	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"

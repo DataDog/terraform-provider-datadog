@@ -5,11 +5,11 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-	"github.com/DataDog/datadog-api-client-go/v2/api/common"
 	"net/http"
 	"net/url"
 	"strings"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/common"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/meta"

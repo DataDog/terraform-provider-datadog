@@ -103,7 +103,7 @@ func testAccCheckDatadogWebhookExists(accProvider func() (*schema.Provider, erro
 		auth := providerConf.Auth
 
 		id := s.RootModule().Resources[name].Primary.ID
-		_, httpresp, err := client.WebhooksIntegrationApi.GetWebhooksIntegration(auth, id)
+		_, httpresp, err := utils.GetWebhooksIntegrationApiV1(client).GetWebhooksIntegration(auth, id)
 		if err != nil {
 			return utils.TranslateClientError(err, httpresp, "error checking webhooks custom variable existence")
 		}

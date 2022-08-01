@@ -8,8 +8,9 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/common"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -87,7 +88,7 @@ func testAccCheckArchiveOrderExists(accProvider func() (*schema.Provider, error)
 	}
 }
 
-func archiveOrderExistsChecker(ctx context.Context, s *terraform.State, datadogClient *datadogV2.APIClient) error {
+func archiveOrderExistsChecker(ctx context.Context, s *terraform.State, datadogClient *common.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_archive_order" {
 			if _, _, err := utils.GetLogsArchivesApiV2(datadogClient).GetLogsArchiveOrder(ctx); err != nil {

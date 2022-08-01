@@ -8,7 +8,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/common"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -293,7 +293,7 @@ func testAccCheckArchiveExists(accProvider func() (*schema.Provider, error)) res
 	}
 }
 
-func archiveExistsChecker(ctx context.Context, s *terraform.State, datadogClient *datadogV2.APIClient) error {
+func archiveExistsChecker(ctx context.Context, s *terraform.State, datadogClient *common.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_archive" {
 			id := r.Primary.ID
@@ -351,7 +351,7 @@ func testAccCheckArchiveDestroy(accProvider func() (*schema.Provider, error)) fu
 	}
 }
 
-func archiveDestroyHelper(ctx context.Context, s *terraform.State, datadogClient *datadogV2.APIClient) error {
+func archiveDestroyHelper(ctx context.Context, s *terraform.State, datadogClient *common.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_archive" {
 			id := r.Primary.ID

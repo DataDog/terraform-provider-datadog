@@ -46,7 +46,7 @@ func resourceDatadogLogsIntegrationPipelineRead(ctx context.Context, d *schema.R
 	datadogClient := providerConf.DatadogClient
 	auth := providerConf.Auth
 	ddPipeline, httpresp, err := utils.GetLogsPipelinesApiV1(datadogClient).
-	GetLogsPipeline(auth, d.Id())
+		GetLogsPipeline(auth, d.Id())
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 400 {
 			d.SetId("")
@@ -71,7 +71,7 @@ func resourceDatadogLogsIntegrationPipelineUpdate(ctx context.Context, d *schema
 	datadogClient := providerConf.DatadogClient
 	auth := providerConf.Auth
 	updatedPipeline, httpResponse, err := utils.GetLogsPipelinesApiV1(datadogClient).
-	UpdateLogsPipeline(auth, d.Id(), ddPipeline)
+		UpdateLogsPipeline(auth, d.Id(), ddPipeline)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs integration pipeline")
 	}

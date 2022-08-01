@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -40,7 +41,7 @@ func cloudWorkloadSecurityCheckAgentRulesCount(accProvider func() (*schema.Provi
 		auth := providerConf.Auth
 		client := providerConf.DatadogClient
 
-		agentRulesResponse, _, err := client.CloudWorkloadSecurityApi.ListCloudWorkloadSecurityAgentRules(auth)
+		agentRulesResponse, _, err := utils.GetCloudWorkloadSecurityApiV2(client).ListCloudWorkloadSecurityAgentRules(auth)
 		if err != nil {
 			return err
 		}

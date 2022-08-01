@@ -8,7 +8,9 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/common"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -199,7 +201,7 @@ func datadogDashListDestroyHelper(ctx context.Context, s *terraform.State, datad
 			continue
 		}
 		id, _ := strconv.Atoi(r.Primary.ID)
-		_, _, errList := utils.GetDashboardListsApiV2(datadogClient).GetDashboardList(ctx, int64(id))
+		_, _, errList := utils.GetDashboardListsApiV1(datadogClient).GetDashboardList(ctx, int64(id))
 		if errList != nil {
 			if strings.Contains(strings.ToLower(errList.Error()), "not found") {
 				continue

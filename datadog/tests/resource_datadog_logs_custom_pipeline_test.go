@@ -9,6 +9,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/common"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -354,8 +355,7 @@ func pipelineExistsChecker(ctx context.Context, s *terraform.State, datadogClien
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_custom_pipeline" {
 			id := r.Primary.ID
-			if _, _, err := utils.GetLogsPipelinesApiV1(datadogClient).GetLogsPipeline(ctx, id)
-			err != nil{
+			if _, _, err := utils.GetLogsPipelinesApiV1(datadogClient).GetLogsPipeline(ctx, id); err != nil {
 				return fmt.Errorf("received an error when retrieving pipeline, (%s)", err)
 			}
 		}
@@ -383,7 +383,7 @@ func pipelineDestroyHelper(ctx context.Context, s *terraform.State, datadogClien
 			err := utils.Retry(2, 5, func() error {
 				id := r.Primary.ID
 				_, _, err := utils.GetLogsPipelinesApiV1(datadogClient).
-				GetLogsPipeline(ctx, id)
+					GetLogsPipeline(ctx, id)
 				if err != nil {
 					if strings.Contains(err.Error(), "400 Bad Request") {
 						return nil

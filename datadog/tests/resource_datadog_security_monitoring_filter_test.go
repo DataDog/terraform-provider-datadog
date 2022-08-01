@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -129,7 +130,7 @@ func testAccCheckDatadogSecurityMonitoringFilterExists(accProvider func() (*sche
 		client := providerConf.DatadogClient
 
 		for _, filter := range s.RootModule().Resources {
-			_, _, err := client.SecurityMonitoringApi.GetSecurityFilter(auth, filter.Primary.ID)
+			_, _, err := utils.GetSecurityMonitoringApiV2(client).GetSecurityFilter(auth, filter.Primary.ID)
 			if err != nil {
 				return fmt.Errorf("received an error retrieving security monitoring filter: %s", err)
 			}
@@ -147,7 +148,7 @@ func testAccCheckDatadogSecurityMonitoringFilterDestroy(accProvider func() (*sch
 
 		for _, resource := range s.RootModule().Resources {
 			if resource.Type == "datadog_security_monitoring_filter" {
-				_, httpResponse, err := client.SecurityMonitoringApi.GetSecurityFilter(auth, resource.Primary.ID)
+				_, httpResponse, err := utils.GetSecurityMonitoringApiV2(client).GetSecurityFilter(auth, resource.Primary.ID)
 				if err != nil {
 					if httpResponse != nil && httpResponse.StatusCode == 404 {
 						continue

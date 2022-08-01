@@ -260,7 +260,7 @@ func testAccCheckDatadogSloCorrectionExists(accProvider func() (*schema.Provider
 				continue
 			}
 			id := r.Primary.ID
-			if _, httpresp, err := utils.GetServiceLevelObjectiveCorrectionsApiV2(datadogClient).GetSLOCorrection(auth, id); err != nil {
+			if _, httpresp, err := utils.GetServiceLevelObjectiveCorrectionsApiV1(datadogClient).GetSLOCorrection(auth, id); err != nil {
 				return utils.TranslateClientError(err, httpresp, "error checking slo_correction existence")
 			}
 		}
@@ -283,7 +283,7 @@ func testAccCheckDatadogSloCorrectionDestroy(accProvider func() (*schema.Provide
 
 			id := r.Primary.ID
 
-			_, resp, err := utils.GetServiceLevelObjectiveCorrectionsApiV2(datadogClient).GetSLOCorrection(auth, id)
+			_, resp, err := utils.GetServiceLevelObjectiveCorrectionsApiV1(datadogClient).GetSLOCorrection(auth, id)
 
 			if err != nil {
 				if resp.StatusCode == 404 {

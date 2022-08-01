@@ -7,7 +7,9 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/common"
 	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -271,7 +273,7 @@ func testAccCheckUserIsDisabled(accProvider func() (*schema.Provider, error), us
 		datadogClient := providerConf.DatadogClient
 		auth := providerConf.Auth
 
-		resp, _, err := utils.GetUsersApiV2(datadogClient).ListUsers(auth, datadogV2.ListUsersOptionalParameters{Filter: &username, FilterStatus: datadogV2.PtrString("Disabled")})
+		resp, _, err := utils.GetUsersApiV2(datadogClient).ListUsers(auth, datadogV2.ListUsersOptionalParameters{Filter: &username, FilterStatus: common.PtrString("Disabled")})
 		if err != nil {
 			return fmt.Errorf("received an error listing users %s", err)
 		}
@@ -399,10 +401,10 @@ resource "datadog_user" "bar" {
 }`, uniq)
 }
 
-func datadogUserV2DestroyHelper(ctx context.Context, s *terraform.State, client *datadogV2.APIClient) error {
+func datadogUserV2DestroyHelper(ctx context.Context, s *terraform.State, client *common.APIClient) error {
 	for _, r := range s.RootModule().Resources {
 		id := r.Primary.ID
-		userResponse, httpResponse, err := client.UsersApi.GetUser(ctx, id)
+		userResponse, httpResponse, err := utils.GetUsersApiV2(client).GetUser(ctx, id)
 
 		if err != nil {
 			if httpResponse.StatusCode == 404 {
@@ -422,9 +424,9 @@ func datadogUserV2DestroyHelper(ctx context.Context, s *terraform.State, client 
 	return nil
 }
 
-func datadogUserV2ExistsHelper(ctx context.Context, s *terraform.State, client *datadogV2.APIClient, name string) error {
+func datadogUserV2ExistsHelper(ctx context.Context, s *terraform.State, client *common.APIClient, name string) error {
 	id := s.RootModule().Resources[name].Primary.ID
-	if _, _, err := client.UsersApi.GetUser(ctx, id); err != nil {
+	if _, _, err := utils.GetUsersApiV2(client).GetUser(ctx, id); err != nil {
 		return fmt.Errorf("received an error retrieving user %s", err)
 	}
 	return nil

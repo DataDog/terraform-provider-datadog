@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -40,7 +41,7 @@ func securityMonitoringCheckFilterCount(accProvider func() (*schema.Provider, er
 		auth := providerConf.Auth
 		client := providerConf.DatadogClient
 
-		filtersResponse, _, err := client.SecurityMonitoringApi.ListSecurityFilters(auth)
+		filtersResponse, _, err := utils.GetSecurityMonitoringApiV2(client).ListSecurityFilters(auth)
 		if err != nil {
 			return err
 		}

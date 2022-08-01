@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -85,7 +86,7 @@ func testAccCheckDatadogMetricTagConfigurationDestroy(accProvider func() (*schem
 
 			id := r.Primary.ID
 
-			_, resp, err := utils.GetMetricsApiV1(datadogClient).ListTagConfigurationByName(auth, id)
+			_, resp, err := utils.GetMetricsApiV2(datadogClient).ListTagConfigurationByName(auth, id)
 
 			if err != nil {
 				if resp.StatusCode == 404 {

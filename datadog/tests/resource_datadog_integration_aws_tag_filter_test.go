@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"github.com/DataDog/datadog-api-client-go/v2/api/common"
 	"regexp"
 	"testing"
 
@@ -131,7 +132,7 @@ func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider func() (*sche
 
 		filters, err := listFiltersHelper(accProvider, resourceID)
 		if err != nil {
-			errObj := err.(datadogV1.GenericOpenAPIError)
+			errObj := err.(common.GenericOpenAPIError)
 			if matched, _ := regexp.MatchString("AWS account [0-9]+ does not exist in integration", string(errObj.Body())); matched {
 				return nil
 			}

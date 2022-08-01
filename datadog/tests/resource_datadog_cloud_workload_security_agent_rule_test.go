@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"strings"
 	"testing"
 
@@ -96,7 +97,7 @@ func testAccCheckDatadogCloudWorkloadSecurityAgentRuleExists(accProvider func() 
 		client := providerConf.DatadogClient
 
 		for _, agentRule := range s.RootModule().Resources {
-			_, _, err := client.CloudWorkloadSecurityApi.GetCloudWorkloadSecurityAgentRule(auth, agentRule.Primary.ID)
+			_, _, err := utils.GetCloudWorkloadSecurityApiV2(client).GetCloudWorkloadSecurityAgentRule(auth, agentRule.Primary.ID)
 			if err != nil {
 				return fmt.Errorf("received an error retrieving cloud workload security agent rule: %s", err)
 			}
@@ -114,7 +115,7 @@ func testAccCheckDatadogCloudWorkloadSecurityAgentRuleDestroy(accProvider func()
 
 		for _, resource := range s.RootModule().Resources {
 			if resource.Type == "datadog_cloud_workload_security_agent_rule" {
-				_, httpResponse, err := client.CloudWorkloadSecurityApi.GetCloudWorkloadSecurityAgentRule(auth, resource.Primary.ID)
+				_, httpResponse, err := utils.GetCloudWorkloadSecurityApiV2(client).GetCloudWorkloadSecurityAgentRule(auth, resource.Primary.ID)
 				if err != nil {
 					if httpResponse != nil && httpResponse.StatusCode == 404 {
 						continue
