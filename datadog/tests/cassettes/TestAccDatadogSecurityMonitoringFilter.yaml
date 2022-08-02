@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"data":{"attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"second","query":"neither does it"}],"filtered_data_type":"logs","is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","query":"first query"},"type":"security_filters"}}
+      {"data":{"attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"second","query":"neither does it"}],"filtered_data_type":"logs","is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546"},"type":"security_filters"}}
     form: {}
     headers:
       Accept:
@@ -13,10 +13,11 @@ interactions:
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters
     method: POST
   response:
-    body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
+    body: |
+      {"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","is_builtin":false},"type":"security_filters","id":"rcy-emj-dos"}}
     headers:
       Content-Type:
-      - application/json;charset=utf-8
+      - application/json
     status: 200 OK
     code: 200
     duration: ""
@@ -26,13 +27,14 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/rcy-emj-dos
     method: GET
   response:
-    body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
+    body: |
+      {"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","is_builtin":false},"type":"security_filters","id":"rcy-emj-dos"}}
     headers:
       Content-Type:
-      - application/json;charset=utf-8
+      - application/json
     status: 200 OK
     code: 200
     duration: ""
@@ -42,13 +44,14 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/rcy-emj-dos
     method: GET
   response:
-    body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
+    body: |
+      {"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","is_builtin":false},"type":"security_filters","id":"rcy-emj-dos"}}
     headers:
       Content-Type:
-      - application/json;charset=utf-8
+      - application/json
     status: 200 OK
     code: 200
     duration: ""
@@ -58,32 +61,34 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/rcy-emj-dos
     method: GET
   response:
-    body: '{"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
+    body: |
+      {"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","is_builtin":false},"type":"security_filters","id":"rcy-emj-dos"}}
     headers:
       Content-Type:
-      - application/json;charset=utf-8
+      - application/json
     status: 200 OK
     code: 200
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"third","query":"I am new"}],"filtered_data_type":"logs","is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","query":"new query","version":1},"type":"security_filters"}}
+      {"data":{"attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"third","query":"I am new"}],"filtered_data_type":"logs","is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","version":1},"type":"security_filters"}}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/rcy-emj-dos
     method: PATCH
   response:
-    body: '{"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
+    body: |
+      {"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","is_builtin":false},"type":"security_filters","id":"rcy-emj-dos"}}
     headers:
       Content-Type:
-      - application/json;charset=utf-8
+      - application/json
     status: 200 OK
     code: 200
     duration: ""
@@ -93,13 +98,14 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/rcy-emj-dos
     method: GET
   response:
-    body: '{"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
+    body: |
+      {"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","is_builtin":false},"type":"security_filters","id":"rcy-emj-dos"}}
     headers:
       Content-Type:
-      - application/json;charset=utf-8
+      - application/json
     status: 200 OK
     code: 200
     duration: ""
@@ -109,13 +115,14 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/rcy-emj-dos
     method: GET
   response:
-    body: '{"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1633078223","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query","is_builtin":false},"type":"security_filters","id":"as1-no6-k6b"}}'
+    body: |
+      {"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1659103546","is_builtin":false},"type":"security_filters","id":"rcy-emj-dos"}}
     headers:
       Content-Type:
-      - application/json;charset=utf-8
+      - application/json
     status: 200 OK
     code: 200
     duration: ""
@@ -124,12 +131,14 @@ interactions:
     form: {}
     headers:
       Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/rcy-emj-dos
     method: DELETE
   response:
     body: ""
     headers:
+      Content-Type:
+      - text/html; charset=utf-8
     status: 204 No Content
     code: 204
     duration: ""
@@ -139,10 +148,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/as1-no6-k6b
+    url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/rcy-emj-dos
     method: GET
   response:
-    body: '{"errors":["not_found(Security filter with id ''as1-no6-k6b'' not found)"]}'
+    body: |
+      {"errors":["not_found(Security filter with id 'rcy-emj-dos' not found)"]}
     headers:
       Content-Type:
       - application/json
