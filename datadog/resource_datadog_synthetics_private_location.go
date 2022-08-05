@@ -178,16 +178,18 @@ func buildSyntheticsPrivateLocationStruct(d *schema.ResourceData) *datadogV1.Syn
 	}
 
 	if metadata, ok := d.GetOk("metadata"); ok {
-		privateLocationMetadata := datadogV1.NewSyntheticsPrivateLocationMetadataWithDefaults()
-		// MaxItems is set to 1 so we are sure there is only one metadata to check
-		if roles, ok := metadata.([]interface{})[0].(map[string]interface{})["restricted_roles"].(*schema.Set); ok {
-			restricted_roles := []string{}
-			for _, role := range roles.List() {
-				restricted_roles = append(restricted_roles, role.(string))
+		if metadataMap, ok := metadata.([]interface{})[0].(map[string]interface{}); ok {
+			privateLocationMetadata := datadogV1.NewSyntheticsPrivateLocationMetadataWithDefaults()
+			// MaxItems is set to 1 so we are sure there is only one metadata to check
+			if roles, ok := metadataMap["restricted_roles"].(*schema.Set); ok {
+				restricted_roles := []string{}
+				for _, role := range roles.List() {
+					restricted_roles = append(restricted_roles, role.(string))
+				}
+				privateLocationMetadata.SetRestrictedRoles(restricted_roles)
 			}
-			privateLocationMetadata.SetRestrictedRoles(restricted_roles)
+			syntheticsPrivateLocation.SetMetadata(*privateLocationMetadata)
 		}
-		syntheticsPrivateLocation.SetMetadata(*privateLocationMetadata)
 	}
 
 	tags := make([]string, 0)
@@ -208,8 +210,10 @@ func updateSyntheticsPrivateLocationLocalState(d *schema.ResourceData, synthetic
 	localMetadata := make(map[string][]string)
 	metadata := syntheticsPrivateLocation.GetMetadata()
 	restrictedRoles := metadata.GetRestrictedRoles()
-	localMetadata["restricted_roles"] = restrictedRoles
-	d.Set("metadata", []map[string][]string{localMetadata})
+	if len(restrictedRoles) > 0 {
+		localMetadata["restricted_roles"] = restrictedRoles
+		d.Set("metadata", []map[string][]string{localMetadata})
+	}
 
 	return nil
 }
