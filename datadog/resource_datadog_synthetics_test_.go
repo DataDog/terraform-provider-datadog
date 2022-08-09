@@ -77,7 +77,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				},
 			},
 			"locations": {
-				Description: "Array of locations used to run the test. Refer to [Datadog documentation](https://docs.datadoghq.com/synthetics/api_test/#request) for available locations (e.g. `aws:eu-central-1`).",
+				Description: "Array of locations used to run the test. Refer to [the Datadog Synthetics location data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/synthetics_locations) to retrieve the list of locations.",
 				Type:        schema.TypeSet,
 				Required:    true,
 				Elem: &schema.Schema{
