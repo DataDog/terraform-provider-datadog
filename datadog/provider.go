@@ -136,9 +136,6 @@ func Provider() *schema.Provider {
 			"datadog_cloud_workload_security_agent_rule":   resourceDatadogCloudWorkloadSecurityAgentRule(),
 			"datadog_dashboard":                            resourceDatadogDashboard(),
 			"datadog_dashboard_json":                       resourceDatadogDashboardJSON(),
-
-			"datadog_service_catalog_json":                 resourceDatadogServiceCatalogJSON(),
-
 			"datadog_dashboard_list":                       resourceDatadogDashboardList(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
 			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
@@ -168,6 +165,7 @@ func Provider() *schema.Provider {
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_security_monitoring_filter":           resourceDatadogSecurityMonitoringFilter(),
+			"datadog_service_catalog_json":                 resourceDatadogServiceCatalogJSON(),
 			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
 			"datadog_slo_correction":                       resourceDatadogSloCorrection(),
 			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
