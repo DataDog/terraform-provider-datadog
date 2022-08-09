@@ -127,7 +127,7 @@ func resourceDatadogServiceCatalogJSONCreate(ctx context.Context, d *schema.Reso
 
 	if d.Id() == "" {
 		_, httpResp, _ := utils.SendRequest(authV1, datadogClientV1, "GET", serviceDefinitionPath+"/"+id.(string), nil)
-		if httpResp.StatusCode != 404 {
+		if httpResp != nil && httpResp.StatusCode != 404 {
 			return diag.FromErr(fmt.Errorf("a service with name '%s' already exists", id))
 		}
 	}

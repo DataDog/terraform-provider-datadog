@@ -1,0 +1,95 @@
+package test
+
+import (
+	"context"
+	"fmt"
+	"strings"
+	"testing"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+)
+
+func TestAccDatadogServiceCatalogJSONBasic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
+	uniqUpdated := fmt.Sprintf("%s-updated", uniq)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceCatalogDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogServiceCatalogJSON(uniq),
+				Check:  checkServiceCatalogExists(accProvider),
+			},
+			{
+				Config: testAccCheckDatadogServiceCatalogJSON(uniqUpdated),
+				Check:  checkServiceCatalogExists(accProvider),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogServiceCatalogJSON(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_catalog_json" "service_catalog_json" {
+  definition =<<EOF
+{
+    "schema-version": "v2",
+    "dd-service": "%s",
+    "team": "Team A",
+    "contacts": [],
+    "repos": [],
+    "tags": [],
+    "integrations": {},
+    "dd-team": "team-a",
+    "docs": [],
+    "extensions": {},
+    "links": []
+}
+EOF
+}`, uniq)
+
+}
+
+func checkServiceCatalogExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
+
+		for _, r := range s.RootModule().Resources {
+			if _, _, err := utils.SendRequest(authV1, datadogClientV1, "GET", "/api/v2/services/definitions/"+r.Primary.ID, nil); err != nil {
+				return fmt.Errorf("received an error retrieving service %s %s", r.Primary.ID, err)
+			}
+		}
+		return nil
+	}
+}
+
+func testAccCheckDatadogServiceCatalogDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
+		datadogClientV1 := providerConf.DatadogClientV1
+		authV1 := providerConf.AuthV1
+
+		for _, r := range s.RootModule().Resources {
+			if _, httpResp, err := utils.SendRequest(authV1, datadogClientV1, "GET", "/api/v2/services/definitions/"+r.Primary.ID, nil); err != nil {
+				if httpResp != nil && httpResp.StatusCode != 404 {
+					return fmt.Errorf("Service still exists")
+				}
+			}
+		}
+		return nil
+	}
+}
