@@ -33,13 +33,13 @@ type responseSingleData struct {
 	Data responseData
 }
 
-func resourceDatadogServiceCatalogJSON() *schema.Resource {
+func resourceDatadogServiceDefinitionJSON() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog service catalog JSON resource. This can be used to create and manage Datadog service definitions using the JSON definition.",
-		CreateContext: resourceDatadogServiceCatalogJSONCreate,
-		ReadContext:   resourceDatadogServiceCatalogJSONRead,
-		UpdateContext: resourceDatadogServiceCatalogJSONCreate,
-		DeleteContext: resourceDatadogServiceCatalogJSONDelete,
+		Description:   "Provides a Datadog service definition JSON resource. This can be used to create and manage Datadog service definitions in the service catalog using the JSON definition.",
+		CreateContext: resourceDatadogServiceDefinitionJSONCreate,
+		ReadContext:   resourceDatadogServiceDefinitionJSONRead,
+		UpdateContext: resourceDatadogServiceDefinitionJSONCreate,
+		DeleteContext: resourceDatadogServiceDefinitionJSONDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -92,7 +92,7 @@ func resourceDatadogServiceCatalogJSON() *schema.Resource {
 	}
 }
 
-func resourceDatadogServiceCatalogJSONRead(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceDefinitionJSONRead(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -113,10 +113,10 @@ func resourceDatadogServiceCatalogJSONRead(_ context.Context, d *schema.Resource
 		return diag.FromErr(err)
 	}
 
-	return updateServiceCatalogJSONState(d, responseData.Data)
+	return updateServiceDefinitionJSONState(d, responseData.Data)
 }
 
-func resourceDatadogServiceCatalogJSONCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceDefinitionJSONCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -145,10 +145,10 @@ func resourceDatadogServiceCatalogJSONCreate(ctx context.Context, d *schema.Reso
 
 	d.SetId(responseData.Data[0].Attributes.Schema["dd-service"].(string))
 
-	return updateServiceCatalogJSONState(d, responseData.Data[0])
+	return updateServiceDefinitionJSONState(d, responseData.Data[0])
 }
 
-func resourceDatadogServiceCatalogJSONDelete(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceDefinitionJSONDelete(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -164,7 +164,7 @@ func resourceDatadogServiceCatalogJSONDelete(_ context.Context, d *schema.Resour
 	return nil
 }
 
-func updateServiceCatalogJSONState(d *schema.ResourceData, response responseData) diag.Diagnostics {
+func updateServiceDefinitionJSONState(d *schema.ResourceData, response responseData) diag.Diagnostics {
 	serviceString, err := structure.FlattenJsonToString(response.Attributes.Schema)
 	if err != nil {
 		return diag.FromErr(err)

@@ -15,7 +15,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
-func TestAccDatadogServiceCatalogJSONBasic(t *testing.T) {
+func TestAccDatadogServiceDefinitionJSONBasic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
@@ -25,23 +25,23 @@ func TestAccDatadogServiceCatalogJSONBasic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogServiceCatalogDestroy(accProvider),
+		CheckDestroy:      testAccCheckDatadogServiceDefinitionDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogServiceCatalogJSON(uniq),
-				Check:  checkServiceCatalogExists(accProvider),
+				Config: testAccCheckDatadogServiceDefinitionJSON(uniq),
+				Check:  checkServiceDefinitionExists(accProvider),
 			},
 			{
-				Config: testAccCheckDatadogServiceCatalogJSON(uniqUpdated),
-				Check:  checkServiceCatalogExists(accProvider),
+				Config: testAccCheckDatadogServiceDefinitionJSON(uniqUpdated),
+				Check:  checkServiceDefinitionExists(accProvider),
 			},
 		},
 	})
 }
 
-func testAccCheckDatadogServiceCatalogJSON(uniq string) string {
+func testAccCheckDatadogServiceDefinitionJSON(uniq string) string {
 	return fmt.Sprintf(`
-resource "datadog_service_catalog_json" "service_catalog_json" {
+resource "datadog_service_definition_json" "service_definition_json" {
   definition =<<EOF
 {
     "schema-version": "v2",
@@ -61,7 +61,7 @@ EOF
 
 }
 
-func checkServiceCatalogExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func checkServiceDefinitionExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
@@ -83,7 +83,7 @@ func checkServiceCatalogExists(accProvider func() (*schema.Provider, error)) res
 	}
 }
 
-func testAccCheckDatadogServiceCatalogDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func testAccCheckDatadogServiceDefinitionDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
