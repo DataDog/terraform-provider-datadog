@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -68,8 +69,14 @@ func checkServiceCatalogExists(accProvider func() (*schema.Provider, error)) res
 		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
-			if _, _, err := utils.SendRequest(authV1, datadogClientV1, "GET", "/api/v2/services/definitions/"+r.Primary.ID, nil); err != nil {
-				return fmt.Errorf("received an error retrieving service %s %s", r.Primary.ID, err)
+			err := utils.Retry(200*time.Millisecond, 4, func() error {
+				if _, _, err := utils.SendRequest(authV1, datadogClientV1, "GET", "/api/v2/services/definitions/"+r.Primary.ID, nil); err != nil {
+					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving service %s", err)}
+				}
+				return nil
+			})
+			if err != nil {
+				return err
 			}
 		}
 		return nil
@@ -84,10 +91,16 @@ func testAccCheckDatadogServiceCatalogDestroy(accProvider func() (*schema.Provid
 		authV1 := providerConf.AuthV1
 
 		for _, r := range s.RootModule().Resources {
-			if _, httpResp, err := utils.SendRequest(authV1, datadogClientV1, "GET", "/api/v2/services/definitions/"+r.Primary.ID, nil); err != nil {
-				if httpResp != nil && httpResp.StatusCode != 404 {
-					return fmt.Errorf("Service still exists")
+			err := utils.Retry(200*time.Millisecond, 4, func() error {
+				if _, httpResp, err := utils.SendRequest(authV1, datadogClientV1, "GET", "/api/v2/services/definitions/"+r.Primary.ID, nil); err != nil {
+					if httpResp != nil && httpResp.StatusCode != 404 {
+						return &utils.RetryableError{Prob: "service still exists"}
+					}
 				}
+				return nil
+			})
+			if err != nil {
+				return err
 			}
 		}
 		return nil
