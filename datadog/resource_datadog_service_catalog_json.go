@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -71,10 +72,10 @@ func resourceDatadogServiceCatalogJSON() *schema.Resource {
 func resourceDatadogServiceCatalogJSONRead(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
-	authV2 := providerConf.AuthV1
+	authV1 := providerConf.AuthV1
 
 	id := d.Id()
-	respByte, httpResp, err := utils.SendRequest(authV2, datadogClientV1, "GET", serviceDefinitionPath+"/"+id, nil)
+	respByte, httpResp, err := utils.SendRequest(authV1, datadogClientV1, "GET", serviceDefinitionPath+"/"+id, nil)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			d.SetId("")
@@ -95,11 +96,20 @@ func resourceDatadogServiceCatalogJSONRead(_ context.Context, d *schema.Resource
 func resourceDatadogServiceCatalogJSONCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
-	authV2 := providerConf.AuthV1
+	authV1 := providerConf.AuthV1
 
 	definition := d.Get("definition").(string)
+	definitionMap, _ := structure.ExpandJsonFromString(definition)
+	id := definitionMap["dd-service"]
 
-	respByte, httpresp, err := utils.SendRequest(authV2, datadogClientV1, "POST", serviceDefinitionPath, &definition)
+	if d.Id() == "" {
+		_, httpResp, _ := utils.SendRequest(authV1, datadogClientV1, "GET", serviceDefinitionPath+"/"+id.(string), nil)
+		if httpResp.StatusCode != 404 {
+			return diag.FromErr(fmt.Errorf("a service with name '%s' already exists", id))
+		}
+	}
+
+	respByte, httpresp, err := utils.SendRequest(authV1, datadogClientV1, "POST", serviceDefinitionPath, &definition)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating resource")
 	}
@@ -118,9 +128,9 @@ func resourceDatadogServiceCatalogJSONCreate(ctx context.Context, d *schema.Reso
 func resourceDatadogServiceCatalogJSONDelete(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
-	authV2 := providerConf.AuthV1
+	authV1 := providerConf.AuthV1
 	id := d.Id()
-	_, httpResp, err := utils.SendRequest(authV2, datadogClientV1, "DELETE", serviceDefinitionPath+"/"+id, nil)
+	_, httpResp, err := utils.SendRequest(authV1, datadogClientV1, "DELETE", serviceDefinitionPath+"/"+id, nil)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			d.SetId("")
