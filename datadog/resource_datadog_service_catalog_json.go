@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -60,10 +61,32 @@ func resourceDatadogServiceCatalogJSON() *schema.Resource {
 		}),
 		Schema: map[string]*schema.Schema{
 			"definition": {
-				Type:         schema.TypeString,
-				Required:     true,
-				ValidateFunc: validation.StringIsJSON,
-				Description:  "The JSON formatted definition of the service.",
+				Type:     schema.TypeString,
+				Required: true,
+				ValidateFunc: validation.All(validation.StringIsJSON, func(val interface{}, key string) (warns []string, errs []error) {
+					definitionMap, _ := structure.ExpandJsonFromString(val.(string))
+					ddServiceInterface, ok := definitionMap["dd-service"]
+					if !ok {
+						errs = append(errs, fmt.Errorf("the definition must include a field called dd-service"))
+						return
+					}
+					ddServiceString, ok := ddServiceInterface.(string)
+					if !ok {
+						errs = append(errs, fmt.Errorf("the field dd-service must be a string"))
+						return
+					}
+					if ddServiceString != strings.ToLower(ddServiceString) {
+						errs = append(errs, fmt.Errorf("the field dd-service must be all lower case"))
+					}
+					return
+				}),
+				StateFunc: func(v interface{}) string {
+					// Unmarshal and Marshal the definition to get consistent formatting
+					definitionMap, _ := structure.ExpandJsonFromString(v.(string))
+					definition, _ := structure.FlattenJsonToString(definitionMap)
+					return definition
+				},
+				Description: "The JSON formatted definition of the service.",
 			},
 		},
 	}
