@@ -47,17 +47,17 @@ func resourceDatadogServiceDefinitionJSON() *schema.Resource {
 			oldAttrMap, _ := structure.ExpandJsonFromString(old.(string))
 			newAttrMap, _ := structure.ExpandJsonFromString(new.(string))
 
-			oldType, ok := oldAttrMap["dd-service"].(string)
+			oldName, ok := oldAttrMap["dd-service"].(string)
 			if !ok {
 				return true
 			}
 
-			newType, ok := newAttrMap["dd-service"].(string)
+			newName, ok := newAttrMap["dd-service"].(string)
 			if !ok {
 				return true
 			}
 
-			return oldType != newType
+			return oldName != newName
 		}),
 		Schema: map[string]*schema.Schema{
 			"definition": {
