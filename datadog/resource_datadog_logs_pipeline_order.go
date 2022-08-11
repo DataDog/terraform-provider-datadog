@@ -6,7 +6,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -50,9 +50,9 @@ func updateLogsPipelineOrderState(d *schema.ResourceData, order *datadogV1.LogsP
 
 func resourceDatadogLogsPipelineOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	order, httpResponse, err := utils.GetLogsPipelinesApiV1(datadogClient).
+	order, httpResponse, err := apiInstances.GetLogsPipelinesApiV1().
 		GetLogsPipelineOrder(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs pipeline order")
@@ -77,14 +77,14 @@ func resourceDatadogLogsPipelineOrderUpdate(ctx context.Context, d *schema.Resou
 		tfID = name.(string)
 	}
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	updatedOrder, httpResponse, err := utils.GetLogsPipelinesApiV1(datadogClient).
+	updatedOrder, httpResponse, err := apiInstances.GetLogsPipelinesApiV1().
 		UpdateLogsPipelineOrder(auth, ddPipelineList)
 	if err != nil {
 		// Cannot map pipelines to existing ones
 		if strings.Contains(err.Error(), "422 Unprocessable Entity") {
-			ddPipelineOrder, httpResponse, getErr := utils.GetLogsPipelinesApiV1(datadogClient).
+			ddPipelineOrder, httpResponse, getErr := apiInstances.GetLogsPipelinesApiV1().
 				GetLogsPipelineOrder(auth)
 			if getErr != nil {
 				return utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs pipeline order")

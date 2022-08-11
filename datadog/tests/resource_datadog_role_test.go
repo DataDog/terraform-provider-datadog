@@ -100,7 +100,7 @@ func testAccCheckDatadogRoleDestroy(accProvider func() (*schema.Provider, error)
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		client := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
@@ -108,7 +108,7 @@ func testAccCheckDatadogRoleDestroy(accProvider func() (*schema.Provider, error)
 				// Only care about roles
 				continue
 			}
-			_, httpresp, err := utils.GetRolesApiV2(client).GetRole(auth, r.Primary.ID)
+			_, httpresp, err := apiInstances.GetRolesApiV2().GetRole(auth, r.Primary.ID)
 			if err != nil {
 				if !(httpresp != nil && httpresp.StatusCode == 404) {
 					return utils.TranslateClientError(err, httpresp, "error getting role")
@@ -126,11 +126,11 @@ func testAccCheckDatadogRoleExists(accProvider func() (*schema.Provider, error),
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		client := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
 		id := s.RootModule().Resources[rolename].Primary.ID
-		_, httpresp, err := utils.GetRolesApiV2(client).GetRole(auth, id)
+		_, httpresp, err := apiInstances.GetRolesApiV2().GetRole(auth, id)
 		if err != nil {
 			return utils.TranslateClientError(err, httpresp, "error checking role existence")
 		}

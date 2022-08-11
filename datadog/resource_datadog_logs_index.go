@@ -7,7 +7,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -118,14 +118,14 @@ func resourceDatadogLogsIndex() *schema.Resource {
 
 func resourceDatadogLogsIndexCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	logsIndexMutex.Lock()
 	defer logsIndexMutex.Unlock()
 
 	ddIndex := buildDatadogIndexCreateRequest(d)
-	createdIndex, httpResponse, err := utils.GetLogsIndexesApiV1(datadogClient).CreateLogsIndex(auth, *ddIndex)
+	createdIndex, httpResponse, err := apiInstances.GetLogsIndexesApiV1().CreateLogsIndex(auth, *ddIndex)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating logs index")
 	}
@@ -161,10 +161,10 @@ func updateLogsIndexState(d *schema.ResourceData, index *datadogV1.LogsIndex) di
 
 func resourceDatadogLogsIndexRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	ddIndex, httpresp, err := utils.GetLogsIndexesApiV1(datadogClient).GetLogsIndex(auth, d.Id())
+	ddIndex, httpresp, err := apiInstances.GetLogsIndexesApiV1().GetLogsIndex(auth, d.Id())
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -180,7 +180,7 @@ func resourceDatadogLogsIndexRead(ctx context.Context, d *schema.ResourceData, m
 
 func resourceDatadogLogsIndexUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	logsIndexMutex.Lock()
@@ -188,7 +188,7 @@ func resourceDatadogLogsIndexUpdate(ctx context.Context, d *schema.ResourceData,
 
 	ddIndex := buildDatadogIndexUpdateRequest(d)
 	tfName := d.Get("name").(string)
-	updatedIndex, httpResponse, err := utils.GetLogsIndexesApiV1(datadogClient).UpdateLogsIndex(auth, tfName, *ddIndex)
+	updatedIndex, httpResponse, err := apiInstances.GetLogsIndexesApiV1().UpdateLogsIndex(auth, tfName, *ddIndex)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs index")
 	}

@@ -5,8 +5,8 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/common"
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -64,22 +64,22 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 
 func buildMetricMetadataStruct(d *schema.ResourceData) (string, *datadogV1.MetricMetadata) {
 	return d.Get("metric").(string), &datadogV1.MetricMetadata{
-		Type:           common.PtrString(d.Get("type").(string)),
-		Description:    common.PtrString(d.Get("description").(string)),
-		ShortName:      common.PtrString(d.Get("short_name").(string)),
-		Unit:           common.PtrString(d.Get("unit").(string)),
-		PerUnit:        common.PtrString(d.Get("per_unit").(string)),
-		StatsdInterval: common.PtrInt64(int64(d.Get("statsd_interval").(int))),
+		Type:           datadog.PtrString(d.Get("type").(string)),
+		Description:    datadog.PtrString(d.Get("description").(string)),
+		ShortName:      datadog.PtrString(d.Get("short_name").(string)),
+		Unit:           datadog.PtrString(d.Get("unit").(string)),
+		PerUnit:        datadog.PtrString(d.Get("per_unit").(string)),
+		StatsdInterval: datadog.PtrInt64(int64(d.Get("statsd_interval").(int))),
 	}
 }
 
 func resourceDatadogMetricMetadataCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	id, m := buildMetricMetadataStruct(d)
-	createdMetadata, httpResponse, err := utils.GetMetricsApiV1(datadogClient).UpdateMetricMetadata(auth, id, *m)
+	createdMetadata, httpResponse, err := apiInstances.GetMetricsApiV1().UpdateMetricMetadata(auth, id, *m)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating metric metadata")
 	}
@@ -117,12 +117,12 @@ func updateMetricMetadataState(d *schema.ResourceData, metadata *datadogV1.Metri
 
 func resourceDatadogMetricMetadataRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	id := d.Id()
 
-	m, httpresp, err := utils.GetMetricsApiV1(datadogClient).GetMetricMetadata(auth, id)
+	m, httpresp, err := apiInstances.GetMetricsApiV1().GetMetricMetadata(auth, id)
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -138,7 +138,7 @@ func resourceDatadogMetricMetadataRead(ctx context.Context, d *schema.ResourceDa
 
 func resourceDatadogMetricMetadataUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	m := &datadogV1.MetricMetadata{}
@@ -163,7 +163,7 @@ func resourceDatadogMetricMetadataUpdate(ctx context.Context, d *schema.Resource
 		m.SetStatsdInterval(int64(attr.(int)))
 	}
 
-	updatedMetadata, httpResponse, err := utils.GetMetricsApiV1(datadogClient).UpdateMetricMetadata(auth, id, *m)
+	updatedMetadata, httpResponse, err := apiInstances.GetMetricsApiV1().UpdateMetricMetadata(auth, id, *m)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating metric metadata")
 	}

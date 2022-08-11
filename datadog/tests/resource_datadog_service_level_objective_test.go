@@ -9,7 +9,6 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/common"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -226,20 +225,20 @@ func testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider func() (*schema
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
-		if err := destroyServiceLevelObjectiveHelper(auth, s, datadogClient); err != nil {
+		if err := destroyServiceLevelObjectiveHelper(auth, s, apiInstances); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func destroyServiceLevelObjectiveHelper(ctx context.Context, s *terraform.State, datadogClient *common.APIClient) error {
+func destroyServiceLevelObjectiveHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	err := utils.Retry(2, 5, func() error {
 		for _, r := range s.RootModule().Resources {
 			if r.Primary.ID != "" {
-				if _, httpResp, err := utils.GetServiceLevelObjectivesApiV1(datadogClient).GetSLO(ctx, r.Primary.ID); err != nil {
+				if _, httpResp, err := apiInstances.GetServiceLevelObjectivesApiV1().GetSLO(ctx, r.Primary.ID); err != nil {
 					if httpResp != nil && httpResp.StatusCode == 404 {
 						return nil
 					}
@@ -253,9 +252,9 @@ func destroyServiceLevelObjectiveHelper(ctx context.Context, s *terraform.State,
 	return err
 }
 
-func existsServiceLevelObjectiveHelper(ctx context.Context, s *terraform.State, datadogClient *common.APIClient) error {
+func existsServiceLevelObjectiveHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
-		if _, _, err := utils.GetServiceLevelObjectivesApiV1(datadogClient).GetSLO(ctx, r.Primary.ID); err != nil {
+		if _, _, err := apiInstances.GetServiceLevelObjectivesApiV1().GetSLO(ctx, r.Primary.ID); err != nil {
 			return fmt.Errorf("received an error retrieving service level objective %s", err)
 		}
 	}
@@ -266,10 +265,10 @@ func testAccCheckDatadogServiceLevelObjectiveExists(accProvider func() (*schema.
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
-		if err := existsServiceLevelObjectiveHelper(auth, s, datadogClient); err != nil {
+		if err := existsServiceLevelObjectiveHelper(auth, s, apiInstances); err != nil {
 			return err
 		}
 		return nil

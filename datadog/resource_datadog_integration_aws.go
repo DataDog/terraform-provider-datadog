@@ -10,7 +10,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -179,14 +179,14 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData) *datadogV1.AWSAcco
 
 func resourceDatadogIntegrationAwsCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
 	iaws := buildDatadogIntegrationAwsStruct(d)
-	response, httpresp, err := utils.GetAWSIntegrationApiV1(datadogClient).CreateAWSAccount(auth, *iaws)
+	response, httpresp, err := apiInstances.GetAWSIntegrationApiV1().CreateAWSAccount(auth, *iaws)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating AWS integration")
 	}
@@ -209,7 +209,7 @@ func resourceDatadogIntegrationAwsCreate(ctx context.Context, d *schema.Resource
 
 func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	var accountID, roleName, accessKeyID string
@@ -223,7 +223,7 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 		accessKeyID = d.Id()
 	}
 
-	integrations, httpresp, err := utils.GetAWSIntegrationApiV1(datadogClient).ListAWSAccounts(auth)
+	integrations, httpresp, err := apiInstances.GetAWSIntegrationApiV1().ListAWSAccounts(auth)
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 400 {
 			// API returns 400 if integration is not installed
@@ -259,7 +259,7 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 
 func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
@@ -267,7 +267,7 @@ func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.Resource
 	iaws := buildDatadogIntegrationAwsStruct(d)
 
 	if !accountAndRoleNameIDRegex.MatchString(d.Id()) {
-		_, httpresp, err := utils.GetAWSIntegrationApiV1(datadogClient).UpdateAWSAccount(auth, *iaws,
+		_, httpresp, err := apiInstances.GetAWSIntegrationApiV1().UpdateAWSAccount(auth, *iaws,
 			*datadogV1.NewUpdateAWSAccountOptionalParameters().
 				WithAccessKeyId(d.Id()),
 		)
@@ -285,7 +285,7 @@ func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.Resource
 		return diag.FromErr(err)
 	}
 
-	_, httpresp, err := utils.GetAWSIntegrationApiV1(datadogClient).UpdateAWSAccount(auth, *iaws,
+	_, httpresp, err := apiInstances.GetAWSIntegrationApiV1().UpdateAWSAccount(auth, *iaws,
 		*datadogV1.NewUpdateAWSAccountOptionalParameters().
 			WithAccountId(existingAccountID).
 			WithRoleName(existingRoleName),
@@ -316,14 +316,14 @@ func buildDatadogIntegrationAwsDeleteStruct(d *schema.ResourceData) *datadogV1.A
 
 func resourceDatadogIntegrationAwsDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
 	iaws := buildDatadogIntegrationAwsDeleteStruct(d)
 
-	_, httpresp, err := utils.GetAWSIntegrationApiV1(datadogClient).DeleteAWSAccount(auth, *iaws)
+	_, httpresp, err := apiInstances.GetAWSIntegrationApiV1().DeleteAWSAccount(auth, *iaws)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting AWS integration")
 	}

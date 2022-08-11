@@ -9,7 +9,6 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/common"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -111,15 +110,15 @@ func checkIntegrationAWSLogCollectionExists(accProvider func() (*schema.Provider
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
-		return checkIntegrationAWSLogCollectionExistsHelper(auth, s, datadogClient)
+		return checkIntegrationAWSLogCollectionExistsHelper(auth, s, apiInstances)
 	}
 }
 
-func checkIntegrationAWSLogCollectionExistsHelper(ctx context.Context, s *terraform.State, datadogClient *common.APIClient) error {
-	logCollections, _, err := utils.GetAWSLogsIntegrationApiV1(datadogClient).ListAWSLogsIntegrations(ctx)
+func checkIntegrationAWSLogCollectionExistsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	logCollections, _, err := apiInstances.GetAWSLogsIntegrationApiV1().ListAWSLogsIntegrations(ctx)
 	if err != nil {
 		return err
 	}
@@ -141,15 +140,15 @@ func checkIntegrationAWSLogCollectionDestroy(accProvider func() (*schema.Provide
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
-		return checkIntegrationAWSLogCollectionDestroyHelper(auth, s, datadogClient)
+		return checkIntegrationAWSLogCollectionDestroyHelper(auth, s, apiInstances)
 	}
 }
 
-func checkIntegrationAWSLogCollectionDestroyHelper(ctx context.Context, s *terraform.State, datadogClient *common.APIClient) error {
-	logCollections, _, err := utils.GetAWSLogsIntegrationApiV1(datadogClient).ListAWSLogsIntegrations(ctx)
+func checkIntegrationAWSLogCollectionDestroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	logCollections, _, err := apiInstances.GetAWSLogsIntegrationApiV1().ListAWSLogsIntegrations(ctx)
 	if err != nil {
 		return err
 	}

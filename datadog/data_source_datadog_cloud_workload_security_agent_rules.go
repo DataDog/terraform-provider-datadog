@@ -56,12 +56,12 @@ func dataSourceDatadogCloudWorkloadSecurityAgentRules() *schema.Resource {
 
 func dataSourceDatadogCloudWorkloadSecurityAgentRulesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	agentRules := make([]map[string]interface{}, 0)
 
-	response, httpresp, err := utils.GetCloudWorkloadSecurityApiV2(datadogClient).ListCloudWorkloadSecurityAgentRules(auth)
+	response, httpresp, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCloudWorkloadSecurityAgentRules(auth)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error listing agent rules")

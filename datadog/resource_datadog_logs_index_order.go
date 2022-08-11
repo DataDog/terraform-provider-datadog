@@ -5,7 +5,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -53,10 +53,10 @@ func resourceDatadogLogsIndexOrderUpdate(ctx context.Context, d *schema.Resource
 		tfID = name.(string)
 	}
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	updatedOrder, httpResponse, err := utils.GetLogsIndexesApiV1(datadogClient).UpdateLogsIndexOrder(auth, ddIndexList)
+	updatedOrder, httpResponse, err := apiInstances.GetLogsIndexesApiV1().UpdateLogsIndexOrder(auth, ddIndexList)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs index list")
 	}
@@ -76,9 +76,9 @@ func updateLogsIndexOrderState(d *schema.ResourceData, order *datadogV1.LogsInde
 
 func resourceDatadogLogsIndexOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	client := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	ddIndexList, httpResponse, err := utils.GetLogsIndexesApiV1(client).GetLogsIndexOrder(auth)
+	ddIndexList, httpResponse, err := apiInstances.GetLogsIndexesApiV1().GetLogsIndexOrder(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs index list")
 	}

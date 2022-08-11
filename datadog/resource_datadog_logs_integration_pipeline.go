@@ -5,7 +5,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -43,9 +43,9 @@ func updateLogsIntegrationPipelineState(d *schema.ResourceData, pipeline *datado
 
 func resourceDatadogLogsIntegrationPipelineRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	ddPipeline, httpresp, err := utils.GetLogsPipelinesApiV1(datadogClient).
+	ddPipeline, httpresp, err := apiInstances.GetLogsPipelinesApiV1().
 		GetLogsPipeline(auth, d.Id())
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 400 {
@@ -68,9 +68,9 @@ func resourceDatadogLogsIntegrationPipelineUpdate(ctx context.Context, d *schema
 	var ddPipeline datadogV1.LogsPipeline
 	ddPipeline.SetIsEnabled(d.Get("is_enabled").(bool))
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	updatedPipeline, httpResponse, err := utils.GetLogsPipelinesApiV1(datadogClient).
+	updatedPipeline, httpResponse, err := apiInstances.GetLogsPipelinesApiV1().
 		UpdateLogsPipeline(auth, d.Id(), ddPipeline)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs integration pipeline")

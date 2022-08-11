@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
 func testAccCheckDatadogIntegrationGCPConfig(uniq string) string {
@@ -147,10 +146,10 @@ func checkIntegrationGCPExists(accProvider func() (*schema.Provider, error)) fun
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
-		integrations, _, err := utils.GetGCPIntegrationApiV1(datadogClient).ListGCPIntegration(auth)
+		integrations, _, err := apiInstances.GetGCPIntegrationApiV1().ListGCPIntegration(auth)
 		if err != nil {
 			return err
 		}
@@ -171,10 +170,10 @@ func checkIntegrationGCPDestroy(accProvider func() (*schema.Provider, error)) fu
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
-		integrations, _, err := utils.GetGCPIntegrationApiV1(datadogClient).ListGCPIntegration(auth)
+		integrations, _, err := apiInstances.GetGCPIntegrationApiV1().ListGCPIntegration(auth)
 		if err != nil {
 			return err
 		}

@@ -6,8 +6,8 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/common"
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -82,7 +82,7 @@ const (
 
 func resourceDatadogIntegrationGcpCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	integrationGcpMutex.Lock()
@@ -90,20 +90,20 @@ func resourceDatadogIntegrationGcpCreate(ctx context.Context, d *schema.Resource
 
 	projectID := d.Get("project_id").(string)
 
-	if _, httpresp, err := utils.GetGCPIntegrationApiV1(datadogClient).CreateGCPIntegration(auth,
+	if _, httpresp, err := apiInstances.GetGCPIntegrationApiV1().CreateGCPIntegration(auth,
 		datadogV1.GCPAccount{
-			Type:                    common.PtrString(defaultType),
-			ProjectId:               common.PtrString(projectID),
-			PrivateKeyId:            common.PtrString(d.Get("private_key_id").(string)),
-			PrivateKey:              common.PtrString(d.Get("private_key").(string)),
-			ClientEmail:             common.PtrString(d.Get("client_email").(string)),
-			ClientId:                common.PtrString(d.Get("client_id").(string)),
-			AuthUri:                 common.PtrString(defaultAuthURI),
-			TokenUri:                common.PtrString(defaultTokenURI),
-			AuthProviderX509CertUrl: common.PtrString(defaultAuthProviderX509CertURL),
-			ClientX509CertUrl:       common.PtrString(defaultClientX509CertURLPrefix + d.Get("client_email").(string)),
-			HostFilters:             common.PtrString(d.Get("host_filters").(string)),
-			Automute:                common.PtrBool(d.Get("automute").(bool)),
+			Type:                    datadog.PtrString(defaultType),
+			ProjectId:               datadog.PtrString(projectID),
+			PrivateKeyId:            datadog.PtrString(d.Get("private_key_id").(string)),
+			PrivateKey:              datadog.PtrString(d.Get("private_key").(string)),
+			ClientEmail:             datadog.PtrString(d.Get("client_email").(string)),
+			ClientId:                datadog.PtrString(d.Get("client_id").(string)),
+			AuthUri:                 datadog.PtrString(defaultAuthURI),
+			TokenUri:                datadog.PtrString(defaultTokenURI),
+			AuthProviderX509CertUrl: datadog.PtrString(defaultAuthProviderX509CertURL),
+			ClientX509CertUrl:       datadog.PtrString(defaultClientX509CertURLPrefix + d.Get("client_email").(string)),
+			HostFilters:             datadog.PtrString(d.Get("host_filters").(string)),
+			Automute:                datadog.PtrBool(d.Get("automute").(bool)),
 		},
 	); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating GCP integration")
@@ -116,12 +116,12 @@ func resourceDatadogIntegrationGcpCreate(ctx context.Context, d *schema.Resource
 
 func resourceDatadogIntegrationGcpRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	projectID := d.Id()
 
-	integrations, httpresp, err := utils.GetGCPIntegrationApiV1(datadogClient).ListGCPIntegration(auth)
+	integrations, httpresp, err := apiInstances.GetGCPIntegrationApiV1().ListGCPIntegration(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting GCP integration")
 	}
@@ -143,18 +143,18 @@ func resourceDatadogIntegrationGcpRead(ctx context.Context, d *schema.ResourceDa
 
 func resourceDatadogIntegrationGcpUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	integrationGcpMutex.Lock()
 	defer integrationGcpMutex.Unlock()
 
-	if _, httpresp, err := utils.GetGCPIntegrationApiV1(datadogClient).UpdateGCPIntegration(auth,
+	if _, httpresp, err := apiInstances.GetGCPIntegrationApiV1().UpdateGCPIntegration(auth,
 		datadogV1.GCPAccount{
-			ProjectId:   common.PtrString(d.Id()),
-			ClientEmail: common.PtrString(d.Get("client_email").(string)),
-			HostFilters: common.PtrString(d.Get("host_filters").(string)),
-			Automute:    common.PtrBool(d.Get("automute").(bool)),
+			ProjectId:   datadog.PtrString(d.Id()),
+			ClientEmail: datadog.PtrString(d.Get("client_email").(string)),
+			HostFilters: datadog.PtrString(d.Get("host_filters").(string)),
+			Automute:    datadog.PtrBool(d.Get("automute").(bool)),
 		},
 	); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating GCP integration")
@@ -165,16 +165,16 @@ func resourceDatadogIntegrationGcpUpdate(ctx context.Context, d *schema.Resource
 
 func resourceDatadogIntegrationGcpDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	integrationGcpMutex.Lock()
 	defer integrationGcpMutex.Unlock()
 
-	if _, httpresp, err := utils.GetGCPIntegrationApiV1(datadogClient).DeleteGCPIntegration(auth,
+	if _, httpresp, err := apiInstances.GetGCPIntegrationApiV1().DeleteGCPIntegration(auth,
 		datadogV1.GCPAccount{
-			ProjectId:   common.PtrString(d.Id()),
-			ClientEmail: common.PtrString(d.Get("client_email").(string)),
+			ProjectId:   datadog.PtrString(d.Id()),
+			ClientEmail: datadog.PtrString(d.Get("client_email").(string)),
 		},
 	); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting GCP integration")

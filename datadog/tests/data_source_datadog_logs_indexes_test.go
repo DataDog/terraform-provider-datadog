@@ -44,9 +44,9 @@ func dataLogsIndexesCountCheck(accProvider func() (*schema.Provider, error)) fun
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		auth := providerConf.Auth
-		client := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 
-		logsIndexes, _, err := utils.GetLogsIndexesApiV1(client).ListLogIndexes(auth)
+		logsIndexes, _, err := apiInstances.GetLogsIndexesApiV1().ListLogIndexes(auth)
 		if err != nil {
 			return err
 		}

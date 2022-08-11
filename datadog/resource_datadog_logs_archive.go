@@ -7,8 +7,8 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/common"
-	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -94,14 +94,14 @@ func resourceDatadogLogsArchive() *schema.Resource {
 
 func resourceDatadogLogsArchiveCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	ddArchive, err := buildDatadogArchiveCreateReq(d)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	createdArchive, httpResponse, err := utils.GetLogsArchivesApiV2(datadogClient).CreateLogsArchive(auth, *ddArchive)
+	createdArchive, httpResponse, err := apiInstances.GetLogsArchivesApiV2().CreateLogsArchive(auth, *ddArchive)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "failed to create logs archive using Datadog API")
 	}
@@ -150,10 +150,10 @@ func updateLogsArchiveState(d *schema.ResourceData, ddArchive *datadogV2.LogsArc
 
 func resourceDatadogLogsArchiveRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	ddArchive, httpresp, err := utils.GetLogsArchivesApiV2(datadogClient).GetLogsArchive(auth, d.Id())
+	ddArchive, httpresp, err := apiInstances.GetLogsArchivesApiV2().GetLogsArchive(auth, d.Id())
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -169,14 +169,14 @@ func resourceDatadogLogsArchiveRead(ctx context.Context, d *schema.ResourceData,
 
 func resourceDatadogLogsArchiveUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	ddArchive, err := buildDatadogArchiveCreateReq(d)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	updatedArchive, httpResponse, err := utils.GetLogsArchivesApiV2(datadogClient).UpdateLogsArchive(auth, d.Id(), *ddArchive)
+	updatedArchive, httpResponse, err := apiInstances.GetLogsArchivesApiV2().UpdateLogsArchive(auth, d.Id(), *ddArchive)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs archive")
 	}
@@ -188,10 +188,10 @@ func resourceDatadogLogsArchiveUpdate(ctx context.Context, d *schema.ResourceDat
 
 func resourceDatadogLogsArchiveDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	if httpresp, err := utils.GetLogsArchivesApiV2(datadogClient).DeleteLogsArchive(auth, d.Id()); err != nil {
+	if httpresp, err := apiInstances.GetLogsArchivesApiV2().DeleteLogsArchive(auth, d.Id()); err != nil {
 		// API returns 404 when the specific archive id doesn't exist.
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			return nil
@@ -353,7 +353,7 @@ func buildAzureDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationA
 		storageAccount.(string),
 		datadogV2.LOGSARCHIVEDESTINATIONAZURETYPE_AZURE,
 	)
-	destination.Path = common.PtrString(path.(string))
+	destination.Path = datadog.PtrString(path.(string))
 	return destination, nil
 }
 
@@ -384,7 +384,7 @@ func buildGCSDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationGCS
 		*integration,
 		datadogV2.LOGSARCHIVEDESTINATIONGCSTYPE_GCS,
 	)
-	destination.Path = common.PtrString(path.(string))
+	destination.Path = datadog.PtrString(path.(string))
 	return destination, nil
 }
 
@@ -415,7 +415,7 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 		*integration,
 		datadogV2.LOGSARCHIVEDESTINATIONS3TYPE_S3,
 	)
-	destination.Path = common.PtrString(path.(string))
+	destination.Path = datadog.PtrString(path.(string))
 	return destination, nil
 }
 

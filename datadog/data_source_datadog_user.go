@@ -3,7 +3,7 @@ package datadog
 import (
 	"context"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
@@ -38,14 +38,14 @@ func dataSourceDatadogUser() *schema.Resource {
 
 func dataSourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	filter := d.Get("filter").(string) // string | Filter all users by the given string. Defaults to no filtering. (optional) // string | Filter on status attribute. Comma separated list, with possible values `Active`, `Pending`, and `Disabled`. Defaults to no filtering. (optional)
 	optionalParams := datadogV2.ListUsersOptionalParameters{
 		Filter: &filter,
 	}
 
-	res, httpresp, err := utils.GetUsersApiV2(datadogClient).ListUsers(auth, optionalParams)
+	res, httpresp, err := apiInstances.GetUsersApiV2().ListUsers(auth, optionalParams)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying user")
 	}

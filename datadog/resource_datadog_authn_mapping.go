@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -45,10 +45,11 @@ func resourceDatadogAuthnMapping() *schema.Resource {
 }
 
 func resourceDatadogAuthnMappingCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*ProviderConfiguration).DatadogClient
+	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 	authNMapReq := buildAuthNMappingCreateRequest(d)
-	createResp, httpResponse, err := utils.GetAuthNMappingsApiV2(client).CreateAuthNMapping(auth, authNMapReq)
+
+	createResp, httpResponse, err := apiInstances.GetAuthNMappingsApiV2().CreateAuthNMapping(auth, authNMapReq)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating authn mapping")
 	}
@@ -56,11 +57,11 @@ func resourceDatadogAuthnMappingCreate(ctx context.Context, d *schema.ResourceDa
 		return diag.FromErr(err)
 	}
 
-	var getAuthNMappingResponse datadog.AuthNMappingResponse
+	var getAuthNMappingResponse datadogV2.AuthNMappingResponse
 	var httpResponseGet *http.Response
 
 	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
-		getAuthNMappingResponse, httpResponseGet, err = utils.GetAuthNMappingsApiV2(client).GetAuthNMapping(auth, createResp.Data.GetId())
+		getAuthNMappingResponse, httpResponseGet, err = apiInstances.GetAuthNMappingsApiV2().GetAuthNMapping(auth, createResp.Data.GetId())
 		if err != nil {
 			if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
 				return resource.RetryableError(fmt.Errorf("SAML role mapping not created yet"))
@@ -84,10 +85,10 @@ func resourceDatadogAuthnMappingCreate(ctx context.Context, d *schema.ResourceDa
 }
 
 func resourceDatadogAuthnMappingRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*ProviderConfiguration).DatadogClient
+	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
-	resp, httpResponse, err := utils.GetAuthNMappingsApiV2(client).GetAuthNMapping(auth, d.Id())
+	resp, httpResponse, err := apiInstances.GetAuthNMappingsApiV2().GetAuthNMapping(auth, d.Id())
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId((""))
@@ -100,11 +101,11 @@ func resourceDatadogAuthnMappingRead(ctx context.Context, d *schema.ResourceData
 }
 
 func resourceDatadogAuthnMappingUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*ProviderConfiguration).DatadogClient
+	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
 	req := buildAuthNMappingUpdateRequest(d)
-	resp, httpResponse, err := utils.GetAuthNMappingsApiV2(client).UpdateAuthNMapping(auth, d.Id(), req)
+	resp, httpResponse, err := apiInstances.GetAuthNMappingsApiV2().UpdateAuthNMapping(auth, d.Id(), req)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating role mapping")
@@ -119,10 +120,10 @@ func resourceDatadogAuthnMappingUpdate(ctx context.Context, d *schema.ResourceDa
 }
 
 func resourceDatadogAuthnMappingDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	client := meta.(*ProviderConfiguration).DatadogClient
+	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
-	httpResponse, err := utils.GetAuthNMappingsApiV2(client).DeleteAuthNMapping(auth, d.Id())
+	httpResponse, err := apiInstances.GetAuthNMappingsApiV2().DeleteAuthNMapping(auth, d.Id())
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting authn mapping")
 	}
@@ -130,7 +131,7 @@ func resourceDatadogAuthnMappingDelete(ctx context.Context, d *schema.ResourceDa
 	return nil
 }
 
-func updateAuthNMappingState(d *schema.ResourceData, authNMapping *datadog.AuthNMapping) diag.Diagnostics {
+func updateAuthNMappingState(d *schema.ResourceData, authNMapping *datadogV2.AuthNMapping) diag.Diagnostics {
 	authNMappingAttributes := authNMapping.GetAttributes()
 	authNMappingRelations := authNMapping.GetRelationships()
 	authNMappingRoleRelation := authNMappingRelations.GetRole()
@@ -150,11 +151,11 @@ func updateAuthNMappingState(d *schema.ResourceData, authNMapping *datadog.AuthN
 	return nil
 }
 
-func buildAuthNMappingCreateRequest(d *schema.ResourceData) datadog.AuthNMappingCreateRequest {
-	authNMappingCreateRequest := datadog.NewAuthNMappingCreateRequestWithDefaults()
-	authNMappingCreateData := datadog.NewAuthNMappingCreateDataWithDefaults()
-	authNMappingCreateAttrs := datadog.NewAuthNMappingCreateAttributesWithDefaults()
-	authNMappingRelations := datadog.NewAuthNMappingCreateRelationshipsWithDefaults()
+func buildAuthNMappingCreateRequest(d *schema.ResourceData) datadogV2.AuthNMappingCreateRequest {
+	authNMappingCreateRequest := datadogV2.NewAuthNMappingCreateRequestWithDefaults()
+	authNMappingCreateData := datadogV2.NewAuthNMappingCreateDataWithDefaults()
+	authNMappingCreateAttrs := datadogV2.NewAuthNMappingCreateAttributesWithDefaults()
+	authNMappingRelations := datadogV2.NewAuthNMappingCreateRelationshipsWithDefaults()
 
 	// Set AuthN mapping Attributes
 	authNMappingCreateAttrs.SetAttributeKey(d.Get("key").(string))
@@ -173,11 +174,11 @@ func buildAuthNMappingCreateRequest(d *schema.ResourceData) datadog.AuthNMapping
 	return *authNMappingCreateRequest
 }
 
-func buildAuthNMappingUpdateRequest(d *schema.ResourceData) datadog.AuthNMappingUpdateRequest {
-	authNMappingUpdateRequest := datadog.NewAuthNMappingUpdateRequestWithDefaults()
-	authNMappingUpdateData := datadog.NewAuthNMappingUpdateDataWithDefaults()
-	authNMappingUpdateAttrs := datadog.NewAuthNMappingUpdateAttributesWithDefaults()
-	authNMappingRelations := datadog.NewAuthNMappingUpdateRelationshipsWithDefaults()
+func buildAuthNMappingUpdateRequest(d *schema.ResourceData) datadogV2.AuthNMappingUpdateRequest {
+	authNMappingUpdateRequest := datadogV2.NewAuthNMappingUpdateRequestWithDefaults()
+	authNMappingUpdateData := datadogV2.NewAuthNMappingUpdateDataWithDefaults()
+	authNMappingUpdateAttrs := datadogV2.NewAuthNMappingUpdateAttributesWithDefaults()
+	authNMappingRelations := datadogV2.NewAuthNMappingUpdateRelationshipsWithDefaults()
 
 	// Set AuthN mapping Attributes
 	authNMappingUpdateAttrs.SetAttributeKey(d.Get("key").(string))
@@ -197,9 +198,9 @@ func buildAuthNMappingUpdateRequest(d *schema.ResourceData) datadog.AuthNMapping
 	return *authNMappingUpdateRequest
 }
 
-func buildRoleRelations(d *schema.ResourceData) *datadog.RelationshipToRole {
-	roleRelations := datadog.NewRelationshipToRoleWithDefaults()
-	roleRelationsData := datadog.NewRelationshipToRoleDataWithDefaults()
+func buildRoleRelations(d *schema.ResourceData) *datadogV2.RelationshipToRole {
+	roleRelations := datadogV2.NewRelationshipToRoleWithDefaults()
+	roleRelationsData := datadogV2.NewRelationshipToRoleDataWithDefaults()
 	roleRelationsData.SetId(d.Get("role").(string))
 	roleRelations.SetData(*roleRelationsData)
 	return roleRelations

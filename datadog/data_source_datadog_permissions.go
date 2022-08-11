@@ -30,10 +30,10 @@ func dataSourceDatadogPermissions() *schema.Resource {
 
 func dataSourceDatadogPermissionsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	res, resp, err := utils.GetRolesApiV2(datadogClient).ListPermissions(auth)
+	res, resp, err := apiInstances.GetRolesApiV2().ListPermissions(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, resp, "error listing permissions")
 	}

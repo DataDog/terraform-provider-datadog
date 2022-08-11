@@ -98,10 +98,10 @@ var dataSourceLogsIndexesExclusionFilterSchema = map[string]*schema.Schema{
 
 func dataSourceDatadogLogsIndexesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	logsIndexes, httpresp, err := utils.GetLogsIndexesApiV1(datadogClient).ListLogIndexes(auth)
+	logsIndexes, httpresp, err := apiInstances.GetLogsIndexesApiV1().ListLogIndexes(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying log indexes")
 	}

@@ -6,7 +6,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -65,7 +65,7 @@ func dataSourceDatadogMonitors() *schema.Resource {
 
 func dataSourceDatadogMonitorsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	optionalParams := datadogV1.NewListMonitorsOptionalParameters()
@@ -79,7 +79,7 @@ func dataSourceDatadogMonitorsRead(ctx context.Context, d *schema.ResourceData, 
 		optionalParams = optionalParams.WithMonitorTags(strings.Join(expandStringList(v.([]interface{})), ","))
 	}
 
-	monitors, httpresp, err := utils.GetMonitorsApiV1(datadogClient).ListMonitors(auth, *optionalParams)
+	monitors, httpresp, err := apiInstances.GetMonitorsApiV1().ListMonitors(auth, *optionalParams)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying monitors")
 	}

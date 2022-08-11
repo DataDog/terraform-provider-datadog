@@ -9,8 +9,8 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/common"
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
+	dd "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -132,7 +132,7 @@ func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider func() (*sche
 
 		filters, err := listFiltersHelper(accProvider, resourceID)
 		if err != nil {
-			errObj := err.(common.GenericOpenAPIError)
+			errObj := err.(dd.GenericOpenAPIError)
 			if matched, _ := regexp.MatchString("AWS account [0-9]+ does not exist in integration", string(errObj.Body())); matched {
 				return nil
 			}
@@ -155,7 +155,7 @@ func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider func() (*sche
 func listFiltersHelper(accProvider func() (*schema.Provider, error), resourceID string) (*[]datadogV1.AWSTagFilter, error) {
 	provider, _ := accProvider()
 	providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	filters := []datadogV1.AWSTagFilter{}
@@ -164,7 +164,7 @@ func listFiltersHelper(accProvider func() (*schema.Provider, error), resourceID 
 		return nil, err
 	}
 
-	resp, _, err := utils.GetAWSIntegrationApiV1(datadogClient).ListAWSTagFilters(auth, accountID)
+	resp, _, err := apiInstances.GetAWSIntegrationApiV1().ListAWSTagFilters(auth, accountID)
 	if err != nil {
 		return nil, err
 	}

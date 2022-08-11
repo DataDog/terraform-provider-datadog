@@ -1,12 +1,15 @@
 package utils
 
 import (
-	"github.com/DataDog/datadog-api-client-go/v2/api/common"
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
-	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 )
 
-var (
+type ApiInstances struct {
+	// HttpClient
+	HttpClient *datadog.APIClient
+
 	// V1 APIs
 	authenticationApiV1                   *datadogV1.AuthenticationApi
 	awsIntegrationApiV1                   *datadogV1.AWSIntegrationApi
@@ -63,428 +66,428 @@ var (
 	serviceAccountsApiV2       *datadogV2.ServiceAccountsApi
 	usageMeteringApiV2         *datadogV2.UsageMeteringApi
 	usersApiV2                 *datadogV2.UsersApi
-)
+}
 
 // GetAuthenticationApiV1 get instance of AuthenticationApi
-func GetAuthenticationApiV1(client *common.APIClient) *datadogV1.AuthenticationApi {
-	if authenticationApiV1 == nil || authenticationApiV1.Client != client {
-		authenticationApiV1 = datadogV1.NewAuthenticationApi(client)
+func (i *ApiInstances) GetAuthenticationApiV1() *datadogV1.AuthenticationApi {
+	if i.authenticationApiV1 == nil || i.authenticationApiV1.Client != i.HttpClient {
+		i.authenticationApiV1 = datadogV1.NewAuthenticationApi(i.HttpClient)
 	}
-	return authenticationApiV1
+	return i.authenticationApiV1
 }
 
 // GetAWSIntegrationApiV1 get instance of AWSIntegrationApi
-func GetAWSIntegrationApiV1(client *common.APIClient) *datadogV1.AWSIntegrationApi {
-	if awsIntegrationApiV1 == nil || awsIntegrationApiV1.Client != client {
-		awsIntegrationApiV1 = datadogV1.NewAWSIntegrationApi(client)
+func (i *ApiInstances) GetAWSIntegrationApiV1() *datadogV1.AWSIntegrationApi {
+	if i.awsIntegrationApiV1 == nil || i.awsIntegrationApiV1.Client != i.HttpClient {
+		i.awsIntegrationApiV1 = datadogV1.NewAWSIntegrationApi(i.HttpClient)
 	}
-	return awsIntegrationApiV1
+	return i.awsIntegrationApiV1
 }
 
 // GetAWSLogsIntegrationApiV1 get instance of AwsLogsIntegrationApi
-func GetAWSLogsIntegrationApiV1(client *common.APIClient) *datadogV1.AWSLogsIntegrationApi {
-	if awsLogsIntegrationApiV1 == nil || awsLogsIntegrationApiV1.Client != client {
-		awsLogsIntegrationApiV1 = datadogV1.NewAWSLogsIntegrationApi(client)
+func (i *ApiInstances) GetAWSLogsIntegrationApiV1() *datadogV1.AWSLogsIntegrationApi {
+	if i.awsLogsIntegrationApiV1 == nil || i.awsLogsIntegrationApiV1.Client != i.HttpClient {
+		i.awsLogsIntegrationApiV1 = datadogV1.NewAWSLogsIntegrationApi(i.HttpClient)
 	}
-	return awsLogsIntegrationApiV1
+	return i.awsLogsIntegrationApiV1
 }
 
 // GetAzureIntegrationApiV1 get instance of AzureIntegrationApi
-func GetAzureIntegrationApiV1(client *common.APIClient) *datadogV1.AzureIntegrationApi {
-	if azureIntegrationApiV1 == nil || azureIntegrationApiV1.Client != client {
-		azureIntegrationApiV1 = datadogV1.NewAzureIntegrationApi(client)
+func (i *ApiInstances) GetAzureIntegrationApiV1() *datadogV1.AzureIntegrationApi {
+	if i.azureIntegrationApiV1 == nil || i.azureIntegrationApiV1.Client != i.HttpClient {
+		i.azureIntegrationApiV1 = datadogV1.NewAzureIntegrationApi(i.HttpClient)
 	}
-	return azureIntegrationApiV1
+	return i.azureIntegrationApiV1
 }
 
 // GetDashboardListsApiV1 get instance of DashboardListsApi
-func GetDashboardListsApiV1(client *common.APIClient) *datadogV1.DashboardListsApi {
-	if dashboardListsApiV1 == nil || dashboardListsApiV1.Client != client {
-		dashboardListsApiV1 = datadogV1.NewDashboardListsApi(client)
+func (i *ApiInstances) GetDashboardListsApiV1() *datadogV1.DashboardListsApi {
+	if i.dashboardListsApiV1 == nil || i.dashboardListsApiV1.Client != i.HttpClient {
+		i.dashboardListsApiV1 = datadogV1.NewDashboardListsApi(i.HttpClient)
 	}
-	return dashboardListsApiV1
+	return i.dashboardListsApiV1
 }
 
 // GetDashboardsApiV1 get instance of DashboardsApi
-func GetDashboardsApiV1(client *common.APIClient) *datadogV1.DashboardsApi {
-	if dashboardsApiV1 == nil || dashboardsApiV1.Client != client {
-		dashboardsApiV1 = datadogV1.NewDashboardsApi(client)
+func (i *ApiInstances) GetDashboardsApiV1() *datadogV1.DashboardsApi {
+	if i.dashboardsApiV1 == nil || i.dashboardsApiV1.Client != i.HttpClient {
+		i.dashboardsApiV1 = datadogV1.NewDashboardsApi(i.HttpClient)
 	}
-	return dashboardsApiV1
+	return i.dashboardsApiV1
 }
 
 // GetDowntimesApiV1 get instance of DowntimesApi
-func GetDowntimesApiV1(client *common.APIClient) *datadogV1.DowntimesApi {
-	if downtimesApiV1 == nil || downtimesApiV1.Client != client {
-		downtimesApiV1 = datadogV1.NewDowntimesApi(client)
+func (i *ApiInstances) GetDowntimesApiV1() *datadogV1.DowntimesApi {
+	if i.downtimesApiV1 == nil || i.downtimesApiV1.Client != i.HttpClient {
+		i.downtimesApiV1 = datadogV1.NewDowntimesApi(i.HttpClient)
 	}
-	return downtimesApiV1
+	return i.downtimesApiV1
 }
 
 // GetEventsApiV1 get instance of EventsApi
-func GetEventsApiV1(client *common.APIClient) *datadogV1.EventsApi {
-	if eventsApiV1 == nil || eventsApiV1.Client != client {
-		eventsApiV1 = datadogV1.NewEventsApi(client)
+func (i *ApiInstances) GetEventsApiV1() *datadogV1.EventsApi {
+	if i.eventsApiV1 == nil || i.eventsApiV1.Client != i.HttpClient {
+		i.eventsApiV1 = datadogV1.NewEventsApi(i.HttpClient)
 	}
-	return eventsApiV1
+	return i.eventsApiV1
 }
 
 // GetGCPIntegrationApiV1 get instance of GcpIntegrationApi
-func GetGCPIntegrationApiV1(client *common.APIClient) *datadogV1.GCPIntegrationApi {
-	if gcpIntegrationApiV1 == nil || gcpIntegrationApiV1.Client != client {
-		gcpIntegrationApiV1 = datadogV1.NewGCPIntegrationApi(client)
+func (i *ApiInstances) GetGCPIntegrationApiV1() *datadogV1.GCPIntegrationApi {
+	if i.gcpIntegrationApiV1 == nil || i.gcpIntegrationApiV1.Client != i.HttpClient {
+		i.gcpIntegrationApiV1 = datadogV1.NewGCPIntegrationApi(i.HttpClient)
 	}
-	return gcpIntegrationApiV1
+	return i.gcpIntegrationApiV1
 }
 
 // GetHostsApiV1 get instance of HostsApi
-func GetHostsApiV1(client *common.APIClient) *datadogV1.HostsApi {
-	if hostsApiV1 == nil || hostsApiV1.Client != client {
-		hostsApiV1 = datadogV1.NewHostsApi(client)
+func (i *ApiInstances) GetHostsApiV1() *datadogV1.HostsApi {
+	if i.hostsApiV1 == nil || i.hostsApiV1.Client != i.HttpClient {
+		i.hostsApiV1 = datadogV1.NewHostsApi(i.HttpClient)
 	}
-	return hostsApiV1
+	return i.hostsApiV1
 }
 
 // GetIPRangesApiV1 get instance of IPRangesApi
-func GetIPRangesApiV1(client *common.APIClient) *datadogV1.IPRangesApi {
-	if ipRangesApiV1 == nil || ipRangesApiV1.Client != client {
-		ipRangesApiV1 = datadogV1.NewIPRangesApi(client)
+func (i *ApiInstances) GetIPRangesApiV1() *datadogV1.IPRangesApi {
+	if i.ipRangesApiV1 == nil || i.ipRangesApiV1.Client != i.HttpClient {
+		i.ipRangesApiV1 = datadogV1.NewIPRangesApi(i.HttpClient)
 	}
-	return ipRangesApiV1
+	return i.ipRangesApiV1
 }
 
 // GetKeyManagementApiV1 get instance of KeyManagementApi
-func GetKeyManagementApiV1(client *common.APIClient) *datadogV1.KeyManagementApi {
-	if keyManagementApiV1 == nil || keyManagementApiV1.Client != client {
-		keyManagementApiV1 = datadogV1.NewKeyManagementApi(client)
+func (i *ApiInstances) GetKeyManagementApiV1() *datadogV1.KeyManagementApi {
+	if i.keyManagementApiV1 == nil || i.keyManagementApiV1.Client != i.HttpClient {
+		i.keyManagementApiV1 = datadogV1.NewKeyManagementApi(i.HttpClient)
 	}
-	return keyManagementApiV1
+	return i.keyManagementApiV1
 }
 
 // GetLogsApiV1 get instance of LogsApi
-func GetLogsApiV1(client *common.APIClient) *datadogV1.LogsApi {
-	if logsApiV1 == nil || logsApiV1.Client != client {
-		logsApiV1 = datadogV1.NewLogsApi(client)
+func (i *ApiInstances) GetLogsApiV1() *datadogV1.LogsApi {
+	if i.logsApiV1 == nil || i.logsApiV1.Client != i.HttpClient {
+		i.logsApiV1 = datadogV1.NewLogsApi(i.HttpClient)
 	}
-	return logsApiV1
+	return i.logsApiV1
 }
 
 // GetLogsIndexesApiV1 get instance of LogsIndexesApi
-func GetLogsIndexesApiV1(client *common.APIClient) *datadogV1.LogsIndexesApi {
-	if logsIndexesApiV1 == nil || logsIndexesApiV1.Client != client {
-		logsIndexesApiV1 = datadogV1.NewLogsIndexesApi(client)
+func (i *ApiInstances) GetLogsIndexesApiV1() *datadogV1.LogsIndexesApi {
+	if i.logsIndexesApiV1 == nil || i.logsIndexesApiV1.Client != i.HttpClient {
+		i.logsIndexesApiV1 = datadogV1.NewLogsIndexesApi(i.HttpClient)
 	}
-	return logsIndexesApiV1
+	return i.logsIndexesApiV1
 }
 
 // GetLogsPipelinesApiV1 get instance of LogsPipelinesApi
-func GetLogsPipelinesApiV1(client *common.APIClient) *datadogV1.LogsPipelinesApi {
-	if logsPipelinesApiV1 == nil || logsPipelinesApiV1.Client != client {
-		logsPipelinesApiV1 = datadogV1.NewLogsPipelinesApi(client)
+func (i *ApiInstances) GetLogsPipelinesApiV1() *datadogV1.LogsPipelinesApi {
+	if i.logsPipelinesApiV1 == nil || i.logsPipelinesApiV1.Client != i.HttpClient {
+		i.logsPipelinesApiV1 = datadogV1.NewLogsPipelinesApi(i.HttpClient)
 	}
-	return logsPipelinesApiV1
+	return i.logsPipelinesApiV1
 }
 
 // GetMetricsApiV1 get instance of MetricsApi
-func GetMetricsApiV1(client *common.APIClient) *datadogV1.MetricsApi {
-	if metricsApiV1 == nil || metricsApiV1.Client != client {
-		metricsApiV1 = datadogV1.NewMetricsApi(client)
+func (i *ApiInstances) GetMetricsApiV1() *datadogV1.MetricsApi {
+	if i.metricsApiV1 == nil || i.metricsApiV1.Client != i.HttpClient {
+		i.metricsApiV1 = datadogV1.NewMetricsApi(i.HttpClient)
 	}
-	return metricsApiV1
+	return i.metricsApiV1
 }
 
 // GetMonitorsApiV1 get instance of MonitorsApi
-func GetMonitorsApiV1(client *common.APIClient) *datadogV1.MonitorsApi {
-	if monitorsApiV1 == nil || monitorsApiV1.Client != client {
-		monitorsApiV1 = datadogV1.NewMonitorsApi(client)
+func (i *ApiInstances) GetMonitorsApiV1() *datadogV1.MonitorsApi {
+	if i.monitorsApiV1 == nil || i.monitorsApiV1.Client != i.HttpClient {
+		i.monitorsApiV1 = datadogV1.NewMonitorsApi(i.HttpClient)
 	}
-	return monitorsApiV1
+	return i.monitorsApiV1
 }
 
 // GetNotebooksApiV1 get instance of NotebooksApi
-func GetNotebooksApiV1(client *common.APIClient) *datadogV1.NotebooksApi {
-	if notebooksApiV1 == nil || notebooksApiV1.Client != client {
-		notebooksApiV1 = datadogV1.NewNotebooksApi(client)
+func (i *ApiInstances) GetNotebooksApiV1() *datadogV1.NotebooksApi {
+	if i.notebooksApiV1 == nil || i.notebooksApiV1.Client != i.HttpClient {
+		i.notebooksApiV1 = datadogV1.NewNotebooksApi(i.HttpClient)
 	}
-	return notebooksApiV1
+	return i.notebooksApiV1
 }
 
 // GetOrganizationsApiV1 get instance of OrganizationsApi
-func GetOrganizationsApiV1(client *common.APIClient) *datadogV1.OrganizationsApi {
-	if organizationsApiV1 == nil || organizationsApiV1.Client != client {
-		organizationsApiV1 = datadogV1.NewOrganizationsApi(client)
+func (i *ApiInstances) GetOrganizationsApiV1() *datadogV1.OrganizationsApi {
+	if i.organizationsApiV1 == nil || i.organizationsApiV1.Client != i.HttpClient {
+		i.organizationsApiV1 = datadogV1.NewOrganizationsApi(i.HttpClient)
 	}
-	return organizationsApiV1
+	return i.organizationsApiV1
 }
 
 // GetPagerDutyIntegrationApiV1 get instance of PagerDutyIntegrationApi
-func GetPagerDutyIntegrationApiV1(client *common.APIClient) *datadogV1.PagerDutyIntegrationApi {
-	if pagerDutyIntegrationApiV1 == nil || pagerDutyIntegrationApiV1.Client != client {
-		pagerDutyIntegrationApiV1 = datadogV1.NewPagerDutyIntegrationApi(client)
+func (i *ApiInstances) GetPagerDutyIntegrationApiV1() *datadogV1.PagerDutyIntegrationApi {
+	if i.pagerDutyIntegrationApiV1 == nil || i.pagerDutyIntegrationApiV1.Client != i.HttpClient {
+		i.pagerDutyIntegrationApiV1 = datadogV1.NewPagerDutyIntegrationApi(i.HttpClient)
 	}
-	return pagerDutyIntegrationApiV1
+	return i.pagerDutyIntegrationApiV1
 }
 
 // GetSecurityMonitoringApiV1 get instance of SecurityMonitoringApi
-func GetSecurityMonitoringApiV1(client *common.APIClient) *datadogV1.SecurityMonitoringApi {
-	if securityMonitoringApiV1 == nil || securityMonitoringApiV1.Client != client {
-		securityMonitoringApiV1 = datadogV1.NewSecurityMonitoringApi(client)
+func (i *ApiInstances) GetSecurityMonitoringApiV1() *datadogV1.SecurityMonitoringApi {
+	if i.securityMonitoringApiV1 == nil || i.securityMonitoringApiV1.Client != i.HttpClient {
+		i.securityMonitoringApiV1 = datadogV1.NewSecurityMonitoringApi(i.HttpClient)
 	}
-	return securityMonitoringApiV1
+	return i.securityMonitoringApiV1
 }
 
 // GetServiceChecksApiV1 get instance of ServiceChecksApi
-func GetServiceChecksApiV1(client *common.APIClient) *datadogV1.ServiceChecksApi {
-	if serviceChecksApiV1 == nil || serviceChecksApiV1.Client != client {
-		serviceChecksApiV1 = datadogV1.NewServiceChecksApi(client)
+func (i *ApiInstances) GetServiceChecksApiV1() *datadogV1.ServiceChecksApi {
+	if i.serviceChecksApiV1 == nil || i.serviceChecksApiV1.Client != i.HttpClient {
+		i.serviceChecksApiV1 = datadogV1.NewServiceChecksApi(i.HttpClient)
 	}
-	return serviceChecksApiV1
+	return i.serviceChecksApiV1
 }
 
 // GetServiceLevelObjectiveCorrectionsApiV1 get instance of ServiceLevelObjectiveCorrectionsApi
-func GetServiceLevelObjectiveCorrectionsApiV1(client *common.APIClient) *datadogV1.ServiceLevelObjectiveCorrectionsApi {
-	if serviceLevelObjectiveCorrectionsApiV1 == nil || serviceLevelObjectiveCorrectionsApiV1.Client != client {
-		serviceLevelObjectiveCorrectionsApiV1 = datadogV1.NewServiceLevelObjectiveCorrectionsApi(client)
+func (i *ApiInstances) GetServiceLevelObjectiveCorrectionsApiV1() *datadogV1.ServiceLevelObjectiveCorrectionsApi {
+	if i.serviceLevelObjectiveCorrectionsApiV1 == nil || i.serviceLevelObjectiveCorrectionsApiV1.Client != i.HttpClient {
+		i.serviceLevelObjectiveCorrectionsApiV1 = datadogV1.NewServiceLevelObjectiveCorrectionsApi(i.HttpClient)
 	}
-	return serviceLevelObjectiveCorrectionsApiV1
+	return i.serviceLevelObjectiveCorrectionsApiV1
 }
 
 // GetServiceLevelObjectivesApiV1 get instance of ServiceLevelObjectivesApi
-func GetServiceLevelObjectivesApiV1(client *common.APIClient) *datadogV1.ServiceLevelObjectivesApi {
-	if serviceLevelObjectivesApiV1 == nil || serviceLevelObjectivesApiV1.Client != client {
-		serviceLevelObjectivesApiV1 = datadogV1.NewServiceLevelObjectivesApi(client)
+func (i *ApiInstances) GetServiceLevelObjectivesApiV1() *datadogV1.ServiceLevelObjectivesApi {
+	if i.serviceLevelObjectivesApiV1 == nil || i.serviceLevelObjectivesApiV1.Client != i.HttpClient {
+		i.serviceLevelObjectivesApiV1 = datadogV1.NewServiceLevelObjectivesApi(i.HttpClient)
 	}
-	return serviceLevelObjectivesApiV1
+	return i.serviceLevelObjectivesApiV1
 }
 
 // GetSlackIntegrationApiV1 get instance of SlackIntegrationApi
-func GetSlackIntegrationApiV1(client *common.APIClient) *datadogV1.SlackIntegrationApi {
-	if slackIntegrationApiV1 == nil || slackIntegrationApiV1.Client != client {
-		slackIntegrationApiV1 = datadogV1.NewSlackIntegrationApi(client)
+func (i *ApiInstances) GetSlackIntegrationApiV1() *datadogV1.SlackIntegrationApi {
+	if i.slackIntegrationApiV1 == nil || i.slackIntegrationApiV1.Client != i.HttpClient {
+		i.slackIntegrationApiV1 = datadogV1.NewSlackIntegrationApi(i.HttpClient)
 	}
-	return slackIntegrationApiV1
+	return i.slackIntegrationApiV1
 }
 
 // GetSnapshotsApiV1 get instance of SnapshotsApi
-func GetSnapshotsApiV1(client *common.APIClient) *datadogV1.SnapshotsApi {
-	if snapshotsApiV1 == nil || snapshotsApiV1.Client != client {
-		snapshotsApiV1 = datadogV1.NewSnapshotsApi(client)
+func (i *ApiInstances) GetSnapshotsApiV1() *datadogV1.SnapshotsApi {
+	if i.snapshotsApiV1 == nil || i.snapshotsApiV1.Client != i.HttpClient {
+		i.snapshotsApiV1 = datadogV1.NewSnapshotsApi(i.HttpClient)
 	}
-	return snapshotsApiV1
+	return i.snapshotsApiV1
 }
 
 // GetSyntheticsApiV1 get instance of SyntheticsApi
-func GetSyntheticsApiV1(client *common.APIClient) *datadogV1.SyntheticsApi {
-	if syntheticsApiV1 == nil || syntheticsApiV1.Client != client {
-		syntheticsApiV1 = datadogV1.NewSyntheticsApi(client)
+func (i *ApiInstances) GetSyntheticsApiV1() *datadogV1.SyntheticsApi {
+	if i.syntheticsApiV1 == nil || i.syntheticsApiV1.Client != i.HttpClient {
+		i.syntheticsApiV1 = datadogV1.NewSyntheticsApi(i.HttpClient)
 	}
-	return syntheticsApiV1
+	return i.syntheticsApiV1
 }
 
 // GetTagsApiV1 get instance of TagsApi
-func GetTagsApiV1(client *common.APIClient) *datadogV1.TagsApi {
-	if tagsApiV1 == nil || tagsApiV1.Client != client {
-		tagsApiV1 = datadogV1.NewTagsApi(client)
+func (i *ApiInstances) GetTagsApiV1() *datadogV1.TagsApi {
+	if i.tagsApiV1 == nil || i.tagsApiV1.Client != i.HttpClient {
+		i.tagsApiV1 = datadogV1.NewTagsApi(i.HttpClient)
 	}
-	return tagsApiV1
+	return i.tagsApiV1
 }
 
 // GetUsageMeteringApiV1 get instance of UsageMeteringApi
-func GetUsageMeteringApiV1(client *common.APIClient) *datadogV1.UsageMeteringApi {
-	if usageMeteringApiV1 == nil || usageMeteringApiV1.Client != client {
-		usageMeteringApiV1 = datadogV1.NewUsageMeteringApi(client)
+func (i *ApiInstances) GetUsageMeteringApiV1() *datadogV1.UsageMeteringApi {
+	if i.usageMeteringApiV1 == nil || i.usageMeteringApiV1.Client != i.HttpClient {
+		i.usageMeteringApiV1 = datadogV1.NewUsageMeteringApi(i.HttpClient)
 	}
-	return usageMeteringApiV1
+	return i.usageMeteringApiV1
 }
 
 // GetUsersApiV1 get instance of UsersApi
-func GetUsersApiV1(client *common.APIClient) *datadogV1.UsersApi {
-	if usersApiV1 == nil || usersApiV1.Client != client {
-		usersApiV1 = datadogV1.NewUsersApi(client)
+func (i *ApiInstances) GetUsersApiV1() *datadogV1.UsersApi {
+	if i.usersApiV1 == nil || i.usersApiV1.Client != i.HttpClient {
+		i.usersApiV1 = datadogV1.NewUsersApi(i.HttpClient)
 	}
-	return usersApiV1
+	return i.usersApiV1
 }
 
 // GetWebhooksIntegrationApiV1 get instance of WebhooksIntegrationApi
-func GetWebhooksIntegrationApiV1(client *common.APIClient) *datadogV1.WebhooksIntegrationApi {
-	if webhooksIntegrationApiV1 == nil || webhooksIntegrationApiV1.Client != client {
-		webhooksIntegrationApiV1 = datadogV1.NewWebhooksIntegrationApi(client)
+func (i *ApiInstances) GetWebhooksIntegrationApiV1() *datadogV1.WebhooksIntegrationApi {
+	if i.webhooksIntegrationApiV1 == nil || i.webhooksIntegrationApiV1.Client != i.HttpClient {
+		i.webhooksIntegrationApiV1 = datadogV1.NewWebhooksIntegrationApi(i.HttpClient)
 	}
-	return webhooksIntegrationApiV1
+	return i.webhooksIntegrationApiV1
 }
 
 // GetAuditApiV2 get instance of AuditApi
-func GetAuditApiV2(client *common.APIClient) *datadogV2.AuditApi {
-	if auditApiV2 == nil || auditApiV2.Client != client {
-		auditApiV2 = datadogV2.NewAuditApi(client)
+func (i *ApiInstances) GetAuditApiV2() *datadogV2.AuditApi {
+	if i.auditApiV2 == nil || i.auditApiV2.Client != i.HttpClient {
+		i.auditApiV2 = datadogV2.NewAuditApi(i.HttpClient)
 	}
-	return auditApiV2
+	return i.auditApiV2
 }
 
 // GetAuthNMappingsApiV2 get instance of AuthNMappingsApi
-func GetAuthNMappingsApiV2(client *common.APIClient) *datadogV2.AuthNMappingsApi {
-	if authNMappingsApiV2 == nil || authNMappingsApiV2.Client != client {
-		authNMappingsApiV2 = datadogV2.NewAuthNMappingsApi(client)
+func (i *ApiInstances) GetAuthNMappingsApiV2() *datadogV2.AuthNMappingsApi {
+	if i.authNMappingsApiV2 == nil || i.authNMappingsApiV2.Client != i.HttpClient {
+		i.authNMappingsApiV2 = datadogV2.NewAuthNMappingsApi(i.HttpClient)
 	}
-	return authNMappingsApiV2
+	return i.authNMappingsApiV2
 }
 
 // GetCloudWorkloadSecurityApiV2 get instance of CloudWorkloadSecurityApi
-func GetCloudWorkloadSecurityApiV2(client *common.APIClient) *datadogV2.CloudWorkloadSecurityApi {
-	if cloudWorkloadSecurityApiV2 == nil || cloudWorkloadSecurityApiV2.Client != client {
-		cloudWorkloadSecurityApiV2 = datadogV2.NewCloudWorkloadSecurityApi(client)
+func (i *ApiInstances) GetCloudWorkloadSecurityApiV2() *datadogV2.CloudWorkloadSecurityApi {
+	if i.cloudWorkloadSecurityApiV2 == nil || i.cloudWorkloadSecurityApiV2.Client != i.HttpClient {
+		i.cloudWorkloadSecurityApiV2 = datadogV2.NewCloudWorkloadSecurityApi(i.HttpClient)
 	}
-	return cloudWorkloadSecurityApiV2
+	return i.cloudWorkloadSecurityApiV2
 }
 
 // GetDashboardListsApiV2 get instance of DashboardListsApi
-func GetDashboardListsApiV2(client *common.APIClient) *datadogV2.DashboardListsApi {
-	if dashboardListsApiV2 == nil || dashboardListsApiV2.Client != client {
-		dashboardListsApiV2 = datadogV2.NewDashboardListsApi(client)
+func (i *ApiInstances) GetDashboardListsApiV2() *datadogV2.DashboardListsApi {
+	if i.dashboardListsApiV2 == nil || i.dashboardListsApiV2.Client != i.HttpClient {
+		i.dashboardListsApiV2 = datadogV2.NewDashboardListsApi(i.HttpClient)
 	}
-	return dashboardListsApiV2
+	return i.dashboardListsApiV2
 }
 
 // GetEventsApiV2 get instance of EventsApi
-func GetEventsApiV2(client *common.APIClient) *datadogV2.EventsApi {
-	if eventsApiV2 == nil || eventsApiV2.Client != client {
-		eventsApiV2 = datadogV2.NewEventsApi(client)
+func (i *ApiInstances) GetEventsApiV2() *datadogV2.EventsApi {
+	if i.eventsApiV2 == nil || i.eventsApiV2.Client != i.HttpClient {
+		i.eventsApiV2 = datadogV2.NewEventsApi(i.HttpClient)
 	}
-	return eventsApiV2
+	return i.eventsApiV2
 }
 
 // GetIncidentServicesApiV2 get instance of IncidentServicesApi
-func GetIncidentServicesApiV2(client *common.APIClient) *datadogV2.IncidentServicesApi {
-	if incidentServicesApiV2 == nil || incidentServicesApiV2.Client != client {
-		incidentServicesApiV2 = datadogV2.NewIncidentServicesApi(client)
+func (i *ApiInstances) GetIncidentServicesApiV2() *datadogV2.IncidentServicesApi {
+	if i.incidentServicesApiV2 == nil || i.incidentServicesApiV2.Client != i.HttpClient {
+		i.incidentServicesApiV2 = datadogV2.NewIncidentServicesApi(i.HttpClient)
 	}
-	return incidentServicesApiV2
+	return i.incidentServicesApiV2
 }
 
 // GetIncidentTeamsApiV2 get instance of IncidentTeamsApi
-func GetIncidentTeamsApiV2(client *common.APIClient) *datadogV2.IncidentTeamsApi {
-	if incidentTeamsApiV2 == nil || incidentTeamsApiV2.Client != client {
-		incidentTeamsApiV2 = datadogV2.NewIncidentTeamsApi(client)
+func (i *ApiInstances) GetIncidentTeamsApiV2() *datadogV2.IncidentTeamsApi {
+	if i.incidentTeamsApiV2 == nil || i.incidentTeamsApiV2.Client != i.HttpClient {
+		i.incidentTeamsApiV2 = datadogV2.NewIncidentTeamsApi(i.HttpClient)
 	}
-	return incidentTeamsApiV2
+	return i.incidentTeamsApiV2
 }
 
 // GetIncidentsApiV2 get instance of IncidentsApi
-func GetIncidentsApiV2(client *common.APIClient) *datadogV2.IncidentsApi {
-	if incidentsApiV2 == nil || incidentsApiV2.Client != client {
-		incidentsApiV2 = datadogV2.NewIncidentsApi(client)
+func (i *ApiInstances) GetIncidentsApiV2() *datadogV2.IncidentsApi {
+	if i.incidentsApiV2 == nil || i.incidentsApiV2.Client != i.HttpClient {
+		i.incidentsApiV2 = datadogV2.NewIncidentsApi(i.HttpClient)
 	}
-	return incidentsApiV2
+	return i.incidentsApiV2
 }
 
 // GetKeyManagementApiV2 get instance of KeyManagementApi
-func GetKeyManagementApiV2(client *common.APIClient) *datadogV2.KeyManagementApi {
-	if keyManagementApiV2 == nil || keyManagementApiV2.Client != client {
-		keyManagementApiV2 = datadogV2.NewKeyManagementApi(client)
+func (i *ApiInstances) GetKeyManagementApiV2() *datadogV2.KeyManagementApi {
+	if i.keyManagementApiV2 == nil || i.keyManagementApiV2.Client != i.HttpClient {
+		i.keyManagementApiV2 = datadogV2.NewKeyManagementApi(i.HttpClient)
 	}
-	return keyManagementApiV2
+	return i.keyManagementApiV2
 }
 
 // GetLogsApiV2 get instance of LogsApi
-func GetLogsApiV2(client *common.APIClient) *datadogV2.LogsApi {
-	if logsApiV2 == nil || logsApiV2.Client != client {
-		logsApiV2 = datadogV2.NewLogsApi(client)
+func (i *ApiInstances) GetLogsApiV2() *datadogV2.LogsApi {
+	if i.logsApiV2 == nil || i.logsApiV2.Client != i.HttpClient {
+		i.logsApiV2 = datadogV2.NewLogsApi(i.HttpClient)
 	}
-	return logsApiV2
+	return i.logsApiV2
 }
 
 // GetLogsArchivesApiV2 get instance of LogsArchivesApi
-func GetLogsArchivesApiV2(client *common.APIClient) *datadogV2.LogsArchivesApi {
-	if logsArchivesApiV2 == nil || logsArchivesApiV2.Client != client {
-		logsArchivesApiV2 = datadogV2.NewLogsArchivesApi(client)
+func (i *ApiInstances) GetLogsArchivesApiV2() *datadogV2.LogsArchivesApi {
+	if i.logsArchivesApiV2 == nil || i.logsArchivesApiV2.Client != i.HttpClient {
+		i.logsArchivesApiV2 = datadogV2.NewLogsArchivesApi(i.HttpClient)
 	}
-	return logsArchivesApiV2
+	return i.logsArchivesApiV2
 }
 
 // GetLogsMetricsApiV2 get instance of LogsMetricsApi
-func GetLogsMetricsApiV2(client *common.APIClient) *datadogV2.LogsMetricsApi {
-	if logsMetricsApiV2 == nil || logsMetricsApiV2.Client != client {
-		logsMetricsApiV2 = datadogV2.NewLogsMetricsApi(client)
+func (i *ApiInstances) GetLogsMetricsApiV2() *datadogV2.LogsMetricsApi {
+	if i.logsMetricsApiV2 == nil || i.logsMetricsApiV2.Client != i.HttpClient {
+		i.logsMetricsApiV2 = datadogV2.NewLogsMetricsApi(i.HttpClient)
 	}
-	return logsMetricsApiV2
+	return i.logsMetricsApiV2
 }
 
 // GetMetricsApiV2 get instance of MetricsApi
-func GetMetricsApiV2(client *common.APIClient) *datadogV2.MetricsApi {
-	if metricsApiV2 == nil || metricsApiV2.Client != client {
-		metricsApiV2 = datadogV2.NewMetricsApi(client)
+func (i *ApiInstances) GetMetricsApiV2() *datadogV2.MetricsApi {
+	if i.metricsApiV2 == nil || i.metricsApiV2.Client != i.HttpClient {
+		i.metricsApiV2 = datadogV2.NewMetricsApi(i.HttpClient)
 	}
-	return metricsApiV2
+	return i.metricsApiV2
 }
 
 // GetOpsgenieIntegrationApiV2 get instance of OpsgenieIntegrationApi
-func GetOpsgenieIntegrationApiV2(client *common.APIClient) *datadogV2.OpsgenieIntegrationApi {
-	if opsgenieIntegrationApiV2 == nil || opsgenieIntegrationApiV2.Client != client {
-		opsgenieIntegrationApiV2 = datadogV2.NewOpsgenieIntegrationApi(client)
+func (i *ApiInstances) GetOpsgenieIntegrationApiV2() *datadogV2.OpsgenieIntegrationApi {
+	if i.opsgenieIntegrationApiV2 == nil || i.opsgenieIntegrationApiV2.Client != i.HttpClient {
+		i.opsgenieIntegrationApiV2 = datadogV2.NewOpsgenieIntegrationApi(i.HttpClient)
 	}
-	return opsgenieIntegrationApiV2
+	return i.opsgenieIntegrationApiV2
 }
 
 // GetOrganizationsApiV2 get instance of OrganizationsApi
-func GetOrganizationsApiV2(client *common.APIClient) *datadogV2.OrganizationsApi {
-	if organizationsApiV2 == nil || organizationsApiV2.Client != client {
-		organizationsApiV2 = datadogV2.NewOrganizationsApi(client)
+func (i *ApiInstances) GetOrganizationsApiV2() *datadogV2.OrganizationsApi {
+	if i.organizationsApiV2 == nil || i.organizationsApiV2.Client != i.HttpClient {
+		i.organizationsApiV2 = datadogV2.NewOrganizationsApi(i.HttpClient)
 	}
-	return organizationsApiV2
+	return i.organizationsApiV2
 }
 
 // GetProcessesApiV2 get instance of ProcessesApi
-func GetProcessesApiV2(client *common.APIClient) *datadogV2.ProcessesApi {
-	if processesApiV2 == nil || processesApiV2.Client != client {
-		processesApiV2 = datadogV2.NewProcessesApi(client)
+func (i *ApiInstances) GetProcessesApiV2() *datadogV2.ProcessesApi {
+	if i.processesApiV2 == nil || i.processesApiV2.Client != i.HttpClient {
+		i.processesApiV2 = datadogV2.NewProcessesApi(i.HttpClient)
 	}
-	return processesApiV2
+	return i.processesApiV2
 }
 
 // GetRolesApiV2 get instance of RolesApi
-func GetRolesApiV2(client *common.APIClient) *datadogV2.RolesApi {
-	if rolesApiV2 == nil || rolesApiV2.Client != client {
-		rolesApiV2 = datadogV2.NewRolesApi(client)
+func (i *ApiInstances) GetRolesApiV2() *datadogV2.RolesApi {
+	if i.rolesApiV2 == nil || i.rolesApiV2.Client != i.HttpClient {
+		i.rolesApiV2 = datadogV2.NewRolesApi(i.HttpClient)
 	}
-	return rolesApiV2
+	return i.rolesApiV2
 }
 
 // GetRumApiV2 get instance of RumApi
-func GetRumApiV2(client *common.APIClient) *datadogV2.RUMApi {
-	if rumApiV2 == nil || rumApiV2.Client != client {
-		rumApiV2 = datadogV2.NewRUMApi(client)
+func (i *ApiInstances) GetRumApiV2() *datadogV2.RUMApi {
+	if i.rumApiV2 == nil || i.rumApiV2.Client != i.HttpClient {
+		i.rumApiV2 = datadogV2.NewRUMApi(i.HttpClient)
 	}
-	return rumApiV2
+	return i.rumApiV2
 }
 
 // GetSecurityMonitoringApiV2 get instance of SecurityMonitoringApi
-func GetSecurityMonitoringApiV2(client *common.APIClient) *datadogV2.SecurityMonitoringApi {
-	if securityMonitoringApiV2 == nil || securityMonitoringApiV2.Client != client {
-		securityMonitoringApiV2 = datadogV2.NewSecurityMonitoringApi(client)
+func (i *ApiInstances) GetSecurityMonitoringApiV2() *datadogV2.SecurityMonitoringApi {
+	if i.securityMonitoringApiV2 == nil || i.securityMonitoringApiV2.Client != i.HttpClient {
+		i.securityMonitoringApiV2 = datadogV2.NewSecurityMonitoringApi(i.HttpClient)
 	}
-	return securityMonitoringApiV2
+	return i.securityMonitoringApiV2
 }
 
 // GetServiceAccountsApiV2 get instance of ServiceAccountsApi
-func GetServiceAccountsApiV2(client *common.APIClient) *datadogV2.ServiceAccountsApi {
-	if serviceAccountsApiV2 == nil || serviceAccountsApiV2.Client != client {
-		serviceAccountsApiV2 = datadogV2.NewServiceAccountsApi(client)
+func (i *ApiInstances) GetServiceAccountsApiV2() *datadogV2.ServiceAccountsApi {
+	if i.serviceAccountsApiV2 == nil || i.serviceAccountsApiV2.Client != i.HttpClient {
+		i.serviceAccountsApiV2 = datadogV2.NewServiceAccountsApi(i.HttpClient)
 	}
-	return serviceAccountsApiV2
+	return i.serviceAccountsApiV2
 }
 
 // GetUsageMeteringApiV2 get instance of UsageMeteringApi
-func GetUsageMeteringApiV2(client *common.APIClient) *datadogV2.UsageMeteringApi {
-	if usageMeteringApiV2 == nil || usageMeteringApiV2.Client != client {
-		usageMeteringApiV2 = datadogV2.NewUsageMeteringApi(client)
+func (i *ApiInstances) GetUsageMeteringApiV2() *datadogV2.UsageMeteringApi {
+	if i.usageMeteringApiV2 == nil || i.usageMeteringApiV2.Client != i.HttpClient {
+		i.usageMeteringApiV2 = datadogV2.NewUsageMeteringApi(i.HttpClient)
 	}
-	return usageMeteringApiV2
+	return i.usageMeteringApiV2
 }
 
 // GetUsersApiV2 get instance of UsersApi
-func GetUsersApiV2(client *common.APIClient) *datadogV2.UsersApi {
-	if usersApiV2 == nil || usersApiV2.Client != client {
-		usersApiV2 = datadogV2.NewUsersApi(client)
+func (i *ApiInstances) GetUsersApiV2() *datadogV2.UsersApi {
+	if i.usersApiV2 == nil || i.usersApiV2.Client != i.HttpClient {
+		i.usersApiV2 = datadogV2.NewUsersApi(i.HttpClient)
 	}
-	return usersApiV2
+	return i.usersApiV2
 }

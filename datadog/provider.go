@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/common"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -206,9 +206,10 @@ func Provider() *schema.Provider {
 
 // ProviderConfiguration contains the initialized API clients to communicate with the Datadog API
 type ProviderConfiguration struct {
-	CommunityClient *datadogCommunity.Client
-	DatadogClient   *common.APIClient
-	Auth            context.Context
+	CommunityClient     *datadogCommunity.Client
+	DatadogApiInstances *utils.ApiInstances
+	DatadogClient       *datadog.APIClient
+	Auth                context.Context
 
 	Now func() time.Time
 }
@@ -272,8 +273,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	// Initialize the official Datadog V1 API client
 	auth := context.WithValue(
 		context.Background(),
-		common.ContextAPIKeys,
-		map[string]common.APIKey{
+		datadog.ContextAPIKeys,
+		map[string]datadog.APIKey{
 			"apiKeyAuth": {
 				Key: apiKey,
 			},
@@ -282,7 +283,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			},
 		},
 	)
-	config := common.NewConfiguration()
+	config := datadog.NewConfiguration()
 	config.HTTPClient = httpClient
 	// Enable unstable operations
 	config.SetUnstableOperationEnabled("v1.CreateSLOCorrection", true)
@@ -305,8 +306,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			return nil, diag.Errorf(`missing protocol or host : %v`, apiURL)
 		}
 		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
-		auth = context.WithValue(auth, common.ContextServerIndex, 1)
-		auth = context.WithValue(auth, common.ContextServerVariables, map[string]string{
+		auth = context.WithValue(auth, datadog.ContextServerIndex, 1)
+		auth = context.WithValue(auth, datadog.ContextServerVariables, map[string]string{
 			"name":     parsedAPIURL.Host,
 			"protocol": parsedAPIURL.Scheme,
 		})
@@ -320,22 +321,23 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		}
 		ipRangesDNSNameArr = append([]string{baseIPRangesSubdomain}, ipRangesDNSNameArr...)
 
-		auth = context.WithValue(auth, common.ContextOperationServerIndices, map[string]int{
+		auth = context.WithValue(auth, datadog.ContextOperationServerIndices, map[string]int{
 			"IPRangesApiService.GetIPRanges": 1,
 		})
-		auth = context.WithValue(auth, common.ContextOperationServerVariables, map[string]map[string]string{
+		auth = context.WithValue(auth, datadog.ContextOperationServerVariables, map[string]map[string]string{
 			"IPRangesApiService.GetIPRanges": {
 				"name": strings.Join(ipRangesDNSNameArr, "."),
 			},
 		})
 	}
 
-	datadogClient := common.NewAPIClient(config)
+	datadogClient := datadog.NewAPIClient(config)
 
 	return &ProviderConfiguration{
-		CommunityClient: communityClient,
-		DatadogClient:   datadogClient,
-		Auth:            auth,
+		CommunityClient:     communityClient,
+		DatadogApiInstances: &utils.ApiInstances{HttpClient: datadogClient},
+		DatadogClient:       datadogClient,
+		Auth:                auth,
 
 		Now: time.Now,
 	}, nil

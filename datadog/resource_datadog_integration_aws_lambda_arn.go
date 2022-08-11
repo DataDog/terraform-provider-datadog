@@ -6,7 +6,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -48,7 +48,7 @@ func resourceDatadogIntegrationAwsLambdaArn() *schema.Resource {
 
 func resourceDatadogIntegrationAwsLambdaArnCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
@@ -56,7 +56,7 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(ctx context.Context, d *schema
 	defer integrationAwsMutex.Unlock()
 
 	attachLambdaArnRequest := buildDatadogIntegrationAwsLambdaArnStruct(d)
-	response, httpresp, err := utils.GetAWSLogsIntegrationApiV1(datadogClient).CreateAWSLambdaARN(auth, *attachLambdaArnRequest)
+	response, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().CreateAWSLambdaARN(auth, *attachLambdaArnRequest)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error attaching Lambda ARN to AWS integration account")
 	}
@@ -76,7 +76,7 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(ctx context.Context, d *schema
 
 func resourceDatadogIntegrationAwsLambdaArnRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	accountID, lambdaArn, err := utils.AccountAndLambdaArnFromID(d.Id())
@@ -84,7 +84,7 @@ func resourceDatadogIntegrationAwsLambdaArnRead(ctx context.Context, d *schema.R
 		return diag.FromErr(err)
 	}
 
-	logCollections, httpresp, err := utils.GetAWSLogsIntegrationApiV1(datadogClient).ListAWSLogsIntegrations(auth)
+	logCollections, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().ListAWSLogsIntegrations(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting aws log integrations for datadog account.")
 	}
@@ -109,7 +109,7 @@ func resourceDatadogIntegrationAwsLambdaArnRead(ctx context.Context, d *schema.R
 
 func resourceDatadogIntegrationAwsLambdaArnDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
@@ -122,7 +122,7 @@ func resourceDatadogIntegrationAwsLambdaArnDelete(ctx context.Context, d *schema
 	}
 
 	attachLambdaArnRequest := datadogV1.NewAWSAccountAndLambdaRequest(accountID, lambdaArn)
-	_, httpresp, err := utils.GetAWSLogsIntegrationApiV1(datadogClient).DeleteAWSLambdaARN(auth, *attachLambdaArnRequest)
+	_, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().DeleteAWSLambdaARN(auth, *attachLambdaArnRequest)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting an AWS integration Lambda ARN")
 	}

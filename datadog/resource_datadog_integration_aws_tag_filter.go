@@ -7,7 +7,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -63,11 +63,11 @@ func buildDatadogIntegrationAwsTagFilter(d *schema.ResourceData) *datadogV1.AWST
 
 func resourceDatadogIntegrationAwsTagFilterCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	req := buildDatadogIntegrationAwsTagFilter(d)
-	if _, httpresp, err := utils.GetAWSIntegrationApiV1(datadogClient).CreateAWSTagFilter(auth, *req); err != nil {
+	if _, httpresp, err := apiInstances.GetAWSIntegrationApiV1().CreateAWSTagFilter(auth, *req); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating aws tag filter")
 	}
 
@@ -77,11 +77,11 @@ func resourceDatadogIntegrationAwsTagFilterCreate(ctx context.Context, d *schema
 
 func resourceDatadogIntegrationAwsTagFilterUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	req := buildDatadogIntegrationAwsTagFilter(d)
-	if _, httpresp, err := utils.GetAWSIntegrationApiV1(datadogClient).CreateAWSTagFilter(auth, *req); err != nil {
+	if _, httpresp, err := apiInstances.GetAWSIntegrationApiV1().CreateAWSTagFilter(auth, *req); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating aws tag filter")
 	}
 
@@ -90,7 +90,7 @@ func resourceDatadogIntegrationAwsTagFilterUpdate(ctx context.Context, d *schema
 
 func resourceDatadogIntegrationAwsTagFilterRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	accountID, tfNamespace, err := utils.AccountAndNamespaceFromID(d.Id())
@@ -99,7 +99,7 @@ func resourceDatadogIntegrationAwsTagFilterRead(ctx context.Context, d *schema.R
 	}
 	namespace := datadogV1.AWSNamespace(tfNamespace)
 
-	resp, httpresp, err := utils.GetAWSIntegrationApiV1(datadogClient).ListAWSTagFilters(auth, accountID)
+	resp, httpresp, err := apiInstances.GetAWSIntegrationApiV1().ListAWSTagFilters(auth, accountID)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error listing aws tag filter")
 	}
@@ -124,7 +124,7 @@ func resourceDatadogIntegrationAwsTagFilterRead(ctx context.Context, d *schema.R
 
 func resourceDatadogIntegrationAwsTagFilterDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	accountID, tfNamespace, err := utils.AccountAndNamespaceFromID(d.Id())
@@ -137,7 +137,7 @@ func resourceDatadogIntegrationAwsTagFilterDelete(ctx context.Context, d *schema
 		Namespace: &namespace,
 	}
 
-	if _, httpresp, err := utils.GetAWSIntegrationApiV1(datadogClient).DeleteAWSTagFilter(auth, deleteRequest); err != nil {
+	if _, httpresp, err := apiInstances.GetAWSIntegrationApiV1().DeleteAWSTagFilter(auth, deleteRequest); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting aws tag filter")
 	}
 

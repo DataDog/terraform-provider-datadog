@@ -105,13 +105,13 @@ func testAccCheckDatadogLogsMetricExists(accProvider func() (*schema.Provider, e
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		resourceID := s.RootModule().Resources[resourceName].Primary.ID
-		datadogClient := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 		var err error
 
 		id := resourceID
 
-		_, httpresp, err := utils.GetLogsMetricsApiV2(datadogClient).GetLogsMetric(auth, id)
+		_, httpresp, err := apiInstances.GetLogsMetricsApiV2().GetLogsMetric(auth, id)
 
 		if err != nil {
 			return utils.TranslateClientError(err, httpresp, "error checking logs_metric existence")
@@ -125,7 +125,7 @@ func testAccCheckDatadogLogsMetricDestroy(accProvider func() (*schema.Provider, 
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_logs_metric" {
@@ -136,7 +136,7 @@ func testAccCheckDatadogLogsMetricDestroy(accProvider func() (*schema.Provider, 
 
 			id := r.Primary.ID
 
-			_, resp, err := utils.GetLogsMetricsApiV2(datadogClient).GetLogsMetric(auth, id)
+			_, resp, err := apiInstances.GetLogsMetricsApiV2().GetLogsMetric(auth, id)
 
 			if err != nil {
 				if resp.StatusCode == 404 {

@@ -21,7 +21,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/common"
+	common "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	ddtesting "github.com/DataDog/dd-sdk-go-testing"
 	"github.com/dnaeon/go-vcr/cassette"
 	"github.com/dnaeon/go-vcr/recorder"
@@ -542,10 +542,12 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 			return nil, diag.FromErr(err)
 		}
 
+		apiClient := buildDatadogClient(c)
 		return &datadog.ProviderConfiguration{
-			CommunityClient: communityClient,
-			DatadogClient:   buildDatadogClient(c),
-			Auth:            ctx,
+			CommunityClient:     communityClient,
+			DatadogClient:       apiClient,
+			DatadogApiInstances: &utils.ApiInstances{HttpClient: apiClient},
+			Auth:                ctx,
 
 			Now: clock.Now,
 		}, nil

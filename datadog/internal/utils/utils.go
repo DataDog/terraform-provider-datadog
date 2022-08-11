@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/common"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/meta"
@@ -33,7 +33,7 @@ func TranslateClientError(err error, httpresp *http.Response, msg string) error 
 	if apiErr, ok := err.(CustomRequestAPIError); ok {
 		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
 	}
-	if apiErr, ok := err.(common.GenericOpenAPIError); ok {
+	if apiErr, ok := err.(datadog.GenericOpenAPIError); ok {
 		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
 	}
 	if errURL, ok := err.(*url.Error); ok {
@@ -45,7 +45,7 @@ func TranslateClientError(err error, httpresp *http.Response, msg string) error 
 
 // CheckForUnparsed takes in a API response object and returns an error if it contains an unparsed element
 func CheckForUnparsed(resp interface{}) error {
-	if unparsed, invalidPart := common.ContainsUnparsedObject(resp); unparsed {
+	if unparsed, invalidPart := datadog.ContainsUnparsedObject(resp); unparsed {
 		return fmt.Errorf("object contains unparsed element: %+v", invalidPart)
 	}
 	return nil

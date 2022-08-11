@@ -7,7 +7,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
@@ -56,12 +56,12 @@ func dataSourceDatadogRoles() *schema.Resource {
 
 func dataSourceDatadogRolesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	var filterPtr *string
 
-	reqParams := datadog.NewListRolesOptionalParameters()
+	reqParams := datadogV2.NewListRolesOptionalParameters()
 	if v, ok := d.GetOk("filter"); ok {
 		filter := v.(string)
 		filterPtr = &filter
@@ -72,9 +72,9 @@ func dataSourceDatadogRolesRead(ctx context.Context, d *schema.ResourceData, met
 	pageNumber := int64(0)
 	remaining := int64(1)
 
-	var roles []datadog.Role
+	var roles []datadogV2.Role
 	for remaining > int64(0) {
-		rolesResp, httpresp, err := utils.GetRolesApiV2(datadogClient).ListRoles(auth, *reqParams.
+		rolesResp, httpresp, err := apiInstances.GetRolesApiV2().ListRoles(auth, *reqParams.
 			WithPageSize(pageSize).
 			WithPageNumber(pageNumber))
 		if err != nil {

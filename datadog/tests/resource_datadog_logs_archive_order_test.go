@@ -7,13 +7,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/common"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
 func ArchiveOrderConfig() string {
@@ -78,20 +78,20 @@ func testAccCheckArchiveOrderExists(accProvider func() (*schema.Provider, error)
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
-		if err := archiveOrderExistsChecker(auth, s, datadogClient); err != nil {
+		if err := archiveOrderExistsChecker(auth, s, apiInstances); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func archiveOrderExistsChecker(ctx context.Context, s *terraform.State, datadogClient *common.APIClient) error {
+func archiveOrderExistsChecker(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type == "datadog_logs_archive_order" {
-			if _, _, err := utils.GetLogsArchivesApiV2(datadogClient).GetLogsArchiveOrder(ctx); err != nil {
+			if _, _, err := apiInstances.GetLogsArchivesApiV2().GetLogsArchiveOrder(ctx); err != nil {
 				return fmt.Errorf("received an error when retrieving archive order, (%s)", err)
 			}
 		}
@@ -103,14 +103,14 @@ func testAccCheckArchiveOrderResourceMatch(accProvider func() (*schema.Provider,
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
 		resourceType := strings.Split(name, ".")[0]
 		elemNo, _ := strconv.Atoi(strings.Split(key, ".")[1])
 		for _, r := range s.RootModule().Resources {
 			if r.Type == resourceType {
-				archiveOrder, _, err := utils.GetLogsArchivesApiV2(datadogClient).GetLogsArchiveOrder(auth)
+				archiveOrder, _, err := apiInstances.GetLogsArchivesApiV2().GetLogsArchiveOrder(auth)
 				if err != nil {
 					return fmt.Errorf("received an error when retrieving archive order, (%s)", err)
 				}

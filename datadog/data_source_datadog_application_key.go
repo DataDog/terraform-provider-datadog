@@ -5,7 +5,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -40,11 +40,11 @@ func dataSourceDatadogApplicationKey() *schema.Resource {
 
 func dataSourceDatadogApplicationKeyRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	if id := d.Get("id").(string); id != "" {
-		resp, httpResponse, err := utils.GetKeyManagementApiV2(datadogClient).GetCurrentUserApplicationKey(auth, id)
+		resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().GetCurrentUserApplicationKey(auth, id)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error getting application key")
 		}
@@ -55,7 +55,7 @@ func dataSourceDatadogApplicationKeyRead(ctx context.Context, d *schema.Resource
 		optionalParams := datadogV2.NewListCurrentUserApplicationKeysOptionalParameters()
 		optionalParams.WithFilter(name)
 
-		applicationKeysResponse, httpResponse, err := utils.GetKeyManagementApiV2(datadogClient).ListCurrentUserApplicationKeys(auth, *optionalParams)
+		applicationKeysResponse, httpResponse, err := apiInstances.GetKeyManagementApiV2().ListCurrentUserApplicationKeys(auth, *optionalParams)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error getting application keys")
 		}
@@ -72,7 +72,7 @@ func dataSourceDatadogApplicationKeyRead(ctx context.Context, d *schema.Resource
 		applicationKeyPartialData := applicationKeysData[0]
 
 		id := applicationKeyPartialData.GetId()
-		applicationKeyResponse, httpResponse, err := utils.GetKeyManagementApiV2(datadogClient).GetCurrentUserApplicationKey(auth, id)
+		applicationKeyResponse, httpResponse, err := apiInstances.GetKeyManagementApiV2().GetCurrentUserApplicationKey(auth, id)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error getting application key")
 		}

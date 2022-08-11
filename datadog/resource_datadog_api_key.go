@@ -5,7 +5,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -67,10 +67,10 @@ func updateApiKeyState(d *schema.ResourceData, apiKeyData *datadogV2.FullAPIKey)
 
 func resourceDatadogApiKeyCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	resp, httpResponse, err := utils.GetKeyManagementApiV2(datadogClient).CreateAPIKey(auth, *buildDatadogApiKeyCreateV2Struct(d))
+	resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().CreateAPIKey(auth, *buildDatadogApiKeyCreateV2Struct(d))
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating api key")
 	}
@@ -83,10 +83,10 @@ func resourceDatadogApiKeyCreate(ctx context.Context, d *schema.ResourceData, me
 
 func resourceDatadogApiKeyRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	resp, httpResponse, err := utils.GetKeyManagementApiV2(datadogClient).GetAPIKey(auth, d.Id())
+	resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().GetAPIKey(auth, d.Id())
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
@@ -100,10 +100,10 @@ func resourceDatadogApiKeyRead(ctx context.Context, d *schema.ResourceData, meta
 
 func resourceDatadogApiKeyUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	resp, httpResponse, err := utils.GetKeyManagementApiV2(datadogClient).UpdateAPIKey(auth, d.Id(), *buildDatadogApiKeyUpdateV2Struct(d))
+	resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().UpdateAPIKey(auth, d.Id(), *buildDatadogApiKeyUpdateV2Struct(d))
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating api key")
 	}
@@ -113,10 +113,10 @@ func resourceDatadogApiKeyUpdate(ctx context.Context, d *schema.ResourceData, me
 
 func resourceDatadogApiKeyDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	if httpResponse, err := utils.GetKeyManagementApiV2(datadogClient).DeleteAPIKey(auth, d.Id()); err != nil {
+	if httpResponse, err := apiInstances.GetKeyManagementApiV2().DeleteAPIKey(auth, d.Id()); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting api key")
 	}
 

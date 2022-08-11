@@ -4,10 +4,9 @@ import (
 	"context"
 	"regexp"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -38,10 +37,10 @@ func dataSourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 func dataSourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	globalVariables, httpresp, err := utils.GetSyntheticsApiV1(datadogClient).ListGlobalVariables(auth)
+	globalVariables, httpresp, err := apiInstances.GetSyntheticsApiV1().ListGlobalVariables(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetics global variables")
 	}
@@ -50,7 +49,7 @@ func dataSourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schem
 	}
 
 	searchedName := d.Get("name").(string)
-	var matchedGlobalVariables []datadog.SyntheticsGlobalVariable
+	var matchedGlobalVariables []datadogV1.SyntheticsGlobalVariable
 
 	for _, globalVariable := range globalVariables.Variables {
 		if globalVariable.Name == searchedName {

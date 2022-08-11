@@ -9,9 +9,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/common"
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
-	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -137,13 +137,13 @@ func resourceDatadogDashboard() *schema.Resource {
 
 func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	dashboardPayload, err := buildDatadogDashboard(d)
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	dashboard, httpresp, err := utils.GetDashboardsApiV1(datadogClient).CreateDashboard(auth, *dashboardPayload)
+	dashboard, httpresp, err := apiInstances.GetDashboardsApiV1().CreateDashboard(auth, *dashboardPayload)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating dashboard")
 	}
@@ -155,7 +155,7 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 	var getDashboard datadogV1.Dashboard
 	var httpResponse *http.Response
 	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
-		getDashboard, httpResponse, err = utils.GetDashboardsApiV1(datadogClient).GetDashboard(auth, *dashboard.Id)
+		getDashboard, httpResponse, err = apiInstances.GetDashboardsApiV1().GetDashboard(auth, *dashboard.Id)
 		if err != nil {
 			if httpResponse != nil && httpResponse.StatusCode == 404 {
 				return resource.RetryableError(fmt.Errorf("dashboard not created yet"))
@@ -181,14 +181,14 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 
 func resourceDatadogDashboardUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	id := d.Id()
 	dashboard, err := buildDatadogDashboard(d)
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	updatedDashboard, httpresp, err := utils.GetDashboardsApiV1(datadogClient).UpdateDashboard(auth, id, *dashboard)
+	updatedDashboard, httpresp, err := apiInstances.GetDashboardsApiV1().UpdateDashboard(auth, id, *dashboard)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating dashboard")
 	}
@@ -208,7 +208,7 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 	}
 	dashType := datadogV2.DashboardType(dashTypeString)
 	itemsRequest := []datadogV2.DashboardListItemRequest{*datadogV2.NewDashboardListItemRequest(dashboardID, dashType)}
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	if v, ok := d.GetOk("dashboard_lists"); ok && v.(*schema.Set).Len() > 0 {
@@ -216,7 +216,7 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 		items.SetDashboards(itemsRequest)
 
 		for _, id := range v.(*schema.Set).List() {
-			_, _, err := utils.GetDashboardListsApiV2(datadogClient).CreateDashboardListItems(auth, int64(id.(int)), *items)
+			_, _, err := apiInstances.GetDashboardListsApiV2().CreateDashboardListItems(auth, int64(id.(int)), *items)
 			if err != nil {
 				log.Printf("[DEBUG] Got error adding to dashboard list %d: %v", id.(int), err)
 			}
@@ -228,7 +228,7 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 		items.SetDashboards(itemsRequest)
 
 		for _, id := range v.(*schema.Set).List() {
-			_, _, err := utils.GetDashboardListsApiV2(datadogClient).DeleteDashboardListItems(auth, int64(id.(int)), *items)
+			_, _, err := apiInstances.GetDashboardListsApiV2().DeleteDashboardListItems(auth, int64(id.(int)), *items)
 			if err != nil {
 				log.Printf("[DEBUG] Got error removing from dashboard list %d: %v", id.(int), err)
 			}
@@ -294,10 +294,10 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 
 func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	id := d.Id()
-	dashboard, httpresp, err := utils.GetDashboardsApiV1(datadogClient).GetDashboard(auth, id)
+	dashboard, httpresp, err := apiInstances.GetDashboardsApiV1().GetDashboard(auth, id)
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -314,10 +314,10 @@ func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, m
 
 func resourceDatadogDashboardDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	id := d.Id()
-	if _, httpresp, err := utils.GetDashboardsApiV1(datadogClient).DeleteDashboard(auth, id); err != nil {
+	if _, httpresp, err := apiInstances.GetDashboardsApiV1().DeleteDashboard(auth, id); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting dashboard")
 	}
 	return nil
@@ -1380,10 +1380,10 @@ func buildDatadogAlertGraphDefinition(terraformDefinition map[string]interface{}
 	datadogDefinition.VizType = datadogV1.WidgetVizType(terraformDefinition["viz_type"].(string))
 	// Optional params
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
-		datadogDefinition.Title = common.PtrString(v)
+		datadogDefinition.Title = datadog.PtrString(v)
 	}
 	if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
-		datadogDefinition.TitleSize = common.PtrString(v)
+		datadogDefinition.TitleSize = datadog.PtrString(v)
 	}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))

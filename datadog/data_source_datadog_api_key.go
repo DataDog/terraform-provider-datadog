@@ -5,7 +5,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadog "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -40,11 +40,11 @@ func dataSourceDatadogApiKey() *schema.Resource {
 
 func dataSourceDatadogApiKeyRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	if id := d.Get("id").(string); id != "" {
-		resp, httpResponse, err := utils.GetKeyManagementApiV2(datadogClient).GetAPIKey(auth, id)
+		resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().GetAPIKey(auth, id)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error getting api key")
 		}
@@ -52,10 +52,10 @@ func dataSourceDatadogApiKeyRead(ctx context.Context, d *schema.ResourceData, me
 		d.SetId(apiKeyData.GetId())
 		return updateApiKeyState(d, &apiKeyData)
 	} else if name := d.Get("name").(string); name != "" {
-		optionalParams := datadog.NewListAPIKeysOptionalParameters()
+		optionalParams := datadogV2.NewListAPIKeysOptionalParameters()
 		optionalParams.WithFilter(name)
 
-		apiKeysResponse, httpResponse, err := utils.GetKeyManagementApiV2(datadogClient).ListAPIKeys(auth, *optionalParams)
+		apiKeysResponse, httpResponse, err := apiInstances.GetKeyManagementApiV2().ListAPIKeys(auth, *optionalParams)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error getting api keys")
 		}
@@ -72,7 +72,7 @@ func dataSourceDatadogApiKeyRead(ctx context.Context, d *schema.ResourceData, me
 		apiKeyPartialData := apiKeysData[0]
 
 		id := apiKeyPartialData.GetId()
-		apiKeyResponse, httpResponse, err := utils.GetKeyManagementApiV2(datadogClient).GetAPIKey(auth, id)
+		apiKeyResponse, httpResponse, err := apiInstances.GetKeyManagementApiV2().GetAPIKey(auth, id)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error getting api key")
 		}

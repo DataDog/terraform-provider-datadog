@@ -8,7 +8,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -102,11 +102,11 @@ func resourceDatadogSecurityMonitoringDefaultRuleCreate(ctx context.Context, d *
 
 func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	id := d.Id()
-	ruleResponse, _, err := utils.GetSecurityMonitoringApiV2(datadogClient).GetSecurityMonitoringRule(auth, id)
+	ruleResponse, _, err := apiInstances.GetSecurityMonitoringApiV2().GetSecurityMonitoringRule(auth, id)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -162,12 +162,12 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 
 func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	ruleID := d.Id()
 
-	response, httpResponse, err := utils.GetSecurityMonitoringApiV2(datadogClient).GetSecurityMonitoringRule(auth, ruleID)
+	response, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().GetSecurityMonitoringRule(auth, ruleID)
 
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
@@ -191,7 +191,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *
 	}
 
 	if shouldUpdate {
-		if _, httpResponse, err := utils.GetSecurityMonitoringApiV2(datadogClient).UpdateSecurityMonitoringRule(auth, ruleID, *ruleUpdate); err != nil {
+		if _, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().UpdateSecurityMonitoringRule(auth, ruleID, *ruleUpdate); err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating security monitoring rule on resource creation")
 		}
 	}

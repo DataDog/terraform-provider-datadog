@@ -7,8 +7,8 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/v2/api/v1/datadog"
-	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -55,14 +55,14 @@ func resourceDatadogDashboardList() *schema.Resource {
 
 func resourceDatadogDashboardListCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	dashboardListPayload, err := buildDatadogDashboardList(d)
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	dashboardList, httpresp, err := utils.GetDashboardListsApiV1(datadogClient).CreateDashboardList(auth, *dashboardListPayload)
+	dashboardList, httpresp, err := apiInstances.GetDashboardListsApiV1().CreateDashboardList(auth, *dashboardListPayload)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating dashboard list")
 	}
@@ -78,7 +78,7 @@ func resourceDatadogDashboardListCreate(ctx context.Context, d *schema.ResourceD
 		if err != nil {
 			return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 		}
-		_, _, err = utils.GetDashboardListsApiV2(datadogClient).UpdateDashboardListItems(auth, id, *dashboardListV2Items)
+		_, _, err = apiInstances.GetDashboardListsApiV2().UpdateDashboardListItems(auth, id, *dashboardListV2Items)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpresp, "error updating dashboard list item")
 		}
@@ -89,7 +89,7 @@ func resourceDatadogDashboardListCreate(ctx context.Context, d *schema.ResourceD
 
 func resourceDatadogDashboardListUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	id, err := strconv.ParseInt(d.Id(), 10, 64)
@@ -103,13 +103,13 @@ func resourceDatadogDashboardListUpdate(ctx context.Context, d *schema.ResourceD
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
 	dashList.SetName(d.Get("name").(string))
-	_, httpresp, err := utils.GetDashboardListsApiV1(datadogClient).UpdateDashboardList(auth, id, *dashList)
+	_, httpresp, err := apiInstances.GetDashboardListsApiV1().UpdateDashboardList(auth, id, *dashList)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating dashboard list")
 	}
 
 	// Delete all elements from the dash list and add back only the ones in the config
-	completeDashListV2, httpresp, err := utils.GetDashboardListsApiV2(datadogClient).GetDashboardListItems(auth, id)
+	completeDashListV2, httpresp, err := apiInstances.GetDashboardListsApiV2().GetDashboardListItems(auth, id)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting dashboard list item")
 	}
@@ -120,7 +120,7 @@ func resourceDatadogDashboardListUpdate(ctx context.Context, d *schema.ResourceD
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating dashboard list delete item")
 	}
-	_, httpresp, err = utils.GetDashboardListsApiV2(datadogClient).DeleteDashboardListItems(auth, id, *completeDashListDeleteV2)
+	_, httpresp, err = apiInstances.GetDashboardListsApiV2().DeleteDashboardListItems(auth, id, *completeDashListDeleteV2)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting dashboard list item")
 	}
@@ -129,7 +129,7 @@ func resourceDatadogDashboardListUpdate(ctx context.Context, d *schema.ResourceD
 		if err != nil {
 			return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 		}
-		_, httpresp, err = utils.GetDashboardListsApiV2(datadogClient).UpdateDashboardListItems(auth, id, *dashboardListV2Items)
+		_, httpresp, err = apiInstances.GetDashboardListsApiV2().UpdateDashboardListItems(auth, id, *dashboardListV2Items)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpresp, "error updating dashboard list item")
 		}
@@ -140,13 +140,13 @@ func resourceDatadogDashboardListUpdate(ctx context.Context, d *schema.ResourceD
 
 func resourceDatadogDashboardListRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	id, _ := strconv.ParseInt(d.Id(), 10, 64)
 
 	//Read the overall Dashboard List object
-	dashList, httpresp, err := utils.GetDashboardListsApiV1(datadogClient).GetDashboardList(auth, id)
+	dashList, httpresp, err := apiInstances.GetDashboardListsApiV1().GetDashboardList(auth, id)
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -157,7 +157,7 @@ func resourceDatadogDashboardListRead(ctx context.Context, d *schema.ResourceDat
 	d.Set("name", dashList.GetName())
 
 	// Read and set all the dashboard list elements
-	completeItemListV2, _, err := utils.GetDashboardListsApiV2(datadogClient).GetDashboardListItems(auth, id)
+	completeItemListV2, _, err := apiInstances.GetDashboardListsApiV2().GetDashboardListItems(auth, id)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting dashboard list item")
 	}
@@ -174,14 +174,14 @@ func resourceDatadogDashboardListRead(ctx context.Context, d *schema.ResourceDat
 
 func resourceDatadogDashboardListDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	id, _ := strconv.ParseInt(d.Id(), 10, 64)
 	// Deleting the overall List will also take care of deleting its sub elements
 	// Deletion of individual dash items happens in the Update method
 	// Note this doesn't delete the actual dashboards, just removes them from the deleted list
-	_, httpresp, err := utils.GetDashboardListsApiV1(datadogClient).DeleteDashboardList(auth, id)
+	_, httpresp, err := apiInstances.GetDashboardListsApiV1().DeleteDashboardList(auth, id)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting dashboard list")
 	}

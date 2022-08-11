@@ -252,7 +252,7 @@ func testAccCheckDatadogSloCorrectionExists(accProvider func() (*schema.Provider
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
@@ -260,7 +260,7 @@ func testAccCheckDatadogSloCorrectionExists(accProvider func() (*schema.Provider
 				continue
 			}
 			id := r.Primary.ID
-			if _, httpresp, err := utils.GetServiceLevelObjectiveCorrectionsApiV1(datadogClient).GetSLOCorrection(auth, id); err != nil {
+			if _, httpresp, err := apiInstances.GetServiceLevelObjectiveCorrectionsApiV1().GetSLOCorrection(auth, id); err != nil {
 				return utils.TranslateClientError(err, httpresp, "error checking slo_correction existence")
 			}
 		}
@@ -272,7 +272,7 @@ func testAccCheckDatadogSloCorrectionDestroy(accProvider func() (*schema.Provide
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_slo_correction" {
@@ -283,7 +283,7 @@ func testAccCheckDatadogSloCorrectionDestroy(accProvider func() (*schema.Provide
 
 			id := r.Primary.ID
 
-			_, resp, err := utils.GetServiceLevelObjectiveCorrectionsApiV1(datadogClient).GetSLOCorrection(auth, id)
+			_, resp, err := apiInstances.GetServiceLevelObjectiveCorrectionsApiV1().GetSLOCorrection(auth, id)
 
 			if err != nil {
 				if resp.StatusCode == 404 {

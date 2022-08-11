@@ -94,12 +94,12 @@ func deleteWidgetID(widgets []interface{}) {
 
 func resourceDatadogDashboardJSONRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	id := d.Id()
 
-	respByte, httpResp, err := utils.SendRequest(auth, datadogClient, "GET", path+"/"+id, nil)
+	respByte, httpResp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", path+"/"+id, nil)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			d.SetId("")
@@ -118,12 +118,12 @@ func resourceDatadogDashboardJSONRead(ctx context.Context, d *schema.ResourceDat
 
 func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	dashboard := d.Get("dashboard").(string)
 
-	respByte, httpresp, err := utils.SendRequest(auth, datadogClient, "POST", path, &dashboard)
+	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "POST", path, &dashboard)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating resource")
 	}
@@ -146,7 +146,7 @@ func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceD
 
 	var httpResponse *http.Response
 	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
-		_, httpResponse, err = utils.SendRequest(auth, datadogClient, "GET", path+"/"+id.(string), nil)
+		_, httpResponse, err = utils.SendRequest(auth, apiInstances.HttpClient, "GET", path+"/"+id.(string), nil)
 		if err != nil {
 			if httpResponse != nil && httpResponse.StatusCode == 404 {
 				return resource.RetryableError(fmt.Errorf("dashboard not created yet"))
@@ -170,13 +170,13 @@ func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceD
 
 func resourceDatadogDashboardJSONUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	dashboard := d.Get("dashboard").(string)
 	id := d.Id()
 
-	respByte, httpresp, err := utils.SendRequest(auth, datadogClient, "PUT", path+"/"+id, &dashboard)
+	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "PUT", path+"/"+id, &dashboard)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating dashboard")
 	}
@@ -199,12 +199,12 @@ func resourceDatadogDashboardJSONUpdate(ctx context.Context, d *schema.ResourceD
 
 func resourceDatadogDashboardJSONDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClient
+	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	id := d.Id()
 
-	_, httpresp, err := utils.SendRequest(auth, datadogClient, "DELETE", path+"/"+id, nil)
+	_, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "DELETE", path+"/"+id, nil)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting dashboard")
 	}

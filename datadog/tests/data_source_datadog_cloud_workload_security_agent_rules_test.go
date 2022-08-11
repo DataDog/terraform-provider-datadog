@@ -6,12 +6,11 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
 const tfAgentRulesSource = "data.datadog_cloud_workload_security_agent_rules.acceptance_test"
@@ -39,9 +38,9 @@ func cloudWorkloadSecurityCheckAgentRulesCount(accProvider func() (*schema.Provi
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		auth := providerConf.Auth
-		client := providerConf.DatadogClient
+		apiInstances := providerConf.DatadogApiInstances
 
-		agentRulesResponse, _, err := utils.GetCloudWorkloadSecurityApiV2(client).ListCloudWorkloadSecurityAgentRules(auth)
+		agentRulesResponse, _, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCloudWorkloadSecurityAgentRules(auth)
 		if err != nil {
 			return err
 		}
