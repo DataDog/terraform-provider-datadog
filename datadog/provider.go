@@ -208,7 +208,6 @@ func Provider() *schema.Provider {
 type ProviderConfiguration struct {
 	CommunityClient     *datadogCommunity.Client
 	DatadogApiInstances *utils.ApiInstances
-	DatadogClient       *datadog.APIClient
 	Auth                context.Context
 
 	Now func() time.Time
@@ -336,7 +335,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	return &ProviderConfiguration{
 		CommunityClient:     communityClient,
 		DatadogApiInstances: &utils.ApiInstances{HttpClient: datadogClient},
-		DatadogClient:       datadogClient,
 		Auth:                auth,
 
 		Now: time.Now,

@@ -542,11 +542,9 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 			return nil, diag.FromErr(err)
 		}
 
-		apiClient := buildDatadogClient(c)
 		return &datadog.ProviderConfiguration{
 			CommunityClient:     communityClient,
-			DatadogClient:       apiClient,
-			DatadogApiInstances: &utils.ApiInstances{HttpClient: apiClient},
+			DatadogApiInstances: &utils.ApiInstances{HttpClient: buildDatadogClient(c)},
 			Auth:                ctx,
 
 			Now: clock.Now,
