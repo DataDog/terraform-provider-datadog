@@ -172,6 +172,8 @@ func Provider() *schema.Provider {
 			"datadog_user":                                 resourceDatadogUser(),
 			"datadog_webhook":                              resourceDatadogWebhook(),
 			"datadog_webhook_custom_variable":              resourceDatadogWebhookCustomVariable(),
+
+			"datadog_rum_application": resourceDatadogRUMApplication(),
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
