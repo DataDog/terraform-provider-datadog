@@ -1774,7 +1774,7 @@ func createSyntheticsICMPTestStep(ctx context.Context, accProvider func() (*sche
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.icmp", "request_definition.0.should_track_hops", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.icmp", "assertion.#", "1"),
+				"datadog_synthetics_test.icmp", "assertion.#", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.icmp", "assertion.0.type", "latency"),
 			resource.TestCheckResourceAttr(
@@ -1783,6 +1783,12 @@ func createSyntheticsICMPTestStep(ctx context.Context, accProvider func() (*sche
 				"datadog_synthetics_test.icmp", "assertion.0.property", "avg"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.icmp", "assertion.0.target", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.1.type", "packetLossPercentage"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.1.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.icmp", "assertion.1.target", "0.06"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.icmp", "locations.#", "1"),
 			resource.TestCheckTypeSetElemAttr(
@@ -1824,6 +1830,12 @@ resource "datadog_synthetics_test" "icmp" {
 		operator = "lessThan"
 		property = "avg"
 		target = 200
+	}
+
+	assertion {
+		type = "packetLossPercentage"
+		operator = "lessThan"
+		target = "0.06"
 	}
 
 	locations = [ "aws:eu-central-1" ]
