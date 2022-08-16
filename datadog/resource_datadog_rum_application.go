@@ -33,6 +33,11 @@ func resourceDatadogRUMApplication() *schema.Resource {
 				Default:     "browser",
 				Description: "The RUM application type",
 			},
+			"client_token": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The RUM application client token",
+			},
 		},
 	}
 }
@@ -124,6 +129,9 @@ func updateRUMApplicationState(d *schema.ResourceData, application *datadogV2.RU
 		return diag.FromErr(err)
 	}
 	if err := d.Set("type", application.Attributes.Type); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("client_token", application.Attributes.Hash); err != nil {
 		return diag.FromErr(err)
 	}
 	return nil
