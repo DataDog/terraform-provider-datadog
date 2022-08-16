@@ -100,7 +100,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"ok": {
-							Description:  "The monitor `OK` threshold. Must be a number.",
+							Description:  "The monitor `OK` threshold. Only supported in monitor type `service check`. Must be a number.",
 							Type:         schema.TypeString,
 							ValidateFunc: validators.ValidateFloatString,
 							Optional:     true,
@@ -122,7 +122,7 @@ func resourceDatadogMonitor() *schema.Resource {
 							Optional:     true,
 						},
 						"unknown": {
-							Description:  "The monitor `UNKNOWN` threshold. Must be a number.",
+							Description:  "The monitor `UNKNOWN` threshold. Only supported in monitor type `service check`. Must be a number.",
 							Type:         schema.TypeString,
 							ValidateFunc: validators.ValidateFloatString,
 							Optional:     true,
