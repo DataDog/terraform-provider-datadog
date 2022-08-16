@@ -92,12 +92,10 @@ func testAccCheckDatadogServiceDefinitionDestroy(accProvider func() (*schema.Pro
 
 		for _, r := range s.RootModule().Resources {
 			err := utils.Retry(200*time.Millisecond, 4, func() error {
-				if _, httpResp, err := utils.SendRequest(authV1, datadogClientV1, "GET", "/api/v2/services/definitions/"+r.Primary.ID, nil); err != nil {
-					if httpResp != nil && httpResp.StatusCode != 404 {
-						return &utils.RetryableError{Prob: "service still exists"}
-					}
+				if _, httpResp, _ := utils.SendRequest(authV1, datadogClientV1, "GET", "/api/v2/services/definitions/"+r.Primary.ID, nil); httpResp != nil && httpResp.StatusCode == 404 {
+					return nil
 				}
-				return nil
+				return &utils.RetryableError{Prob: "service still exists"}
 			})
 			if err != nil {
 				return err
