@@ -124,7 +124,7 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_TIMEOUT", nil),
-				Description: "The HTTP request retry timeout period.",
+				Description: "The HTTP request retry timeout period. Defaults to 60 seconds.",
 			},
 		},
 
