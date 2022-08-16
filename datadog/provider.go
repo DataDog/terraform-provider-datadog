@@ -161,6 +161,7 @@ func Provider() *schema.Provider {
 			"datadog_monitor_json":                         resourceDatadogMonitorJSON(),
 			"datadog_organization_settings":                resourceDatadogOrganizationSettings(),
 			"datadog_role":                                 resourceDatadogRole(),
+			"datadog_rum_application":                      resourceDatadogRUMApplication(),
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_security_monitoring_filter":           resourceDatadogSecurityMonitoringFilter(),
@@ -172,8 +173,6 @@ func Provider() *schema.Provider {
 			"datadog_user":                                 resourceDatadogUser(),
 			"datadog_webhook":                              resourceDatadogWebhook(),
 			"datadog_webhook_custom_variable":              resourceDatadogWebhookCustomVariable(),
-
-			"datadog_rum_application": resourceDatadogRUMApplication(),
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
