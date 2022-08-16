@@ -217,7 +217,6 @@ resource "datadog_synthetics_test" "test" {
 
 
 # Example Usage (Synthetics Browser test)
-# Support for Synthetics Browser test steps is limited (see below)
 # Create a new Datadog Synthetics Browser test starting on https://www.example.org
 resource "datadog_synthetics_test" "test_browser" {
   type = "browser"
