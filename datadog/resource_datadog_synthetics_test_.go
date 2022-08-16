@@ -1161,7 +1161,6 @@ func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertio
 		datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME,
 		datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE,
 		datadogV1.SYNTHETICSASSERTIONTYPE_LATENCY,
-		datadogV1.SYNTHETICSASSERTIONTYPE_PACKET_LOSS_PERCENTAGE,
 		datadogV1.SYNTHETICSASSERTIONTYPE_PACKETS_RECEIVED,
 		datadogV1.SYNTHETICSASSERTIONTYPE_NETWORK_HOP,
 		datadogV1.SYNTHETICSASSERTIONTYPE_GRPC_HEALTHCHECK_STATUS,
@@ -1606,6 +1605,9 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 						if isTargetOfTypeInt(assertionTarget.GetType(), assertionTarget.GetOperator()) {
 							assertionTargetInt, _ := strconv.Atoi(v.(string))
 							assertionTarget.SetTarget(assertionTargetInt)
+						} else if assertionTarget.GetType() == datadogV1.SYNTHETICSASSERTIONTYPE_PACKET_LOSS_PERCENTAGE {
+							assertionTargetFloat, _ := strconv.ParseFloat(v.(string), 64)
+							assertionTarget.SetTarget(assertionTargetFloat)
 						} else {
 							assertionTarget.SetTarget(v.(string))
 						}
