@@ -104,6 +104,10 @@ func resourceDatadogMonitor() *schema.Resource {
 							Type:         schema.TypeString,
 							ValidateFunc: validators.ValidateFloatString,
 							Optional:     true,
+							DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+								monitorType := d.Get("type").(string)
+								return monitorType != string(datadogV1.MONITORTYPE_SERVICE_CHECK)
+							},
 						},
 						"warning": {
 							Description:  "The monitor `WARNING` threshold. Must be a number.",
@@ -122,6 +126,10 @@ func resourceDatadogMonitor() *schema.Resource {
 							Type:         schema.TypeString,
 							ValidateFunc: validators.ValidateFloatString,
 							Optional:     true,
+							DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+								monitorType := d.Get("type").(string)
+								return monitorType != string(datadogV1.MONITORTYPE_SERVICE_CHECK)
+							},
 						},
 						"warning_recovery": {
 							Description:  "The monitor `WARNING` recovery threshold. Must be a number.",
