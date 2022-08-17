@@ -14,7 +14,7 @@ Provides a Datadog service definition JSON resource. This can be used to create 
 
 ```terraform
 resource "datadog_service_definition_json" "service_definition_json" {
-  definition =<<EOF
+  definition = <<EOF
 {
   "schema-version": "v2",
   "dd-service": "testservice",
@@ -43,4 +43,10 @@ EOF
 
 - `id` (String) The ID of this resource.
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+terraform import datadog_service_definition_json.service_definition my_service_name
+```
