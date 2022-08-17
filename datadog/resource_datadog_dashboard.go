@@ -3242,7 +3242,6 @@ func buildTerraformWidgetFieldSort(datadogWidgetFieldSort datadogV1.WidgetFieldS
 //
 // Manage Status Widget Definition helpers
 //
-
 func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"query": {
@@ -3832,7 +3831,6 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 //
 // Query Table Widget Definition helpers
 //
-
 func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
@@ -4863,7 +4861,6 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 //
 // Geomap Widget Definition helpers
 //
-
 func getGeomapDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {

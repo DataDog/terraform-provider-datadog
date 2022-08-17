@@ -666,8 +666,7 @@ func testCheckResourceAttrs(name string, checkExists resource.TestCheckFunc, ass
 	return funcs
 }
 
-/*
-Utility method for Debugging purpose. This method helps list assertions as well
+/* Utility method for Debugging purpose. This method helps list assertions as well
 It is a duplication of `resource.TestCheckResourceAttr` into which we added print statements.
 */
 func CheckResourceAttr(name, key, value string) resource.TestCheckFunc {

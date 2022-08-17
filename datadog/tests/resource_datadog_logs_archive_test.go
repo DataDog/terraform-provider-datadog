@@ -13,7 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
-// Test
+//Test
 // create: OK azure
 func archiveAzureConfigForCreation(uniq string) string {
 	return fmt.Sprintf(`

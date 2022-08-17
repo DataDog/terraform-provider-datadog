@@ -25,7 +25,7 @@ func NewResourceDataKey(d *schema.ResourceData, initial string) *ResourceDataKey
 	return rdk
 }
 
-// interfaceToPartsStr converts an interface to string, assuming it's a string or int,
+//interfaceToPartsStr converts an interface to string, assuming it's a string or int,
 // it panics otherwise.
 func (k *ResourceDataKey) interfaceToPartsStr(i interface{}, method string) string {
 	switch i := i.(type) {
