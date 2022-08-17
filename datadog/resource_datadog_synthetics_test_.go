@@ -526,6 +526,23 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Description: "The RUM data collection settings for the Synthetic browser test.",
 					Type:        schema.TypeList,
 					MaxItems:    1,
+					DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+						if strings.Contains(key, "is_enabled") {
+							if new != "true" && old != "true" {
+								return true
+							}
+						} else {
+							if rum_settings, ok := d.GetOk("options_list.0.rum_settings.0"); ok {
+								settings := rum_settings.(map[string]interface{})
+								isEnabled := settings["is_enabled"]
+
+								if !isEnabled.(bool) {
+									return true
+								}
+							}
+						}
+						return false
+					},
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"is_enabled": {

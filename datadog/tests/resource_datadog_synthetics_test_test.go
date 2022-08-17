@@ -392,6 +392,22 @@ func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsBrowserTest_Updated_RumSettings(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsBrowserTestStep(ctx, accProvider, t),
+			updateSyntheticsBrowserTestStepRumSettings(ctx, accProvider, t),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsBrowserTestBrowserVariables_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -2509,6 +2525,96 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
+func updateSyntheticsBrowserTestStepRumSettings(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "-updated-rumsettings"
+	return resource.TestStep{
+		Config: updateSyntheticsBrowserTestRumSetting(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.is_enabled", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.application_id", ""),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.client_token_id", "0"),
+		),
+	}
+}
+
+func updateSyntheticsBrowserTestRumSetting(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+	type = "browser"
+	request_definition {
+		method = "PUT"
+		url = "https://docs.datadoghq.com"
+		body = "this is an updated body"
+		timeout = 60
+	}
+	request_headers = {
+		Accept = "application/xml"
+		X-Datadog-Trace-ID = "987654321"
+	}
+	device_ids = [ "laptop_large", "tablet" ]
+	locations = [ "aws:eu-central-1" ]
+	options_list {
+		tick_every = 1800
+		min_failure_duration = 10
+		min_location_failed = 1
+
+		retry {
+			count = 3
+			interval = 500
+		}
+
+		monitor_options {
+			renotify_interval = 120
+		}
+
+		no_screenshot = false
+
+		rum_settings {
+			is_enabled = false
+			application_id = "rum-app-id-updated"
+			client_token_id = "6789"
+		}
+
+		ci {
+			execution_rule = "skipped"
+		}
+	}
+	name = "%s"
+	message = "Notify @pagerduty"
+	tags = ["foo:bar", "buz"]
+	status = "live"
+
+	browser_step {
+	    name = "first step updated"
+	    type = "assertCurrentUrl"
+
+	    params {
+	        check = "contains"
+	        value = "content"
+	    }
+	}
+
+	browser_step {
+	    name = "press key step"
+	    type = "pressKey"
+
+	    params {
+	        value = "1"
+	    }
+	}
+
+	browser_variable {
+		type = "text"
+		name = "MY_PATTERN_VAR"
+		pattern = "{{numeric(4)}}"
+		example = "5970"
+	}
+}`, uniq)
+}
 func createSyntheticsBrowserTestBrowserVariablesStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
