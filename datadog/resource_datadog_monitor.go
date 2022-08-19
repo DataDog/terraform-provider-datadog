@@ -20,6 +20,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+const defaultNoDataTimeframeMinutes = 10
+
 // Minimal interface between ResourceData and ResourceDiff so that we can use them interchangeably in buildMonitorStruct
 type builtResource interface {
 	Get(string) interface{}
@@ -168,10 +170,22 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"notify_no_data": {
-				Description: "A boolean indicating whether this monitor will notify when data stops reporting. Defaults to `false`.",
-				Type:        schema.TypeBool,
+				Description:   "A boolean indicating whether this monitor will notify when data stops reporting. Defaults to `false`.",
+				Type:          schema.TypeBool,
+				Optional:      true,
+				Default:       false,
+				ConflictsWith: []string{"on_missing_data"},
+			},
+			"on_missing_data": {
+				Description:   "Controls how groups or monitors are treated if an evaluation does not return any data points. The default option results in different behavior depending on the monitor query type. For monitors using Count queries, an empty monitor evaluation is treated as 0 and is compared to the threshold conditions. For monitor using any query type other than Count, for example Gauge or Rate, the monitor shows the last known status. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors.",
+				Type:          schema.TypeString,
+				Optional:      true,
+				ConflictsWith: []string{"notify_no_data", "no_data_timeframe"},
+			},
+			"group_retention_duration": {
+				Description: "The time span after which groups with missing data are dropped from the monitor state. The minimum value is one hour, and the maximum value is 72 hours. Example values are: 60m, 1h, and 2d. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors.",
+				Type:        schema.TypeString,
 				Optional:    true,
-				Default:     false,
 			},
 			// We only set new_group_delay in the monitor API payload if it is nonzero
 			// because the SDKv2 terraform plugin API prevents unsetting new_group_delay
@@ -204,7 +218,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Description: "The number of minutes before a monitor will notify when data stops reporting. Provider defaults to 10 minutes.\n\nWe recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.",
 				Type:        schema.TypeInt,
 				Optional:    true,
-				Default:     10,
+				Default:     defaultNoDataTimeframeMinutes,
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 					if !d.Get("notify_no_data").(bool) {
 						if newVal != oldVal {
@@ -214,6 +228,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					}
 					return newVal == oldVal
 				},
+				ConflictsWith: []string{"on_missing_data"},
 			},
 			"renotify_interval": {
 				Description: "The number of minutes after the last notification before a monitor will re-notify on the current status. It will only re-notify if it's not resolved.",
@@ -369,6 +384,9 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	if attr, ok := d.GetOk("notify_no_data"); ok {
 		o.SetNotifyNoData(attr.(bool))
 	}
+	if attr, ok := d.GetOk("group_retention_duration"); ok {
+		o.SetGroupRetentionDuration(attr.(string))
+	}
 	if attr, ok := d.GetOk("new_group_delay"); ok {
 		o.SetNewGroupDelay(int64(attr.(int)))
 	}
@@ -378,7 +396,14 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	if attr, ok := d.GetOk("evaluation_delay"); ok {
 		o.SetEvaluationDelay(int64(attr.(int)))
 	}
-	if attr, ok := d.GetOk("no_data_timeframe"); ok {
+	attr, onMissingDataOk := d.GetOk("on_missing_data")
+	if onMissingDataOk {
+		o.SetOnMissingData(datadogV1.OnMissingDataOption(attr.(string)))
+	}
+	// no_data_timeframe cannot be combined with on_missing_data. This provider
+	// defaults no_data_timeframe to 10, so we need this extra logic to exclude
+	// no_data_timeframe from the monitor definition when on_missing_data is set.
+	if attr, ok := d.GetOk("no_data_timeframe"); ok && !onMissingDataOk {
 		o.SetNoDataTimeframe(int64(attr.(int)))
 	}
 	if attr, ok := d.GetOk("renotify_interval"); ok {
@@ -595,6 +620,12 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return diag.FromErr(err)
 	}
 	if err := d.Set("notify_no_data", m.Options.GetNotifyNoData()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("on_missing_data", m.Options.GetOnMissingData()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("group_retention_duration", m.Options.GetGroupRetentionDuration()); err != nil {
 		return diag.FromErr(err)
 	}
 	if err := d.Set("no_data_timeframe", m.Options.NoDataTimeframe.Get()); err != nil {

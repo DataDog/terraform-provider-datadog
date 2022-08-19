@@ -121,6 +121,16 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				Type:        schema.TypeBool,
 				Computed:    true,
 			},
+			"on_missing_data": {
+				Description: "Controls how groups or monitors are treated if an evaluation does not return any data points. The default option results in different behavior depending on the monitor query type. For monitors using Count queries, an empty monitor evaluation is treated as 0 and is compared to the threshold conditions. For monitor using any query type other than Count, for example Gauge or Rate, the monitor shows the last known status. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"group_retention_duration": {
+				Description: "The time span after which groups with missing data are dropped from the monitor state. The minimum value is one hour, and the maximum value is 72 hours. Example values are: 60m, 1h, and 2d. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
 			"new_group_delay": {
 				Description: "Time (in seconds) to skip evaluations for new groups.",
 				Type:        schema.TypeInt,
@@ -303,6 +313,8 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	d.Set("new_host_delay", m.Options.GetNewHostDelay())
 	d.Set("evaluation_delay", m.Options.GetEvaluationDelay())
 	d.Set("notify_no_data", m.Options.GetNotifyNoData())
+	d.Set("on_missing_data", m.Options.GetOnMissingData())
+	d.Set("group_retention_duration", m.Options.GetGroupRetentionDuration())
 	d.Set("no_data_timeframe", m.Options.GetNoDataTimeframe())
 	d.Set("renotify_interval", m.Options.GetRenotifyInterval())
 	d.Set("renotify_occurrences", m.Options.GetRenotifyOccurrences())
