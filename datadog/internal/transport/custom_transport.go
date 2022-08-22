@@ -38,6 +38,11 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		defer ccancel()
 	}
 
+	var rawBody []byte
+	if req.Body != nil && req.Body != http.NoBody {
+		rawBody, _ = ioutil.ReadAll(req.Body)
+		req.Body.Close()
+	}
 	var resp *http.Response
 	var respErr error
 	retryCount := 0
@@ -46,7 +51,7 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 			ccancel()
 		}
 
-		newRequest := t.copyRequest(req)
+		newRequest := t.copyRequest(req, &rawBody)
 		resp, respErr = t.defaultTransport.RoundTrip(newRequest)
 		// Close the body so connection can be re-used
 		if resp != nil {
@@ -74,15 +79,13 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	}
 }
 
-func (t *CustomTransport) copyRequest(r *http.Request) *http.Request {
+func (t *CustomTransport) copyRequest(r *http.Request, rawBody *[]byte) *http.Request {
 	newRequest := *r
 
 	if r.Body == nil || r.Body == http.NoBody {
 		return &newRequest
 	}
-
-	body, _ := r.GetBody()
-	newRequest.Body = body
+	newRequest.Body = ioutil.NopCloser(bytes.NewBuffer(*rawBody))
 
 	return &newRequest
 }
