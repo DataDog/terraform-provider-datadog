@@ -63,7 +63,7 @@ test-compile: get-test-deps
 update-go-client:
 	echo "Updating the Zorkian client to ${ZORKIAN_VERSION} and the API Client to ${API_CLIENT_VERSION}"
 	go get github.com/zorkian/go-datadog-api@$(ZORKIAN_VERSION)
-	go get github.com/DataDog/datadog-api-client-go@${API_CLIENT_VERSION}
+	go get github.com/DataDog/datadog-api-client-go/v2@${API_CLIENT_VERSION}
 	go mod tidy
 
 get-test-deps:
