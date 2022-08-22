@@ -297,8 +297,6 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckNoResourceAttr(
 						"datadog_monitor.foo", "renotify_statuses.#"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "monitor_thresholds.0.ok", "0"),
-					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.warning", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.warning_recovery", "0.5"),
@@ -445,8 +443,6 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckNoResourceAttr(
 						"datadog_monitor.foo", "renotify_statuses.#"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "monitor_thresholds.0.ok", "0"),
-					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.warning", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.warning_recovery", "0.5"),
@@ -525,8 +521,6 @@ func TestAccDatadogMonitor_TrimWhitespace(t *testing.T) {
 						"datadog_monitor.foo", "renotify_statuses.*", "alert"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_monitor.foo", "renotify_statuses.*", "warn"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "monitor_thresholds.0.ok", "0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.warning", "1"),
 					resource.TestCheckResourceAttr(
@@ -694,8 +688,6 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 						"datadog_monitor.foo", "renotify_statuses.*", "alert"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_monitor.foo", "renotify_statuses.*", "warn"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "monitor_thresholds.0.ok", "0"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "monitor_thresholds.0.warning", "0.5"),
 					resource.TestCheckResourceAttr(
