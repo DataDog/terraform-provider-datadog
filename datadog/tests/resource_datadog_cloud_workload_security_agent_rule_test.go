@@ -6,11 +6,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
 const tfAgentRuleName = "datadog_cloud_workload_security_agent_rule.acceptance_test"
@@ -92,11 +92,11 @@ func testAccCheckDatadogCloudWorkloadSecurityAgentRuleExists(accProvider func() 
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
+		auth := providerConf.Auth
+		apiInstances := providerConf.DatadogApiInstances
 
 		for _, agentRule := range s.RootModule().Resources {
-			_, _, err := client.CloudWorkloadSecurityApi.GetCloudWorkloadSecurityAgentRule(authV2, agentRule.Primary.ID)
+			_, _, err := apiInstances.GetCloudWorkloadSecurityApiV2().GetCloudWorkloadSecurityAgentRule(auth, agentRule.Primary.ID)
 			if err != nil {
 				return fmt.Errorf("received an error retrieving cloud workload security agent rule: %s", err)
 			}
@@ -109,12 +109,12 @@ func testAccCheckDatadogCloudWorkloadSecurityAgentRuleDestroy(accProvider func()
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
+		auth := providerConf.Auth
+		apiInstances := providerConf.DatadogApiInstances
 
 		for _, resource := range s.RootModule().Resources {
 			if resource.Type == "datadog_cloud_workload_security_agent_rule" {
-				_, httpResponse, err := client.CloudWorkloadSecurityApi.GetCloudWorkloadSecurityAgentRule(authV2, resource.Primary.ID)
+				_, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().GetCloudWorkloadSecurityAgentRule(auth, resource.Primary.ID)
 				if err != nil {
 					if httpResponse != nil && httpResponse.StatusCode == 404 {
 						continue

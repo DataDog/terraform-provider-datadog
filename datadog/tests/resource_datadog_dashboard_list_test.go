@@ -7,12 +7,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
 func testAccCheckDatadogDashListConfig(uniq string) string {
@@ -187,20 +188,20 @@ func testAccCheckDatadogDashListDestroy(accProvider func() (*schema.Provider, er
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
-		return datadogDashListDestroyHelper(authV1, s, datadogClientV1)
+		return datadogDashListDestroyHelper(auth, s, apiInstances)
 	}
 }
 
-func datadogDashListDestroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
+func datadogDashListDestroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
 		if !strings.Contains(r.Primary.Attributes["name"], "List") {
 			continue
 		}
 		id, _ := strconv.Atoi(r.Primary.ID)
-		_, _, errList := datadogClientV1.DashboardListsApi.GetDashboardList(ctx, int64(id))
+		_, _, errList := apiInstances.GetDashboardListsApiV1().GetDashboardList(ctx, int64(id))
 		if errList != nil {
 			if strings.Contains(strings.ToLower(errList.Error()), "not found") {
 				continue

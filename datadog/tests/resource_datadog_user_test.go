@@ -7,8 +7,10 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	dd "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -268,10 +270,10 @@ func testAccCheckUserIsDisabled(accProvider func() (*schema.Provider, error), us
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
-		resp, _, err := datadogClientV2.UsersApi.ListUsers(authV2, datadogV2.ListUsersOptionalParameters{Filter: &username, FilterStatus: datadogV2.PtrString("Disabled")})
+		resp, _, err := apiInstances.GetUsersApiV2().ListUsers(auth, datadogV2.ListUsersOptionalParameters{Filter: &username, FilterStatus: dd.PtrString("Disabled")})
 		if err != nil {
 			return fmt.Errorf("received an error listing users %s", err)
 		}
@@ -295,10 +297,10 @@ func testAccCheckDatadogUserV2Destroy(accProvider func() (*schema.Provider, erro
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
-		if err := datadogUserV2DestroyHelper(authV2, s, datadogClientV2); err != nil {
+		if err := datadogUserV2DestroyHelper(auth, s, apiInstances); err != nil {
 			return err
 		}
 		return nil
@@ -309,10 +311,10 @@ func testAccCheckDatadogUserV2Exists(accProvider func() (*schema.Provider, error
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
-		if err := datadogUserV2ExistsHelper(authV2, s, datadogClientV2, n); err != nil {
+		if err := datadogUserV2ExistsHelper(auth, s, apiInstances, n); err != nil {
 			return err
 		}
 		return nil
@@ -399,10 +401,10 @@ resource "datadog_user" "bar" {
 }`, uniq)
 }
 
-func datadogUserV2DestroyHelper(ctx context.Context, s *terraform.State, client *datadogV2.APIClient) error {
+func datadogUserV2DestroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
 		id := r.Primary.ID
-		userResponse, httpResponse, err := client.UsersApi.GetUser(ctx, id)
+		userResponse, httpResponse, err := apiInstances.GetUsersApiV2().GetUser(ctx, id)
 
 		if err != nil {
 			if httpResponse.StatusCode == 404 {
@@ -422,9 +424,9 @@ func datadogUserV2DestroyHelper(ctx context.Context, s *terraform.State, client 
 	return nil
 }
 
-func datadogUserV2ExistsHelper(ctx context.Context, s *terraform.State, client *datadogV2.APIClient, name string) error {
+func datadogUserV2ExistsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances, name string) error {
 	id := s.RootModule().Resources[name].Primary.ID
-	if _, _, err := client.UsersApi.GetUser(ctx, id); err != nil {
+	if _, _, err := apiInstances.GetUsersApiV2().GetUser(ctx, id); err != nil {
 		return fmt.Errorf("received an error retrieving user %s", err)
 	}
 	return nil

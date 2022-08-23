@@ -14,7 +14,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -485,14 +485,14 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 	}
 
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 	return resource.RetryContext(ctx, retryTimeout, func() *resource.RetryError {
 		var httpresp *http.Response
 		if hasID {
-			_, httpresp, err = datadogClientV1.MonitorsApi.ValidateExistingMonitor(authV1, id, *m)
+			_, httpresp, err = apiInstances.GetMonitorsApiV1().ValidateExistingMonitor(auth, id, *m)
 		} else {
-			_, httpresp, err = datadogClientV1.MonitorsApi.ValidateMonitor(authV1, *m)
+			_, httpresp, err = apiInstances.GetMonitorsApiV1().ValidateMonitor(auth, *m)
 		}
 		if err != nil {
 			if httpresp != nil && (httpresp.StatusCode == 502 || httpresp.StatusCode == 504) {
@@ -506,11 +506,11 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 
 func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	m, _ := buildMonitorStruct(d)
-	mCreated, httpResponse, err := datadogClientV1.MonitorsApi.CreateMonitor(authV1, *m)
+	mCreated, httpResponse, err := apiInstances.GetMonitorsApiV1().CreateMonitor(auth, *m)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating monitor")
 	}
@@ -661,8 +661,8 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 
 func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	i, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
@@ -673,7 +673,7 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 		httpresp *http.Response
 	)
 	if err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
-		m, httpresp, err = datadogClientV1.MonitorsApi.GetMonitor(authV1, i)
+		m, httpresp, err = apiInstances.GetMonitorsApiV1().GetMonitor(auth, i)
 		if err != nil {
 			if httpresp != nil {
 				if httpresp.StatusCode == 404 {
@@ -702,8 +702,8 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 
 func resourceDatadogMonitorUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	_, m := buildMonitorStruct(d)
 	i, err := strconv.ParseInt(d.Id(), 10, 64)
@@ -713,7 +713,7 @@ func resourceDatadogMonitorUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	m.Id = &i
 
-	monitorResp, httpresp, err := datadogClientV1.MonitorsApi.UpdateMonitor(authV1, i, *m)
+	monitorResp, httpresp, err := apiInstances.GetMonitorsApiV1().UpdateMonitor(auth, i, *m)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating monitor")
 	}
@@ -726,8 +726,8 @@ func resourceDatadogMonitorUpdate(ctx context.Context, d *schema.ResourceData, m
 
 func resourceDatadogMonitorDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	i, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
@@ -737,10 +737,10 @@ func resourceDatadogMonitorDelete(ctx context.Context, d *schema.ResourceData, m
 	var httpResponse *http.Response
 
 	if d.Get("force_delete").(bool) {
-		_, httpResponse, err = datadogClientV1.MonitorsApi.DeleteMonitor(authV1, i,
+		_, httpResponse, err = apiInstances.GetMonitorsApiV1().DeleteMonitor(auth, i,
 			*datadogV1.NewDeleteMonitorOptionalParameters().WithForce("true"))
 	} else {
-		_, httpResponse, err = datadogClientV1.MonitorsApi.DeleteMonitor(authV1, i)
+		_, httpResponse, err = apiInstances.GetMonitorsApiV1().DeleteMonitor(auth, i)
 	}
 
 	if err != nil {

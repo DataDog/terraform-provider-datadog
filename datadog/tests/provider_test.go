@@ -21,8 +21,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	common "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	ddtesting "github.com/DataDog/dd-sdk-go-testing"
 	"github.com/dnaeon/go-vcr/cassette"
 	"github.com/dnaeon/go-vcr/recorder"
@@ -472,24 +471,12 @@ func initAccProvider(ctx context.Context, t *testing.T, httpClient *http.Client)
 func buildContext(ctx context.Context, apiKey string, appKey string, apiURL string) (context.Context, error) {
 	ctx = context.WithValue(
 		ctx,
-		datadogV1.ContextAPIKeys,
-		map[string]datadogV1.APIKey{
-			"apiKeyAuth": datadogV1.APIKey{
+		common.ContextAPIKeys,
+		map[string]common.APIKey{
+			"apiKeyAuth": common.APIKey{
 				Key: apiKey,
 			},
-			"appKeyAuth": datadogV1.APIKey{
-				Key: appKey,
-			},
-		},
-	)
-	ctx = context.WithValue(
-		ctx,
-		datadogV2.ContextAPIKeys,
-		map[string]datadogV2.APIKey{
-			"apiKeyAuth": datadogV2.APIKey{
-				Key: apiKey,
-			},
-			"appKeyAuth": datadogV2.APIKey{
+			"appKeyAuth": common.APIKey{
 				Key: appKey,
 			},
 		},
@@ -504,43 +491,32 @@ func buildContext(ctx context.Context, apiKey string, appKey string, apiURL stri
 			return nil, fmt.Errorf(`missing protocol or host : %v`, apiURL)
 		}
 		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
-		ctx = context.WithValue(ctx, datadogV1.ContextServerIndex, 1)
-		ctx = context.WithValue(ctx, datadogV2.ContextServerIndex, 1)
+		ctx = context.WithValue(ctx, common.ContextServerIndex, 1)
 
 		serverVariables := map[string]string{
 			"name":     parsedAPIURL.Host,
 			"protocol": parsedAPIURL.Scheme,
 		}
-		ctx = context.WithValue(ctx, datadogV1.ContextServerVariables, serverVariables)
-		ctx = context.WithValue(ctx, datadogV2.ContextServerVariables, serverVariables)
+		ctx = context.WithValue(ctx, common.ContextServerVariables, serverVariables)
 	}
 	return ctx, nil
 }
 
-func buildDatadogClientV1(httpClient *http.Client) *datadogV1.APIClient {
-	//Datadog V1 API config.HTTPClient
-	configV1 := datadogV1.NewConfiguration()
-	configV1.SetUnstableOperationEnabled("CreateSLOCorrection", true)
-	configV1.SetUnstableOperationEnabled("GetSLOCorrection", true)
-	configV1.SetUnstableOperationEnabled("UpdateSLOCorrection", true)
-	configV1.SetUnstableOperationEnabled("DeleteSLOCorrection", true)
-	configV1.Debug = isDebug()
-	configV1.HTTPClient = httpClient
-	configV1.UserAgent = utils.GetUserAgent(configV1.UserAgent)
-	return datadogV1.NewAPIClient(configV1)
-}
-
-func buildDatadogClientV2(httpClient *http.Client) *datadogV2.APIClient {
-	//Datadog V2 API config.HTTPClient
-	configV2 := datadogV2.NewConfiguration()
-	configV2.SetUnstableOperationEnabled("CreateTagConfiguration", true)
-	configV2.SetUnstableOperationEnabled("DeleteTagConfiguration", true)
-	configV2.SetUnstableOperationEnabled("ListTagConfigurationByName", true)
-	configV2.SetUnstableOperationEnabled("UpdateTagConfiguration", true)
-	configV2.Debug = isDebug()
-	configV2.HTTPClient = httpClient
-	configV2.UserAgent = utils.GetUserAgent(configV2.UserAgent)
-	return datadogV2.NewAPIClient(configV2)
+func buildDatadogClient(httpClient *http.Client) *common.APIClient {
+	//Datadog API config.HTTPClient
+	config := common.NewConfiguration()
+	config.SetUnstableOperationEnabled("v1.CreateSLOCorrection", true)
+	config.SetUnstableOperationEnabled("v1.GetSLOCorrection", true)
+	config.SetUnstableOperationEnabled("v1.UpdateSLOCorrection", true)
+	config.SetUnstableOperationEnabled("v1.DeleteSLOCorrection", true)
+	config.SetUnstableOperationEnabled("v2.CreateTagConfiguration", true)
+	config.SetUnstableOperationEnabled("v2.DeleteTagConfiguration", true)
+	config.SetUnstableOperationEnabled("v2.ListTagConfigurationByName", true)
+	config.SetUnstableOperationEnabled("v2.UpdateTagConfiguration", true)
+	config.Debug = isDebug()
+	config.HTTPClient = httpClient
+	config.UserAgent = utils.GetUserAgent(config.UserAgent)
+	return common.NewAPIClient(config)
 }
 
 func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock clockwork.FakeClock) schema.ConfigureContextFunc {
@@ -567,11 +543,9 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 		}
 
 		return &datadog.ProviderConfiguration{
-			CommunityClient: communityClient,
-			DatadogClientV1: buildDatadogClientV1(c),
-			DatadogClientV2: buildDatadogClientV2(c),
-			AuthV1:          ctx,
-			AuthV2:          ctx,
+			CommunityClient:     communityClient,
+			DatadogApiInstances: &utils.ApiInstances{HttpClient: buildDatadogClient(c)},
+			Auth:                ctx,
 
 			Now: clock.Now,
 		}, nil

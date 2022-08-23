@@ -6,7 +6,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -29,12 +29,11 @@ func dataSourceDatadogDashboardList() *schema.Resource {
 }
 
 func dataSourceDatadogDashboardListRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	listResponse, httpresp, err := datadogClientV1.DashboardListsApi.ListDashboardLists(authV1)
+	listResponse, httpresp, err := apiInstances.GetDashboardListsApiV1().ListDashboardLists(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying dashboard lists")
 	}

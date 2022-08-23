@@ -6,7 +6,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -99,10 +99,10 @@ func updateOpsgenieServiceState(d *schema.ResourceData, serviceData *datadogV2.O
 
 func resourceDatadogIntegrationOpsgenieServiceCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	resp, httpResponse, err := datadogClientV2.OpsgenieIntegrationApi.CreateOpsgenieService(authV2, *buildOpsgenieServiceCreateRequest(d))
+	resp, httpResponse, err := apiInstances.GetOpsgenieIntegrationApiV2().CreateOpsgenieService(auth, *buildOpsgenieServiceCreateRequest(d))
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating Opsgenie service")
 	}
@@ -115,10 +115,10 @@ func resourceDatadogIntegrationOpsgenieServiceCreate(ctx context.Context, d *sch
 
 func resourceDatadogIntegrationOpsgenieServiceRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	resp, httpResponse, err := datadogClientV2.OpsgenieIntegrationApi.GetOpsgenieService(authV2, d.Id())
+	resp, httpResponse, err := apiInstances.GetOpsgenieIntegrationApiV2().GetOpsgenieService(auth, d.Id())
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
@@ -132,10 +132,10 @@ func resourceDatadogIntegrationOpsgenieServiceRead(ctx context.Context, d *schem
 
 func resourceDatadogIntegrationOpsgenieServiceUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	resp, httpResponse, err := datadogClientV2.OpsgenieIntegrationApi.UpdateOpsgenieService(authV2, d.Id(), *buildOpsgenieServiceUpdateRequest(d))
+	resp, httpResponse, err := apiInstances.GetOpsgenieIntegrationApiV2().UpdateOpsgenieService(auth, d.Id(), *buildOpsgenieServiceUpdateRequest(d))
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating Opsgenie service")
 	}
@@ -145,10 +145,10 @@ func resourceDatadogIntegrationOpsgenieServiceUpdate(ctx context.Context, d *sch
 
 func resourceDatadogIntegrationOpsgenieServiceDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	if httpResponse, err := datadogClientV2.OpsgenieIntegrationApi.DeleteOpsgenieService(authV2, d.Id()); err != nil {
+	if httpResponse, err := apiInstances.GetOpsgenieIntegrationApiV2().DeleteOpsgenieService(auth, d.Id()); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting Opsgenie service")
 	}
 

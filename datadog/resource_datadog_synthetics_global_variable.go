@@ -9,7 +9,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -114,11 +114,11 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 
 func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	syntheticsGlobalVariable := buildSyntheticsGlobalVariableStruct(d)
-	createdSyntheticsGlobalVariable, httpResponse, err := datadogClientV1.SyntheticsApi.CreateGlobalVariable(authV1, *syntheticsGlobalVariable)
+	createdSyntheticsGlobalVariable, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateGlobalVariable(auth, *syntheticsGlobalVariable)
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics global variable")
@@ -130,7 +130,7 @@ func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schem
 	var getSyntheticsGlobalVariableResponse datadogV1.SyntheticsGlobalVariable
 	var httpResponseGet *http.Response
 	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
-		getSyntheticsGlobalVariableResponse, httpResponseGet, err = datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, createdSyntheticsGlobalVariable.GetId())
+		getSyntheticsGlobalVariableResponse, httpResponseGet, err = apiInstances.GetSyntheticsApiV1().GetGlobalVariable(auth, createdSyntheticsGlobalVariable.GetId())
 		if err != nil {
 			if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
 				return resource.RetryableError(fmt.Errorf("synthetics global variable not created yet"))
@@ -156,10 +156,10 @@ func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schem
 
 func resourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	syntheticsGlobalVariable, httpresp, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, d.Id())
+	syntheticsGlobalVariable, httpresp, err := apiInstances.GetSyntheticsApiV1().GetGlobalVariable(auth, d.Id())
 
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
@@ -178,11 +178,11 @@ func resourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.
 
 func resourceDatadogSyntheticsGlobalVariableUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	syntheticsGlobalVariable := buildSyntheticsGlobalVariableStruct(d)
-	if _, httpResponse, err := datadogClientV1.SyntheticsApi.EditGlobalVariable(authV1, d.Id(), *syntheticsGlobalVariable); err != nil {
+	if _, httpResponse, err := apiInstances.GetSyntheticsApiV1().EditGlobalVariable(auth, d.Id(), *syntheticsGlobalVariable); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
 		utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics global variable")
 	}
@@ -193,10 +193,10 @@ func resourceDatadogSyntheticsGlobalVariableUpdate(ctx context.Context, d *schem
 
 func resourceDatadogSyntheticsGlobalVariableDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	if httpResponse, err := datadogClientV1.SyntheticsApi.DeleteGlobalVariable(authV1, d.Id()); err != nil {
+	if httpResponse, err := apiInstances.GetSyntheticsApiV1().DeleteGlobalVariable(auth, d.Id()); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting synthetics global variable")
 	}

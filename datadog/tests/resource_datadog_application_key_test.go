@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func TestAccDatadogApplicationKey_Update(t *testing.T) {
@@ -87,19 +87,19 @@ func testAccCheckDatadogApplicationKeyExists(accProvider func() (*schema.Provide
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
-		if err := datadogApplicationKeyExistsHelper(authV2, s, datadogClientV2, n); err != nil {
+		if err := datadogApplicationKeyExistsHelper(auth, s, apiInstances, n); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func datadogApplicationKeyExistsHelper(ctx context.Context, s *terraform.State, client *datadogV2.APIClient, name string) error {
+func datadogApplicationKeyExistsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances, name string) error {
 	id := s.RootModule().Resources[name].Primary.ID
-	if _, _, err := client.KeyManagementApi.GetCurrentUserApplicationKey(ctx, id); err != nil {
+	if _, _, err := apiInstances.GetKeyManagementApiV2().GetCurrentUserApplicationKey(ctx, id); err != nil {
 		return fmt.Errorf("received an error retrieving application key %s", err)
 	}
 	return nil
@@ -109,21 +109,21 @@ func testAccCheckDatadogApplicationKeyValueMatches(accProvider func() (*schema.P
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
-		if err := datadogApplicationKeyValueMatches(authV2, s, datadogClientV2, n); err != nil {
+		if err := datadogApplicationKeyValueMatches(auth, s, apiInstances, n); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func datadogApplicationKeyValueMatches(ctx context.Context, s *terraform.State, client *datadogV2.APIClient, name string) error {
+func datadogApplicationKeyValueMatches(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances, name string) error {
 	primaryResource := s.RootModule().Resources[name].Primary
 	id := primaryResource.ID
 	expectedKey := primaryResource.Attributes["key"]
-	resp, _, err := client.KeyManagementApi.GetCurrentUserApplicationKey(ctx, id)
+	resp, _, err := apiInstances.GetKeyManagementApiV2().GetCurrentUserApplicationKey(ctx, id)
 	if err != nil {
 		return fmt.Errorf("received an error retrieving application key %s", err)
 	}
@@ -138,24 +138,24 @@ func testAccCheckDatadogApplicationKeyDestroy(accProvider func() (*schema.Provid
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
-		if err := datadogApplicationKeyDestroyHelper(authV2, s, datadogClientV2); err != nil {
+		if err := datadogApplicationKeyDestroyHelper(auth, s, apiInstances); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func datadogApplicationKeyDestroyHelper(ctx context.Context, s *terraform.State, client *datadogV2.APIClient) error {
+func datadogApplicationKeyDestroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type != "datadog_application_key" {
 			continue
 		}
 
 		id := r.Primary.ID
-		_, httpResponse, err := client.KeyManagementApi.GetCurrentUserApplicationKey(ctx, id)
+		_, httpResponse, err := apiInstances.GetKeyManagementApiV2().GetCurrentUserApplicationKey(ctx, id)
 
 		if err != nil {
 			if httpResponse.StatusCode == 404 {

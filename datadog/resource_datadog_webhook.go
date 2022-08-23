@@ -7,7 +7,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -92,15 +92,15 @@ func resourceDatadogWebhookCreate(ctx context.Context, d *schema.ResourceData, m
 	defer webhookMutex.Unlock()
 
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	webhook, err := buildWebhookCreatePayload(d)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	resp, httpResponse, err := datadogClientV1.WebhooksIntegrationApi.CreateWebhooksIntegration(authV1, *webhook)
+	resp, httpResponse, err := apiInstances.GetWebhooksIntegrationApiV1().CreateWebhooksIntegration(auth, *webhook)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating webhooks custom variable")
 	}
@@ -112,10 +112,10 @@ func resourceDatadogWebhookCreate(ctx context.Context, d *schema.ResourceData, m
 
 func resourceDatadogWebhookRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	resp, httpResponse, err := datadogClientV1.WebhooksIntegrationApi.GetWebhooksIntegration(authV1, d.Id())
+	resp, httpResponse, err := apiInstances.GetWebhooksIntegrationApiV1().GetWebhooksIntegration(auth, d.Id())
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
@@ -131,15 +131,15 @@ func resourceDatadogWebhookUpdate(ctx context.Context, d *schema.ResourceData, m
 	defer webhookMutex.Unlock()
 
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	webhook, err := buildWebhookUpdatePayload(d)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	resp, httpResponse, err := datadogClientV1.WebhooksIntegrationApi.UpdateWebhooksIntegration(authV1, d.Id(), *webhook)
+	resp, httpResponse, err := apiInstances.GetWebhooksIntegrationApiV1().UpdateWebhooksIntegration(auth, d.Id(), *webhook)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating webhook")
 	}
@@ -154,10 +154,10 @@ func resourceDatadogWebhookDelete(ctx context.Context, d *schema.ResourceData, m
 	defer webhookMutex.Unlock()
 
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	if httpResponse, err := datadogClientV1.WebhooksIntegrationApi.DeleteWebhooksIntegration(authV1, d.Id()); err != nil {
+	if httpResponse, err := apiInstances.GetWebhooksIntegrationApiV1().DeleteWebhooksIntegration(auth, d.Id()); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting webhook")
 	}
 

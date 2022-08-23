@@ -5,7 +5,8 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -63,10 +64,10 @@ func resourceDatadogWebhookCustomVariableCreate(ctx context.Context, d *schema.R
 	defer webhookMutex.Unlock()
 
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	resp, httpResponse, err := datadogClientV1.WebhooksIntegrationApi.CreateWebhooksIntegrationCustomVariable(authV1, datadogV1.WebhooksIntegrationCustomVariable{
+	resp, httpResponse, err := apiInstances.GetWebhooksIntegrationApiV1().CreateWebhooksIntegrationCustomVariable(auth, datadogV1.WebhooksIntegrationCustomVariable{
 		Name:     d.Get("name").(string),
 		Value:    d.Get("value").(string),
 		IsSecret: d.Get("is_secret").(bool),
@@ -82,10 +83,10 @@ func resourceDatadogWebhookCustomVariableCreate(ctx context.Context, d *schema.R
 
 func resourceDatadogWebhookCustomVariableRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	resp, httpResponse, err := datadogClientV1.WebhooksIntegrationApi.GetWebhooksIntegrationCustomVariable(authV1, d.Id())
+	resp, httpResponse, err := apiInstances.GetWebhooksIntegrationApiV1().GetWebhooksIntegrationCustomVariable(auth, d.Id())
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
@@ -101,13 +102,13 @@ func resourceDatadogWebhookCustomVariableUpdate(ctx context.Context, d *schema.R
 	defer webhookMutex.Unlock()
 
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	resp, httpResponse, err := datadogClientV1.WebhooksIntegrationApi.UpdateWebhooksIntegrationCustomVariable(authV1, d.Id(), datadogV1.WebhooksIntegrationCustomVariableUpdateRequest{
-		Name:     datadogV1.PtrString(d.Get("name").(string)),
-		Value:    datadogV1.PtrString(d.Get("value").(string)),
-		IsSecret: datadogV1.PtrBool(d.Get("is_secret").(bool)),
+	resp, httpResponse, err := apiInstances.GetWebhooksIntegrationApiV1().UpdateWebhooksIntegrationCustomVariable(auth, d.Id(), datadogV1.WebhooksIntegrationCustomVariableUpdateRequest{
+		Name:     datadog.PtrString(d.Get("name").(string)),
+		Value:    datadog.PtrString(d.Get("value").(string)),
+		IsSecret: datadog.PtrBool(d.Get("is_secret").(bool)),
 	})
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating webhooks custom variable key")
@@ -123,10 +124,10 @@ func resourceDatadogWebhookCustomVariableDelete(ctx context.Context, d *schema.R
 	defer webhookMutex.Unlock()
 
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	if httpResponse, err := datadogClientV1.WebhooksIntegrationApi.DeleteWebhooksIntegrationCustomVariable(authV1, d.Id()); err != nil {
+	if httpResponse, err := apiInstances.GetWebhooksIntegrationApiV1().DeleteWebhooksIntegrationCustomVariable(auth, d.Id()); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting webhooks custom variable")
 	}
 

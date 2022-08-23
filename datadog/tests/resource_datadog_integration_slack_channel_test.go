@@ -140,13 +140,13 @@ func testAccCheckDatadogIntegrationSlackChannelExists(accProvider func() (*schem
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClientV1
-		auth := providerConf.AuthV1
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
 		accountName := s.RootModule().Resources[resourceName].Primary.Attributes["account_name"]
 		channelName := s.RootModule().Resources[resourceName].Primary.Attributes["channel_name"]
 
-		_, httpresp, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, accountName, channelName)
+		_, httpresp, err := apiInstances.GetSlackIntegrationApiV1().GetSlackIntegrationChannel(auth, accountName, channelName)
 		if err != nil {
 			return utils.TranslateClientError(err, httpresp, "error checking slack_channel existence")
 		}
@@ -159,8 +159,8 @@ func testAccCheckDatadogIntegrationSlackChannelDestroy(accProvider func() (*sche
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClientV1
-		auth := providerConf.AuthV1
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_slack_channel" {
@@ -170,7 +170,7 @@ func testAccCheckDatadogIntegrationSlackChannelDestroy(accProvider func() (*sche
 			accountName := r.Primary.Attributes["account_name"]
 			channelName := r.Primary.Attributes["channel_name"]
 
-			_, resp, err := datadogClient.SlackIntegrationApi.GetSlackIntegrationChannel(auth, accountName, channelName)
+			_, resp, err := apiInstances.GetSlackIntegrationApiV1().GetSlackIntegrationChannel(auth, accountName, channelName)
 
 			if err != nil {
 				if resp.StatusCode == 404 {

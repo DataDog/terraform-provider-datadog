@@ -28,10 +28,10 @@ func dataSourceDatadogSyntheticsLocations() *schema.Resource {
 func dataSourceDatadogSyntheticsLocationsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	syntheticsLocations, _, err := datadogClientV1.SyntheticsApi.ListLocations(authV1)
+	syntheticsLocations, _, err := apiInstances.GetSyntheticsApiV1().ListLocations(auth)
 
 	if err != nil {
 		return diag.FromErr(err)

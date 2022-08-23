@@ -11,7 +11,8 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -68,8 +69,8 @@ func dataSourceDatadogSecurityMonitoringRules() *schema.Resource {
 
 func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	var nameFilter *string
 	var defaultFilter *bool
@@ -107,10 +108,10 @@ func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema
 	page := int64(0)
 
 	for {
-		response, httpresp, err := datadogClientV2.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
+		response, httpresp, err := apiInstances.GetSecurityMonitoringApiV2().ListSecurityMonitoringRules(auth,
 			datadogV2.ListSecurityMonitoringRulesOptionalParameters{
-				PageNumber: datadogV2.PtrInt64(page),
-				PageSize:   datadogV2.PtrInt64(100),
+				PageNumber: datadog.PtrInt64(page),
+				PageSize:   datadog.PtrInt64(100),
 			})
 
 		if err != nil {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
@@ -40,14 +40,14 @@ func dataSourceDatadogRole() *schema.Resource {
 
 func dataSourceDatadogRoleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	optionalParams := datadogV2.NewListRolesOptionalParameters()
 	filter := d.Get("filter").(string)
 	optionalParams = optionalParams.WithFilter(filter)
 
-	res, httpresp, err := datadogClientV2.RolesApi.ListRoles(authV2, *optionalParams)
+	res, httpresp, err := apiInstances.GetRolesApiV2().ListRoles(auth, *optionalParams)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying roles")
 	}

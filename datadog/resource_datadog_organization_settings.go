@@ -5,7 +5,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -252,10 +252,10 @@ func buildDatadogOrganizationUpdateV1Struct(d *schema.ResourceData) *datadogV1.O
 
 func resourceDatadogOrganizationSettingsCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	resp, httpResponse, err := datadogClientV1.OrganizationsApi.ListOrgs(authV1)
+	resp, httpResponse, err := apiInstances.GetOrganizationsApiV1().ListOrgs(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting organization")
 	}
@@ -273,10 +273,10 @@ func resourceDatadogOrganizationSettingsCreate(ctx context.Context, d *schema.Re
 
 func resourceDatadogOrganizationSettingsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	resp, httpResponse, err := datadogClientV1.OrganizationsApi.GetOrg(authV1, d.Id())
+	resp, httpResponse, err := apiInstances.GetOrganizationsApiV1().GetOrg(auth, d.Id())
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
@@ -293,10 +293,10 @@ func resourceDatadogOrganizationSettingsRead(ctx context.Context, d *schema.Reso
 
 func resourceDatadogOrganizationSettingsUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	resp, httpResponse, err := datadogClientV1.OrganizationsApi.UpdateOrg(authV1, d.Id(), *buildDatadogOrganizationUpdateV1Struct(d))
+	resp, httpResponse, err := apiInstances.GetOrganizationsApiV1().UpdateOrg(auth, d.Id(), *buildDatadogOrganizationUpdateV1Struct(d))
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating organization")
 	}

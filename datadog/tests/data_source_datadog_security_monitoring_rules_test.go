@@ -7,13 +7,13 @@ import (
 	"strings"
 	"testing"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
 const tfSecurityRulesSource = "data.datadog_security_monitoring_rules.acceptance_test"
@@ -70,10 +70,10 @@ func securityMonitoringCheckRuleCountNoFilter(accProvider func() (*schema.Provid
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
+		auth := providerConf.Auth
+		apiInstances := providerConf.DatadogApiInstances
 
-		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
+		rulesResponse, _, err := apiInstances.GetSecurityMonitoringApiV2().ListSecurityMonitoringRules(auth,
 			*datadogV2.NewListSecurityMonitoringRulesOptionalParameters().
 				WithPageNumber(0).
 				WithPageSize(1000))
@@ -88,10 +88,10 @@ func securityMonitoringCheckRuleCountNameFilter(accProvider func() (*schema.Prov
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
+		auth := providerConf.Auth
+		apiInstances := providerConf.DatadogApiInstances
 
-		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
+		rulesResponse, _, err := apiInstances.GetSecurityMonitoringApiV2().ListSecurityMonitoringRules(auth,
 			*datadogV2.NewListSecurityMonitoringRulesOptionalParameters().WithPageSize(1000))
 		if err != nil {
 			return err
@@ -112,9 +112,9 @@ func securityMonitoringCheckRuleCountTagsFilter(accProvider func() (*schema.Prov
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
-		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
+		auth := providerConf.Auth
+		apiInstances := providerConf.DatadogApiInstances
+		rulesResponse, _, err := apiInstances.GetSecurityMonitoringApiV2().ListSecurityMonitoringRules(auth,
 			*datadogV2.NewListSecurityMonitoringRulesOptionalParameters().WithPageSize(1000))
 		if err != nil {
 			return err
@@ -136,9 +136,9 @@ func securityMonitoringCheckRuleCountDefaultFilter(accProvider func() (*schema.P
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		authV2 := providerConf.AuthV2
-		client := providerConf.DatadogClientV2
-		rulesResponse, _, err := client.SecurityMonitoringApi.ListSecurityMonitoringRules(authV2,
+		auth := providerConf.Auth
+		apiInstances := providerConf.DatadogApiInstances
+		rulesResponse, _, err := apiInstances.GetSecurityMonitoringApiV2().ListSecurityMonitoringRules(auth,
 			*datadogV2.NewListSecurityMonitoringRulesOptionalParameters().WithPageSize(1000))
 		if err != nil {
 			return err

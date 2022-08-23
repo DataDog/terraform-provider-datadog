@@ -7,11 +7,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
 func TestAccDatadogMetricTagConfiguration_Error(t *testing.T) {
@@ -74,8 +74,8 @@ func testAccCheckDatadogMetricTagConfigurationDestroy(accProvider func() (*schem
 		provider, _ := accProvider()
 		meta := provider.Meta()
 		providerConf := meta.(*datadog.ProviderConfiguration)
-		datadogClient := providerConf.DatadogClientV2
-		auth := providerConf.AuthV2
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_metric_tag_configuration" {
 				continue
@@ -85,7 +85,7 @@ func testAccCheckDatadogMetricTagConfigurationDestroy(accProvider func() (*schem
 
 			id := r.Primary.ID
 
-			_, resp, err := datadogClient.MetricsApi.ListTagConfigurationByName(auth, id)
+			_, resp, err := apiInstances.GetMetricsApiV2().ListTagConfigurationByName(auth, id)
 
 			if err != nil {
 				if resp.StatusCode == 404 {

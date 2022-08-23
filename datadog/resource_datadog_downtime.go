@@ -15,7 +15,8 @@ import (
 	// embed time zone data
 	_ "time/tzdata"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -323,7 +324,7 @@ func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, co
 	return apply
 }
 
-func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, client *datadogV1.APIClient, updating bool) (*datadogV1.Downtime, error) {
+func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, apiInstances *utils.ApiInstances, updating bool) (*datadogV1.Downtime, error) {
 	// NOTE: for each of start/start_date/end/end_date, we only send the value when
 	// it has changed or if the configured value is different than current value
 	// (IOW there's a resource drift). This allows users to change other attributes
@@ -331,8 +332,8 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, client *da
 	// in the future (this works thanks to the downtime API allowing not to send these
 	// values when they shouldn't be touched).
 	var dt datadogV1.Downtime
-	var currentStart = *datadogV1.PtrInt64(0)
-	var currentEnd = *datadogV1.PtrInt64(0)
+	var currentStart = *datadog.PtrInt64(0)
+	var currentEnd = *datadog.PtrInt64(0)
 
 	if updating {
 		id, err := getID(d)
@@ -341,7 +342,7 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, client *da
 		}
 
 		var currdt datadogV1.Downtime
-		currdt, httpresp, err := client.DowntimesApi.GetDowntime(ctx, id)
+		currdt, httpresp, err := apiInstances.GetDowntimesApiV1().GetDowntime(ctx, id)
 		if err != nil {
 			return nil, utils.TranslateClientError(err, httpresp, "error getting downtime")
 		}
@@ -417,14 +418,14 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, client *da
 
 func resourceDatadogDowntimeCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	dts, err := buildDowntimeStruct(authV1, d, datadogClientV1, false)
+	dts, err := buildDowntimeStruct(auth, d, apiInstances, false)
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
-	dt, httpresp, err := datadogClientV1.DowntimesApi.CreateDowntime(authV1, *dts)
+	dt, httpresp, err := apiInstances.GetDowntimesApiV1().CreateDowntime(auth, *dts)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating downtime")
 	}
@@ -439,15 +440,15 @@ func resourceDatadogDowntimeCreate(ctx context.Context, d *schema.ResourceData, 
 
 func resourceDatadogDowntimeRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	dt, httpresp, err := datadogClientV1.DowntimesApi.GetDowntime(authV1, id)
+	dt, httpresp, err := apiInstances.GetDowntimesApiV1().GetDowntime(auth, id)
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			d.SetId("")
@@ -586,10 +587,10 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild, upd
 
 func resourceDatadogDowntimeUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	dt, err := buildDowntimeStruct(authV1, d, datadogClientV1, true)
+	dt, err := buildDowntimeStruct(auth, d, apiInstances, true)
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
@@ -603,7 +604,7 @@ func resourceDatadogDowntimeUpdate(ctx context.Context, d *schema.ResourceData, 
 	// is replaced, the ID of the downtime will be set to 0.
 	dt.SetId(id)
 
-	updatedDowntime, httpresp, err := datadogClientV1.DowntimesApi.UpdateDowntime(authV1, id, *dt)
+	updatedDowntime, httpresp, err := apiInstances.GetDowntimesApiV1().UpdateDowntime(auth, id, *dt)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating downtime")
 	}
@@ -623,15 +624,15 @@ func resourceDatadogDowntimeUpdate(ctx context.Context, d *schema.ResourceData, 
 
 func resourceDatadogDowntimeDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	id, err := getID(d)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	if httpresp, err := datadogClientV1.DowntimesApi.CancelDowntime(authV1, id); err != nil {
+	if httpresp, err := apiInstances.GetDowntimesApiV1().CancelDowntime(auth, id); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting downtime")
 	}
 

@@ -5,7 +5,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -40,11 +40,11 @@ func dataSourceDatadogApiKey() *schema.Resource {
 
 func dataSourceDatadogApiKeyRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV2 := providerConf.DatadogClientV2
-	authV2 := providerConf.AuthV2
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	if id := d.Get("id").(string); id != "" {
-		resp, httpResponse, err := datadogClientV2.KeyManagementApi.GetAPIKey(authV2, id)
+		resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().GetAPIKey(auth, id)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error getting api key")
 		}
@@ -55,7 +55,7 @@ func dataSourceDatadogApiKeyRead(ctx context.Context, d *schema.ResourceData, me
 		optionalParams := datadogV2.NewListAPIKeysOptionalParameters()
 		optionalParams.WithFilter(name)
 
-		apiKeysResponse, httpResponse, err := datadogClientV2.KeyManagementApi.ListAPIKeys(authV2, *optionalParams)
+		apiKeysResponse, httpResponse, err := apiInstances.GetKeyManagementApiV2().ListAPIKeys(auth, *optionalParams)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error getting api keys")
 		}
@@ -72,7 +72,7 @@ func dataSourceDatadogApiKeyRead(ctx context.Context, d *schema.ResourceData, me
 		apiKeyPartialData := apiKeysData[0]
 
 		id := apiKeyPartialData.GetId()
-		apiKeyResponse, httpResponse, err := datadogClientV2.KeyManagementApi.GetAPIKey(authV2, id)
+		apiKeyResponse, httpResponse, err := apiInstances.GetKeyManagementApiV2().GetAPIKey(auth, id)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error getting api key")
 		}

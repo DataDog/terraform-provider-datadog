@@ -6,12 +6,12 @@ import (
 	"regexp"
 	"testing"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
 func TestAccDatadogIntegrationOpsgenieServiceObject_Basic(t *testing.T) {
@@ -75,23 +75,23 @@ func testAccCheckDatadogIntegrationOpsgenieServiceDestroy(accProvider func() (*s
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
-		if err := datadogIntegrationOpsgenieServiceObjectDestroyHelper(authV2, s, datadogClientV2); err != nil {
+		if err := datadogIntegrationOpsgenieServiceObjectDestroyHelper(auth, s, apiInstances); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func datadogIntegrationOpsgenieServiceObjectDestroyHelper(ctx context.Context, s *terraform.State, client *datadogV2.APIClient) error {
+func datadogIntegrationOpsgenieServiceObjectDestroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type != "datadog_integration_opsgenie_service_object" {
 			continue
 		}
 		id := r.Primary.ID
-		_, httpResponse, err := client.OpsgenieIntegrationApi.GetOpsgenieService(ctx, id)
+		_, httpResponse, err := apiInstances.GetOpsgenieIntegrationApiV2().GetOpsgenieService(ctx, id)
 
 		if err != nil {
 			if httpResponse.StatusCode == 404 {
@@ -108,19 +108,19 @@ func testAccCheckDatadogIntegrationOpsgenieServiceObjectExists(accProvider func(
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
-		if err := datadogIntegrationOpsgenieServiceObjectExistsHelper(authV2, s, datadogClientV2, resourceName); err != nil {
+		if err := datadogIntegrationOpsgenieServiceObjectExistsHelper(auth, s, apiInstances, resourceName); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func datadogIntegrationOpsgenieServiceObjectExistsHelper(ctx context.Context, s *terraform.State, client *datadogV2.APIClient, resourceName string) error {
+func datadogIntegrationOpsgenieServiceObjectExistsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances, resourceName string) error {
 	id := s.RootModule().Resources[resourceName].Primary.ID
-	if _, _, err := client.OpsgenieIntegrationApi.GetOpsgenieService(ctx, id); err != nil {
+	if _, _, err := apiInstances.GetOpsgenieIntegrationApiV2().GetOpsgenieService(ctx, id); err != nil {
 		return fmt.Errorf("received an error retrieving Opsgenie service %s", err)
 	}
 	return nil

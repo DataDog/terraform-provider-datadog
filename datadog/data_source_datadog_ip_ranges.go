@@ -120,10 +120,10 @@ func dataSourceDatadogIPRanges() *schema.Resource {
 
 func dataSourceDatadogIPRangesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	ipAddresses, _, err := datadogClientV1.IPRangesApi.GetIPRanges(authV1)
+	ipAddresses, _, err := apiInstances.GetIPRangesApiV1().GetIPRanges(auth)
 	if err != nil {
 		return diag.FromErr(err)
 	}

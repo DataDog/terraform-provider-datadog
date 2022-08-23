@@ -7,7 +7,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -176,8 +176,8 @@ func getGroupBys(d *schema.ResourceData) ([]datadogV2.LogsMetricGroupBy, error) 
 
 func resourceDatadogLogsMetricCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClientV2
-	auth := providerConf.AuthV2
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	resultLogsMetricCreateData, err := buildDatadogLogsMetric(d)
 	if err != nil {
@@ -187,7 +187,7 @@ func resourceDatadogLogsMetricCreate(ctx context.Context, d *schema.ResourceData
 	ddObject := datadogV2.NewLogsMetricCreateRequestWithDefaults()
 	ddObject.SetData(*resultLogsMetricCreateData)
 
-	response, httpResponse, err := datadogClient.LogsMetricsApi.CreateLogsMetric(auth, *ddObject)
+	response, httpResponse, err := apiInstances.GetLogsMetricsApiV2().CreateLogsMetric(auth, *ddObject)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating LogsMetric")
 	}
@@ -254,13 +254,13 @@ func updateLogsMetricState(d *schema.ResourceData, resource *datadogV2.LogsMetri
 
 func resourceDatadogLogsMetricRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClientV2
-	auth := providerConf.AuthV2
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 	var err error
 
 	id := d.Id()
 
-	resourceLogsMetricResponse, httpResp, err := datadogClient.LogsMetricsApi.GetLogsMetric(auth, id)
+	resourceLogsMetricResponse, httpResp, err := apiInstances.GetLogsMetricsApiV2().GetLogsMetric(auth, id)
 
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
@@ -301,8 +301,8 @@ func buildDatadogLogsMetricUpdate(d *schema.ResourceData) (*datadogV2.LogsMetric
 
 func resourceDatadogLogsMetricUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClientV2
-	auth := providerConf.AuthV2
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	resultLogsMetricUpdateData, err := buildDatadogLogsMetricUpdate(d)
 	if err != nil {
@@ -313,7 +313,7 @@ func resourceDatadogLogsMetricUpdate(ctx context.Context, d *schema.ResourceData
 	ddObject.SetData(*resultLogsMetricUpdateData)
 	id := d.Id()
 
-	response, httpResponse, err := datadogClient.LogsMetricsApi.UpdateLogsMetric(auth, id, *ddObject)
+	response, httpResponse, err := apiInstances.GetLogsMetricsApiV2().UpdateLogsMetric(auth, id, *ddObject)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating LogsMetric")
 	}
@@ -326,13 +326,13 @@ func resourceDatadogLogsMetricUpdate(ctx context.Context, d *schema.ResourceData
 
 func resourceDatadogLogsMetricDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClient := providerConf.DatadogClientV2
-	auth := providerConf.AuthV2
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 	var err error
 
 	id := d.Id()
 
-	httpResponse, err := datadogClient.LogsMetricsApi.DeleteLogsMetric(auth, id)
+	httpResponse, err := apiInstances.GetLogsMetricsApiV2().DeleteLogsMetric(auth, id)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting LogsMetric")

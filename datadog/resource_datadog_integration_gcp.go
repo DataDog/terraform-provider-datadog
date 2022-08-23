@@ -6,7 +6,8 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -81,28 +82,28 @@ const (
 
 func resourceDatadogIntegrationGcpCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	integrationGcpMutex.Lock()
 	defer integrationGcpMutex.Unlock()
 
 	projectID := d.Get("project_id").(string)
 
-	if _, httpresp, err := datadogClientV1.GCPIntegrationApi.CreateGCPIntegration(authV1,
+	if _, httpresp, err := apiInstances.GetGCPIntegrationApiV1().CreateGCPIntegration(auth,
 		datadogV1.GCPAccount{
-			Type:                    datadogV1.PtrString(defaultType),
-			ProjectId:               datadogV1.PtrString(projectID),
-			PrivateKeyId:            datadogV1.PtrString(d.Get("private_key_id").(string)),
-			PrivateKey:              datadogV1.PtrString(d.Get("private_key").(string)),
-			ClientEmail:             datadogV1.PtrString(d.Get("client_email").(string)),
-			ClientId:                datadogV1.PtrString(d.Get("client_id").(string)),
-			AuthUri:                 datadogV1.PtrString(defaultAuthURI),
-			TokenUri:                datadogV1.PtrString(defaultTokenURI),
-			AuthProviderX509CertUrl: datadogV1.PtrString(defaultAuthProviderX509CertURL),
-			ClientX509CertUrl:       datadogV1.PtrString(defaultClientX509CertURLPrefix + d.Get("client_email").(string)),
-			HostFilters:             datadogV1.PtrString(d.Get("host_filters").(string)),
-			Automute:                datadogV1.PtrBool(d.Get("automute").(bool)),
+			Type:                    datadog.PtrString(defaultType),
+			ProjectId:               datadog.PtrString(projectID),
+			PrivateKeyId:            datadog.PtrString(d.Get("private_key_id").(string)),
+			PrivateKey:              datadog.PtrString(d.Get("private_key").(string)),
+			ClientEmail:             datadog.PtrString(d.Get("client_email").(string)),
+			ClientId:                datadog.PtrString(d.Get("client_id").(string)),
+			AuthUri:                 datadog.PtrString(defaultAuthURI),
+			TokenUri:                datadog.PtrString(defaultTokenURI),
+			AuthProviderX509CertUrl: datadog.PtrString(defaultAuthProviderX509CertURL),
+			ClientX509CertUrl:       datadog.PtrString(defaultClientX509CertURLPrefix + d.Get("client_email").(string)),
+			HostFilters:             datadog.PtrString(d.Get("host_filters").(string)),
+			Automute:                datadog.PtrBool(d.Get("automute").(bool)),
 		},
 	); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating GCP integration")
@@ -115,12 +116,12 @@ func resourceDatadogIntegrationGcpCreate(ctx context.Context, d *schema.Resource
 
 func resourceDatadogIntegrationGcpRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	projectID := d.Id()
 
-	integrations, httpresp, err := datadogClientV1.GCPIntegrationApi.ListGCPIntegration(authV1)
+	integrations, httpresp, err := apiInstances.GetGCPIntegrationApiV1().ListGCPIntegration(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting GCP integration")
 	}
@@ -142,18 +143,18 @@ func resourceDatadogIntegrationGcpRead(ctx context.Context, d *schema.ResourceDa
 
 func resourceDatadogIntegrationGcpUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	integrationGcpMutex.Lock()
 	defer integrationGcpMutex.Unlock()
 
-	if _, httpresp, err := datadogClientV1.GCPIntegrationApi.UpdateGCPIntegration(authV1,
+	if _, httpresp, err := apiInstances.GetGCPIntegrationApiV1().UpdateGCPIntegration(auth,
 		datadogV1.GCPAccount{
-			ProjectId:   datadogV1.PtrString(d.Id()),
-			ClientEmail: datadogV1.PtrString(d.Get("client_email").(string)),
-			HostFilters: datadogV1.PtrString(d.Get("host_filters").(string)),
-			Automute:    datadogV1.PtrBool(d.Get("automute").(bool)),
+			ProjectId:   datadog.PtrString(d.Id()),
+			ClientEmail: datadog.PtrString(d.Get("client_email").(string)),
+			HostFilters: datadog.PtrString(d.Get("host_filters").(string)),
+			Automute:    datadog.PtrBool(d.Get("automute").(bool)),
 		},
 	); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating GCP integration")
@@ -164,16 +165,16 @@ func resourceDatadogIntegrationGcpUpdate(ctx context.Context, d *schema.Resource
 
 func resourceDatadogIntegrationGcpDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	integrationGcpMutex.Lock()
 	defer integrationGcpMutex.Unlock()
 
-	if _, httpresp, err := datadogClientV1.GCPIntegrationApi.DeleteGCPIntegration(authV1,
+	if _, httpresp, err := apiInstances.GetGCPIntegrationApiV1().DeleteGCPIntegration(auth,
 		datadogV1.GCPAccount{
-			ProjectId:   datadogV1.PtrString(d.Id()),
-			ClientEmail: datadogV1.PtrString(d.Get("client_email").(string)),
+			ProjectId:   datadog.PtrString(d.Id()),
+			ClientEmail: datadog.PtrString(d.Get("client_email").(string)),
 		},
 	); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting GCP integration")

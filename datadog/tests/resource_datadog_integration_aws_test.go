@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
 func testAccDatadogIntegrationAWSConfig(uniq string) string {
@@ -257,15 +258,15 @@ func checkIntegrationAWSExists(accProvider func() (*schema.Provider, error)) fun
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
-		return checkIntegrationAWSExistsHelper(authV1, s, datadogClientV1)
+		return checkIntegrationAWSExistsHelper(auth, s, apiInstances)
 	}
 }
 
-func checkIntegrationAWSExistsHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
-	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(ctx)
+func checkIntegrationAWSExistsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	integrations, _, err := apiInstances.GetAWSIntegrationApiV1().ListAWSAccounts(ctx)
 	if err != nil {
 		return err
 	}
@@ -287,15 +288,15 @@ func checkIntegrationAWSDestroy(accProvider func() (*schema.Provider, error)) fu
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
-		return checkIntegrationAWSDestroyHelper(authV1, s, datadogClientV1)
+		return checkIntegrationAWSDestroyHelper(auth, s, apiInstances)
 	}
 }
 
-func checkIntegrationAWSDestroyHelper(ctx context.Context, s *terraform.State, datadogClientV1 *datadogV1.APIClient) error {
-	integrations, _, err := datadogClientV1.AWSIntegrationApi.ListAWSAccounts(ctx)
+func checkIntegrationAWSDestroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	integrations, _, err := apiInstances.GetAWSIntegrationApiV1().ListAWSAccounts(ctx)
 	if err != nil {
 		return err
 	}

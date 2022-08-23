@@ -7,7 +7,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
@@ -72,15 +72,15 @@ func dataSourceDatadogServiceLevelObjectives() *schema.Resource {
 
 func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	var idsPtr *string
 	var nameQueryPtr *string
 	var tagsQueryPtr *string
 	var metricsQueryPtr *string
 
-	reqParams := datadog.NewListSLOsOptionalParameters()
+	reqParams := datadogV1.NewListSLOsOptionalParameters()
 	if v, ok := d.GetOk("ids"); ok {
 		ids := strings.Join(expandStringList(v.([]interface{})), ",")
 		idsPtr = &ids
@@ -102,7 +102,7 @@ func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.
 		reqParams.WithMetricsQuery(metricsQuery)
 	}
 
-	slosResp, httpresp, err := datadogClientV1.ServiceLevelObjectivesApi.ListSLOs(authV1, *reqParams)
+	slosResp, httpresp, err := apiInstances.GetServiceLevelObjectivesApiV1().ListSLOs(auth, *reqParams)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying service level objectives")
 	}

@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV2 "github.com/DataDog/datadog-api-client-go/api/v2/datadog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
@@ -87,19 +87,19 @@ func testAccCheckDatadogApiKeyExists(accProvider func() (*schema.Provider, error
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
-		if err := datadogApiKeyExistsHelper(authV2, s, datadogClientV2, n); err != nil {
+		if err := datadogApiKeyExistsHelper(auth, s, apiInstances, n); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func datadogApiKeyExistsHelper(ctx context.Context, s *terraform.State, client *datadogV2.APIClient, name string) error {
+func datadogApiKeyExistsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances, name string) error {
 	id := s.RootModule().Resources[name].Primary.ID
-	if _, _, err := client.KeyManagementApi.GetAPIKey(ctx, id); err != nil {
+	if _, _, err := apiInstances.GetKeyManagementApiV2().GetAPIKey(ctx, id); err != nil {
 		return fmt.Errorf("received an error retrieving api key %s", err)
 	}
 	return nil
@@ -109,21 +109,21 @@ func testAccCheckDatadogApiKeyValueMatches(accProvider func() (*schema.Provider,
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
-		if err := datadogApiKeyValueMatches(authV2, s, datadogClientV2, n); err != nil {
+		if err := datadogApiKeyValueMatches(auth, s, apiInstances, n); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func datadogApiKeyValueMatches(ctx context.Context, s *terraform.State, client *datadogV2.APIClient, name string) error {
+func datadogApiKeyValueMatches(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances, name string) error {
 	primaryResource := s.RootModule().Resources[name].Primary
 	id := primaryResource.ID
 	expectedKey := primaryResource.Attributes["key"]
-	resp, _, err := client.KeyManagementApi.GetAPIKey(ctx, id)
+	resp, _, err := apiInstances.GetKeyManagementApiV2().GetAPIKey(ctx, id)
 	if err != nil {
 		return fmt.Errorf("received an error retrieving api key %s", err)
 	}
@@ -138,24 +138,24 @@ func testAccCheckDatadogApiKeyDestroy(accProvider func() (*schema.Provider, erro
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV2 := providerConf.DatadogClientV2
-		authV2 := providerConf.AuthV2
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
-		if err := datadogApiKeyDestroyHelper(authV2, s, datadogClientV2); err != nil {
+		if err := datadogApiKeyDestroyHelper(auth, s, apiInstances); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func datadogApiKeyDestroyHelper(ctx context.Context, s *terraform.State, client *datadogV2.APIClient) error {
+func datadogApiKeyDestroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
 		if r.Type != "datadog_api_key" {
 			continue
 		}
 
 		id := r.Primary.ID
-		_, httpResponse, err := client.KeyManagementApi.GetAPIKey(ctx, id)
+		_, httpResponse, err := apiInstances.GetKeyManagementApiV2().GetAPIKey(ctx, id)
 
 		if err != nil {
 			if httpResponse.StatusCode == 404 {

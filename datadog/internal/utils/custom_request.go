@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"net/url"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 )
 
 // SendRequest send custom request
-func SendRequest(ctx context.Context, client *datadogV1.APIClient, method, path string, body interface{}) ([]byte, *http.Response, error) {
+func SendRequest(ctx context.Context, client *datadog.APIClient, method, path string, body interface{}) ([]byte, *http.Response, error) {
 	req, err := buildRequest(ctx, client, method, path, body)
 	if err != nil {
 		return nil, nil, err
@@ -39,13 +39,13 @@ func SendRequest(ctx context.Context, client *datadogV1.APIClient, method, path 
 	return bodyResByte, httpRes, nil
 }
 
-func buildRequest(ctx context.Context, client *datadogV1.APIClient, method, path string, body interface{}) (*http.Request, error) {
+func buildRequest(ctx context.Context, client *datadog.APIClient, method, path string, body interface{}) (*http.Request, error) {
 	var (
 		localVarPostBody        interface{}
 		localVarPath            string
 		localVarQueryParams     url.Values
 		localVarFormQueryParams url.Values
-		localVarFormFile        *datadogV1.FormFile
+		localVarFormFile        *datadog.FormFile
 	)
 
 	localBasePath, err := client.GetConfig().ServerURLWithContext(ctx, "")
@@ -65,7 +65,7 @@ func buildRequest(ctx context.Context, client *datadogV1.APIClient, method, path
 	}
 
 	if ctx != nil {
-		if auth, ok := ctx.Value(datadogV1.ContextAPIKeys).(map[string]datadogV1.APIKey); ok {
+		if auth, ok := ctx.Value(datadog.ContextAPIKeys).(map[string]datadog.APIKey); ok {
 			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
 				if apiKey.Prefix != "" {
@@ -78,7 +78,7 @@ func buildRequest(ctx context.Context, client *datadogV1.APIClient, method, path
 		}
 	}
 	if ctx != nil {
-		if auth, ok := ctx.Value(datadogV1.ContextAPIKeys).(map[string]datadogV1.APIKey); ok {
+		if auth, ok := ctx.Value(datadog.ContextAPIKeys).(map[string]datadog.APIKey); ok {
 			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
 				if apiKey.Prefix != "" {

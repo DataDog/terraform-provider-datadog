@@ -6,11 +6,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
 func getUniqueVariableName(ctx context.Context, t *testing.T) string {
@@ -354,18 +354,18 @@ func testSyntheticsResourceExists(accProvider func() (*schema.Provider, error)) 
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type == "datadog_synthetics_test" {
-				if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID); err != nil {
+				if _, _, err := apiInstances.GetSyntheticsApiV1().GetTest(auth, r.Primary.ID); err != nil {
 					return fmt.Errorf("received an error retrieving synthetics test %s", err)
 				}
 			}
 
 			if r.Type == "datadog_synthetics_global_variable" {
-				if _, _, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, r.Primary.ID); err != nil {
+				if _, _, err := apiInstances.GetSyntheticsApiV1().GetGlobalVariable(auth, r.Primary.ID); err != nil {
 					return fmt.Errorf("received an error retrieving synthetics global variable %s", err)
 				}
 			}
@@ -378,8 +378,8 @@ func testSyntheticsResourceIsDestroyed(accProvider func() (*schema.Provider, err
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		datadogClientV1 := providerConf.DatadogClientV1
-		authV1 := providerConf.AuthV1
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type == "datadog_role" {
@@ -387,7 +387,7 @@ func testSyntheticsResourceIsDestroyed(accProvider func() (*schema.Provider, err
 			}
 
 			if r.Type == "datadog_synthetics_test" {
-				if _, _, err := datadogClientV1.SyntheticsApi.GetTest(authV1, r.Primary.ID); err != nil {
+				if _, _, err := apiInstances.GetSyntheticsApiV1().GetTest(auth, r.Primary.ID); err != nil {
 					if strings.Contains(err.Error(), "404 Not Found") {
 						continue
 					}
@@ -396,7 +396,7 @@ func testSyntheticsResourceIsDestroyed(accProvider func() (*schema.Provider, err
 				return fmt.Errorf("synthetics test still exists")
 			}
 
-			if _, _, err := datadogClientV1.SyntheticsApi.GetGlobalVariable(authV1, r.Primary.ID); err != nil {
+			if _, _, err := apiInstances.GetSyntheticsApiV1().GetGlobalVariable(auth, r.Primary.ID); err != nil {
 				if strings.Contains(err.Error(), "404 Not Found") {
 					continue
 				}

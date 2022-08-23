@@ -6,7 +6,7 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -55,8 +55,8 @@ func buildDatadogIntegrationAwsLogCollectionStruct(d *schema.ResourceData) *data
 
 func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
 	integrationAwsMutex.Lock()
@@ -65,7 +65,7 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *sc
 	accountID := d.Get("account_id").(string)
 
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
-	response, httpresp, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1, *enableLogCollectionServices)
+	response, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().EnableAWSLogServices(auth, *enableLogCollectionServices)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error enabling log collection services for Amazon Web Services integration account")
 	}
@@ -81,15 +81,15 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *sc
 
 func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
 	integrationAwsMutex.Lock()
 	defer integrationAwsMutex.Unlock()
 
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
-	_, httpresp, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1, *enableLogCollectionServices)
+	_, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().EnableAWSLogServices(auth, *enableLogCollectionServices)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating log collection services for Amazon Web Services integration account")
 	}
@@ -99,12 +99,12 @@ func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *sc
 
 func resourceDatadogIntegrationAwsLogCollectionRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	accountID := d.Id()
 
-	logCollections, httpresp, err := datadogClientV1.AWSLogsIntegrationApi.ListAWSLogsIntegrations(authV1)
+	logCollections, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().ListAWSLogsIntegrations(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting log collection for aws integration.")
 	}
@@ -125,8 +125,8 @@ func resourceDatadogIntegrationAwsLogCollectionRead(ctx context.Context, d *sche
 
 func resourceDatadogIntegrationAwsLogCollectionDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
 	integrationAwsMutex.Lock()
@@ -135,7 +135,7 @@ func resourceDatadogIntegrationAwsLogCollectionDelete(ctx context.Context, d *sc
 	accountID := d.Id()
 	services := []string{}
 	deleteLogCollectionServices := datadogV1.NewAWSLogsServicesRequest(accountID, services)
-	_, httpresp, err := datadogClientV1.AWSLogsIntegrationApi.EnableAWSLogServices(authV1, *deleteLogCollectionServices)
+	_, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().EnableAWSLogServices(auth, *deleteLogCollectionServices)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error disabling Amazon Web Services log collection")

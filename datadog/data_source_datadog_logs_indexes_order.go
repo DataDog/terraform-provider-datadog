@@ -28,10 +28,10 @@ func dataSourceDatadogLogsIndexesOrder() *schema.Resource {
 
 func dataSourceDatadogLogsIndexesOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	logsIndexesOrder, httpresp, err := datadogClientV1.LogsIndexesApi.GetLogsIndexOrder(authV1)
+	logsIndexesOrder, httpresp, err := apiInstances.GetLogsIndexesApiV1().GetLogsIndexOrder(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying the order of your log indexes")
 	}

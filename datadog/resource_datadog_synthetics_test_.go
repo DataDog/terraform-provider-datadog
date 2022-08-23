@@ -15,7 +15,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
-	datadogV1 "github.com/DataDog/datadog-api-client-go/api/v1/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -991,14 +991,14 @@ func syntheticsFollowRedirectsOption() *schema.Schema {
 
 func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	testType := getSyntheticsTestType(d)
 
 	if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
 		syntheticsTest := buildSyntheticsAPITestStruct(d)
-		createdSyntheticsTest, httpResponseCreate, err := datadogClientV1.SyntheticsApi.CreateSyntheticsAPITest(authV1, *syntheticsTest)
+		createdSyntheticsTest, httpResponseCreate, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsAPITest(auth, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
 			return utils.TranslateClientErrorDiag(err, httpResponseCreate, "error creating synthetics API test")
@@ -1010,7 +1010,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		var getSyntheticsApiTestResponse datadogV1.SyntheticsAPITest
 		var httpResponseGet *_nethttp.Response
 		err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
-			getSyntheticsApiTestResponse, httpResponseGet, err = datadogClientV1.SyntheticsApi.GetAPITest(authV1, createdSyntheticsTest.GetPublicId())
+			getSyntheticsApiTestResponse, httpResponseGet, err = apiInstances.GetSyntheticsApiV1().GetAPITest(auth, createdSyntheticsTest.GetPublicId())
 			if err != nil {
 				if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
 					return resource.RetryableError(fmt.Errorf("synthetics api test not created yet"))
@@ -1033,7 +1033,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		return updateSyntheticsAPITestLocalState(d, &getSyntheticsApiTestResponse)
 	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
-		createdSyntheticsTest, httpResponse, err := datadogClientV1.SyntheticsApi.CreateSyntheticsBrowserTest(authV1, *syntheticsTest)
+		createdSyntheticsTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsBrowserTest(auth, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics browser test")
@@ -1045,7 +1045,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		var getSyntheticsBrowserTestResponse datadogV1.SyntheticsBrowserTest
 		var httpResponseGet *_nethttp.Response
 		err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
-			getSyntheticsBrowserTestResponse, httpResponseGet, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, createdSyntheticsTest.GetPublicId())
+			getSyntheticsBrowserTestResponse, httpResponseGet, err = apiInstances.GetSyntheticsApiV1().GetBrowserTest(auth, createdSyntheticsTest.GetPublicId())
 			if err != nil {
 				if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
 					return resource.RetryableError(fmt.Errorf("synthetics browser test not created yet"))
@@ -1073,8 +1073,8 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 
 func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	var syntheticsTest datadogV1.SyntheticsTestDetails
 	var syntheticsAPITest datadogV1.SyntheticsAPITest
@@ -1083,7 +1083,7 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	var httpresp *_nethttp.Response
 
 	// get the generic test to detect if it's an api or browser test
-	syntheticsTest, httpresp, err = datadogClientV1.SyntheticsApi.GetTest(authV1, d.Id())
+	syntheticsTest, httpresp, err = apiInstances.GetSyntheticsApiV1().GetTest(auth, d.Id())
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			// Delete the resource from the local state since it doesn't exist anymore in the actual state
@@ -1097,9 +1097,9 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	}
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
-		syntheticsBrowserTest, _, err = datadogClientV1.SyntheticsApi.GetBrowserTest(authV1, d.Id())
+		syntheticsBrowserTest, _, err = apiInstances.GetSyntheticsApiV1().GetBrowserTest(auth, d.Id())
 	} else {
-		syntheticsAPITest, _, err = datadogClientV1.SyntheticsApi.GetAPITest(authV1, d.Id())
+		syntheticsAPITest, _, err = apiInstances.GetSyntheticsApiV1().GetAPITest(auth, d.Id())
 	}
 
 	if err != nil {
@@ -1126,14 +1126,14 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 
 func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	testType := getSyntheticsTestType(d)
 
 	if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
 		syntheticsTest := buildSyntheticsAPITestStruct(d)
-		updatedTest, httpResponse, err := datadogClientV1.SyntheticsApi.UpdateAPITest(authV1, d.Id(), *syntheticsTest)
+		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateAPITest(auth, d.Id(), *syntheticsTest)
 		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics API test")
@@ -1144,7 +1144,7 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 		return updateSyntheticsAPITestLocalState(d, &updatedTest)
 	} else if testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
-		updatedTest, httpResponse, err := datadogClientV1.SyntheticsApi.UpdateBrowserTest(authV1, d.Id(), *syntheticsTest)
+		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateBrowserTest(auth, d.Id(), *syntheticsTest)
 		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics browser test")
@@ -1160,11 +1160,11 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 
 func resourceDatadogSyntheticsTestDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	syntheticsDeleteTestsPayload := datadogV1.SyntheticsDeleteTestsPayload{PublicIds: []string{d.Id()}}
-	if _, httpResponse, err := datadogClientV1.SyntheticsApi.DeleteTests(authV1, syntheticsDeleteTestsPayload); err != nil {
+	if _, httpResponse, err := apiInstances.GetSyntheticsApiV1().DeleteTests(auth, syntheticsDeleteTestsPayload); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting synthetics test")
 	}
