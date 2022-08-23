@@ -3242,6 +3242,7 @@ func buildTerraformWidgetFieldSort(datadogWidgetFieldSort datadogV1.WidgetFieldS
 //
 // Manage Status Widget Definition helpers
 //
+
 func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"query": {
@@ -3280,6 +3281,11 @@ func getManageStatusDefinitionSchema() map[string]*schema.Schema {
 		},
 		"show_last_triggered": {
 			Description: "A Boolean indicating whether to show when monitors/groups last triggered.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+		"show_priority": {
+			Description: "Whether to show the priorities column.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
@@ -3325,6 +3331,9 @@ func buildDatadogManageStatusDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["show_last_triggered"].(bool); ok {
 		datadogDefinition.SetShowLastTriggered(v)
 	}
+	if v, ok := terraformDefinition["show_priority"].(bool); ok {
+		datadogDefinition.SetShowPriority(v)
+	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
 	}
@@ -3359,6 +3368,9 @@ func buildTerraformManageStatusDefinition(datadogDefinition datadogV1.MonitorSum
 	}
 	if v, ok := datadogDefinition.GetShowLastTriggeredOk(); ok {
 		terraformDefinition["show_last_triggered"] = *v
+	}
+	if v, ok := datadogDefinition.GetShowPriorityOk(); ok {
+		terraformDefinition["show_priority"] = *v
 	}
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v
@@ -3828,9 +3840,7 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 	return &terraformRequests
 }
 
-//
 // Query Table Widget Definition helpers
-//
 func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {
@@ -4858,9 +4868,7 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 	return &datadogRequests
 }
 
-//
 // Geomap Widget Definition helpers
-//
 func getGeomapDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request": {

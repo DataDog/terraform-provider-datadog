@@ -4490,7 +4490,7 @@ Required:
 
 Required:
 
-- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `rum_issue_stream`, `apm_issue_stream`.
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `rum_issue_stream`, `apm_issue_stream`, `logs_pattern_stream`.
 
 Optional:
 
@@ -4540,7 +4540,8 @@ Optional:
 - `display_format` (String) The display setting to use. Valid values are `counts`, `countsAndList`, `list`.
 - `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
 - `show_last_triggered` (Boolean) A Boolean indicating whether to show when monitors/groups last triggered.
-- `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`.
+- `show_priority` (Boolean) Whether to show the priorities column.
+- `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`.
 - `summary_type` (String) The summary type to use. Valid values are `monitors`, `groups`, `combined`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -9817,7 +9818,7 @@ Required:
 
 Required:
 
-- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `rum_issue_stream`, `apm_issue_stream`.
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `rum_issue_stream`, `apm_issue_stream`, `logs_pattern_stream`.
 
 Optional:
 
@@ -9867,7 +9868,8 @@ Optional:
 - `display_format` (String) The display setting to use. Valid values are `counts`, `countsAndList`, `list`.
 - `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
 - `show_last_triggered` (Boolean) A Boolean indicating whether to show when monitors/groups last triggered.
-- `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`.
+- `show_priority` (Boolean) Whether to show the priorities column.
+- `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`.
 - `summary_type` (String) The summary type to use. Valid values are `monitors`, `groups`, `combined`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.

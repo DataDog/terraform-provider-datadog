@@ -1141,6 +1141,7 @@ var datadogFreeDashboardAsserts = []string{
 	"widget.6.manage_status_definition.0.title = Widget Title",
 	"widget.6.manage_status_definition.0.title_align = left",
 	"widget.6.manage_status_definition.0.title_size = 16",
+	"widget.6.manage_status_definition.0.show_priority = false",
 	"widget.6.widget_layout.0.height = 40",
 	"widget.6.widget_layout.0.width = 30",
 	"widget.6.widget_layout.0.x = 112",
