@@ -31,7 +31,7 @@ func resourceDatadogRUMApplication() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "browser",
-				Description: "The RUM application type. Supported values: browser|ios|android|react-native|flutter",
+				Description: "The RUM application type. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`",
 			},
 			"client_token": {
 				Type:        schema.TypeString,
