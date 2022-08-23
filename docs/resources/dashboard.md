@@ -4490,7 +4490,7 @@ Required:
 
 Required:
 
-- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `rum_issue_stream`, `apm_issue_stream`.
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `rum_issue_stream`, `apm_issue_stream`, `logs_pattern_stream`.
 
 Optional:
 
@@ -9818,7 +9818,7 @@ Required:
 
 Required:
 
-- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `rum_issue_stream`, `apm_issue_stream`.
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `rum_issue_stream`, `apm_issue_stream`, `logs_pattern_stream`.
 
 Optional:
 
