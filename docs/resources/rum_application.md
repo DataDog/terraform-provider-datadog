@@ -28,7 +28,7 @@ resource "datadog_rum_application" "rum_application" {
 
 ### Optional
 
-- `type` (String) The RUM application type
+- `type` (String) The RUM application type. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`
 
 ### Read-Only
 
