@@ -814,6 +814,9 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Description: `For an "assert download" step.`,
 					Type:        schema.TypeString,
 					Optional:    true,
+					DiffSuppressFunc: func(_, old, new string, _ *schema.ResourceData) bool {
+						return strings.TrimSpace(old) == strings.TrimSpace(new)
+					},
 				},
 				"files": {
 					Description: `Details of the files for an "upload files" step, json encoded string.`,
