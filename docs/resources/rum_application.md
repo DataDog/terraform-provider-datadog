@@ -32,7 +32,7 @@ resource "datadog_rum_application" "rum_application" {
 
 ### Read-Only
 
-- `client_token` (String) The RUM application client token
+- `client_token` (String) The client token
 - `id` (String) The ID of this resource.
 
 ## Import
