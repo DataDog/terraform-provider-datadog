@@ -36,7 +36,7 @@ func resourceDatadogRUMApplication() *schema.Resource {
 			"client_token": {
 				Type:        schema.TypeString,
 				Computed:    true,
-				Description: "The RUM application client token",
+				Description: "The client token",
 			},
 		},
 	}
