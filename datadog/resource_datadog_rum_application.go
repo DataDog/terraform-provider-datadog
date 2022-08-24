@@ -3,10 +3,10 @@ package datadog
 import (
 	"context"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -48,7 +48,6 @@ func resourceDatadogRUMApplicationRead(ctx context.Context, d *schema.ResourceDa
 	auth := providerConf.Auth
 
 	resp, httpResponse, err := apiInstances.GetRumApiV2().GetRUMApplication(auth, d.Id())
-
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
@@ -76,7 +75,6 @@ func resourceDatadogRUMApplicationCreate(ctx context.Context, d *schema.Resource
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	resp, httpResponse, err := apiInstances.GetRumApiV2().CreateRUMApplication(auth, body)
-
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating RUM application")
 	}
@@ -102,7 +100,6 @@ func resourceDatadogRUMApplicationUpdate(_ context.Context, d *schema.ResourceDa
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	resp, httpResponse, err := apiInstances.GetRumApiV2().UpdateRUMApplication(auth, d.Id(), body)
-
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating RUM application")
 	}
@@ -116,7 +113,6 @@ func resourceDatadogRUMApplicationDelete(_ context.Context, d *schema.ResourceDa
 	auth := providerConf.Auth
 
 	httpResponse, err := apiInstances.GetRumApiV2().DeleteRUMApplication(auth, d.Id())
-
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting RUM application")
 	}
