@@ -51,6 +51,7 @@ var datadogDashboardManageStatusAsserts = []string{
 	"widget.0.manage_status_definition.0.title_size = 20",
 	"widget.0.manage_status_definition.0.sort = triggered,desc",
 	"widget.0.manage_status_definition.0.title_align = center",
+	"widget.0.manage_status_definition.0.show_priority = false",
 	"title = {{uniq}}",
 	"widget.0.manage_status_definition.0.query = env:prod group_status:alert",
 }
