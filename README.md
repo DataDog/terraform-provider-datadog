@@ -30,32 +30,6 @@ $ make build
 
 ## Using the provider
 
-If you're building the provider, follow the instructions to [install it as a plugin.](https://www.terraform.io/cli/config/config-file#development-overrides-for-provider-developers) After placing it into your plugins directory, run `terraform init` to initialize it.
+If you're building the provider, follow the instructions to [install it as a plugin.](./DEVELOPMENT.md) After placing it into your plugins directory, run `terraform init` to initialize it.
 
-<details><summary>Example config</summary>
-
-```
-// ~/.terraformrc file
-provider_installation {
-  dev_overrides {
-    "datadog/datadog" = "{your_home_directory}/.terraform.d/plugins"
-  }
-  direct {}
-}
-
-// main.tf file
-terraform {
-  required_providers {
-    datadog = {
-      source = "datadog/datadog"
-    }
-  }
-}
-provider "datadog" {
-  api_key = {your_datadog_api_key}
-  app_key = {your_datadog_app_key}
-}
-```
-
-</details>
 Further [usage documentation is available on the Terraform website](https://www.terraform.io/docs/providers/datadog/index.html).
