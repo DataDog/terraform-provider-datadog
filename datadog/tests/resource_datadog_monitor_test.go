@@ -604,6 +604,10 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "on_missing_data", ""),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "group_retention_duration", ""),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "60"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_occurrences", "5"),
@@ -621,6 +625,59 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 						"datadog_monitor.foo", "enable_logs_sample", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "groupby_simple_monitor", "true"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogMonitor_LogMultiAlert(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorConfigLogMultiAlert(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "message", "some message Notify: @hipchat-channel"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "log alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "query", "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") > 2"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notify_no_data", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "on_missing_data", "show_no_data"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "group_retention_duration", "2d"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_interval", "60"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_occurrences", "5"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "renotify_statuses.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "alert"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "renotify_statuses.*", "warn"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "monitor_thresholds.0.warning", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "monitor_thresholds.0.critical", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "enable_logs_sample", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "groupby_simple_monitor", "false"),
 				),
 			},
 		},
@@ -1131,8 +1188,41 @@ resource "datadog_monitor" "foo" {
   require_full_window = true
   locked = false
   tags = ["foo:bar", "baz"]
-	enable_logs_sample = true
-	groupby_simple_monitor = true
+  enable_logs_sample = true
+  groupby_simple_monitor = true
+}`, uniq)
+}
+
+func testAccCheckDatadogMonitorConfigLogMultiAlert(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "log alert"
+  message = "some message Notify: @hipchat-channel"
+  escalation_message = "the situation has escalated @pagerduty"
+
+  query = "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") > 2"
+
+  monitor_thresholds {
+	warning = "1.0"
+	critical = "2.0"
+  }
+
+  renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
+
+  notify_audit = false
+  timeout_h = 1
+  group_retention_duration = "2d"
+  on_missing_data = "show_no_data"
+  new_host_delay = 600
+  evaluation_delay = 700
+  include_tags = true
+  require_full_window = true
+  locked = false
+  tags = ["foo:bar", "baz"]
+  enable_logs_sample = true
 }`, uniq)
 }
 

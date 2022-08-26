@@ -33,6 +33,7 @@ data "datadog_monitor" "test" {
 - `enable_logs_sample` (Boolean) Whether or not a list of log values which triggered the alert is included. This is only used by log monitors.
 - `escalation_message` (String) Message included with a re-notification for this monitor.
 - `evaluation_delay` (Number) Time (in seconds) for which evaluation is delayed. This is only used by metric monitors.
+- `group_retention_duration` (String) The time span after which groups with missing data are dropped from the monitor state. The minimum value is one hour, and the maximum value is 72 hours. Example values are: 60m, 1h, and 2d. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors.
 - `groupby_simple_monitor` (Boolean) Whether or not to trigger one alert if any source breaches a threshold.
 - `id` (String) The ID of this resource.
 - `include_tags` (Boolean) Whether or not notifications from the monitor automatically inserts its triggering tags into the title.
@@ -46,6 +47,7 @@ data "datadog_monitor" "test" {
 - `no_data_timeframe` (Number) The number of minutes before the monitor notifies when data stops reporting.
 - `notify_audit` (Boolean) Whether or not tagged users are notified on changes to the monitor.
 - `notify_no_data` (Boolean) Whether or not this monitor notifies when data stops reporting.
+- `on_missing_data` (String) Controls how groups or monitors are treated if an evaluation does not return any data points. The default option results in different behavior depending on the monitor query type. For monitors using `Count` queries, an empty monitor evaluation is treated as 0 and is compared to the threshold conditions. For monitors using any query type other than `Count`, for example `Gauge`, `Measure`, or `Rate`, the monitor shows the last known status. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors. Valid values are: `show_no_data`, `show_and_notify_no_data`, `resolve`, and `default`.
 - `query` (String) Query of the monitor.
 - `renotify_interval` (Number) The number of minutes after the last notification before the monitor re-notifies on the current status.
 - `renotify_occurrences` (Number) The number of re-notification messages that should be sent on the current status.

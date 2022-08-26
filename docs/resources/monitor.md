@@ -54,6 +54,7 @@ Email notifications can be sent to specific users by using the same `@username` 
 
 For example, if the value is set to `300` (5min), the `timeframe` is set to `last_5m` and the time is 7:00, the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor will always have data during evaluation.
 - `force_delete` (Boolean) A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).
+- `group_retention_duration` (String) The time span after which groups with missing data are dropped from the monitor state. The minimum value is one hour, and the maximum value is 72 hours. Example values are: 60m, 1h, and 2d. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors.
 - `groupby_simple_monitor` (Boolean) Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.
 - `include_tags` (Boolean) A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`.
 - `locked` (Boolean, Deprecated) A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`. **Deprecated.** Use `restricted_roles`.
@@ -68,6 +69,7 @@ For example, if the value is set to `300` (5min), the `timeframe` is set to `las
 We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.
 - `notify_audit` (Boolean) A boolean indicating whether tagged users will be notified on changes to this monitor. Defaults to `false`.
 - `notify_no_data` (Boolean) A boolean indicating whether this monitor will notify when data stops reporting. Defaults to `false`.
+- `on_missing_data` (String) Controls how groups or monitors are treated if an evaluation does not return any data points. The default option results in different behavior depending on the monitor query type. For monitors using `Count` queries, an empty monitor evaluation is treated as 0 and is compared to the threshold conditions. For monitors using any query type other than `Count`, for example `Gauge`, `Measure`, or `Rate`, the monitor shows the last known status. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors. Valid values are: `show_no_data`, `show_and_notify_no_data`, `resolve`, and `default`.
 - `priority` (Number) Integer from 1 (high) to 5 (low) indicating alert severity.
 - `renotify_interval` (Number) The number of minutes after the last notification before a monitor will re-notify on the current status. It will only re-notify if it's not resolved.
 - `renotify_occurrences` (Number) The number of re-notification messages that should be sent on the current status.
