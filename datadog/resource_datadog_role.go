@@ -244,7 +244,7 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
-	if d.HasChange("name") {
+	if d.HasChange("name") || d.HasChange("permission") {
 		roleReq := buildRoleUpdateRequest(d)
 		resp, httpResponse, err := apiInstances.GetRolesApiV2().UpdateRole(auth, d.Id(), roleReq)
 		if err != nil {
@@ -255,51 +255,6 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 		}
 		roleData := resp.GetData()
 		if err := updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, apiInstances); err != nil {
-			return err
-		}
-	}
-	if d.HasChange("permission") {
-		oldPermsI, newPermsI := d.GetChange("permission")
-		oldPerms := oldPermsI.(*schema.Set)
-		newPerms := newPermsI.(*schema.Set)
-		permsToRemove := oldPerms.Difference(newPerms)
-		permsToAdd := newPerms.Difference(oldPerms)
-		var (
-			permsResponse datadogV2.PermissionsResponse
-			err           error
-			httpResponse  *http.Response
-		)
-		for _, permI := range permsToRemove.List() {
-			perm := permI.(map[string]interface{})
-			permRelation := datadogV2.NewRelationshipToPermissionWithDefaults()
-			permRelationData := datadogV2.NewRelationshipToPermissionDataWithDefaults()
-			permRelationData.SetId(perm["id"].(string))
-			permRelation.SetData(*permRelationData)
-			permsResponse, httpResponse, err = apiInstances.GetRolesApiV2().RemovePermissionFromRole(auth, d.Id(), *permRelation)
-			if err != nil {
-				return utils.TranslateClientErrorDiag(err, httpResponse, "error removing permission from role")
-			}
-			if err := utils.CheckForUnparsed(permsResponse); err != nil {
-				return diag.FromErr(err)
-			}
-
-		}
-		for _, permI := range permsToAdd.List() {
-			perm := permI.(map[string]interface{})
-			permRelation := datadogV2.NewRelationshipToPermissionWithDefaults()
-			permRelationData := datadogV2.NewRelationshipToPermissionDataWithDefaults()
-			permRelationData.SetId(perm["id"].(string))
-			permRelation.SetData(*permRelationData)
-			permsResponse, httpResponse, err = apiInstances.GetRolesApiV2().AddPermissionToRole(auth, d.Id(), *permRelation)
-			if err != nil {
-				return utils.TranslateClientErrorDiag(err, httpResponse, "error adding permission to role")
-			}
-			if err := utils.CheckForUnparsed(permsResponse); err != nil {
-				return diag.FromErr(err)
-			}
-		}
-		// Only need to update once all the permissions have been added/revoked, with the last call response
-		if err := updateRolePermissionsState(auth, d, permsResponse.GetData(), apiInstances); err != nil {
 			return err
 		}
 	}
@@ -353,11 +308,30 @@ func buildRoleUpdateRequest(d *schema.ResourceData) datadogV2.RoleUpdateRequest 
 	roleUpdateRequest := datadogV2.NewRoleUpdateRequestWithDefaults()
 	roleUpdateData := datadogV2.NewRoleUpdateDataWithDefaults()
 	roleUpdateAttributes := datadogV2.NewRoleUpdateAttributesWithDefaults()
+	roleUpdateRelations := datadogV2.NewRoleRelationshipsWithDefaults()
 
-	roleUpdateAttributes.SetName(d.Get("name").(string))
+	if name, ok := d.GetOk("name"); ok {
+		roleUpdateAttributes.SetName(name.(string))
+	}
 
 	roleUpdateData.SetId(d.Id())
 	roleUpdateData.SetAttributes(*roleUpdateAttributes)
+
+	// Set permission relationships
+	if permsI, ok := d.GetOk("permission"); ok {
+		perms := permsI.(*schema.Set).List()
+		rolePermRelations := datadogV2.NewRelationshipToPermissionsWithDefaults()
+		rolePermRelationsData := make([]datadogV2.RelationshipToPermissionData, len(perms))
+		for i, permI := range perms {
+			perm := permI.(map[string]interface{})
+			roleRelationshipToPerm := datadogV2.NewRelationshipToPermissionDataWithDefaults()
+			roleRelationshipToPerm.SetId(perm["id"].(string))
+			rolePermRelationsData[i] = *roleRelationshipToPerm
+		}
+		rolePermRelations.SetData(rolePermRelationsData)
+		roleUpdateRelations.SetPermissions(*rolePermRelations)
+	}
+	roleUpdateData.SetRelationships(*roleUpdateRelations)
 
 	roleUpdateRequest.SetData(*roleUpdateData)
 	return *roleUpdateRequest
