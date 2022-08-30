@@ -247,6 +247,29 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 	if d.HasChange("name") || d.HasChange("permission") {
 		roleReq := buildRoleUpdateRequest(d)
 		resp, httpResponse, err := apiInstances.GetRolesApiV2().UpdateRole(auth, d.Id(), roleReq)
+		/* if perms := d.Get("permission").(*schema.Set).List(); len(perms) == 0 {
+			var (
+				permsResponse datadogV2.PermissionsResponse
+				err           error
+				httpResponse  *http.Response
+			)
+			permsToRemove, _ := d.GetChange("permission")
+			for _, permI := range permsToRemove.(*schema.Set).List() {
+				perm := permI.(map[string]interface{})
+				permRelation := datadogV2.NewRelationshipToPermissionWithDefaults()
+				permRelationData := datadogV2.NewRelationshipToPermissionDataWithDefaults()
+				permRelationData.SetId(perm["id"].(string))
+				permRelation.SetData(*permRelationData)
+				permsResponse, httpResponse, err = apiInstances.GetRolesApiV2().RemovePermissionFromRole(auth, d.Id(), *permRelation)
+
+				if err != nil {
+					return utils.TranslateClientErrorDiag(err, httpResponse, "error removing permission from role")
+				}
+				if err := utils.CheckForUnparsed(permsResponse); err != nil {
+					return diag.FromErr(err)
+				}
+			}
+		} */
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating role")
 		}
@@ -318,9 +341,9 @@ func buildRoleUpdateRequest(d *schema.ResourceData) datadogV2.RoleUpdateRequest 
 	roleUpdateData.SetAttributes(*roleUpdateAttributes)
 
 	// Set permission relationships
+	rolePermRelations := datadogV2.NewRelationshipToPermissionsWithDefaults()
 	if permsI, ok := d.GetOk("permission"); ok {
 		perms := permsI.(*schema.Set).List()
-		rolePermRelations := datadogV2.NewRelationshipToPermissionsWithDefaults()
 		rolePermRelationsData := make([]datadogV2.RelationshipToPermissionData, len(perms))
 		for i, permI := range perms {
 			perm := permI.(map[string]interface{})
@@ -329,8 +352,11 @@ func buildRoleUpdateRequest(d *schema.ResourceData) datadogV2.RoleUpdateRequest 
 			rolePermRelationsData[i] = *roleRelationshipToPerm
 		}
 		rolePermRelations.SetData(rolePermRelationsData)
-		roleUpdateRelations.SetPermissions(*rolePermRelations)
+	} else {
+		rolePermRelationsData := []datadogV2.RelationshipToPermissionData{}
+		rolePermRelations.SetData(rolePermRelationsData)
 	}
+	roleUpdateRelations.SetPermissions(*rolePermRelations)
 	roleUpdateData.SetRelationships(*roleUpdateRelations)
 
 	roleUpdateRequest.SetData(*roleUpdateData)
