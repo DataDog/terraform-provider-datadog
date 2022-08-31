@@ -2720,7 +2720,7 @@ func buildDatadogHostmapDefinition(terraformDefinition map[string]interface{}) *
 
 	// Required params
 	datadogDefinition := datadogV1.NewHostMapWidgetDefinitionWithDefaults()
-	if v, ok := terraformDefinition["request"].([]interface{}); ok && len(v) > 0 {
+	if v, ok := terraformDefinition["request"].([]interface{}); ok && len(v) > 0 && v[0] != nil {
 		terraformRequests := v[0].(map[string]interface{})
 		datadogRequests := datadogV1.NewHostMapWidgetDefinitionRequests()
 		if terraformFillArray, ok := terraformRequests["fill"].([]interface{}); ok && len(terraformFillArray) > 0 {
