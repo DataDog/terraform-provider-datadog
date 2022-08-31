@@ -48,7 +48,7 @@ resource "datadog_synthetics_global_variable" "test_variable" {
 Required:
 
 - `parser` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--parse_test_options--parser))
-- `type` (String) Defines the source to use to extract the value. Valid values are `http_body`, `http_header`.
+- `type` (String) Defines the source to use to extract the value. Valid values are `http_body`, `http_header`, `local_variable`.
 
 Optional:
 
