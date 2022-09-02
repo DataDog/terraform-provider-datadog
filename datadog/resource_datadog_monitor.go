@@ -18,6 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 const defaultNoDataTimeframeMinutes = 10
@@ -328,6 +329,134 @@ func resourceDatadogMonitor() *schema.Resource {
 					return true
 				},
 			},
+			"variables": getMonitorFormulaQuerySchema(),
+		},
+	}
+}
+
+// Monitor specific schema for formula and functions. Should be a strict
+// subset of getFormulaQuerySchema with the appropriate types.
+func getMonitorFormulaQuerySchema() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Optional: true,
+		MaxItems: 1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"event_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "A timeseries formula and functions events query.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionEventsDataSourceFromValue),
+								Description:      "The data source for event platform-based queries.",
+							},
+							"search": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The search options.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"query": {
+											Type:         schema.TypeString,
+											ValidateFunc: validation.StringIsNotEmpty,
+											Required:     true,
+											Description:  "The events search string.",
+										},
+									},
+								},
+							},
+							"indexes": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Elem:        &schema.Schema{Type: schema.TypeString},
+								Description: "An array of index names to query in the stream.",
+							},
+							"compute": {
+								Type:        schema.TypeList,
+								Required:    true,
+								Description: "The compute options.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"aggregation": {
+											Type:             schema.TypeString,
+											Required:         true,
+											ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionEventAggregationFromValue),
+											Description:      "The aggregation methods for event platform queries.",
+										},
+										"interval": {
+											Type:        schema.TypeInt,
+											Optional:    true,
+											Description: "A time interval in milliseconds.",
+										},
+										"metric": {
+											Type:        schema.TypeString,
+											Optional:    true,
+											Description: "The measurable attribute to compute.",
+										},
+									},
+								},
+							},
+							"group_by": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Description: "Group by options.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"facet": {
+											Type:        schema.TypeString,
+											Required:    true,
+											Description: "The event facet.",
+										},
+										"limit": {
+											Type:        schema.TypeInt,
+											Optional:    true,
+											Description: "The number of groups to return.",
+										},
+										"sort": {
+											Type:        schema.TypeList,
+											Optional:    true,
+											MaxItems:    1,
+											Description: "The options for sorting group by results.",
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"aggregation": {
+														Type:             schema.TypeString,
+														Required:         true,
+														ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionEventAggregationFromValue),
+														Description:      "The aggregation methods for the event platform queries.",
+													},
+													"metric": {
+														Type:        schema.TypeString,
+														Optional:    true,
+														Description: "The metric used for sorting group by results.",
+													},
+													"order": {
+														Type:             schema.TypeString,
+														Optional:         true,
+														ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
+														Description:      "Direction of sort.",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The name of query for use in formulas.",
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -433,6 +562,21 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	if attr, ok := d.GetOk("locked"); ok {
 		o.SetLocked(attr.(bool))
 	}
+	if v, ok := d.GetOk("variables"); ok {
+		variables := v.([]interface{})
+		if len(variables) > 0 {
+			// we always have either zero or one
+			for _, v := range variables {
+				m := v.(map[string]interface{})
+				queries := m["event_query"].([]interface{})
+				monitorVariables := make([]datadogV1.MonitorFormulaAndFunctionQueryDefinition, len(queries))
+				for i, q := range queries {
+					monitorVariables[i] = buildMonitorFormulaAndFunctionEventQuery(q.(map[string]interface{}))
+				}
+				o.SetVariables(monitorVariables)
+			}
+		}
+	}
 
 	monitorType := datadogV1.MonitorType(d.Get("type").(string))
 	if monitorType == datadogV1.MONITORTYPE_LOG_ALERT {
@@ -485,6 +629,75 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	u.SetTags(tags)
 
 	return m, u
+}
+
+func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.MonitorFormulaAndFunctionEventsDataSource(data["data_source"].(string))
+	computeList := data["compute"].([]interface{})
+	computeMap := computeList[0].(map[string]interface{})
+	aggregation := datadogV1.MonitorFormulaAndFunctionEventAggregation(computeMap["aggregation"].(string))
+	compute := datadogV1.NewMonitorFormulaAndFunctionEventQueryDefinitionCompute(aggregation)
+	if interval, ok := computeMap["interval"].(int); ok && interval != 0 {
+		compute.SetInterval(int64(interval))
+	}
+	if metric, ok := computeMap["metric"].(string); ok && len(metric) > 0 {
+		compute.SetMetric(metric)
+	}
+	eventQuery := datadogV1.NewMonitorFormulaAndFunctionEventQueryDefinition(*compute, dataSource, data["name"].(string))
+	eventQueryIndexes := data["indexes"].([]interface{})
+	indexes := make([]string, len(eventQueryIndexes))
+	for i, index := range eventQueryIndexes {
+		indexes[i] = index.(string)
+	}
+	eventQuery.SetIndexes(indexes)
+
+	if terraformSearches, ok := data["search"].([]interface{}); ok && len(terraformSearches) > 0 {
+		terraformSearch := terraformSearches[0].(map[string]interface{})
+		eventQuery.Search = datadogV1.NewMonitorFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
+	}
+
+	// GroupBy
+	if terraformGroupBys, ok := data["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
+		datadogGroupBys := make([]datadogV1.MonitorFormulaAndFunctionEventQueryGroupBy, len(terraformGroupBys))
+		for i, g := range terraformGroupBys {
+			groupBy := g.(map[string]interface{})
+
+			// Facet
+			datadogGroupBy := datadogV1.NewMonitorFormulaAndFunctionEventQueryGroupBy(groupBy["facet"].(string))
+
+			// Limit
+			if v, ok := groupBy["limit"].(int); ok && v != 0 {
+				datadogGroupBy.SetLimit(int64(v))
+			}
+
+			// Sort
+			if v, ok := groupBy["sort"].([]interface{}); ok && len(v) > 0 {
+				if v, ok := v[0].(map[string]interface{}); ok && len(v) > 0 {
+					sortMap := &datadogV1.MonitorFormulaAndFunctionEventQueryGroupBySort{}
+					if aggr, ok := v["aggregation"].(string); ok && len(aggr) > 0 {
+						aggregation := datadogV1.MonitorFormulaAndFunctionEventAggregation(v["aggregation"].(string))
+						sortMap.SetAggregation(aggregation)
+					}
+					if order, ok := v["order"].(string); ok && len(order) > 0 {
+						eventSort := datadogV1.QuerySortOrder(order)
+						sortMap.SetOrder(eventSort)
+					}
+					if metric, ok := v["metric"].(string); ok && len(metric) > 0 {
+						sortMap.SetMetric(metric)
+					}
+					datadogGroupBy.SetSort(*sortMap)
+				}
+			}
+
+			datadogGroupBys[i] = *datadogGroupBy
+		}
+		eventQuery.SetGroupBy(datadogGroupBys)
+	} else {
+		emptyGroupBy := make([]datadogV1.MonitorFormulaAndFunctionEventQueryGroupBy, 0)
+		eventQuery.SetGroupBy(emptyGroupBy)
+	}
+
+	return datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(eventQuery)
 }
 
 // Use CustomizeDiff to do monitor validation
@@ -678,6 +891,14 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		}
 	}
 
+	if variables, ok := m.Options.GetVariablesOk(); ok && len(*variables) > 0 {
+		log.Printf("[INFO] variables: %d, %+v", len(*variables), *variables)
+		terraformVariables := buildTerraformMonitorVariables(*variables)
+		if err := d.Set("variables", terraformVariables); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
 	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {
 		if err := d.Set("enable_logs_sample", m.Options.GetEnableLogsSample()); err != nil {
 			return diag.FromErr(err)
@@ -688,6 +909,82 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	}
 
 	return nil
+}
+
+func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
+	queries := make([]map[string]interface{}, len(datadogVariables))
+	for i, query := range datadogVariables {
+		terraformQuery := map[string]interface{}{}
+		terraformEventQueryDefinition := query.MonitorFormulaAndFunctionEventQueryDefinition
+		if terraformEventQueryDefinition != nil {
+			if dataSource, ok := terraformEventQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if name, ok := terraformEventQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			if indexes, ok := terraformEventQueryDefinition.GetIndexesOk(); ok {
+				terraformQuery["indexes"] = indexes
+			}
+			if search, ok := terraformEventQueryDefinition.GetSearchOk(); ok {
+				if len(search.GetQuery()) > 0 {
+					terraformSearch := map[string]interface{}{}
+					terraformSearch["query"] = search.GetQuery()
+					terraformSearchList := []map[string]interface{}{terraformSearch}
+					terraformQuery["search"] = terraformSearchList
+				}
+			}
+			if compute, ok := terraformEventQueryDefinition.GetComputeOk(); ok {
+				terraformCompute := map[string]interface{}{}
+				if aggregation, ok := compute.GetAggregationOk(); ok {
+					terraformCompute["aggregation"] = aggregation
+				}
+				if interval, ok := compute.GetIntervalOk(); ok {
+					terraformCompute["interval"] = interval
+				}
+				if metric, ok := compute.GetMetricOk(); ok {
+					terraformCompute["metric"] = metric
+				}
+				terraformComputeList := []map[string]interface{}{terraformCompute}
+				terraformQuery["compute"] = terraformComputeList
+			}
+			if terraformEventQuery, ok := terraformEventQueryDefinition.GetGroupByOk(); ok {
+				terraformGroupBys := make([]map[string]interface{}, len(*terraformEventQuery))
+				for i, groupBy := range *terraformEventQuery {
+					// Facet
+					terraformGroupBy := map[string]interface{}{
+						"facet": groupBy.GetFacet(),
+					}
+					// Limit
+					if v, ok := groupBy.GetLimitOk(); ok {
+						terraformGroupBy["limit"] = *v
+					}
+					// Sort
+					if v, ok := groupBy.GetSortOk(); ok {
+						terraformSort := map[string]interface{}{}
+						if metric, ok := v.GetMetricOk(); ok {
+							terraformSort["metric"] = metric
+						}
+						if order, ok := v.GetOrderOk(); ok {
+							terraformSort["order"] = order
+						}
+						if aggregation, ok := v.GetAggregationOk(); ok {
+							terraformSort["aggregation"] = aggregation
+						}
+						terraformGroupBy["sort"] = []map[string]interface{}{terraformSort}
+					}
+					terraformGroupBys[i] = terraformGroupBy
+				}
+				terraformQuery["group_by"] = &terraformGroupBys
+			}
+			queries[i] = terraformQuery
+		}
+	}
+	terraformVariables := make([]map[string]interface{}, 1) // only event_queries are supported for now
+	terraformVariables[0] = map[string]interface{}{"event_query": queries}
+
+	log.Printf("[INFO] queries: %+v", terraformVariables)
+	return terraformVariables
 }
 
 func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
