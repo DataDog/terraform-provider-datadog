@@ -792,7 +792,7 @@ func datadogDowntimeDestroyHelper(ctx context.Context, s *terraform.State, apiIn
 							return nil
 						}
 						return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving Downtime %s", err)}
-					} else if !dt.GetActive() {
+					} else if canceled, ok := dt.GetCanceledOk(); !dt.GetActive() || (ok && canceled != nil) {
 						// Datadog only cancels downtime on DELETE so if its not Active, its deleted
 						return nil
 					}
