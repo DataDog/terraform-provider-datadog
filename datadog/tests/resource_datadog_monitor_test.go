@@ -794,6 +794,32 @@ func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitor_FormulaFunction(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorFormulaFunction(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.event_query.#", "2"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogMonitorDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
@@ -1334,6 +1360,47 @@ resource "datadog_monitor" "bar" {
   	message = "test"
 	query = "${datadog_monitor.foo.id} || ${datadog_synthetics_test.foo.monitor_id}"
 }`, uniq, uniq, uniq)
+}
+
+func testAccCheckDatadogMonitorFormulaFunction(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "rum alert"
+  message = "test"
+
+  query = "formula(\"var1 + var2\").last(\"5m\") > 100"
+
+  variables {
+  	event_query {
+		data_source = "rum"
+		name        = "var1"
+		indexes     = ["*"]
+		compute {
+			aggregation = "count"
+		}
+		search {
+			query = "@browser.name:Firefox"
+		}
+	}
+	event_query {
+		data_source = "rum"
+		name        = "var2"
+		indexes     = ["*"]
+		compute {
+			aggregation = "count"
+		}
+		search {
+			query = "@browser.name:Chrome"
+		}
+	}
+  }
+
+  monitor_thresholds {
+      critical = 100
+  }
+}
+`, uniq)
 }
 
 func testAccCheckDatadogMonitorConfigZeroDelay(uniq string) string {

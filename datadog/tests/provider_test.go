@@ -506,14 +506,6 @@ func buildContext(ctx context.Context, apiKey string, appKey string, apiURL stri
 func buildDatadogClient(httpClient *http.Client) *common.APIClient {
 	//Datadog API config.HTTPClient
 	config := common.NewConfiguration()
-	config.SetUnstableOperationEnabled("v1.CreateSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v1.GetSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v1.UpdateSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v1.DeleteSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v2.CreateTagConfiguration", true)
-	config.SetUnstableOperationEnabled("v2.DeleteTagConfiguration", true)
-	config.SetUnstableOperationEnabled("v2.ListTagConfigurationByName", true)
-	config.SetUnstableOperationEnabled("v2.UpdateTagConfiguration", true)
 	config.Debug = isDebug()
 	config.HTTPClient = httpClient
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
@@ -666,7 +658,8 @@ func testCheckResourceAttrs(name string, checkExists resource.TestCheckFunc, ass
 	return funcs
 }
 
-/* Utility method for Debugging purpose. This method helps list assertions as well
+/*
+Utility method for Debugging purpose. This method helps list assertions as well
 It is a duplication of `resource.TestCheckResourceAttr` into which we added print statements.
 */
 func CheckResourceAttr(name, key, value string) resource.TestCheckFunc {
