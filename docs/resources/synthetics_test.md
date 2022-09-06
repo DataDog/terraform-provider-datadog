@@ -359,7 +359,7 @@ Required:
 
 - `name` (String)
 - `parser` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--api_step--extracted_value--parser))
-- `type` (String) Property of the Synthetics Test Response to use for the variable. Valid values are `http_body`, `http_header`.
+- `type` (String) Property of the Synthetics Test Response to use for the variable. Valid values are `http_body`, `http_header`, `local_variable`.
 
 Optional:
 
