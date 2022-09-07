@@ -93,8 +93,8 @@ func dataSourceDatadogLogsPipelinesRead(ctx context.Context, d *schema.ResourceD
 		return diag.FromErr(err)
 	}
 
-	tflogsPipelines := make([]map[string]interface{}, len(logsPipelines))
-	for i, pipeline := range logsPipelines {
+	tflogsPipelines := make([]map[string]interface{}, 0)
+	for _, pipeline := range logsPipelines {
 		v_str, ok := d.GetOk("is_read_only")
 		v, _ := strconv.ParseBool(v_str.(string))
 		if !ok || (ok && v == *pipeline.IsReadOnly) {
@@ -106,14 +106,6 @@ func dataSourceDatadogLogsPipelinesRead(ctx context.Context, d *schema.ResourceD
 				"is_read_only": pipeline.IsReadOnly,
 				"type":         pipeline.Type,
 			})
-		}
-		tflogsPipelines[i] = map[string]interface{}{
-			"name":         pipeline.Name,
-			"id":           pipeline.Id,
-			"filter":       buildTerraformLogsPipelineFilter(*pipeline.Filter),
-			"is_enabled":   pipeline.IsEnabled,
-			"is_read_only": pipeline.IsReadOnly,
-			"type":         pipeline.Type,
 		}
 	}
 	if err := d.Set("logs_pipelines", tflogsPipelines); err != nil {
