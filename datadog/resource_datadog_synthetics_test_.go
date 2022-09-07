@@ -201,6 +201,14 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"certificate_domains": {
+				Description: "By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
@@ -564,6 +572,21 @@ func syntheticsTestOptionsList() *schema.Schema {
 						},
 					},
 					Optional: true,
+				},
+				"ignore_server_certificate_error": {
+					Description: "Ignore server certificate error.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"disable_csp": {
+					Description: "Disable Content Security Policy for browser tests.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"initial_navigation_timeout": {
+					Description: "Timeout before declaring the initial step as failed (in seconds) for browser tests.",
+					Type:        schema.TypeInt,
+					Optional:    true,
 				},
 			},
 		},
@@ -1428,6 +1451,10 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 			options.SetCi(ciOptions)
 		}
+
+		if ignoreServerCertificateError, ok := d.GetOk("options_list.0.ignore_server_certificate_error"); ok {
+			options.SetIgnoreServerCertificateError(ignoreServerCertificateError.(bool))
+		}
 	}
 
 	if attr, ok := d.GetOk("device_ids"); ok {
@@ -1661,6 +1688,14 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	if attr, ok := k.GetOkWith("timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
 	}
+	if attr, ok := k.GetOkWith("certificate_domains"); ok {
+		var certificateDomains []string
+
+		for _, s := range attr.([]interface{}) {
+			certificateDomains = append(certificateDomains, s.(string))
+		}
+		request.SetCertificateDomains(certificateDomains)
+	}
 	k.Remove(parts)
 	if attr, ok := d.GetOk("request_query"); ok {
 		query := attr.(map[string]interface{})
@@ -1890,6 +1925,18 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 			options.SetRumSettings(rumSettings)
 		}
+
+		if ignoreServerCertificateError, ok := d.GetOk("options_list.0.ignore_server_certificate_error"); ok {
+			options.SetIgnoreServerCertificateError(ignoreServerCertificateError.(bool))
+		}
+
+		if disableCsp, ok := d.GetOk("options_list.0.disable_csp"); ok {
+			options.SetDisableCsp(disableCsp.(bool))
+		}
+
+		if initialNavigationTimeout, ok := d.GetOk("options_list.0.initial_navigation_timeout"); ok {
+			options.SetInitialNavigationTimeout(int64(initialNavigationTimeout.(int)))
+		}
 	}
 
 	if attr, ok := d.GetOk("device_ids"); ok {
@@ -2025,6 +2072,9 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	}
 	if request.HasService() {
 		localRequest["service"] = request.GetService()
+	}
+	if request.HasCertificateDomains() {
+		localRequest["certificate_domains"] = request.GetCertificateDomains()
 	}
 
 	return localRequest
@@ -2377,6 +2427,15 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 
 		localOptionsList["rum_settings"] = []map[string]interface{}{localRumSettings}
 	}
+	if actualOptions.HasIgnoreServerCertificateError() {
+		localOptionsList["ignore_server_certificate_error"] = actualOptions.GetIgnoreServerCertificateError()
+	}
+	if actualOptions.HasDisableCsp() {
+		localOptionsList["disable_csp"] = actualOptions.GetDisableCsp()
+	}
+	if actualOptions.HasInitialNavigationTimeout() {
+		localOptionsList["initial_navigation_timeout"] = actualOptions.GetInitialNavigationTimeout()
+	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)
 	localOptionsLists[0] = localOptionsList
@@ -2722,6 +2781,10 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		ciOptions["execution_rule"] = actualCi.GetExecutionRule()
 
 		localOptionsList["ci"] = []map[string]interface{}{ciOptions}
+	}
+
+	if actualOptions.HasIgnoreServerCertificateError() {
+		localOptionsList["ignore_server_certificate_error"] = actualOptions.GetIgnoreServerCertificateError()
 	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)

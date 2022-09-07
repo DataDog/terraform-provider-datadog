@@ -602,6 +602,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.ci.0.execution_rule", "blocking"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.ignore_server_certificate_error", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "message", "Notify @datadog.user"),
@@ -700,6 +702,7 @@ resource "datadog_synthetics_test" "foo" {
 		ci {
 			execution_rule = "blocking"
 		}
+		ignore_server_certificate_error = true
 	}
 
 	name = "%[1]s"
@@ -2153,6 +2156,10 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.timeout", "30"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_definition.0.certificate_domains.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_definition.0.certificate_domains.0", "https://datadoghq.com"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_headers.%", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_headers.Accept", "application/json"),
@@ -2219,6 +2226,12 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.ci.0.execution_rule", "blocking"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.ignore_server_certificate_error", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.disable_csp", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.initial_navigation_timeout", "150"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
@@ -2274,6 +2287,7 @@ resource "datadog_synthetics_test" "bar" {
 		url = "https://www.datadoghq.com"
 		body = "this is a body"
 		timeout = 30
+		certificate_domains = ["https://datadoghq.com"]
 	}
 	request_headers = {
 		Accept = "application/json"
@@ -2325,6 +2339,10 @@ resource "datadog_synthetics_test" "bar" {
 		ci {
 			execution_rule = "blocking"
 		}
+
+		ignore_server_certificate_error = true
+		disable_csp = true
+		initial_navigation_timeout = 150
 	}
 
 	name = "%[1]s"
