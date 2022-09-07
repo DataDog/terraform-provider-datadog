@@ -2,9 +2,11 @@ package datadog
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -14,6 +16,11 @@ func dataSourceDatadogLogsPipelines() *schema.Resource {
 		Description: "Use this data source to list all existing logs pipelines for use in other resources.",
 		ReadContext: dataSourceDatadogLogsPipelinesRead,
 		Schema: map[string]*schema.Schema{
+			"is_read_only": {
+				Description: "Filter parameter for retrieved pipelines",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
 			// Computed values
 			"logs_pipelines": {
 				Description: "List of logs pipelines",
@@ -67,6 +74,13 @@ func dataSourceDatadogLogsPipelines() *schema.Resource {
 	}
 }
 
+func buildTerraformLogsPipelineFilter(ddFilter datadogV1.LogsFilter) *[]map[string]interface{} {
+	tfFilter := map[string]interface{}{
+		"query": ddFilter.GetQuery(),
+	}
+	return &[]map[string]interface{}{tfFilter}
+}
+
 func dataSourceDatadogLogsPipelinesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -81,10 +95,22 @@ func dataSourceDatadogLogsPipelinesRead(ctx context.Context, d *schema.ResourceD
 
 	tflogsPipelines := make([]map[string]interface{}, len(logsPipelines))
 	for i, pipeline := range logsPipelines {
+		v_str, ok := d.GetOk("is_read_only")
+		v, _ := strconv.ParseBool(v_str.(string))
+		if !ok || (ok && v == *pipeline.IsReadOnly) {
+			tflogsPipelines = append(tflogsPipelines, map[string]interface{}{
+				"name":         pipeline.Name,
+				"id":           pipeline.Id,
+				"filter":       buildTerraformLogsPipelineFilter(*pipeline.Filter),
+				"is_enabled":   pipeline.IsEnabled,
+				"is_read_only": pipeline.IsReadOnly,
+				"type":         pipeline.Type,
+			})
+		}
 		tflogsPipelines[i] = map[string]interface{}{
 			"name":         pipeline.Name,
 			"id":           pipeline.Id,
-			"filter":       buildTerraformIndexFilter(*pipeline.Filter),
+			"filter":       buildTerraformLogsPipelineFilter(*pipeline.Filter),
 			"is_enabled":   pipeline.IsEnabled,
 			"is_read_only": pipeline.IsReadOnly,
 			"type":         pipeline.Type,
