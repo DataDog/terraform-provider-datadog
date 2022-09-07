@@ -1,3 +1,32 @@
+## 3.15.0 (September 7, 2022)
+
+### BUGFIXES
+* [datadog_security_monitoring_rule] Check for nil `metrics` values. by @juliendoutre in https://github.com/DataDog/terraform-provider-datadog/pull/1506
+* [datadog_synthetics_private_location] Improve restricted_roles handling by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/1519
+* [datadog_synthetics_test] Fix target for packet loss assertions by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1527
+* [provider] Handle redirects by retaining the original request/redirect body by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1534
+* [datadog_synthetics_test] suppress whitespace diff when comparing files by @AlaricCalmette in https://github.com/DataDog/terraform-provider-datadog/pull/1518
+* [datadog_dashboard] Handle empty requests definition in hostmap widget by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/1546
+### IMPROVEMENTS
+* [datadog_synthetics_test] Add DiffSupressFunc for rum settings by @bhaoui in https://github.com/DataDog/terraform-provider-datadog/pull/1532
+* [datadog_monitor] Suppress diff when using `ok` and `unknown` thresholds in non `service check` monitors. by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1529
+* [datadog_dashboard] add support for priority parameters in ManageStatus widget by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1525
+* [datadog_monitor] add group_retention_duration and on_missing_data monitor options by @chrismdd in https://github.com/DataDog/terraform-provider-datadog/pull/1535
+* [datadog_monitor] Add formula & functions by @phillip-dd in https://github.com/DataDog/terraform-provider-datadog/pull/1357
+* [datadog_role] Upgrade provider from old single-permission APIs to newer UpdateRole API by @retsguj in https://github.com/DataDog/terraform-provider-datadog/pull/1542
+### FEATURES
+* [datadog_rum_application] Add RUM Application resource support by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1537
+### NOTES
+* [provider] Bump datadog-api-client to V2 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1515
+* Bump datadog-api-client to v2.2.0 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1547
+
+## New Contributors
+* @bhaoui made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1532
+* @nkzou made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1525
+* @buranmert made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1538
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.14.0...v3.15.0
+
 ## 3.14.0 (July 25, 2022)
 
 ### BUGFIXES
