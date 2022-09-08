@@ -72,7 +72,7 @@ func resourceDatadogServiceDefinition() *schema.Resource {
 					res, _ := flattenYAMLToString(attrMap)
 					return res
 				},
-				Description: "Service Definition YAML (Single)",
+				Description: "The YAML/JSON formatted definition of the service",
 			},
 		},
 	}
