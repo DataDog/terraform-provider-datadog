@@ -322,10 +322,10 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		ipRangesDNSNameArr = append([]string{baseIPRangesSubdomain}, ipRangesDNSNameArr...)
 
 		auth = context.WithValue(auth, datadog.ContextOperationServerIndices, map[string]int{
-			"IPRangesApiService.GetIPRanges": 1,
+			"v1.IPRangesApi.GetIPRanges": 1,
 		})
 		auth = context.WithValue(auth, datadog.ContextOperationServerVariables, map[string]map[string]string{
-			"IPRangesApiService.GetIPRanges": {
+			"v1.IPRangesApi.GetIPRanges": {
 				"name": strings.Join(ipRangesDNSNameArr, "."),
 			},
 		})
