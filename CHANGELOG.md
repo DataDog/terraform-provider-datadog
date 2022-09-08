@@ -1,3 +1,11 @@
+## 3.15.1 (September 8, 2022)
+
+### BUGFIXES
+* [datadog_ip_ranges] Fix `IPRanges` server configuration by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1560
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.15.0...v3.15.1
+
 ## 3.15.0 (September 7, 2022)
 
 ### BUGFIXES
