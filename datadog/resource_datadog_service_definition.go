@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sort"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -15,6 +16,8 @@ import (
 )
 
 const serviceDefinitionPath = "/api/v2/services/definitions"
+
+var fieldsWithName = []string{"contacts", "repos", "docs", "links"}
 
 type sdAttribute struct {
 	Schema map[string]interface{} `json:"schema"`
@@ -98,26 +101,22 @@ func flattenYAMLToString(input map[string]interface{}) (string, error) {
 
 func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]interface{} {
 	// this assumes we only support v2
-	if contacts, ok := attrMap["contacts"].([]interface{}); ok {
-		if len(contacts) == 0 {
-			delete(attrMap, "contacts")
+	delete(attrMap, "dd-team") //dd-team is a computed field
+
+	for _, field := range fieldsWithName {
+		normalizeArrayField(attrMap, field)
+	}
+
+	if tags, ok := attrMap["tags"].([]interface{}); ok {
+		if len(tags) == 0 {
+			delete(attrMap, "tags")
+		} else {
+			sort.SliceStable(tags, func(i, j int) bool {
+				return tags[i].(string) < tags[j].(string)
+			})
 		}
 	}
-	if docs, ok := attrMap["docs"].([]interface{}); ok {
-		if len(docs) == 0 {
-			delete(attrMap, "docs")
-		}
-	}
-	if links, ok := attrMap["links"].([]interface{}); ok {
-		if len(links) == 0 {
-			delete(attrMap, "links")
-		}
-	}
-	if repos, ok := attrMap["repos"].([]interface{}); ok {
-		if len(repos) == 0 {
-			delete(attrMap, "repos")
-		}
-	}
+
 	if team, ok := attrMap["team"].(string); ok {
 		if team == "" {
 			delete(attrMap, "team")
@@ -134,6 +133,27 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 		}
 	}
 	return attrMap
+}
+
+func normalizeArrayField(attrMap map[string]interface{}, key string) {
+	if items, ok := attrMap[key].([]interface{}); ok {
+		if len(items) == 0 {
+			delete(attrMap, key)
+		} else {
+			sort.SliceStable(items, func(i, j int) bool {
+				name1 := getNameField(items[i])
+				name2 := getNameField(items[j])
+				return name1 < name2
+			})
+		}
+	}
+}
+
+func getNameField(data interface{}) string {
+	if stringMap, ok := data.(map[string]interface{}); ok {
+		return stringMap["name"].(string)
+	}
+	return ""
 }
 
 func isValidServiceDefinition(i interface{}, k string) (warnings []string, errors []error) {
