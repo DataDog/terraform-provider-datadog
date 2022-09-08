@@ -42,7 +42,7 @@ func dataSourceDatadogLogsPipelines() *schema.Resource {
 									"query": {
 										Description: "Pipeline filter criteria.",
 										Type:        schema.TypeString,
-										Required:    true,
+										Computed:    true,
 									},
 								},
 							},
@@ -93,18 +93,18 @@ func dataSourceDatadogLogsPipelinesRead(ctx context.Context, d *schema.ResourceD
 		return diag.FromErr(err)
 	}
 
+	vStr, ok := d.GetOk("is_read_only")
+	v, _ := strconv.ParseBool(vStr.(string))
 	tflogsPipelines := make([]map[string]interface{}, 0)
 	for _, pipeline := range logsPipelines {
-		v_str, ok := d.GetOk("is_read_only")
-		v, _ := strconv.ParseBool(v_str.(string))
 		if !ok || (ok && v == *pipeline.IsReadOnly) {
 			tflogsPipelines = append(tflogsPipelines, map[string]interface{}{
-				"name":         pipeline.Name,
-				"id":           pipeline.Id,
-				"filter":       buildTerraformLogsPipelineFilter(*pipeline.Filter),
-				"is_enabled":   pipeline.IsEnabled,
-				"is_read_only": pipeline.IsReadOnly,
-				"type":         pipeline.Type,
+				"name":         pipeline.GetName(),
+				"id":           pipeline.GetId(),
+				"filter":       buildTerraformLogsPipelineFilter(pipeline.GetFilter()),
+				"is_enabled":   pipeline.GetIsEnabled(),
+				"is_read_only": pipeline.GetIsReadOnly(),
+				"type":         pipeline.GetType(),
 			})
 		}
 	}
