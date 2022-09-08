@@ -137,7 +137,6 @@ func resourceDatadogApplicationKeyRead(ctx context.Context, d *schema.ResourceDa
 		applicationKeyData := resp.GetData()
 		return updateApplicationKeyState(d, &applicationKeyData)
 	}
-
 }
 
 func resourceDatadogApplicationKeyUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
