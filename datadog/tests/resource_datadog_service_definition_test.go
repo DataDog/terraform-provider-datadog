@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
-func TestAccDatadogServiceDefinitionBasic(t *testing.T) {
+func TestAccDatadogServiceDefinition_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
