@@ -9,6 +9,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func dataSourceDatadogLogsPipelines() *schema.Resource {
@@ -17,9 +18,10 @@ func dataSourceDatadogLogsPipelines() *schema.Resource {
 		ReadContext: dataSourceDatadogLogsPipelinesRead,
 		Schema: map[string]*schema.Schema{
 			"is_read_only": {
-				Description: "Filter parameter for retrieved pipelines",
-				Type:        schema.TypeString,
-				Optional:    true,
+				Description:  "Filter parameter for retrieved pipelines",
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
 			},
 			// Computed values
 			"logs_pipelines": {
@@ -112,6 +114,6 @@ func dataSourceDatadogLogsPipelinesRead(ctx context.Context, d *schema.ResourceD
 		return diag.FromErr(err)
 	}
 
-	d.SetId("log-pipelines")
+	d.SetId("logs-pipelines")
 	return nil
 }
