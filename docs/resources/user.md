@@ -28,6 +28,8 @@ resource "datadog_user" "foo" {
 # Create a new Datadog service account
 resource "datadog_user" "bar" {
   email = "new@example.com"
+  
+  name = "Service Account Bar"
 
   roles = [data.datadog_role.ro_role.id]
 
