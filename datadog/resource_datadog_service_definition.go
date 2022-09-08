@@ -35,8 +35,8 @@ type getSDResponse struct {
 func resourceDatadogServiceDefinition() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog service definition resource. This can be used to create and manage Datadog service definitions in the service catalog using the YAML/JSON definition.",
-		CreateContext: resourceDatadogServiceDefinitionInsert,
-		ReadContext:   resourceDatadogServiceDefinitionGet,
+		CreateContext: resourceDatadogServiceDefinitionCreate,
+		ReadContext:   resourceDatadogServiceDefinitionRead,
 		UpdateContext: resourceDatadogServiceDefinitionUpdate,
 		DeleteContext: resourceDatadogServiceDefinitionDelete,
 		CustomizeDiff: customdiff.ForceNewIfChange("service_definition", func(ctx context.Context, old, new, meta interface{}) bool {
@@ -62,7 +62,7 @@ func resourceDatadogServiceDefinition() *schema.Resource {
 			"service_definition": {
 				Type:         schema.TypeString,
 				Required:     true,
-				ValidateFunc: stringIsYAML,
+				ValidateFunc: isValidServiceDefinition,
 				StateFunc: func(v interface{}) string {
 					attrMap, _ := expandYAMLFromString(v.(string))
 					prepServiceDefinitionResource(attrMap)
@@ -97,25 +97,74 @@ func flattenYAMLToString(input map[string]interface{}) (string, error) {
 }
 
 func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]interface{} {
+	// this assumes we only support v2
+	if contacts, ok := attrMap["contacts"].([]interface{}); ok {
+		if len(contacts) == 0 {
+			delete(attrMap, "contacts")
+		}
+	}
+	if docs, ok := attrMap["docs"].([]interface{}); ok {
+		if len(docs) == 0 {
+			delete(attrMap, "docs")
+		}
+	}
+	if links, ok := attrMap["links"].([]interface{}); ok {
+		if len(links) == 0 {
+			delete(attrMap, "links")
+		}
+	}
+	if repos, ok := attrMap["repos"].([]interface{}); ok {
+		if len(repos) == 0 {
+			delete(attrMap, "repos")
+		}
+	}
+	if team, ok := attrMap["team"].(string); ok {
+		if team == "" {
+			delete(attrMap, "team")
+		}
+	}
+	if extensions, ok := attrMap["extensions"].(map[string]interface{}); ok {
+		if len(extensions) == 0 {
+			delete(attrMap, "extensions")
+		}
+	}
+	if integrations, ok := attrMap["integrations"].(map[string]interface{}); ok {
+		if len(integrations) == 0 {
+			delete(attrMap, "integrations")
+		}
+	}
 	return attrMap
 }
 
-func stringIsYAML(i interface{}, k string) (warnings []string, errors []error) {
+func isValidServiceDefinition(i interface{}, k string) (warnings []string, errors []error) {
 	v, ok := i.(string)
 	if !ok {
 		errors = append(errors, fmt.Errorf("expected type of %s to be string", k))
 		return warnings, errors
 	}
 
-	var j interface{}
-	if err := yaml.Unmarshal([]byte(v), &j); err != nil {
+	var attrMap map[string]interface{}
+	if err := yaml.Unmarshal([]byte(v), &attrMap); err != nil {
 		errors = append(errors, fmt.Errorf("%q contains an invalid YAML/JSON: %s", k, err))
+		return warnings, errors
+	}
+
+	if schemaVersion, ok := attrMap["schema-version"].(string); ok {
+		if schemaVersion != "v2" {
+			errors = append(errors, fmt.Errorf("schema-version must be v2, but %s is used", schemaVersion))
+		}
+	} else {
+		errors = append(errors, fmt.Errorf("schema-version is missing: %q", k))
+	}
+
+	if schemaVersion, ok := attrMap["dd-service"].(string); !ok || schemaVersion == "" {
+		errors = append(errors, fmt.Errorf("dd-service is missing: %q", k))
 	}
 
 	return warnings, errors
 }
 
-func resourceDatadogServiceDefinitionGet(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceDefinitionRead(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -141,7 +190,7 @@ func resourceDatadogServiceDefinitionGet(_ context.Context, d *schema.ResourceDa
 	return updateServiceDefinitionState(d, response.Data)
 }
 
-func resourceDatadogServiceDefinitionInsert(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceDefinitionCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	datadogClientV1 := providerConf.DatadogClientV1
 	authV1 := providerConf.AuthV1
@@ -216,12 +265,13 @@ func resourceDatadogServiceDefinitionDelete(_ context.Context, d *schema.Resourc
 }
 
 func updateServiceDefinitionState(d *schema.ResourceData, response sdData) diag.Diagnostics {
-	serviceString, err := flattenYAMLToString(response.Attributes.Schema)
+	schema := prepServiceDefinitionResource(response.Attributes.Schema)
+	serviceDefinition, err := flattenYAMLToString(schema)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	if err = d.Set("service_definition", serviceString); err != nil {
+	if err = d.Set("service_definition", serviceDefinition); err != nil {
 		return diag.FromErr(err)
 	}
 	return nil
