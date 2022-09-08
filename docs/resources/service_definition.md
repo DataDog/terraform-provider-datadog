@@ -57,7 +57,7 @@ EOF
 
 ### Required
 
-- `service_definition` (String) Service Definition YAML (Single)
+- `service_definition` (String) The YAML/JSON formatted definition of the service
 
 ### Read-Only
 
