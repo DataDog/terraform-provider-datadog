@@ -175,7 +175,7 @@ func TestAccDatadogUser_ServiceAccountForceNew(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogUserConfigRequiredServiceAccountForceNew(username),
+				Config: testAccCheckDatadogUserConfigRequiredServiceAccount(username),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
 					resource.TestCheckResourceAttr(
@@ -184,7 +184,7 @@ func TestAccDatadogUser_ServiceAccountForceNew(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "email", username),
 					resource.TestCheckResourceAttr(
-						"datadog_user.foo", "name", "Updated User"),
+						"datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "send_user_invitation", "false"),
 					// Service accounts are automatically verified
@@ -495,16 +495,6 @@ resource "datadog_user" "foo" {
   // NOTE: it's not possible ATM to update email of another user
   email       = "%s"
   name        = "Updated User"
-}`, uniq)
-}
-
-func testAccCheckDatadogUserConfigRequiredServiceAccountForceNew(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_user" "foo" {
-  // NOTE: it's not possible ATM to update email of another user
-  email           = "%s"
-  name            = "Updated User"
-  service_account = true
 }`, uniq)
 }
 
