@@ -7,13 +7,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
 func TestAccDatadogServiceDefinitionBasic(t *testing.T) {
@@ -43,20 +42,40 @@ func TestAccDatadogServiceDefinitionBasic(t *testing.T) {
 func testAccCheckDatadogServiceDefinition(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_service_definition" "service_definition" {
-  definition =<<EOF
-{
-    "schema-version": "v2",
-    "dd-service": "%s",
-    "team": "Team A",
-    "contacts": [],
-    "repos": [],
-    "tags": [],
-    "integrations": {},
-    "dd-team": "team-a",
-    "docs": [],
-    "extensions": {},
-    "links": []
-}
+  service_definition =<<EOF
+	schema-version: v2
+	dd-service: %s
+	team: E Commerce
+	contacts:
+		- name: Support Email
+			type: email
+			contact: team@shopping.com
+		- name: Support Slack
+			type: slack
+			contact: https://www.slack.com/archives/shopping-cart
+	repos:
+		- name: shopping-cart source code
+			provider: github
+			url: http://github/shopping-cart
+	docs:
+		- name: shopping-cart architecture
+			provider: gdoc
+			url: https://google.drive/shopping-cart-architecture
+		- name: shopping-cart service Wiki
+			provider: wiki
+			url: https://wiki/shopping-cart
+	links:
+		- name: shopping-cart runbook
+			type: runbook
+			url: https://runbook/shopping-cart
+	tags:
+		- business-unit:retail
+		- cost-center:engineering
+	integrations:
+		pagerduty: https://www.pagerduty.com/service-directory/Pshopping-cart
+	extensions:
+		datadoghq.com/shopping-cart:
+			customField: customValue
 EOF
 }`, uniq)
 
