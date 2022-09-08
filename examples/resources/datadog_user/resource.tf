@@ -14,6 +14,8 @@ resource "datadog_user" "foo" {
 resource "datadog_user" "bar" {
   email = "new@example.com"
 
+  name = "Service Account Bar"
+
   roles = [data.datadog_role.ro_role.id]
 
   service_account = true
