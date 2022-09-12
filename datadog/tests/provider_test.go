@@ -109,6 +109,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_timeseries_test":                   "dashboards",
 	"tests/resource_datadog_dashboard_top_list_test":                     "dashboards",
 	"tests/resource_datadog_dashboard_trace_service_test":                "dashboards",
+	"tests/resource_datadog_dashboard_topology_map_test":                 "dashboards",
 	"tests/resource_datadog_dashboard_json_test":                         "dashboards-json",
 	"tests/resource_datadog_downtime_test":                               "downtimes",
 	"tests/resource_datadog_dashboard_geomap_test":                       "dashboards",
