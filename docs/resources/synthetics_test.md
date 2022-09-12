@@ -435,6 +435,7 @@ Optional:
 
 - `allow_insecure` (Boolean) Allows loading insecure content for an HTTP test.
 - `body` (String) The request body.
+- `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (Number) DNS server port to use for DNS tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
@@ -617,7 +618,10 @@ Optional:
 - `allow_insecure` (Boolean) Allows loading insecure content for an HTTP test.
 - `check_certificate_revocation` (Boolean) For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.
 - `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--options_list--ci))
+- `disable_csp` (Boolean) Disable Content Security Policy for browser tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
+- `ignore_server_certificate_error` (Boolean) Ignore server certificate error.
+- `initial_navigation_timeout` (Number) Timeout before declaring the initial step as failed (in seconds) for browser tests.
 - `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert. Default is `0`.
 - `min_location_failed` (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`.
 - `monitor_name` (String) The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.
@@ -723,6 +727,7 @@ Optional:
 Optional:
 
 - `body` (String) The request body.
+- `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (Number) DNS server port to use for DNS tests.
 - `host` (String) Host name to perform the test with.
