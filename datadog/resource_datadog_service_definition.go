@@ -186,11 +186,11 @@ func isValidServiceDefinition(i interface{}, k string) (warnings []string, error
 
 func resourceDatadogServiceDefinitionRead(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	id := d.Id()
-	respByte, resp, err := utils.SendRequest(authV1, datadogClientV1, "GET", serviceDefinitionPath+"/"+id, nil)
+	respByte, resp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", serviceDefinitionPath+"/"+id, nil)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, resp, fmt.Sprintf("error retrieving service definition %s", id))
 	}
@@ -212,12 +212,12 @@ func resourceDatadogServiceDefinitionRead(_ context.Context, d *schema.ResourceD
 
 func resourceDatadogServiceDefinitionCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	definition := d.Get("service_definition").(string)
 
-	respByte, resp, err := utils.SendRequest(authV1, datadogClientV1, "POST", serviceDefinitionPath, &definition)
+	respByte, resp, err := utils.SendRequest(auth, apiInstances.HttpClient, "POST", serviceDefinitionPath, &definition)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, resp, "error creating service definition")
 	}
@@ -242,12 +242,12 @@ func resourceDatadogServiceDefinitionCreate(ctx context.Context, d *schema.Resou
 
 func resourceDatadogServiceDefinitionUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
 	definition := d.Get("service_definition").(string)
 
-	respByte, resp, err := utils.SendRequest(authV1, datadogClientV1, "POST", serviceDefinitionPath, &definition)
+	respByte, resp, err := utils.SendRequest(auth, apiInstances.HttpClient, "POST", serviceDefinitionPath, &definition)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, resp, "error updating service definition")
 	}
@@ -271,10 +271,10 @@ func resourceDatadogServiceDefinitionUpdate(ctx context.Context, d *schema.Resou
 
 func resourceDatadogServiceDefinitionDelete(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
-	datadogClientV1 := providerConf.DatadogClientV1
-	authV1 := providerConf.AuthV1
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 	id := d.Id()
-	_, resp, err := utils.SendRequest(authV1, datadogClientV1, "DELETE", serviceDefinitionPath+"/"+id, nil)
+	_, resp, err := utils.SendRequest(auth, apiInstances.HttpClient, "DELETE", serviceDefinitionPath+"/"+id, nil)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, resp, "error deleting service definition")
 	}
