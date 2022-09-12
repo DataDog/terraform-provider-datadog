@@ -4704,8 +4704,7 @@ func buildDatadogTopologyRequests(terraformRequests *[]interface{}) *[]datadogV1
 		// Build TopologyRequest
 		datadogTopologyRequest := datadogV1.NewTopologyRequest()
 		if v, ok := terraformRequest["request_type"].(string); ok && len(v) != 0 {
-			requestType, _ := datadogV1.NewTopologyRequestTypeFromValue(v)
-			datadogTopologyRequest.SetRequestType(*requestType)
+			datadogTopologyRequest.SetRequestType(datadogV1.TopologyRequestType(v))
 		}
 		if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
 			topologyQuery := v[0].(map[string]interface{})
@@ -4719,8 +4718,7 @@ func buildDatadogTopologyRequests(terraformRequests *[]interface{}) *[]datadogV1
 func buildDatadogTopologyQuery(terraformQuery map[string]interface{}) *datadogV1.TopologyQuery {
 	datadogQuery := datadogV1.NewTopologyQuery()
 	// Required params
-	dataSource, _ := datadogV1.NewTopologyQueryDataSourceFromValue(terraformQuery["data_source"].(string))
-	datadogQuery.SetDataSource(*dataSource)
+	datadogQuery.SetDataSource(datadogV1.TopologyQueryDataSource(terraformQuery["data_source"].(string)))
 	datadogQuery.SetService(terraformQuery["service"].(string))
 	terraformFilters := terraformQuery["filters"].([]interface{})
 	datadogFilters := make([]string, len(terraformFilters))
