@@ -4635,9 +4635,10 @@ func getTopologyMapDefinitionSchema() map[string]*schema.Schema {
 func getTopologyRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request_type": {
-			Description: "The request type for the Topology request ('topology').",
-			Type:        schema.TypeString,
-			Required:    true,
+			Description:      "The request type for the Topology request ('topology').",
+			Type:             schema.TypeString,
+			Required:         true,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTopologyRequestTypeFromValue),
 		},
 		"query": getTopologyQuerySchema(),
 	}
@@ -4651,9 +4652,10 @@ func getTopologyQuerySchema() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"data_source": {
-					Description: "The data source for the Topology request ('service_map' or 'data_streams').",
-					Type:        schema.TypeString,
-					Required:    true,
+					Description:      "The data source for the Topology request ('service_map' or 'data_streams').",
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTopologyQueryDataSourceFromValue),
 				},
 				"service": {
 					Description: "The ID of the service to map.",
