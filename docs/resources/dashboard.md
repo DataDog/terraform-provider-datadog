@@ -768,6 +768,7 @@ Optional:
 - `sunburst_definition` (Block List, Max: 1) The definition for a Sunburst widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition))
 - `timeseries_definition` (Block List, Max: 1) The definition for a Timeseries widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition))
 - `toplist_definition` (Block List, Max: 1) The definition for a Toplist widget. (see [below for nested schema](#nestedblock--widget--toplist_definition))
+- `topology_map_definition` (Block List, Max: 1) The definition for a Topology Map widget. (see [below for nested schema](#nestedblock--widget--topology_map_definition))
 - `trace_service_definition` (Block List, Max: 1) The definition for a Trace Service widget. (see [below for nested schema](#nestedblock--widget--trace_service_definition))
 - `treemap_definition` (Block List, Max: 1) The definition for a Treemap widget. (see [below for nested schema](#nestedblock--widget--treemap_definition))
 - `widget_layout` (Block List, Max: 1) The layout of the widget on a 'free' dashboard. (see [below for nested schema](#nestedblock--widget--widget_layout))
@@ -2141,6 +2142,7 @@ Optional:
 - `sunburst_definition` (Block List, Max: 1) The definition for a Sunburst widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition))
 - `timeseries_definition` (Block List, Max: 1) The definition for a Timeseries widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition))
 - `toplist_definition` (Block List, Max: 1) The definition for a Toplist widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition))
+- `topology_map_definition` (Block List, Max: 1) The definition for a Topology Map widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition))
 - `trace_service_definition` (Block List, Max: 1) The definition for a Trace Service widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition))
 - `treemap_definition` (Block List, Max: 1) The definition for a Treemap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition))
 - `widget_layout` (Block List, Max: 1) The layout of the widget on a 'free' dashboard. (see [below for nested schema](#nestedblock--widget--group_definition--widget--widget_layout))
@@ -8546,6 +8548,48 @@ Optional:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--topology_map_definition"></a>
+### Nested Schema for `widget.group_definition.widget.topology_map_definition`
+
+Optional:
+
+- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition--custom_link))
+- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request). (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition--request))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--topology_map_definition--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.topology_map_definition.custom_link`
+
+Optional:
+
+- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
+- `label` (String) The label for the custom link URL.
+- `link` (String) The URL of the custom link.
+- `override_label` (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
+
+
+<a id="nestedblock--widget--group_definition--widget--topology_map_definition--request"></a>
+### Nested Schema for `widget.group_definition.widget.topology_map_definition.request`
+
+Required:
+
+- `query` (Block List, Min: 1) The query for a Topology request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition--request--query))
+- `request_type` (String) The request type for the Topology request ('topology'). Valid values are `topology`.
+
+<a id="nestedblock--widget--group_definition--widget--topology_map_definition--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.topology_map_definition.request.query`
+
+Required:
+
+- `data_source` (String) The data source for the Topology request ('service_map' or 'data_streams'). Valid values are `data_streams`, `service_map`.
+- `filters` (List of String) Your environment and primary tag (or `*` if enabled for your account).
+- `service` (String) The ID of the service to map.
+
+
+
+
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition`
 
@@ -13870,6 +13914,48 @@ Optional:
 Optional:
 
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
+
+
+
+<a id="nestedblock--widget--topology_map_definition"></a>
+### Nested Schema for `widget.topology_map_definition`
+
+Optional:
+
+- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--topology_map_definition--custom_link))
+- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request). (see [below for nested schema](#nestedblock--widget--topology_map_definition--request))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--topology_map_definition--custom_link"></a>
+### Nested Schema for `widget.topology_map_definition.custom_link`
+
+Optional:
+
+- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
+- `label` (String) The label for the custom link URL.
+- `link` (String) The URL of the custom link.
+- `override_label` (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
+
+
+<a id="nestedblock--widget--topology_map_definition--request"></a>
+### Nested Schema for `widget.topology_map_definition.request`
+
+Required:
+
+- `query` (Block List, Min: 1) The query for a Topology request. (see [below for nested schema](#nestedblock--widget--topology_map_definition--request--query))
+- `request_type` (String) The request type for the Topology request ('topology'). Valid values are `topology`.
+
+<a id="nestedblock--widget--topology_map_definition--request--query"></a>
+### Nested Schema for `widget.topology_map_definition.request.query`
+
+Required:
+
+- `data_source` (String) The data source for the Topology request ('service_map' or 'data_streams'). Valid values are `data_streams`, `service_map`.
+- `filters` (List of String) Your environment and primary tag (or `*` if enabled for your account).
+- `service` (String) The ID of the service to map.
 
 
 
