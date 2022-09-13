@@ -123,7 +123,8 @@ func computePipelinesDatasourceID(d *schema.ResourceData) string {
 	var dsID strings.Builder
 	dsID.WriteString("logs-pipeline")
 	if v, ok := d.GetOk("is_read_only"); ok {
-		dsID.WriteString("|is_read_only:" + v.(string))
+		dsID.WriteRune('|')
+		dsID.WriteString("is_read_only:" + v.(string))
 	}
 	return dsID.String()
 }
