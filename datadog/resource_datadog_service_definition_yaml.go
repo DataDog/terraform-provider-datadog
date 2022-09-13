@@ -35,7 +35,7 @@ type getSDResponse struct {
 	Data sdData `json:"data"`
 }
 
-func resourceDatadogServiceDefinitionJSON() *schema.Resource {
+func resourceDatadogServiceDefinitionYAML() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog service definition resource. This can be used to create and manage Datadog service definitions in the service catalog using the YAML/JSON definition.",
 		CreateContext: resourceDatadogServiceDefinitionCreate,
@@ -222,10 +222,6 @@ func resourceDatadogServiceDefinitionCreate(ctx context.Context, d *schema.Resou
 		return utils.TranslateClientErrorDiag(err, resp, "error creating service definition")
 	}
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return utils.TranslateClientErrorDiag(err, resp, "error creating service definition, received an error from the Service Catalog endpoint")
-	}
-
 	var response createSDResponse
 	err = json.Unmarshal(respByte, &response)
 	if err != nil {
@@ -252,10 +248,6 @@ func resourceDatadogServiceDefinitionUpdate(ctx context.Context, d *schema.Resou
 		return utils.TranslateClientErrorDiag(err, resp, "error updating service definition")
 	}
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return utils.TranslateClientErrorDiag(err, resp, "error updating service definition, received an error from the Service Catalog endpoint")
-	}
-
 	var response createSDResponse
 	err = json.Unmarshal(respByte, &response)
 	if err != nil {
@@ -278,9 +270,7 @@ func resourceDatadogServiceDefinitionDelete(_ context.Context, d *schema.Resourc
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, resp, "error deleting service definition")
 	}
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return utils.TranslateClientErrorDiag(err, resp, "error deleting service definition, received an error from the Service Catalog endpoint")
-	}
+
 	return nil
 }
 

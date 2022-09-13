@@ -1,4 +1,4 @@
-resource "datadog_service_definition" "service_definition" {
+resource "datadog_service_definition_yaml" "service_definition" {
   service_definition = <<EOF
 schema-version: v2
 dd-service: shopping-cart
