@@ -51,9 +51,6 @@ func dataLogsPipelinesCountCheck(accProvider func() (*schema.Provider, error)) f
 		if err != nil {
 			return err
 		}
-		if err := utils.CheckForUnparsed(logsPipelines); err != nil {
-			return err
-		}
 
 		resourceAttributes := state.RootModule().Resources["data.datadog_logs_pipelines.foo"].Primary.Attributes
 		logPipelinesCount, _ := strconv.Atoi(resourceAttributes["logs_pipelines.#"])
@@ -107,9 +104,6 @@ func dataLogsPipelinesReadonlyCountCheck(accProvider func() (*schema.Provider, e
 			}
 		}
 		if err != nil {
-			return err
-		}
-		if err := utils.CheckForUnparsed(logsPipelines); err != nil {
 			return err
 		}
 
