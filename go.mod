@@ -12,6 +12,7 @@ require (
 	github.com/zorkian/go-datadog-api v2.30.0+incompatible
 	gopkg.in/DataDog/dd-trace-go.v1 v1.34.0
 	gopkg.in/warnings.v0 v0.1.2
+	gopkg.in/yaml.v3 v3.0.0
 )
 
 require (
