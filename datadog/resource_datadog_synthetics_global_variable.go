@@ -81,7 +81,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 						},
 						"parser": {
 							Type:     schema.TypeList,
-							Required: true,
+							Optional: true,
 							MaxItems: 1,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
@@ -98,6 +98,11 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 									},
 								},
 							},
+						},
+						"local_variable_name": {
+							Type:        schema.TypeString,
+							Description: "When type is `local_variable`, name of the local variable to use to extract the value.",
+							Optional:    true,
 						},
 					},
 				},
@@ -240,14 +245,20 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 				parseTestOptions.SetField(field.(string))
 			}
 
-			parser := datadogV1.SyntheticsVariableParser{}
-			parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(d.Get("parse_test_options.0.parser.0.type").(string)))
+			if _, ok := d.GetOk("parse_test_options.0.parser"); ok {
+				parser := datadogV1.SyntheticsVariableParser{}
+				parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(d.Get("parse_test_options.0.parser.0.type").(string)))
 
-			if value, ok := d.GetOk("parse_test_options.0.parser.0.value"); ok {
-				parser.SetValue(value.(string))
+				if value, ok := d.GetOk("parse_test_options.0.parser.0.value"); ok {
+					parser.SetValue(value.(string))
+				}
+
+				parseTestOptions.SetParser(parser)
 			}
 
-			parseTestOptions.SetParser(parser)
+			if localVariableName, ok := d.GetOk("parse_test_options.0.local_variable_name"); ok {
+				parseTestOptions.SetLocalVariableName(localVariableName.(string))
+			}
 
 			syntheticsGlobalVariable.SetParseTestOptions(parseTestOptions)
 		}
@@ -289,19 +300,27 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 		localParser := make(map[string]string)
 
 		parseTestOptions := syntheticsGlobalVariable.GetParseTestOptions()
-		parser := parseTestOptions.GetParser()
-
-		if v, ok := parser.GetTypeOk(); ok {
-			localParser["type"] = string(*v)
-		}
-
-		localParser["value"] = parser.GetValue()
 
 		localParseTestOptions["type"] = parseTestOptions.GetType()
+
 		if v, ok := parseTestOptions.GetFieldOk(); ok {
 			localParseTestOptions["field"] = string(*v)
 		}
-		localParseTestOptions["parser"] = []map[string]string{localParser}
+
+		if parseTestOptions.HasParser() {
+			parser := parseTestOptions.GetParser()
+
+			if v, ok := parser.GetTypeOk(); ok {
+				localParser["type"] = string(*v)
+			}
+			localParser["value"] = parser.GetValue()
+
+			localParseTestOptions["parser"] = []map[string]string{localParser}
+		}
+
+		if parseTestOptions.HasLocalVariableName() {
+			localParseTestOptions["local_variable_name"] = parseTestOptions.GetLocalVariableName()
+		}
 
 		d.Set("parse_test_options", []map[string]interface{}{localParseTestOptions})
 	}

@@ -118,6 +118,21 @@ func TestAccDatadogSyntheticsGlobalVariableFromTest_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsGlobalVariableFromTest_LocalVariable(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsResourceIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsGlobalVariableFromTestLocalVariableStep(ctx, accProvider, t),
+		},
+	})
+}
+
 func createSyntheticsGlobalVariableStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	variableName := getUniqueVariableName(ctx, t)
 	roleName := uniqueEntityName(ctx, t)
@@ -346,6 +361,107 @@ resource "datadog_synthetics_global_variable" "foo" {
 			type = "regex"
 			value = ".*"
 		}
+	}
+}`, uniq)
+}
+
+func createSyntheticsGlobalVariableFromTestLocalVariableStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+	variableName := getUniqueVariableName(ctx, t)
+	return resource.TestStep{
+		Config: createSyntheticsGlobalVariableFromTestLocalVariableConfig(variableName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsResourceExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "name", variableName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "description", "a global variable from multistep test"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "value", ""),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_global_variable.foo", "parse_test_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "parse_test_options.0.type", "local_variable"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "parse_test_options.0.local_variable_name", "LOCAL_VAR_EXTRACT"),
+		),
+	}
+}
+
+func createSyntheticsGlobalVariableFromTestLocalVariableConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "multi" {
+	type = "api"
+	subtype = "multi"
+
+	locations = [ "aws:eu-central-1" ]
+
+	options_list {
+		tick_every = 60
+		follow_redirects = true
+		min_failure_duration = 0
+		min_location_failed = 1
+
+		monitor_options {
+			renotify_interval = 120
+		}
+	}
+
+	api_step {
+    name = "First api step"
+    request_definition {
+      method           = "GET"
+      url              = "https://www.datadoghq.com"
+      body             = "this is a body"
+      timeout          = 30
+      allow_insecure   = true
+      follow_redirects = true
+    }
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    extracted_value {
+      name  = "LOCAL_VAR_EXTRACT"
+      field = "content-length"
+      type  = "http_header"
+      parser {
+        type  = "regex"
+        value = ".*"
+      }
+    }
+    allow_failure = true
+    is_critical   = false
+
+    retry {
+      count    = 5
+      interval = 1000
+    }
+  }
+
+	name = "%[1]s"
+	message = ""
+	tags = []
+
+	status = "paused"
+}
+
+resource "datadog_synthetics_global_variable" "foo" {
+	name = "%[1]s"
+	description = "a global variable from multistep test"
+	tags = ["foo:bar", "baz"]
+	value = ""
+	parse_test_id = datadog_synthetics_test.multi.id
+	parse_test_options {
+		type = "local_variable"
+		local_variable_name = "LOCAL_VAR_EXTRACT"
 	}
 }`, uniq)
 }
