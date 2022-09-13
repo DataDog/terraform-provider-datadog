@@ -179,6 +179,13 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         aggregation = "cardinality"
         distinct_fields = ["@orgId"]
         group_by_fields = ["host"]
+    }
+
+	query {
+		name = "third"
+        query = "does not really match much either"
+        aggregation = "sum"
+        group_by_fields = ["host"]
         metric = "@network.bytes_read"
     }
 
@@ -194,6 +201,12 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         status = "medium"
         condition = "first > 0 || second > 0"
     }
+
+	case {
+		name = "low case"
+		status = "low"
+		condition = "third > 9000"
+	}
 
     options {
         evaluation_window = 300
@@ -247,7 +260,15 @@ func testAccCheckDatadogSecurityMonitorCreatedCheck(accProvider func() (*schema.
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.1.group_by_fields.0", "host"),
 		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.1.metric", "@network.bytes_read"),
+			tfSecurityRuleName, "query.2.name", "third"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.2.query", "does not really match much either"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.2.aggregation", "sum"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.2.group_by_fields.0", "host"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.2.metric", "@network.bytes_read"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.name", "high case"),
 		resource.TestCheckResourceAttr(
@@ -262,6 +283,12 @@ func testAccCheckDatadogSecurityMonitorCreatedCheck(accProvider func() (*schema.
 			tfSecurityRuleName, "case.1.status", "medium"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.1.condition", "first > 0 || second > 0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.2.name", "low case"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.2.status", "low"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.2.condition", "third > 9000"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.evaluation_window", "300"),
 		resource.TestCheckResourceAttr(
@@ -599,7 +626,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         aggregation = "cardinality"
         distinct_fields = ["@orgId"]
         group_by_fields = ["service"]
-        metric = "@network.bytes_read"
     }
 
     case {
@@ -653,8 +679,6 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider func() (*schem
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
 		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.0.metric", "@network.bytes_read"),
-		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.name", "high case (updated)"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.status", "medium"),
@@ -695,7 +719,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     enabled = true
 
     query {
-        name = "first_updated"
+        name = "first"
         query = "does not really match much (updated)"
         aggregation = "new_value"
         group_by_fields = ["service"]
@@ -734,7 +758,7 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRule(accProvider fu
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "enabled", "true"),
 		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.0.name", "first_updated"),
+			tfSecurityRuleName, "query.0.name", "first"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.query", "does not really match much (updated)"),
 		resource.TestCheckResourceAttr(
@@ -782,7 +806,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         query = "@agent.rule_id:(%s_random_id OR random_id)"
         aggregation = "count"
         group_by_fields = ["service"]
-        metric = "@network.bytes_read"
     }
 
     case {
@@ -824,8 +847,6 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckCwsRule(accProvider func() 
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
 		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.0.metric", "@network.bytes_read"),
-		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.name", "high case (updated)"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.status", "medium"),
@@ -862,7 +883,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         aggregation = "cardinality"
         distinct_fields = ["@orgId"]
         group_by_fields = ["service"]
-        metric = "@network.bytes_read"
     }
 
     case {
@@ -913,8 +933,6 @@ func testAccCheckDatadogSecurityMonitoringEnabledDefaultCheck(accProvider func()
 			tfSecurityRuleName, "query.0.distinct_fields.0", "@orgId"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.0.metric", "@network.bytes_read"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.name", "high case (updated)"),
 		resource.TestCheckResourceAttr(
