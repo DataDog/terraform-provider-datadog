@@ -41,7 +41,7 @@ func TestAccDatadogServiceDefinition_Basic(t *testing.T) {
 
 func testAccCheckDatadogServiceDefinition(uniq string) string {
 	return fmt.Sprintf(`
-resource "datadog_service_definition" "service_definition" {
+resource "datadog_service_definition_json" "service_definition" {
   service_definition =<<EOF
 schema-version: v2
 dd-service: %s

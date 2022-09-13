@@ -35,7 +35,7 @@ type getSDResponse struct {
 	Data sdData `json:"data"`
 }
 
-func resourceDatadogServiceDefinition() *schema.Resource {
+func resourceDatadogServiceDefinitionJSON() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog service definition resource. This can be used to create and manage Datadog service definitions in the service catalog using the YAML/JSON definition.",
 		CreateContext: resourceDatadogServiceDefinitionCreate,
