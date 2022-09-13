@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"strconv"
+	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -114,6 +115,15 @@ func dataSourceDatadogLogsPipelinesRead(ctx context.Context, d *schema.ResourceD
 		return diag.FromErr(err)
 	}
 
-	d.SetId("logs-pipelines")
+	d.SetId(computePipelinesDatasourceID(d))
 	return nil
+}
+
+func computePipelinesDatasourceID(d *schema.ResourceData) string {
+	var dsID strings.Builder
+	dsID.WriteString("logs-pipeline")
+	if v, ok := d.GetOk("is_read_only"); ok {
+		dsID.WriteString("|is_read_only:" + v.(string))
+	}
+	return dsID.String()
 }
