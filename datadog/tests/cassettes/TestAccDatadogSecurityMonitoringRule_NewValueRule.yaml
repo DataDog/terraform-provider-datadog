@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1658926773","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"new_value","evaluationWindow":0,"keepAlive":600,"maxSignalDuration":900,"newValueOptions":{"forgetAfter":7,"learningDuration":1,"learningMethod":"duration","learningThreshold":0}},"queries":[{"aggregation":"new_value","distinctFields":[],"groupByFields":["host"],"metric":"@value","name":"first","query":"does not really match much"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+      {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1663073819","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"new_value","evaluationWindow":0,"keepAlive":600,"maxSignalDuration":900,"newValueOptions":{"forgetAfter":7,"learningDuration":1,"learningMethod":"duration","learningThreshold":0}},"queries":[{"aggregation":"new_value","distinctFields":[],"groupByFields":["host"],"metric":"@value","name":"first","query":"does not really match much"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"newValueOptions":{"learningDuration":1,"learningMethod":"duration","forgetAfter":7,"learningThreshold":0},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"new_value","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1658926775301,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"cfk-02l-kah","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1658926773"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"newValueOptions":{"learningDuration":1,"learningMethod":"duration","forgetAfter":7,"learningThreshold":0},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"new_value","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1663073821695,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","metrics":["@value"],"groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"saa-1im-mex","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1663073819"}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/cfk-02l-kah
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/saa-1im-mex
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"newValueOptions":{"learningDuration":1,"learningMethod":"duration","forgetAfter":7,"learningThreshold":0},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"new_value","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1658926775301,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","metrics":["@value"],"groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"cfk-02l-kah","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1658926773"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"newValueOptions":{"learningDuration":1,"learningMethod":"duration","forgetAfter":7,"learningThreshold":0},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"new_value","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1663073821695,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","metrics":["@value"],"groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"saa-1im-mex","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1663073819"}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/cfk-02l-kah
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/saa-1im-mex
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"newValueOptions":{"learningDuration":1,"learningMethod":"duration","forgetAfter":7,"learningThreshold":0},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"new_value","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1658926775301,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","metrics":["@value"],"groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"cfk-02l-kah","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1658926773"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"newValueOptions":{"learningDuration":1,"learningMethod":"duration","forgetAfter":7,"learningThreshold":0},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"new_value","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1663073821695,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","metrics":["@value"],"groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"saa-1im-mex","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1663073819"}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/cfk-02l-kah
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/saa-1im-mex
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"newValueOptions":{"learningDuration":1,"learningMethod":"duration","forgetAfter":7,"learningThreshold":0},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"new_value","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1658926775301,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","metrics":["@value"],"groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"cfk-02l-kah","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1658926773"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"newValueOptions":{"learningDuration":1,"learningMethod":"duration","forgetAfter":7,"learningThreshold":0},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"new_value","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":1,"createdAt":1663073821695,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@value","aggregation":"new_value","metrics":["@value"],"groupByFields":["host"],"query":"does not really match much"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"","condition":""}],"type":"log_detection","id":"saa-1im-mex","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1663073819"}
     headers:
       Content-Type:
       - application/json
@@ -74,18 +74,18 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"cases":[{"condition":"","name":"high case (updated)","notifications":["@user"],"status":"medium"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1658926773 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"new_value","evaluationWindow":0,"keepAlive":600,"maxSignalDuration":900,"newValueOptions":{"forgetAfter":1,"learningDuration":0,"learningMethod":"duration","learningThreshold":0}},"queries":[{"aggregation":"new_value","distinctFields":[],"groupByFields":["service"],"metric":"@network.bytes_read","metrics":["@value"],"name":"first_updated","query":"does not really match much (updated)"}],"tags":["u:tomato","i:tomato"]}
+      {"cases":[{"condition":"","name":"high case (updated)","notifications":["@user"],"status":"medium"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1663073819 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"new_value","evaluationWindow":0,"keepAlive":600,"maxSignalDuration":900,"newValueOptions":{"forgetAfter":1,"learningDuration":0,"learningMethod":"duration","learningThreshold":0}},"queries":[{"aggregation":"new_value","distinctFields":[],"groupByFields":["service"],"metric":"@network.bytes_read","metrics":["@value"],"name":"first","query":"does not really match much (updated)"}],"tags":["u:tomato","i:tomato"]}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/cfk-02l-kah
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/saa-1im-mex
     method: PUT
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"newValueOptions":{"learningDuration":0,"learningMethod":"duration","forgetAfter":1,"learningThreshold":0},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"new_value","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first_updated","metric":"@network.bytes_read","aggregation":"new_value","metrics":["@value"],"groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"cfk-02l-kah","createdAt":1658926775301,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1658926773 - updated"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"newValueOptions":{"learningDuration":0,"learningMethod":"duration","forgetAfter":1,"learningThreshold":0},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"new_value","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@network.bytes_read","aggregation":"new_value","metrics":["@network.bytes_read"],"groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"saa-1im-mex","createdAt":1663073821695,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1663073819 - updated"}
     headers:
       Content-Type:
       - application/json
@@ -98,11 +98,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/cfk-02l-kah
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/saa-1im-mex
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"newValueOptions":{"learningDuration":0,"learningMethod":"duration","forgetAfter":1,"learningThreshold":0},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"new_value","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first_updated","metric":"@network.bytes_read","aggregation":"new_value","metrics":["@value"],"groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"cfk-02l-kah","createdAt":1658926775301,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1658926773 - updated"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"newValueOptions":{"learningDuration":0,"learningMethod":"duration","forgetAfter":1,"learningThreshold":0},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"new_value","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@network.bytes_read","aggregation":"new_value","metrics":["@network.bytes_read"],"groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"saa-1im-mex","createdAt":1663073821695,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1663073819 - updated"}
     headers:
       Content-Type:
       - application/json
@@ -115,11 +115,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/cfk-02l-kah
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/saa-1im-mex
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"newValueOptions":{"learningDuration":0,"learningMethod":"duration","forgetAfter":1,"learningThreshold":0},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"new_value","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first_updated","metric":"@network.bytes_read","aggregation":"new_value","metrics":["@value"],"groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"cfk-02l-kah","createdAt":1658926775301,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1658926773 - updated"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"newValueOptions":{"learningDuration":0,"learningMethod":"duration","forgetAfter":1,"learningThreshold":0},"evaluationWindow":0,"maxSignalDuration":900,"detectionMethod":"new_value","decreaseCriticalityBasedOnEnv":false,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"distinctFields":[],"name":"first","metric":"@network.bytes_read","aggregation":"new_value","metrics":["@network.bytes_read"],"groupByFields":["service"],"query":"does not really match much (updated)"}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":""}],"type":"log_detection","id":"saa-1im-mex","createdAt":1663073821695,"name":"tf-TestAccDatadogSecurityMonitoringRule_NewValueRule-local-1663073819 - updated"}
     headers:
       Content-Type:
       - application/json
@@ -132,7 +132,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/cfk-02l-kah
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/saa-1im-mex
     method: DELETE
   response:
     body: ""
@@ -146,11 +146,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/cfk-02l-kah
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/saa-1im-mex
     method: GET
   response:
     body: |
-      {"errors":["Threat detection rule not found: cfk-02l-kah"]}
+      {"errors":["Threat detection rule not found: saa-1im-mex"]}
     headers:
       Content-Type:
       - application/json
