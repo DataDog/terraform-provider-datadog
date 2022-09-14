@@ -904,6 +904,9 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 func buildDatadogWidgets(terraformWidgets *[]interface{}) (*[]datadogV1.Widget, error) {
 	datadogWidgets := make([]datadogV1.Widget, len(*terraformWidgets))
 	for i, terraformWidget := range *terraformWidgets {
+		if terraformWidget == nil {
+			continue
+		}
 		datadogWidget, err := buildDatadogWidget(terraformWidget.(map[string]interface{}))
 		if err != nil {
 			return nil, err
