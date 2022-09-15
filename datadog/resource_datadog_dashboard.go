@@ -5994,6 +5994,11 @@ func getFormulaQuerySchema() *schema.Schema {
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventsDataSourceFromValue),
 								Description:      "The data source for event platform-based queries.",
 							},
+							"storage": {
+								Type:        schema.TypeString,
+								Required:    false,
+								Description: "Storage location",
+							},
 							"search": {
 								Type:        schema.TypeList,
 								Optional:    true,
@@ -8194,6 +8199,10 @@ func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *u
 			terraformGroupBys[i] = terraformGroupBy
 		}
 		terraformQuery["group_by"] = &terraformGroupBys
+	}
+	// Storage
+	if storage, ok := datadogQuery.GetStorageOk(); ok {
+		terraformQuery["storage"] = storage
 	}
 	return terraformQuery
 }
