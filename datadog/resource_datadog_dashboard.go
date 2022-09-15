@@ -5001,6 +5001,11 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 						Optional:    true,
 						Elem:        &schema.Schema{Type: schema.TypeString},
 					},
+					"storage": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "Storage location",
+					},
 				},
 			},
 		},
@@ -5042,6 +5047,9 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 			}
 			if v, ok := q["query_string"].(string); ok {
 				datadogQuery.SetQueryString(v)
+			}
+			if v, ok := q["storage"].(string); ok {
+				datadogQuery.SetStorage(v)
 			}
 			if v, ok := q["indexes"].([]interface{}); ok {
 				var indexes []string
@@ -5996,7 +6004,7 @@ func getFormulaQuerySchema() *schema.Schema {
 							},
 							"storage": {
 								Type:        schema.TypeString,
-								Required:    false,
+								Optional:    true,
 								Description: "Storage location",
 							},
 							"search": {
@@ -6428,7 +6436,9 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 		indexes[i] = index.(string)
 	}
 	eventQuery.SetIndexes(indexes)
-
+	if storage, ok := data["storage"].(string); ok {
+		eventQuery.SetStorage(storage)
+	}
 	if terraformSearches, ok := data["search"].([]interface{}); ok && len(terraformSearches) > 0 {
 		terraformSearch := terraformSearches[0].(map[string]interface{})
 		eventQuery.Search = datadogV1.NewFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
@@ -7304,6 +7314,9 @@ func buildTerraformListStreamWidgetRequests(datadogListStreamRequests []datadogV
 		}
 		if queryString, ok := q.GetQueryStringOk(); ok {
 			queryRequest["query_string"] = queryString
+		}
+		if storage, ok := q.GetStorageOk(); ok {
+			queryRequest["storage"] = storage
 		}
 		queryRequest["data_source"] = string(q.GetDataSource())
 		terraformRequest["query"] = []map[string]interface{}{queryRequest}
