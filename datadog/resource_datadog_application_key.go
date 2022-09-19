@@ -115,7 +115,7 @@ func resourceDatadogApplicationKeyRead(ctx context.Context, d *schema.ResourceDa
 	auth := providerConf.Auth
 
 	if v, ok := d.GetOk("service_account"); ok {
-		resp, httpResponse, err := apiInstances.GetServiceAccountsApiV2().GetServiceAccountApplicationKey(ctx, v.(string), d.Id())
+		resp, httpResponse, err := apiInstances.GetServiceAccountsApiV2().GetServiceAccountApplicationKey(auth, v.(string), d.Id())
 		if err != nil {
 			if httpResponse != nil && httpResponse.StatusCode == 404 {
 				d.SetId("")
