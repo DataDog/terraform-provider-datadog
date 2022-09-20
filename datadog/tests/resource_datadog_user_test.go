@@ -79,6 +79,8 @@ func TestAccDatadogUser_Invitation(t *testing.T) {
 						"datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "service_account", "false"),
 					resource.TestCheckResourceAttrSet(
 						"datadog_user.foo", "user_invitation_id"),
 				),
@@ -108,8 +110,102 @@ func TestAccDatadogUser_NoInvitation(t *testing.T) {
 						"datadog_user.foo", "name", "Test User"),
 					resource.TestCheckResourceAttr(
 						"datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "service_account", "false"),
 					resource.TestCheckNoResourceAttr(
 						"datadog_user.foo", "user_invitation_id"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogUser_ServiceAccount(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogUserConfigRequiredServiceAccount(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "verified", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "service_account", "true"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_user.foo", "user_invitation_id"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogUser_ServiceAccountForceNew(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogUserConfigRequired(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "verified", "false"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogUserConfigRequiredServiceAccount(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "service_account", "true"),
+					// NOTE: it's not possible ATM to update email of another user
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "name", "Test User"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "send_user_invitation", "false"),
+					// Service accounts are automatically verified
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "verified", "true"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogUserConfigRequired(username),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogUserV2Exists(accProvider, "datadog_user.foo"),
+					// NOTE: it's not possible ATM to update email of another user
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "email", username),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "name", "Test User"),
+					// Converting a user from a service account to a user account seems to skip verification
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "verified", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_user.foo", "service_account", "false"),
 				),
 			},
 		},
@@ -336,6 +432,15 @@ resource "datadog_user" "foo" {
   email     = "%s"
   name      = "Test User"
   send_user_invitation = false
+}`, uniq)
+}
+
+func testAccCheckDatadogUserConfigRequiredServiceAccount(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_user" "foo" {
+  email     = "%s"
+  name      = "Test User"
+  service_account = true
 }`, uniq)
 }
 

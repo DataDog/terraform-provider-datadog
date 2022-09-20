@@ -7,6 +7,10 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func TestAccDatadogApplicationKeyDatasource_matchId(t *testing.T) {
@@ -123,6 +127,34 @@ func TestAccDatadogApplicationKeyDatasource_missingParametersError(t *testing.T)
 			},
 		},
 	})
+}
+
+func testAccCheckDatadogApplicationKeyExists(accProvider func() (*schema.Provider, error), n string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
+
+		if err := datadogApplicationKeyExistsHelper(auth, s, apiInstances, n); err != nil {
+			return err
+		}
+		return nil
+	}
+}
+
+func datadogApplicationKeyExistsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances, name string) error {
+	id := s.RootModule().Resources[name].Primary.ID
+	if v, ok := s.RootModule().Resources[name].Primary.Attributes["service_account"]; ok {
+		if _, _, err := apiInstances.GetServiceAccountsApiV2().GetServiceAccountApplicationKey(ctx, v, id); err != nil {
+			return fmt.Errorf("received an error retrieving service account application key %s", err)
+		}
+	} else {
+		if _, _, err := apiInstances.GetKeyManagementApiV2().GetCurrentUserApplicationKey(ctx, id); err != nil {
+			return fmt.Errorf("received an error retrieving application key %s", err)
+		}
+	}
+	return nil
 }
 
 func testAccApplicationKeyConfig(uniq string) string {
