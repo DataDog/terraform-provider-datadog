@@ -5004,7 +5004,7 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 					"storage": {
 						Type:        schema.TypeString,
 						Optional:    true,
-						Description: "Storage location",
+						Description: "Storage location. Private Beta feature.",
 					},
 				},
 			},
@@ -6005,7 +6005,7 @@ func getFormulaQuerySchema() *schema.Schema {
 							"storage": {
 								Type:        schema.TypeString,
 								Optional:    true,
-								Description: "Storage location",
+								Description: "Storage location. Private Beta feature",
 							},
 							"search": {
 								Type:        schema.TypeList,
@@ -6430,15 +6430,16 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 		compute.SetMetric(metric)
 	}
 	eventQuery := datadogV1.NewFormulaAndFunctionEventQueryDefinition(*compute, dataSource, data["name"].(string))
+	if storage, ok := data["storage"].(string); ok {
+		eventQuery.SetStorage(storage)
+	}
 	eventQueryIndexes := data["indexes"].([]interface{})
 	indexes := make([]string, len(eventQueryIndexes))
 	for i, index := range eventQueryIndexes {
 		indexes[i] = index.(string)
 	}
 	eventQuery.SetIndexes(indexes)
-	if storage, ok := data["storage"].(string); ok {
-		eventQuery.SetStorage(storage)
-	}
+
 	if terraformSearches, ok := data["search"].([]interface{}); ok && len(terraformSearches) > 0 {
 		terraformSearch := terraformSearches[0].(map[string]interface{})
 		eventQuery.Search = datadogV1.NewFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
@@ -7911,6 +7912,9 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 			if indexes, ok := terraformEventQueryDefinition.GetIndexesOk(); ok {
 				terraformQuery["indexes"] = indexes
 			}
+			if storage, ok := terraformEventQueryDefinition.GetStorageOk(); ok {
+				terraformQuery["storage"] = storage
+			}
 			if search, ok := terraformEventQueryDefinition.GetSearchOk(); ok {
 				if len(search.GetQuery()) > 0 {
 					terraformSearch := map[string]interface{}{}
@@ -8212,10 +8216,6 @@ func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *u
 			terraformGroupBys[i] = terraformGroupBy
 		}
 		terraformQuery["group_by"] = &terraformGroupBys
-	}
-	// Storage
-	if storage, ok := datadogQuery.GetStorageOk(); ok {
-		terraformQuery["storage"] = storage
 	}
 	return terraformQuery
 }
