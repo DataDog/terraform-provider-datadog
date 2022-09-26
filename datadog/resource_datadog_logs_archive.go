@@ -201,7 +201,7 @@ func resourceDatadogLogsArchiveDelete(ctx context.Context, d *schema.ResourceDat
 	return nil
 }
 
-//Model to map
+// Model to map
 func buildDestination(archiveDestination datadogV2.NullableLogsArchiveDestination) (string, map[string]interface{}, error) {
 	emptyDestination := map[string]interface{}{}
 	if archiveDestination.IsSet() {
@@ -249,7 +249,7 @@ func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) map[string]inter
 	return result
 }
 
-//Map to model
+// Map to model
 func buildDatadogArchiveCreateReq(d *schema.ResourceData) (*datadogV2.LogsArchiveCreateRequest, error) {
 	archive := datadogV2.NewLogsArchiveCreateRequest()
 	destination, err := buildCreateReqDestination(d)
