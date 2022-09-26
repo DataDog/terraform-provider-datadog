@@ -412,7 +412,7 @@ resource "datadog_synthetics_test" "multi" {
 		}
 	}
 
-	api_step {
+  api_step {
     name = "First api step"
     request_definition {
       method           = "GET"
