@@ -129,7 +129,7 @@ func getArchiveIds(d *schema.ResourceData) []string {
 	return ddList
 }
 
-//Map to model
+// Map to model
 func buildDatadogArchiveOrderCreateReq(d *schema.ResourceData) (*datadogV2.LogsArchiveOrder, error) {
 	archiveOrderAttributes := datadogV2.NewLogsArchiveOrderAttributes(getArchiveIds(d))
 
