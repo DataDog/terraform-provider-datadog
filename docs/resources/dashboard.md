@@ -2103,7 +2103,6 @@ Required:
 Required:
 
 - `layout_type` (String) The layout type of the group. Valid values are `ordered`.
-- `widget` (Block List, Min: 1) The list of widgets in this group. (see [below for nested schema](#nestedblock--widget--group_definition--widget))
 
 Optional:
 
@@ -2111,6 +2110,7 @@ Optional:
 - `banner_img` (String) The image URL to display as a banner for the group.
 - `show_title` (Boolean) Whether to show the title or not.
 - `title` (String) The title of the group.
+- `widget` (Block List) The list of widgets in this group. (see [below for nested schema](#nestedblock--widget--group_definition--widget))
 
 <a id="nestedblock--widget--group_definition--widget"></a>
 ### Nested Schema for `widget.group_definition.widget`
