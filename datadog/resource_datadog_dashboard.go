@@ -1261,7 +1261,7 @@ func getGroupDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"widget": {
 			Type:        schema.TypeList,
-			Required:    true,
+			Optional:    true,
 			Description: "The list of widgets in this group.",
 			Elem: &schema.Resource{
 				Schema: getNonGroupWidgetSchema(),
@@ -1306,6 +1306,8 @@ func buildDatadogGroupDefinition(terraformGroupDefinition map[string]interface{}
 			return nil, err
 		}
 		datadogGroupDefinition.SetWidgets(*datadogWidgets)
+	} else {
+		datadogGroupDefinition.SetWidgets([]datadogV1.Widget{})
 	}
 	if v, ok := terraformGroupDefinition["layout_type"].(string); ok && len(v) != 0 {
 		datadogGroupDefinition.SetLayoutType(datadogV1.WidgetLayoutType(v))
