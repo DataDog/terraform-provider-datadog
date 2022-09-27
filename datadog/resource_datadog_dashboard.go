@@ -5004,7 +5004,7 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 					"storage": {
 						Type:        schema.TypeString,
 						Optional:    true,
-						Description: "Storage location. Private Beta feature.",
+						Description: "Storage location (private beta).",
 					},
 				},
 			},
@@ -6005,7 +6005,7 @@ func getFormulaQuerySchema() *schema.Schema {
 							"storage": {
 								Type:        schema.TypeString,
 								Optional:    true,
-								Description: "Storage location. Private Beta feature",
+								Description: "Storage location (private beta).",
 							},
 							"search": {
 								Type:        schema.TypeList,
