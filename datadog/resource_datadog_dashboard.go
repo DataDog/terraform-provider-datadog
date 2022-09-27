@@ -5048,7 +5048,7 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 			if v, ok := q["query_string"].(string); ok {
 				datadogQuery.SetQueryString(v)
 			}
-			if v, ok := q["storage"].(string); ok {
+			if v, ok := q["storage"].(string); ok && v != "" {
 				datadogQuery.SetStorage(v)
 			}
 			if v, ok := q["indexes"].([]interface{}); ok {
@@ -6430,7 +6430,7 @@ func buildDatadogEventQuery(data map[string]interface{}) datadogV1.FormulaAndFun
 		compute.SetMetric(metric)
 	}
 	eventQuery := datadogV1.NewFormulaAndFunctionEventQueryDefinition(*compute, dataSource, data["name"].(string))
-	if storage, ok := data["storage"].(string); ok {
+	if storage, ok := data["storage"].(string); ok && storage != "" {
 		eventQuery.SetStorage(storage)
 	}
 	eventQueryIndexes := data["indexes"].([]interface{})
