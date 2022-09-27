@@ -1,3 +1,24 @@
+## 3.16.0 (September 27, 2022)
+
+### BUGFIXES
+* [datadog_dashboard] Handle empty widgets by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/1568
+* [datadog_dashboards] Handle empty group definition by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1576
+* [datadog_security_monitoring_default_rule] Add missing schema attribute `type` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1579
+### IMPROVEMENTS
+* [datadog_synthetics_test] Add missing options for synthetics tests by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1553
+* [datadog_dashboard] add Topology Map definition by @anbnyc in https://github.com/DataDog/terraform-provider-datadog/pull/1557
+### FEATURES
+* [datadog_service_definition] Add terraform support for service catalog definition (yaml/json) by @hyperloglogy in https://github.com/DataDog/terraform-provider-datadog/pull/1556
+* [datadog_logs_pipelines] Add a pipelines datasource by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1555
+* [datadog_user] Add service account support by @stephengroat-dd in https://github.com/DataDog/terraform-provider-datadog/pull/1490
+
+## New Contributors
+* @hyperloglogy made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1556
+* @jketcham made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1428
+* @stephengroat-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1490
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.15.1...v3.16.0
+
 ## 3.15.1 (September 8, 2022)
 
 ### BUGFIXES
