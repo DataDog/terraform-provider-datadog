@@ -92,6 +92,12 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 					},
 				},
 			},
+
+			"type": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The rule type.",
+			},
 		},
 	}
 }
@@ -149,6 +155,8 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 	}
 
 	d.Set("filter", ruleFilters)
+
+	d.Set("type", ruleResponse.GetType())
 
 	responseOptions := ruleResponse.GetOptions()
 	ruleOptions := []map[string]interface{}{{
