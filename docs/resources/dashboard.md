@@ -1103,7 +1103,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--change_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.change_definition.request.query.event_query.compute`
@@ -1940,7 +1940,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--geomap_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.geomap_definition.request.query.event_query.compute`
@@ -2479,7 +2479,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.group_definition.widget.change_definition.request.query.event_query.compute`
@@ -3316,7 +3316,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.event_query.compute`
@@ -4502,7 +4502,7 @@ Optional:
 
 - `indexes` (List of String) List of indexes.
 - `query_string` (String) Widget query.
-- `storage` (String) Storage location. Private Beta feature.
+- `storage` (String) Storage location (private beta).
 
 
 
@@ -4919,7 +4919,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.group_definition.widget.query_table_definition.request.query.event_query.compute`
@@ -5511,7 +5511,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.event_query.compute`
@@ -5870,7 +5870,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--compute"></a>
 ### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.event_query.compute`
@@ -7036,7 +7036,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.event_query.compute`
@@ -7716,7 +7716,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.event_query.compute`
@@ -8337,7 +8337,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.event_query.compute`
@@ -8750,7 +8750,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.group_definition.widget.treemap_definition.request.query.event_query.compute`
@@ -9880,7 +9880,7 @@ Optional:
 
 - `indexes` (List of String) List of indexes.
 - `query_string` (String) Widget query.
-- `storage` (String) Storage location. Private Beta feature.
+- `storage` (String) Storage location (private beta).
 
 
 
@@ -10297,7 +10297,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--query_table_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.query_table_definition.request.query.event_query.compute`
@@ -10889,7 +10889,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--query_value_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.query_value_definition.request.query.event_query.compute`
@@ -11248,7 +11248,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--compute"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.event_query.compute`
@@ -12414,7 +12414,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--sunburst_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.sunburst_definition.request.query.event_query.compute`
@@ -13094,7 +13094,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--timeseries_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.timeseries_definition.request.query.event_query.compute`
@@ -13715,7 +13715,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--toplist_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.toplist_definition.request.query.event_query.compute`
@@ -14128,7 +14128,7 @@ Optional:
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query--search))
-- `storage` (String) Storage location. Private Beta feature
+- `storage` (String) Storage location (private beta).
 
 <a id="nestedblock--widget--treemap_definition--request--query--event_query--compute"></a>
 ### Nested Schema for `widget.treemap_definition.request.query.event_query.compute`
