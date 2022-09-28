@@ -3,7 +3,6 @@ package datadog
 import (
 	"context"
 	"log"
-	"net/http"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -56,14 +55,6 @@ func resourceDatadogUser() *schema.Resource {
 					return d.Id() != ""
 				},
 			},
-			"service_account": {
-				Description:   "Whether the user is a service account.",
-				Type:          schema.TypeBool,
-				Optional:      true,
-				Default:       false,
-				ForceNew:      true,
-				ConflictsWith: []string{"send_user_invitation"},
-			},
 			"verified": {
 				Description: "Returns `true` if the user is verified.",
 				Type:        schema.TypeBool,
@@ -78,7 +69,16 @@ func resourceDatadogUser() *schema.Resource {
 	}
 }
 
-func buildDatadogUserV2UserRelationships(d *schema.ResourceData) *datadogV2.UserRelationships {
+func buildDatadogUserV2Struct(d *schema.ResourceData) *datadogV2.UserCreateRequest {
+	userAttributes := datadogV2.NewUserCreateAttributesWithDefaults()
+	userAttributes.SetEmail(d.Get("email").(string))
+	if v, ok := d.GetOk("name"); ok {
+		userAttributes.SetName(v.(string))
+	}
+
+	userCreate := datadogV2.NewUserCreateDataWithDefaults()
+	userCreate.SetAttributes(*userAttributes)
+
 	roles := d.Get("roles").(*schema.Set).List()
 	rolesData := make([]datadogV2.RelationshipToRoleData, len(roles))
 	for i, role := range roles {
@@ -92,44 +92,12 @@ func buildDatadogUserV2UserRelationships(d *schema.ResourceData) *datadogV2.User
 
 	userRelationships := datadogV2.NewUserRelationships()
 	userRelationships.SetRoles(*toRoles)
-	return userRelationships
-}
-
-func buildDatadogUserV2Struct(d *schema.ResourceData) *datadogV2.UserCreateRequest {
-	userAttributes := datadogV2.NewUserCreateAttributesWithDefaults()
-	userAttributes.SetEmail(d.Get("email").(string))
-	if v, ok := d.GetOk("name"); ok {
-		userAttributes.SetName(v.(string))
-	}
-
-	userCreate := datadogV2.NewUserCreateDataWithDefaults()
-	userCreate.SetAttributes(*userAttributes)
-
-	userCreate.SetRelationships(*buildDatadogUserV2UserRelationships(d))
+	userCreate.SetRelationships(*userRelationships)
 
 	userRequest := datadogV2.NewUserCreateRequestWithDefaults()
 	userRequest.SetData(*userCreate)
 
 	return userRequest
-}
-
-func buildDatadogServiceAccountV2Struct(d *schema.ResourceData) *datadogV2.ServiceAccountCreateRequest {
-	serviceAccountAttributes := datadogV2.NewServiceAccountCreateAttributesWithDefaults()
-	serviceAccountAttributes.SetServiceAccount(true)
-	serviceAccountAttributes.SetEmail(d.Get("email").(string))
-	if v, ok := d.GetOk("name"); ok {
-		serviceAccountAttributes.SetName(v.(string))
-	}
-
-	serviceAccountCreate := datadogV2.NewServiceAccountCreateDataWithDefaults()
-	serviceAccountCreate.SetAttributes(*serviceAccountAttributes)
-
-	serviceAccountCreate.SetRelationships(*buildDatadogUserV2UserRelationships(d))
-
-	serviceAccountRequest := datadogV2.NewServiceAccountCreateRequestWithDefaults()
-	serviceAccountRequest.SetData(*serviceAccountCreate)
-
-	return serviceAccountRequest
 }
 
 func buildDatadogUserV2UpdateStruct(d *schema.ResourceData, userID string) *datadogV2.UserUpdateRequest {
@@ -189,24 +157,13 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
+	userRequest := buildDatadogUserV2Struct(d)
 	var userID string
 	updated := false
 
-	var createResponse datadogV2.UserResponse
-	var httpresp *http.Response
-	var err error
-
-	if d.Get("service_account").(bool) {
-		d.Set("send_user_invitation", false)
-		serviceAccountRequest := buildDatadogServiceAccountV2Struct(d)
-		createResponse, httpresp, err = apiInstances.GetUsersApiV2().CreateServiceAccount(auth, *serviceAccountRequest)
-	} else {
-		userRequest := buildDatadogUserV2Struct(d)
-		createResponse, httpresp, err = apiInstances.GetUsersApiV2().CreateUser(auth, *userRequest)
-	}
-
 	// Datadog does not actually delete users, so CreateUser might return a 409.
 	// We ignore that case and proceed, likely re-enabling the user.
+	createResponse, httpresp, err := apiInstances.GetUsersApiV2().CreateUser(auth, *userRequest)
 	if err != nil {
 		if httpresp == nil || httpresp.StatusCode != 409 {
 			return utils.TranslateClientErrorDiag(err, httpresp, "error creating user")
@@ -227,7 +184,7 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 		responseData := listResponse.GetData()
 		if len(responseData) > 1 {
 			for _, user := range responseData {
-				if user.Attributes.GetEmail() == email && user.Attributes.GetServiceAccount() == d.Get("service_account").(bool) {
+				if user.Attributes.GetEmail() == email {
 					existingUser = &user
 					break
 				}
@@ -335,9 +292,6 @@ func updateUserStateV2(d *schema.ResourceData, user *datadogV2.UserResponse) dia
 		return diag.FromErr(err)
 	}
 	if err := d.Set("disabled", userAttributes.GetDisabled()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("service_account", userAttributes.GetServiceAccount()); err != nil {
 		return diag.FromErr(err)
 	}
 	roles := make([]string, len(userRoles))
