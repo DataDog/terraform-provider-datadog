@@ -100,7 +100,11 @@ func securityMonitoringCheckRuleCountNameFilter(accProvider func() (*schema.Prov
 
 		ruleCount := 0
 		for _, rule := range *allRules {
-			if strings.Contains(rule.GetName(), name) {
+			if rule.SecurityMonitoringStandardRuleResponse == nil {
+				continue
+			}
+
+			if strings.Contains(rule.SecurityMonitoringStandardRuleResponse.GetName(), name) {
 				ruleCount++
 			}
 		}
@@ -120,7 +124,11 @@ func securityMonitoringCheckRuleCountTagsFilter(accProvider func() (*schema.Prov
 
 		ruleCount := 0
 		for _, rule := range *allRules {
-			for _, tag := range rule.GetTags() {
+			if rule.SecurityMonitoringStandardRuleResponse == nil {
+				continue
+			}
+
+			for _, tag := range rule.SecurityMonitoringStandardRuleResponse.GetTags() {
 				if strings.Contains(tag, filterTag) {
 					ruleCount++
 				}
@@ -141,7 +149,11 @@ func securityMonitoringCheckRuleCountDefaultFilter(accProvider func() (*schema.P
 
 		ruleCount := 0
 		for _, rule := range *allRules {
-			if rule.GetIsDefault() == isDefault {
+			if rule.SecurityMonitoringStandardRuleResponse == nil {
+				continue
+			}
+
+			if rule.SecurityMonitoringStandardRuleResponse.GetIsDefault() == isDefault {
 				ruleCount++
 			}
 		}
