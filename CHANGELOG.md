@@ -10,13 +10,11 @@
 ### FEATURES
 * [datadog_service_definition] Add terraform support for service catalog definition (yaml/json) by @hyperloglogy in https://github.com/DataDog/terraform-provider-datadog/pull/1556
 * [datadog_logs_pipelines] Add a pipelines datasource by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1555
-* [datadog_user] Add service account support by @stephengroat-dd in https://github.com/DataDog/terraform-provider-datadog/pull/1490
 * [datadog_synthetics_global_variable] Add support for local variable extract from test by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1567
 
 ## New Contributors
 * @hyperloglogy made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1556
 * @jketcham made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1428
-* @stephengroat-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1490
 
 **Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.15.1...v3.16.0
 
