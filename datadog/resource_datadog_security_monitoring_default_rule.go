@@ -120,7 +120,12 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 		return diag.FromErr(err)
 	}
 
-	d.Set("enabled", *ruleResponse.IsEnabled)
+	rule := ruleResponse.SecurityMonitoringStandardRuleResponse
+	if rule == nil {
+		return diag.Errorf("signal rule type is not currently supported")
+	}
+
+	d.Set("enabled", *rule.IsEnabled)
 
 	if v, ok := d.GetOk("case"); ok {
 		tfCasesRaw := v.([]interface{})
@@ -129,7 +134,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 			tfCase := tfCaseRaw.(map[string]interface{})
 			var ruleCase *datadogV2.SecurityMonitoringRuleCase
 			tfStatus := datadogV2.SecurityMonitoringRuleSeverity(tfCase["status"].(string))
-			for _, rc := range ruleResponse.GetCases() {
+			for _, rc := range rule.GetCases() {
 				if *rc.Status == tfStatus {
 					ruleCase = &rc
 					break
@@ -146,8 +151,8 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 		}
 	}
 
-	ruleFilters := make([]map[string]interface{}, len(ruleResponse.GetFilters()))
-	for idx, responseRuleFilter := range ruleResponse.GetFilters() {
+	ruleFilters := make([]map[string]interface{}, len(rule.GetFilters()))
+	for idx, responseRuleFilter := range rule.GetFilters() {
 		ruleFilters[idx] = map[string]interface{}{
 			"action": responseRuleFilter.GetAction(),
 			"query":  responseRuleFilter.GetQuery(),
@@ -156,9 +161,9 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 
 	d.Set("filter", ruleFilters)
 
-	d.Set("type", ruleResponse.GetType())
+	d.Set("type", rule.GetType())
 
-	responseOptions := ruleResponse.GetOptions()
+	responseOptions := rule.GetOptions()
 	ruleOptions := []map[string]interface{}{{
 		"decrease_criticality_based_on_env": responseOptions.GetDecreaseCriticalityBasedOnEnv(),
 	}}
@@ -176,7 +181,6 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *
 	ruleID := d.Id()
 
 	response, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().GetSecurityMonitoringRule(auth, ruleID)
-
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			return diag.FromErr(errors.New("default rule does not exist"))
@@ -188,11 +192,16 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *
 		return diag.FromErr(err)
 	}
 
-	if !response.GetIsDefault() {
+	rule := response.SecurityMonitoringStandardRuleResponse
+	if rule == nil {
+		return diag.Errorf("signal rule type is not currently supported")
+	}
+
+	if !rule.GetIsDefault() {
 		return diag.FromErr(errors.New("rule is not a default rule"))
 	}
 
-	ruleUpdate, shouldUpdate, err := buildSecMonDefaultRuleUpdatePayload(response, d)
+	ruleUpdate, shouldUpdate, err := buildSecMonDefaultRuleUpdatePayload(rule, d)
 
 	if err != nil {
 		return diag.FromErr(err)
@@ -207,7 +216,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *
 	return nil
 }
 
-func buildSecMonDefaultRuleUpdatePayload(currentState datadogV2.SecurityMonitoringRuleResponse, d *schema.ResourceData) (*datadogV2.SecurityMonitoringRuleUpdatePayload, bool, error) {
+func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitoringStandardRuleResponse, d *schema.ResourceData) (*datadogV2.SecurityMonitoringRuleUpdatePayload, bool, error) {
 	payload := datadogV2.SecurityMonitoringRuleUpdatePayload{}
 
 	isEnabled := d.Get("enabled").(bool)
