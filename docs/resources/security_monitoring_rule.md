@@ -96,7 +96,7 @@ Required:
 Optional:
 
 - `agent_rule` (Block List, Deprecated) **Deprecated**. It won't be applied anymore. **Deprecated.** `agent_rule` has been deprecated in favor of new Agent Rule resource. (see [below for nested schema](#nestedblock--query--agent_rule))
-- `aggregation` (String) The aggregation type. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`.
+- `aggregation` (String) The aggregation type. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`.
 - `distinct_fields` (List of String) Field for which the cardinality is measured. Sent as an array.
 - `group_by_fields` (List of String) Fields to group by.
 - `metric` (String) The target field to aggregate over when using the `sum`, `max`, or `new_value` aggregations.

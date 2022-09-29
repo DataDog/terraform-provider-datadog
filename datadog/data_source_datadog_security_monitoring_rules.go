@@ -121,7 +121,12 @@ func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema
 			return diag.FromErr(err)
 		}
 
-		for _, rule := range response.GetData() {
+		for _, ruleR := range response.GetData() {
+			if ruleR.SecurityMonitoringStandardRuleResponse == nil {
+				continue
+			}
+
+			rule := ruleR.SecurityMonitoringStandardRuleResponse
 			if !matchesSecMonRuleFilters(rule, nameFilter, defaultFilter, tagFilter) {
 				continue
 			}
@@ -180,7 +185,7 @@ func computeSecMonDataSourceRulesID(nameFilter *string, defaultFilter *bool, tag
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
-func buildSecurityMonitoringTfRule(rule datadogV2.SecurityMonitoringRuleResponse) map[string]interface{} {
+func buildSecurityMonitoringTfRule(rule *datadogV2.SecurityMonitoringStandardRuleResponse) map[string]interface{} {
 	tfRule := make(map[string]interface{})
 
 	cases := make([]map[string]interface{}, len(rule.GetCases()))
@@ -242,7 +247,7 @@ func buildSecurityMonitoringTfRule(rule datadogV2.SecurityMonitoringRuleResponse
 }
 
 func matchesSecMonRuleFilters(
-	rule datadogV2.SecurityMonitoringRuleResponse,
+	rule *datadogV2.SecurityMonitoringStandardRuleResponse,
 	nameFilter *string,
 	defaultFilter *bool,
 	tagFilter map[string]bool) bool {
