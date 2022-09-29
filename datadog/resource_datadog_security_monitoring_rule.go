@@ -2,6 +2,8 @@ package datadog
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -27,6 +29,29 @@ func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 }
 
 func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"standard_rule": {
+			Type:        schema.TypeList,
+			Description: "Standard rule definition",
+			MaxItems:    1,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: datadogSecurityMonitoringStandardRuleSchema(),
+			},
+		},
+		"signal_rule": {
+			Type:        schema.TypeList,
+			Description: "Signal rule definition.",
+			MaxItems:    1,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: datadogSecurityMonitoringSignalRuleSchema(),
+			},
+		},
+	}
+}
+
+func datadogSecurityMonitoringCommonRuleSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"case": {
 			Type:        schema.TypeList,
@@ -191,77 +216,6 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			},
 		},
 
-		"query": {
-			Type:        schema.TypeList,
-			Required:    true,
-			Description: "Queries for selecting logs which are part of the rule.",
-			Elem: &schema.Resource{
-				Schema: map[string]*schema.Schema{
-					"agent_rule": {
-						Type:        schema.TypeList,
-						Deprecated:  "`agent_rule` has been deprecated in favor of new Agent Rule resource.",
-						Optional:    true,
-						Description: "**Deprecated**. It won't be applied anymore.",
-						Elem: &schema.Resource{
-							Schema: map[string]*schema.Schema{
-								"agent_rule_id": {
-									Type:        schema.TypeString,
-									Required:    true,
-									Description: "**Deprecated**. It won't be applied anymore.",
-								},
-								"expression": {
-									Type:        schema.TypeString,
-									Required:    true,
-									Description: "**Deprecated**. It won't be applied anymore.",
-								},
-							},
-						},
-					},
-					"aggregation": {
-						Type:             schema.TypeString,
-						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleQueryAggregationFromValue),
-						Optional:         true,
-						Description:      "The aggregation type.",
-						Default:          datadogV2.SECURITYMONITORINGRULEQUERYAGGREGATION_COUNT,
-					},
-					"distinct_fields": {
-						Type:        schema.TypeList,
-						Optional:    true,
-						Description: "Field for which the cardinality is measured. Sent as an array.",
-						Elem:        &schema.Schema{Type: schema.TypeString},
-					},
-					"group_by_fields": {
-						Type:        schema.TypeList,
-						Optional:    true,
-						Description: "Fields to group by.",
-						Elem:        &schema.Schema{Type: schema.TypeString},
-					},
-					"metric": {
-						Type:        schema.TypeString,
-						Optional:    true,
-						Description: "The target field to aggregate over when using the `sum`, `max`, or `new_value` aggregations.",
-					},
-					"metrics": {
-						Type:        schema.TypeList,
-						Computed:    true,
-						Optional:    true,
-						Description: "Group of target fields to aggregate over when using the new value aggregations.",
-						Elem:        &schema.Schema{Type: schema.TypeString},
-					},
-					"name": {
-						Type:        schema.TypeString,
-						Optional:    true,
-						Description: "Name of the query. Not compatible with `new_value` aggregations.",
-					},
-					"query": {
-						Type:        schema.TypeString,
-						Required:    true,
-						Description: "Query to run on logs.",
-					},
-				},
-			},
-		},
-
 		"tags": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -289,15 +243,161 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 				},
 			},
 		},
-
-		"type": {
-			Type:             schema.TypeString,
-			ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleTypeReadFromValue),
-			Optional:         true,
-			Description:      "The rule type.",
-			Default:          "log_detection",
-		},
 	}
+}
+
+func addDatadogSecurityMonitoringCommonRuleSchema(specificSchema map[string]*schema.Schema) map[string]*schema.Schema {
+	commonSchema := datadogSecurityMonitoringCommonRuleSchema()
+	mergeSchema := make(map[string]*schema.Schema, len(specificSchema)+len(commonSchema))
+	for k, v := range commonSchema {
+		if _, ok := commonSchema[k]; ok {
+			mergeSchema[k] = v
+		}
+	}
+	for k, v := range specificSchema {
+		if _, ok := specificSchema[k]; ok {
+			mergeSchema[k] = v
+		}
+	}
+	return mergeSchema
+}
+
+func datadogSecurityMonitoringStandardRuleSchema() map[string]*schema.Schema {
+	return addDatadogSecurityMonitoringCommonRuleSchema(
+		map[string]*schema.Schema{
+			"query": {
+				Type:        schema.TypeList,
+				Required:    true,
+				Description: "Queries for selecting logs which are part of the rule.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"agent_rule": {
+							Type:        schema.TypeList,
+							Deprecated:  "`agent_rule` has been deprecated in favor of new Agent Rule resource.",
+							Optional:    true,
+							Description: "**Deprecated**. It won't be applied anymore.",
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"agent_rule_id": {
+										Type:        schema.TypeString,
+										Required:    true,
+										Description: "**Deprecated**. It won't be applied anymore.",
+									},
+									"expression": {
+										Type:        schema.TypeString,
+										Required:    true,
+										Description: "**Deprecated**. It won't be applied anymore.",
+									},
+								},
+							},
+						},
+						"aggregation": {
+							Type:             schema.TypeString,
+							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleQueryAggregationFromValue),
+							Optional:         true,
+							Description:      "The aggregation type.",
+							Default:          datadogV2.SECURITYMONITORINGRULEQUERYAGGREGATION_COUNT,
+						},
+						"distinct_fields": {
+							Type:        schema.TypeList,
+							Optional:    true,
+							Description: "Field for which the cardinality is measured. Sent as an array.",
+							Elem:        &schema.Schema{Type: schema.TypeString},
+						},
+						"group_by_fields": {
+							Type:        schema.TypeList,
+							Optional:    true,
+							Description: "Fields to group by.",
+							Elem:        &schema.Schema{Type: schema.TypeString},
+						},
+						"metric": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "The target field to aggregate over when using the `sum`, `max`, or `new_value` aggregations.",
+						},
+						"metrics": {
+							Type:        schema.TypeList,
+							Computed:    true,
+							Optional:    true,
+							Description: "Group of target fields to aggregate over when using the new value aggregations.",
+							Elem:        &schema.Schema{Type: schema.TypeString},
+						},
+						"name": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Name of the query. Not compatible with `new_value` aggregations.",
+						},
+						"query": {
+							Type:        schema.TypeString,
+							Required:    true,
+							Description: "Query to run on logs.",
+						},
+					},
+				},
+			},
+
+			"type": {
+				Type:             schema.TypeString,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleTypeReadFromValue),
+				Optional:         true,
+				Description:      "The rule type.",
+				Default:          "log_detection",
+			},
+		},
+	)
+}
+
+func datadogSecurityMonitoringSignalRuleSchema() map[string]*schema.Schema {
+	return addDatadogSecurityMonitoringCommonRuleSchema(
+		map[string]*schema.Schema{
+			"query": {
+				Type:        schema.TypeList,
+				Required:    true,
+				Description: "Queries for selecting signals which are part of the rule.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"aggregation": {
+							Type:             schema.TypeString,
+							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleQueryAggregationFromValue),
+							Optional:         true,
+							Description:      "The aggregation type. Only EVENT_COUNT is supported.",
+							Default:          datadogV2.SECURITYMONITORINGRULEQUERYAGGREGATION_EVENT_COUNT,
+						},
+						"correlated_by_fields": {
+							Type:        schema.TypeList,
+							Optional:    true,
+							Description: "Fields to correlated by.",
+							Elem:        &schema.Schema{Type: schema.TypeString},
+						},
+						"correlated_query_index": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Index of the rule query used to retrieve the correlated field. An empty string applies correlation on the non-projected per query attributes of the rule.",
+							Default:     "",
+						},
+						"name": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Name of the query.",
+						},
+						"rule_id": {
+							Type:        schema.TypeString,
+							Required:    true,
+							Description: "Rule ID of the signal to correlate.",
+						},
+					},
+				},
+			},
+
+			"type": {
+				Type:             schema.TypeString,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue),
+				Optional:         true,
+				Description:      "The rule type.",
+				Default:          "signal_correlation",
+			},
+		},
+	)
 }
 
 func resourceDatadogSecurityMonitoringRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -317,55 +417,118 @@ func resourceDatadogSecurityMonitoringRuleCreate(ctx context.Context, d *schema.
 		return diag.FromErr(err)
 	}
 
-	d.SetId(response.SecurityMonitoringStandardRuleResponse.GetId())
+	if response.SecurityMonitoringStandardRuleResponse != nil {
+		d.SetId(response.SecurityMonitoringStandardRuleResponse.GetId())
+	} else if response.SecurityMonitoringSignalRuleResponse != nil {
+		d.SetId(response.SecurityMonitoringSignalRuleResponse.GetId())
+	} else {
+		return diag.FromErr(fmt.Errorf("SecurityMonitoringStandardRuleResponse and SecurityMonitoringSignalRuleResponse are both empty"))
+	}
 
 	return nil
 }
 
 func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRuleCreatePayload, error) {
+
+	if v, ok := d.GetOk("standard_rule"); ok {
+		standardPayload, err := buildCreateStandardPayload(v.([]interface{}))
+		return datadogV2.SecurityMonitoringStandardRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(&standardPayload), err
+	}
+	if v, ok := d.GetOk("signal_rule"); ok {
+		signalPayload, err := buildCreateSignalPayload(v.([]interface{}))
+		return datadogV2.SecurityMonitoringSignalRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(&signalPayload), err
+	}
+	return datadogV2.SecurityMonitoringRuleCreatePayload{}, fmt.Errorf("either standard rule or signal rule is required")
+}
+
+func buildCreateStandardPayload(tfData []interface{}) (datadogV2.SecurityMonitoringStandardRuleCreatePayload, error) {
+	d := extractMapFromInterface(tfData)
 	payload := datadogV2.SecurityMonitoringStandardRuleCreatePayload{}
 	payload.Cases = buildCreatePayloadCases(d)
 
-	payload.IsEnabled = d.Get("enabled").(bool)
-	payload.Message = d.Get("message").(string)
-	payload.Name = d.Get("name").(string)
-	payload.SetHasExtendedTitle(d.Get("has_extended_title").(bool))
+	payload.SetIsEnabled(d["enabled"].(bool))
+	payload.SetMessage(d["message"].(string))
+	payload.SetName(d["name"].(string))
+	payload.SetHasExtendedTitle(d["has_extended_title"].(bool))
 
-	if v, ok := d.GetOk("options"); ok {
+	if v, ok := d["options"]; ok {
 		tfOptionsList := v.([]interface{})
-		payloadOptions := buildPayloadOptions(tfOptionsList, d.Get("type").(string))
-		payload.Options = *payloadOptions
+		payloadOptions := buildPayloadOptions(tfOptionsList, d["type"].(string))
+		payload.SetOptions(*payloadOptions)
 	}
 
-	payload.Queries = buildCreatePayloadQueries(d)
+	payload.SetQueries(buildCreateStandardPayloadQueries(d))
 
-	if v, ok := d.GetOk("tags"); ok {
+	if v, ok := d["tags"]; ok {
 		tfTags := v.([]interface{})
 		tags := make([]string, len(tfTags))
 		for i, value := range tfTags {
 			tags[i] = value.(string)
 		}
-		payload.Tags = tags
+		payload.SetTags(tags)
 	}
 
-	if v, ok := d.GetOk("filter"); ok {
+	if v, ok := d["filter"]; ok {
 		tfFilterList := v.([]interface{})
 		payload.SetFilters(buildPayloadFilters(tfFilterList))
 	}
 
-	if v, ok := d.GetOk("type"); ok {
+	if v, ok := d["type"]; ok {
 		if ruleType, err := datadogV2.NewSecurityMonitoringRuleTypeCreateFromValue(v.(string)); err == nil {
-			payload.Type = ruleType
+			payload.SetType(*ruleType)
 		} else {
-			return datadogV2.SecurityMonitoringStandardRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(&payload), err
+			return payload, err
 		}
 	}
 
-	return datadogV2.SecurityMonitoringStandardRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(&payload), nil
+	return payload, nil
 }
 
-func buildCreatePayloadCases(d *schema.ResourceData) []datadogV2.SecurityMonitoringRuleCaseCreate {
-	tfCases := d.Get("case").([]interface{})
+func buildCreateSignalPayload(tfData []interface{}) (datadogV2.SecurityMonitoringSignalRuleCreatePayload, error) {
+	d := extractMapFromInterface(tfData)
+	payload := datadogV2.SecurityMonitoringSignalRuleCreatePayload{}
+	payload.Cases = buildCreatePayloadCases(d)
+
+	payload.SetIsEnabled(d["enabled"].(bool))
+	payload.SetMessage(d["message"].(string))
+	payload.SetName(d["name"].(string))
+	payload.SetHasExtendedTitle(d["has_extended_title"].(bool))
+
+	if v, ok := d["options"]; ok {
+		tfOptionsList := v.([]interface{})
+		payloadOptions := buildPayloadOptions(tfOptionsList, d["type"].(string))
+		payload.SetOptions(*payloadOptions)
+	}
+
+	payload.Queries = buildCreateSignalPayloadQueries(d)
+
+	if v, ok := d["tags"]; ok {
+		tfTags := v.([]interface{})
+		tags := make([]string, len(tfTags))
+		for i, value := range tfTags {
+			tags[i] = value.(string)
+		}
+		payload.SetTags(tags)
+	}
+
+	if v, ok := d["filter"]; ok {
+		tfFilterList := v.([]interface{})
+		payload.SetFilters(buildPayloadFilters(tfFilterList))
+	}
+
+	if v, ok := d["type"]; ok {
+		if ruleType, err := datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue(v.(string)); err == nil {
+			payload.SetType(*ruleType)
+		} else {
+			return payload, err
+		}
+	}
+
+	return payload, nil
+}
+
+func buildCreatePayloadCases(d map[string]interface{}) []datadogV2.SecurityMonitoringRuleCaseCreate {
+	tfCases := d["case"].([]interface{})
 	payloadCases := make([]datadogV2.SecurityMonitoringRuleCaseCreate, len(tfCases))
 
 	for idx, ruleCaseIf := range tfCases {
@@ -486,8 +649,9 @@ func extractMapFromInterface(tfOptionsList []interface{}) map[string]interface{}
 	return tfOptions
 }
 
-func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonitoringStandardRuleQuery {
-	tfQueries := d.Get("query").([]interface{})
+func buildCreateStandardPayloadQueries(tfData interface{}) []datadogV2.SecurityMonitoringStandardRuleQuery {
+	d := tfData.(map[string]interface{})
+	tfQueries := d["query"].([]interface{})
 	payloadQueries := make([]datadogV2.SecurityMonitoringStandardRuleQuery, len(tfQueries))
 	for idx, tfQuery := range tfQueries {
 		query := tfQuery.(map[string]interface{})
@@ -495,7 +659,7 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 
 		if v, ok := query["aggregation"]; ok {
 			aggregation := datadogV2.SecurityMonitoringRuleQueryAggregation(v.(string))
-			payloadQuery.Aggregation = &aggregation
+			payloadQuery.SetAggregation(aggregation)
 		}
 
 		if v, ok := query["group_by_fields"]; ok {
@@ -504,7 +668,7 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 			for i, value := range tfGroupByFields {
 				groupByFields[i] = value.(string)
 			}
-			payloadQuery.GroupByFields = groupByFields
+			payloadQuery.SetGroupByFields(groupByFields)
 		}
 
 		if v, ok := query["distinct_fields"]; ok {
@@ -513,12 +677,11 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 			for i, value := range tfDistinctFields {
 				distinctFields[i] = value.(string)
 			}
-			payloadQuery.DistinctFields = distinctFields
+			payloadQuery.SetDistinctFields(distinctFields)
 		}
 
 		if v, ok := query["metric"]; ok {
-			metric := v.(string)
-			payloadQuery.Metric = &metric
+			payloadQuery.SetMetric(v.(string))
 		}
 
 		if v, ok := query["metrics"]; ok && v != nil {
@@ -527,16 +690,66 @@ func buildCreatePayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonit
 				for i, value := range tfMetrics {
 					metrics[i] = value.(string)
 				}
-				payloadQuery.Metrics = metrics
+				payloadQuery.SetMetrics(metrics)
 			}
 		}
 
 		if v, ok := query["name"]; ok {
 			name := v.(string)
-			payloadQuery.Name = &name
+			payloadQuery.SetName(name)
 		}
 
-		payloadQuery.Query = query["query"].(string)
+		payloadQuery.SetQuery(query["query"].(string))
+
+		payloadQueries[idx] = payloadQuery
+	}
+	return payloadQueries
+}
+
+func buildCreateSignalPayloadQueries(tfData interface{}) []datadogV2.SecurityMonitoringSignalRuleQuery {
+	d := tfData.(map[string]interface{})
+	tfQueries := d["query"].([]interface{})
+	payloadQueries := make([]datadogV2.SecurityMonitoringSignalRuleQuery, len(tfQueries))
+	for idx, tfQuery := range tfQueries {
+		query := tfQuery.(map[string]interface{})
+		payloadQuery := datadogV2.SecurityMonitoringSignalRuleQuery{}
+
+		if v, ok := query["aggregation"]; ok {
+			aggregation := datadogV2.SecurityMonitoringRuleQueryAggregation(v.(string))
+			payloadQuery.SetAggregation(aggregation)
+		}
+
+		if v, ok := query["correlated_by_fields"]; ok {
+			tfCorrelatedByFields := v.([]interface{})
+			correlatedByFields := make([]string, len(tfCorrelatedByFields))
+			for i, value := range tfCorrelatedByFields {
+				correlatedByFields[i] = value.(string)
+			}
+			payloadQuery.SetCorrelatedByFields(correlatedByFields)
+		}
+
+		if v, ok := query["correlated_query_index"]; ok && len(v.(string)) > 0 {
+			if vInt, err := strconv.Atoi(v.(string)); err == nil {
+				payloadQuery.SetCorrelatedQueryIndex(int32(vInt))
+			}
+		}
+
+		if v, ok := query["metrics"]; ok && v != nil {
+			if tfMetrics, ok := v.([]interface{}); ok && len(tfMetrics) > 0 {
+				metrics := make([]string, len(tfMetrics))
+				for i, value := range tfMetrics {
+					metrics[i] = value.(string)
+				}
+				payloadQuery.SetMetrics(metrics)
+			}
+		}
+
+		if v, ok := query["name"]; ok {
+			name := v.(string)
+			payloadQuery.SetName(name)
+		}
+
+		payloadQuery.SetRuleId(query["rule_id"].(string))
 
 		payloadQueries[idx] = payloadQuery
 	}
@@ -577,12 +790,20 @@ func resourceDatadogSecurityMonitoringRuleRead(ctx context.Context, d *schema.Re
 		return diag.FromErr(err)
 	}
 
-	updateResourceDataFromResponse(d, ruleResponse.SecurityMonitoringStandardRuleResponse)
-
+	if ruleResponse.SecurityMonitoringStandardRuleResponse != nil {
+		updateStandardResourceDataFromResponse(d, ruleResponse.SecurityMonitoringStandardRuleResponse)
+	} else if ruleResponse.SecurityMonitoringSignalRuleResponse != nil {
+		updateSignalResourceDataFromResponse(d, ruleResponse.SecurityMonitoringSignalRuleResponse)
+	}
 	return nil
 }
 
-func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse) {
+func updateStandardResourceDataFromResponse(d *schema.ResourceData, ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse) {
+	standardRule := make(map[string]interface{})
+	if standardRuleList, ok := d.GetOk("standard_rule"); ok {
+		standardRule = extractMapFromInterface(standardRuleList.([]interface{}))
+	}
+
 	ruleCases := make([]interface{}, len(ruleResponse.GetCases()))
 	for idx := range ruleResponse.GetCases() {
 		ruleCase := make(map[string]interface{})
@@ -602,15 +823,15 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse *datado
 		ruleCases[idx] = ruleCase
 	}
 
-	d.Set("case", ruleCases)
-	d.Set("message", ruleResponse.GetMessage())
-	d.Set("name", ruleResponse.GetName())
-	d.Set("has_extended_title", ruleResponse.GetHasExtendedTitle())
-	d.Set("enabled", ruleResponse.GetIsEnabled())
+	standardRule["case"] = ruleCases
+	standardRule["message"] = ruleResponse.GetMessage()
+	standardRule["name"] = ruleResponse.GetName()
+	standardRule["has_extended_title"] = ruleResponse.GetHasExtendedTitle()
+	standardRule["enabled"] = ruleResponse.GetIsEnabled()
 
 	options := extractTfOptions(ruleResponse.GetOptions())
 
-	d.Set("options", []map[string]interface{}{options})
+	standardRule["options"] = []map[string]interface{}{options}
 
 	ruleQueries := make([]map[string]interface{}, len(ruleResponse.GetQueries()))
 	for idx := range ruleResponse.GetQueries() {
@@ -641,19 +862,115 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse *datado
 
 		ruleQueries[idx] = ruleQuery
 	}
-	d.Set("query", ruleQueries)
+	standardRule["query"] = ruleQueries
 
 	if _, ok := ruleResponse.GetFiltersOk(); ok {
-		filters := extractFiltersFromRuleResponse(ruleResponse)
-		d.Set("filter", filters)
+		filters := extractFiltersFromStandardRuleResponse(ruleResponse)
+		standardRule["filter"] = filters
 	}
 
 	if ruleType, ok := ruleResponse.GetTypeOk(); ok {
-		d.Set("type", *ruleType)
+		standardRule["type"] = *ruleType
 	}
+	standardRuleList := make([]interface{}, 1)
+	standardRuleList[0] = standardRule
+	d.Set("standard_rule", standardRuleList)
 }
 
-func extractFiltersFromRuleResponse(ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse) []interface{} {
+func updateSignalResourceDataFromResponse(d *schema.ResourceData, ruleResponse *datadogV2.SecurityMonitoringSignalRuleResponse) {
+	signalRule := make(map[string]interface{})
+	if signalRuleList, ok := d.GetOk("signal_rule"); ok {
+		signalRule = extractMapFromInterface(signalRuleList.([]interface{}))
+	}
+
+	ruleCases := make([]interface{}, len(ruleResponse.GetCases()))
+	for idx := range ruleResponse.GetCases() {
+		ruleCase := make(map[string]interface{})
+		responseRuleCase := ruleResponse.GetCases()[idx]
+
+		if name, ok := responseRuleCase.GetNameOk(); ok {
+			ruleCase["name"] = *name
+		}
+		if condition, ok := responseRuleCase.GetConditionOk(); ok {
+			ruleCase["condition"] = *condition
+		}
+		if notifications, ok := responseRuleCase.GetNotificationsOk(); ok {
+			ruleCase["notifications"] = *notifications
+		}
+		ruleCase["status"] = responseRuleCase.GetStatus()
+
+		ruleCases[idx] = ruleCase
+	}
+
+	signalRule["case"] = ruleCases
+	signalRule["message"] = ruleResponse.GetMessage()
+	signalRule["name"] = ruleResponse.GetName()
+	signalRule["has_extended_title"] = ruleResponse.GetHasExtendedTitle()
+	signalRule["enabled"] = ruleResponse.GetIsEnabled()
+
+	options := extractTfOptions(ruleResponse.GetOptions())
+
+	signalRule["options"] = []map[string]interface{}{options}
+
+	ruleQueries := make([]map[string]interface{}, len(ruleResponse.GetQueries()))
+	for idx := range ruleResponse.GetQueries() {
+		ruleQuery := make(map[string]interface{})
+		responseRuleQuery := ruleResponse.GetQueries()[idx]
+
+		if aggregation, ok := responseRuleQuery.GetAggregationOk(); ok {
+			ruleQuery["aggregation"] = *aggregation
+		}
+		if correlatedByFields, ok := responseRuleQuery.GetCorrelatedByFieldsOk(); ok {
+			ruleQuery["correlated_by_fields"] = *correlatedByFields
+		}
+		if correlatedQueryIndex, ok := responseRuleQuery.GetCorrelatedQueryIndexOk(); ok {
+			ruleQuery["correlated_query_index"] = fmt.Sprintf("%d", *correlatedQueryIndex)
+		}
+		if metrics, ok := responseRuleQuery.GetMetricsOk(); ok {
+			ruleQuery["metrics"] = *metrics
+		}
+		if name, ok := responseRuleQuery.GetNameOk(); ok {
+			ruleQuery["name"] = *name
+		}
+		if ruleId, ok := responseRuleQuery.GetRuleIdOk(); ok {
+			ruleQuery["rule_id"] = *ruleId
+		}
+
+		ruleQueries[idx] = ruleQuery
+	}
+	signalRule["query"] = ruleQueries
+
+	if _, ok := ruleResponse.GetFiltersOk(); ok {
+		filters := extractFiltersFromSignalRuleResponse(ruleResponse)
+		signalRule["filter"] = filters
+	}
+
+	if ruleType, ok := ruleResponse.GetTypeOk(); ok {
+		signalRule["type"] = *ruleType
+	}
+	signalRuleList := make([]interface{}, 1)
+	signalRuleList[0] = signalRule
+	d.Set("signal_rule", signalRuleList)
+}
+
+func extractFiltersFromStandardRuleResponse(ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse) []interface{} {
+
+	filters := make([]interface{}, len(ruleResponse.GetFilters()))
+	for idx, responseFilter := range ruleResponse.GetFilters() {
+		filter := make(map[string]interface{})
+		if query, ok := responseFilter.GetQueryOk(); ok {
+			filter["query"] = *query
+		}
+		if action, ok := responseFilter.GetActionOk(); ok {
+			filter["action"] = *action
+		}
+
+		filters[idx] = filter
+	}
+	return filters
+}
+
+func extractFiltersFromSignalRuleResponse(ruleResponse *datadogV2.SecurityMonitoringSignalRuleResponse) []interface{} {
 	filters := make([]interface{}, len(ruleResponse.GetFilters()))
 	for idx, responseFilter := range ruleResponse.GetFilters() {
 		filter := make(map[string]interface{})
@@ -716,7 +1033,11 @@ func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.
 		return diag.FromErr(err)
 	}
 
-	updateResourceDataFromResponse(d, response.SecurityMonitoringStandardRuleResponse)
+	if response.SecurityMonitoringStandardRuleResponse != nil {
+		updateStandardResourceDataFromResponse(d, response.SecurityMonitoringStandardRuleResponse)
+	} else if response.SecurityMonitoringSignalRuleResponse != nil {
+		updateSignalResourceDataFromResponse(d, response.SecurityMonitoringSignalRuleResponse)
+	}
 
 	return nil
 }
@@ -724,7 +1045,15 @@ func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.
 func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRuleUpdatePayload {
 	payload := datadogV2.SecurityMonitoringRuleUpdatePayload{}
 
-	tfCases := d.Get("case").([]interface{})
+	var tfData interface{}
+	var ok bool
+	if tfData, ok = d.GetOk("standard_rule"); !ok {
+		if tfData, ok = d.GetOk("signal_rule"); !ok {
+			return payload
+		}
+	}
+	ruleData := extractMapFromInterface(tfData.([]interface{}))
+	tfCases := ruleData["case"].([]interface{})
 	payloadCases := make([]datadogV2.SecurityMonitoringRuleCase, len(tfCases))
 
 	for idx, tfRuleCase := range tfCases {
@@ -732,7 +1061,7 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 
 		ruleCase := tfRuleCase.(map[string]interface{})
 		status := datadogV2.SecurityMonitoringRuleSeverity(ruleCase["status"].(string))
-		structRuleCase.Status = &status
+		structRuleCase.SetStatus(status)
 
 		if name, ok := ruleCase["name"]; ok {
 			structRuleCase.SetName(name.(string))
@@ -750,98 +1079,150 @@ func buildUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRule
 		}
 		payloadCases[idx] = structRuleCase
 	}
-	payload.Cases = payloadCases
+	payload.SetCases(payloadCases)
 
-	payload.SetIsEnabled(d.Get("enabled").(bool))
-	payload.SetHasExtendedTitle(d.Get("has_extended_title").(bool))
+	payload.SetIsEnabled(ruleData["enabled"].(bool))
+	payload.SetHasExtendedTitle(ruleData["has_extended_title"].(bool))
 
-	if v, ok := d.GetOk("message"); ok {
-		message := v.(string)
-		payload.Message = &message
+	if v, ok := ruleData["message"]; ok {
+		payload.SetMessage(v.(string))
 	}
 
-	if v, ok := d.GetOk("name"); ok {
-		name := v.(string)
-		payload.Name = &name
+	if v, ok := ruleData["name"]; ok {
+		payload.SetName(v.(string))
 	}
 
-	if v, ok := d.GetOk("options"); ok {
-		payload.Options = buildPayloadOptions(v.([]interface{}), d.Get("type").(string))
+	if v, ok := ruleData["options"]; ok {
+		payload.SetOptions(*buildPayloadOptions(v.([]interface{}), ruleData["type"].(string)))
 	}
 
-	if v, ok := d.GetOk("query"); ok {
+	if v, ok := ruleData["query"]; ok {
 		tfQueries := v.([]interface{})
 		payloadQueries := make([]datadogV2.SecurityMonitoringRuleQuery, len(tfQueries))
 		for idx, tfQuery := range tfQueries {
 			query := tfQuery.(map[string]interface{})
-			payloadQuery := datadogV2.SecurityMonitoringStandardRuleQuery{}
 
-			if v, ok := query["aggregation"]; ok {
-				aggregation := datadogV2.SecurityMonitoringRuleQueryAggregation(v.(string))
-				payloadQuery.Aggregation = &aggregation
+			if _, ok := query["query"]; ok {
+				payloadQueries[idx] = buildUpdateStandardRuleQuery(tfQuery)
+			} else if _, ok := query["rule_id"]; ok {
+				payloadQueries[idx] = buildUpdateSignalRuleQuery(tfQuery)
 			}
-
-			if v, ok := query["group_by_fields"]; ok {
-				tfGroupByFields := v.([]interface{})
-				groupByFields := make([]string, len(tfGroupByFields))
-				for i, value := range tfGroupByFields {
-					groupByFields[i] = value.(string)
-				}
-				payloadQuery.GroupByFields = groupByFields
-			}
-
-			if v, ok := query["distinct_fields"]; ok {
-				tfDistinctFields := v.([]interface{})
-				distinctFields := make([]string, len(tfDistinctFields))
-				for i, field := range tfDistinctFields {
-					distinctFields[i] = field.(string)
-				}
-				payloadQuery.DistinctFields = distinctFields
-			}
-
-			if v, ok := query["metric"]; ok {
-				metric := v.(string)
-				payloadQuery.Metric = &metric
-			}
-
-			if v, ok := query["metrics"]; ok {
-				tfMetrics := v.([]interface{})
-				metrics := make([]string, len(tfMetrics))
-				for i, value := range tfMetrics {
-					metrics[i] = value.(string)
-				}
-				payloadQuery.Metrics = metrics
-			}
-
-			if v, ok := query["name"]; ok {
-				name := v.(string)
-				payloadQuery.Name = &name
-			}
-
-			queryQuery := query["query"].(string)
-			payloadQuery.Query = queryQuery
-
-			payloadQueries[idx] = datadogV2.SecurityMonitoringStandardRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery)
 		}
 
-		payload.Queries = payloadQueries
+		payload.SetQueries(payloadQueries)
 	}
 
-	if v, ok := d.GetOk("tags"); ok {
+	if v, ok := ruleData["tags"]; ok {
 		tfTags := v.([]interface{})
 		tags := make([]string, len(tfTags))
 		for i, value := range tfTags {
 			tags[i] = value.(string)
 		}
-		payload.Tags = tags
+		payload.SetTags(tags)
 	}
 
-	if v, ok := d.GetOk("filter"); ok {
+	if v, ok := ruleData["filter"]; ok {
 		tfFilters := v.([]interface{})
 		payload.SetFilters(buildPayloadFilters(tfFilters))
 	}
 
 	return payload
+}
+
+func buildUpdateStandardRuleQuery(tfQuery interface{}) datadogV2.SecurityMonitoringRuleQuery {
+	query := tfQuery.(map[string]interface{})
+	payloadQuery := datadogV2.SecurityMonitoringStandardRuleQuery{}
+
+	if v, ok := query["aggregation"]; ok {
+		aggregation := datadogV2.SecurityMonitoringRuleQueryAggregation(v.(string))
+		payloadQuery.SetAggregation(aggregation)
+	}
+
+	if v, ok := query["group_by_fields"]; ok {
+		tfGroupByFields := v.([]interface{})
+		groupByFields := make([]string, len(tfGroupByFields))
+		for i, value := range tfGroupByFields {
+			groupByFields[i] = value.(string)
+		}
+		payloadQuery.SetGroupByFields(groupByFields)
+	}
+
+	if v, ok := query["distinct_fields"]; ok {
+		tfDistinctFields := v.([]interface{})
+		distinctFields := make([]string, len(tfDistinctFields))
+		for i, field := range tfDistinctFields {
+			distinctFields[i] = field.(string)
+		}
+		payloadQuery.SetDistinctFields(distinctFields)
+	}
+
+	if v, ok := query["metric"]; ok {
+		metric := v.(string)
+		payloadQuery.SetMetric(metric)
+	}
+
+	if v, ok := query["metrics"]; ok {
+		tfMetrics := v.([]interface{})
+		metrics := make([]string, len(tfMetrics))
+		for i, value := range tfMetrics {
+			metrics[i] = value.(string)
+		}
+		payloadQuery.SetMetrics(metrics)
+	}
+
+	if v, ok := query["name"]; ok {
+		name := v.(string)
+		payloadQuery.SetName(name)
+	}
+
+	queryQuery := query["query"].(string)
+	payloadQuery.SetQuery(queryQuery)
+
+	return datadogV2.SecurityMonitoringStandardRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery)
+}
+
+func buildUpdateSignalRuleQuery(tfQuery interface{}) datadogV2.SecurityMonitoringRuleQuery {
+	query := tfQuery.(map[string]interface{})
+	payloadQuery := datadogV2.SecurityMonitoringSignalRuleQuery{}
+
+	if v, ok := query["aggregation"]; ok {
+		aggregation := datadogV2.SecurityMonitoringRuleQueryAggregation(v.(string))
+		payloadQuery.SetAggregation(aggregation)
+	}
+
+	if v, ok := query["correlated_by_fields"]; ok {
+		tfCorrelatedByFields := v.([]interface{})
+		correlatedByFields := make([]string, len(tfCorrelatedByFields))
+		for i, value := range tfCorrelatedByFields {
+			correlatedByFields[i] = value.(string)
+		}
+		payloadQuery.SetCorrelatedByFields(correlatedByFields)
+	}
+
+	if v, ok := query["correlated_query_index"]; ok && len(v.(string)) > 0 {
+		if vInt, err := strconv.Atoi(v.(string)); err == nil {
+			payloadQuery.SetCorrelatedQueryIndex(int32(vInt))
+		}
+	}
+
+	if v, ok := query["metrics"]; ok {
+		tfMetrics := v.([]interface{})
+		metrics := make([]string, len(tfMetrics))
+		for i, value := range tfMetrics {
+			metrics[i] = value.(string)
+		}
+		payloadQuery.SetMetrics(metrics)
+	}
+
+	if v, ok := query["name"]; ok {
+		name := v.(string)
+		payloadQuery.SetName(name)
+	}
+
+	queryQuery := query["rule_id"].(string)
+	payloadQuery.SetRuleId(queryQuery)
+
+	return datadogV2.SecurityMonitoringSignalRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery)
 }
 
 func resourceDatadogSecurityMonitoringRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {

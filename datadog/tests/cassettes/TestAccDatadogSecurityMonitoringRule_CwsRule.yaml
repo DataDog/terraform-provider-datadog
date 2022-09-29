@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"condition":"first \u003e 3","name":"high case","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1663073819","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"first","query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1663073819_random_id OR random_id)"}],"tags":["i:tomato","u:tomato"],"type":"workload_security"}
+      {"cases":[{"condition":"first \u003e 3","name":"high case","notifications":[],"status":"high"}],"filters":[],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1664785023","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"first","query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1664785023_random_id OR random_id)"}],"tags":["i:tomato","u:tomato"],"type":"workload_security"}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1663073821702,"filters":[],"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1663073819_random_id OR random_id)","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"bgd-can-ikk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1663073819"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1664785024830,"filters":[],"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1664785023_random_id OR random_id)","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"s2x-ecz-fyz","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1664785023"}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bgd-can-ikk
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/s2x-ecz-fyz
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1663073821702,"filters":[],"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1663073819_random_id OR random_id)","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"bgd-can-ikk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1663073819"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1664785024830,"filters":[],"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1664785023_random_id OR random_id)","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"s2x-ecz-fyz","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1664785023"}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bgd-can-ikk
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/s2x-ecz-fyz
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1663073821702,"filters":[],"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1663073819_random_id OR random_id)","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"bgd-can-ikk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1663073819"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1664785024830,"filters":[],"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1664785023_random_id OR random_id)","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"s2x-ecz-fyz","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1664785023"}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bgd-can-ikk
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/s2x-ecz-fyz
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1663073821702,"filters":[],"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1663073819_random_id OR random_id)","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"bgd-can-ikk","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1663073819"}
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1664785024830,"filters":[],"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1664785023_random_id OR random_id)","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"high case","condition":"first > 3"}],"type":"workload_security","id":"s2x-ecz-fyz","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1664785023"}
     headers:
       Content-Type:
       - application/json
@@ -74,18 +74,18 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"cases":[{"condition":"first \u003e 10","name":"high case (updated)","notifications":["@user"],"status":"medium"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1663073819","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["service"],"metric":"","metrics":[],"name":"first","query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1663073819_random_id OR random_id)"}],"tags":["u:tomato","i:tomato"]}
+      {"cases":[{"condition":"first \u003e 10","name":"high case (updated)","notifications":["@user"],"status":"medium"}],"filters":[],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1664785023","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["service"],"metric":"","metrics":[],"name":"first","query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1664785023_random_id OR random_id)"}],"tags":["u:tomato","i:tomato"]}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bgd-can-ikk
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/s2x-ecz-fyz
     method: PUT
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1663073819_random_id OR random_id)","groupByFields":["service"],"aggregation":"count","name":"first","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first > 10"}],"type":"workload_security","id":"bgd-can-ikk","createdAt":1663073821702,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1663073819"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1664785023_random_id OR random_id)","groupByFields":["service"],"aggregation":"count","name":"first","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first > 10"}],"type":"workload_security","id":"s2x-ecz-fyz","createdAt":1664785024830,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1664785023"}
     headers:
       Content-Type:
       - application/json
@@ -98,11 +98,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bgd-can-ikk
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/s2x-ecz-fyz
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1663073819_random_id OR random_id)","groupByFields":["service"],"aggregation":"count","name":"first","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first > 10"}],"type":"workload_security","id":"bgd-can-ikk","createdAt":1663073821702,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1663073819"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1664785023_random_id OR random_id)","groupByFields":["service"],"aggregation":"count","name":"first","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first > 10"}],"type":"workload_security","id":"s2x-ecz-fyz","createdAt":1664785024830,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1664785023"}
     headers:
       Content-Type:
       - application/json
@@ -115,11 +115,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bgd-can-ikk
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/s2x-ecz-fyz
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1663073819_random_id OR random_id)","groupByFields":["service"],"aggregation":"count","name":"first","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first > 10"}],"type":"workload_security","id":"bgd-can-ikk","createdAt":1663073821702,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1663073819"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":2,"isDefault":false,"filters":[],"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1664785023_random_id OR random_id)","groupByFields":["service"],"aggregation":"count","name":"first","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first > 10"}],"type":"workload_security","id":"s2x-ecz-fyz","createdAt":1664785024830,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1664785023"}
     headers:
       Content-Type:
       - application/json
@@ -132,7 +132,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bgd-can-ikk
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/s2x-ecz-fyz
     method: DELETE
   response:
     body: ""
@@ -146,11 +146,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bgd-can-ikk
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/s2x-ecz-fyz
     method: GET
   response:
     body: |
-      {"errors":["Threat detection rule not found: bgd-can-ikk"]}
+      {"errors":["Threat detection rule not found: s2x-ecz-fyz"]}
     headers:
       Content-Type:
       - application/json

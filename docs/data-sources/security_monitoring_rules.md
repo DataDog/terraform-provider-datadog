@@ -41,19 +41,27 @@ data "datadog_security_monitoring_rules" "test" {
 
 Read-Only:
 
-- `case` (List of Object) (see [below for nested schema](#nestedobjatt--rules--case))
+- `signal_rule` (List of Object) (see [below for nested schema](#nestedobjatt--rules--signal_rule))
+- `standard_rule` (List of Object) (see [below for nested schema](#nestedobjatt--rules--standard_rule))
+
+<a id="nestedobjatt--rules--signal_rule"></a>
+### Nested Schema for `rules.signal_rule`
+
+Read-Only:
+
+- `case` (List of Object) (see [below for nested schema](#nestedobjatt--rules--signal_rule--case))
 - `enabled` (Boolean)
-- `filter` (List of Object) (see [below for nested schema](#nestedobjatt--rules--filter))
+- `filter` (List of Object) (see [below for nested schema](#nestedobjatt--rules--signal_rule--filter))
 - `has_extended_title` (Boolean)
 - `message` (String)
 - `name` (String)
-- `options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options))
-- `query` (List of Object) (see [below for nested schema](#nestedobjatt--rules--query))
+- `options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--signal_rule--options))
+- `query` (List of Object) (see [below for nested schema](#nestedobjatt--rules--signal_rule--query))
 - `tags` (List of String)
 - `type` (String)
 
-<a id="nestedobjatt--rules--case"></a>
-### Nested Schema for `rules.case`
+<a id="nestedobjatt--rules--signal_rule--case"></a>
+### Nested Schema for `rules.signal_rule.case`
 
 Read-Only:
 
@@ -63,8 +71,8 @@ Read-Only:
 - `status` (String)
 
 
-<a id="nestedobjatt--rules--filter"></a>
-### Nested Schema for `rules.filter`
+<a id="nestedobjatt--rules--signal_rule--filter"></a>
+### Nested Schema for `rules.signal_rule.filter`
 
 Read-Only:
 
@@ -72,29 +80,29 @@ Read-Only:
 - `query` (String)
 
 
-<a id="nestedobjatt--rules--options"></a>
-### Nested Schema for `rules.options`
+<a id="nestedobjatt--rules--signal_rule--options"></a>
+### Nested Schema for `rules.signal_rule.options`
 
 Read-Only:
 
 - `decrease_criticality_based_on_env` (Boolean)
 - `detection_method` (String)
 - `evaluation_window` (Number)
-- `impossible_travel_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--impossible_travel_options))
+- `impossible_travel_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--signal_rule--options--impossible_travel_options))
 - `keep_alive` (Number)
 - `max_signal_duration` (Number)
-- `new_value_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--new_value_options))
+- `new_value_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--signal_rule--options--new_value_options))
 
-<a id="nestedobjatt--rules--options--impossible_travel_options"></a>
-### Nested Schema for `rules.options.impossible_travel_options`
+<a id="nestedobjatt--rules--signal_rule--options--impossible_travel_options"></a>
+### Nested Schema for `rules.signal_rule.options.new_value_options`
 
 Read-Only:
 
 - `baseline_user_locations` (Boolean)
 
 
-<a id="nestedobjatt--rules--options--new_value_options"></a>
-### Nested Schema for `rules.options.new_value_options`
+<a id="nestedobjatt--rules--signal_rule--options--new_value_options"></a>
+### Nested Schema for `rules.signal_rule.options.new_value_options`
 
 Read-Only:
 
@@ -105,12 +113,94 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--rules--query"></a>
-### Nested Schema for `rules.query`
+<a id="nestedobjatt--rules--signal_rule--query"></a>
+### Nested Schema for `rules.signal_rule.query`
 
 Read-Only:
 
-- `agent_rule` (List of Object) (see [below for nested schema](#nestedobjatt--rules--query--agent_rule))
+- `aggregation` (String)
+- `correlated_by_fields` (List of String)
+- `correlated_query_index` (String)
+- `name` (String)
+- `rule_id` (String)
+
+
+
+<a id="nestedobjatt--rules--standard_rule"></a>
+### Nested Schema for `rules.standard_rule`
+
+Read-Only:
+
+- `case` (List of Object) (see [below for nested schema](#nestedobjatt--rules--standard_rule--case))
+- `enabled` (Boolean)
+- `filter` (List of Object) (see [below for nested schema](#nestedobjatt--rules--standard_rule--filter))
+- `has_extended_title` (Boolean)
+- `message` (String)
+- `name` (String)
+- `options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--standard_rule--options))
+- `query` (List of Object) (see [below for nested schema](#nestedobjatt--rules--standard_rule--query))
+- `tags` (List of String)
+- `type` (String)
+
+<a id="nestedobjatt--rules--standard_rule--case"></a>
+### Nested Schema for `rules.standard_rule.case`
+
+Read-Only:
+
+- `condition` (String)
+- `name` (String)
+- `notifications` (List of String)
+- `status` (String)
+
+
+<a id="nestedobjatt--rules--standard_rule--filter"></a>
+### Nested Schema for `rules.standard_rule.filter`
+
+Read-Only:
+
+- `action` (String)
+- `query` (String)
+
+
+<a id="nestedobjatt--rules--standard_rule--options"></a>
+### Nested Schema for `rules.standard_rule.options`
+
+Read-Only:
+
+- `decrease_criticality_based_on_env` (Boolean)
+- `detection_method` (String)
+- `evaluation_window` (Number)
+- `impossible_travel_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--standard_rule--options--impossible_travel_options))
+- `keep_alive` (Number)
+- `max_signal_duration` (Number)
+- `new_value_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--standard_rule--options--new_value_options))
+
+<a id="nestedobjatt--rules--standard_rule--options--impossible_travel_options"></a>
+### Nested Schema for `rules.standard_rule.options.new_value_options`
+
+Read-Only:
+
+- `baseline_user_locations` (Boolean)
+
+
+<a id="nestedobjatt--rules--standard_rule--options--new_value_options"></a>
+### Nested Schema for `rules.standard_rule.options.new_value_options`
+
+Read-Only:
+
+- `forget_after` (Number)
+- `learning_duration` (Number)
+- `learning_method` (String)
+- `learning_threshold` (Number)
+
+
+
+<a id="nestedobjatt--rules--standard_rule--query"></a>
+### Nested Schema for `rules.standard_rule.query`
+
+Read-Only:
+
+- `agent_rule` (List of Object) (see [below for nested schema](#nestedobjatt--rules--standard_rule--query--agent_rule))
 - `aggregation` (String)
 - `distinct_fields` (List of String)
 - `group_by_fields` (List of String)
@@ -119,8 +209,8 @@ Read-Only:
 - `name` (String)
 - `query` (String)
 
-<a id="nestedobjatt--rules--query--agent_rule"></a>
-### Nested Schema for `rules.query.agent_rule`
+<a id="nestedobjatt--rules--standard_rule--query--agent_rule"></a>
+### Nested Schema for `rules.standard_rule.query.query`
 
 Read-Only:
 
