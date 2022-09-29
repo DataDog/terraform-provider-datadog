@@ -7,10 +7,10 @@
 ### IMPROVEMENTS
 * [datadog_synthetics_test] Add missing options for synthetics tests by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1553
 * [datadog_dashboard] add Topology Map definition by @anbnyc in https://github.com/DataDog/terraform-provider-datadog/pull/1557
+* [datadog_synthetics_global_variable] Add support for local variable extract from test by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1567
 ### FEATURES
 * [datadog_service_definition] Add terraform support for service catalog definition (yaml/json) by @hyperloglogy in https://github.com/DataDog/terraform-provider-datadog/pull/1556
 * [datadog_logs_pipelines] Add a pipelines datasource by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1555
-* [datadog_synthetics_global_variable] Add support for local variable extract from test by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1567
 
 ## New Contributors
 * @hyperloglogy made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1556
