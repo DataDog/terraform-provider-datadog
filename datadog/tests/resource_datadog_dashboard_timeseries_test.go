@@ -475,6 +475,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 					event_query {
 						data_source = "logs"
 						indexes = ["days-3"]
+						storage = "hot"
 						name = "my_event_query"
 						compute {
 							aggregation = "count"
@@ -708,6 +709,7 @@ var datadogDashboardFormulaAsserts = []string{
 	"widget.0.timeseries_definition.0.request.0.query.1.metric_query.0.aggregator = sum",
 	"widget.1.timeseries_definition.0.request.0.query.0.event_query.0.data_source = logs",
 	"widget.1.timeseries_definition.0.request.0.query.0.event_query.0.indexes.# = 1",
+	"widget.1.timeseries_definition.0.request.0.query.0.event_query.0.storage = hot",
 	"widget.1.timeseries_definition.0.request.0.query.0.event_query.0.indexes.0 = days-3",
 	"widget.1.timeseries_definition.0.request.0.query.0.event_query.0.name = my_event_query",
 	"widget.1.timeseries_definition.0.request.0.query.0.event_query.0.group_by.0.facet = host",
