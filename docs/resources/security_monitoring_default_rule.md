@@ -37,6 +37,7 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `type` (String) The rule type.
 
 <a id="nestedblock--case"></a>
 ### Nested Schema for `case`
