@@ -1,0 +1,123 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardListStreamStorage-local-1664567464","widgets":[{"definition":{"requests":[{"columns":[{"field":"details","width":"auto"}],"query":{"data_source":"logs_stream","indexes":["timestamp","message"],"query_string":"env: prod","storage":"online_archives"},"response_format":"event_list"}],"title":"List Stream 1","title_align":"right","title_size":"16","type":"list_stream"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard
+    method: POST
+  response:
+    body: |
+      {"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"4ii-vgw-iih","title":"tf-TestAccDatadogDashboardListStreamStorage-local-1664567464","url":"/dashboard/4ii-vgw-iih/tf-testaccdatadogdashboardliststreamstorage-local-1664567464","created_at":"2022-09-30T19:51:06.009456+00:00","modified_at":"2022-09-30T19:51:06.009456+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"type":"list_stream","requests":[{"query":{"query_string":"env: prod","data_source":"logs_stream","storage":"online_archives","indexes":["timestamp","message"]},"response_format":"event_list","columns":[{"field":"details","width":"auto"}]}],"title_align":"right","title_size":"16","title":"List Stream 1"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7580124721112832}],"layout_type":"free"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/4ii-vgw-iih
+    method: GET
+  response:
+    body: '{"errors":["Dashboard with ID 4ii-vgw-iih not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/4ii-vgw-iih
+    method: GET
+  response:
+    body: |
+      {"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"4ii-vgw-iih","title":"tf-TestAccDatadogDashboardListStreamStorage-local-1664567464","url":"/dashboard/4ii-vgw-iih/tf-testaccdatadogdashboardliststreamstorage-local-1664567464","created_at":"2022-09-30T19:51:06.009456+00:00","modified_at":"2022-09-30T19:51:06.009456+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"type":"list_stream","requests":[{"query":{"query_string":"env: prod","data_source":"logs_stream","storage":"online_archives","indexes":["timestamp","message"]},"response_format":"event_list","columns":[{"field":"details","width":"auto"}]}],"title_align":"right","title_size":"16","title":"List Stream 1"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7580124721112832}],"layout_type":"free"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/4ii-vgw-iih
+    method: GET
+  response:
+    body: |
+      {"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"4ii-vgw-iih","title":"tf-TestAccDatadogDashboardListStreamStorage-local-1664567464","url":"/dashboard/4ii-vgw-iih/tf-testaccdatadogdashboardliststreamstorage-local-1664567464","created_at":"2022-09-30T19:51:06.009456+00:00","modified_at":"2022-09-30T19:51:06.009456+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"type":"list_stream","requests":[{"query":{"query_string":"env: prod","data_source":"logs_stream","storage":"online_archives","indexes":["timestamp","message"]},"response_format":"event_list","columns":[{"field":"details","width":"auto"}]}],"title_align":"right","title_size":"16","title":"List Stream 1"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7580124721112832}],"layout_type":"free"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/4ii-vgw-iih
+    method: GET
+  response:
+    body: |
+      {"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"4ii-vgw-iih","title":"tf-TestAccDatadogDashboardListStreamStorage-local-1664567464","url":"/dashboard/4ii-vgw-iih/tf-testaccdatadogdashboardliststreamstorage-local-1664567464","created_at":"2022-09-30T19:51:06.009456+00:00","modified_at":"2022-09-30T19:51:06.009456+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"type":"list_stream","requests":[{"query":{"query_string":"env: prod","data_source":"logs_stream","storage":"online_archives","indexes":["timestamp","message"]},"response_format":"event_list","columns":[{"field":"details","width":"auto"}]}],"title_align":"right","title_size":"16","title":"List Stream 1"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7580124721112832}],"layout_type":"free"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/4ii-vgw-iih
+    method: DELETE
+  response:
+    body: |
+      {"deleted_dashboard_id":"4ii-vgw-iih"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/4ii-vgw-iih
+    method: GET
+  response:
+    body: '{"errors":["Dashboard with ID 4ii-vgw-iih not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
