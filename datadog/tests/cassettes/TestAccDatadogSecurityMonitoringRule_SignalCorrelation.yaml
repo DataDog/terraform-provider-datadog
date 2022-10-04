@@ -1,0 +1,431 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057_rule_0","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"","name":"second","query":"does not really match much either"},{"aggregation":"sum","distinctFields":[],"groupByFields":["host"],"metric":"@network.bytes_read","name":"third","query":"does not really match much either"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules
+    method: POST
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059283,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]},{"query":"does not really match much either","groupByFields":["host"],"aggregation":"cardinality","name":"second","distinctFields":["@orgId"]},{"distinctFields":[],"name":"third","metric":"@network.bytes_read","aggregation":"sum","metrics":["@network.bytes_read"],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"},{"status":"low","notifications":[],"name":"low case","condition":"third > 9000"}],"type":"log_detection","id":"01k-azj-xsn","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057_rule_0"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057_rule_1","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"","name":"second","query":"does not really match much either"},{"aggregation":"sum","distinctFields":[],"groupByFields":["host"],"metric":"@network.bytes_read","name":"third","query":"does not really match much either"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules
+    method: POST
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059313,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]},{"query":"does not really match much either","groupByFields":["host"],"aggregation":"cardinality","name":"second","distinctFields":["@orgId"]},{"distinctFields":[],"name":"third","metric":"@network.bytes_read","aggregation":"sum","metrics":["@network.bytes_read"],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"},{"status":"low","notifications":[],"name":"low case","condition":"third > 9000"}],"type":"log_detection","id":"7ow-qj2-xth","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057_rule_1"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"cases":[{"condition":"first \u003e 0 \u0026\u0026 second \u003e 0","name":"high case","notifications":["@user"],"status":"high"}],"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"event_count","correlatedByFields":["host"],"name":"first","ruleId":"01k-azj-xsn"},{"aggregation":"event_count","correlatedByFields":["host"],"correlatedQueryIndex":1,"name":"second","ruleId":"7ow-qj2-xth"}],"tags":["alert:red","attack:advanced"],"type":"signal_correlation"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules
+    method: POST
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["attack:advanced","alert:red"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059664,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"distinctFields":[],"correlatedByFields":["host"],"name":"first","ruleId":"01k-azj-xsn","aggregation":"event_count","groupByFields":[]},{"distinctFields":[],"correlatedByFields":["host"],"name":"second","ruleId":"7ow-qj2-xth","aggregation":"event_count","groupByFields":[],"correlatedQueryIndex":1}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 0 && second > 0"}],"type":"signal_correlation","id":"nbn-wzy-ibe","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/01k-azj-xsn
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059283,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]},{"query":"does not really match much either","groupByFields":["host"],"aggregation":"cardinality","name":"second","distinctFields":["@orgId"]},{"distinctFields":[],"name":"third","metric":"@network.bytes_read","aggregation":"sum","metrics":["@network.bytes_read"],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"},{"status":"low","notifications":[],"name":"low case","condition":"third > 9000"}],"type":"log_detection","id":"01k-azj-xsn","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057_rule_0"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7ow-qj2-xth
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059313,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]},{"query":"does not really match much either","groupByFields":["host"],"aggregation":"cardinality","name":"second","distinctFields":["@orgId"]},{"distinctFields":[],"name":"third","metric":"@network.bytes_read","aggregation":"sum","metrics":["@network.bytes_read"],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"},{"status":"low","notifications":[],"name":"low case","condition":"third > 9000"}],"type":"log_detection","id":"7ow-qj2-xth","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057_rule_1"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/nbn-wzy-ibe
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["attack:advanced","alert:red"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059664,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"distinctFields":[],"correlatedByFields":["host"],"name":"first","ruleId":"01k-azj-xsn","aggregation":"event_count","groupByFields":[]},{"distinctFields":[],"correlatedByFields":["host"],"name":"second","ruleId":"7ow-qj2-xth","aggregation":"event_count","groupByFields":[],"correlatedQueryIndex":1}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 0 && second > 0"}],"type":"signal_correlation","id":"nbn-wzy-ibe","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7ow-qj2-xth
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059313,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]},{"query":"does not really match much either","groupByFields":["host"],"aggregation":"cardinality","name":"second","distinctFields":["@orgId"]},{"distinctFields":[],"name":"third","metric":"@network.bytes_read","aggregation":"sum","metrics":["@network.bytes_read"],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"},{"status":"low","notifications":[],"name":"low case","condition":"third > 9000"}],"type":"log_detection","id":"7ow-qj2-xth","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057_rule_1"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/01k-azj-xsn
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059283,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]},{"query":"does not really match much either","groupByFields":["host"],"aggregation":"cardinality","name":"second","distinctFields":["@orgId"]},{"distinctFields":[],"name":"third","metric":"@network.bytes_read","aggregation":"sum","metrics":["@network.bytes_read"],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"},{"status":"low","notifications":[],"name":"low case","condition":"third > 9000"}],"type":"log_detection","id":"01k-azj-xsn","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057_rule_0"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/nbn-wzy-ibe
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["attack:advanced","alert:red"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059664,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"distinctFields":[],"correlatedByFields":["host"],"name":"first","ruleId":"01k-azj-xsn","aggregation":"event_count","groupByFields":[]},{"distinctFields":[],"correlatedByFields":["host"],"name":"second","ruleId":"7ow-qj2-xth","aggregation":"event_count","groupByFields":[],"correlatedQueryIndex":1}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 0 && second > 0"}],"type":"signal_correlation","id":"nbn-wzy-ibe","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/01k-azj-xsn
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059283,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]},{"query":"does not really match much either","groupByFields":["host"],"aggregation":"cardinality","name":"second","distinctFields":["@orgId"]},{"distinctFields":[],"name":"third","metric":"@network.bytes_read","aggregation":"sum","metrics":["@network.bytes_read"],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"},{"status":"low","notifications":[],"name":"low case","condition":"third > 9000"}],"type":"log_detection","id":"01k-azj-xsn","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057_rule_0"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7ow-qj2-xth
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059313,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]},{"query":"does not really match much either","groupByFields":["host"],"aggregation":"cardinality","name":"second","distinctFields":["@orgId"]},{"distinctFields":[],"name":"third","metric":"@network.bytes_read","aggregation":"sum","metrics":["@network.bytes_read"],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"},{"status":"low","notifications":[],"name":"low case","condition":"third > 9000"}],"type":"log_detection","id":"7ow-qj2-xth","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057_rule_1"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/nbn-wzy-ibe
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["attack:advanced","alert:red"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059664,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"distinctFields":[],"correlatedByFields":["host"],"name":"first","ruleId":"01k-azj-xsn","aggregation":"event_count","groupByFields":[]},{"distinctFields":[],"correlatedByFields":["host"],"name":"second","ruleId":"7ow-qj2-xth","aggregation":"event_count","groupByFields":[],"correlatedQueryIndex":1}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 0 && second > 0"}],"type":"signal_correlation","id":"nbn-wzy-ibe","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"cases":[{"condition":"first_updated \u003e 0 \u0026\u0026 second_updated \u003e 0","name":"high case (updated)","notifications":["@user"],"status":"medium"}],"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057 - updated","options":{"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"event_count","correlatedByFields":["service"],"name":"first_updated","ruleId":"01k-azj-xsn"},{"aggregation":"event_count","correlatedByFields":["service"],"correlatedQueryIndex":0,"name":"second_updated","ruleId":"7ow-qj2-xth"}],"tags":["alert:red","attack:advanced"]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/nbn-wzy-ibe
+    method: PUT
+  response:
+    body: |
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["attack:advanced","alert:red"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":[],"correlatedByFields":["service"],"name":"first_updated","ruleId":"01k-azj-xsn","aggregation":"event_count","groupByFields":[]},{"distinctFields":[],"correlatedByFields":["service"],"name":"second_updated","ruleId":"7ow-qj2-xth","aggregation":"event_count","groupByFields":[],"correlatedQueryIndex":0}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 0 && second_updated > 0"}],"type":"signal_correlation","id":"nbn-wzy-ibe","createdAt":1665415059664,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057 - updated"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/nbn-wzy-ibe
+    method: GET
+  response:
+    body: |
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["attack:advanced","alert:red"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":[],"correlatedByFields":["service"],"name":"first_updated","ruleId":"01k-azj-xsn","aggregation":"event_count","groupByFields":[]},{"distinctFields":[],"correlatedByFields":["service"],"name":"second_updated","ruleId":"7ow-qj2-xth","aggregation":"event_count","groupByFields":[],"correlatedQueryIndex":0}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 0 && second_updated > 0"}],"type":"signal_correlation","id":"nbn-wzy-ibe","createdAt":1665415059664,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057 - updated"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/01k-azj-xsn
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059283,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]},{"query":"does not really match much either","groupByFields":["host"],"aggregation":"cardinality","name":"second","distinctFields":["@orgId"]},{"distinctFields":[],"name":"third","metric":"@network.bytes_read","aggregation":"sum","metrics":["@network.bytes_read"],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"},{"status":"low","notifications":[],"name":"low case","condition":"third > 9000"}],"type":"log_detection","id":"01k-azj-xsn","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057_rule_0"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7ow-qj2-xth
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059313,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]},{"query":"does not really match much either","groupByFields":["host"],"aggregation":"cardinality","name":"second","distinctFields":["@orgId"]},{"distinctFields":[],"name":"third","metric":"@network.bytes_read","aggregation":"sum","metrics":["@network.bytes_read"],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"},{"status":"low","notifications":[],"name":"low case","condition":"third > 9000"}],"type":"log_detection","id":"7ow-qj2-xth","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057_rule_1"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7ow-qj2-xth
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059313,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]},{"query":"does not really match much either","groupByFields":["host"],"aggregation":"cardinality","name":"second","distinctFields":["@orgId"]},{"distinctFields":[],"name":"third","metric":"@network.bytes_read","aggregation":"sum","metrics":["@network.bytes_read"],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"},{"status":"low","notifications":[],"name":"low case","condition":"third > 9000"}],"type":"log_detection","id":"7ow-qj2-xth","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057_rule_1"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/01k-azj-xsn
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":false,"hasExtendedTitle":true,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059283,"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"first","distinctFields":[]},{"query":"does not really match much either","groupByFields":["host"],"aggregation":"cardinality","name":"second","distinctFields":["@orgId"]},{"distinctFields":[],"name":"third","metric":"@network.bytes_read","aggregation":"sum","metrics":["@network.bytes_read"],"groupByFields":["host"],"query":"does not really match much either"}],"isDeleted":false,"cases":[{"status":"high","notifications":["@user"],"name":"high case","condition":"first > 3 || second > 10"},{"status":"medium","notifications":[],"name":"warning case","condition":"first > 0 || second > 0"},{"status":"low","notifications":[],"name":"low case","condition":"third > 9000"}],"type":"log_detection","id":"01k-azj-xsn","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057_rule_0"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/nbn-wzy-ibe
+    method: GET
+  response:
+    body: |
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["attack:advanced","alert:red"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"distinctFields":[],"correlatedByFields":["service"],"name":"first_updated","ruleId":"01k-azj-xsn","aggregation":"event_count","groupByFields":[]},{"distinctFields":[],"correlatedByFields":["service"],"name":"second_updated","ruleId":"7ow-qj2-xth","aggregation":"event_count","groupByFields":[],"correlatedQueryIndex":0}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 0 && second_updated > 0"}],"type":"signal_correlation","id":"nbn-wzy-ibe","createdAt":1665415059664,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1665415057 - updated"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/nbn-wzy-ibe
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/01k-azj-xsn
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7ow-qj2-xth
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/nbn-wzy-ibe
+    method: GET
+  response:
+    body: |
+      {"errors":["Threat detection rule not found: nbn-wzy-ibe"]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/01k-azj-xsn
+    method: GET
+  response:
+    body: |
+      {"errors":["Threat detection rule not found: 01k-azj-xsn"]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7ow-qj2-xth
+    method: GET
+  response:
+    body: |
+      {"errors":["Threat detection rule not found: 7ow-qj2-xth"]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""

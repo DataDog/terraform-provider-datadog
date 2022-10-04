@@ -158,9 +158,40 @@ func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringRule_SignalCorrelation(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringCreatedSignalCorrelationConfig(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitorCreatedSignalCorrelationCheck(accProvider, ruleName),
+			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringUpdatedSignalCorrelationConfig(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitoringUpdateSignalCorrelationCheck(accProvider, ruleName),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogSecurityMonitoringCreatedConfig(name string) string {
+	return testAccCheckDatadogSecurityMonitoringCreatedConfigWithId(name, "")
+}
+
+func testAccCheckDatadogSecurityMonitoringCreatedConfigWithId(name string, id string) string {
+	suffix := id
+	if suffix != "" {
+		suffix = fmt.Sprintf("_%s", suffix)
+	}
 	return fmt.Sprintf(`
-resource "datadog_security_monitoring_rule" "acceptance_test" {
+resource "datadog_security_monitoring_rule" "acceptance_test%s" {
     name = "%s"
     message = "acceptance rule triggered"
     enabled = false
@@ -227,10 +258,18 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 
     tags = ["i:tomato", "u:tomato"]
 }
-`, name)
+`, suffix, name)
 }
 
 func testAccCheckDatadogSecurityMonitorCreatedCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return testAccCheckDatadogSecurityMonitorCreatedCheckWithId(accProvider, ruleName, "")
+}
+
+func testAccCheckDatadogSecurityMonitorCreatedCheckWithId(accProvider func() (*schema.Provider, error), ruleName string, id string) resource.TestCheckFunc {
+	tfSecurityRuleNameWithId := tfSecurityRuleName
+	if id != "" {
+		tfSecurityRuleNameWithId = fmt.Sprintf("%s_%s", tfSecurityRuleNameWithId, id)
+	}
 	return resource.ComposeTestCheckFunc(
 		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
 		resource.TestCheckResourceAttr(
@@ -912,6 +951,237 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     tags = ["u:tomato", "i:tomato"]
 }
 `, name)
+}
+
+func testAccCheckDatadogSecurityMonitoringCreatedSignalCorrelationConfig(name string) string {
+	logDetectionRule0 := fmt.Sprintf("%s_rule_0", name)
+	logDetectionRule1 := fmt.Sprintf("%s_rule_1", name)
+	return fmt.Sprintf(`
+%s
+%s
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+	name = "%s"
+	message = "acceptance rule triggered"
+	enabled = false
+	has_extended_title = true
+
+	signal_query {
+		name = "first"
+		rule_id = "${datadog_security_monitoring_rule.acceptance_test_0.id}"
+		aggregation = "event_count"
+		correlated_by_fields = ["host"]
+	}
+
+	signal_query {
+		name = "second"
+		rule_id = "${datadog_security_monitoring_rule.acceptance_test_1.id}"
+		aggregation = "event_count"
+		correlated_by_fields = ["host"]
+		correlated_query_index = "1"
+	}
+
+	case {
+		name = "high case"
+		status = "high"
+		condition = "first > 0 && second > 0"
+		notifications = ["@user"]
+	}
+
+	options {
+		evaluation_window = 300
+		keep_alive = 600
+		max_signal_duration = 900
+	}
+
+	filter {
+		query = "does not really suppress"
+		action = "suppress"
+	}
+
+	filter {
+		query = "does not really require neither"
+		action = "require"
+	}
+
+	type = "signal_correlation"
+
+	tags = ["alert:red", "attack:advanced"]
+}
+`, testAccCheckDatadogSecurityMonitoringCreatedConfigWithId(logDetectionRule0, "0"),
+		testAccCheckDatadogSecurityMonitoringCreatedConfigWithId(logDetectionRule1, "1"),
+		name)
+}
+
+func testCheckResourceAttrPairSignalCorrelation(name string, queryId int, logDetectionId int) resource.TestCheckFunc {
+	logDetectionName := fmt.Sprintf("%s_%d", name, logDetectionId)
+	signalQuery := fmt.Sprintf("signal_query.%d.rule_id", queryId)
+	return resource.TestCheckResourceAttrPair(name, signalQuery, logDetectionName, "id")
+}
+
+func testAccCheckDatadogSecurityMonitorCreatedSignalCorrelationCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "acceptance rule triggered"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "enabled", "false"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "has_extended_title", "true"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.0.name", "first"),
+		testCheckResourceAttrPairSignalCorrelation(tfSecurityRuleName, 0, 0),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.0.aggregation", "event_count"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.0.correlated_by_fields.0", "host"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.0.correlated_query_index", ""),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.1.name", "second"),
+		testCheckResourceAttrPairSignalCorrelation(tfSecurityRuleName, 1, 1),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.1.aggregation", "event_count"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.1.correlated_by_fields.0", "host"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.1.correlated_query_index", "1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.name", "high case"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.status", "high"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.condition", "first > 0 && second > 0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.notifications.0", "@user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.evaluation_window", "300"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "filter.0.action", "suppress"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "filter.0.query", "does not really suppress"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "filter.1.action", "require"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "filter.1.query", "does not really require neither"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.0", "alert:red"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.1", "attack:advanced"),
+	)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdatedSignalCorrelationConfig(name string) string {
+	logDetectionRule0 := fmt.Sprintf("%s_rule_0", name)
+	logDetectionRule1 := fmt.Sprintf("%s_rule_1", name)
+	return fmt.Sprintf(`
+%s
+%s
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+	name = "%s - updated"
+	message = "acceptance rule triggered (updated)"
+	enabled = true
+	has_extended_title = false
+
+	signal_query {
+		name = "first_updated"
+		rule_id = "${datadog_security_monitoring_rule.acceptance_test_0.id}"
+		correlated_by_fields = ["service"]
+		aggregation = "event_count"
+	}
+
+	signal_query {
+		name = "second_updated"
+		rule_id = "${datadog_security_monitoring_rule.acceptance_test_1.id}"
+		correlated_by_fields = ["service"]
+		correlated_query_index = "0"
+		aggregation = "event_count"
+	}
+
+	case {
+		name = "high case (updated)"
+		status = "medium"
+		condition = "first_updated > 0 && second_updated > 0"
+		notifications = ["@user"]
+	}
+
+	options {
+		evaluation_window = 60
+		keep_alive = 300
+		max_signal_duration = 600
+	}
+
+	filter {
+		query = "does not really suppress (updated)"
+		action = "suppress"
+	}
+
+	type = "signal_correlation"
+
+	tags = ["alert:red", "attack:advanced"]
+}
+`, testAccCheckDatadogSecurityMonitoringCreatedConfigWithId(logDetectionRule0, "0"),
+		testAccCheckDatadogSecurityMonitoringCreatedConfigWithId(logDetectionRule1, "1"),
+		name)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdateSignalCorrelationCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName+" - updated"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "acceptance rule triggered (updated)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "enabled", "true"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "has_extended_title", "false"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.0.name", "first_updated"),
+		testCheckResourceAttrPairSignalCorrelation(tfSecurityRuleName, 0, 0),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.0.aggregation", "event_count"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.0.correlated_by_fields.0", "service"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.0.correlated_query_index", ""),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.1.name", "second_updated"),
+		testCheckResourceAttrPairSignalCorrelation(tfSecurityRuleName, 1, 1),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.1.aggregation", "event_count"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.1.correlated_by_fields.0", "service"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "signal_query.1.correlated_query_index", "0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.name", "high case (updated)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.status", "medium"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.condition", "first_updated > 0 && second_updated > 0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.notifications.0", "@user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.evaluation_window", "60"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "300"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "filter.0.action", "suppress"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "filter.0.query", "does not really suppress (updated)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.0", "alert:red"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "tags.1", "attack:advanced"),
+	)
 }
 
 func testAccCheckDatadogSecurityMonitoringEnabledDefaultCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
