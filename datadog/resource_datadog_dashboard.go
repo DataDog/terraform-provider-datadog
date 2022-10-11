@@ -4942,7 +4942,7 @@ func getSloListDefinitionSchema() map[string]*schema.Schema {
 		"request": {
 			Description: "A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed.",
 			Type:        schema.TypeList,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
 			MinItems:    1,
 			Elem: &schema.Resource{
@@ -4971,7 +4971,7 @@ func getSloListDefinitionSchema() map[string]*schema.Schema {
 func getSloListRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"request_type": {
-			Description:      "The request type for the SLO List request ('slo_list').",
+			Description:      "The request type for the SLO List request.",
 			Type:             schema.TypeString,
 			Required:         true,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOListWidgetRequestTypeFromValue),
