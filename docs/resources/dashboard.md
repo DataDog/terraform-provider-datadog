@@ -765,6 +765,7 @@ Optional:
 - `scatterplot_definition` (Block List, Max: 1) The definition for a Scatterplot widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition))
 - `service_level_objective_definition` (Block List, Max: 1) The definition for a Service Level Objective widget. (see [below for nested schema](#nestedblock--widget--service_level_objective_definition))
 - `servicemap_definition` (Block List, Max: 1) The definition for a Service Map widget. (see [below for nested schema](#nestedblock--widget--servicemap_definition))
+- `slo_list_definition` (Block List, Max: 1) The definition for an SLO (Service Level Objective) List widget. (see [below for nested schema](#nestedblock--widget--slo_list_definition))
 - `sunburst_definition` (Block List, Max: 1) The definition for a Sunburst widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition))
 - `timeseries_definition` (Block List, Max: 1) The definition for a Timeseries widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition))
 - `toplist_definition` (Block List, Max: 1) The definition for a Toplist widget. (see [below for nested schema](#nestedblock--widget--toplist_definition))
@@ -2141,6 +2142,7 @@ Optional:
 - `scatterplot_definition` (Block List, Max: 1) The definition for a Scatterplot widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition))
 - `service_level_objective_definition` (Block List, Max: 1) The definition for a Service Level Objective widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--service_level_objective_definition))
 - `servicemap_definition` (Block List, Max: 1) The definition for a Service Map widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition))
+- `slo_list_definition` (Block List, Max: 1) The definition for an SLO (Service Level Objective) List widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition))
 - `sunburst_definition` (Block List, Max: 1) The definition for a Sunburst widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition))
 - `timeseries_definition` (Block List, Max: 1) The definition for a Timeseries widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition))
 - `toplist_definition` (Block List, Max: 1) The definition for a Toplist widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition))
@@ -6592,6 +6594,38 @@ Optional:
 - `label` (String) The label for the custom link URL.
 - `link` (String) The URL of the custom link.
 - `override_label` (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--slo_list_definition"></a>
+### Nested Schema for `widget.group_definition.widget.slo_list_definition`
+
+Optional:
+
+- `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--request))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--slo_list_definition--request"></a>
+### Nested Schema for `widget.group_definition.widget.slo_list_definition.request`
+
+Required:
+
+- `query` (Block List, Min: 1, Max: 1) Updated SLO List widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--request--query))
+- `request_type` (String) The request type for the SLO List request ('slo_list'). Valid values are `slo_list`.
+
+<a id="nestedblock--widget--group_definition--widget--slo_list_definition--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.slo_list_definition.request.query`
+
+Required:
+
+- `query_string` (String) Widget query.
+
+Optional:
+
+- `limit` (Number) Maximum number of results to display in the table.
+
 
 
 
@@ -11970,6 +12004,38 @@ Optional:
 - `label` (String) The label for the custom link URL.
 - `link` (String) The URL of the custom link.
 - `override_label` (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
+
+
+
+<a id="nestedblock--widget--slo_list_definition"></a>
+### Nested Schema for `widget.slo_list_definition`
+
+Optional:
+
+- `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--slo_list_definition--request))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--slo_list_definition--request"></a>
+### Nested Schema for `widget.slo_list_definition.request`
+
+Required:
+
+- `query` (Block List, Min: 1, Max: 1) Updated SLO List widget. (see [below for nested schema](#nestedblock--widget--slo_list_definition--request--query))
+- `request_type` (String) The request type for the SLO List request ('slo_list'). Valid values are `slo_list`.
+
+<a id="nestedblock--widget--slo_list_definition--request--query"></a>
+### Nested Schema for `widget.slo_list_definition.request.query`
+
+Required:
+
+- `query_string` (String) Widget query.
+
+Optional:
+
+- `limit` (Number) Maximum number of results to display in the table.
+
 
 
 
