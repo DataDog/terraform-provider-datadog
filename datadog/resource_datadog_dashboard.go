@@ -835,6 +835,15 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getServiceLevelObjectiveDefinitionSchema(),
 			},
 		},
+		"slo_list_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for an SLO (Service Level Objective) List widget.",
+			Elem: &schema.Resource{
+				Schema: getSloListDefinitionSchema(),
+			},
+		},
 		"sunburst_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -1008,6 +1017,10 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 		if serviceLevelObjectiveDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.SLOWidgetDefinitionAsWidgetDefinition(buildDatadogServiceLevelObjectiveDefinition(serviceLevelObjectiveDefinition))
 		}
+	} else if def, ok := terraformWidget["slo_list_definition"].([]interface{}); ok && len(def) > 0 {
+		if sloListDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.SLOListWidgetDefinitionAsWidgetDefinition(buildDatadogSloListDefinition(sloListDefinition))
+		}
 	} else if def, ok := terraformWidget["sunburst_definition"].([]interface{}); ok && len(def) > 0 {
 		if sunburstDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.SunburstWidgetDefinitionAsWidgetDefinition(buildDatadogSunburstDefinition(sunburstDefinition))
@@ -1173,6 +1186,9 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataK
 	} else if widgetDefinition.SLOWidgetDefinition != nil {
 		terraformDefinition := buildTerraformServiceLevelObjectiveDefinition(*widgetDefinition.SLOWidgetDefinition)
 		terraformWidget["service_level_objective_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if widgetDefinition.SLOListWidgetDefinition != nil {
+		terraformDefinition := buildTerraformSloListDefinition(*widgetDefinition.SLOListWidgetDefinition, k.Add("slo_list_definition.0"))
+		terraformWidget["slo_list_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.SunburstWidgetDefinition != nil {
 		terraformDefinition := buildTerraformSunburstDefinition(*widgetDefinition.SunburstWidgetDefinition, k.Add("sunburst_definition.0"))
 		k.Remove("sunburst_definition.0")
@@ -4915,6 +4931,156 @@ func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition datadogV1.S
 		terraformDefinition["global_time_target"] = globalTimeTarget
 	}
 	return terraformDefinition
+}
+
+//
+// SLO (Service Level Objective) List Widget Definition helpers
+//
+
+func getSloListDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"request": {
+			Description: "A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Elem: &schema.Resource{
+				Schema: getSloListRequestSchema(),
+			},
+		},
+		"title": {
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"title_size": {
+			Description: "The size of the widget's title (defaults to 16).",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"title_align": {
+			Description:      "The alignment of the widget's title.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
+		},
+	}
+}
+
+func getSloListRequestSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"request_type": {
+			Description:      "The request type for the SLO List request ('slo_list').",
+			Type:             schema.TypeString,
+			Required:         true,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOListWidgetRequestTypeFromValue),
+		},
+		"query": {
+			Description: "Updated SLO List widget.",
+			Type:        schema.TypeList,
+			Required:    true,
+			MaxItems:    1,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"query_string": {
+						Description: "Widget query.",
+						Type:        schema.TypeString,
+						Required:    true,
+					},
+					"limit": {
+						Description: "Maximum number of results to display in the table.",
+						Type:        schema.TypeInt,
+						Optional:    true,
+						Default:     100,
+					},
+				},
+			},
+		},
+	}
+}
+
+func buildDatadogSloListDefinition(terraformDefinition map[string]interface{}) *datadogV1.SLOListWidgetDefinition {
+	datadogDefinition := datadogV1.NewSLOListWidgetDefinitionWithDefaults()
+	// Required params
+	terraformRequest := terraformDefinition["request"].([]interface{})
+	datadogDefinition.SetRequests(*buildDatadogSloListRequests(&terraformRequest))
+	// Optional params
+	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitle(v)
+	}
+	if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleSize(v)
+	}
+	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
+	}
+	return datadogDefinition
+}
+
+func buildDatadogSloListRequests(terraformRequests *[]interface{}) *[]datadogV1.SLOListWidgetRequest {
+	datadogRequests := make([]datadogV1.SLOListWidgetRequest, len(*terraformRequests))
+	for i, r := range *terraformRequests {
+		terraformRequest := r.(map[string]interface{})
+		datadogSloListRequest := datadogV1.NewSLOListWidgetRequestWithDefaults()
+
+		if v, ok := terraformRequest["request_type"].(string); ok && len(v) != 0 {
+			datadogSloListRequest.SetRequestType(datadogV1.SLOListWidgetRequestType(v))
+		}
+		if terraformQuery, ok := terraformRequest["query"].([]interface{}); ok && len(terraformQuery) > 0 {
+			q := terraformQuery[0].(map[string]interface{})
+			datadogQuery := datadogV1.NewSLOListWidgetQueryWithDefaults()
+
+			if v, ok := q["query_string"].(string); ok {
+				datadogQuery.SetQueryString(v)
+			}
+			if v, ok := q["limit"].(int); ok {
+				datadogQuery.SetLimit(int64(v))
+			}
+			datadogSloListRequest.SetQuery(*datadogQuery)
+		}
+		datadogRequests[i] = *datadogSloListRequest
+	}
+	return &datadogRequests
+}
+
+func buildTerraformSloListDefinition(datadogDefinition datadogV1.SLOListWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+	terraformDefinition := map[string]interface{}{}
+	// Required params
+	terraformDefinition["request"] = buildTerraformSloListRequests(&datadogDefinition.Requests, k)
+	// Optional params
+	if title, ok := datadogDefinition.GetTitleOk(); ok {
+		terraformDefinition["title"] = title
+	}
+	if titleSize, ok := datadogDefinition.GetTitleSizeOk(); ok {
+		terraformDefinition["title_size"] = titleSize
+	}
+	if titleAlign, ok := datadogDefinition.GetTitleAlignOk(); ok {
+		terraformDefinition["title_align"] = titleAlign
+	}
+	return terraformDefinition
+}
+
+func buildTerraformSloListRequests(datadogSloListRequests *[]datadogV1.SLOListWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+	terraformRequests := make([]map[string]interface{}, len(*datadogSloListRequests))
+	for i, datadogRequest := range *datadogSloListRequests {
+		terraformRequest := map[string]interface{}{}
+		if v, ok := datadogRequest.GetRequestTypeOk(); ok {
+			terraformRequest["request_type"] = *v
+		}
+		if datadogQuery, ok := datadogRequest.GetQueryOk(); ok {
+			terraformQuery := map[string]interface{}{}
+			if v, ok := datadogQuery.GetQueryStringOk(); ok {
+				terraformQuery["query_string"] = v
+			}
+			if v, ok := datadogQuery.GetLimitOk(); ok {
+				terraformQuery["limit"] = v
+			}
+			terraformRequest["query"] = []map[string]interface{}{terraformQuery}
+		}
+		terraformRequests[i] = terraformRequest
+	}
+	return &terraformRequests
 }
 
 //
