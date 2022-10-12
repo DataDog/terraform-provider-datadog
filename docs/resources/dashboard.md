@@ -6600,9 +6600,12 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--slo_list_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.slo_list_definition`
 
+Required:
+
+- `request` (Block List, Min: 1, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--request))
+
 Optional:
 
-- `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -6613,7 +6616,7 @@ Optional:
 Required:
 
 - `query` (Block List, Min: 1, Max: 1) Updated SLO List widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--request--query))
-- `request_type` (String) The request type for the SLO List request ('slo_list'). Valid values are `slo_list`.
+- `request_type` (String) The request type for the SLO List request. Valid values are `slo_list`.
 
 <a id="nestedblock--widget--group_definition--widget--slo_list_definition--request--query"></a>
 ### Nested Schema for `widget.group_definition.widget.slo_list_definition.request.query`
@@ -12010,9 +12013,12 @@ Optional:
 <a id="nestedblock--widget--slo_list_definition"></a>
 ### Nested Schema for `widget.slo_list_definition`
 
+Required:
+
+- `request` (Block List, Min: 1, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--slo_list_definition--request))
+
 Optional:
 
-- `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--slo_list_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -12023,7 +12029,7 @@ Optional:
 Required:
 
 - `query` (Block List, Min: 1, Max: 1) Updated SLO List widget. (see [below for nested schema](#nestedblock--widget--slo_list_definition--request--query))
-- `request_type` (String) The request type for the SLO List request ('slo_list'). Valid values are `slo_list`.
+- `request_type` (String) The request type for the SLO List request. Valid values are `slo_list`.
 
 <a id="nestedblock--widget--slo_list_definition--request--query"></a>
 ### Nested Schema for `widget.slo_list_definition.request.query`
