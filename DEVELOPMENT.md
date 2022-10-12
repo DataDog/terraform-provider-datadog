@@ -70,9 +70,9 @@ The Datadog terraform provider uses the standard [Terraform Testing Framework][6
 
 **NOTE** Use the API and APP keys for a sandbox/test organization, never an account hosting production data. This test suite will create/update/delete real resources.
 
--   `DD_API_KEY="<api_key>" DD_APP_KEY=<app_key> make testall` will run the test suite against the real Datadog API.
+-   `DD_TEST_CLIENT_API_KEY="<api_key>" DD_TEST_CLIENT_APP_KEY=<app_key> make testall` will run the test suite against the real Datadog API.
 
-We also use `cassettes` to record API request/responses, which allows the test suite to be reliable and run very quickly. There are a few environment variables that can control this behavior (All commands are assumed to be prefixed with `DD_API_KEY=` and `DD_APP_KEY=`)
+We also use `cassettes` to record API request/responses, which allows the test suite to be reliable and run very quickly. There are a few environment variables that can control this behavior (All commands are assumed to be prefixed with `DD_TEST_CLIENT_API_KEY=` and `DD_TEST_CLIENT_APP_KEY=`)
 
 -   `TESTARGS`: Allows passing extra flags directly to the underlying `go test` command. Most often used to run individual tests:
     -   Ex: `TESTARGS="-run TestAccDatadogServiceLevelObjective_Basic" make testall`
