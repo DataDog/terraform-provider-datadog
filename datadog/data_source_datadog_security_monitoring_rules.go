@@ -122,10 +122,6 @@ func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema
 		}
 
 		for _, ruleR := range response.GetData() {
-			if ruleR.GetActualInstance() == nil {
-				continue
-			}
-
 			if ruleR.SecurityMonitoringStandardRuleResponse != nil {
 				rule := ruleR.SecurityMonitoringStandardRuleResponse
 				if !matchesSecMonRuleFilters(rule.GetName(), rule.GetIsDefault(), rule.GetTags(), nameFilter, defaultFilter, tagFilter) {
@@ -133,7 +129,7 @@ func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema
 				}
 				ruleIds = append(ruleIds, rule.GetId())
 				rules = append(rules, buildSecurityMonitoringTfStandardRule(rule))
-			} else {
+			} else if ruleR.SecurityMonitoringSignalRuleResponse != nil {
 				rule := ruleR.SecurityMonitoringSignalRuleResponse
 				if !matchesSecMonRuleFilters(rule.GetName(), rule.GetIsDefault(), rule.GetTags(), nameFilter, defaultFilter, tagFilter) {
 					continue

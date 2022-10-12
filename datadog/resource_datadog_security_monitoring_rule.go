@@ -3,10 +3,7 @@ package datadog
 import (
 	"context"
 	"fmt"
-	"reflect"
 	"strconv"
-
-	"github.com/hashicorp/go-cty/cty"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -28,66 +25,6 @@ func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 		},
 
 		Schema: datadogSecurityMonitoringRuleSchema(),
-	}
-}
-
-// ValidateMergedEnumValue returns a validate func for a merge of two enum values
-// It reuses the same logic as ValidateEnumValue
-func ValidateMergedEnumValue(newEnumFuncA interface{}, newEnumFuncB interface{}) schema.SchemaValidateDiagFunc {
-	fA := reflect.TypeOf(newEnumFuncA)
-	argTA := fA.In(0)
-	fB := reflect.TypeOf(newEnumFuncB)
-	argTB := fB.In(0)
-
-	return func(val interface{}, path cty.Path) diag.Diagnostics {
-		var diags diag.Diagnostics
-
-		if _, ok := val.(validators.EnumChecker); ok {
-			msg := ""
-			sep := ", "
-			enumA := reflect.New(fA.Out(0)).Elem()
-			validValuesA := enumA.MethodByName("GetAllowedValues").Call([]reflect.Value{})[0]
-			for i := 0; i < validValuesA.Len(); i++ {
-				if i == validValuesA.Len()-1 {
-					sep = ""
-				}
-				msg += fmt.Sprintf("`%v`%s", validValuesA.Index(i).Interface(), sep)
-			}
-			enumB := reflect.New(fB.Out(0)).Elem()
-			validValuesB := enumB.MethodByName("GetAllowedValues").Call([]reflect.Value{})[0]
-			sep = ", "
-			if validValuesB.Len() > 0 {
-				msg += fmt.Sprintf("%s", sep)
-			}
-			for i := 0; i < validValuesB.Len(); i++ {
-				if i == validValuesB.Len()-1 {
-					sep = ""
-				}
-				msg += fmt.Sprintf("`%v`%s", validValuesB.Index(i).Interface(), sep)
-			}
-
-			return append(diags, diag.Diagnostic{
-				Severity:      diag.Warning,
-				Summary:       "Allowed values",
-				Detail:        msg,
-				AttributePath: cty.Path{},
-			})
-		}
-
-		arg := reflect.ValueOf(val)
-		outsA := reflect.ValueOf(newEnumFuncA).Call([]reflect.Value{arg.Convert(argTA)})
-		outsB := reflect.ValueOf(newEnumFuncB).Call([]reflect.Value{arg.Convert(argTB)})
-		errA := outsA[1].Interface()
-		errB := outsB[1].Interface()
-		if errA != nil && errB != nil {
-			diags = append(diags, diag.Diagnostic{
-				Severity:      diag.Error,
-				Summary:       "Invalid enum value",
-				Detail:        fmt.Sprintf("%s and %s", errA.(error).Error(), errB.(error).Error()),
-				AttributePath: path,
-			})
-		}
-		return diags
 	}
 }
 
@@ -401,7 +338,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 
 		"type": {
 			Type:             schema.TypeString,
-			ValidateDiagFunc: ValidateMergedEnumValue(datadogV2.NewSecurityMonitoringRuleTypeReadFromValue, datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue),
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleTypeReadFromValue, datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue),
 			Optional:         true,
 			Description:      "The rule type.",
 			Default:          "log_detection",
