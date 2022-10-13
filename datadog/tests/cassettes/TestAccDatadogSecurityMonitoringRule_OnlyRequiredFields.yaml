@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665415057","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"","query":"does not really match much"}],"type":"log_detection"}
+      {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665663120","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"","query":"does not really match much"}],"type":"log_detection"}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059229,"filters":[],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"y94-kzg-fn6","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665415057"}
+      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665663121481,"filters":[],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"ngm-obi-qbn","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665663120"}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/y94-kzg-fn6
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ngm-obi-qbn
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059229,"filters":[],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"y94-kzg-fn6","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665415057"}
+      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665663121481,"filters":[],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"ngm-obi-qbn","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665663120"}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/y94-kzg-fn6
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ngm-obi-qbn
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059229,"filters":[],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"y94-kzg-fn6","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665415057"}
+      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665663121481,"filters":[],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"ngm-obi-qbn","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665663120"}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/y94-kzg-fn6
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ngm-obi-qbn
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665415059229,"filters":[],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"y94-kzg-fn6","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665415057"}
+      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665663121481,"filters":[],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"ngm-obi-qbn","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665663120"}
     headers:
       Content-Type:
       - application/json
@@ -74,18 +74,18 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665415057 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["service"],"metric":"","metrics":[],"name":"first_updated","query":"does not really match much (updated)"}],"tags":["u:tomato","i:tomato"]}
+      {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665663120 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["service"],"metric":"","metrics":[],"name":"first_updated","query":"does not really match much (updated)"}],"tags":["u:tomato","i:tomato"]}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/y94-kzg-fn6
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ngm-obi-qbn
     method: PUT
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"aggregation":"cardinality","name":"first_updated","distinctFields":["@orgId"]}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"y94-kzg-fn6","createdAt":1665415059229,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665415057 - updated"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"aggregation":"cardinality","name":"first_updated","distinctFields":["@orgId"]}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"ngm-obi-qbn","createdAt":1665663121481,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665663120 - updated"}
     headers:
       Content-Type:
       - application/json
@@ -98,11 +98,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/y94-kzg-fn6
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ngm-obi-qbn
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"aggregation":"cardinality","name":"first_updated","distinctFields":["@orgId"]}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"y94-kzg-fn6","createdAt":1665415059229,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665415057 - updated"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"aggregation":"cardinality","name":"first_updated","distinctFields":["@orgId"]}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"ngm-obi-qbn","createdAt":1665663121481,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665663120 - updated"}
     headers:
       Content-Type:
       - application/json
@@ -115,11 +115,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/y94-kzg-fn6
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ngm-obi-qbn
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"aggregation":"cardinality","name":"first_updated","distinctFields":["@orgId"]}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"y94-kzg-fn6","createdAt":1665415059229,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665415057 - updated"}
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["u:tomato","i:tomato"],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered (updated)","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"maxSignalDuration":600,"keepAlive":300},"version":2,"isDefault":false,"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"aggregation":"cardinality","name":"first_updated","distinctFields":["@orgId"]}],"isDeleted":false,"cases":[{"status":"medium","notifications":["@user"],"name":"high case (updated)","condition":"first_updated > 3"},{"status":"high","notifications":[],"name":"warning case (updated)","condition":"first_updated > 0"}],"type":"log_detection","id":"ngm-obi-qbn","createdAt":1665663121481,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1665663120 - updated"}
     headers:
       Content-Type:
       - application/json
@@ -132,7 +132,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/y94-kzg-fn6
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ngm-obi-qbn
     method: DELETE
   response:
     body: ""
@@ -146,11 +146,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/y94-kzg-fn6
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ngm-obi-qbn
     method: GET
   response:
     body: |
-      {"errors":["Threat detection rule not found: y94-kzg-fn6"]}
+      {"errors":["Threat detection rule not found: ngm-obi-qbn"]}
     headers:
       Content-Type:
       - application/json

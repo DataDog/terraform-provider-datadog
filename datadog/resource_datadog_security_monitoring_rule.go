@@ -721,16 +721,6 @@ func buildCreateSignalPayloadQueries(d *schema.ResourceData) ([]datadogV2.Securi
 			}
 		}
 
-		if v, ok := query["metrics"]; ok && v != nil {
-			if tfMetrics, ok := v.([]interface{}); ok && len(tfMetrics) > 0 {
-				metrics := make([]string, len(tfMetrics))
-				for i, value := range tfMetrics {
-					metrics[i] = value.(string)
-				}
-				payloadQuery.SetMetrics(metrics)
-			}
-		}
-
 		if v, ok := query["name"]; ok {
 			name := v.(string)
 			payloadQuery.SetName(name)
@@ -861,9 +851,6 @@ func updateSignalResourceDataFromResponse(d *schema.ResourceData, ruleResponse *
 		}
 		if correlatedQueryIndex, ok := responseRuleQuery.GetCorrelatedQueryIndexOk(); ok {
 			ruleQuery["correlated_query_index"] = fmt.Sprintf("%d", *correlatedQueryIndex)
-		}
-		if metrics, ok := responseRuleQuery.GetMetricsOk(); ok {
-			ruleQuery["metrics"] = *metrics
 		}
 		if name, ok := responseRuleQuery.GetNameOk(); ok {
 			ruleQuery["name"] = *name
@@ -1148,15 +1135,6 @@ func buildUpdateSignalRuleQuery(tfQuery interface{}) (datadogV2.SecurityMonitori
 		if vInt, err := strconv.Atoi(v.(string)); err == nil {
 			payloadQuery.SetCorrelatedQueryIndex(int32(vInt))
 		}
-	}
-
-	if v, ok := query["metrics"]; ok {
-		tfMetrics := v.([]interface{})
-		metrics := make([]string, len(tfMetrics))
-		for i, value := range tfMetrics {
-			metrics[i] = value.(string)
-		}
-		payloadQuery.SetMetrics(metrics)
 	}
 
 	if v, ok := query["name"]; ok {
