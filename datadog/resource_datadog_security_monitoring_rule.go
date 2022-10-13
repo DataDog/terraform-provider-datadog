@@ -223,7 +223,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						Type:             schema.TypeString,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleQueryAggregationFromValue),
 						Optional:         true,
-						Description:      "The aggregation type. For Signal Correlation rules, it must be event_query.",
+						Description:      "The aggregation type. For Signal Correlation rules, it must be event_count.",
 						Default:          datadogV2.SECURITYMONITORINGRULEQUERYAGGREGATION_COUNT,
 					},
 					"distinct_fields": {
@@ -274,7 +274,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						Type:             schema.TypeString,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleQueryAggregationFromValue),
 						Optional:         true,
-						Description:      "The aggregation type. For Signal Correlation rules, it must be event_query.",
+						Description:      "The aggregation type. For Signal Correlation rules, it must be event_count.",
 						Default:          datadogV2.SECURITYMONITORINGRULEQUERYAGGREGATION_EVENT_COUNT,
 					},
 					"name": {
@@ -413,7 +413,7 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 
 func buildCreateStandardPayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringStandardRuleCreatePayload, error) {
 	payload := datadogV2.SecurityMonitoringStandardRuleCreatePayload{}
-	payload.Cases = buildCreatePayloadCases(d)
+	payload.SetCases(buildCreatePayloadCases(d))
 
 	payload.SetIsEnabled(d.Get("enabled").(bool))
 	payload.SetMessage(d.Get("message").(string))
@@ -455,7 +455,7 @@ func buildCreateStandardPayload(d *schema.ResourceData) (datadogV2.SecurityMonit
 
 func buildCreateSignalPayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringSignalRuleCreatePayload, error) {
 	payload := datadogV2.SecurityMonitoringSignalRuleCreatePayload{}
-	payload.Cases = buildCreatePayloadCases(d)
+	payload.SetCases(buildCreatePayloadCases(d))
 
 	payload.SetIsEnabled(d.Get("enabled").(bool))
 	payload.SetMessage(d.Get("message").(string))
@@ -893,8 +893,8 @@ func extractFiltersFromRuleResponse(ruleResponseFilter []datadogV2.SecurityMonit
 	return filters
 }
 
-func extractRuleCases(responseRulesCases []datadogV2.SecurityMonitoringRuleCase) []interface{} {
-	ruleCases := make([]interface{}, len(responseRulesCases))
+func extractRuleCases(responseRulesCases []datadogV2.SecurityMonitoringRuleCase) []map[string]interface{} {
+	ruleCases := make([]map[string]interface{}, len(responseRulesCases))
 	for idx, responseRuleCase := range responseRulesCases {
 		ruleCase := make(map[string]interface{})
 

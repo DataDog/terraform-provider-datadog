@@ -145,7 +145,7 @@ Required:
 Optional:
 
 - `agent_rule` (Block List, Deprecated) **Deprecated**. It won't be applied anymore. **Deprecated.** `agent_rule` has been deprecated in favor of new Agent Rule resource. (see [below for nested schema](#nestedblock--query--agent_rule))
-- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_query. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`.
+- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`.
 - `distinct_fields` (List of String) Field for which the cardinality is measured. Sent as an array.
 - `group_by_fields` (List of String) Fields to group by.
 - `metric` (String) The target field to aggregate over when using the `sum`, `max`, or `new_value` aggregations.
@@ -171,7 +171,7 @@ Required:
 
 Optional:
 
-- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_query. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`.
+- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`.
 - `correlated_by_fields` (List of String) Fields to correlate by.
 - `correlated_query_index` (String) Index of the rule query used to retrieve the correlated field. An empty string applies correlation on the non-projected per query attributes of the rule.
 - `default_rule_id` (String) Default Rule ID of the signal to correlate. This value is READ-ONLY.
