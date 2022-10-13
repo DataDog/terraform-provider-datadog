@@ -190,7 +190,7 @@ func computeSecMonDataSourceRulesID(nameFilter *string, defaultFilter *bool, tag
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
-func buildSecurityMonitoringTfStandardRule(rule *datadogV2.SecurityMonitoringStandardRuleResponse) map[string]interface{} {
+func buildSecurityMonitoringTfCommonRule(rule SecurityMonitoringRuleResponseInterface) map[string]interface{} {
 	tfRule := make(map[string]interface{})
 
 	tfRule["case"] = extractRuleCases(rule.GetCases())
@@ -201,6 +201,19 @@ func buildSecurityMonitoringTfStandardRule(rule *datadogV2.SecurityMonitoringSta
 
 	tfOptions := extractTfOptions(rule.GetOptions())
 	tfRule["options"] = []map[string]interface{}{tfOptions}
+
+	if tags, ok := rule.GetTagsOk(); ok {
+		tfRule["tags"] = *tags
+	}
+
+	filters := extractFiltersFromRuleResponse(rule.GetFilters())
+	tfRule["filter"] = filters
+
+	return tfRule
+}
+
+func buildSecurityMonitoringTfStandardRule(rule *datadogV2.SecurityMonitoringStandardRuleResponse) map[string]interface{} {
+	tfRule := buildSecurityMonitoringTfCommonRule(rule)
 
 	tfQueries := make([]map[string]interface{}, len(rule.GetQueries()))
 	for i, query := range rule.GetQueries() {
@@ -225,13 +238,6 @@ func buildSecurityMonitoringTfStandardRule(rule *datadogV2.SecurityMonitoringSta
 	}
 	tfRule["query"] = tfQueries
 
-	if tags, ok := rule.GetTagsOk(); ok {
-		tfRule["tags"] = *tags
-	}
-
-	filters := extractFiltersFromRuleResponse(rule.GetFilters())
-	tfRule["filter"] = filters
-
 	if ruleType, ok := rule.GetTypeOk(); ok {
 		tfRule["type"] = *ruleType
 	}
@@ -240,16 +246,7 @@ func buildSecurityMonitoringTfStandardRule(rule *datadogV2.SecurityMonitoringSta
 }
 
 func buildSecurityMonitoringTfSignalRule(rule *datadogV2.SecurityMonitoringSignalRuleResponse) map[string]interface{} {
-	tfRule := make(map[string]interface{})
-
-	tfRule["case"] = extractRuleCases(rule.GetCases())
-	tfRule["enabled"] = rule.GetIsEnabled()
-	tfRule["message"] = rule.GetMessage()
-	tfRule["name"] = rule.GetName()
-	tfRule["has_extended_title"] = rule.GetHasExtendedTitle()
-
-	tfOptions := extractTfOptions(rule.GetOptions())
-	tfRule["options"] = []map[string]interface{}{tfOptions}
+	tfRule := buildSecurityMonitoringTfCommonRule(rule)
 
 	tfQueries := make([]map[string]interface{}, len(rule.GetQueries()))
 	for i, query := range rule.GetQueries() {
@@ -270,13 +267,6 @@ func buildSecurityMonitoringTfSignalRule(rule *datadogV2.SecurityMonitoringSigna
 		tfQueries[i] = tfQuery
 	}
 	tfRule["signal_query"] = tfQueries
-
-	if tags, ok := rule.GetTagsOk(); ok {
-		tfRule["tags"] = tags
-	}
-
-	filters := extractFiltersFromRuleResponse(rule.GetFilters())
-	tfRule["filter"] = filters
 
 	if ruleType, ok := rule.GetTypeOk(); ok {
 		tfRule["type"] = *ruleType

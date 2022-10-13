@@ -346,6 +346,45 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 	}
 }
 
+// SecurityMonitoringRuleInterface Common Interface to SecurityMonitoringRuleCreateInterface and SecurityMonitoringRuleReadInterface
+type SecurityMonitoringRuleInterface interface {
+	GetFilters() []datadogV2.SecurityMonitoringFilter
+	GetFiltersOk() (*[]datadogV2.SecurityMonitoringFilter, bool)
+	SetFilters(v []datadogV2.SecurityMonitoringFilter)
+	GetHasExtendedTitle() bool
+	GetHasExtendedTitleOk() (*bool, bool)
+	SetHasExtendedTitle(v bool)
+	GetIsEnabled() bool
+	GetIsEnabledOk() (*bool, bool)
+	SetIsEnabled(v bool)
+	GetMessage() string
+	GetMessageOk() (*string, bool)
+	SetMessage(v string)
+	GetName() string
+	GetNameOk() (*string, bool)
+	SetName(v string)
+	GetOptions() datadogV2.SecurityMonitoringRuleOptions
+	GetOptionsOk() (*datadogV2.SecurityMonitoringRuleOptions, bool)
+	SetOptions(v datadogV2.SecurityMonitoringRuleOptions)
+	GetTags() []string
+	GetTagsOk() (*[]string, bool)
+	SetTags(v []string)
+}
+
+// SecurityMonitoringRuleCreateInterface Common interface to SecurityMonitoringStandardRuleCreatePayload and SecurityMonitoringSignalRuleCreatePayload
+type SecurityMonitoringRuleCreateInterface interface {
+	SecurityMonitoringRuleInterface
+	SetCases(v []datadogV2.SecurityMonitoringRuleCaseCreate)
+	GetCases() []datadogV2.SecurityMonitoringRuleCaseCreate
+}
+
+// SecurityMonitoringRuleResponseInterface Common interface to SecurityMonitoringStandardRuleResponse and SecurityMonitoringSignalRuleResponse
+type SecurityMonitoringRuleResponseInterface interface {
+	SecurityMonitoringRuleInterface
+	SetCases(v []datadogV2.SecurityMonitoringRuleCase)
+	GetCases() []datadogV2.SecurityMonitoringRuleCase
+}
+
 func resourceDatadogSecurityMonitoringRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -411,8 +450,7 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 	return datadogV2.SecurityMonitoringStandardRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(&payload), err
 }
 
-func buildCreateStandardPayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringStandardRuleCreatePayload, error) {
-	payload := datadogV2.SecurityMonitoringStandardRuleCreatePayload{}
+func buildCreateCommonPayload(d *schema.ResourceData, payload SecurityMonitoringRuleCreateInterface) {
 	payload.SetCases(buildCreatePayloadCases(d))
 
 	payload.SetIsEnabled(d.Get("enabled").(bool))
@@ -425,8 +463,6 @@ func buildCreateStandardPayload(d *schema.ResourceData) (datadogV2.SecurityMonit
 		payloadOptions := buildPayloadOptions(tfOptionsList, d.Get("type").(string))
 		payload.SetOptions(*payloadOptions)
 	}
-
-	payload.SetQueries(buildCreateStandardPayloadQueries(d))
 
 	if v, ok := d.GetOk("tags"); ok {
 		tfTags := v.([]interface{})
@@ -441,6 +477,13 @@ func buildCreateStandardPayload(d *schema.ResourceData) (datadogV2.SecurityMonit
 		tfFilterList := v.([]interface{})
 		payload.SetFilters(buildPayloadFilters(tfFilterList))
 	}
+}
+
+func buildCreateStandardPayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringStandardRuleCreatePayload, error) {
+	payload := datadogV2.SecurityMonitoringStandardRuleCreatePayload{}
+	buildCreateCommonPayload(d, &payload)
+
+	payload.SetQueries(buildCreateStandardPayloadQueries(d))
 
 	if v, ok := d.GetOk("type"); ok {
 		if ruleType, err := datadogV2.NewSecurityMonitoringRuleTypeCreateFromValue(v.(string)); err == nil {
@@ -449,43 +492,17 @@ func buildCreateStandardPayload(d *schema.ResourceData) (datadogV2.SecurityMonit
 			return payload, err
 		}
 	}
-
 	return payload, nil
 }
 
 func buildCreateSignalPayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringSignalRuleCreatePayload, error) {
 	payload := datadogV2.SecurityMonitoringSignalRuleCreatePayload{}
-	payload.SetCases(buildCreatePayloadCases(d))
-
-	payload.SetIsEnabled(d.Get("enabled").(bool))
-	payload.SetMessage(d.Get("message").(string))
-	payload.SetName(d.Get("name").(string))
-	payload.SetHasExtendedTitle(d.Get("has_extended_title").(bool))
-
-	if v, ok := d.GetOk("options"); ok {
-		tfOptionsList := v.([]interface{})
-		payloadOptions := buildPayloadOptions(tfOptionsList, d.Get("type").(string))
-		payload.SetOptions(*payloadOptions)
-	}
+	buildCreateCommonPayload(d, &payload)
 
 	if queries, err := buildCreateSignalPayloadQueries(d); err == nil {
 		payload.SetQueries(queries)
 	} else {
 		return payload, err
-	}
-
-	if v, ok := d.GetOk("tags"); ok {
-		tfTags := v.([]interface{})
-		tags := make([]string, len(tfTags))
-		for i, value := range tfTags {
-			tags[i] = value.(string)
-		}
-		payload.SetTags(tags)
-	}
-
-	if v, ok := d.GetOk("filter"); ok {
-		tfFilterList := v.([]interface{})
-		payload.SetFilters(buildPayloadFilters(tfFilterList))
 	}
 
 	if v, ok := d.GetOk("type"); ok {
@@ -772,7 +789,7 @@ func resourceDatadogSecurityMonitoringRuleRead(ctx context.Context, d *schema.Re
 	return nil
 }
 
-func updateStandardResourceDataFromResponse(d *schema.ResourceData, ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse) {
+func updateCommonResourceDataFromResponse(d *schema.ResourceData, ruleResponse SecurityMonitoringRuleResponseInterface) {
 	d.Set("case", extractRuleCases(ruleResponse.GetCases()))
 	d.Set("message", ruleResponse.GetMessage())
 	d.Set("name", ruleResponse.GetName())
@@ -782,6 +799,15 @@ func updateStandardResourceDataFromResponse(d *schema.ResourceData, ruleResponse
 	options := extractTfOptions(ruleResponse.GetOptions())
 
 	d.Set("options", []map[string]interface{}{options})
+
+	if _, ok := ruleResponse.GetFiltersOk(); ok {
+		filters := extractFiltersFromRuleResponse(ruleResponse.GetFilters())
+		d.Set("filter", filters)
+	}
+}
+
+func updateStandardResourceDataFromResponse(d *schema.ResourceData, ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse) {
+	updateCommonResourceDataFromResponse(d, ruleResponse)
 
 	ruleQueries := make([]map[string]interface{}, len(ruleResponse.GetQueries()))
 	for idx := range ruleResponse.GetQueries() {
@@ -814,26 +840,13 @@ func updateStandardResourceDataFromResponse(d *schema.ResourceData, ruleResponse
 	}
 	d.Set("query", ruleQueries)
 
-	if _, ok := ruleResponse.GetFiltersOk(); ok {
-		filters := extractFiltersFromRuleResponse(ruleResponse.GetFilters())
-		d.Set("filter", filters)
-	}
-
 	if ruleType, ok := ruleResponse.GetTypeOk(); ok {
 		d.Set("type", *ruleType)
 	}
 }
 
 func updateSignalResourceDataFromResponse(d *schema.ResourceData, ruleResponse *datadogV2.SecurityMonitoringSignalRuleResponse) {
-	d.Set("case", extractRuleCases(ruleResponse.GetCases()))
-	d.Set("message", ruleResponse.GetMessage())
-	d.Set("name", ruleResponse.GetName())
-	d.Set("has_extended_title", ruleResponse.GetHasExtendedTitle())
-	d.Set("enabled", ruleResponse.GetIsEnabled())
-
-	options := extractTfOptions(ruleResponse.GetOptions())
-
-	d.Set("options", []map[string]interface{}{options})
+	updateCommonResourceDataFromResponse(d, ruleResponse)
 
 	ruleQueries := make([]map[string]interface{}, len(ruleResponse.GetQueries()))
 	for idx := range ruleResponse.GetQueries() {
@@ -865,11 +878,6 @@ func updateSignalResourceDataFromResponse(d *schema.ResourceData, ruleResponse *
 		ruleQueries[idx] = ruleQuery
 	}
 	d.Set("signal_query", ruleQueries)
-
-	if _, ok := ruleResponse.GetFiltersOk(); ok {
-		filters := extractFiltersFromRuleResponse(ruleResponse.GetFilters())
-		d.Set("filter", filters)
-	}
 
 	if ruleType, ok := ruleResponse.GetTypeOk(); ok {
 		d.Set("type", *ruleType)
