@@ -653,7 +653,7 @@ func TestAccDatadogMonitor_LogMultiAlert(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "type", "log alert"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "query", "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") > 2"),
+						"datadog_monitor.foo", "query", "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source,status\").last(\"5m\") > 2"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
@@ -678,6 +678,10 @@ func TestAccDatadogMonitor_LogMultiAlert(t *testing.T) {
 						"datadog_monitor.foo", "enable_logs_sample", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "groupby_simple_monitor", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notify_by.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notify_by.0", "status"),
 				),
 			},
 		},
@@ -1227,7 +1231,7 @@ resource "datadog_monitor" "foo" {
   message = "some message Notify: @hipchat-channel"
   escalation_message = "the situation has escalated @pagerduty"
 
-  query = "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") > 2"
+  query = "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source,status\").last(\"5m\") > 2"
 
   monitor_thresholds {
 	warning = "1.0"
@@ -1249,6 +1253,7 @@ resource "datadog_monitor" "foo" {
   locked = false
   tags = ["foo:bar", "baz"]
   enable_logs_sample = true
+  notify_by = ["status"]
 }`, uniq)
 }
 

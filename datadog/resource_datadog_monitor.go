@@ -307,6 +307,12 @@ func resourceDatadogMonitor() *schema.Resource {
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
+			"notify_by": {
+				Description: "Controls what granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by `cluster`, `namespace`, and `pod` can be configured to only notify on each new `cluster` violating the alert conditions by setting `notify_by` to `['cluster']`. Tags mentioned in `notify_by` must be a subset of the grouping tags in the query. For example, a query grouped by `cluster` and `namespace` cannot notify on `region`. Setting `notify_by` to `[*]` configures the monitor to notify as a simple-alert.",
+				Type:        schema.TypeSet,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+			},
 			// since this is only useful for "log alert" type, we don't set a default value
 			// if we did set it, it would be used for all types; we have to handle this manually
 			// throughout the code
@@ -589,6 +595,15 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 		if attr, ok := d.GetOk("groupby_simple_monitor"); ok {
 			o.SetGroupbySimpleMonitor(attr.(bool))
 		}
+	}
+
+	if attr, ok := d.GetOk("notify_by"); ok {
+		notifyBy := make([]string, 0)
+		for _, s := range attr.(*schema.Set).List() {
+			notifyBy = append(notifyBy, s.(string))
+		}
+		sort.Strings(notifyBy)
+		o.SetNotifyBy(notifyBy)
 	}
 
 	m := datadogV1.NewMonitor(d.Get("query").(string), monitorType)
@@ -906,6 +921,10 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		if err := d.Set("groupby_simple_monitor", m.Options.GetGroupbySimpleMonitor()); err != nil {
 			return diag.FromErr(err)
 		}
+	}
+
+	if err := d.Set("notify_by", m.Options.GetNotifyBy()); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return nil
