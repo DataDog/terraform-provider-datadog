@@ -346,8 +346,8 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 	}
 }
 
-// SecurityMonitoringRuleInterface Common Interface to SecurityMonitoringRuleCreateInterface and SecurityMonitoringRuleReadInterface
-type SecurityMonitoringRuleInterface interface {
+// securityMonitoringRuleInterface Common Interface to securityMonitoringRuleCreateInterface and SecurityMonitoringRuleReadInterface
+type securityMonitoringRuleInterface interface {
 	GetFilters() []datadogV2.SecurityMonitoringFilter
 	GetFiltersOk() (*[]datadogV2.SecurityMonitoringFilter, bool)
 	SetFilters(v []datadogV2.SecurityMonitoringFilter)
@@ -371,16 +371,16 @@ type SecurityMonitoringRuleInterface interface {
 	SetTags(v []string)
 }
 
-// SecurityMonitoringRuleCreateInterface Common interface to SecurityMonitoringStandardRuleCreatePayload and SecurityMonitoringSignalRuleCreatePayload
-type SecurityMonitoringRuleCreateInterface interface {
-	SecurityMonitoringRuleInterface
+// securityMonitoringRuleCreateInterface Common interface to SecurityMonitoringStandardRuleCreatePayload and SecurityMonitoringSignalRuleCreatePayload
+type securityMonitoringRuleCreateInterface interface {
+	securityMonitoringRuleInterface
 	SetCases(v []datadogV2.SecurityMonitoringRuleCaseCreate)
 	GetCases() []datadogV2.SecurityMonitoringRuleCaseCreate
 }
 
-// SecurityMonitoringRuleResponseInterface Common interface to SecurityMonitoringStandardRuleResponse and SecurityMonitoringSignalRuleResponse
-type SecurityMonitoringRuleResponseInterface interface {
-	SecurityMonitoringRuleInterface
+// securityMonitoringRuleResponseInterface Common interface to SecurityMonitoringStandardRuleResponse and SecurityMonitoringSignalRuleResponse
+type securityMonitoringRuleResponseInterface interface {
+	securityMonitoringRuleInterface
 	SetCases(v []datadogV2.SecurityMonitoringRuleCase)
 	GetCases() []datadogV2.SecurityMonitoringRuleCase
 }
@@ -450,7 +450,7 @@ func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 	return datadogV2.SecurityMonitoringStandardRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(&payload), err
 }
 
-func buildCreateCommonPayload(d *schema.ResourceData, payload SecurityMonitoringRuleCreateInterface) {
+func buildCreateCommonPayload(d *schema.ResourceData, payload securityMonitoringRuleCreateInterface) {
 	payload.SetCases(buildCreatePayloadCases(d))
 
 	payload.SetIsEnabled(d.Get("enabled").(bool))
@@ -779,7 +779,7 @@ func resourceDatadogSecurityMonitoringRuleRead(ctx context.Context, d *schema.Re
 	return nil
 }
 
-func updateCommonResourceDataFromResponse(d *schema.ResourceData, ruleResponse SecurityMonitoringRuleResponseInterface) {
+func updateCommonResourceDataFromResponse(d *schema.ResourceData, ruleResponse securityMonitoringRuleResponseInterface) {
 	d.Set("case", extractRuleCases(ruleResponse.GetCases()))
 	d.Set("message", ruleResponse.GetMessage())
 	d.Set("name", ruleResponse.GetName())

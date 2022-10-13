@@ -190,7 +190,7 @@ func computeSecMonDataSourceRulesID(nameFilter *string, defaultFilter *bool, tag
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
-func buildSecurityMonitoringTfCommonRule(rule SecurityMonitoringRuleResponseInterface) map[string]interface{} {
+func buildSecurityMonitoringTfCommonRule(rule securityMonitoringRuleResponseInterface) map[string]interface{} {
 	tfRule := make(map[string]interface{})
 
 	tfRule["case"] = extractRuleCases(rule.GetCases())
