@@ -57,7 +57,6 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - `case` (Block List, Min: 1, Max: 10) Cases for generating signals. (see [below for nested schema](#nestedblock--case))
 - `message` (String) Message for generated signals.
 - `name` (String) The name of the rule.
-- `query` (Block List, Min: 1) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
 
 ### Optional
 
@@ -65,8 +64,10 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - `filter` (Block List) Additional queries to filter matched events before they are processed. (see [below for nested schema](#nestedblock--filter))
 - `has_extended_title` (Boolean) Whether the notifications include the triggering group-by values in their title.
 - `options` (Block List, Max: 1) Options on rules. (see [below for nested schema](#nestedblock--options))
+- `query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
+- `signal_query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--signal_query))
 - `tags` (List of String) Tags for generated signals.
-- `type` (String) The rule type. Valid values are `log_detection`, `infrastructure_configuration`, `workload_security`, `cloud_configuration`.
+- `type` (String) The rule type. Valid values are `log_detection`, `infrastructure_configuration`, `workload_security`, `cloud_configuration`, `signal_correlation`.
 
 ### Read-Only
 
@@ -84,33 +85,6 @@ Optional:
 - `condition` (String) A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.
 - `name` (String) Name of the case.
 - `notifications` (List of String) Notification targets for each rule case.
-
-
-<a id="nestedblock--query"></a>
-### Nested Schema for `query`
-
-Required:
-
-- `query` (String) Query to run on logs.
-
-Optional:
-
-- `agent_rule` (Block List, Deprecated) **Deprecated**. It won't be applied anymore. **Deprecated.** `agent_rule` has been deprecated in favor of new Agent Rule resource. (see [below for nested schema](#nestedblock--query--agent_rule))
-- `aggregation` (String) The aggregation type. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`.
-- `distinct_fields` (List of String) Field for which the cardinality is measured. Sent as an array.
-- `group_by_fields` (List of String) Fields to group by.
-- `metric` (String) The target field to aggregate over when using the `sum`, `max`, or `new_value` aggregations.
-- `metrics` (List of String) Group of target fields to aggregate over when using the new value aggregations.
-- `name` (String) Name of the query. Not compatible with `new_value` aggregations.
-
-<a id="nestedblock--query--agent_rule"></a>
-### Nested Schema for `query.agent_rule`
-
-Required:
-
-- `agent_rule_id` (String) **Deprecated**. It won't be applied anymore.
-- `expression` (String) **Deprecated**. It won't be applied anymore.
-
 
 
 <a id="nestedblock--filter"></a>
@@ -143,7 +117,7 @@ Optional:
 
 Optional:
 
-- `baseline_user_locations` (Boolean) If true, signals are suppressed for the first 24 hours. In that time, Datadog learns the user's regular access locations. This can be helpful to reduce noise and infer VPN usage or credentialed API access.
+- `baseline_user_locations` (Boolean) If true, signals are suppressed for the first 24 hours. During that time, Datadog learns the user's regular access locations. This can be helpful to reduce noise and infer VPN usage or credentialed API access.
 
 
 <a id="nestedblock--options--new_value_options"></a>
@@ -158,6 +132,50 @@ Optional:
 - `learning_duration` (Number) The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned. Valid values are `0`, `1`, `7`.
 - `learning_method` (String) The learning method used to determine when signals should be generated for values that weren't learned. Valid values are `duration`, `threshold`.
 - `learning_threshold` (Number) A number of occurrences after which signals are generated for values that weren't learned. Valid values are `0`, `1`.
+
+
+
+<a id="nestedblock--query"></a>
+### Nested Schema for `query`
+
+Required:
+
+- `query` (String) Query to run on logs.
+
+Optional:
+
+- `agent_rule` (Block List, Deprecated) **Deprecated**. It won't be applied anymore. **Deprecated.** `agent_rule` has been deprecated in favor of new Agent Rule resource. (see [below for nested schema](#nestedblock--query--agent_rule))
+- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`.
+- `distinct_fields` (List of String) Field for which the cardinality is measured. Sent as an array.
+- `group_by_fields` (List of String) Fields to group by.
+- `metric` (String) The target field to aggregate over when using the `sum`, `max`, or `new_value` aggregations.
+- `metrics` (List of String) Group of target fields to aggregate over when using the new value aggregations.
+- `name` (String) Name of the query. Not compatible with `new_value` aggregations.
+
+<a id="nestedblock--query--agent_rule"></a>
+### Nested Schema for `query.agent_rule`
+
+Required:
+
+- `agent_rule_id` (String) **Deprecated**. It won't be applied anymore.
+- `expression` (String) **Deprecated**. It won't be applied anymore.
+
+
+
+<a id="nestedblock--signal_query"></a>
+### Nested Schema for `signal_query`
+
+Required:
+
+- `rule_id` (String) Rule ID of the signal to correlate.
+
+Optional:
+
+- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`.
+- `correlated_by_fields` (List of String) Fields to correlate by.
+- `correlated_query_index` (String) Index of the rule query used to retrieve the correlated field. An empty string applies correlation on the non-projected per query attributes of the rule.
+- `default_rule_id` (String) Default Rule ID of the signal to correlate. This value is READ-ONLY.
+- `name` (String) Name of the query. Not compatible with `new_value` aggregations.
 
 ## Import
 

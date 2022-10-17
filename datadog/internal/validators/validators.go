@@ -21,30 +21,36 @@ func ValidateFloatString(v interface{}, k string) (ws []string, errors []error) 
 // EnumChecker type to get allowed enum values from validate func
 type EnumChecker struct{}
 
-// ValidateEnumValue returns a validate func for an enum value. It takes the constructor with validation for the enum as an argument.
+// ValidateEnumValue returns a validate func for a collection of enum value. It takes the constructors with validation for the enum as an argument.
 // Such a constructor is for instance `datadogV1.NewWidgetLineWidthFromValue`
-func ValidateEnumValue(newEnumFunc interface{}) schema.SchemaValidateDiagFunc {
+func ValidateEnumValue(newEnumFuncs ...interface{}) schema.SchemaValidateDiagFunc {
 
 	// Get type of arg to convert int to int32/64 for instance
-	f := reflect.TypeOf(newEnumFunc)
-	argT := f.In(0)
+	f := make([]reflect.Type, len(newEnumFuncs))
+	argT := make([]reflect.Type, len(newEnumFuncs))
+	for idx, newEnumFunc := range newEnumFuncs {
+		f[idx] = reflect.TypeOf(newEnumFunc)
+		argT[idx] = f[idx].In(0)
+	}
 
 	return func(val interface{}, path cty.Path) diag.Diagnostics {
 		var diags diag.Diagnostics
 
 		// Hack to return a specific diagnostic containing the allowed enum values and have accurate docs
+		msg := ""
+		sep := ""
 		if _, ok := val.(EnumChecker); ok {
-			enum := reflect.New(f.Out(0)).Elem()
-			validValues := enum.MethodByName("GetAllowedValues").Call([]reflect.Value{})[0]
-			msg := ""
-			sep := ", "
-			for i := 0; i < validValues.Len(); i++ {
-				if i == validValues.Len()-1 {
-					sep = ""
-				}
-				msg += fmt.Sprintf("`%v`%s", validValues.Index(i).Interface(), sep)
-			}
+			for _, fi := range f {
+				enum := reflect.New(fi.Out(0)).Elem()
+				validValues := enum.MethodByName("GetAllowedValues").Call([]reflect.Value{})[0]
 
+				for i := 0; i < validValues.Len(); i++ {
+					if len(msg) > 0 {
+						sep = ", "
+					}
+					msg += fmt.Sprintf("%s`%v`", sep, validValues.Index(i).Interface())
+				}
+			}
 			return append(diags, diag.Diagnostic{
 				Severity:      diag.Warning,
 				Summary:       "Allowed values",
@@ -54,12 +60,23 @@ func ValidateEnumValue(newEnumFunc interface{}) schema.SchemaValidateDiagFunc {
 		}
 
 		arg := reflect.ValueOf(val)
-		outs := reflect.ValueOf(newEnumFunc).Call([]reflect.Value{arg.Convert(argT)})
-		if err := outs[1].Interface(); err != nil {
-			diags = append(diags, diag.Diagnostic{
+		sep = ""
+		nbErrors := 0
+		for idx, newEnumFunc := range newEnumFuncs {
+			outs := reflect.ValueOf(newEnumFunc).Call([]reflect.Value{arg.Convert(argT[idx])})
+			if err := outs[1].Interface(); err != nil {
+				if len(msg) > 0 {
+					sep = ", "
+				}
+				msg += fmt.Sprintf("%s`%v`", sep, err.(error).Error())
+				nbErrors++
+			}
+		}
+		if nbErrors == len(newEnumFuncs) {
+			return append(diags, diag.Diagnostic{
 				Severity:      diag.Error,
 				Summary:       "Invalid enum value",
-				Detail:        err.(error).Error(),
+				Detail:        msg,
 				AttributePath: path,
 			})
 		}

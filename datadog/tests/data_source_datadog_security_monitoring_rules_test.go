@@ -100,12 +100,18 @@ func securityMonitoringCheckRuleCountNameFilter(accProvider func() (*schema.Prov
 
 		ruleCount := 0
 		for _, rule := range *allRules {
-			if rule.SecurityMonitoringStandardRuleResponse == nil {
+			if rule.GetActualInstance() == nil {
 				continue
 			}
 
-			if strings.Contains(rule.SecurityMonitoringStandardRuleResponse.GetName(), name) {
-				ruleCount++
+			if rule.SecurityMonitoringStandardRuleResponse != nil {
+				if strings.Contains(rule.SecurityMonitoringStandardRuleResponse.GetName(), name) {
+					ruleCount++
+				}
+			} else {
+				if strings.Contains(rule.SecurityMonitoringSignalRuleResponse.GetName(), name) {
+					ruleCount++
+				}
 			}
 		}
 
@@ -124,11 +130,17 @@ func securityMonitoringCheckRuleCountTagsFilter(accProvider func() (*schema.Prov
 
 		ruleCount := 0
 		for _, rule := range *allRules {
-			if rule.SecurityMonitoringStandardRuleResponse == nil {
+			if rule.GetActualInstance() == nil {
 				continue
 			}
 
-			for _, tag := range rule.SecurityMonitoringStandardRuleResponse.GetTags() {
+			var tags []string
+			if rule.SecurityMonitoringStandardRuleResponse != nil {
+				tags = rule.SecurityMonitoringStandardRuleResponse.GetTags()
+			} else {
+				tags = rule.SecurityMonitoringSignalRuleResponse.GetTags()
+			}
+			for _, tag := range tags {
 				if strings.Contains(tag, filterTag) {
 					ruleCount++
 				}
@@ -149,12 +161,18 @@ func securityMonitoringCheckRuleCountDefaultFilter(accProvider func() (*schema.P
 
 		ruleCount := 0
 		for _, rule := range *allRules {
-			if rule.SecurityMonitoringStandardRuleResponse == nil {
+			if rule.GetActualInstance() == nil {
 				continue
 			}
 
-			if rule.SecurityMonitoringStandardRuleResponse.GetIsDefault() == isDefault {
-				ruleCount++
+			if rule.SecurityMonitoringStandardRuleResponse != nil {
+				if rule.SecurityMonitoringStandardRuleResponse.GetIsDefault() == isDefault {
+					ruleCount++
+				}
+			} else {
+				if rule.SecurityMonitoringSignalRuleResponse.GetIsDefault() == isDefault {
+					ruleCount++
+				}
 			}
 		}
 		return securityMonitoringCheckRuleCount(state, ruleCount)

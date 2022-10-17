@@ -49,6 +49,7 @@ Read-Only:
 - `name` (String)
 - `options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options))
 - `query` (List of Object) (see [below for nested schema](#nestedobjatt--rules--query))
+- `signal_query` (List of Object) (see [below for nested schema](#nestedobjatt--rules--signal_query))
 - `tags` (List of String)
 - `type` (String)
 
@@ -126,5 +127,19 @@ Read-Only:
 
 - `agent_rule_id` (String)
 - `expression` (String)
+
+
+
+<a id="nestedobjatt--rules--signal_query"></a>
+### Nested Schema for `rules.signal_query`
+
+Read-Only:
+
+- `aggregation` (String)
+- `correlated_by_fields` (List of String)
+- `correlated_query_index` (String)
+- `default_rule_id` (String)
+- `name` (String)
+- `rule_id` (String)
 
 
