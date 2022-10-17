@@ -42,4 +42,4 @@ Import is supported using the following syntax:
 # The Datadog Terraform Provider does not support the creation and deletion of index orders. There must be at most one `datadog_logs_index_order` resource
 terraform import <datadog_logs_index_order.name> <name>
 ```
-`<name>` here can be whatever you specify in your code; datadog does not store a name at their server.
+`<name>` can be whatever you specify in your code; Datadog does not store a name on the server.
