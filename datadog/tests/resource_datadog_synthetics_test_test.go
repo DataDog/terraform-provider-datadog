@@ -2230,6 +2230,8 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.disable_csp", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.disable_cors", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.initial_navigation_timeout", "150"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
@@ -2342,6 +2344,7 @@ resource "datadog_synthetics_test" "bar" {
 
 		ignore_server_certificate_error = true
 		disable_csp = true
+        disable_cors = true
 		initial_navigation_timeout = 150
 	}
 

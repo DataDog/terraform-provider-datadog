@@ -619,6 +619,7 @@ Optional:
 - `check_certificate_revocation` (Boolean) For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.
 - `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--options_list--ci))
 - `disable_csp` (Boolean) Disable Content Security Policy for browser tests.
+- `disable_cors` (Boolean) Disable Cross-Origin Resource Sharing for browser tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - `ignore_server_certificate_error` (Boolean) Ignore server certificate error.
 - `initial_navigation_timeout` (Number) Timeout before declaring the initial step as failed (in seconds) for browser tests.
