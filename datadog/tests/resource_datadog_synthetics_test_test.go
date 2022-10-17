@@ -2344,7 +2344,7 @@ resource "datadog_synthetics_test" "bar" {
 
 		ignore_server_certificate_error = true
 		disable_csp = true
-        disable_cors = true
+		disable_cors = true
 		initial_navigation_timeout = 150
 	}
 
