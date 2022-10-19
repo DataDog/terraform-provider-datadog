@@ -221,6 +221,12 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				Type:        schema.TypeBool,
 				Computed:    true,
 			},
+			"notify_by": {
+				Description: "Controls what granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by `cluster`, `namespace`, and `pod` can be configured to only notify on each new `cluster` violating the alert conditions by setting `notify_by` to `['cluster']`. Tags mentioned in `notify_by` must be a subset of the grouping tags in the query. For example, a query grouped by `cluster` and `namespace` cannot notify on `region`. Setting `notify_by` to `[*]` configures the monitor to notify as a simple-alert.",
+				Type:        schema.TypeSet,
+				Computed:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+			},
 		},
 	}
 }
@@ -328,6 +334,7 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	d.Set("locked", m.Options.GetLocked())
 	d.Set("restricted_roles", restricted_roles)
 	d.Set("groupby_simple_monitor", m.Options.GetGroupbySimpleMonitor())
+	d.Set("notify_by", m.Options.GetNotifyBy())
 
 	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {
 		d.Set("enable_logs_sample", m.Options.GetEnableLogsSample())
