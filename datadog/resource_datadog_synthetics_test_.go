@@ -583,6 +583,11 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
+				"disable_cors": {
+					Description: "Disable Cross-Origin Resource Sharing for browser tests.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 				"initial_navigation_timeout": {
 					Description: "Timeout before declaring the initial step as failed (in seconds) for browser tests.",
 					Type:        schema.TypeInt,
@@ -1934,6 +1939,10 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			options.SetDisableCsp(disableCsp.(bool))
 		}
 
+		if disableCors, ok := d.GetOk("options_list.0.disable_cors"); ok {
+			options.SetDisableCors(disableCors.(bool))
+		}
+
 		if initialNavigationTimeout, ok := d.GetOk("options_list.0.initial_navigation_timeout"); ok {
 			options.SetInitialNavigationTimeout(int64(initialNavigationTimeout.(int)))
 		}
@@ -2432,6 +2441,9 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	}
 	if actualOptions.HasDisableCsp() {
 		localOptionsList["disable_csp"] = actualOptions.GetDisableCsp()
+	}
+	if actualOptions.HasDisableCors() {
+		localOptionsList["disable_cors"] = actualOptions.GetDisableCors()
 	}
 	if actualOptions.HasInitialNavigationTimeout() {
 		localOptionsList["initial_navigation_timeout"] = actualOptions.GetInitialNavigationTimeout()
