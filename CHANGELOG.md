@@ -1,9 +1,9 @@
 ## 3.17.0 (October 24, 2022)
 
 ### BUGFIXES
-* [logs_metrics] add nil check to Logs Metrics getGroupBys by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1608
+* [datadog_logs_metric] add nil check to Logs Metrics getGroupBys by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1608
 ### IMPROVEMENTS
-* [dashboards] add support for storage parameter in widget queries by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1569
+* [datadog_dashboards] add support for storage parameter in widget queries by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1569
 * [datadog_dashboard] Add support for the SLO List widget by @mmeyer724 in https://github.com/DataDog/terraform-provider-datadog/pull/1595
 * [datadog_security_monitoring_rule] Add Terraform Support for Signal Correlation Rules by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/1593
 * [datadog_monitor] add notify_by option by @chrismdd in https://github.com/DataDog/terraform-provider-datadog/pull/1599
