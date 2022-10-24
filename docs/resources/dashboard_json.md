@@ -522,4 +522,11 @@ EOF
 - `dashboard_lists_removed` (Set of Number) The list of dashboard lists this dashboard should be removed from. Internal only.
 - `id` (String) The ID of this resource.
 
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+terraform import datadog_dashboard_json.my_service_dashboard sv7-gyh-kas
+```
 
