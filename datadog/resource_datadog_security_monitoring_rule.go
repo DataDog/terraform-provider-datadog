@@ -240,14 +240,15 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 					},
 					"metric": {
 						Type:        schema.TypeString,
+						Deprecated:  "Configure `metrics` instead. This attribute will be removed in the next major version of the provider.",
 						Optional:    true,
-						Description: "The target field to aggregate over when using the `sum`, `max`, or `new_value` aggregations.",
+						Description: "The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations.",
 					},
 					"metrics": {
 						Type:        schema.TypeList,
 						Computed:    true,
 						Optional:    true,
-						Description: "Group of target fields to aggregate over when using the new value aggregations.",
+						Description: "Group of target fields to aggregate over when using the `sum`, `max`, `geo_data`, or `new_value` aggregations. The `sum`, `max`, and `geo_data` aggregations only accept one value in this list, whereas the `new_value` aggregation accepts up to five values.",
 						Elem:        &schema.Schema{Type: schema.TypeString},
 					},
 					"name": {
