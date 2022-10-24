@@ -148,7 +148,7 @@ Optional:
 - `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`.
 - `distinct_fields` (List of String) Field for which the cardinality is measured. Sent as an array.
 - `group_by_fields` (List of String) Fields to group by.
-- `metric` (String, Deprecated) **Deprecated** The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations. **Deprecated.** Configure `metrics` instead. This attribute will be removed in the next major version of the provider.
+- `metric` (String, Deprecated) The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations. **Deprecated.** Configure `metrics` instead. This attribute will be removed in the next major version of the provider.
 - `metrics` (List of String) Group of target fields to aggregate over when using the `sum`, `max`, `geo_data`, or `new_value` aggregations. The `sum`, `max`, and `geo_data` aggregations only accept one value in this list, whereas the `new_value` aggregation accepts up to five values.
 - `name` (String) Name of the query. Not compatible with `new_value` aggregations.
 

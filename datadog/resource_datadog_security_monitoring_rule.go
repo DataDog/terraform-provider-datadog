@@ -242,7 +242,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						Type:        schema.TypeString,
 						Deprecated:  "Configure `metrics` instead. This attribute will be removed in the next major version of the provider.",
 						Optional:    true,
-						Description: "**Deprecated** The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations.",
+						Description: "The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations.",
 					},
 					"metrics": {
 						Type:        schema.TypeList,
