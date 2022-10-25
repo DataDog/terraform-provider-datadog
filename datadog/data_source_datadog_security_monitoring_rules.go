@@ -122,16 +122,21 @@ func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema
 		}
 
 		for _, ruleR := range response.GetData() {
-			if ruleR.SecurityMonitoringStandardRuleResponse == nil {
-				continue
+			if ruleR.SecurityMonitoringStandardRuleResponse != nil {
+				rule := ruleR.SecurityMonitoringStandardRuleResponse
+				if !matchesSecMonRuleFilters(rule.GetName(), rule.GetIsDefault(), rule.GetTags(), nameFilter, defaultFilter, tagFilter) {
+					continue
+				}
+				ruleIds = append(ruleIds, rule.GetId())
+				rules = append(rules, buildSecurityMonitoringTfStandardRule(rule))
+			} else if ruleR.SecurityMonitoringSignalRuleResponse != nil {
+				rule := ruleR.SecurityMonitoringSignalRuleResponse
+				if !matchesSecMonRuleFilters(rule.GetName(), rule.GetIsDefault(), rule.GetTags(), nameFilter, defaultFilter, tagFilter) {
+					continue
+				}
+				ruleIds = append(ruleIds, rule.GetId())
+				rules = append(rules, buildSecurityMonitoringTfSignalRule(rule))
 			}
-
-			rule := ruleR.SecurityMonitoringStandardRuleResponse
-			if !matchesSecMonRuleFilters(rule, nameFilter, defaultFilter, tagFilter) {
-				continue
-			}
-			ruleIds = append(ruleIds, rule.GetId())
-			rules = append(rules, buildSecurityMonitoringTfRule(rule))
 		}
 
 		totalCount := *response.Meta.GetPage().TotalCount
@@ -185,22 +190,10 @@ func computeSecMonDataSourceRulesID(nameFilter *string, defaultFilter *bool, tag
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
-func buildSecurityMonitoringTfRule(rule *datadogV2.SecurityMonitoringStandardRuleResponse) map[string]interface{} {
+func buildSecurityMonitoringTfCommonRule(rule securityMonitoringRuleResponseInterface) map[string]interface{} {
 	tfRule := make(map[string]interface{})
 
-	cases := make([]map[string]interface{}, len(rule.GetCases()))
-	for i, ruleCase := range rule.GetCases() {
-		tfRuleCase := make(map[string]interface{})
-		tfRuleCase["name"] = ruleCase.GetName()
-		tfRuleCase["condition"] = ruleCase.GetCondition()
-		tfRuleCase["status"] = ruleCase.Status
-		if notifications, ok := ruleCase.GetNotificationsOk(); ok {
-			tfRuleCase["notifications"] = notifications
-		}
-		cases[i] = tfRuleCase
-	}
-	tfRule["case"] = cases
-
+	tfRule["case"] = extractRuleCases(rule.GetCases())
 	tfRule["enabled"] = rule.GetIsEnabled()
 	tfRule["message"] = rule.GetMessage()
 	tfRule["name"] = rule.GetName()
@@ -208,6 +201,19 @@ func buildSecurityMonitoringTfRule(rule *datadogV2.SecurityMonitoringStandardRul
 
 	tfOptions := extractTfOptions(rule.GetOptions())
 	tfRule["options"] = []map[string]interface{}{tfOptions}
+
+	if tags, ok := rule.GetTagsOk(); ok {
+		tfRule["tags"] = *tags
+	}
+
+	filters := extractFiltersFromRuleResponse(rule.GetFilters())
+	tfRule["filter"] = filters
+
+	return tfRule
+}
+
+func buildSecurityMonitoringTfStandardRule(rule *datadogV2.SecurityMonitoringStandardRuleResponse) map[string]interface{} {
+	tfRule := buildSecurityMonitoringTfCommonRule(rule)
 
 	tfQueries := make([]map[string]interface{}, len(rule.GetQueries()))
 	for i, query := range rule.GetQueries() {
@@ -232,12 +238,35 @@ func buildSecurityMonitoringTfRule(rule *datadogV2.SecurityMonitoringStandardRul
 	}
 	tfRule["query"] = tfQueries
 
-	if tags, ok := rule.GetTagsOk(); ok {
-		tfRule["tags"] = *tags
+	if ruleType, ok := rule.GetTypeOk(); ok {
+		tfRule["type"] = *ruleType
 	}
 
-	filters := extractFiltersFromRuleResponse(rule)
-	tfRule["filter"] = filters
+	return tfRule
+}
+
+func buildSecurityMonitoringTfSignalRule(rule *datadogV2.SecurityMonitoringSignalRuleResponse) map[string]interface{} {
+	tfRule := buildSecurityMonitoringTfCommonRule(rule)
+
+	tfQueries := make([]map[string]interface{}, len(rule.GetQueries()))
+	for i, query := range rule.GetQueries() {
+		tfQuery := make(map[string]interface{})
+		if aggregation, ok := query.GetAggregationOk(); ok {
+			tfQuery["aggregation"] = string(*aggregation)
+		}
+		if correlatedByFields, ok := query.GetCorrelatedByFieldsOk(); ok {
+			tfQuery["correlated_by_fields"] = *correlatedByFields
+		}
+		if correlatedQueryIndex, ok := query.GetCorrelatedQueryIndexOk(); ok {
+			tfQuery["correlated_query_index"] = fmt.Sprintf("%d", *correlatedQueryIndex)
+		}
+		if name, ok := query.GetNameOk(); ok {
+			tfQuery["name"] = *name
+		}
+		tfQuery["rule_id"] = query.GetRuleId()
+		tfQueries[i] = tfQuery
+	}
+	tfRule["signal_query"] = tfQueries
 
 	if ruleType, ok := rule.GetTypeOk(); ok {
 		tfRule["type"] = *ruleType
@@ -247,25 +276,26 @@ func buildSecurityMonitoringTfRule(rule *datadogV2.SecurityMonitoringStandardRul
 }
 
 func matchesSecMonRuleFilters(
-	rule *datadogV2.SecurityMonitoringStandardRuleResponse,
+	ruleName string,
+	ruleDefaultFilter bool,
+	ruleTags []string,
 	nameFilter *string,
 	defaultFilter *bool,
 	tagFilter map[string]bool) bool {
 
 	if nameFilter != nil {
-		name := *rule.Name
-		if !strings.Contains(name, *nameFilter) {
+		if !strings.Contains(ruleName, *nameFilter) {
 			return false
 		}
 	}
 	if defaultFilter != nil {
-		if *rule.IsDefault != *defaultFilter {
+		if ruleDefaultFilter != *defaultFilter {
 			return false
 		}
 	}
 	if tagFilter != nil {
 		matchedTagCount := 0
-		for _, tag := range rule.Tags {
+		for _, tag := range ruleTags {
 			if _, ok := tagFilter[tag]; ok {
 				matchedTagCount++
 			}
