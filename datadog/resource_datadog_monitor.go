@@ -839,7 +839,7 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("new_group_delay", m.Options.GetNewGroupDelay()); err != nil {
 		return diag.FromErr(err)
 	}
-	if v, ok := m.Options.GetNewHostDelayOk(); ok {
+	if v, ok := m.Options.GetNewHostDelayOk(); ok && v != nil {
 		if err := d.Set("new_host_delay", *v); err != nil {
 			return diag.FromErr(err)
 		}
