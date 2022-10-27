@@ -81,6 +81,12 @@ func resourceDatadogDashboard() *schema.Resource {
 				Optional:    true,
 				Computed:    true,
 				Description: "The URL of the dashboard.",
+				DiffSuppressFunc: func(_, _, _ string, _ *schema.ResourceData) bool {
+					// This value is computed and cannot be updated.
+					// To maintain backward compatibility, always suppress diff rather
+					// than converting the attribute to `Computed` only
+					return true
+				},
 			},
 			"restricted_roles": {
 				Type:          schema.TypeSet,
