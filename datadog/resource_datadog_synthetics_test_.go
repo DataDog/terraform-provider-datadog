@@ -495,7 +495,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 				"monitor_priority": {
 					Type:         schema.TypeInt,
 					Optional:     true,
-					ValidateFunc: validation.IntBetween(1, 5),
+					ValidateFunc: validation.IntBetween(0, 5),
 				},
 				"restricted_roles": {
 					Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
