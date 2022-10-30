@@ -398,6 +398,12 @@ func getTemplateVariableSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Description: "The default value for the template variable on dashboard load.",
 		},
+		"defaults": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
+			Description: "The default values for the template variable on dashboard load.",
+		},
 		"available_values": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -428,6 +434,13 @@ func buildDatadogTemplateVariables(terraformTemplateVariables *[]interface{}) *[
 			}
 			datadogTemplateVariable.SetAvailableValues(availableValues)
 		}
+		if v, ok := terraformTemplateVariable["defaults"].([]interface{}); ok && len(v) > 0 {
+			defaultValues := make([]string, len(v))
+			for i, defaultValue := range v {
+				defaultValues[i] = defaultValue.(string)
+			}
+			datadogTemplateVariable.SetDefaults(defaultValues)
+		}
 		datadogTemplateVariables[i] = datadogTemplateVariable
 	}
 	return &datadogTemplateVariables
@@ -452,6 +465,13 @@ func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadogV1.Dashb
 				availableValues[i] = availableValue
 			}
 			terraformTemplateVariable["available_values"] = availableValues
+		}
+		if v, ok := templateVariable.GetDefaultsOk(); ok {
+			defaultValues := make([]string, len(*v))
+			for i, defaultValue := range *v {
+				defaultValues[i] = defaultValue
+			}
+			terraformTemplateVariable["defaults"] = defaultValues
 		}
 		terraformTemplateVariables[i] = terraformTemplateVariable
 	}
