@@ -396,7 +396,14 @@ func getTemplateVariableSchema() map[string]*schema.Schema {
 		"default": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "The default value for the template variable on dashboard load.",
+			Deprecated:  "Use `defaults` instead.",
+			Description: "The default value for the template variable on dashboard load. Cannot be used in conjunction with `defaults`.",
+		},
+		"defaults": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
+			Description: "One or many default values for template variables on load. If more than one default is specified, they will be unioned together with `OR`. Cannot be used in conjunction with `default`.",
 		},
 		"available_values": {
 			Type:        schema.TypeList,
@@ -418,7 +425,13 @@ func buildDatadogTemplateVariables(terraformTemplateVariables *[]interface{}) *[
 		if v, ok := terraformTemplateVariable["prefix"].(string); ok && len(v) != 0 {
 			datadogTemplateVariable.SetPrefix(v)
 		}
-		if v, ok := terraformTemplateVariable["default"].(string); ok && len(v) != 0 {
+		if v, ok := terraformTemplateVariable["defaults"].([]interface{}); ok && len(v) != 0 {
+			var defaults []string
+			for _, s := range v {
+				defaults = append(defaults, s.(string))
+			}
+			datadogTemplateVariable.SetDefaults(defaults)
+		} else if v, ok := terraformTemplateVariable["default"].(string); ok && len(v) != 0 {
 			datadogTemplateVariable.SetDefault(v)
 		}
 		if v, ok := terraformTemplateVariable["available_values"].([]interface{}); ok && len(v) > 0 {
@@ -443,7 +456,11 @@ func buildTerraformTemplateVariables(datadogTemplateVariables *[]datadogV1.Dashb
 		if v := templateVariable.GetPrefix(); len(v) > 0 {
 			terraformTemplateVariable["prefix"] = v
 		}
-		if v, ok := templateVariable.GetDefaultOk(); ok {
+		if v, ok := templateVariable.GetDefaultsOk(); ok && len(*v) > 0 {
+			var tags []string
+			tags = append(tags, *v...)
+			terraformTemplateVariable["defaults"] = tags
+		} else if v, ok := templateVariable.GetDefaultOk(); ok {
 			terraformTemplateVariable["default"] = *v
 		}
 		if v, ok := templateVariable.GetAvailableValuesOk(); ok {
@@ -489,8 +506,19 @@ func getTemplateVariablePresetValueSchema() map[string]*schema.Schema {
 		},
 		"value": {
 			Type:        schema.TypeString,
-			Description: "The value that should be assumed by the template variable in this preset",
+			Description: "The value that should be assumed by the template variable in this preset. Cannot be used in conjunction with `values`.",
 			Optional:    true,
+			Deprecated:  "Use `values` instead.",
+		},
+		"values": {
+			Type:     schema.TypeList,
+			Optional: true,
+			MinItems: 1,
+			Elem: &schema.Schema{
+				Type:     schema.TypeString,
+				MinItems: 1,
+			},
+			Description: "One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified. Cannot be used in conjunction with `value`.",
 		},
 	}
 }
@@ -517,7 +545,13 @@ func buildDatadogTemplateVariablePresets(terraformTemplateVariablePresets *[]int
 					datadogTemplateVariablePresetValue.SetName(w)
 				}
 
-				if w, ok := templateVariablePresetValue["value"].(string); ok && len(w) != 0 {
+				if w, ok := templateVariablePresetValue["values"].([]interface{}); ok && len(w) != 0 {
+					var presets []string
+					for _, s := range w {
+						presets = append(presets, s.(string))
+					}
+					datadogTemplateVariablePresetValue.SetValues(presets)
+				} else if w, ok := templateVariablePresetValue["value"].(string); ok && len(w) != 0 {
 					datadogTemplateVariablePresetValue.SetValue(w)
 				}
 
@@ -547,14 +581,18 @@ func buildTerraformTemplateVariablePresets(datadogTemplateVariablePresets *[]dat
 
 		// allocate for array of preset values (names = name,value, values = name, template variable)
 
-		terraformTemplateVariablePresetValues := make([]map[string]string, len(templateVariablePreset.GetTemplateVariables()))
+		terraformTemplateVariablePresetValues := make([]map[string]interface{}, len(templateVariablePreset.GetTemplateVariables()))
 		for j, templateVariablePresetValue := range templateVariablePreset.GetTemplateVariables() {
 			// allocate map for name => name value => value
-			terraformTemplateVariablePresetValue := make(map[string]string)
+			terraformTemplateVariablePresetValue := make(map[string]interface{})
 			if v, ok := templateVariablePresetValue.GetNameOk(); ok {
 				terraformTemplateVariablePresetValue["name"] = *v
 			}
-			if v, ok := templateVariablePresetValue.GetValueOk(); ok {
+			if v, ok := templateVariablePresetValue.GetValuesOk(); ok && len(*v) > 0 {
+				var tags []string
+				tags = append(tags, *v...)
+				terraformTemplateVariablePresetValue["values"] = tags
+			} else if v, ok := templateVariablePresetValue.GetValueOk(); ok {
 				terraformTemplateVariablePresetValue["value"] = *v
 			}
 
