@@ -417,11 +417,13 @@ resource "datadog_dashboard" "ordered_dashboard" {
 		name   = "var_1"
 		prefix = "host"
 		default = "aws"
+                defaults = ["aws"]
 	}
 	template_variable {
 		name   = "var_2"
 		prefix = "service_name"
 		default = "autoscaling"
+		defaults = ["autoscaling"]
 	}
 	template_variable_preset {
 		name = "preset_1"
@@ -468,11 +470,13 @@ resource "datadog_dashboard" "simple_dashboard" {
 		name   = "var_1"
 		prefix = "host"
 		default = "aws"
+		defaults = ["aws"]
 	}
 	template_variable {
 		name   = "var_2"
 		prefix = "service_name"
 		default = "autoscaling"
+		defaults = ["autoscaling"]
 	}
 	template_variable_preset {
 		name = "preset_1"
@@ -645,11 +649,13 @@ resource "datadog_dashboard" "free_dashboard" {
 		name   = "var_1"
 		prefix = "host"
 		default = "aws"
+		defaults = ["aws"]
 	}
 	template_variable {
 		name   = "var_2"
 		prefix = "service_name"
 		default = "autoscaling"
+		defaults = ["autoscaling"]
 	}
 	template_variable_preset {
 		name = "preset_1"
@@ -702,11 +708,13 @@ resource "datadog_dashboard" "simple_dashboard" {
 		name   = "var_1"
 		prefix = "host"
 		default = "aws"
+		defaults = ["aws"]
 	}
 	template_variable {
 		name   = "var_2"
 		prefix = "service_name"
 		default = "autoscaling"
+		defaults = ["autoscaling"]
 	}
 	template_variable_preset {
 		name = "preset_1"
@@ -750,9 +758,11 @@ var datadogSimpleOrderedDashboardAsserts = []string{
 	"template_variable.0.name = var_1",
 	"template_variable.0.prefix = host",
 	"template_variable.0.default = aws",
+	"template_variable.0.defaults = [\"aws\"]",
 	"template_variable.1.name = var_2",
 	"template_variable.1.prefix = service_name",
 	"template_variable.1.default = autoscaling",
+	"template_variable.1.defaults = [\"autoscaling\"]",
 	"description = Created using the Datadog provider in Terraform",
 	// Template Variable Presets
 	"template_variable_preset.# = 3",
@@ -787,9 +797,11 @@ var datadogSimpleFreeDashboardAsserts = []string{
 	"template_variable.0.name = var_1",
 	"template_variable.0.prefix = host",
 	"template_variable.0.default = aws",
+	"template_variable.0.defaults = [\"aws\"]",
 	"template_variable.1.name = var_2",
 	"template_variable.1.prefix = service_name",
 	"template_variable.1.default = autoscaling",
+	"template_variable.1.defaults = [\"autoscaling\"]",
 	"description = Created using the Datadog provider in Terraform",
 	// Template Variable Presets
 	"template_variable_preset.# = 3",
@@ -1049,9 +1061,11 @@ var datadogOrderedDashboardAsserts = []string{
 	"template_variable.0.name = var_1",
 	"template_variable.0.prefix = host",
 	"template_variable.0.default = aws",
+	"template_variable.0.defaults = [\"aws\"]",
 	"template_variable.1.name = var_2",
 	"template_variable.1.prefix = service_name",
 	"template_variable.1.default = autoscaling",
+	"template_variable.1.defaults = [\"autoscaling\"]",
 	"description = Created using the Datadog provider in Terraform",
 
 	// Template Variable Presets
@@ -1165,9 +1179,11 @@ var datadogFreeDashboardAsserts = []string{
 	// Template Variables
 	"template_variable.# = 2",
 	"template_variable.0.default = aws",
+	"template_variable.0.defaults = [\"aws\"]",
 	"template_variable.0.name = var_1",
 	"template_variable.0.prefix = host",
 	"template_variable.1.default = autoscaling",
+	"template_variable.1.defaults = [\"autoscaling\"]",
 	"template_variable.1.name = var_2",
 	"template_variable.1.prefix = service_name",
 
