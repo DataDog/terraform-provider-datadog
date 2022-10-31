@@ -400,9 +400,12 @@ func getTemplateVariableSchema() map[string]*schema.Schema {
 			Description: "The default value for the template variable on dashboard load. Cannot be used in conjunction with `defaults`.",
 		},
 		"defaults": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			Elem:        &schema.Schema{Type: schema.TypeString},
+			Type:     schema.TypeList,
+			Optional: true,
+			Elem: &schema.Schema{
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringIsNotEmpty,
+			},
 			Description: "One or many default values for template variables on load. If more than one default is specified, they will be unioned together with `OR`. Cannot be used in conjunction with `default`.",
 		},
 		"available_values": {
