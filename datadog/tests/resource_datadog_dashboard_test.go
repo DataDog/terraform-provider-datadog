@@ -1803,3 +1803,104 @@ func TestAccDatadogDashboardNotifyListDiff(t *testing.T) {
 		},
 	})
 }
+
+func datadogDashboardTemplateVariablesConfig(uniqueDashboardName string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard" "ordered_dashboard" {
+  title        = "%s"
+  description  = "Created using the Datadog provider in Terraform"
+  layout_type  = "ordered"
+  is_read_only = true
+
+  template_variable {
+    name    = "var_1"
+    prefix  = "host"
+    defaults = ["foo", "bar"]
+  }
+
+  template_variable {
+    name    = "var_2"
+    prefix  = "service_name"
+    defaults = ["autoscaling", "two"]
+  }
+
+  template_variable_preset {
+    name = "preset_1"
+    template_variable {
+      name  = "var_1"
+      values = ["host.dc"]
+    }
+  }
+
+  template_variable_preset {
+    name = "preset_2"
+    template_variable {
+      name  = "var_2"
+      values = ["host.dc", "foo"]
+    }
+    template_variable {
+      name  = "var_3"
+      values = ["my_service"]
+    }
+  }
+
+  widget {
+    note_definition {
+      content          = "note text"
+      background_color = "pink"
+      font_size        = "14"
+      text_align       = "center"
+      show_tick        = true
+      tick_edge        = "left"
+      tick_pos         = "50%%"
+    }
+  }
+}`, uniqueDashboardName)
+}
+
+var datadogDashboardTemplateVariablesConfigAsserts = []string{
+	"template_variable.# = 2",
+	"template_variable.0.name = var_1",
+	"template_variable.0.prefix = host",
+	"template_variable.0.defaults.# = 2",
+	"template_variable.0.defaults.0 = foo",
+	"template_variable.0.defaults.1 = bar",
+	"template_variable.1.name = var_2",
+	"template_variable.1.prefix = service_name",
+	"template_variable.1.defaults.# = 2",
+	"template_variable.1.defaults.0 = autoscaling",
+	"template_variable.1.defaults.1 = two",
+	"template_variable_preset.0.template_variable.# = 1",
+	"template_variable_preset.0.name = preset_1",
+	"template_variable_preset.0.template_variable.0.name = var_1",
+	"template_variable_preset.0.template_variable.0.values.0 = host.dc",
+	"template_variable_preset.1.template_variable.# = 2",
+	"template_variable_preset.1.name = preset_2",
+	"template_variable_preset.1.template_variable.0.name = var_2",
+	"template_variable_preset.1.template_variable.0.values.# = 2",
+	"template_variable_preset.1.template_variable.0.values.0 = host.dc",
+	"template_variable_preset.1.template_variable.0.values.1 = foo",
+	"template_variable_preset.1.template_variable.1.name = var_3",
+	"template_variable_preset.1.template_variable.1.values.0 = my_service",
+}
+
+func TestAccDatadogDashboardTemplateVariables(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	boardName := uniqueEntityName(ctx, t)
+	asserts := datadogDashboardTemplateVariablesConfigAsserts
+	accProvider := testAccProvider(t, accProviders)
+	checks := testCheckResourceAttrs("datadog_dashboard.ordered_dashboard", checkDashboardExists(accProvider), asserts)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: datadogDashboardTemplateVariablesConfig(boardName),
+				Check:  resource.ComposeTestCheckFunc(checks...),
+			},
+		},
+	})
+
+}

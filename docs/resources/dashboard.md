@@ -715,7 +715,8 @@ Required:
 Optional:
 
 - `available_values` (List of String) The list of values that the template variable drop-down is be limited to
-- `default` (String) The default value for the template variable on dashboard load.
+- `default` (String, Deprecated) The default value for the template variable on dashboard load. Cannot be used in conjunction with `defaults`. **Deprecated.** Use `defaults` instead.
+- `defaults` (List of String) One or many default values for template variables on load. If more than one default is specified, they will be unioned together with `OR`. Cannot be used in conjunction with `default`.
 - `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
 
 
@@ -733,7 +734,8 @@ Optional:
 Optional:
 
 - `name` (String) The name of the template variable
-- `value` (String) The value that should be assumed by the template variable in this preset
+- `value` (String, Deprecated) The value that should be assumed by the template variable in this preset. Cannot be used in conjunction with `values`. **Deprecated.** Use `values` instead.
+- `values` (List of String) One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified. Cannot be used in conjunction with `value`.
 
 
 
