@@ -1815,8 +1815,9 @@ resource "datadog_dashboard" "ordered_dashboard" {
   template_variable {
     name    = "var_1"
     prefix  = "host"
-    defaults = ["aws", "yooo"]
+    defaults = ["foo", "bar"]
   }
+
   template_variable {
     name    = "var_2"
     prefix  = "service_name"
@@ -1858,6 +1859,17 @@ resource "datadog_dashboard" "ordered_dashboard" {
 }
 
 var datadogDashboardTemplateVariablesConfigAsserts = []string{
+	"template_variable.# = 2",
+	"template_variable.0.name = var_1",
+	"template_variable.0.prefix = host",
+	"template_variable.0.defaults.# = 2",
+	"template_variable.0.defaults.0 = foo",
+	"template_variable.0.defaults.1 = bar",
+	"template_variable.1.name = var_2",
+	"template_variable.1.prefix = service_name",
+	"template_variable.1.defaults.# = 2",
+	"template_variable.1.defaults.0 = autoscaling",
+	"template_variable.1.defaults.1 = two",
 	"template_variable_preset.0.template_variable.# = 1",
 	"template_variable_preset.0.name = preset_1",
 	"template_variable_preset.0.template_variable.0.name = var_1",
