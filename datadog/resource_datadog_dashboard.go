@@ -515,8 +515,8 @@ func getTemplateVariablePresetValueSchema() map[string]*schema.Schema {
 			Optional: true,
 			MinItems: 1,
 			Elem: &schema.Schema{
-				Type:     schema.TypeString,
-				MinItems: 1,
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringIsNotEmpty,
 			},
 			Description: "One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified. Cannot be used in conjunction with `value`.",
 		},
