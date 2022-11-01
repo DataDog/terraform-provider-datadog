@@ -196,9 +196,10 @@ func resourceDatadogMonitor() *schema.Resource {
 			// refers to this terraform resource. In the API, setting new_group_delay
 			// to any value, including zero, causes it to override new_host_delay.
 			"new_group_delay": {
-				Description: "The time (in seconds) to skip evaluations for new groups.\n\n`new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.",
-				Type:        schema.TypeInt,
-				Optional:    true,
+				Description:   "The time (in seconds) to skip evaluations for new groups.\n\n`new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.",
+				Type:          schema.TypeInt,
+				Optional:      true,
+				ConflictsWith: []string{"new_host_delay"},
 			},
 			"new_host_delay": {
 				// Removing the default requires removing the default in the API as well (possibly only for
@@ -524,12 +525,13 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 	}
 	if attr, ok := d.GetOk("new_group_delay"); ok {
 		o.SetNewGroupDelay(int64(attr.(int)))
-	}
-	// Don't check with GetOk, doesn't work with 0 (we can't do the same for
-	// new_group_delay because it would always override new_host_delay).
-	o.SetNewHostDelay(int64(d.Get("new_host_delay").(int)))
-	if attr, ok := d.GetOk("evaluation_delay"); ok {
-		o.SetEvaluationDelay(int64(attr.(int)))
+	} else {
+		// Don't check with GetOk, doesn't work with 0 (we can't do the same for
+		// new_group_delay because it would always override new_host_delay).
+		o.SetNewHostDelay(int64(d.Get("new_host_delay").(int)))
+		if attr, ok := d.GetOk("evaluation_delay"); ok {
+			o.SetEvaluationDelay(int64(attr.(int)))
+		}
 	}
 	attr, onMissingDataOk := d.GetOk("on_missing_data")
 	if onMissingDataOk {
