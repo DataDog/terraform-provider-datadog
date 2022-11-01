@@ -1,3 +1,17 @@
+## 3.17.1 (November 1, 2022)
+
+### BUGFIXES
+* [datadog_monitor] Handle explicit null for `new_host_delay` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1615
+* [datadog_dashboard] Suppress URL attribute diff by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1614
+* [datadog_dashboard] Fix panic when `slo_list` widget is in `group` widget by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1624
+### IMPROVEMENTS
+* [datadog_dashboard] Add support for `values` and `defaults` in template variables by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1622
+### NOTES
+* [datadog_provider] Bump `go` and `terraform-plugin-sdk` versions by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1597
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.17.0...v3.17.1
+
 ## 3.17.0 (October 24, 2022)
 
 ### BUGFIXES
