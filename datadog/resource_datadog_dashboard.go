@@ -1235,6 +1235,7 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataK
 		terraformWidget["service_level_objective_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.SLOListWidgetDefinition != nil {
 		terraformDefinition := buildTerraformSloListDefinition(*widgetDefinition.SLOListWidgetDefinition, k.Add("slo_list_definition.0"))
+		k.Remove("slo_list_definition.0")
 		terraformWidget["slo_list_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.SunburstWidgetDefinition != nil {
 		terraformDefinition := buildTerraformSunburstDefinition(*widgetDefinition.SunburstWidgetDefinition, k.Add("sunburst_definition.0"))
