@@ -524,6 +524,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_definition.0.body", "this is a body"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_definition.0.body_type", "text/plain"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_definition.0.no_saving_response_body", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_basicauth.#", "1"),
@@ -639,6 +641,7 @@ resource "datadog_synthetics_test" "foo" {
 		method = "GET"
 		url = "https://www.datadoghq.com"
 		body = "this is a body"
+		body_type = "text/plain"
 		timeout = 30
 		no_saving_response_body = true
 	}
