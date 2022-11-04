@@ -55,6 +55,7 @@ data "datadog_monitor" "test" {
 - `renotify_statuses` (Set of String) The types of statuses for which re-notification messages should be sent. Valid values are `alert`, `warn`, `no data`.
 - `require_full_window` (Boolean) Whether or not the monitor needs a full window of data before it is evaluated.
 - `restricted_roles` (Set of String)
+- `scheduling_options` (List of Object) Configuration options for scheduling. (see [below for nested schema](#nestedatt--scheduling_options))
 - `tags` (Set of String) List of tags associated with the monitor.
 - `timeout_h` (Number) Number of hours of the monitor not reporting data before it automatically resolves from a triggered state.
 - `type` (String) Type of the monitor.
@@ -79,5 +80,22 @@ Read-Only:
 - `unknown` (String)
 - `warning` (String)
 - `warning_recovery` (String)
+
+
+<a id="nestedatt--scheduling_options"></a>
+### Nested Schema for `scheduling_options`
+
+Read-Only:
+
+- `evaluation_window` (List of Object) (see [below for nested schema](#nestedobjatt--scheduling_options--evaluation_window))
+
+<a id="nestedobjatt--scheduling_options--evaluation_window"></a>
+### Nested Schema for `scheduling_options.evaluation_window`
+
+Read-Only:
+
+- `day_starts` (String)
+- `hour_starts` (Number)
+- `month_starts` (Number)
 
 
