@@ -144,7 +144,7 @@ func syntheticsTestRequest() *schema.Resource {
 				Optional:    true,
 			},
 			"body_type": {
-				Description:      "Request body type. Supported values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `GraphQL`, or `None`.",
+				Description:      "Type of the request body.",
 				Type:             schema.TypeString,
 				Optional:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestRequestBodyTypeFromValue),
