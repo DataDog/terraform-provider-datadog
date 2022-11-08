@@ -144,9 +144,10 @@ func syntheticsTestRequest() *schema.Resource {
 				Optional:    true,
 			},
 			"body_type": {
-				Description: "Request body type. Supported values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `GraphQL`, or `None`.",
-				Type:        schema.TypeString,
-				Optional:    true,
+				Description:      "Request body type. Supported values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `GraphQL`, or `None`.",
+				Type:             schema.TypeString,
+				Optional:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestRequestBodyTypeFromValue),
 			},
 			"timeout": {
 				Description: "Timeout in seconds for the test. Defaults to `60`.",
@@ -1258,7 +1259,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		request.SetBody(attr.(string))
 	}
 	if attr, ok := k.GetOkWith("body_type"); ok {
-		request.SetBodyType(attr.(string))
+		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
 	}
 	if attr, ok := k.GetOkWith("timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
@@ -1358,7 +1359,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 				request.SetUrl(requestMap["url"].(string))
 				request.SetBody(requestMap["body"].(string))
 				if v, ok := requestMap["body_type"].(string); ok && v != "" {
-					request.SetBodyType(v)
+					request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(v))
 				}
 				request.SetTimeout(float64(requestMap["timeout"].(int)))
 				request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
@@ -1702,7 +1703,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		request.SetBody(attr.(string))
 	}
 	if attr, ok := k.GetOkWith("body_type"); ok {
-		request.SetBodyType(attr.(string))
+		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
 	}
 	if attr, ok := k.GetOkWith("timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
