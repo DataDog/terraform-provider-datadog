@@ -79,6 +79,7 @@ We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes fo
 
 We highly recommend you set this to `false` for sparse metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.
 - `restricted_roles` (Set of String) A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.
+- `scheduling_options` (Block List) Configuration options for scheduling. (see [below for nested schema](#nestedblock--scheduling_options))
 - `tags` (Set of String) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
 - `timeout_h` (Number) The number of hours of the monitor not reporting data before it automatically resolves from a triggered state. The minimum allowed value is 0 hours. The maximum allowed value is 24 hours.
 - `validate` (Boolean) If set to `false`, skip the validation call done during plan.
@@ -108,6 +109,24 @@ Optional:
 - `unknown` (String) The monitor `UNKNOWN` threshold. Only supported in monitor type `service check`. Must be a number.
 - `warning` (String) The monitor `WARNING` threshold. Must be a number.
 - `warning_recovery` (String) The monitor `WARNING` recovery threshold. Must be a number.
+
+
+<a id="nestedblock--scheduling_options"></a>
+### Nested Schema for `scheduling_options`
+
+Required:
+
+- `evaluation_window` (Block List, Min: 1) Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together. (see [below for nested schema](#nestedblock--scheduling_options--evaluation_window))
+
+<a id="nestedblock--scheduling_options--evaluation_window"></a>
+### Nested Schema for `scheduling_options.evaluation_window`
+
+Optional:
+
+- `day_starts` (String) The time of the day at which a one day cumulative evaluation window starts. Must be defined in UTC time in `HH:mm` format.
+- `hour_starts` (Number) The minute of the hour at which a one hour cumulative evaluation window starts. Must be between 0 and 59.
+- `month_starts` (Number) The day of the month at which a one month cumulative evaluation window starts. Must be a value of 1.
+
 
 
 <a id="nestedblock--variables"></a>

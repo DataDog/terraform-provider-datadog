@@ -336,6 +336,39 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"variables": getMonitorFormulaQuerySchema(),
+			"scheduling_options": {
+				Description: "Configuration options for scheduling.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"evaluation_window": {
+							Description: "Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together.",
+							Type:        schema.TypeList,
+							Required:    true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"day_starts": {
+										Description: "The time of the day at which a one day cumulative evaluation window starts. Must be defined in UTC time in `HH:mm` format.",
+										Type:        schema.TypeString,
+										Optional:    true,
+									},
+									"month_starts": {
+										Description: "The day of the month at which a one month cumulative evaluation window starts. Must be a value of 1.",
+										Type:        schema.TypeInt,
+										Optional:    true,
+									},
+									"hour_starts": {
+										Description: "The minute of the hour at which a one hour cumulative evaluation window starts. Must be between 0 and 59.",
+										Type:        schema.TypeInt,
+										Optional:    true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -604,6 +637,25 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 		}
 		sort.Strings(notifyBy)
 		o.SetNotifyBy(notifyBy)
+	}
+
+	if attr, ok := d.GetOk("scheduling_options"); ok {
+		scheduling_options_list := attr.([]interface{})
+		scheduling_options_map := scheduling_options_list[0].(map[string]interface{})
+		evaluation_window_map := scheduling_options_map["evaluation_window"].([]interface{})[0].(map[string]interface{})
+		scheduling_options := datadogV1.NewMonitorOptionsSchedulingOptions()
+		evaluation_window := datadogV1.NewMonitorOptionsSchedulingOptionsEvaluationWindow()
+		if day_starts, ok := evaluation_window_map["day_starts"].(string); ok && day_starts != "" {
+			evaluation_window.SetDayStarts(day_starts)
+		}
+		if hour_starts, ok := evaluation_window_map["hour_starts"].(int); ok && hour_starts != 0 {
+			evaluation_window.SetHourStarts(int32(hour_starts))
+		}
+		if month_starts, ok := evaluation_window_map["month_starts"].(int); ok && month_starts != 0 {
+			evaluation_window.SetMonthStarts(int32(month_starts))
+		}
+		scheduling_options.SetEvaluationWindow(*evaluation_window)
+		o.SetSchedulingOptions(*scheduling_options)
 	}
 
 	m := datadogV1.NewMonitor(d.Get("query").(string), monitorType)
@@ -925,6 +977,26 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 
 	if err := d.Set("notify_by", m.Options.GetNotifyBy()); err != nil {
 		return diag.FromErr(err)
+	}
+
+	evaluation_window := make(map[string]interface{})
+	if e, ok := m.Options.SchedulingOptions.GetEvaluationWindowOk(); ok {
+		if d, ok := e.GetDayStartsOk(); ok {
+			evaluation_window["day_starts"] = *d
+		}
+		if h, ok := e.GetHourStartsOk(); ok {
+			evaluation_window["hour_starts"] = h
+		}
+		if m, ok := e.GetMonthStartsOk(); ok {
+			evaluation_window["month_starts"] = m
+		}
+	}
+	scheduling_options := make(map[string]interface{})
+	if len(evaluation_window) > 0 {
+		scheduling_options["evaluation_window"] = []interface{}{evaluation_window}
+		if err := d.Set("scheduling_options", []interface{}{scheduling_options}); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	return nil

@@ -192,12 +192,12 @@ func resourceDatadogServiceDefinitionRead(_ context.Context, d *schema.ResourceD
 	id := d.Id()
 	respByte, resp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", serviceDefinitionPath+"/"+id, nil)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, resp, fmt.Sprintf("error retrieving service definition %s", id))
-	}
+		if resp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 
-	if resp.StatusCode == 404 {
-		d.SetId("")
-		return nil
+		return utils.TranslateClientErrorDiag(err, resp, fmt.Sprintf("error retrieving service definition %s", id))
 	}
 
 	var response getSDResponse

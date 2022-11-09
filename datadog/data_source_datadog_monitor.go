@@ -227,6 +227,39 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				Computed:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
+			"scheduling_options": {
+				Description: "Configuration options for scheduling.",
+				Type:        schema.TypeList,
+				Computed:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"evaluation_window": {
+							Description: "Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together.",
+							Type:        schema.TypeList,
+							Computed:    true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"day_starts": {
+										Description: "The time of the day at which a one day cumulative evaluation window starts. Must be defined in UTC time in `HH:mm` format.",
+										Type:        schema.TypeString,
+										Computed:    true,
+									},
+									"month_starts": {
+										Description: "The day of the month at which a one month cumulative evaluation window starts. Must be a value of 1.",
+										Type:        schema.TypeInt,
+										Computed:    true,
+									},
+									"hour_starts": {
+										Description: "The minute of the hour at which a one hour cumulative evaluation window starts. Must be between 0 and 59.",
+										Type:        schema.TypeInt,
+										Computed:    true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -335,6 +368,26 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	d.Set("restricted_roles", restricted_roles)
 	d.Set("groupby_simple_monitor", m.Options.GetGroupbySimpleMonitor())
 	d.Set("notify_by", m.Options.GetNotifyBy())
+
+	evaluation_window := make(map[string]interface{})
+	if e, ok := m.Options.SchedulingOptions.GetEvaluationWindowOk(); ok {
+		if d, ok := e.GetDayStartsOk(); ok {
+			evaluation_window["day_starts"] = *d
+		}
+		if h, ok := e.GetHourStartsOk(); ok {
+			evaluation_window["hour_starts"] = h
+		}
+		if m, ok := e.GetMonthStartsOk(); ok {
+			evaluation_window["month_starts"] = m
+		}
+	}
+	scheduling_options := make(map[string]interface{})
+	if len(evaluation_window) > 0 {
+		scheduling_options["evaluation_window"] = []interface{}{evaluation_window}
+		if err := d.Set("scheduling_options", []interface{}{scheduling_options}); err != nil {
+			return diag.FromErr(err)
+		}
+	}
 
 	if m.GetType() == datadogV1.MONITORTYPE_LOG_ALERT {
 		d.Set("enable_logs_sample", m.Options.GetEnableLogsSample())
