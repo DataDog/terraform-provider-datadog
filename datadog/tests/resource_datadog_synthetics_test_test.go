@@ -963,12 +963,12 @@ resource "datadog_synthetics_test" "bar" {
 		}
 	}
 	assertion {
-        type = "body"
-        operator = "validatesXPath"
-        targetxpath {
-            operator = "contains"
-            targetvalue = "12"
-            xpath = "something"
+		type = "body"
+		operator = "validatesXPath"
+		targetxpath {
+			operator = "contains"
+			targetvalue = "12"
+			xpath = "something"
         }
     }
 
