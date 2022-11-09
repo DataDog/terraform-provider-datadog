@@ -755,7 +755,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.#", "8"),
+				"datadog_synthetics_test.bar", "assertion.#", "9"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
@@ -824,6 +824,18 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.operator", "moreThan"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.targetvalue", "{{ TEST_VAR_1 }}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.operator", "validatesXPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetxpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetxpath.0.xpath", "something"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetxpath.0.operator", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetxpath.0.targetvalue", "12"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -950,6 +962,15 @@ resource "datadog_synthetics_test" "bar" {
 			targetvalue = "{{ TEST_VAR_1 }}"
 		}
 	}
+	assertion {
+		type = "body"
+		operator = "validatesXPath"
+		targetxpath {
+			operator = "contains"
+			targetvalue = "12"
+			xpath = "something"
+        }
+    }
 
 	locations = [ "aws:eu-central-1" ]
 	options_list {

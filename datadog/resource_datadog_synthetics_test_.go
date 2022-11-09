@@ -412,6 +412,31 @@ func syntheticsAPIAssertion() *schema.Schema {
 						},
 					},
 				},
+				"targetxpath": {
+					Description: "Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"operator": {
+								Description: "The specific operator to use on the path.",
+								Type:        schema.TypeString,
+								Required:    true,
+							},
+							"xpath": {
+								Description: "The xpath to assert.",
+								Type:        schema.TypeString,
+								Required:    true,
+							},
+							"targetvalue": {
+								Description: "Expected matching value.",
+								Type:        schema.TypeString,
+								Required:    true,
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -1622,6 +1647,7 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 						if v, ok := targetMap["jsonpath"]; ok {
 							subTarget.SetJsonPath(v.(string))
 						}
+
 						operator, ok := targetMap["operator"]
 						if ok {
 							subTarget.SetOperator(operator.(string))
@@ -1634,7 +1660,9 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 								if match, _ := regexp.MatchString("{{\\s*([^{}]*?)\\s*}}", v.(string)); match {
 									subTarget.SetTargetValue(v)
 								} else {
-									setFloatTargetValue(subTarget, v.(string))
+									if floatValue, err := strconv.ParseFloat(v.(string), 64); err == nil {
+										subTarget.SetTargetValue(floatValue)
+									}
 								}
 							default:
 								subTarget.SetTargetValue(v)
@@ -1643,9 +1671,46 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 						assertionJSONPathTarget.SetTarget(*subTarget)
 					}
 					if _, ok := assertionMap["target"]; ok {
-						log.Printf("[WARN] target shouldn't be specified for validateJSONPath operator, only targetjsonpath")
+						log.Printf("[WARN] target shouldn't be specified for validatesJSONPath operator, only targetjsonpath")
 					}
 					assertions = append(assertions, datadogV1.SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion(assertionJSONPathTarget))
+				} else if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONXPATHOPERATOR_VALIDATES_X_PATH) {
+					assertionXPathTarget := datadogV1.NewSyntheticsAssertionXPathTarget(datadogV1.SyntheticsAssertionXPathOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
+					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
+						assertionXPathTarget.SetProperty(v)
+					}
+					if v, ok := assertionMap["targetxpath"].([]interface{}); ok && len(v) > 0 {
+						subTarget := datadogV1.NewSyntheticsAssertionXPathTargetTarget()
+						targetMap := v[0].(map[string]interface{})
+						if v, ok := targetMap["xpath"]; ok {
+							subTarget.SetXPath(v.(string))
+						}
+						operator, ok := targetMap["operator"]
+						if ok {
+							subTarget.SetOperator(operator.(string))
+						}
+						if v, ok := targetMap["targetvalue"]; ok {
+							switch datadogV1.SyntheticsAssertionOperator(operator.(string)) {
+							case
+								datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
+								datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
+								if match, _ := regexp.MatchString("{{\\s*([^{}]*?)\\s*}}", v.(string)); match {
+									subTarget.SetTargetValue(v)
+								} else {
+									if floatValue, err := strconv.ParseFloat(v.(string), 64); err == nil {
+										subTarget.SetTargetValue(floatValue)
+									}
+								}
+							default:
+								subTarget.SetTargetValue(v)
+							}
+						}
+						assertionXPathTarget.SetTarget(*subTarget)
+					}
+					if _, ok := assertionMap["target"]; ok {
+						log.Printf("[WARN] target shouldn't be specified for validateXPath operator, only targetxpath")
+					}
+					assertions = append(assertions, datadogV1.SyntheticsAssertionXPathTargetAsSyntheticsAssertion(assertionXPathTarget))
 				} else {
 					assertionTarget := datadogV1.NewSyntheticsAssertionTargetWithDefaults()
 					assertionTarget.SetOperator(datadogV1.SyntheticsAssertionOperator(assertionOperator))
@@ -1665,7 +1730,10 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 						}
 					}
 					if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
-						log.Printf("[WARN] targetjsonpath shouldn't be specified for non-validateJSONPath operator, only target")
+						log.Printf("[WARN] targetjsonpath shouldn't be specified for non-validatesJSONPath operator, only target")
+					}
+					if v, ok := assertionMap["targetxpath"].([]interface{}); ok && len(v) > 0 {
+						log.Printf("[WARN] targetxpath shouldn't be specified for non-validatesXPath operator, only target")
 					}
 					assertions = append(assertions, datadogV1.SyntheticsAssertionTargetAsSyntheticsAssertion(assertionTarget))
 				}
@@ -2134,6 +2202,37 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 					}
 				}
 				localAssertion["targetjsonpath"] = []map[string]string{localTarget}
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
+		} else if assertion.SyntheticsAssertionXPathTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionXPathTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if assertionTarget.HasProperty() {
+				localAssertion["property"] = assertionTarget.GetProperty()
+			}
+			if target, ok := assertionTarget.GetTargetOk(); ok {
+				localTarget := make(map[string]string)
+				if v, ok := target.GetXPathOk(); ok {
+					localTarget["xpath"] = string(*v)
+				}
+				if v, ok := target.GetOperatorOk(); ok {
+					localTarget["operator"] = string(*v)
+				}
+				if v, ok := target.GetTargetValueOk(); ok {
+					val := (*v).(interface{})
+					if vAsString, ok := val.(string); ok {
+						localTarget["targetvalue"] = vAsString
+					} else if vAsFloat, ok := val.(float64); ok {
+						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
+					} else {
+						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
+					}
+				}
+				localAssertion["targetxpath"] = []map[string]string{localTarget}
 			}
 			if v, ok := assertionTarget.GetTypeOk(); ok {
 				localAssertion["type"] = string(*v)
@@ -2845,17 +2944,15 @@ func convertToString(i interface{}) string {
 	}
 }
 
-func setFloatTargetValue(subTarget *datadogV1.SyntheticsAssertionJSONPathTargetTarget, value string) {
-	if floatValue, err := strconv.ParseFloat(value, 64); err == nil {
-		subTarget.SetTargetValue(floatValue)
-	}
-}
-
 func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []string, errs []error) {
 	_, err := datadogV1.NewSyntheticsAssertionOperatorFromValue(val.(string))
 	if err != nil {
 		_, err2 := datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue(val.(string))
-		if err2 != nil {
+		_, err3 := datadogV1.NewSyntheticsAssertionXPathOperatorFromValue(val.(string))
+
+		if err2 == nil || err3 == nil {
+			return
+		} else {
 			errs = append(errs, err, err2)
 		}
 	}
