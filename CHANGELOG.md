@@ -8,8 +8,8 @@
 ### IMPROVEMENTS
 * [datadog_dashboard] Add support for `values` and `defaults` in template variables by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1622
 * [datadog_monitor] Support monitor `scheduling_options` by @bmay2 in https://github.com/DataDog/terraform-provider-datadog/pull/1630
-* [Synthetics] Add support for xpath assertions by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1632
-* [Synthetics] Add body_type field to SyntheticsTest request_definition by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1629
+* [datadog_synthetics] Add support for xpath assertions by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1632
+* [datadog_synthetics] Add body_type field to SyntheticsTest request_definition by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1629
 ### NOTES
 * [datadog_provider] Bump `go` and `terraform-plugin-sdk` versions by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1597
 
