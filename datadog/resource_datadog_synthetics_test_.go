@@ -143,6 +143,12 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"body_type": {
+				Description:      "Type of the request body.",
+				Type:             schema.TypeString,
+				Optional:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestRequestBodyTypeFromValue),
+			},
 			"timeout": {
 				Description: "Timeout in seconds for the test. Defaults to `60`.",
 				Type:        schema.TypeInt,
@@ -1277,6 +1283,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := k.GetOkWith("body"); ok {
 		request.SetBody(attr.(string))
 	}
+	if attr, ok := k.GetOkWith("body_type"); ok {
+		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
+	}
 	if attr, ok := k.GetOkWith("timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
 	}
@@ -1374,6 +1383,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 				request.SetMethod(datadogV1.HTTPMethod(requestMap["method"].(string)))
 				request.SetUrl(requestMap["url"].(string))
 				request.SetBody(requestMap["body"].(string))
+				if v, ok := requestMap["body_type"].(string); ok && v != "" {
+					request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(v))
+				}
 				request.SetTimeout(float64(requestMap["timeout"].(int)))
 				request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
 				request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
@@ -1758,6 +1770,9 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	if attr, ok := k.GetOkWith("body"); ok {
 		request.SetBody(attr.(string))
 	}
+	if attr, ok := k.GetOkWith("body_type"); ok {
+		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
+	}
 	if attr, ok := k.GetOkWith("timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
 	}
@@ -2110,6 +2125,9 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	localRequest := make(map[string]interface{})
 	if request.HasBody() {
 		localRequest["body"] = request.GetBody()
+	}
+	if request.HasBodyType() {
+		localRequest["body_type"] = request.GetBodyType()
 	}
 	if request.HasMethod() {
 		localRequest["method"] = convertToString(request.GetMethod())
