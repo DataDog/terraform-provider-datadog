@@ -3762,6 +3762,9 @@ func testSyntheticsTestExists(accProvider func() (*schema.Provider, error)) reso
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
+			if r.Type != "datadog_synthetics_test" {
+				continue
+			}
 			if _, _, err := apiInstances.GetSyntheticsApiV1().GetTest(auth, r.Primary.ID); err != nil {
 				return fmt.Errorf("received an error retrieving synthetics test %s", err)
 			}
