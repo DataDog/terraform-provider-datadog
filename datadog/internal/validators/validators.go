@@ -21,6 +21,44 @@ func ValidateFloatString(v interface{}, k string) (ws []string, errors []error) 
 // EnumChecker type to get allowed enum values from validate func
 type EnumChecker struct{}
 
+func contains(values []interface{}, value interface{}) bool {
+	for _, v := range values {
+		if value == v {
+			return true
+		}
+	}
+	return false
+}
+
+func ValidateAmongAllowedValues(allowedValues ...interface{}) schema.SchemaValidateDiagFunc {
+	stringValues := make([]string, len(allowedValues))
+	for _, v := range allowedValues {
+		stringValues = append(stringValues, fmt.Sprintf("`%s`", v))
+	}
+	msg := strings.Join(stringValues, ", ")
+
+	return func(val interface{}, path cty.Path) diag.Diagnostics {
+		if contains(allowedValues, val) {
+			// value is allowed
+			okDiag := diag.Diagnostic{
+				Severity:      diag.Warning,
+				Summary:       "Allowed values",
+				Detail:        msg,
+				AttributePath: cty.Path{},
+			}
+			return []diag.Diagnostic{okDiag}
+		}
+		// value is not allowed
+		invalidValueDiag := diag.Diagnostic{
+			Severity:      diag.Error,
+			Summary:       "Invalid enum value",
+			Detail:        msg,
+			AttributePath: path,
+		}
+		return []diag.Diagnostic{invalidValueDiag}
+	}
+}
+
 // ValidateEnumValue returns a validate func for a collection of enum value. It takes the constructors with validation for the enum as an argument.
 // Such a constructor is for instance `datadogV1.NewWidgetLineWidthFromValue`
 func ValidateEnumValue(newEnumFuncs ...interface{}) schema.SchemaValidateDiagFunc {
