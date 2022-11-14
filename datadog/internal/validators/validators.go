@@ -21,7 +21,7 @@ func ValidateFloatString(v interface{}, k string) (ws []string, errors []error) 
 // EnumChecker type to get allowed enum values from validate func
 type EnumChecker struct{}
 
-func contains(values []interface{}, value interface{}) bool {
+func contains(values []string, value string) bool {
 	for _, v := range values {
 		if value == v {
 			return true
@@ -30,32 +30,51 @@ func contains(values []interface{}, value interface{}) bool {
 	return false
 }
 
-func ValidateAmongAllowedValues(allowedValues ...interface{}) schema.SchemaValidateDiagFunc {
-	stringValues := make([]string, len(allowedValues))
-	for _, v := range allowedValues {
+func buildMessageString(values []string) string {
+	stringValues := make([]string, 0)
+	for _, v := range values {
 		stringValues = append(stringValues, fmt.Sprintf("`%s`", v))
 	}
-	msg := strings.Join(stringValues, ", ")
+	return strings.Join(stringValues, ", ")
+}
+
+func ValidateStringEnumValue(allowedValues ...interface{}) schema.SchemaValidateDiagFunc {
+	allowedStringValues := make([]string, 0)
+	for _, v := range allowedValues {
+		allowedStringValues = append(allowedStringValues, fmt.Sprint(v))
+	}
 
 	return func(val interface{}, path cty.Path) diag.Diagnostics {
-		if contains(allowedValues, val) {
-			// value is allowed
-			okDiag := diag.Diagnostic{
+		var diags diag.Diagnostics
+
+		if _, ok := val.(EnumChecker); ok {
+			return append(diags, diag.Diagnostic{
 				Severity:      diag.Warning,
 				Summary:       "Allowed values",
-				Detail:        msg,
+				Detail:        buildMessageString(allowedStringValues),
 				AttributePath: cty.Path{},
-			}
-			return []diag.Diagnostic{okDiag}
+			})
 		}
-		// value is not allowed
-		invalidValueDiag := diag.Diagnostic{
-			Severity:      diag.Error,
-			Summary:       "Invalid enum value",
-			Detail:        msg,
-			AttributePath: path,
+
+		stringVal, isString := val.(string)
+		if !isString {
+			return append(diags, diag.Diagnostic{
+				Severity:      diag.Error,
+				Summary:       "Invalid value type",
+				Detail:        "Field value must be of type string",
+				AttributePath: path,
+			})
 		}
-		return []diag.Diagnostic{invalidValueDiag}
+
+		if !contains(allowedStringValues, stringVal) {
+			return append(diags, diag.Diagnostic{
+				Severity:      diag.Error,
+				Summary:       "Invalid enum value",
+				Detail:        fmt.Sprintf("Invalid value '%v': valid values are %v", val, allowedStringValues),
+				AttributePath: path,
+			})
+		}
+		return diags
 	}
 }
 

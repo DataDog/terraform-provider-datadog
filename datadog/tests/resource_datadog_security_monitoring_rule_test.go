@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -176,6 +177,38 @@ func TestAccDatadogSecurityMonitoringRule_SignalCorrelation(t *testing.T) {
 			{
 				Config: testAccCheckDatadogSecurityMonitoringUpdatedSignalCorrelationConfig(ruleName),
 				Check:  testAccCheckDatadogSecurityMonitoringUpdateSignalCorrelationCheck(accProvider, ruleName),
+			},
+		},
+	})
+}
+
+func TestAccDatadogSecurityMonitoringRule_InvalidTypes(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+
+	invalidValueRegex, _ := regexp.Compile("Invalid enum value")
+	invalidTypeRegex, _ := regexp.Compile("Incorrect attribute value type")
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogSecurityMonitoringRule("\"infrastructure_configuration\"", ruleName),
+				ExpectError: invalidValueRegex,
+			},
+			{
+				Config:      testAccCheckDatadogSecurityMonitoringRule("\"cloud_configuration\"", ruleName),
+				ExpectError: invalidValueRegex,
+			},
+			{
+				Config:      testAccCheckDatadogSecurityMonitoringRule("\"bogus_type\"", ruleName),
+				ExpectError: invalidValueRegex,
+			},
+			{
+				Config:      testAccCheckDatadogSecurityMonitoringRule("[\"one\", \"two\"]", ruleName),
+				ExpectError: invalidTypeRegex,
 			},
 		},
 	})
@@ -609,6 +642,40 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 	type = "workload_security"
 }
 `, name, strings.Replace(name, "-", "_", -1))
+}
+
+func testAccCheckDatadogSecurityMonitoringRule(ruleType string, name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+	name = "%s"
+	message = "acceptance rule triggered"
+	enabled = false
+
+	query {
+		name = "first"
+		query = "@agent.rule_id:(%s_random_id OR random_id)"
+		aggregation = "count"
+		group_by_fields = ["host"]
+	}
+
+	case {
+		name = "high case"
+		status = "high"
+		condition = "first > 3"
+	}
+
+	options {
+		detection_method = "threshold"
+		evaluation_window = 300
+		keep_alive = 600
+		max_signal_duration = 900
+	}
+
+	tags = ["i:tomato", "u:tomato"]
+
+	type = %s
+}
+`, name, strings.Replace(name, "-", "_", -1), ruleType)
 }
 
 func testAccCheckDatadogSecurityMonitoringCreatedCheckCwsRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {

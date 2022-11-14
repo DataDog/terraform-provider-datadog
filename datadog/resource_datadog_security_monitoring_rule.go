@@ -339,7 +339,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 
 		"type": {
 			Type: schema.TypeString,
-			ValidateDiagFunc: validators.ValidateAmongAllowedValues(datadogV2.SECURITYMONITORINGRULETYPEREAD_LOG_DETECTION,
+			ValidateDiagFunc: validators.ValidateStringEnumValue(datadogV2.SECURITYMONITORINGRULETYPEREAD_LOG_DETECTION,
 				datadogV2.SECURITYMONITORINGRULETYPEREAD_WORKLOAD_SECURITY, datadogV2.SECURITYMONITORINGSIGNALRULETYPE_SIGNAL_CORRELATION),
 			Optional:    true,
 			Description: "The rule type.",
