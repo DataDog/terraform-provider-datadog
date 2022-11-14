@@ -524,6 +524,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_definition.0.body", "this is a body"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_definition.0.body_type", "text/plain"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_definition.0.no_saving_response_body", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_basicauth.#", "1"),
@@ -598,7 +600,7 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0_list.#", "0"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options_list.0.restricted_roles.0", "abc"),
+				"datadog_synthetics_test.foo", "options_list.0.restricted_roles.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.ci.0.execution_rule", "blocking"),
 			resource.TestCheckResourceAttr(
@@ -631,6 +633,10 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 
 func createSyntheticsAPITestConfig(uniq string) string {
 	return fmt.Sprintf(`
+resource "datadog_role" "bar" {
+	name      = "%[1]s"
+}
+
 resource "datadog_synthetics_test" "foo" {
 	type = "api"
 	subtype = "http"
@@ -639,6 +645,7 @@ resource "datadog_synthetics_test" "foo" {
 		method = "GET"
 		url = "https://www.datadoghq.com"
 		body = "this is a body"
+		body_type = "text/plain"
 		timeout = 30
 		no_saving_response_body = true
 	}
@@ -698,7 +705,7 @@ resource "datadog_synthetics_test" "foo" {
 		}
 		monitor_name = "%[1]s-monitor"
 		monitor_priority = 5
-		restricted_roles = ["abc"]
+		restricted_roles = ["${datadog_role.bar.id}"]
 		ci {
 			execution_rule = "blocking"
 		}
@@ -755,7 +762,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.#", "8"),
+				"datadog_synthetics_test.bar", "assertion.#", "9"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
@@ -824,6 +831,18 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.operator", "moreThan"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.targetvalue", "{{ TEST_VAR_1 }}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.operator", "validatesXPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetxpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetxpath.0.xpath", "something"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetxpath.0.operator", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.8.targetxpath.0.targetvalue", "12"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -950,6 +969,15 @@ resource "datadog_synthetics_test" "bar" {
 			targetvalue = "{{ TEST_VAR_1 }}"
 		}
 	}
+	assertion {
+		type = "body"
+		operator = "validatesXPath"
+		targetxpath {
+			operator = "contains"
+			targetvalue = "12"
+			xpath = "something"
+        }
+    }
 
 	locations = [ "aws:eu-central-1" ]
 	options_list {
@@ -2216,7 +2244,7 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_priority", "5"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.restricted_roles.0", "abc"),
+				"datadog_synthetics_test.bar", "options_list.0.restricted_roles.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.is_enabled", "true"),
 			resource.TestCheckResourceAttr(
@@ -2281,6 +2309,9 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 
 func createSyntheticsBrowserTestConfig(uniq string) string {
 	return fmt.Sprintf(`
+resource "datadog_role" "bar" {
+	name      = "%[1]s"
+}
 resource "datadog_synthetics_test" "bar" {
 	type = "browser"
 
@@ -2328,7 +2359,7 @@ resource "datadog_synthetics_test" "bar" {
 		}
 		monitor_name = "%[1]s-monitor"
 		monitor_priority = 5
-		restricted_roles = ["abc"]
+		restricted_roles = ["${datadog_role.bar.id}"]
 
 		no_screenshot = true
 
@@ -3495,7 +3526,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "options_list.0.restricted_roles.0", "abc"),
+				"datadog_synthetics_test.multi", "options_list.0.restricted_roles.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -3608,6 +3639,10 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 
 func createSyntheticsMultistepAPITestConfig(testName string, variableName string) string {
 	return fmt.Sprintf(`
+resource "datadog_role" "bar" {
+	name      = "%[1]s"
+}
+
 resource "datadog_synthetics_global_variable" "global_variable" {
   name        = "%[2]s"
   description = "a global variable"
@@ -3623,8 +3658,8 @@ resource "datadog_synthetics_test" "multi" {
     tick_every           = 900
     min_failure_duration = 0
     min_location_failed  = 1
-	restricted_roles     = ["abc"]
-  }
+	restricted_roles = ["${datadog_role.bar.id}"]
+}
   name    = "%[1]s"
   message = "Notify @datadog.user"
   tags    = ["multistep"]
@@ -3727,6 +3762,9 @@ func testSyntheticsTestExists(accProvider func() (*schema.Provider, error)) reso
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
+			if r.Type != "datadog_synthetics_test" {
+				continue
+			}
 			if _, _, err := apiInstances.GetSyntheticsApiV1().GetTest(auth, r.Primary.ID); err != nil {
 				return fmt.Errorf("received an error retrieving synthetics test %s", err)
 			}

@@ -1,3 +1,23 @@
+## 3.18.0 (November 10, 2022)
+
+### BUGFIXES
+* [datadog_monitor] Handle explicit null for `new_host_delay` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1615
+* [datadog_dashboard] Suppress URL attribute diff by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1614
+* [datadog_dashboard] Fix panic when `slo_list` widget is in `group` widget by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1624
+* [datadog_service_definition_yaml] Move `404 statusCode` check into the error check block by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1634
+### IMPROVEMENTS
+* [datadog_dashboard] Add support for `values` and `defaults` in template variables by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1622
+* [datadog_monitor] Support monitor `scheduling_options` by @bmay2 in https://github.com/DataDog/terraform-provider-datadog/pull/1630
+* [datadog_synthetics] Add support for xpath assertions by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1632
+* [datadog_synthetics] Add body_type field to SyntheticsTest request_definition by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1629
+### NOTES
+* [datadog_provider] Bump `go` and `terraform-plugin-sdk` versions by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1597
+
+## New Contributors
+* @bmay2 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1630
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.17.0...v3.18.0
+
 ## 3.17.0 (October 24, 2022)
 
 ### BUGFIXES

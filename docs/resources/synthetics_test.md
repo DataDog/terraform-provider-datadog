@@ -340,6 +340,7 @@ Optional:
 - `property` (String) If assertion type is `header`, this is the header name.
 - `target` (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonpath))
+- `targetxpath` (Block List, Max: 1) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetxpath))
 
 <a id="nestedblock--api_step--assertion--targetjsonpath"></a>
 ### Nested Schema for `api_step.assertion.targetjsonpath`
@@ -349,6 +350,16 @@ Required:
 - `jsonpath` (String) The JSON path to assert.
 - `operator` (String) The specific operator to use on the path.
 - `targetvalue` (String) Expected matching value.
+
+
+<a id="nestedblock--api_step--assertion--targetxpath"></a>
+### Nested Schema for `api_step.assertion.targetxpath`
+
+Required:
+
+- `operator` (String) The specific operator to use on the path.
+- `targetvalue` (String) Expected matching value.
+- `xpath` (String) The xpath to assert.
 
 
 
@@ -435,6 +446,7 @@ Optional:
 
 - `allow_insecure` (Boolean) Allows loading insecure content for an HTTP test.
 - `body` (String) The request body.
+- `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`.
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (Number) DNS server port to use for DNS tests.
@@ -487,6 +499,7 @@ Optional:
 - `property` (String) If assertion type is `header`, this is the header name.
 - `target` (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonpath))
+- `targetxpath` (Block List, Max: 1) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetxpath))
 
 <a id="nestedblock--assertion--targetjsonpath"></a>
 ### Nested Schema for `assertion.targetjsonpath`
@@ -496,6 +509,16 @@ Required:
 - `jsonpath` (String) The JSON path to assert.
 - `operator` (String) The specific operator to use on the path.
 - `targetvalue` (String) Expected matching value.
+
+
+<a id="nestedblock--assertion--targetxpath"></a>
+### Nested Schema for `assertion.targetxpath`
+
+Required:
+
+- `operator` (String) The specific operator to use on the path.
+- `targetvalue` (String) Expected matching value.
+- `xpath` (String) The xpath to assert.
 
 
 
@@ -728,6 +751,7 @@ Optional:
 Optional:
 
 - `body` (String) The request body.
+- `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`.
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (Number) DNS server port to use for DNS tests.
