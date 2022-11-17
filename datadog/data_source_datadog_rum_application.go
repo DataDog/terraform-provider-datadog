@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -13,10 +14,21 @@ func dataSourceDatadogRUMApplication() *schema.Resource {
 		ReadContext: dataSourceDatadogRUMApplicationRead,
 
 		Schema: map[string]*schema.Schema{
+			"name_filter": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The name used to search for a RUM application",
+			},
+			"type_filter": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The type used to search for a RUM application",
+			},
 			"id": {
 				Type:        schema.TypeString,
-				Required:    true,
-				Description: "ID of the RUM application",
+				Optional:    true,
+				Computed:    true,
+				Description: "ID of the RUM application. If set, this takes precedence over name and type filters.",
 			},
 			"name": {
 				Type:        schema.TypeString,
@@ -42,26 +54,53 @@ func dataSourceDatadogRUMApplicationRead(ctx context.Context, d *schema.Resource
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	searchID, ok := d.GetOk("id")
-	if !ok {
-		return diag.Errorf("Missing ID in RUM application data source.")
+	if searchID, ok := d.GetOk("id"); ok {
+		resp, _, err := apiInstances.GetRumApiV2().GetRUMApplication(auth, searchID.(string))
+		if err != nil {
+			return diag.Errorf("Couldn't find RUM application with id %s", searchID)
+		}
+
+		return dataSourceDatadogRUMApplicationUpdate(d, resp.Data.GetAttributes())
+	} else {
+		resp, _, err := apiInstances.GetRumApiV2().GetRUMApplications(auth)
+		if err != nil {
+			return diag.Errorf("Couldn't retrieve list of RUM Applications")
+		}
+
+		searchName, searchNameOk := d.GetOk("name_filter")
+		searchType, searchTypeOk := d.GetOk("type_filter")
+		var foundRUMApplications []datadogV2.RUMApplicationAttributes
+		for _, resp_data := range resp.Data {
+			rum_app, ok := resp_data.GetAttributesOk()
+			// Only filter by name or type if it is set in the data source
+			if ok && (!searchNameOk || rum_app.GetName() == searchName) && (!searchTypeOk || rum_app.GetType() == searchType) {
+				foundRUMApplications = append(foundRUMApplications, *rum_app)
+			}
+		}
+
+		if len(foundRUMApplications) == 0 {
+			return diag.Errorf("Couldn't find a RUM Application with name '%s' and type '%s'", searchName, searchType)
+		} else if len(foundRUMApplications) > 1 {
+			return diag.Errorf("Searching for name '%s' and type '%s' returned more than one RUM application.", searchName, searchType)
+		}
+
+		app_resp, _, app_err := apiInstances.GetRumApiV2().GetRUMApplication(auth, foundRUMApplications[0].GetApplicationId())
+		if app_err != nil {
+			return diag.Errorf("Couldn't find RUM application with id %s", foundRUMApplications[0].GetApplicationId())
+		}
+		return dataSourceDatadogRUMApplicationUpdate(d, app_resp.Data.GetAttributes())
 	}
+}
 
-	resp, _, err := apiInstances.GetRumApiV2().GetRUMApplication(auth, searchID.(string))
-	if err != nil {
-		return diag.Errorf("Couldn't find RUM application with id %s", searchID)
-	}
-
-	rum_app := resp.Data.GetAttributes()
-
+func dataSourceDatadogRUMApplicationUpdate(d *schema.ResourceData, rum_app datadogV2.RUMApplicationAttributes) diag.Diagnostics {
 	d.SetId(rum_app.GetApplicationId())
-	if err := d.Set("name", rum_app.Name); err != nil {
+	if err := d.Set("name", rum_app.GetName()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("type", rum_app.Type); err != nil {
+	if err := d.Set("type", rum_app.GetType()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("client_token", rum_app.Hash); err != nil {
+	if err := d.Set("client_token", rum_app.GetHash()); err != nil {
 		return diag.FromErr(err)
 	}
 	return nil

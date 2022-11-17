@@ -70,7 +70,7 @@ func TestAccDatadogRoleDatasourceError(t *testing.T) {
 			},
 			{
 				Config:      testAccDatasourceRoleErrorConfig(rolename),
-				ExpectError: regexp.MustCompile("no exact match for name .* were found"),
+				ExpectError: regexp.MustCompile("more than one RUM application"),
 			},
 		},
 	})
