@@ -71,10 +71,12 @@ func dataSourceDatadogRUMApplicationRead(ctx context.Context, d *schema.Resource
 		searchType, searchTypeOk := d.GetOk("type_filter")
 		var foundRUMApplications []datadogV2.RUMApplicationAttributes
 		for _, resp_data := range resp.Data {
-			rum_app, ok := resp_data.GetAttributesOk()
-			// Only filter by name or type if it is set in the data source
-			if ok && (!searchNameOk || rum_app.GetName() == searchName) && (!searchTypeOk || rum_app.GetType() == searchType) {
-				foundRUMApplications = append(foundRUMApplications, *rum_app)
+			if rum_app, ok := resp_data.GetAttributesOk(); ok {
+				nameSetAndMatched := searchNameOk && rum_app.GetName() == searchName
+				typeSetAndMatched := searchTypeOk && rum_app.GetType() == searchType
+				if nameSetAndMatched || typeSetAndMatched {
+					foundRUMApplications = append(foundRUMApplications, *rum_app)
+				}
 			}
 		}
 
