@@ -67,7 +67,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - `query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
 - `signal_query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--signal_query))
 - `tags` (List of String) Tags for generated signals.
-- `type` (String) The rule type. Valid values are `log_detection`, `infrastructure_configuration`, `workload_security`, `cloud_configuration`, `signal_correlation`.
+- `type` (String) The rule type. Valid values are `log_detection`, `workload_security`, `signal_correlation`.
 
 ### Read-Only
 
