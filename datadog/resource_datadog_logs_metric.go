@@ -138,23 +138,32 @@ func getCompute(d *schema.ResourceData) (*datadogV2.LogsMetricCompute, error) {
 	resourceCompute := d.Get("compute").([]interface{})[0].(map[string]interface{})
 	compute := datadogV2.NewLogsMetricComputeWithDefaults()
 
-	aggregationType, ok := resourceCompute["aggregation_type"]
-	if ok {
-		compute.SetAggregationType(datadogV2.LogsMetricComputeAggregationType(aggregationType.(string)))
-	}
-
-	if ok && aggregationType == datadogV2.LOGSMETRICCOMPUTEAGGREGATIONTYPE_DISTRIBUTION {
-		if includePercentiles, ok := resourceCompute["include_percentiles"]; ok {
-			compute.SetIncludePercentiles(includePercentiles.(bool))
+	if aggregationType, ok := resourceCompute["aggregation_type"]; ok {
+		aggregation_type := datadogV2.LogsMetricComputeAggregationType(aggregationType.(string))
+		compute.SetAggregationType(aggregation_type)
+		if aggregation_type == datadogV2.LOGSMETRICCOMPUTEAGGREGATIONTYPE_DISTRIBUTION {
+			if includePercentiles, ok := resourceCompute["include_percentiles"]; ok {
+				compute.SetIncludePercentiles(includePercentiles.(bool))
+			}
 		}
 	}
 
-	path, ok := resourceCompute["path"]
-	if ok && path != "" {
+	if path, ok := resourceCompute["path"]; ok && path != "" {
 		compute.SetPath(path.(string))
 	}
 
 	return compute, nil
+}
+
+func getUpdateCompute(d *schema.ResourceData) (*datadogV2.LogsMetricUpdateCompute, error) {
+	resourceCompute := d.Get("compute").([]interface{})[0].(map[string]interface{})
+	updateCompute := datadogV2.NewLogsMetricUpdateComputeWithDefaults()
+
+	if includePercentiles, ok := resourceCompute["include_percentiles"]; ok {
+		updateCompute.SetIncludePercentiles(includePercentiles.(bool))
+	}
+
+	return updateCompute, nil
 }
 
 func getFilter(d *schema.ResourceData) (*datadogV2.LogsMetricFilter, error) {
@@ -219,13 +228,13 @@ func updateLogsMetricState(d *schema.ResourceData, resource *datadogV2.LogsMetri
 	if ddAttributes, ok := resource.GetAttributesOk(); ok {
 		if computeDDModel, ok := ddAttributes.GetComputeOk(); ok {
 			computeMap := map[string]interface{}{}
-			v, ok := computeDDModel.GetAggregationTypeOk()
-			if ok {
+
+			if v, ok := computeDDModel.GetAggregationTypeOk(); ok {
 				computeMap["aggregation_type"] = *v
-			}
-			if ok && *v == datadogV2.LOGSMETRICRESPONSECOMPUTEAGGREGATIONTYPE_DISTRIBUTION {
-				if v, ok := computeDDModel.GetIncludePercentilesOk(); ok {
-					computeMap["include_percentiles"] = *v
+				if *v == datadogV2.LOGSMETRICRESPONSECOMPUTEAGGREGATIONTYPE_DISTRIBUTION {
+					if w, ok := computeDDModel.GetIncludePercentilesOk(); ok {
+						computeMap["include_percentiles"] = *w
+					}
 				}
 			}
 			if v, ok := computeDDModel.GetPathOk(); ok {
@@ -302,6 +311,12 @@ func resourceDatadogLogsMetricRead(ctx context.Context, d *schema.ResourceData, 
 func buildDatadogLogsMetricUpdate(d *schema.ResourceData) (*datadogV2.LogsMetricUpdateData, error) {
 	result := datadogV2.NewLogsMetricUpdateDataWithDefaults()
 	attributes := datadogV2.NewLogsMetricUpdateAttributesWithDefaults()
+
+	updateCompute, err := getUpdateCompute(d)
+	if err != nil {
+		return nil, err
+	}
+	attributes.SetCompute(*updateCompute)
 
 	filter, err := getFilter(d)
 	if err != nil {
