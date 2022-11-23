@@ -47,6 +47,12 @@ func resourceDatadogLogsMetric() *schema.Resource {
 							ForceNew:    true,
 							Description: "The path to the value the log-based metric will aggregate on (only used if the aggregation type is a \"distribution\"). This field can't be updated after creation.",
 						},
+
+						"include_percentiles": {
+							Description: "Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a `aggregation_type` of distribution.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+						},
 					},
 				},
 			},
@@ -132,8 +138,15 @@ func getCompute(d *schema.ResourceData) (*datadogV2.LogsMetricCompute, error) {
 	resourceCompute := d.Get("compute").([]interface{})[0].(map[string]interface{})
 	compute := datadogV2.NewLogsMetricComputeWithDefaults()
 
-	if aggregationType, ok := resourceCompute["aggregation_type"]; ok {
+	aggregationType, ok := resourceCompute["aggregation_type"]
+	if ok {
 		compute.SetAggregationType(datadogV2.LogsMetricComputeAggregationType(aggregationType.(string)))
+	}
+
+	if ok && aggregationType == datadogV2.LOGSMETRICCOMPUTEAGGREGATIONTYPE_DISTRIBUTION {
+		if includePercentiles, ok := resourceCompute["include_percentiles"]; ok {
+			compute.SetIncludePercentiles(includePercentiles.(bool))
+		}
 	}
 
 	path, ok := resourceCompute["path"]
@@ -206,8 +219,14 @@ func updateLogsMetricState(d *schema.ResourceData, resource *datadogV2.LogsMetri
 	if ddAttributes, ok := resource.GetAttributesOk(); ok {
 		if computeDDModel, ok := ddAttributes.GetComputeOk(); ok {
 			computeMap := map[string]interface{}{}
-			if v, ok := computeDDModel.GetAggregationTypeOk(); ok {
+			v, ok := computeDDModel.GetAggregationTypeOk()
+			if ok {
 				computeMap["aggregation_type"] = *v
+			}
+			if ok && *v == datadogV2.LOGSMETRICRESPONSECOMPUTEAGGREGATIONTYPE_DISTRIBUTION {
+				if v, ok := computeDDModel.GetIncludePercentilesOk(); ok {
+					computeMap["include_percentiles"] = *v
+				}
 			}
 			if v, ok := computeDDModel.GetPathOk(); ok {
 				computeMap["path"] = *v
