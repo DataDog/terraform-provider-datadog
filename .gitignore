@@ -1,4 +1,5 @@
 .env
+.venv
 *.dll
 *.exe
 .DS_Store
@@ -25,6 +26,8 @@ website/node_modules
 *.iml
 *.test
 *.iml
+
+*__pycache__*
 
 website/vendor
 

@@ -1,0 +1,36 @@
+package datadog
+
+import (
+	"context"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog{{ version|upperfirst }}"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+)
+
+func resourceDatadog{{ name|camel_case }}() *schema.Resource {
+	return &schema.Resource{
+		Description:   "Provides a Datadog {{ name|camel_case }} resource. This can be used to create and manage Datadog {{ name }}.",
+		CreateContext: resourceDatadog{{ name|camel_case }}Create,
+		ReadContext:   resourceDatadog{{ name|camel_case }}Read,
+		UpdateContext: resourceDatadog{{ name|camel_case }}Update,
+		DeleteContext: resourceDatadog{{ name|camel_case }}Delete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
+
+		Schema: map[string]*schema.Schema{
+		},
+	}
+}
+
+{% include "read_method.j2" %}
+
+{% include "create_method.j2" %}
+
+{% include "update_method.j2" %}
+
+{% include "delete_method.j2" %}
