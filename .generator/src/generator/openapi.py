@@ -107,125 +107,6 @@ def get_type_for_response(response):
                 return type_to_go(content["schema"])
 
 
-def responses_by_types(operation):
-    result = {}
-    for response_code, response in operation["responses"].items():
-        if int(response_code) < 300:
-            continue
-        response_type = get_type_for_response(response)
-        if response_type in result:
-            result[response_type][1].append(response_code)
-        else:
-            result[response_type] = [response, [response_code]]
-    return result.items()
-
-
-def child_models(schema, alternative_name=None, seen=None, parent=None):
-    seen = seen or set()
-    current_name = get_name(schema)
-    name = current_name or alternative_name
-
-    # schema["name"] = name
-
-    if parent is not None:
-        schema["parent"] = parent
-
-    has_sub_models = False
-    if "allOf" in schema:
-        has_sub_models = True
-        for index in range(len(schema["allOf"])):
-            yield from child_models(schema["allOf"][index], seen=seen, parent=schema)
-    if "oneOf" in schema:
-        has_sub_models = True
-        for index in range(len(schema["oneOf"])):
-            yield from child_models(schema["oneOf"][index], seen=seen, parent=schema)
-    if "anyOf" in schema:
-        has_sub_models = True
-        for index in range(len(schema["anyOf"])):
-            yield from child_models(schema["anyOf"][index], seen=seen, parent=schema)
-
-    if "items" in schema:
-        if current_name is not None and schema.get("x-generate-alias-as-model", False):
-            if name in seen:
-                return
-            seen.add(name)
-            yield name, schema
-
-        yield from child_models(
-            schema["items"],
-            alternative_name=name + "Item" if name is not None else None,
-            seen=seen,
-            parent=schema,
-        )
-
-    if (schema.get("type") == "object" or "properties" in schema or has_sub_models) and (
-        not (schema.get("additionalProperties") and not schema.get("properties"))
-    ):
-        if not has_sub_models and name is None:
-            # this is a basic map object so we don't need a type
-            return
-
-        if name is None:
-            raise ValueError(f"Schema {schema} has no name")
-
-        if name in seen:
-            return
-
-        if "properties" in schema or has_sub_models:
-            seen.add(name)
-            yield name, schema
-
-        for key in schema.get("properties", {}):
-            yield from child_models(
-                schema["properties"][key],
-                alternative_name=name + formatter.camel_case(key),
-                seen=seen,
-                # parent=schema,
-            )
-
-    if "enum" in schema:
-        if name is None:
-            raise ValueError(f"Schema {schema} has no name")
-
-        if name in seen:
-            return
-
-        seen.add(name)
-        yield name, schema
-
-    if "additionalProperties" in schema:
-        nested_name = get_name(schema["additionalProperties"])
-        if nested_name:
-            yield from child_models(
-                schema["additionalProperties"],
-                seen=seen,
-                # parent=schema,
-            )
-
-
-def models(spec):
-    name_to_schema = {}
-
-    for path in spec["paths"]:
-        for method in spec["paths"][path]:
-            operation = spec["paths"][path][method]
-
-            for content in operation.get("parameters", []):
-                if "schema" in content:
-                    name_to_schema.update(dict(child_models(content["schema"])))
-
-            for content in operation.get("requestBody", {}).get("content", {}).values():
-                if "schema" in content:
-                    name_to_schema.update(dict(child_models(content["schema"])))
-
-            for response in operation.get("responses", {}).values():
-                for content in response.get("content", {}).values():
-                    if "schema" in content:
-                        name_to_schema.update(dict(child_models(content["schema"])))
-
-    return name_to_schema
-
-
 def operations_to_generate(spec):
     operations = {}
 
@@ -243,15 +124,6 @@ def operations_to_generate(spec):
                     operations.setdefault(operation["x-terraform-resource"], {})[utils.DELETE_OPERATION] = operation
 
     return operations
-
-
-def operation(spec, operation_id):
-    for path in spec["paths"]:
-        for method in spec["paths"][path]:
-            operation = spec["paths"][path][method]
-            if operation["operationId"] == operation_id:
-                return operation
-    return None
 
 
 def parameters(operationList):
@@ -320,63 +192,6 @@ def response(operation, status_code=None):
         if status_code is None or response == str(status_code):
             return list(operation["responses"][response]["content"].values())[0]["schema"]
     return None
-
-
-def get_default(operation, attribute_path):
-    attrs = attribute_path.split(".")
-    for name, parameter in parameters(operation):
-        if name == attrs[0]:
-            break
-    if name == attribute_path:
-        # We found a top level attribute matching the full path, let's use the default
-        return parameter["schema"]["default"]
-
-    if name == "body":
-        parameter = next(iter(parameter["content"].values()))["schema"]
-    for attr in attrs[1:]:
-        parameter = parameter["properties"][attr]
-    return parameter["default"]
-
-
-def get_container(operation, attribute_path, container_name="o[0]"):
-    attribute_name = attribute_path.split(".")[0]
-    for name, parameter in parameters(operation):
-        if name == attribute_name and parameter["required"]:
-            return '{}.{}'.format(name, ".".join(formatter.attribute_name(a) for a in attribute_path.split(".")[1:]))
-    return f'{container_name}.{formatter.attribute_path(attribute_path)}'
-
-
-def get_container_type(operation, attribute_path, stop=None):
-    attrs = attribute_path.split(".")[:stop]
-    for name, parameter in parameters(operation):
-        if name == attrs[0]:
-            break
-
-    if attrs[0] == "body":
-        parameter = next(iter(parameter["content"].values()))
-        
-    if name == attrs[0] and len(attrs) == 1:
-        return type_to_go(parameter["schema"])
-
-    parameter = parameter["schema"]
-    for attr in attrs[1:]:
-        parameter = parameter["properties"][attr]
-    return type_to_go(parameter)
-
-
-def get_type_at_path(operation, attribute_path):
-    content = None
-    for code, response in operation.get("responses", {}).items():
-        if int(code) >= 300:
-            continue
-        for content in response.get("content", {}).values():
-            if "schema" in content:
-                break
-    if content is None:
-        raise RuntimeError("Default response not found")
-    for attr in attribute_path.split("."):
-        content = content["schema"]["properties"][attr]
-    return get_name(content.get("items"))
 
 
 def generate_value(schema, use_random=False, prefix=None):

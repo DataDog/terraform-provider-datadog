@@ -29,12 +29,10 @@ def cli(spec_path, output):
 
     env.filters["attribute_name"] = formatter.attribute_name
     env.filters["camel_case"] = formatter.camel_case
-    env.filters["format_value"] = formatter.format_value
     env.filters["is_reference"] = formatter.is_reference
     env.filters["parameter_schema"] = openapi.parameter_schema
     env.filters["parameters"] = openapi.parameters
     env.filters["response_type"] = openapi.get_type_for_response
-    env.filters["responses_by_types"] = openapi.responses_by_types
     env.filters["return_type"] = openapi.return_type
     env.filters["simple_type"] = formatter.simple_type
     env.filters["snake_case"] = formatter.snake_case
@@ -49,10 +47,6 @@ def cli(spec_path, output):
     env.globals["get_type_for_attribute"] = openapi.get_type_for_attribute
     env.globals["get_type_for_parameter"] = openapi.get_type_for_parameter
     env.globals["get_type"] = openapi.type_to_go
-    env.globals["get_default"] = openapi.get_default
-    env.globals["get_container"] = openapi.get_container
-    env.globals["get_container_type"] = openapi.get_container_type
-    env.globals["get_type_at_path"] = openapi.get_type_at_path
     
     env.globals["GET_OPERATION"] = utils.GET_OPERATION
     env.globals["CREATE_OPERATION"] = utils.CREATE_OPERATION
