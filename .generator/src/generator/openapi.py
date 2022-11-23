@@ -237,7 +237,7 @@ def operations_to_generate(spec):
                     operations.setdefault(operation["x-terraform-resource"], {})[utils.GET_OPERATION] = operation
                 elif method == "post":
                     operations.setdefault(operation["x-terraform-resource"], {})[utils.CREATE_OPERATION] = operation
-                elif method == "update":
+                elif method == "patch":
                     operations.setdefault(operation["x-terraform-resource"], {})[utils.UPDATE_OPERATION] = operation
                 elif method == "delete":
                     operations.setdefault(operation["x-terraform-resource"], {})[utils.DELETE_OPERATION] = operation
@@ -254,41 +254,34 @@ def operation(spec, operation_id):
     return None
 
 
-def parameters(operation):
-    for content in operation.get("parameters", []):
-        if "schema" in content and content.get("required"):
-            yield content["name"], content
+def parameters(operationList):
+    parametersDict = {}
 
-    if "requestBody" in operation:
-        if "multipart/form-data" in operation["requestBody"]["content"]:
-            parent = operation["requestBody"]["content"]["multipart/form-data"]["schema"]
-            for name, schema in parent["properties"].items():
-                yield name, {
-                    "in": "form",
-                    "schema": schema,
-                    "name": name,
-                    "description": schema.get("description"),
-                    "required": name in parent.get("required", []),
-                }
-        else:
-            name = operation.get("x-codegen-request-body-name", "body")
-            yield name, operation["requestBody"]
+    for operation in operationList:
+        for content in operation.get("parameters", []):
+            if "schema" in content and content.get("required"):
+                parametersDict[content["name"]] = content
 
-    for content in operation.get("parameters", []):
-        if "schema" in content and not content.get("required"):
-            yield content["name"], content
+        if "requestBody" in operation:
+            if "multipart/form-data" in operation["requestBody"]["content"]:
+                parent = operation["requestBody"]["content"]["multipart/form-data"]["schema"]
+                for name, schema in parent["properties"].items():
+                    parametersDict[name] = {
+                        "in": "form",
+                        "schema": schema,
+                        "name": name,
+                        "description": schema.get("description"),
+                        "required": name in parent.get("required", []),
+                    }
+            else:
+                name = operation.get("x-codegen-request-body-name", "body")
+                parametersDict[name] = operation["requestBody"]
 
+        for content in operation.get("parameters", []):
+            if "schema" in content and not content.get("required"):
+                parametersDict[content["name"]] = content
 
-def form_parameter(operation):
-    if "requestBody" in operation and "multipart/form-data" in operation["requestBody"]["content"]:
-        parent = operation["requestBody"]["content"]["multipart/form-data"]["schema"]
-        [(name, schema)] = list(parent["properties"].items())
-        return {
-            "schema": schema,
-            "name": name,
-            "description": schema.get("description"),
-            "required": name in parent.get("required", []),
-        }
+    return parametersDict
 
 
 def parameter_schema(parameter):
@@ -416,6 +409,26 @@ def generate_value(schema, use_random=False, prefix=None):
         return {key: generate_value(schema[key], use_random=use_random) for key in spec["properties"]}
     else:
         raise TypeError(f"Unknown type: {spec['type']}")
+
+
+def is_primitive(schema):
+    # We resolve enums to ClassName.ENUM so don't treat enum's as primitive
+    if schema.get("type") in utils.PRIMITIVE_TYPES:
+        return True
+    return False
+
+
+def get_terraform_type(schema):
+    return {
+        "string": "TypeString",
+        "boolean": "TypeBool",
+        "integer": "TypeInt",
+        "number": "TypeInt",
+        "array": "TypeList",
+        "object": "TypeList",
+        None: "String",
+    }[schema.get("type")]
+
 
 
 class Schema:

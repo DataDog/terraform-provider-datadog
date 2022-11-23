@@ -12081,6 +12081,7 @@ paths:
     post:
       description: Create a Confluent account.
       operationId: CreateConfluentAccount
+      x-terraform-resource: confluent_account_test
       requestBody:
         content:
           application/json:
@@ -12111,6 +12112,7 @@ paths:
     delete:
       description: Delete a Confluent account with the provided account ID.
       operationId: DeleteConfluentAccount
+      x-terraform-resource: confluent_account_test
       parameters:
       - $ref: '#/components/parameters/ConfluentAccountID'
       responses:
@@ -12130,6 +12132,7 @@ paths:
     get:
       description: Get the Confluent account with the provided account ID.
       operationId: GetConfluentAccount
+      x-terraform-resource: confluent_account_test
       parameters:
       - $ref: '#/components/parameters/ConfluentAccountID'
       responses:
@@ -12153,6 +12156,7 @@ paths:
     patch:
       description: Update the Confluent account with the provided account ID.
       operationId: UpdateConfluentAccount
+      x-terraform-resource: confluent_account_test
       parameters:
       - $ref: '#/components/parameters/ConfluentAccountID'
       requestBody:

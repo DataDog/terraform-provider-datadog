@@ -6,6 +6,7 @@ CREATE_OPERATION = "createOperation"
 UPDATE_OPERATION = "updateOperation"
 DELETE_OPERATION = "deleteOperation"
 
+PRIMITIVE_TYPES = ["string", "number", "boolean", "integer"]
 
 PATTERN_DOUBLE_UNDERSCORE = re.compile(r"__+")
 PATTERN_LEADING_ALPHA = re.compile(r"(.)([A-Z][a-z]+)")

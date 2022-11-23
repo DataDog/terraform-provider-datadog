@@ -1,3 +1,5 @@
+{%- import "utils/schema.j2" as schemaMacros %}
+
 package datadog
 
 import (
@@ -11,6 +13,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+{% set allParams = [operations[UPDATE_OPERATION], operations[CREATE_OPERATION]]|parameters %}
+
+
 func resourceDatadog{{ name|camel_case }}() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog {{ name|camel_case }} resource. This can be used to create and manage Datadog {{ name }}.",
@@ -23,6 +28,10 @@ func resourceDatadog{{ name|camel_case }}() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
+			{%- for name, parameter in allParams.items() %}
+				 {%- set schema = parameter|parameter_schema%}
+				 {{- schemaMacros.baseSchema(name, schema) }}
+			{%- endfor%}
 		},
 	}
 }

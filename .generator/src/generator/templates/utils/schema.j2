@@ -1,0 +1,31 @@
+{%- macro baseSchema(name, schema) %}
+    {%- if schema|is_primitive %}
+    {{ premitiveSchema(name, schema) }}
+    {%- elif schema.type == "object" %}
+    {{ typeObjectSchema(name, schema) }}
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro premitiveSchema(name, schema) %}
+"{{ name }}": {
+    Type:        schema.{{ schema|get_terraform_type }},
+    {% if schema.required %}Required:    true,{%- else %}Optional:    true,{%- endif %}
+    Description: "{{ schema.description }}",
+},
+{%- endmacro %}
+
+{%- macro typeObjectSchema(name, schema) %}
+"{{ name }}": {
+    Type:        schema.TypeList,
+    {% if schema.required %}Required:    true,{%- else %}Optional:    true,{%- endif %}
+    MaxItems:    1,
+    Description: "{{ schema.description }}",
+    Elem: &schema.Resource{
+        Schema: map[string]*schema.Schema{
+            {%- for attr, childSchema in schema.get("properties", {}).items() %}
+                {{- baseSchema(attr, childSchema) }}
+            {%- endfor%}
+        },
+    },
+},
+{%- endmacro %}

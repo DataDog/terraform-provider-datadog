@@ -41,6 +41,8 @@ def cli(spec_path, output):
     env.filters["untitle_case"] = formatter.untitle_case
     env.filters["upperfirst"] = utils.upperfirst
     env.filters["variable_name"] = formatter.variable_name
+    env.filters["is_primitive"] = openapi.is_primitive
+    env.filters["get_terraform_type"] = openapi.get_terraform_type
 
     env.globals["enumerate"] = enumerate
     env.globals["get_name"] = openapi.get_name
@@ -63,6 +65,7 @@ def cli(spec_path, output):
     operations_to_generate = openapi.operations_to_generate(spec)
     
     base_resource = env.get_template("base_resource.j2")
+    
 
     for name, operations in operations_to_generate.items():
         resource_filename = output / f"resource_datadog_{name}.go"
