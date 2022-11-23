@@ -82,8 +82,9 @@ func testAccCheckDatadogLogsMetricConfigBasic(uniq string) string {
         resource "datadog_logs_metric" "testing_logs_metric" {
 			name = "%s"
 			compute {
-				aggregation_type = "distribution"
-				path             = "@duration"
+				aggregation_type    = "distribution"
+				path                = "@duration"
+				include_percentiles = false
 			}
 			filter {
 				query = "service:test"
