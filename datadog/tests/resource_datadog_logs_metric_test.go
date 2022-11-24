@@ -60,6 +60,8 @@ func TestAccDatadogLogsMetric_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_metric.testing_logs_metric", "compute.0.path", "@duration"),
 					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "compute.0.include_percentiles", "false"),
+					resource.TestCheckResourceAttr(
 						"datadog_logs_metric.testing_logs_metric", "filter.#", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_metric.testing_logs_metric", "filter.0.query", "service:test"),
