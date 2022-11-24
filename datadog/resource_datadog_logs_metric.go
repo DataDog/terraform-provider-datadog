@@ -49,7 +49,7 @@ func resourceDatadogLogsMetric() *schema.Resource {
 						},
 
 						"include_percentiles": {
-							Description: "Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a `aggregation_type` of distribution.",
+							Description: "Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have an `aggregation_type` of distribution.",
 							Type:        schema.TypeBool,
 							Optional:    true,
 						},
