@@ -75,6 +75,14 @@ func TestAccDatadogLogsMetric_Basic(t *testing.T) {
 						"datadog_logs_metric.testing_logs_metric", "group_by.1.path", "service"),
 				),
 			},
+			{
+				Config: testAccCheckDatadogLogsMetricConfigUpdateIncludePercentiles(uniqueLogsMetric),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogLogsMetricExists(accProvider, "datadog_logs_metric.testing_logs_metric"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "compute.0.include_percentiles", "true"),
+				),
+			},
 		},
 	})
 }
@@ -87,6 +95,30 @@ func testAccCheckDatadogLogsMetricConfigBasic(uniq string) string {
 				aggregation_type    = "distribution"
 				path                = "@duration"
 				include_percentiles = false
+			}
+			filter {
+				query = "service:test"
+			}
+			group_by {
+				path     = "@my.status"
+				tag_name = "status"
+			}
+			group_by {
+				path     = "service"
+				tag_name = "service"
+			}
+        }
+    `, uniq)
+}
+
+func testAccCheckDatadogLogsMetricConfigUpdateIncludePercentiles(uniq string) string {
+	return fmt.Sprintf(`
+        resource "datadog_logs_metric" "testing_logs_metric" {
+			name = "%s"
+			compute {
+				aggregation_type    = "distribution"
+				path                = "@duration"
+				include_percentiles = true
 			}
 			filter {
 				query = "service:test"
