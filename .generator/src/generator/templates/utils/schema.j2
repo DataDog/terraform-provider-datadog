@@ -1,15 +1,17 @@
 {%- macro baseSchema(name, schema) %}
     {%- if schema|is_primitive %}
-    {{ premitiveSchema(name, schema) }}
+        {{- premitiveSchema(name, schema) }}
     {%- elif schema.type == "object" %}
-    {{ typeObjectSchema(name, schema) }}
+        {{- typeObjectSchema(name, schema) }}
+    {%- elif schema.type == "array" %}
+        {{- typeArraySchema(name, schema) }}
     {%- endif %}
 {%- endmacro %}
 
 {%- macro premitiveSchema(name, schema) %}
 "{{ name }}": {
-    Type:        schema.{{ schema|get_terraform_type }},
-    {% if schema.required %}Required:    true,{%- else %}Optional:    true,{%- endif %}
+    Type:        schema.{{ get_terraform_type(schema) }},
+    {%- if schema.required %}Required:    true,{%- else %}Optional:    true,{%- endif %}
     Description: "{{ schema.description }}",
 },
 {%- endmacro %}
@@ -17,15 +19,35 @@
 {%- macro typeObjectSchema(name, schema) %}
 "{{ name }}": {
     Type:        schema.TypeList,
-    {% if schema.required %}Required:    true,{%- else %}Optional:    true,{%- endif %}
+    {%- if schema.required %}Required:    true,{%- else %}Optional:    true,{%- endif %}
     MaxItems:    1,
     Description: "{{ schema.description }}",
     Elem: &schema.Resource{
         Schema: map[string]*schema.Schema{
-            {%- for attr, childSchema in schema.get("properties", {}).items() %}
-                {{- baseSchema(attr, childSchema) }}
-            {%- endfor%}
+        {%- for attr, childSchema in schema.get("properties", {}).items() %}
+            {{- baseSchema(attr, childSchema) }}
+        {%- endfor%}
         },
     },
+},
+{%- endmacro %}
+
+{%- macro typeArraySchema(name, schema) %}
+"{{ name }}": {
+    Type:        schema.TypeList,
+    {%- if schema.required %}Required:    true,{%- else %}Optional:    true,{%- endif %}
+    Description: "{{ schema.description }}",
+    {%- if schema.get("items")|is_primitive%}
+    Elem:        &schema.Schema{Type: schema.{{ get_terraform_type(schema.get("items")) }}},
+    {%- else %}
+    Elem: &schema.Resource{
+        Schema: map[string]*schema.Schema{
+        {%- for attr, childSchema in schema.get("items").get("properties", {}).items() %}
+            {{- baseSchema(attr, childSchema) }}
+        {%- endfor%}
+        },
+    },
+    {%- endif%}
+
 },
 {%- endmacro %}

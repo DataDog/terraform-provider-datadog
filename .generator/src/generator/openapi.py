@@ -5,6 +5,7 @@ import random
 import uuid
 import warnings
 import yaml
+import re
 
 from jsonref import JsonRef
 from urllib.parse import urlparse
@@ -108,50 +109,82 @@ def get_type_for_response(response):
 
 
 def operations_to_generate(spec):
+    """
+    {
+        "resourceName": {
+            "getOperation": {
+                "path": "endpoint/path",
+                "schema": {...}    
+            },
+            ...
+        }
+    }
+    """
     operations = {}
-
     for path in spec["paths"]:
         for method in spec["paths"][path]:
             operation = spec["paths"][path][method]
             if "x-terraform-resource" in operation:
                 if method == "get":
-                    operations.setdefault(operation["x-terraform-resource"], {})[utils.GET_OPERATION] = operation
+                    operations.setdefault(operation["x-terraform-resource"], {})[utils.GET_OPERATION] = {"schema": operation, "path": path}
                 elif method == "post":
-                    operations.setdefault(operation["x-terraform-resource"], {})[utils.CREATE_OPERATION] = operation
-                elif method == "patch":
-                    operations.setdefault(operation["x-terraform-resource"], {})[utils.UPDATE_OPERATION] = operation
+                    operations.setdefault(operation["x-terraform-resource"], {})[utils.CREATE_OPERATION] = {"schema": operation, "path": path}
+                elif method == "patch" or method == "put":
+                    operations.setdefault(operation["x-terraform-resource"], {})[utils.UPDATE_OPERATION] = {"schema": operation, "path": path}
                 elif method == "delete":
-                    operations.setdefault(operation["x-terraform-resource"], {})[utils.DELETE_OPERATION] = operation
+                    operations.setdefault(operation["x-terraform-resource"], {})[utils.DELETE_OPERATION] = {"schema": operation, "path": path}
 
     return operations
+    
+
+def get_terraform_schema(operations):
+    create_params = parameters(operations[utils.CREATE_OPERATION]["schema"])
+    update_params = parameters(operations[utils.UPDATE_OPERATION]["schema"])
+    primary_id = operations[utils.UPDATE_OPERATION]["path"].split("/")[-1][1:-1]
+    primary_id_param = update_params.pop(primary_id)
+        
+    attributes = {}
+    for name, parameter in create_params.items():
+        schema = parameter_schema(parameter)
+        if is_json_api(schema):
+            for attr, attr_schema in get_json_api_attributes(schema).items():
+                attributes[attr] = attr_schema
+        else:
+            attributes[name] = schema
+    
+    return {
+        "primaryId": {
+            "schema": parameter_schema(primary_id_param),
+            "name": primary_id
+        },
+        "schemaAttribues": attributes
+    }
 
 
-def parameters(operationList):
+def parameters(operation):
     parametersDict = {}
+    for content in operation.get("parameters", []):
+        if "schema" in content and content.get("required"):
+            parametersDict[content["name"]] = content
 
-    for operation in operationList:
-        for content in operation.get("parameters", []):
-            if "schema" in content and content.get("required"):
-                parametersDict[content["name"]] = content
+    if "requestBody" in operation:
+        if "multipart/form-data" in operation["requestBody"]["content"]:
+            parent = operation["requestBody"]["content"]["multipart/form-data"]["schema"]
+            for name, schema in parent["properties"].items():
+                parametersDict[name] = {
+                    "in": "form",
+                    "schema": schema,
+                    "name": name,
+                    "description": schema.get("description"),
+                    "required": name in parent.get("required", []),
+                }
+        else:
+            name = operation.get("x-codegen-request-body-name", "body")
+            parametersDict[name] = operation["requestBody"]
 
-        if "requestBody" in operation:
-            if "multipart/form-data" in operation["requestBody"]["content"]:
-                parent = operation["requestBody"]["content"]["multipart/form-data"]["schema"]
-                for name, schema in parent["properties"].items():
-                    parametersDict[name] = {
-                        "in": "form",
-                        "schema": schema,
-                        "name": name,
-                        "description": schema.get("description"),
-                        "required": name in parent.get("required", []),
-                    }
-            else:
-                name = operation.get("x-codegen-request-body-name", "body")
-                parametersDict[name] = operation["requestBody"]
-
-        for content in operation.get("parameters", []):
-            if "schema" in content and not content.get("required"):
-                parametersDict[content["name"]] = content
+    for content in operation.get("parameters", []):
+        if "schema" in content and not content.get("required"):
+            parametersDict[content["name"]] = content
 
     return parametersDict
 
@@ -194,44 +227,23 @@ def response(operation, status_code=None):
     return None
 
 
-def generate_value(schema, use_random=False, prefix=None):
-    spec = schema.spec
-    if not use_random:
-        if "example" in spec:
-            return spec["example"]
-        if "default" in spec:
-            return spec["default"]
-
-    if spec["type"] == "string":
-        if use_random:
-            return str(
-                uuid.UUID(
-                    bytes=hashlib.sha256(
-                        str(prefix or schema.keys).encode("utf-8"),
-                    ).digest()[:16]
-                )
-            )
-        return "string"
-    elif spec["type"] == "integer":
-        return random.randint(0, 32000) if use_random else len(str(prefix or schema.keys))
-    elif spec["type"] == "number":
-        return random.random() if use_random else 1.0 / len(str(prefix or schema.keys))
-    elif spec["type"] == "boolean":
-        return True
-    elif spec["type"] == "array":
-        return [generate_value(schema[0], use_random=use_random)]
-    elif spec["type"] == "object":
-        return {key: generate_value(schema[key], use_random=use_random) for key in spec["properties"]}
-    else:
-        raise TypeError(f"Unknown type: {spec['type']}")
-
-
 def is_primitive(schema):
-    # We resolve enums to ClassName.ENUM so don't treat enum's as primitive
     if schema.get("type") in utils.PRIMITIVE_TYPES:
         return True
     return False
 
+
+def is_json_api(schema):
+    properties = schema.get("properties", {})
+    if "data" in properties:
+        data_properties = properties["data"].get("properties", {})
+        if "type" in data_properties and "attributes" in data_properties:
+            return True
+    return False
+
+
+def get_json_api_attributes(schema):
+    return schema.get("properties", {}).get("data", {}).get("properties", {}).get("attributes", {}).get("properties", {})
 
 def get_terraform_type(schema):
     return {

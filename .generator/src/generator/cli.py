@@ -40,13 +40,15 @@ def cli(spec_path, output):
     env.filters["upperfirst"] = utils.upperfirst
     env.filters["variable_name"] = formatter.variable_name
     env.filters["is_primitive"] = openapi.is_primitive
-    env.filters["get_terraform_type"] = openapi.get_terraform_type
+    env.filters["is_json_api"] = openapi.is_json_api
 
     env.globals["enumerate"] = enumerate
     env.globals["get_name"] = openapi.get_name
     env.globals["get_type_for_attribute"] = openapi.get_type_for_attribute
     env.globals["get_type_for_parameter"] = openapi.get_type_for_parameter
     env.globals["get_type"] = openapi.type_to_go
+    env.globals["get_terraform_type"] = openapi.get_terraform_type
+    env.globals["get_json_api_attributes"] = openapi.get_json_api_attributes
     
     env.globals["GET_OPERATION"] = utils.GET_OPERATION
     env.globals["CREATE_OPERATION"] = utils.CREATE_OPERATION
@@ -59,9 +61,10 @@ def cli(spec_path, output):
     operations_to_generate = openapi.operations_to_generate(spec)
     
     base_resource = env.get_template("base_resource.j2")
-    
 
     for name, operations in operations_to_generate.items():
+        terraform_schema = openapi.get_terraform_schema(operations)
+        
         resource_filename = output / f"resource_datadog_{name}.go"
         with resource_filename.open("w") as fp:
-            fp.write(base_resource.render(name=name, spec=spec, operations=operations))
+            fp.write(base_resource.render(name=name, terraform_schema=terraform_schema, operations=operations))
