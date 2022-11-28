@@ -143,10 +143,8 @@ def get_terraform_primary_id(operations):
     primary_id_param = update_params.pop(primary_id)
     
     return {
-        "primaryId": {
-            "schema": parameter_schema(primary_id_param),
-            "name": primary_id
-        },
+        "schema": parameter_schema(primary_id_param),
+        "name": primary_id
     }
 
 

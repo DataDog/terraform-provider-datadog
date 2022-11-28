@@ -9,11 +9,11 @@ func resourceDatadog{{ name|camel_case }}Read(ctx context.Context, d *schema.Res
 		{% if name == primaryId["name"] %}
 		id := d.Id()
 		{%- else%}
-		{{ name|camel_case }} = d.Get("{{ name }}").(paramSchema)
+		{{ name|variable_name }} = d.Get("{{ name }}").(paramSchema)
 		{%- endif%}
 	{%- endfor %}
 
-	resp, httpresp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ getOperationId }}(auth, {% for name, param in readOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|camel_case }},{% endif%}{% endfor%})
+	resp, httpresp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ getOperationId }}(auth, {% for name, param in readOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			// Delete the resource from the local state since it doesn't exist anymore in the actual state
