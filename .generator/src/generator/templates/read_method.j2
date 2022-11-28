@@ -1,4 +1,30 @@
-func resourceDatadog{{ name|camel_case }}Read(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+{%- set readOperationParams = operations[GET_OPERATION]["schema"]|parameters %}
 
-	return nil
+func resourceDatadog{{ name|camel_case }}Read(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	providerConf := meta.(*ProviderConfiguration)
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
+	{%- for name, param in readOperationParams.items() %}
+		{%- set paramSchema = get_terraform_type(param|parameter_schema) %}
+		{% if name == terraform_schema["primaryId"]["name"] %}
+		id := d.Id()
+		{%- else%}
+		{{ name|camel_case }} = d.Get("{{ name }}").(paramSchema)
+		{%- endif%}
+	{%- endfor %}
+
+	resp, httpresp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ getOperationId }}(auth, {% for name, param in readOperationParams.items() %}{% if name == terraform_schema["primaryId"]["name"] %}id,{% else %}{{ name|camel_case }},{% endif%}{% endfor%})
+	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			// Delete the resource from the local state since it doesn't exist anymore in the actual state
+			d.SetId("")
+			return nil
+		}
+		return utils.TranslateClientErrorDiag(err, httpresp, "error calling {{ getOperationId }}")
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		return diag.FromErr(err)
+	}
+
+	return update{{ name|camel_case }}State(d, &resp)
 }

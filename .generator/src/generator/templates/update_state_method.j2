@@ -1,0 +1,18 @@
+{%- import "utils/update_state_helper.j2" as updateStateMacros %}
+
+{#- Use the read operation response type. #}
+{#- TODO: Add support for different updateState methods if responseType is different per operation. #}
+{%- set readResponseType, readResponseSchema = operations[GET_OPERATION]["schema"]|return_type%}
+func update{{ name|camel_case }}State(d *schema.ResourceData, resp *datadog{{ version|upperfirst }}.{{ readResponseType }}) diag.Diagnostics {
+    {%- if readResponseSchema|is_json_api %}
+        {%- set jsonApiAttributes = get_json_api_attributes(readResponseSchema) %}
+        data := resp.GetData()
+		attributes := data.GetAttributes()
+        
+        {%- for attr, schema in jsonApiAttributes.items() %}
+            {{ updateStateMacros.baseStateSetter(attr, schema, baseAccessor="attributes") }}
+        {%- endfor %}
+    {%- endif%}
+
+    return nil
+}

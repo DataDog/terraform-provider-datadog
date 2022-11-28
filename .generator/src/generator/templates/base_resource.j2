@@ -1,4 +1,10 @@
-{%- import "utils/schema.j2" as schemaMacros %}
+{%- import "utils/schema_helper.j2" as schemaMacros %}
+
+{%- set apiName = operations[GET_OPERATION]["schema"]["tags"][0].replace(" ", "") + "Api" %}
+{%- set getOperationId = operations[GET_OPERATION]["schema"]["operationId"] %}
+{%- set updateOperationId = operations[UPDATE_OPERATION]["schema"]["operationId"] %}
+{%- set createOperationId = operations[CREATE_OPERATION]["schema"]["operationId"] %}
+{%- set deleteOperationId = operations[DELETE_OPERATION]["schema"]["operationId"] %}
 
 package datadog
 
@@ -16,8 +22,8 @@ import (
 func resourceDatadog{{ name|camel_case }}() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog {{ name|camel_case }} resource. This can be used to create and manage Datadog {{ name }}.",
-		CreateContext: resourceDatadog{{ name|camel_case }}Create,
 		ReadContext:   resourceDatadog{{ name|camel_case }}Read,
+		CreateContext: resourceDatadog{{ name|camel_case }}Create,
 		UpdateContext: resourceDatadog{{ name|camel_case }}Update,
 		DeleteContext: resourceDatadog{{ name|camel_case }}Delete,
 		Importer: &schema.ResourceImporter{
@@ -39,3 +45,5 @@ func resourceDatadog{{ name|camel_case }}() *schema.Resource {
 {% include "update_method.j2" %}
 
 {% include "delete_method.j2" %}
+
+{% include "update_state_method.j2" %}

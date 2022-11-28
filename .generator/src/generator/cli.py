@@ -55,12 +55,12 @@ def cli(spec_path, output):
     env.globals["UPDATE_OPERATION"] = utils.UPDATE_OPERATION
     env.globals["DELETE_OPERATION"] = utils.DELETE_OPERATION
 
-    
+    # Templates
+    base_resource = env.get_template("base_resource.j2")
+
     spec = openapi.load(spec_path)
     env.globals["version"] = spec_path.parent.name
     operations_to_generate = openapi.operations_to_generate(spec)
-    
-    base_resource = env.get_template("base_resource.j2")
 
     for name, operations in operations_to_generate.items():
         terraform_schema = openapi.get_terraform_schema(operations)

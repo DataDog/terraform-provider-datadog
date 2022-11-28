@@ -1,6 +1,6 @@
 {%- macro baseSchema(name, schema) %}
     {%- if schema|is_primitive %}
-        {{- premitiveSchema(name, schema) }}
+        {{- typePremitiveSchema(name, schema) }}
     {%- elif schema.type == "object" %}
         {{- typeObjectSchema(name, schema) }}
     {%- elif schema.type == "array" %}
@@ -8,10 +8,10 @@
     {%- endif %}
 {%- endmacro %}
 
-{%- macro premitiveSchema(name, schema) %}
+{%- macro typePremitiveSchema(name, schema) %}
 "{{ name }}": {
     Type:        schema.{{ get_terraform_type(schema) }},
-    {%- if schema.required %}Required:    true,{%- else %}Optional:    true,{%- endif %}
+    {% if schema.required %}Required:    true,{% else %}Optional:    true,{% endif %}
     Description: "{{ schema.description }}",
 },
 {%- endmacro %}
@@ -19,7 +19,7 @@
 {%- macro typeObjectSchema(name, schema) %}
 "{{ name }}": {
     Type:        schema.TypeList,
-    {%- if schema.required %}Required:    true,{%- else %}Optional:    true,{%- endif %}
+    {% if schema.required %}Required:    true,{% else %}Optional:    true,{% endif %}
     MaxItems:    1,
     Description: "{{ schema.description }}",
     Elem: &schema.Resource{
@@ -35,7 +35,7 @@
 {%- macro typeArraySchema(name, schema) %}
 "{{ name }}": {
     Type:        schema.TypeList,
-    {%- if schema.required %}Required:    true,{%- else %}Optional:    true,{%- endif %}
+    {% if schema.required %}Required:    true,{% else %}Optional:    true,{% endif %}
     Description: "{{ schema.description }}",
     {%- if schema.get("items")|is_primitive%}
     Elem:        &schema.Schema{Type: schema.{{ get_terraform_type(schema.get("items")) }}},

@@ -1,0 +1,56 @@
+{%- macro baseStateSetter(name, schema, baseAccessor="resp") %}
+    {%- if schema|is_primitive %}
+        {{- typePremitiveStateSetter(name, schema, baseAccessor=baseAccessor) }}
+    {%- elif schema.type == "object" %}
+        {{- typeObjectStateSetter(name, schema, baseAccessor=baseAccessor) }}
+    {%- elif schema.type == "array" %}
+        {{- typeArrayStateSetter(name, schema, baseAccessor=baseAccessor) }}
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro typePremitiveStateSetter(name, schema, baseAccessor="resp") %}
+    {}
+    {%- if schema.required %}
+        if err := d.Set("{{ name }}", {{ baseAccessor }}.Get{{ name|camel_case }}()); err != nil {
+            return diag.FromErr(err)
+        }
+    {%- else %}
+		if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok {
+            if err := d.Set("{{ name }}", {{ name|variable_name }}); err != nil {
+                return diag.FromErr(err)
+            }
+		}
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro typeObjectStateSetter(name, schema, baseAccessor="resp") %}
+{#    {{ name|variable_name }}Dd = {{ baseAccessor }}.Get{{ name|camel_case }}
+    {{ name|variable_name }}Tf := make(map[string]interface{})
+
+    {%- for attr, childSchema in schema.get("properties", {}).items() %}
+        {%- if childSchema|is_primitive %}
+            if {{ attr|variable_name }}, ok := {{ name|variable_name }}Dd.Get{{ attr|camel_case }}Ok(); ok {
+                if err := d.Set("{{ attr }}", {{ attr|variable_name }}); err != nil {
+                    return diag.FromErr(err)
+                }
+            }
+        {%- elif childSchema.type == "object" %}
+        {%- elif childSchema.type == "array" %}
+        {%- endif %}
+    {%- endfor%}#}
+{%- endmacro %}
+
+{%- macro typeArrayStateSetter(name, schema, baseAccessor="resp") %}
+    {%- if schema.get("items")|is_primitive %}
+        {{ name|variable_name }}Tf := make([]{{ schema.get("items")|simple_type }}, 0)
+        {{ name|variable_name }}Tf = append({{ name|variable_name }}Tf, {{ baseAccessor }}.Get{{ name|camel_case }}()...)
+        if err := d.Set("{{ name }}", {{ name|variable_name }}Tf); err != nil {
+		    return diag.FromErr(err)
+	    }
+    {%- elif schema.get("items").type == "object" %}
+        {{ name|variable_name }}Tf := make([]map[string]interface{}, 0)
+
+    {%- endif %}
+
+ 
+{%- endmacro %}

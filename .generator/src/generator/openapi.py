@@ -11,8 +11,8 @@ from jsonref import JsonRef
 from urllib.parse import urlparse
 from yaml import CSafeLoader
 
-from . import formatter, utils
-
+from . import formatter
+from .utils import GET_OPERATION, CREATE_OPERATION, UPDATE_OPERATION, DELETE_OPERATION, PRIMITIVE_TYPES
 
 def load(filename):
     path = pathlib.Path(filename)
@@ -126,21 +126,21 @@ def operations_to_generate(spec):
             operation = spec["paths"][path][method]
             if "x-terraform-resource" in operation:
                 if method == "get":
-                    operations.setdefault(operation["x-terraform-resource"], {})[utils.GET_OPERATION] = {"schema": operation, "path": path}
+                    operations.setdefault(operation["x-terraform-resource"], {})[GET_OPERATION] = {"schema": operation, "path": path}
                 elif method == "post":
-                    operations.setdefault(operation["x-terraform-resource"], {})[utils.CREATE_OPERATION] = {"schema": operation, "path": path}
+                    operations.setdefault(operation["x-terraform-resource"], {})[CREATE_OPERATION] = {"schema": operation, "path": path}
                 elif method == "patch" or method == "put":
-                    operations.setdefault(operation["x-terraform-resource"], {})[utils.UPDATE_OPERATION] = {"schema": operation, "path": path}
+                    operations.setdefault(operation["x-terraform-resource"], {})[UPDATE_OPERATION] = {"schema": operation, "path": path}
                 elif method == "delete":
-                    operations.setdefault(operation["x-terraform-resource"], {})[utils.DELETE_OPERATION] = {"schema": operation, "path": path}
+                    operations.setdefault(operation["x-terraform-resource"], {})[DELETE_OPERATION] = {"schema": operation, "path": path}
 
     return operations
     
 
 def get_terraform_schema(operations):
-    create_params = parameters(operations[utils.CREATE_OPERATION]["schema"])
-    update_params = parameters(operations[utils.UPDATE_OPERATION]["schema"])
-    primary_id = operations[utils.UPDATE_OPERATION]["path"].split("/")[-1][1:-1]
+    create_params = parameters(operations[CREATE_OPERATION]["schema"])
+    update_params = parameters(operations[UPDATE_OPERATION]["schema"])
+    primary_id = operations[UPDATE_OPERATION]["path"].split("/")[-1][1:-1]
     primary_id_param = update_params.pop(primary_id)
         
     attributes = {}
@@ -203,7 +203,7 @@ def return_type(operation):
     for response in operation.get("responses", {}).values():
         for content in response.get("content", {}).values():
             if "schema" in content:
-                return type_to_go(content["schema"])
+                return type_to_go(content["schema"]), content["schema"]
         return
 
 
@@ -228,7 +228,7 @@ def response(operation, status_code=None):
 
 
 def is_primitive(schema):
-    if schema.get("type") in utils.PRIMITIVE_TYPES:
+    if schema.get("type") in PRIMITIVE_TYPES:
         return True
     return False
 
