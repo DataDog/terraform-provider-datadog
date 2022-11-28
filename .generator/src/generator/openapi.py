@@ -137,27 +137,16 @@ def operations_to_generate(spec):
     return operations
     
 
-def get_terraform_schema(operations):
-    create_params = parameters(operations[CREATE_OPERATION]["schema"])
+def get_terraform_primary_id(operations):
     update_params = parameters(operations[UPDATE_OPERATION]["schema"])
     primary_id = operations[UPDATE_OPERATION]["path"].split("/")[-1][1:-1]
     primary_id_param = update_params.pop(primary_id)
-        
-    attributes = {}
-    for name, parameter in create_params.items():
-        schema = parameter_schema(parameter)
-        if is_json_api(schema):
-            for attr, attr_schema in get_json_api_attributes(schema).items():
-                attributes[attr] = attr_schema
-        else:
-            attributes[name] = schema
     
     return {
         "primaryId": {
             "schema": parameter_schema(primary_id_param),
             "name": primary_id
         },
-        "schemaAttribues": attributes
     }
 
 
@@ -242,8 +231,8 @@ def is_json_api(schema):
     return False
 
 
-def get_json_api_attributes(schema):
-    return schema.get("properties", {}).get("data", {}).get("properties", {}).get("attributes", {}).get("properties", {})
+def get_nested_json_api_attributes_schema(schema):
+    return schema.get("properties", {}).get("data", {}).get("properties", {}).get("attributes", {})
 
 def get_terraform_type(schema):
     return {

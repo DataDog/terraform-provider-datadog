@@ -1,41 +1,42 @@
-{%- macro baseSchema(name, schema) %}
+{%- macro baseSchema(name, schema, required=False) %}
     {%- if schema|is_primitive %}
-        {{- typePremitiveSchema(name, schema) }}
+        {{- typePremitiveSchema(name, schema, required) }}
     {%- elif schema.type == "object" %}
-        {{- typeObjectSchema(name, schema) }}
+        {{- typeObjectSchema(name, schema, required) }}
     {%- elif schema.type == "array" %}
-        {{- typeArraySchema(name, schema) }}
+        {{- typeArraySchema(name, schema, required) }}
     {%- endif %}
 {%- endmacro %}
 
-{%- macro typePremitiveSchema(name, schema) %}
+{%- macro typePremitiveSchema(name, schema, required=False) %}
 "{{ name }}": {
     Type:        schema.{{ get_terraform_type(schema) }},
-    {% if schema.required %}Required:    true,{% else %}Optional:    true,{% endif %}
+    {% if required %}Required:    true,{% else %}Optional:    true,{% endif %}
     Description: "{{ schema.description }}",
 },
 {%- endmacro %}
 
-{%- macro typeObjectSchema(name, schema) %}
+{%- macro typeObjectSchema(name, schema, required=False) %}
 "{{ name }}": {
     Type:        schema.TypeList,
-    {% if schema.required %}Required:    true,{% else %}Optional:    true,{% endif %}
+    {% if required %}Required:    true,{% else %}Optional:    true,{% endif %}
     MaxItems:    1,
     Description: "{{ schema.description }}",
     Elem: &schema.Resource{
         Schema: map[string]*schema.Schema{
         {%- for attr, childSchema in schema.get("properties", {}).items() %}
-            {{- baseSchema(attr, childSchema) }}
+            {%- set isRequired = attr in childSchema.get("required", []) %}
+            {{- baseSchema(attr, childSchema, required=isRequired) }}
         {%- endfor%}
         },
     },
 },
 {%- endmacro %}
 
-{%- macro typeArraySchema(name, schema) %}
+{%- macro typeArraySchema(name, schema, required=False) %}
 "{{ name }}": {
     Type:        schema.TypeList,
-    {% if schema.required %}Required:    true,{% else %}Optional:    true,{% endif %}
+    {% if required %}Required:    true,{% else %}Optional:    true,{% endif %}
     Description: "{{ schema.description }}",
     {%- if schema.get("items")|is_primitive%}
     Elem:        &schema.Schema{Type: schema.{{ get_terraform_type(schema.get("items")) }}},
@@ -43,7 +44,8 @@
     Elem: &schema.Resource{
         Schema: map[string]*schema.Schema{
         {%- for attr, childSchema in schema.get("items").get("properties", {}).items() %}
-            {{- baseSchema(attr, childSchema) }}
+            {%- set isRequired = attr in childSchema.get("required", []) %}
+            {{- baseSchema(attr, childSchema, required=isRequired) }}
         {%- endfor%}
         },
     },

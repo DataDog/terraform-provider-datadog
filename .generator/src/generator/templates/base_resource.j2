@@ -5,6 +5,8 @@
 {%- set updateOperationId = operations[UPDATE_OPERATION]["schema"]["operationId"] %}
 {%- set createOperationId = operations[CREATE_OPERATION]["schema"]["operationId"] %}
 {%- set deleteOperationId = operations[DELETE_OPERATION]["schema"]["operationId"] %}
+{%- set createOperationParams = operations[CREATE_OPERATION]["schema"]|parameters %}
+{%- set primaryId = get_terraform_primary_id(operations) %}
 
 package datadog
 
@@ -31,9 +33,20 @@ func resourceDatadog{{ name|camel_case }}() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			{%- for name, schema in terraform_schema["schemaAttribues"].items() %}
-				 {{- schemaMacros.baseSchema(name, schema) }}
-			{%- endfor%}
+			{%- for name, parameter in createOperationParams.items() %}
+				{%- if name != primaryId["name"] %}
+					{%- set parameterSchema = parameter|parameter_schema %}
+					{%- if parameterSchema|is_json_api %}
+						{%- set jsonAttributeSchema = get_json_api_attributes_schema(parameterSchema) %}
+						{%- for attr, schema in jsonAttributeSchema.properties.items() %}
+							{%- set isRequired = attr in jsonAttributeSchema.get("required", []) %}
+							{{- schemaMacros.baseSchema(attr, schema, required=isRequired) }}
+						{%- endfor %}
+					{%- else %}
+						{{- schemaMacros.baseSchema(name, parameterSchema, required=parameter.get("required")) }}
+					{%- endif %}
+				{% endif%}
+			{%- endfor %}
 		},
 	}
 }
