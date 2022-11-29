@@ -77,11 +77,11 @@
             {%- if attrSchema.get("items")|is_primitive %}
                 {{ parent }}Item["{{ attr }}"] = {{ baseAccessor }}.Get{{ attr|camel_case }}()
             {%- else %}
-                {{ attr|variable_name }}TfItem := map[string]interface{}{}
+{#                {{ attr|variable_name }}TfItem := map[string]interface{}{}
 
                 {{- tfListBuilderHelper(attrSchema.get("items"), attr|variable_name ~ "Tf", attr|variable_name ~ "Dd") }}
 
-                {{ attr|variable_name }}Tf = append({{ attr|variable_name }}Tf, {{ attr|variable_name }}TfItem)
+                {{ attr|variable_name }}Tf = append({{ attr|variable_name }}Tf, {{ attr|variable_name }}TfItem) #}
             {%- endif %}
         {%- endif %}
     {%- endfor %}
