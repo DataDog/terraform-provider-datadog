@@ -10,7 +10,7 @@
 
 {%- macro typePremitiveSchema(name, schema, required=False) %}
 "{{ name }}": {
-    Type:        schema.{{ get_terraform_type(schema) }},
+    Type:        schema.{{ get_terraform_schema_type(schema) }},
     {% if required %}Required:    true,{% else %}Optional:    true,{% endif %}
     Description: "{{ schema.description }}",
 },
@@ -39,7 +39,7 @@
     {% if required %}Required:    true,{% else %}Optional:    true,{% endif %}
     Description: "{{ schema.description }}",
     {%- if schema.get("items")|is_primitive%}
-    Elem:        &schema.Schema{Type: schema.{{ get_terraform_type(schema.get("items")) }}},
+    Elem:        &schema.Schema{Type: schema.{{ get_terraform_schema_type(schema.get("items")) }}},
     {%- else %}
     Elem: &schema.Resource{
         Schema: map[string]*schema.Schema{

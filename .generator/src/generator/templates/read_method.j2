@@ -3,7 +3,7 @@ func resourceDatadog{{ name|camel_case }}Read(ctx context.Context, d *schema.Res
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	{%- for name, param in readOperationParams.items() %}
-		{%- set paramSchema = get_terraform_type(param|parameter_schema) %}
+		{%- set paramSchema = get_terraform_schema_type(param|parameter_schema) %}
 		{% if name == primaryId["name"] %}
 		id := d.Id()
 		{%- else%}
