@@ -1,4 +1,23 @@
+{%- set responseHasThreeValues = "204" not in operations[DELETE_OPERATION]["schema"]["responses"].keys() %}
+
 func resourceDatadog{{ name|camel_case }}Delete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	providerConf := meta.(*ProviderConfiguration)
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
+	{%- for name, param in deleteOperationParams.items() %}
+		{%- set paramSchema = get_terraform_type(param|parameter_schema) %}
+		{% if name == primaryId["name"] %}
+		id := d.Id()
+		{%- else%}
+		{{ name|variable_name }} = d.Get("{{ name }}").(paramSchema)
+		{%- endif%}
+	{%- endfor %}
+
+	{% if responseHasThreeValues %}_, {% endif %}httpresp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ deleteOperationId }}(auth, {% for name, param in deleteOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})
+	if err != nil {
+		// The resource is assumed to still exist, and all prior state is preserved.
+		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting {{ name }}")
+	}
 
 	return nil
 }

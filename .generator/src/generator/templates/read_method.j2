@@ -1,5 +1,3 @@
-{%- set readOperationParams = operations[GET_OPERATION]["schema"]|parameters %}
-
 func resourceDatadog{{ name|camel_case }}Read(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances

@@ -23,20 +23,23 @@
 {%- endmacro %}
 
 {%- macro typeObjectStateSetter(name, schema, baseAccessor="resp", required=False) %}
-{#    {{ name|variable_name }}Dd = {{ baseAccessor }}.Get{{ name|camel_case }}
-    {{ name|variable_name }}Tf := make(map[string]interface{})
+    {{ name|variable_name }}Dd = {{ baseAccessor }}.Get{{ name|camel_case }}
+    {{ name|variable_name }}Tf := map[string]interface{}
 
     {%- for attr, childSchema in schema.get("properties", {}).items() %}
         {%- if childSchema|is_primitive %}
             if {{ attr|variable_name }}, ok := {{ name|variable_name }}Dd.Get{{ attr|camel_case }}Ok(); ok {
-                if err := d.Set("{{ attr }}", {{ attr|variable_name }}); err != nil {
-                    return diag.FromErr(err)
-                }
+                {{ name|variable_name }}Tf["{{ attr }}"] = *{{ attr|variable_name }}
             }
         {%- elif childSchema.type == "object" %}
         {%- elif childSchema.type == "array" %}
         {%- endif %}
-    {%- endfor%}#}
+    {%- endfor%}
+
+    if err := d.Set("{{ name }}", []interface{}{% raw %}{{% endraw %} {{ name|variable_name }}Tf{% raw %}}{% endraw %}); err != nil {
+        return diag.FromErr(err)
+    }
+
 {%- endmacro %}
 
 {%- macro typeArrayStateSetter(name, schema, baseAccessor="resp", required=False) %}

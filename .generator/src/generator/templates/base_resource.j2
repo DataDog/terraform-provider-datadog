@@ -5,7 +5,10 @@
 {%- set updateOperationId = operations[UPDATE_OPERATION]["schema"]["operationId"] %}
 {%- set createOperationId = operations[CREATE_OPERATION]["schema"]["operationId"] %}
 {%- set deleteOperationId = operations[DELETE_OPERATION]["schema"]["operationId"] %}
+{%- set readOperationParams = operations[GET_OPERATION]["schema"]|parameters %}
 {%- set createOperationParams = operations[CREATE_OPERATION]["schema"]|parameters %}
+{%- set updateOperationParams = operations[UPDATE_OPERATION]["schema"]|parameters %}
+{%- set deleteOperationParams = operations[DELETE_OPERATION]["schema"]|parameters %}
 {%- set primaryId = get_terraform_primary_id(operations) %}
 
 package datadog
