@@ -1,16 +1,15 @@
-{%- macro baseStateSetter(name, schema, baseAccessor="resp") %}
+{%- macro baseStateSetter(name, schema, baseAccessor="resp", required=False) %}
     {%- if schema|is_primitive %}
-        {{- typePremitiveStateSetter(name, schema, baseAccessor=baseAccessor) }}
+        {{- typePremitiveStateSetter(name, schema, baseAccessor=baseAccessor, required=required) }}
     {%- elif schema.type == "object" %}
-        {{- typeObjectStateSetter(name, schema, baseAccessor=baseAccessor) }}
+        {{- typeObjectStateSetter(name, schema, baseAccessor=baseAccessor, required=required) }}
     {%- elif schema.type == "array" %}
-        {{- typeArrayStateSetter(name, schema, baseAccessor=baseAccessor) }}
+        {{- typeArrayStateSetter(name, schema, baseAccessor=baseAccessor, required=required) }}
     {%- endif %}
 {%- endmacro %}
 
-{%- macro typePremitiveStateSetter(name, schema, baseAccessor="resp") %}
-    {}
-    {%- if schema.required %}
+{%- macro typePremitiveStateSetter(name, schema, baseAccessor="resp", required=False) %}
+    {%- if required %}
         if err := d.Set("{{ name }}", {{ baseAccessor }}.Get{{ name|camel_case }}()); err != nil {
             return diag.FromErr(err)
         }
@@ -23,7 +22,7 @@
     {%- endif %}
 {%- endmacro %}
 
-{%- macro typeObjectStateSetter(name, schema, baseAccessor="resp") %}
+{%- macro typeObjectStateSetter(name, schema, baseAccessor="resp", required=False) %}
 {#    {{ name|variable_name }}Dd = {{ baseAccessor }}.Get{{ name|camel_case }}
     {{ name|variable_name }}Tf := make(map[string]interface{})
 
@@ -40,17 +39,50 @@
     {%- endfor%}#}
 {%- endmacro %}
 
-{%- macro typeArrayStateSetter(name, schema, baseAccessor="resp") %}
+{%- macro typeArrayStateSetter(name, schema, baseAccessor="resp", required=False) %}
     {%- if schema.get("items")|is_primitive %}
-        {{ name|variable_name }}Tf := make([]{{ schema.get("items")|simple_type }}, 0)
-        {{ name|variable_name }}Tf = append({{ name|variable_name }}Tf, {{ baseAccessor }}.Get{{ name|camel_case }}()...)
-        if err := d.Set("{{ name }}", {{ name|variable_name }}Tf); err != nil {
-		    return diag.FromErr(err)
-	    }
+        {%- if required %}
+            if err := d.Set("{{ name }}", {{ baseAccessor }}.Get{{ name|camel_case }}()); err != nil {
+                return diag.FromErr(err)
+            }
+        {%- else %}
+            if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok && len(*{{ name|variable_name }}) > 0 {
+                if err := d.Set("{{ name }}", *{{ name|variable_name }}); err != nil {
+                    return diag.FromErr(err)
+                }
+            }
+
+        {%- endif %}
     {%- elif schema.get("items").type == "object" %}
         {{ name|variable_name }}Tf := make([]map[string]interface{}, 0)
+        for _, {{ name|variable_name }}Dd := range {{ baseAccessor }}.Get{{ name|camel_case }}() {
+            {{ name|variable_name }}TfItem := map[string]interface{}{}
 
+            {{- tfListBuilderHelper(schema.get("items"), name|variable_name ~ "Tf", name|variable_name ~ "Dd") }}
+
+            {{ name|variable_name }}Tf = append({{ name|variable_name }}Tf, {{ name|variable_name }}TfItem)
+
+        }
+        if err := d.Set("{{ name }}", {{ name|variable_name }}Tf); err != nil {
+            return diag.FromErr(err)
+        }
     {%- endif %}
+{%- endmacro %}
 
- 
+{%- macro tfListBuilderHelper(schema, parent, baseAccessor) %}
+    {%- for attr, attrSchema in schema.properties.items() %}
+        {%- if attrSchema|is_primitive %}
+            {{ parent }}Item["{{ attr }}"] = {{ baseAccessor }}.Get{{ attr|camel_case }}()
+        {%- elif attrSchema.type == "array" %}
+            {%- if attrSchema.get("items")|is_primitive %}
+                {{ parent }}Item["{{ attr }}"] = {{ baseAccessor }}.Get{{ attr|camel_case }}()
+            {%- else %}
+                {{ attr|variable_name }}TfItem := map[string]interface{}{}
+
+                {{- tfListBuilderHelper(attrSchema.get("items"), attr|variable_name ~ "Tf", attr|variable_name ~ "Dd") }}
+
+                {{ attr|variable_name }}Tf = append({{ attr|variable_name }}Tf, {{ attr|variable_name }}TfItem)
+            {%- endif %}
+        {%- endif %}
+    {%- endfor %}
 {%- endmacro %}
