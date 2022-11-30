@@ -1,3 +1,5 @@
+{%- import "utils/request_builder_helper.j2" as requestBuilderMacros %}
+
 func resourceDatadog{{ name|camel_case }}Create(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -26,7 +28,14 @@ func resourceDatadog{{ name|camel_case }}Create(ctx context.Context, d *schema.R
 func build{{ name|camel_case }}RequestBody(d *schema.ResourceData) *datadog{{ version|upperfirst }}.{{ get_type_for_parameter(createOperationParams["body"]) }} {
 	{%- set parameterBodySchema = createOperationParams["body"]|parameter_schema %}
 	{%- if parameterBodySchema|is_json_api %}
-		// JSON API
+	{%- set jsonAttributeSchema = get_json_api_attributes_schema(parameterBodySchema) %}
+	attributes := datadog{{ version|upperfirst }}.New{{ get_type(jsonAttributeSchema) }}WithDefaults()
+
+	{%- for attr, schema in jsonAttributeSchema.properties.items() %}
+		{%- set isRequired = attr in jsonAttributeSchema.get("required", []) %}
+		{{- requestBuilderMacros.baseRequestAttrBuilder(attr, schema, "attributes", required=isRequired) }}
+	{%- endfor %}
+
 	{%- endif %}
 
 	return nil

@@ -1,0 +1,46 @@
+{%- macro baseRequestAttrBuilder(name, schema, baseSetter, required=False) %}
+    {%- if schema|is_primitive %}
+        {{- basePrimitiveAttrBuilder(name=name, schema=schema, baseSetter=baseSetter, required=required) }}
+    {%- elif schema.type == "object" %}
+    {%- elif schema.type == "array" %}
+        {{- baseArrayAttrBuilder(name=name, schema=schema, baseSetter=baseSetter, required=required) }}
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro basePrimitiveAttrBuilder(name, schema, baseSetter, required=False) %}
+    {%- if required %}
+        {{ baseAttrGetter }}
+        {{ baseSetter }}.Set{{ name|camel_case }}(d.Get("{{ name }}").({{ schema|simple_type }}))
+    {%- else %}
+        if {{ name|variable_name }}, ok := d.GetOk("{{ name }}"); ok {
+            {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }}.({{ schema|simple_type }}))
+        }
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro basePrimitiveAttrBuilder(name, schema, baseSetter, required=False) %}
+    {%- set simpleType = schema|simple_type %}
+    {%- if required %}
+        {%- if simpleType in ["int", "string", "bool"] %}
+            {{ baseSetter }}.Set{{ name|camel_case }}(d.Get("{{ name }}").({{ simpleType }}))
+        {%- elif simpleType == "int64" %}
+            {{ attr|variable_name }}, _ := strconv.ParseInt(d.Get("{{ name }}"), 10, 64)
+            {{ baseSetter }}.Set{{ name|camel_case }}({{ attr|variable_name }})
+        {%- endif %}
+    {%- else %}
+        if {{ name|variable_name }}, ok := d.GetOk("{{ name }}"); ok {
+        {%- if simpleType in ["int", "string", "bool"] %}
+            {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }}.({{ simpleType }}))
+        {%- elif simpleType == "int64" %}
+            {{ attr|variable_name }}, _ := strconv.ParseInt({{ name|variable_name }}, 10, 64)
+            {{ baseSetter }}.Set{{ name|camel_case }}({{ attr|variable_name }})
+        {%- endif %}
+        }
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro baseArrayAttrBuilder(name, schema, baseSetter, required=False) %}
+    {%- if schema.get("items")|is_primitive %}
+
+    {%- endif %}
+{%- endmacro %}
