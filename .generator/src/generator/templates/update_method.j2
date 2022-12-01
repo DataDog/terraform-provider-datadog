@@ -8,12 +8,14 @@ func resourceDatadog{{ name|camel_case }}Update(ctx context.Context, d *schema.R
 	{%- for paramName, param in updateOperationParams.items() %}
 		{% if paramName == "body" %}
 		body := build{{ name|camel_case }}{% if not useCreateBodyRequest %}Update{%- endif%}RequestBody(d)
+		{% elif paramName == primaryId["name"] %}
+		id := d.Id()
 		{%- else%}
 		{{ paramName|variable_name }} := d.Get("{{ paramName }}").({{ get_type_for_parameter(param) }})
 		{%- endif%}
 	{%- endfor %}
 
-	resp, httpresp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ updateOperationId }}(auth, {% for paramName, param in updateOperationParams.items() %}{% if paramName == "body" %}*{% endif %}{{ paramName|variable_name }}, {% endfor%})
+	resp, httpresp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ updateOperationId }}(auth, {% for paramName, param in updateOperationParams.items() %}{% if paramName == primaryId["name"] %}id{% else %}{% if paramName == "body" %}*{% endif %}{{ paramName|variable_name }}{% endif %}, {% endfor%})
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating {{ name|camel_case }}")
 	}
