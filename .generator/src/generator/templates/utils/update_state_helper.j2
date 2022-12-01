@@ -43,7 +43,8 @@
 {%- endmacro %}
 
 {%- macro typeArrayStateSetter(name, schema, baseAccessor="resp", required=False) %}
-    {%- if schema.get("items")|is_primitive %}
+    {%- set itemSchema = schema.get("items") %}
+    {%- if itemSchema|is_primitive %}
         {%- if required %}
             if err := d.Set("{{ name }}", {{ baseAccessor }}.Get{{ name|camel_case }}()); err != nil {
                 return diag.FromErr(err)
@@ -56,12 +57,12 @@
             }
 
         {%- endif %}
-    {%- elif schema.get("items").type == "object" %}
+    {%- elif itemSchema.type == "object" %}
         {{ name|variable_name }}Tf := make([]map[string]interface{}, 0)
         for _, {{ name|variable_name }}Dd := range {{ baseAccessor }}.Get{{ name|camel_case }}() {
             {{ name|variable_name }}TfItem := map[string]interface{}{}
 
-            {{- tfListBuilderHelper(schema.get("items"), name|variable_name ~ "Tf", name|variable_name ~ "Dd") }}
+            {{- tfListBuilderHelper(itemSchema, name|variable_name ~ "Tf", name|variable_name ~ "Dd") }}
 
             {{ name|variable_name }}Tf = append({{ name|variable_name }}Tf, {{ name|variable_name }}TfItem)
 
