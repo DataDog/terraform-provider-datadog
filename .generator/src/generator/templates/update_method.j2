@@ -1,4 +1,44 @@
+{%- import "utils/request_builder_helper.j2" as requestBuilderMacros %}
+{%- set useCreateBodyRequest = get_type_for_parameter(createOperationParams["body"]) == get_type_for_parameter(updateOperationParams["body"]) %}
+
 func resourceDatadog{{ name|camel_case }}Update(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	providerConf := meta.(*ProviderConfiguration)
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
+	{%- for paramName, param in updateOperationParams.items() %}
+		{% if paramName == "body" %}
+		body := build{{ name|camel_case }}{% if not useCreateBodyRequest %}Update{%- endif%}RequestBody(d)
+		{%- else%}
+		{{ paramName|variable_name }} := d.Get("{{ paramName }}").({{ get_type_for_parameter(param) }})
+		{%- endif%}
+	{%- endfor %}
+
+	resp, httpresp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ updateOperationId }}(auth, {% for paramName, param in updateOperationParams.items() %}{% if paramName == "body" %}*{% endif %}{{ paramName|variable_name }}, {% endfor%})
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, httpresp, "error creating {{ name|camel_case }}")
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		return diag.FromErr(err)
+	}
+	d.SetId(resp.Data.GetId())
+
+	return update{{ name|camel_case }}State(d, &resp)
+}
+
+{% if not useCreateBodyRequest %}
+func build{{ name|camel_case }}UpdateRequestBody(d *schema.ResourceData) *datadog{{ version|upperfirst }}.{{ get_type_for_parameter(updateOperationParams["body"]) }} {
+	{%- set parameterBodySchema = updateOperationParams["body"]|parameter_schema %}
+	{%- if parameterBodySchema|is_json_api %}
+	{%- set jsonAttributeSchema = get_json_api_attributes_schema(parameterBodySchema) %}
+	attributes := datadog{{ version|upperfirst }}.New{{ get_type(jsonAttributeSchema) }}WithDefaults()
+
+	{%- for attr, schema in jsonAttributeSchema.properties.items() %}
+		{%- set isRequired = attr in jsonAttributeSchema.get("required", []) %}
+		{{- requestBuilderMacros.baseRequestAttrBuilder(attr, schema, "attributes", required=isRequired) }}
+	{%- endfor %}
+
+	{%- endif %}
 
 	return nil
 }
+{%- endif %}

@@ -5,11 +5,10 @@ func resourceDatadog{{ name|camel_case }}Create(ctx context.Context, d *schema.R
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	{%- for paramName, param in createOperationParams.items() %}
-		{%- set paramSchema = get_terraform_schema_type(param|parameter_schema) %}
 		{% if paramName == "body" %}
 		body := build{{ name|camel_case }}RequestBody(d)
 		{%- else%}
-		{{ paramName|variable_name }} = d.Get("{{ paramName }}").({{ paramSchema|simple_type }}))
+		{{ paramName|variable_name }} := d.Get("{{ paramName }}").({{ get_type_for_parameter(param) }}))
 		{%- endif%}
 	{%- endfor %}
 
