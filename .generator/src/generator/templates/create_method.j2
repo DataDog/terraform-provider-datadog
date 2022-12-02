@@ -36,8 +36,11 @@ func build{{ name|camel_case }}RequestBody(d *schema.ResourceData) *datadog{{ ve
 		{%- set isRequired = attr in jsonAttributeSchema.get("required", []) %}
 		{{- requestBuilderMacros.baseRequestAttrBuilder(attr, schema, "attributes", required=isRequired) }}
 	{%- endfor %}
-
 	{%- endif %}
 
-	return nil
+	req := datadogV2.New{{ get_type(parameterBodySchema) }}WithDefaults()
+	req.Data = *datadogV2.New{{ get_type(parameterBodySchema) }}DataWithDefaults()
+	req.Data.SetAttributes(*attributes)
+
+	return req
 }

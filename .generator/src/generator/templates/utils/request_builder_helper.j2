@@ -49,11 +49,12 @@
     {%- elif itemSchema.type == "object" %}
         {{ name|variable_name }} := []datadog{{ version|upperfirst }}.{{ get_type(itemSchema) }}{}
 
-        for _, s := range d.Get("{{ name }}").([]map[string]interface{}) {
+        for _, s := range d.Get("{{ name }}").([]interface{}) {
+            sMap := s.(map[string]interface{})
             {{ name|variable_name }}Item := datadog{{ version|upperfirst }}.New{{ get_type(itemSchema) }}WithDefaults()
             {%- for attr, attrSchema in itemSchema.get("properties").items() %}
                 {%- set isRequired = attr in itemSchema.get("required", []) %}
-                {{- objectFromMapBuilder(attr, attrSchema, name|variable_name~"Item", required=isRequired) }}
+                {{- objectFromMapBuilder(attr, attrSchema, "sMap", name|variable_name~"Item", required=isRequired) }}
             {%- endfor %}
 
             {{ name|variable_name }} = append({{ name|variable_name }}, *{{ name|variable_name }}Item)
@@ -63,9 +64,9 @@
     {%- endif %}
 {%- endmacro %}
 
-{%- macro objectFromMapBuilder(name, schema, baseSetter, required=False) %}
+{%- macro objectFromMapBuilder(name, schema, baseGetter, baseSetter, required=False) %}
     {%- if schema|is_primitive %}
-        {{ baseSetter }}.Set{{ name|camel_case }}(s["{{ name }}"].({{ get_type(schema) }}))
+        {{ baseSetter }}.Set{{ name|camel_case }}({{ baseGetter }}["{{ name }}"].({{ get_type(schema) }}))
     {%- elif schema.type == "object" %}
         {{ name|variable_name }} := datadog{{ version|upperfirst }}.New{{ get_type(itemSchema) }}WithDefaults()
         {%- for attr, attrSchema in itemSchema.get("properties").items() %}
