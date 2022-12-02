@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -56,7 +57,9 @@ func resourceDatadogServiceDefinitionYAML() *schema.Resource {
 				return true
 			}
 
-			return oldName != newName
+			// Prevent recreating resource in case the difference is simply "foo vs Foo"
+			// More info: https://github.com/DataDog/terraform-provider-datadog/issues/1651
+			return strings.ToLower(oldName) != strings.ToLower(newName)
 		}),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
@@ -102,6 +105,12 @@ func flattenYAMLToString(input map[string]interface{}) (string, error) {
 func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]interface{} {
 	// this assumes we only support v2
 	delete(attrMap, "dd-team") //dd-team is a computed field
+
+	// Prevent recreating resource in case the difference is simply "foo vs Foo"
+	// More info: https://github.com/DataDog/terraform-provider-datadog/issues/1651
+	if service, ok := attrMap["dd-service"].(string); ok {
+		attrMap["dd-service"] = strings.ToLower(service)
+	}
 
 	for _, field := range fieldsWithName {
 		normalizeArrayField(attrMap, field)
