@@ -332,9 +332,16 @@ func resourceDatadogIntegrationAwsDelete(ctx context.Context, d *schema.Resource
 }
 
 func resourceDatadogIntegrationAwsImport(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	originalId := d.Id()
 	if diagErr := resourceDatadogIntegrationAwsRead(ctx, d, meta); diagErr != nil {
 		return nil, fmt.Errorf(diagErr[0].Summary)
 	}
+
+	// We can assume resource was not found for import when `id` is set to nil in the read step
+	if d.Id() == "" {
+		return nil, fmt.Errorf("error importing aws integration resource. Resource with id `%s` does not exist", originalId)
+	}
+
 	d.Set("external_id", os.Getenv("EXTERNAL_ID"))
 	return []*schema.ResourceData{d}, nil
 }
