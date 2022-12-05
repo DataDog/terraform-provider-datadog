@@ -16,7 +16,7 @@ func TestAccDatadogLogsArchivesOrderDatasource(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: `data "datadog_logs_Archives_order" "order" {}`,
+				Config: `data "datadog_logs_archives_order" "order" {}`,
 				Check:  resource.TestMatchResourceAttr("data.datadog_logs_archives_order.order", "archive_ids.#", regexp.MustCompile("[^0].*$")),
 			},
 		},

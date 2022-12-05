@@ -1,0 +1,88 @@
+---
+version: 1
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/logs/config/archive-order
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"archive_order","attributes":{"archive_ids":["FDhaAaBtQ9yXG41RPzHFzQ"]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/logs/config/archive-order
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"archive_order","attributes":{"archive_ids":["FDhaAaBtQ9yXG41RPzHFzQ"]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/logs/config/archive-order
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"archive_order","attributes":{"archive_ids":["FDhaAaBtQ9yXG41RPzHFzQ"]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/logs/config/archive-order
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"archive_order","attributes":{"archive_ids":["FDhaAaBtQ9yXG41RPzHFzQ"]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/logs/config/archive-order
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"archive_order","attributes":{"archive_ids":["FDhaAaBtQ9yXG41RPzHFzQ"]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
