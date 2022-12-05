@@ -3,13 +3,23 @@
         {{ basePrimitiveAttrBuilder(name=name, schema=schema, baseSetter=baseSetter, required=required) }}
     {%- elif schema.type == "object" %}
     {%- elif schema.type == "array" %}
-        {{ baseArrayAttrBuilder(name=name, schema=schema, baseSetter=baseSetter, required=required) }}
-    {%- endif %}
+        {%- set itemSchema = schema.get("items") %}
+        {%- if itemSchema|is_primitive %}
+            {{ name|variable_name }} := []{{ itemSchema|simple_type }}{}
+        {%- elif itemSchema.type == "object" %}
+            {{ name|variable_name }} := []datadog{{ version|upperfirst }}.{{ get_type(itemSchema) }}{}
+        {%- endif %}
+        for _, s := range d.Get("{{ name }}").([]interface{}) {
+            {{- baseArrayAttrBuilder(name=name, schema=schema, baseGetter="s", baseSetter=baseSetter, required=required) }}
+        }
+        {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }})
+    {% endif %}
 {%- endmacro %}
 
 {%- macro basePrimitiveAttrBuilder(name, schema, baseSetter, required=False) %}
     {%- if required %}
         {{ baseSetter }}.Set{{ name|camel_case }}(d.Get("{{ name }}").({{ schema|simple_type }}))
+
     {%- else %}
         if {{ name|variable_name }}, ok := d.GetOk("{{ name }}"); ok {
             {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }}.({{ schema|simple_type }}))
@@ -38,29 +48,21 @@
     {%- endif %}
 {%- endmacro %}
 
-{%- macro baseArrayAttrBuilder(name, schema, baseSetter, required=False) %}
+{%- macro baseArrayAttrBuilder(name, schema, baseGetter, baseSetter, required=False) %}
     {%- set itemSchema = schema.get("items") %}
     {%- if itemSchema|is_primitive %}
-        {{ name|variable_name }} := []{{ itemSchema|simple_type }}{}
-        for _, s := range d.Get("{{ name }}").([]interface{}) {
-             {{ name|variable_name }} = append( {{ name|variable_name }}, s.({{ itemSchema|simple_type }}))
-        }
-        {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }})
+        {{ name|variable_name }} = append( {{ name|variable_name }}, s.({{ itemSchema|simple_type }}))
     {%- elif itemSchema.type == "object" %}
-        {{ name|variable_name }} := []datadog{{ version|upperfirst }}.{{ get_type(itemSchema) }}{}
+        {{ baseGetter }}Map := s.(map[string]interface{})
+        {{ name|variable_name }}Item := datadog{{ version|upperfirst }}.New{{ get_type(itemSchema) }}WithDefaults()
+        {%- for attr, attrSchema in itemSchema.get("properties").items() %}
+            {%- set isRequired = attr in itemSchema.get("required", []) %}
+            {{- objectFromMapBuilder(attr, attrSchema, "sMap", name|variable_name~"Item", required=isRequired) }}
+        {%- endfor %}
 
-        for _, s := range d.Get("{{ name }}").([]interface{}) {
-            sMap := s.(map[string]interface{})
-            {{ name|variable_name }}Item := datadog{{ version|upperfirst }}.New{{ get_type(itemSchema) }}WithDefaults()
-            {%- for attr, attrSchema in itemSchema.get("properties").items() %}
-                {%- set isRequired = attr in itemSchema.get("required", []) %}
-                {{- objectFromMapBuilder(attr, attrSchema, "sMap", name|variable_name~"Item", required=isRequired) }}
-            {%- endfor %}
+        {{ name|variable_name }} = append({{ name|variable_name }}, *{{ name|variable_name }}Item)
+    {%- elif itemSchema.type == "array" %}
 
-            {{ name|variable_name }} = append({{ name|variable_name }}, *{{ name|variable_name }}Item)
-        }
-
-        {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }})
     {%- endif %}
 {%- endmacro %}
 

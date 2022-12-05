@@ -16,7 +16,7 @@ func resourceDatadog{{ name|camel_case }}Delete(ctx context.Context, d *schema.R
 	{% if responseHasThreeValues %}_, {% endif %}httpresp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ deleteOperationId }}(auth, {% for name, param in deleteOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})
 	if err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
-		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting {{ name }}")
+		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting {{ name|camel_case }}")
 	}
 
 	return nil
