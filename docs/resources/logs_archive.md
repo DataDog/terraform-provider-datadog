@@ -68,8 +68,11 @@ Required:
 
 - `bucket` (String) Name of your GCS bucket.
 - `client_email` (String) Your client email.
-- `path` (String) Path where the archive will be stored.
 - `project_id` (String) Your project id.
+
+Optional:
+
+- `path` (String) Path where the archive will be stored.
 
 
 <a id="nestedblock--s3_archive"></a>
@@ -79,8 +82,11 @@ Required:
 
 - `account_id` (String) Your AWS account id.
 - `bucket` (String) Name of your s3 bucket.
-- `path` (String) Path where the archive will be stored.
 - `role_name` (String) Your AWS role name
+
+Optional:
+
+- `path` (String) Path where the archive will be stored.
 
 ## Import
 
