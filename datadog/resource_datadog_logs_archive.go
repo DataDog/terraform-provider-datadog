@@ -34,7 +34,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"bucket":     {Description: "Name of your s3 bucket.", Type: schema.TypeString, Required: true},
-						"path":       {Description: "Path where the archive will be stored.", Type: schema.TypeString, Required: true},
+						"path":       {Description: "Path where the archive will be stored.", Type: schema.TypeString, Optional: true},
 						"account_id": {Description: "Your AWS account id.", Type: schema.TypeString, Required: true},
 						"role_name":  {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
 					},
@@ -63,7 +63,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"bucket":       {Description: "Name of your GCS bucket.", Type: schema.TypeString, Required: true},
-						"path":         {Description: "Path where the archive will be stored.", Type: schema.TypeString, Required: true},
+						"path":         {Description: "Path where the archive will be stored.", Type: schema.TypeString, Optional: true},
 						"client_email": {Description: "Your client email.", Type: schema.TypeString, Required: true},
 						"project_id":   {Description: "Your project id.", Type: schema.TypeString, Required: true},
 					},
