@@ -11,7 +11,7 @@ import (
 
 func dataSourceDatadogLogsArchivesOrder() *schema.Resource {
 	return &schema.Resource{
-		Description: "Get the current order of your log Archives.",
+		Description: "Get the current order of your logs archives.",
 		ReadContext: dataSourceDatadogLogsArchivesOrderRead,
 
 		Schema: map[string]*schema.Schema{
@@ -33,7 +33,7 @@ func dataSourceDatadogLogsArchivesOrderRead(ctx context.Context, d *schema.Resou
 
 	logsArchiveOrder, httpresp, err := apiInstances.GetLogsArchivesApiV2().GetLogsArchiveOrder(auth)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp, "error querying the order of your log archives")
+		return utils.TranslateClientErrorDiag(err, httpresp, "error querying the order of your logs archives")
 	}
 	if err := utils.CheckForUnparsed(logsArchiveOrder); err != nil {
 		return diag.FromErr(err)
