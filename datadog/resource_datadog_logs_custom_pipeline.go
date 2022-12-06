@@ -868,7 +868,11 @@ func buildDatadogLookupProcessor(tfProcessor map[string]interface{}) *datadogV1.
 func buildDatadogNestedPipeline(tfProcessor map[string]interface{}) (*datadogV1.LogsPipelineProcessor, error) {
 	ddNestedPipeline := datadogV1.NewLogsPipelineProcessorWithDefaults()
 	if tfFilter, exist := tfProcessor["filter"].([]interface{}); exist && len(tfFilter) > 0 {
-		ddNestedPipeline.SetFilter(buildDatadogFilter(tfFilter[0].(map[string]interface{})))
+		filter, ok := tfFilter[0].(map[string]interface{})
+		if !ok {
+			filter = make(map[string]interface{})
+		}
+		ddNestedPipeline.SetFilter(buildDatadogFilter(filter))
 	}
 	if tfProcessors, exists := tfProcessor["processor"].([]interface{}); exists && len(tfProcessors) > 0 {
 		ddProcessors, err := buildDatadogProcessors(tfProcessors)
@@ -1025,7 +1029,11 @@ func buildDatadogCategoryProcessor(tfProcessor map[string]interface{}) *datadogV
 				ddCategory.SetName(tfName)
 			}
 			if tfFilter, exist := tfCategory["filter"].([]interface{}); exist && len(tfFilter) > 0 {
-				ddCategory.SetFilter(buildDatadogFilter(tfFilter[0].(map[string]interface{})))
+				filter, ok := tfFilter[0].(map[string]interface{})
+				if !ok {
+					filter = make(map[string]interface{})
+				}
+				ddCategory.SetFilter(buildDatadogFilter(filter))
 			}
 
 			ddCategories[i] = ddCategory
