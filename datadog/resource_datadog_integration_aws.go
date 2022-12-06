@@ -63,7 +63,7 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 			},
 			"excluded_regions": {
 				Description: "An array of AWS regions to exclude from metrics collection.",
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Optional:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
@@ -153,7 +153,7 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData) *datadogV1.AWSAcco
 
 	excludedRegions := make([]string, 0)
 	if attr, ok := d.GetOk("excluded_regions"); ok {
-		for _, s := range attr.([]interface{}) {
+		for _, s := range attr.(*schema.Set).List() {
 			excludedRegions = append(excludedRegions, s.(string))
 		}
 	}
