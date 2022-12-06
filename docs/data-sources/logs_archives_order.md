@@ -3,12 +3,12 @@
 page_title: "datadog_logs_archives_order Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Get the current order of your log Archives.
+  Get the current order of your logs archives.
 ---
 
 # datadog_logs_archives_order (Data Source)
 
-Get the current order of your log Archives.
+Get the current order of your logs archives.
 
 
 
