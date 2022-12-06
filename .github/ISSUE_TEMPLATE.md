@@ -33,6 +33,8 @@ Please provider a link to a GitHub Gist containing the complete debug output: ht
 
 If Terraform produced a panic, please provide a link to a GitHub Gist containing the output of the `crash.log`.
 
+**IMPORTANT!!! Remember to review panic log file before posting. It can contain credentials or other private data**
+
 ### Expected Behavior
 
 What should have happened?
