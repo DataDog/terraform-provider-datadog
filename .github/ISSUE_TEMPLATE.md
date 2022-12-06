@@ -27,7 +27,7 @@ If this issue appears to affect multiple resources, it may be an issue with Terr
 
 Please provider a link to a GitHub Gist containing the complete debug output: https://www.terraform.io/docs/internals/debugging.html. Please do NOT paste the debug output in the issue; just paste a link to the Gist.
 
-**IMPORTANT!!! Remember to review debug output before posting and remove credentials or private data**
+**IMPORTANT!!! Remember to review debug output before posting. It can contain credentials or other private data**
 
 ### Panic Output
 
