@@ -151,7 +151,9 @@ func normalizeArrayField(attrMap map[string]interface{}, key string) {
 
 func getNameField(data interface{}) string {
 	if stringMap, ok := data.(map[string]interface{}); ok {
-		return stringMap["name"].(string)
+		if name, ok := stringMap["name"]; ok {
+			return name.(string)
+		}
 	}
 	return ""
 }
