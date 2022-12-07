@@ -69,26 +69,26 @@ func dataSourceDatadogRUMApplicationRead(ctx context.Context, d *schema.Resource
 
 		searchName, searchNameOk := d.GetOk("name_filter")
 		searchType, searchTypeOk := d.GetOk("type_filter")
-		var foundRUMApplications []datadogV2.RUMApplicationAttributes
+		var foundRUMApplicationIDs []string
 		for _, resp_data := range resp.Data {
 			if rum_app, ok := resp_data.GetAttributesOk(); ok {
 				nameSetAndMatched := searchNameOk && rum_app.GetName() == searchName
 				typeSetAndMatched := searchTypeOk && rum_app.GetType() == searchType
 				if nameSetAndMatched || typeSetAndMatched {
-					foundRUMApplications = append(foundRUMApplications, *rum_app)
+					foundRUMApplicationIDs = append(foundRUMApplicationIDs, rum_app.GetApplicationId())
 				}
 			}
 		}
 
-		if len(foundRUMApplications) == 0 {
+		if len(foundRUMApplicationIDs) == 0 {
 			return diag.Errorf("Couldn't find a RUM Application with name '%s' and type '%s'", searchName, searchType)
-		} else if len(foundRUMApplications) > 1 {
+		} else if len(foundRUMApplicationIDs) > 1 {
 			return diag.Errorf("Searching for name '%s' and type '%s' returned more than one RUM application.", searchName, searchType)
 		}
 
-		app_resp, _, app_err := apiInstances.GetRumApiV2().GetRUMApplication(auth, foundRUMApplications[0].GetApplicationId())
+		app_resp, _, app_err := apiInstances.GetRumApiV2().GetRUMApplication(auth, foundRUMApplicationIDs[0])
 		if app_err != nil {
-			return diag.Errorf("Couldn't find RUM application with id %s", foundRUMApplications[0].GetApplicationId())
+			return diag.Errorf("Found RUM application with id %s, but couldn't retrieve details.", foundRUMApplicationIDs[0])
 		}
 		return dataSourceDatadogRUMApplicationUpdate(d, app_resp.Data.GetAttributes())
 	}
@@ -102,7 +102,7 @@ func dataSourceDatadogRUMApplicationUpdate(d *schema.ResourceData, rum_app datad
 	if err := d.Set("type", rum_app.GetType()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("client_token", rum_app.GetHash()); err != nil {
+	if err := d.Set("client_token", rum_app.GetClientToken()); err != nil {
 		return diag.FromErr(err)
 	}
 	return nil

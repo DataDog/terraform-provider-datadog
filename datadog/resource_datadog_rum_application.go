@@ -127,7 +127,7 @@ func updateRUMApplicationState(d *schema.ResourceData, application *datadogV2.RU
 	if err := d.Set("type", application.Attributes.Type); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("client_token", application.Attributes.Hash); err != nil {
+	if err := d.Set("client_token", application.Attributes.ClientToken); err != nil {
 		return diag.FromErr(err)
 	}
 	return nil
