@@ -59,7 +59,7 @@ resource "datadog_downtime" "foo" {
 - `recurrence` (Block List, Max: 1) Optional recurring schedule for this downtime (see [below for nested schema](#nestedblock--recurrence))
 - `start` (Number) Specify when this downtime should start
 - `start_date` (String) String representing date and time to start the downtime in RFC3339 format.
-- `timezone` (String) The timezone for the downtime, default UTC
+- `timezone` (String) The timezone for the downtime, default UTC. Follows IANA timezone database identifiers.
 
 ### Read-Only
 
