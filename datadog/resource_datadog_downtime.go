@@ -176,7 +176,7 @@ func resourceDatadogDowntime() *schema.Resource {
 				Type:         schema.TypeString,
 				Default:      "UTC",
 				Optional:     true,
-				Description:  "The timezone for the downtime, default UTC",
+				Description:  "The timezone for the downtime, default UTC. Follows IANA timezone database identifiers.",
 				ValidateFunc: validators.ValidateDatadogDowntimeTimezone,
 			},
 			"message": {
