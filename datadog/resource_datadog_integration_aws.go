@@ -63,7 +63,7 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 			},
 			"excluded_regions": {
 				Description: "An array of AWS regions to exclude from metrics collection.",
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Optional:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
@@ -153,7 +153,7 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData) *datadogV1.AWSAcco
 
 	excludedRegions := make([]string, 0)
 	if attr, ok := d.GetOk("excluded_regions"); ok {
-		for _, s := range attr.([]interface{}) {
+		for _, s := range attr.(*schema.Set).List() {
 			excludedRegions = append(excludedRegions, s.(string))
 		}
 	}
@@ -332,9 +332,16 @@ func resourceDatadogIntegrationAwsDelete(ctx context.Context, d *schema.Resource
 }
 
 func resourceDatadogIntegrationAwsImport(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	originalId := d.Id()
 	if diagErr := resourceDatadogIntegrationAwsRead(ctx, d, meta); diagErr != nil {
 		return nil, fmt.Errorf(diagErr[0].Summary)
 	}
+
+	// We can assume resource was not found for import when `id` is set to nil in the read step
+	if d.Id() == "" {
+		return nil, fmt.Errorf("error importing aws integration resource. Resource with id `%s` does not exist", originalId)
+	}
+
 	d.Set("external_id", os.Getenv("EXTERNAL_ID"))
 	return []*schema.ResourceData{d}, nil
 }

@@ -34,7 +34,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"bucket":     {Description: "Name of your s3 bucket.", Type: schema.TypeString, Required: true},
-						"path":       {Description: "Path where the archive will be stored.", Type: schema.TypeString, Required: true},
+						"path":       {Description: "Path where the archive is stored.", Type: schema.TypeString, Optional: true},
 						"account_id": {Description: "Your AWS account id.", Type: schema.TypeString, Required: true},
 						"role_name":  {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
 					},
@@ -47,11 +47,11 @@ func resourceDatadogLogsArchive() *schema.Resource {
 				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"container":       {Description: "The container where the archive will be stored.", Type: schema.TypeString, Required: true},
+						"container":       {Description: "The container where the archive is stored.", Type: schema.TypeString, Required: true},
 						"client_id":       {Description: "Your client id.", Type: schema.TypeString, Required: true},
 						"tenant_id":       {Description: "Your tenant id.", Type: schema.TypeString, Required: true},
 						"storage_account": {Description: "The associated storage account.", Type: schema.TypeString, Required: true},
-						"path":            {Description: "The path where the archive will be stored.", Type: schema.TypeString, Optional: true},
+						"path":            {Description: "The path where the archive is stored.", Type: schema.TypeString, Optional: true},
 					},
 				},
 			},
@@ -63,7 +63,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"bucket":       {Description: "Name of your GCS bucket.", Type: schema.TypeString, Required: true},
-						"path":         {Description: "Path where the archive will be stored.", Type: schema.TypeString, Required: true},
+						"path":         {Description: "Path where the archive is stored.", Type: schema.TypeString, Optional: true},
 						"client_email": {Description: "Your client email.", Type: schema.TypeString, Required: true},
 						"project_id":   {Description: "Your project id.", Type: schema.TypeString, Required: true},
 					},

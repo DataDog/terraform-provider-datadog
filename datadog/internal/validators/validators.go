@@ -21,6 +21,63 @@ func ValidateFloatString(v interface{}, k string) (ws []string, errors []error) 
 // EnumChecker type to get allowed enum values from validate func
 type EnumChecker struct{}
 
+func contains(values []string, value string) bool {
+	for _, v := range values {
+		if value == v {
+			return true
+		}
+	}
+	return false
+}
+
+func buildMessageString(values []string) string {
+	stringValues := make([]string, 0)
+	for _, v := range values {
+		stringValues = append(stringValues, fmt.Sprintf("`%s`", v))
+	}
+	return strings.Join(stringValues, ", ")
+}
+
+func ValidateStringEnumValue(allowedValues ...interface{}) schema.SchemaValidateDiagFunc {
+	allowedStringValues := make([]string, 0)
+	for _, v := range allowedValues {
+		allowedStringValues = append(allowedStringValues, fmt.Sprint(v))
+	}
+
+	return func(val interface{}, path cty.Path) diag.Diagnostics {
+		var diags diag.Diagnostics
+
+		if _, ok := val.(EnumChecker); ok {
+			return append(diags, diag.Diagnostic{
+				Severity:      diag.Warning,
+				Summary:       "Allowed values",
+				Detail:        buildMessageString(allowedStringValues),
+				AttributePath: cty.Path{},
+			})
+		}
+
+		stringVal, isString := val.(string)
+		if !isString {
+			return append(diags, diag.Diagnostic{
+				Severity:      diag.Error,
+				Summary:       "Invalid value type",
+				Detail:        "Field value must be of type string",
+				AttributePath: path,
+			})
+		}
+
+		if !contains(allowedStringValues, stringVal) {
+			return append(diags, diag.Diagnostic{
+				Severity:      diag.Error,
+				Summary:       "Invalid enum value",
+				Detail:        fmt.Sprintf("Invalid value '%v': valid values are %v", val, allowedStringValues),
+				AttributePath: path,
+			})
+		}
+		return diags
+	}
+}
+
 // ValidateEnumValue returns a validate func for a collection of enum value. It takes the constructors with validation for the enum as an argument.
 // Such a constructor is for instance `datadogV1.NewWidgetLineWidthFromValue`
 func ValidateEnumValue(newEnumFuncs ...interface{}) schema.SchemaValidateDiagFunc {
