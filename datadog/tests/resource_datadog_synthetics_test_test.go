@@ -3538,7 +3538,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "status", "paused"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.#", "2"),
+				"datadog_synthetics_test.multi", "api_step.#", "3"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
 			resource.TestCheckResourceAttr(
@@ -3629,6 +3629,48 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 				"datadog_synthetics_test.multi", "api_step.0.retry.0.interval", "1000"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.1.name", "Second api step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.type", "oauth-client"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.audience", "audience"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.client_id", "client-id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.client_secret", "client-secret"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.resource", "resource"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.scope", "scope"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.token_api_authentication", "header"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.access_token_url", "https://token.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.name", "Third api step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.type", "oauth-rop"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.audience", "audience"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.client_id", "client-id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.client_secret", "client-secret"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.resource", "resource"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.scope", "scope"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.token_api_authentication", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.access_token_url", "https://token.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.username", "username"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.password", "password"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
 			resource.TestCheckResourceAttr(
@@ -3744,6 +3786,44 @@ resource "datadog_synthetics_test" "multi" {
       allow_insecure   = true
       follow_redirects = true
     }
+    request_basicauth {
+		type = "oauth-client"
+		audience = "audience"
+		client_id = "client-id"
+		client_secret = "client-secret"
+		resource = "resource"
+		scope = "scope"
+		token_api_authentication = "header"
+		access_token_url = "https://token.datadoghq.com"
+	}
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+  }
+
+  api_step {
+    name = "Third api step"
+    request_definition {
+      method           = "GET"
+      url              = "https://docs.datadoghq.com"
+      timeout          = 30
+      allow_insecure   = true
+      follow_redirects = true
+    }
+    request_basicauth {
+		type = "oauth-rop"
+		audience = "audience"
+		client_id = "client-id"
+		client_secret = "client-secret"
+		resource = "resource"
+		scope = "scope"
+		token_api_authentication = "body"
+		access_token_url = "https://token.datadoghq.com"
+		username = "username"
+		password = "password"
+	}
     assertion {
       type     = "statusCode"
       operator = "is"
