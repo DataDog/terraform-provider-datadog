@@ -4,13 +4,44 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strconv"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
+
+func logsArchiveOrderCheckCount(accProvider func() (*schema.Provider, error)) func(state *terraform.State) error {
+	return func(state *terraform.State) error {
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
+		auth := providerConf.Auth
+		apiInstances := providerConf.DatadogApiInstances
+
+		logsArchiveOrder, _, err := apiInstances.GetLogsArchivesApiV2().GetLogsArchiveOrder(auth)
+		if err != nil {
+			return err
+		}
+		return logsArchiveOrderCount(state, len(logsArchiveOrder.Data.Attributes.ArchiveIds))
+	}
+}
+
+func logsArchiveOrderCount(state *terraform.State, responseCount int) error {
+	resourceAttributes := state.RootModule().Resources["data.datadog_logs_archives_order.order"].Primary.Attributes
+	logsArchiveCount, _ := strconv.Atoi(resourceAttributes["archive_ids.#"])
+
+	if logsArchiveCount != responseCount {
+		return fmt.Errorf("expected %d logs archives in order, got %d logs archives",
+			responseCount, logsArchiveCount)
+	}
+	return nil
+}
 
 func TestAccDatadogLogsArchivesOrderDatasource(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
 	uniq := uniqueAWSAccountID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
@@ -23,7 +54,9 @@ func TestAccDatadogLogsArchivesOrderDatasource(t *testing.T) {
 			},
 			{
 				Config: testAccDatasourceDatadogLogsArchiveOrderWithArchive(uniq),
-				Check:  resource.TestCheckTypeSetElemAttrPair("data.datadog_logs_archives_order.order", "archive_ids.*", "datadog_logs_archive.sample_archive", "id"),
+				Check: resource.ComposeTestCheckFunc(
+					logsArchiveOrderCheckCount(accProvider),
+				),
 			},
 		},
 	})
@@ -32,9 +65,7 @@ func TestAccDatadogLogsArchivesOrderDatasource(t *testing.T) {
 func testAccDatasourceDatadogLogsArchiveOrderWithArchive(uniq string) string {
 	return fmt.Sprintf(`
 data "datadog_logs_archives_order" "order" {
-	depends_on = [
-		datadog_logs_archive.sample_archive,
-	]
+	depends_on = ["datadog_logs_archive.sample_archive"]
 }
 
 resource "datadog_integration_aws" "account" {
@@ -43,13 +74,12 @@ resource "datadog_integration_aws" "account" {
 }
 
 resource "datadog_logs_archive" "sample_archive" {
-	depends_on = ["datadog_integration_aws.account"]
 	name = "my first s3 archive"
 	query = "service:tutu"
 	s3_archive {
 		bucket 		 = "my-bucket"
 		path 		 = "/path/foo"
-		account_id   = "%[1]s"
+		account_id   = datadog_integration_aws.account.account_id
 		role_name    = "testacc-datadog-integration-role"
 	}
 	rehydration_tags = ["team:intake", "team:app"]
