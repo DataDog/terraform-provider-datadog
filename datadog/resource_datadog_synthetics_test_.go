@@ -300,41 +300,41 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 				},
 				"access_token_url": {
 					Type:        schema.TypeString,
-					Description: "todo",
+					Description: "Access token url for `oauth-client` or `oauth-rop` authentication.",
 					Optional:    true,
 				},
 				"audience": {
 					Type:        schema.TypeString,
-					Description: "todo",
+					Description: "Audience for `oauth-client` or `oauth-rop` authentication.",
 					Optional:    true,
 					Default:     "",
 				},
 				"resource": {
 					Type:        schema.TypeString,
-					Description: "todo",
+					Description: "Resource for `oauth-client` or `oauth-rop` authentication.",
 					Optional:    true,
 					Default:     "",
 				},
 				"scope": {
 					Type:        schema.TypeString,
-					Description: "todo",
+					Description: "Scope for `oauth-client` or `oauth-rop` authentication.",
 					Optional:    true,
 					Default:     "",
 				},
 				"token_api_authentication": {
 					Type:             schema.TypeString,
-					Description:      "todo header | body",
+					Description:      "Token API Authentication for `oauth-client` or `oauth-rop` authentication. Must be `header` or `body`",
 					Optional:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue),
 				},
 				"client_id": {
 					Type:        schema.TypeString,
-					Description: "todo",
+					Description: "Client ID for `oauth-client` or `oauth-rop` authentication.",
 					Optional:    true,
 				},
 				"client_secret": {
 					Type:        schema.TypeString,
-					Description: "todo",
+					Description: "Client secret for `oauth-client` or `oauth-rop` authentication.",
 					Optional:    true,
 					Sensitive:   true,
 				},
@@ -1625,6 +1625,23 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 				basicAuth.SetScope(requestBasicAuth["scope"].(string))
 
 				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthClientAsSyntheticsBasicAuth(basicAuth))
+			}
+
+			if requestBasicAuth["type"] == "oauth-rop" {
+				tokenApiAuthentication, _ := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthROP(
+					requestBasicAuth["access_token_url"].(string),
+					requestBasicAuth["password"].(string),
+					*tokenApiAuthentication,
+					requestBasicAuth["username"].(string))
+
+				basicAuth.SetAudience(requestBasicAuth["audience"].(string))
+				basicAuth.SetClientId(requestBasicAuth["client_id"].(string))
+				basicAuth.SetClientSecret(requestBasicAuth["client_secret"].(string))
+				basicAuth.SetResource(requestBasicAuth["resource"].(string))
+				basicAuth.SetScope(requestBasicAuth["scope"].(string))
+
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthROPAsSyntheticsBasicAuth(basicAuth))
 			}
 		}
 	}
