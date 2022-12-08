@@ -137,7 +137,7 @@ func resourceDatadogDowntime() *schema.Resource {
 					// If "start_date" is set, ignore diff for "start". If "start" isn't set, ignore diff if start is now or in the past
 					return startDatePresent || (newVal == "0" && oldVal != "0" && int64(d.Get("start").(int)) <= now)
 				},
-				Description: "Specify when this downtime should start",
+				Description: "Specify when this downtime should start. Accepts a Unix timestamp in UTC.",
 			},
 			"start_date": {
 				Type:          schema.TypeString,
@@ -158,7 +158,7 @@ func resourceDatadogDowntime() *schema.Resource {
 					_, endDatePresent := d.GetOk("end_date")
 					return endDatePresent
 				},
-				Description: "Optionally specify an end date when this downtime should expire",
+				Description: "Optionally specify an end date when this downtime should expire. Accepts a Unix timestamp in UTC.",
 			},
 			"end_date": {
 				Type:          schema.TypeString,
