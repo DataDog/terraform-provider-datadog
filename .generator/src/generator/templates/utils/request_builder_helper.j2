@@ -51,13 +51,13 @@
 {%- macro baseArrayAttrBuilder(name, schema, baseGetter, baseSetter, required=False) %}
     {%- set itemSchema = schema.get("items") %}
     {%- if itemSchema|is_primitive %}
-        {{ name|variable_name }} = append( {{ name|variable_name }}, s.({{ itemSchema|simple_type }}))
+        {{ name|variable_name }} = append( {{ name|variable_name }}, {{ baseGetter }}.({{ itemSchema|simple_type }}))
     {%- elif itemSchema.type == "object" %}
         {{ baseGetter }}Map := s.(map[string]interface{})
         {{ name|variable_name }}Item := datadog{{ version|upperfirst }}.New{{ get_type(itemSchema) }}WithDefaults()
         {%- for attr, attrSchema in itemSchema.get("properties").items() %}
             {%- set isRequired = attr in itemSchema.get("required", []) %}
-            {{- objectFromMapBuilder(attr, attrSchema, "sMap", name|variable_name~"Item", required=isRequired) }}
+            {{- objectFromMapBuilder(attr, attrSchema, baseGetter~"Map", name|variable_name~"Item", required=isRequired) }}
         {%- endfor %}
 
         {{ name|variable_name }} = append({{ name|variable_name }}, *{{ name|variable_name }}Item)
@@ -70,13 +70,18 @@
     {%- if schema|is_primitive %}
         {{ baseSetter }}.Set{{ name|camel_case }}({{ baseGetter }}["{{ name }}"].({{ get_type(schema) }}))
     {%- elif schema.type == "object" %}
-        {{ name|variable_name }} := datadog{{ version|upperfirst }}.New{{ get_type(itemSchema) }}WithDefaults()
-        {%- for attr, attrSchema in itemSchema.get("properties").items() %}
+        {{ name|variable_name }} := datadog{{ version|upperfirst }}.New{{ get_type(schema) }}WithDefaults()
+        {%- for attr, attrSchema in schema.get("properties").items() %}
             {%- set isRequired = attr in itemSchema.get("required", []) %}
             {{- objectFromMapBuilder(attr, attrSchema, name|variable_name~"Item", required=isRequired) }}
         {%- endfor %}
         {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }})
     {%- elif schema.type == "array" %}
 
+        {{ name|variable_name }} := []{{ schema.get("items")|simple_type }}{}
+        for _, {{ name|variable_name }}Item := range {{ baseGetter }}["{{ name }}"].([]interface{}) {
+            {{- baseArrayAttrBuilder(name=name, schema=schema, baseGetter=name|variable_name~"Item", baseSetter=name|variable_name, required=required) }}
+        }
+        {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }})
     {%- endif %}
 {%- endmacro %}
