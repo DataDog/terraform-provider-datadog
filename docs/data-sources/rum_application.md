@@ -17,7 +17,7 @@ Use this data source to retrieve a Datadog RUM Application.
 
 ### Optional
 
-- `id` (String) ID of the RUM application. If set, this takes precedence over name and type filters.
+- `id` (String) ID of the RUM application. Cannot be used with name and type filters.
 - `name_filter` (String) The name used to search for a RUM application
 - `type_filter` (String) The type used to search for a RUM application
 
