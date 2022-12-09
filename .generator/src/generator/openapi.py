@@ -232,6 +232,7 @@ def is_json_api(schema):
 def get_nested_json_api_attributes_schema(schema):
     return schema.get("properties", {}).get("data", {}).get("properties", {}).get("attributes", {})
 
+
 def get_terraform_schema_type(schema):
     return {
         "string": "TypeString",
