@@ -25,10 +25,11 @@ func dataSourceDatadogRUMApplication() *schema.Resource {
 				Description: "The type used to search for a RUM application",
 			},
 			"id": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-				Description: "ID of the RUM application. If set, this takes precedence over name and type filters.",
+				Type:          schema.TypeString,
+				Optional:      true,
+				Computed:      true,
+				ConflictsWith: []string{"name_filter", "type_filter"},
+				Description:   "ID of the RUM application. Cannot be used with name and type filters.",
 			},
 			"name": {
 				Type:        schema.TypeString,
@@ -69,12 +70,18 @@ func dataSourceDatadogRUMApplicationRead(ctx context.Context, d *schema.Resource
 
 		searchName, searchNameOk := d.GetOk("name_filter")
 		searchType, searchTypeOk := d.GetOk("type_filter")
+		bothSet := searchNameOk && searchTypeOk
+
 		var foundRUMApplicationIDs []string
 		for _, resp_data := range resp.Data {
 			if rum_app, ok := resp_data.GetAttributesOk(); ok {
 				nameSetAndMatched := searchNameOk && rum_app.GetName() == searchName
 				typeSetAndMatched := searchTypeOk && rum_app.GetType() == searchType
-				if nameSetAndMatched || typeSetAndMatched {
+				if bothSet {
+					if nameSetAndMatched && typeSetAndMatched {
+						foundRUMApplicationIDs = append(foundRUMApplicationIDs, rum_app.GetApplicationId())
+					}
+				} else if nameSetAndMatched || typeSetAndMatched {
 					foundRUMApplicationIDs = append(foundRUMApplicationIDs, rum_app.GetApplicationId())
 				}
 			}

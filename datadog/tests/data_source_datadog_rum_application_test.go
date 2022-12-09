@@ -7,13 +7,11 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func TestAccDatadogRUMApplicationDatasourceNameFilter(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
@@ -21,7 +19,16 @@ func TestAccDatadogRUMApplicationDatasourceNameFilter(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceRUMApplicationNameFilterConfig(uniq),
-				Check:  checkDatasourceRUMApplicationAttrs(accProvider, uniq),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"data.datadog_rum_application.bar", "name", uniq),
+					resource.TestCheckResourceAttr(
+						"data.datadog_rum_application.bar", "type", "browser"),
+					resource.TestCheckResourceAttrPair(
+						"data.datadog_rum_application.bar", "id", "datadog_rum_application.foo", "id"),
+					resource.TestCheckResourceAttrPair(
+						"data.datadog_rum_application.bar", "client_token", "datadog_rum_application.foo", "client_token"),
+				),
 			},
 		},
 	})
@@ -30,7 +37,6 @@ func TestAccDatadogRUMApplicationDatasourceNameFilter(t *testing.T) {
 func TestAccDatadogRUMApplicationDatasourceIDFilter(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
@@ -38,7 +44,16 @@ func TestAccDatadogRUMApplicationDatasourceIDFilter(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceRUMApplicationIDConfig(uniq),
-				Check:  checkDatasourceRUMApplicationAttrs(accProvider, uniq),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"data.datadog_rum_application.bar", "name", uniq),
+					resource.TestCheckResourceAttr(
+						"data.datadog_rum_application.bar", "type", "browser"),
+					resource.TestCheckResourceAttrPair(
+						"data.datadog_rum_application.bar", "id", "datadog_rum_application.foo", "id"),
+					resource.TestCheckResourceAttrPair(
+						"data.datadog_rum_application.bar", "client_token", "datadog_rum_application.foo", "client_token"),
+				),
 			},
 		},
 	})
@@ -60,28 +75,22 @@ func TestAccDatadogRUMApplicationDatasourceErrorMultiple(t *testing.T) {
 	})
 }
 
-func checkDatasourceRUMApplicationAttrs(accProvider func() (*schema.Provider, error), uniq string) resource.TestCheckFunc {
-	return resource.ComposeTestCheckFunc(
-		resource.TestCheckResourceAttr(
-			"data.datadog_rum_application.bar", "name", uniq),
-		resource.TestCheckResourceAttr(
-			"data.datadog_rum_application.bar", "type", "browser"),
-		resource.TestCheckResourceAttrSet(
-			"data.datadog_rum_application.bar", "id"),
-		resource.TestCheckResourceAttrSet(
-			"data.datadog_rum_application.bar", "client_token"),
-	)
-}
-
 func testAccDatasourceRUMApplicationNameFilterConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_rum_application" "foo" {
 	name = "%[1]s"
 	type = "browser"
 }
+
+resource "datadog_rum_application" "baz" {
+	name = "%[1]s-extra"
+	type = "browser"
+}
+
 data "datadog_rum_application" "bar" {
 	depends_on = [
 		datadog_rum_application.foo,
+		datadog_rum_application.baz,
 	]
     name_filter = "%[1]s"
 }`, uniq)
@@ -93,9 +102,16 @@ resource "datadog_rum_application" "foo" {
 	name = "%[1]s"
 	type = "browser"
 }
+
+resource "datadog_rum_application" "baz" {
+	name = "%[1]s"
+	type = "browser"
+}
+
 data "datadog_rum_application" "bar" {
 	depends_on = [
 		datadog_rum_application.foo,
+		datadog_rum_application.baz,
 	]
     id = datadog_rum_application.foo.id
 }`, uniq)
@@ -107,15 +123,17 @@ resource "datadog_rum_application" "foo" {
 	name = "%[1]s"
 	type = "browser"
 }
-resource "datadog_rum_application" "foobar" {
+
+resource "datadog_rum_application" "baz" {
 	name = "%[1]s"
-	type = "react-native"
+	type = "browser"
 }
+
 data "datadog_rum_application" "bar" {
 	depends_on = [
 		datadog_rum_application.foo,
-		datadog_rum_application.foobar,
+		datadog_rum_application.baz,
 	]
     name_filter = "%[1]s"
-}`, uniq, uniq)
+}`, uniq)
 }
