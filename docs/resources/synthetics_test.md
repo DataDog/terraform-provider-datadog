@@ -395,12 +395,19 @@ Optional:
 Optional:
 
 - `access_key` (String, Sensitive) Access key for `SIGV4` authentication.
+- `access_token_url` (String) Access token url for `oauth-client` or `oauth-rop` authentication.
+- `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication.
+- `client_id` (String) Client ID for `oauth-client` or `oauth-rop` authentication.
+- `client_secret` (String, Sensitive) Client secret for `oauth-client` or `oauth-rop` authentication.
 - `domain` (String) Domain for `ntlm` authentication.
 - `password` (String, Sensitive) Password for authentication.
 - `region` (String) Region for `SIGV4` authentication.
+- `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication.
+- `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication.
 - `secret_key` (String, Sensitive) Secret key for `SIGV4` authentication.
 - `service_name` (String) Service name for `SIGV4` authentication.
 - `session_token` (String) Session token for `SIGV4` authentication.
+- `token_api_authentication` (String) Token API Authentication for `oauth-client` or `oauth-rop` authentication. Must be `header` or `body` Valid values are `header`, `body`.
 - `type` (String) Type of basic authentication to use when performing the test.
 - `username` (String) Username for authentication.
 - `workstation` (String) Workstation for `ntlm` authentication.
@@ -701,12 +708,19 @@ Optional:
 Optional:
 
 - `access_key` (String, Sensitive) Access key for `SIGV4` authentication.
+- `access_token_url` (String) Access token url for `oauth-client` or `oauth-rop` authentication.
+- `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication.
+- `client_id` (String) Client ID for `oauth-client` or `oauth-rop` authentication.
+- `client_secret` (String, Sensitive) Client secret for `oauth-client` or `oauth-rop` authentication.
 - `domain` (String) Domain for `ntlm` authentication.
 - `password` (String, Sensitive) Password for authentication.
 - `region` (String) Region for `SIGV4` authentication.
+- `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication.
+- `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication.
 - `secret_key` (String, Sensitive) Secret key for `SIGV4` authentication.
 - `service_name` (String) Service name for `SIGV4` authentication.
 - `session_token` (String) Session token for `SIGV4` authentication.
+- `token_api_authentication` (String) Token API Authentication for `oauth-client` or `oauth-rop` authentication. Must be `header` or `body` Valid values are `header`, `body`.
 - `type` (String) Type of basic authentication to use when performing the test.
 - `username` (String) Username for authentication.
 - `workstation` (String) Workstation for `ntlm` authentication.
