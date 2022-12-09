@@ -407,7 +407,11 @@ Optional:
 - `secret_key` (String, Sensitive) Secret key for `SIGV4` authentication.
 - `service_name` (String) Service name for `SIGV4` authentication.
 - `session_token` (String) Session token for `SIGV4` authentication.
+<<<<<<< HEAD
 - `token_api_authentication` (String) Token API Authentication for `oauth-client` or `oauth-rop` authentication. Valid values are `header`, `body`.
+=======
+- `token_api_authentication` (String) Token API Authentication for `oauth-client` or `oauth-rop` authentication. Must be `header` or `body` Valid values are `header`, `body`.
+>>>>>>> 435b2d9e (Regenerate docs)
 - `type` (String) Type of basic authentication to use when performing the test.
 - `username` (String) Username for authentication.
 - `workstation` (String) Workstation for `ntlm` authentication.
