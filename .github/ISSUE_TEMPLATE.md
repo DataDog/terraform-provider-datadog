@@ -25,15 +25,15 @@ If this issue appears to affect multiple resources, it may be an issue with Terr
 
 ### Debug Output
 
-Please provider a link to a GitHub Gist containing the complete debug output: https://www.terraform.io/docs/internals/debugging.html. Please do NOT paste the debug output in the issue; just paste a link to the Gist.
+Please provide a link to a GitHub Gist containing the complete debug output: https://www.terraform.io/docs/internals/debugging.html. Please do NOT paste the debug output in the issue; just paste a link to the Gist.
 
-**IMPORTANT!!! Remember to review debug output before posting. It can contain credentials or other private data**
+**NOTE:** Remember to review debug output before posting, and redact any sensitive data.
 
 ### Panic Output
 
 If Terraform produced a panic, please provide a link to a GitHub Gist containing the output of the `crash.log`.
 
-**IMPORTANT!!! Remember to review panic log file before posting. It can contain credentials or other private data**
+**NOTE:** Remember to review panic log file before posting, and redact any sensitive data.
 
 ### Expected Behavior
 
