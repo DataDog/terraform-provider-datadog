@@ -128,10 +128,10 @@ func syntheticsTestRequest() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"method": {
-				Description:      "The HTTP method.",
-				Type:             schema.TypeString,
-				Optional:         true,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewHTTPMethodFromValue),
+				Description: "The HTTP method.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				//ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewHTTPMethodFromValue),
 			},
 			"url": {
 				Description: "The URL to send the request to.",
@@ -1275,7 +1275,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 	request := datadogV1.SyntheticsTestRequest{}
 	if attr, ok := k.GetOkWith("method"); ok {
-		request.SetMethod(datadogV1.HTTPMethod(attr.(string)))
+		request.SetMethod(attr.(string))
 	}
 	if attr, ok := k.GetOkWith("url"); ok {
 		request.SetUrl(attr.(string))
@@ -1380,7 +1380,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			requests := stepMap["request_definition"].([]interface{})
 			if len(requests) > 0 && requests[0] != nil {
 				requestMap := requests[0].(map[string]interface{})
-				request.SetMethod(datadogV1.HTTPMethod(requestMap["method"].(string)))
+				request.SetMethod(requestMap["method"].(string))
 				request.SetUrl(requestMap["url"].(string))
 				request.SetBody(requestMap["body"].(string))
 				if v, ok := requestMap["body_type"].(string); ok && v != "" {
@@ -1762,7 +1762,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	parts := "request_definition.0"
 	k.Add(parts)
 	if attr, ok := k.GetOkWith("method"); ok {
-		request.SetMethod(datadogV1.HTTPMethod(attr.(string)))
+		request.SetMethod(attr.(string))
 	}
 	if attr, ok := k.GetOkWith("url"); ok {
 		request.SetUrl(attr.(string))
@@ -2950,8 +2950,6 @@ func convertToString(i interface{}) string {
 		return strconv.FormatFloat(v, 'f', -1, 64)
 	case string:
 		return v
-	case datadogV1.HTTPMethod:
-		return string(v)
 	default:
 		// TODO: manage target for JSON body assertions
 		valStrr, err := json.Marshal(v)
