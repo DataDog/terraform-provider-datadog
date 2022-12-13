@@ -6162,6 +6162,26 @@ func getFormulaSchema() *schema.Schema {
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
 					Optional:         true,
 				},
+				"style": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "Styling options for widget formulas.",
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"palette": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors",
+							},
+							"palette_index": {
+								Type:        schema.TypeInt,
+								Optional:    true,
+								Description: "Index specifying which color to use within the palette.",
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -6628,6 +6648,18 @@ func buildDatadogFormula(data map[string]interface{}) datadogV1.WidgetFormula {
 
 	if v, ok := data["conditional_formats"].([]interface{}); ok && len(v) != 0 {
 		formula.ConditionalFormats = *buildDatadogWidgetConditionalFormat(&v)
+	}
+
+	if style, ok := data["style"].([]interface{}); ok && len(style) != 0 {
+		datadogFormulaStyle := datadogV1.NewWidgetFormulaStyle()
+		style_attr := style[0].(map[string]interface{})
+		if palette, ok := style_attr["palette"].(string); ok {
+			datadogFormulaStyle.SetPalette(palette)
+		}
+		if palette_index, ok := style_attr["palette_index"].(int64); ok {
+			datadogFormulaStyle.SetPaletteIndex(palette_index)
+		}
+		formula.SetStyle(*datadogFormulaStyle)
 	}
 
 	return formula
@@ -8356,6 +8388,16 @@ func buildTerraformFormula(datadogFormulas []datadogV1.WidgetFormula) []map[stri
 		}
 		if cellDisplayMode, cellDisplayModeOk := formula.GetCellDisplayModeOk(); cellDisplayModeOk {
 			terraformFormula["cell_display_mode"] = cellDisplayMode
+		}
+		if style, ok := formula.GetStyleOk(); ok {
+			terraFormstyle := make(map[string]interface{})
+			if palette, ok := style.GetPaletteOk(); ok {
+				terraFormstyle["palette"] = palette
+			}
+			if palette_index, ok := style.GetPaletteIndexOk(); ok {
+				terraFormstyle["palette_index"] = palette_index
+			}
+			terraformFormula["style"] = []map[string]interface{}{terraFormstyle}
 		}
 		formulas[i] = terraformFormula
 	}
