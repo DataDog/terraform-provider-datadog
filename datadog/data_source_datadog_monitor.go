@@ -216,6 +216,11 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				Type:        schema.TypeBool,
 				Computed:    true,
 			},
+			"enable_samples": {
+				Description: "Whether or not a list of samples which triggered the alert is included. This is only used by CI Test and Pipeline monitors.",
+				Type:        schema.TypeBool,
+				Computed:    true,
+			},
 			"groupby_simple_monitor": {
 				Description: "Whether or not to trigger one alert if any source breaches a threshold.",
 				Type:        schema.TypeBool,

@@ -49,6 +49,7 @@ Email notifications can be sent to specific users by using the same `@username` 
 ### Optional
 
 - `enable_logs_sample` (Boolean) A boolean indicating whether or not to include a list of log values which triggered the alert. This is only used by log monitors. Defaults to `false`.
+- `enable_samples` (Boolean) A boolean indicating whether or not to include a list of samples which triggered the alert. This is only used by CI Test and Pipeline monitors. Defaults to `false`.
 - `escalation_message` (String) A message to include with a re-notification. Supports the `@username` notification allowed elsewhere.
 - `evaluation_delay` (Number) (Only applies to metric alert) Time (in seconds) to delay evaluation, as a non-negative integer.
 
