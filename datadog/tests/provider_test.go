@@ -56,6 +56,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_dashboard_test":                           "dashboard",
 	"tests/data_source_datadog_dashboard_list_test":                      "dashboard-lists",
 	"tests/data_source_datadog_ip_ranges_test":                           "ip-ranges",
+	"tests/data_source_datadog_logs_archives_order_test":                 "logs-archive",
 	"tests/data_source_datadog_logs_indexes_order_test":                  "logs-index",
 	"tests/data_source_datadog_logs_indexes_test":                        "logs-index",
 	"tests/data_source_datadog_logs_pipelines_test":                      "logs-pipelines",

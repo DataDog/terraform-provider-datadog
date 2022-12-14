@@ -50,16 +50,16 @@ resource "datadog_downtime" "foo" {
 
 ### Optional
 
-- `end` (Number) Optionally specify an end date when this downtime should expire
+- `end` (Number) Optionally specify an end date when this downtime should expire. Accepts a Unix timestamp in UTC.
 - `end_date` (String) String representing date and time to end the downtime in RFC3339 format.
 - `message` (String) An optional message to provide when creating the downtime, can include notification handles
 - `monitor_id` (Number) When specified, this downtime will only apply to this monitor
 - `monitor_tags` (Set of String) A list of monitor tags (up to 32) to base the scheduled downtime on. Only monitors that have all selected tags are silenced
 - `mute_first_recovery_notification` (Boolean) When true the first recovery notification during the downtime will be muted
 - `recurrence` (Block List, Max: 1) Optional recurring schedule for this downtime (see [below for nested schema](#nestedblock--recurrence))
-- `start` (Number) Specify when this downtime should start
+- `start` (Number) Specify when this downtime should start. Accepts a Unix timestamp in UTC.
 - `start_date` (String) String representing date and time to start the downtime in RFC3339 format.
-- `timezone` (String) The timezone for the downtime, default UTC
+- `timezone` (String) The timezone for the downtime, default UTC. Follows IANA timezone database identifiers.
 
 ### Read-Only
 
