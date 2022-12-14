@@ -634,7 +634,7 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 			o.SetGroupbySimpleMonitor(attr.(bool))
 		}
 	}
-	
+
 	if monitorType == datadogV1.MONITORTYPE_CI_PIPELINES_ALERT || monitorType == datadogV1.MONITORTYPE_CI_TESTS_ALERT {
 		if attr, ok := d.GetOk("enable_samples"); ok {
 			o.SetEnableSamples(attr.(bool))
