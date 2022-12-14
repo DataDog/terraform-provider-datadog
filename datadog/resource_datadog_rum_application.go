@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"context"
-	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -11,8 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
-
-var rumCreateMutex = sync.Mutex{}
 
 func resourceDatadogRUMApplication() *schema.Resource {
 	return &schema.Resource{
@@ -78,8 +75,6 @@ func resourceDatadogRUMApplicationCreate(ctx context.Context, d *schema.Resource
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	rumCreateMutex.Lock()
-	defer rumCreateMutex.Unlock()
 	resp, httpResponse, err := apiInstances.GetRumApiV2().CreateRUMApplication(auth, body)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating RUM application")
