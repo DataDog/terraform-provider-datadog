@@ -248,7 +248,7 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 					Type:         schema.TypeString,
 					Optional:     true,
 					Default:      "web",
-					ValidateFunc: validation.StringInSlice([]string{"web", "sigv4", "ntlm"}, false),
+					ValidateFunc: validation.StringInSlice([]string{"web", "sigv4", "ntlm", "oauth-client", "oauth-rop"}, false),
 				},
 				"username": {
 					Description: "Username for authentication.",
@@ -297,6 +297,46 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 					Type:        schema.TypeString,
 					Description: "Workstation for `ntlm` authentication.",
 					Optional:    true,
+				},
+				"access_token_url": {
+					Type:        schema.TypeString,
+					Description: "Access token url for `oauth-client` or `oauth-rop` authentication.",
+					Optional:    true,
+				},
+				"audience": {
+					Type:        schema.TypeString,
+					Description: "Audience for `oauth-client` or `oauth-rop` authentication.",
+					Optional:    true,
+					Default:     "",
+				},
+				"resource": {
+					Type:        schema.TypeString,
+					Description: "Resource for `oauth-client` or `oauth-rop` authentication.",
+					Optional:    true,
+					Default:     "",
+				},
+				"scope": {
+					Type:        schema.TypeString,
+					Description: "Scope for `oauth-client` or `oauth-rop` authentication.",
+					Optional:    true,
+					Default:     "",
+				},
+				"token_api_authentication": {
+					Type:             schema.TypeString,
+					Description:      "Token API Authentication for `oauth-client` or `oauth-rop` authentication.",
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue),
+				},
+				"client_id": {
+					Type:        schema.TypeString,
+					Description: "Client ID for `oauth-client` or `oauth-rop` authentication.",
+					Optional:    true,
+				},
+				"client_secret": {
+					Type:        schema.TypeString,
+					Description: "Client secret for `oauth-client` or `oauth-rop` authentication.",
+					Optional:    true,
+					Sensitive:   true,
 				},
 			},
 		},
@@ -1575,6 +1615,34 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 
 				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthNTLMAsSyntheticsBasicAuth(basicAuth))
 			}
+
+			if requestBasicAuth["type"] == "oauth-client" {
+				tokenApiAuthentication, _ := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(requestBasicAuth["access_token_url"].(string), requestBasicAuth["client_id"].(string), requestBasicAuth["client_secret"].(string), *tokenApiAuthentication)
+
+				basicAuth.SetAudience(requestBasicAuth["audience"].(string))
+				basicAuth.SetResource(requestBasicAuth["resource"].(string))
+				basicAuth.SetScope(requestBasicAuth["scope"].(string))
+
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthClientAsSyntheticsBasicAuth(basicAuth))
+			}
+
+			if requestBasicAuth["type"] == "oauth-rop" {
+				tokenApiAuthentication, _ := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthROP(
+					requestBasicAuth["access_token_url"].(string),
+					requestBasicAuth["password"].(string),
+					*tokenApiAuthentication,
+					requestBasicAuth["username"].(string))
+
+				basicAuth.SetAudience(requestBasicAuth["audience"].(string))
+				basicAuth.SetClientId(requestBasicAuth["client_id"].(string))
+				basicAuth.SetClientSecret(requestBasicAuth["client_secret"].(string))
+				basicAuth.SetResource(requestBasicAuth["resource"].(string))
+				basicAuth.SetScope(requestBasicAuth["scope"].(string))
+
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthROPAsSyntheticsBasicAuth(basicAuth))
+			}
 		}
 	}
 
@@ -2290,6 +2358,33 @@ func buildLocalBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]st
 		localAuth["domain"] = *basicAuthNtlm.Domain
 		localAuth["workstation"] = *basicAuthNtlm.Workstation
 		localAuth["type"] = "ntlm"
+	}
+
+	if basicAuth.SyntheticsBasicAuthOauthClient != nil {
+		basicAuthOauthClient := basicAuth.SyntheticsBasicAuthOauthClient
+		localAuth["access_token_url"] = basicAuthOauthClient.AccessTokenUrl
+		localAuth["client_id"] = basicAuthOauthClient.ClientId
+		localAuth["client_secret"] = basicAuthOauthClient.ClientSecret
+		localAuth["token_api_authentication"] = string(basicAuthOauthClient.TokenApiAuthentication)
+		localAuth["audience"] = *basicAuthOauthClient.Audience
+		localAuth["scope"] = *basicAuthOauthClient.Scope
+		localAuth["resource"] = *basicAuthOauthClient.Resource
+
+		localAuth["type"] = "oauth-client"
+	}
+	if basicAuth.SyntheticsBasicAuthOauthROP != nil {
+		basicAuthOauthROP := basicAuth.SyntheticsBasicAuthOauthROP
+		localAuth["access_token_url"] = basicAuthOauthROP.AccessTokenUrl
+		localAuth["client_id"] = *basicAuthOauthROP.ClientId
+		localAuth["client_secret"] = *basicAuthOauthROP.ClientSecret
+		localAuth["token_api_authentication"] = string(basicAuthOauthROP.TokenApiAuthentication)
+		localAuth["audience"] = *basicAuthOauthROP.Audience
+		localAuth["scope"] = *basicAuthOauthROP.Scope
+		localAuth["resource"] = *basicAuthOauthROP.Resource
+		localAuth["username"] = basicAuthOauthROP.Username
+		localAuth["password"] = basicAuthOauthROP.Password
+
+		localAuth["type"] = "oauth-rop"
 	}
 
 	return localAuth
