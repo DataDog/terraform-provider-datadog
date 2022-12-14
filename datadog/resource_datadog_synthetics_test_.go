@@ -323,7 +323,7 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 				},
 				"token_api_authentication": {
 					Type:             schema.TypeString,
-					Description:      "Token API Authentication for `oauth-client` or `oauth-rop` authentication. Must be `header` or `body`",
+					Description:      "Token API Authentication for `oauth-client` or `oauth-rop` authentication.",
 					Optional:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue),
 				},
