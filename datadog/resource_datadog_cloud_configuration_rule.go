@@ -25,6 +25,7 @@ func resourceDatadogCloudConfigurationRule() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog Cloud Configuration Rule resource.",
 		CreateContext: cloudConfigurationRuleCreateContext,
+		UpdateContext: cloudConfigurationRuleUpdateContext,
 		DeleteContext: resourceDatadogSecurityMonitoringRuleDelete,
 		Schema:        cloudConfigurationRuleSchema(),
 	}
@@ -91,7 +92,7 @@ func cloudConfigurationRuleCreateContext(ctx context.Context, d *schema.Resource
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	ruleCreate := buildCloudConfigurationRulePayload(d)
+	ruleCreate := buildRuleCreatePayload(d)
 
 	response, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().CreateSecurityMonitoringRule(auth, ruleCreate)
 	if err != nil {
@@ -110,21 +111,21 @@ func cloudConfigurationRuleCreateContext(ctx context.Context, d *schema.Resource
 	return nil
 }
 
-func buildCloudConfigurationRulePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRuleCreatePayload {
+func buildRuleCreatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRuleCreatePayload {
 	payload := datadogV2.NewCloudConfigurationRuleCreatePayloadWithDefaults()
 	payload.SetName(d.Get(nameField).(string))
 	payload.SetMessage(d.Get(messageField).(string))
 	payload.SetIsEnabled(d.Get(enabledField).(bool))
-	payload.SetOptions(buildComplianceRuleOptions(d))
+	payload.SetOptions(buildRuleCreationOptions(d))
 	payload.SetComplianceSignalOptions(builComplianceSignalOptions(d))
-	payload.SetCases(buildCases(d))
+	payload.SetCases(buildRuleCreationCases(d))
 	payload.SetTags(getStringSlice(d, tagsField))
 	payload.SetType(datadogV2.CLOUDCONFIGURATIONRULETYPE_CLOUD_CONFIGURATION)
 
 	return datadogV2.CloudConfigurationRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(payload)
 }
 
-func buildComplianceRuleOptions(d *schema.ResourceData) datadogV2.CloudConfigurationRuleOptions {
+func buildRuleCreationOptions(d *schema.ResourceData) datadogV2.CloudConfigurationRuleOptions {
 	regoPolicy := d.Get(policyField).(string)
 	resourceTypes := getStringSlice(d, resourceTypesField)
 	isComplexrule := len(resourceTypes) > 1
@@ -135,7 +136,7 @@ func buildComplianceRuleOptions(d *schema.ResourceData) datadogV2.CloudConfigura
 	return *datadogV2.NewCloudConfigurationRuleOptions(*complianceRuleOptions)
 }
 
-func buildCases(d *schema.ResourceData) []datadogV2.CloudConfigurationRuleCaseCreate {
+func buildRuleCreationCases(d *schema.ResourceData) []datadogV2.CloudConfigurationRuleCaseCreate {
 	notifications := getStringSlice(d, notificationsField)
 	severity := d.Get(severityField).(string)
 
@@ -165,4 +166,63 @@ func getStringSlice(d *schema.ResourceData, key string) []string {
 		return stringValues
 	}
 	return []string{}
+}
+
+func cloudConfigurationRuleUpdateContext(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	providerConf := meta.(*ProviderConfiguration)
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
+
+	ruleUpdate := buildRuleUpdatePayload(d)
+	response, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().UpdateSecurityMonitoringRule(auth, d.Id(), ruleUpdate)
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating security monitoring rule")
+	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if response.SecurityMonitoringStandardRuleResponse != nil {
+		updateStandardResourceDataFromResponse(d, response.SecurityMonitoringStandardRuleResponse)
+	} else if response.SecurityMonitoringSignalRuleResponse != nil {
+		updateSignalResourceDataFromResponse(d, response.SecurityMonitoringSignalRuleResponse)
+	}
+
+	return nil
+}
+
+func buildRuleUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoringRuleUpdatePayload {
+	payload := datadogV2.SecurityMonitoringRuleUpdatePayload{}
+	payload.SetName(d.Get(nameField).(string))
+	payload.SetMessage(d.Get(messageField).(string))
+	payload.SetIsEnabled(d.Get(enabledField).(bool))
+	payload.SetOptions(buildRuleUpdateOptions(d))
+	payload.SetComplianceSignalOptions(builComplianceSignalOptions(d))
+	payload.SetCases(buildRuleUpdateCases(d))
+	payload.SetTags(getStringSlice(d, tagsField))
+	return payload
+}
+
+func buildRuleUpdateOptions(d *schema.ResourceData) datadogV2.SecurityMonitoringRuleOptions {
+	regoPolicy := d.Get(policyField).(string)
+	resourceTypes := getStringSlice(d, resourceTypesField)
+	isComplexrule := len(resourceTypes) > 1
+
+	complianceRuleOptions := datadogV2.NewCloudConfigurationComplianceRuleOptions(*datadogV2.NewCloudConfigurationRegoRule(regoPolicy, resourceTypes))
+	complianceRuleOptions.SetComplexRule(isComplexrule)
+
+	options := datadogV2.NewSecurityMonitoringRuleOptions()
+	options.SetComplianceRuleOptions(*complianceRuleOptions)
+	return *options
+}
+
+func buildRuleUpdateCases(d *schema.ResourceData) []datadogV2.SecurityMonitoringRuleCase {
+	notifications := getStringSlice(d, notificationsField)
+	severity := d.Get(severityField).(string)
+
+	ruleCase := datadogV2.NewSecurityMonitoringRuleCase()
+	ruleCase.SetStatus(datadogV2.SecurityMonitoringRuleSeverity(severity))
+	ruleCase.SetNotifications(notifications)
+
+	return []datadogV2.SecurityMonitoringRuleCase{*ruleCase}
 }
