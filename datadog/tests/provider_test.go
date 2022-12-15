@@ -52,6 +52,7 @@ var allowedHeaders = map[string]string{"Accept": "", "Content-Type": ""}
 var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_api_key_test":                             "api_keys",
 	"tests/data_source_datadog_application_key_test":                     "application_keys",
+	"tests/data_source_datadog_aws_logs_services_test":                   "aws-logs-services",
 	"tests/data_source_datadog_cloud_workload_security_agent_rules_test": "cloud-workload-security",
 	"tests/data_source_datadog_dashboard_test":                           "dashboard",
 	"tests/data_source_datadog_dashboard_list_test":                      "dashboard-lists",

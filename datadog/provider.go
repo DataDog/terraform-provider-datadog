@@ -179,6 +179,7 @@ func Provider() *schema.Provider {
 		DataSourcesMap: map[string]*schema.Resource{
 			"datadog_api_key":                             dataSourceDatadogApiKey(),
 			"datadog_application_key":                     dataSourceDatadogApplicationKey(),
+			"datadog_aws_logs_services":                   dataSourceDatadogAwsLogsServices(),
 			"datadog_cloud_workload_security_agent_rules": dataSourceDatadogCloudWorkloadSecurityAgentRules(),
 			"datadog_dashboard":                           dataSourceDatadogDashboard(),
 			"datadog_dashboard_list":                      dataSourceDatadogDashboardList(),
