@@ -128,10 +128,9 @@ func syntheticsTestRequest() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"method": {
-				Description:      "The HTTP method.",
-				Type:             schema.TypeString,
-				Optional:         true,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewHTTPMethodFromValue),
+				Description: "Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"url": {
 				Description: "The URL to send the request to.",
@@ -202,8 +201,14 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"call_type": {
+				Description:      "The type of gRPC call to perform.",
+				Type:             schema.TypeString,
+				Optional:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestCallTypeFromValue),
+			},
 			"service": {
-				Description: "For gRPC tests, service to target for healthcheck.",
+				Description: "The gRPC service on which you want to perform the gRPC call.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
@@ -1315,7 +1320,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 	request := datadogV1.SyntheticsTestRequest{}
 	if attr, ok := k.GetOkWith("method"); ok {
-		request.SetMethod(datadogV1.HTTPMethod(attr.(string)))
+		request.SetMethod(attr.(string))
 	}
 	if attr, ok := k.GetOkWith("url"); ok {
 		request.SetUrl(attr.(string))
@@ -1355,6 +1360,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 	if attr, ok := k.GetOkWith("message"); ok {
 		request.SetMessage(attr.(string))
+	}
+	if attr, ok := k.GetOkWith("call_type"); ok {
+		request.SetCallType(datadogV1.SyntheticsTestCallType(attr.(string)))
 	}
 	if attr, ok := k.GetOkWith("service"); ok {
 		request.SetService(attr.(string))
@@ -1420,7 +1428,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			requests := stepMap["request_definition"].([]interface{})
 			if len(requests) > 0 && requests[0] != nil {
 				requestMap := requests[0].(map[string]interface{})
-				request.SetMethod(datadogV1.HTTPMethod(requestMap["method"].(string)))
+				request.SetMethod(requestMap["method"].(string))
 				request.SetUrl(requestMap["url"].(string))
 				request.SetBody(requestMap["body"].(string))
 				if v, ok := requestMap["body_type"].(string); ok && v != "" {
@@ -1835,7 +1843,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	parts := "request_definition.0"
 	k.Add(parts)
 	if attr, ok := k.GetOkWith("method"); ok {
-		request.SetMethod(datadogV1.HTTPMethod(attr.(string)))
+		request.SetMethod(attr.(string))
 	}
 	if attr, ok := k.GetOkWith("url"); ok {
 		request.SetUrl(attr.(string))
@@ -2237,6 +2245,9 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	}
 	if request.HasMessage() {
 		localRequest["message"] = request.GetMessage()
+	}
+	if request.HasCallType() {
+		localRequest["call_type"] = request.GetCallType()
 	}
 	if request.HasService() {
 		localRequest["service"] = request.GetService()
@@ -3058,8 +3069,6 @@ func convertToString(i interface{}) string {
 		return strconv.FormatFloat(v, 'f', -1, 64)
 	case string:
 		return v
-	case datadogV1.HTTPMethod:
-		return string(v)
 	default:
 		// TODO: manage target for JSON body assertions
 		valStrr, err := json.Marshal(v)
