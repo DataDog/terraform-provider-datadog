@@ -170,6 +170,63 @@ func TestStringEnumValidation(t *testing.T) {
 	}
 }
 
+func TestNonEmptyListValidation(t *testing.T) {
+	notStringListError := &diag.Diagnostic{
+		Severity:      diag.Error,
+		Summary:       "Value must be a string list",
+		AttributePath: cty.Path{},
+	}
+	emptyListError := &diag.Diagnostic{
+		Severity:      diag.Error,
+		Summary:       "List must contain at least one element",
+		AttributePath: cty.Path{},
+	}
+
+	cases := []struct {
+		InputValue    interface{}
+		ExpectedError *diag.Diagnostic
+	}{
+		{
+			InputValue:    "not a list",
+			ExpectedError: notStringListError,
+		},
+		{
+			InputValue:    123,
+			ExpectedError: notStringListError,
+		},
+		{
+			InputValue:    []int{},
+			ExpectedError: notStringListError,
+		},
+		{
+			InputValue:    []int{123},
+			ExpectedError: notStringListError,
+		},
+		{
+			InputValue:    []string{},
+			ExpectedError: emptyListError,
+		},
+		{
+			InputValue:    []string{"a string"},
+			ExpectedError: nil,
+		},
+	}
+
+	for _, tc := range cases {
+		var diags diag.Diagnostics = ValidateNonEmptyStringList(tc.InputValue, cty.Path{})
+
+		if tc.ExpectedError == nil && len(diags) != 0 {
+			t.Fatalf("Expected no diagnostics for input %v, found %d instead", tc.InputValue, len(diags))
+		}
+		if tc.ExpectedError != nil && len(diags) > 1 {
+			t.Fatalf("Expected one diagnostic for input %v, found %d instead", tc.InputValue, len(diags))
+		}
+		if tc.ExpectedError != nil && !areEqual(diags[0], *(tc.ExpectedError)) {
+			t.Fatalf("Expected %v for input %v, found %v instead", diags[0], tc.InputValue, *(tc.ExpectedError))
+		}
+	}
+}
+
 func areEqual(actual diag.Diagnostic, expected diag.Diagnostic) bool {
 	return actual.Detail == expected.Detail && actual.Severity == expected.Severity && actual.Summary == expected.Summary
 }

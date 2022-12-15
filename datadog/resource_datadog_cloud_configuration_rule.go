@@ -55,7 +55,7 @@ func cloudConfigurationRuleSchema() map[string]*schema.Schema {
 			Type:             schema.TypeList,
 			Required:         true,
 			Description:      "Resource types to be checked by the rule. Must have at least one element.",
-			ValidateDiagFunc: validators.ValidateNonEmptyList,
+			ValidateDiagFunc: validators.ValidateNonEmptyStringList,
 			Elem:             &schema.Schema{Type: schema.TypeString},
 		},
 		severityField: {

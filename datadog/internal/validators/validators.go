@@ -188,13 +188,13 @@ func ValidateDatadogDowntimeTimezone(v interface{}, k string) (ws []string, erro
 	return
 }
 
-func ValidateNonEmptyList(v interface{}, p cty.Path) diag.Diagnostics {
+func ValidateNonEmptyStringList(v interface{}, p cty.Path) diag.Diagnostics {
 	var diags diag.Diagnostics
-	values, isSlice := v.([]interface{})
+	values, isSlice := v.([]string)
 	if !isSlice {
 		return append(diags, diag.Diagnostic{
 			Severity:      diag.Error,
-			Summary:       "Value must be a list",
+			Summary:       "Value must be a string list",
 			AttributePath: p,
 		})
 	}
