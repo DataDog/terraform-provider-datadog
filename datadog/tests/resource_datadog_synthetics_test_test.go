@@ -3538,7 +3538,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "status", "paused"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.#", "3"),
+				"datadog_synthetics_test.multi", "api_step.#", "4"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
 			resource.TestCheckResourceAttr(
@@ -3671,6 +3671,16 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.username", "username"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.password", "password"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.3.name", "Fourth api step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.type", "digest"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.username", "username"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.password", "password"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
 			resource.TestCheckResourceAttr(
@@ -3821,6 +3831,27 @@ resource "datadog_synthetics_test" "multi" {
 		scope = "scope"
 		token_api_authentication = "body"
 		access_token_url = "https://token.datadoghq.com"
+		username = "username"
+		password = "password"
+	}
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+  }
+
+  api_step {
+    name = "Fourth api step"
+    request_definition {
+      method           = "GET"
+      url              = "https://docs.datadoghq.com"
+      timeout          = 30
+      allow_insecure   = true
+      follow_redirects = true
+    }
+    request_basicauth {
+		type = "digest"
 		username = "username"
 		password = "password"
 	}

@@ -248,7 +248,7 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 					Type:         schema.TypeString,
 					Optional:     true,
 					Default:      "web",
-					ValidateFunc: validation.StringInSlice([]string{"web", "sigv4", "ntlm", "oauth-client", "oauth-rop"}, false),
+					ValidateFunc: validation.StringInSlice([]string{"web", "sigv4", "ntlm", "oauth-client", "oauth-rop", "digest"}, false),
 				},
 				"username": {
 					Description: "Username for authentication.",
@@ -1643,6 +1643,11 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 
 				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthROPAsSyntheticsBasicAuth(basicAuth))
 			}
+
+			if requestBasicAuth["type"] == "digest" {
+				basicAuth := datadogV1.NewSyntheticsBasicAuthDigest(requestBasicAuth["password"].(string), requestBasicAuth["username"].(string))
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthDigestAsSyntheticsBasicAuth(basicAuth))
+			}
 		}
 	}
 
@@ -2385,6 +2390,14 @@ func buildLocalBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]st
 		localAuth["password"] = basicAuthOauthROP.Password
 
 		localAuth["type"] = "oauth-rop"
+	}
+
+	if basicAuth.SyntheticsBasicAuthDigest != nil {
+		basicAuthDigest := basicAuth.SyntheticsBasicAuthDigest
+		localAuth["username"] = basicAuthDigest.Username
+		localAuth["password"] = basicAuthDigest.Password
+
+		localAuth["type"] = "digest"
 	}
 
 	return localAuth

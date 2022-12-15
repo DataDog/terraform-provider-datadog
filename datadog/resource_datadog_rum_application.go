@@ -74,6 +74,7 @@ func resourceDatadogRUMApplicationCreate(ctx context.Context, d *schema.Resource
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+
 	resp, httpResponse, err := apiInstances.GetRumApiV2().CreateRUMApplication(auth, body)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating RUM application")
@@ -127,7 +128,7 @@ func updateRUMApplicationState(d *schema.ResourceData, application *datadogV2.RU
 	if err := d.Set("type", application.Attributes.Type); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("client_token", application.Attributes.Hash); err != nil {
+	if err := d.Set("client_token", application.Attributes.ClientToken); err != nil {
 		return diag.FromErr(err)
 	}
 	return nil
