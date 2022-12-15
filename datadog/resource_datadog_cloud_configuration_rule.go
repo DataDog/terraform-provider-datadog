@@ -55,7 +55,7 @@ func cloudConfigurationRuleSchema() map[string]*schema.Schema {
 			Type:             schema.TypeList,
 			Required:         true,
 			Description:      "Resource types to be checked by the rule. Must have at least one element.",
-			ValidateDiagFunc: validators.ValidateEnumValue(),
+			ValidateDiagFunc: validators.ValidateNonEmptyList,
 			Elem:             &schema.Schema{Type: schema.TypeString},
 		},
 		severityField: {
@@ -64,7 +64,6 @@ func cloudConfigurationRuleSchema() map[string]*schema.Schema {
 			Required:         true,
 			Description:      "Severity of the rule and associated signals.",
 		},
-		// TODO: put both field in an optional block
 		notificationsField: {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -74,7 +73,7 @@ func cloudConfigurationRuleSchema() map[string]*schema.Schema {
 		groupByField: {
 			Type:        schema.TypeList,
 			Optional:    true,
-			Description: "Fields to group by when generating signals. Defaults to empty list.",
+			Description: "Fields to group by when generating signals, e.g. @resource. Defaults to empty list.",
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		tagsField: {
