@@ -25,6 +25,7 @@ func resourceDatadogCloudConfigurationRule() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog Cloud Configuration Rule resource.",
 		CreateContext: cloudConfigurationRuleCreateContext,
+		DeleteContext: resourceDatadogSecurityMonitoringRuleDelete,
 		Schema:        cloudConfigurationRuleSchema(),
 	}
 }
