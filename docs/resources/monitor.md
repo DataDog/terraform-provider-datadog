@@ -87,6 +87,7 @@ We highly recommend you set this to `false` for sparse metrics, otherwise some e
 
 ### Read-Only
 
+- `enable_samples` (Boolean) Whether or not a list of samples which triggered the alert is included. This is only used by CI Test and Pipeline monitors.
 - `id` (String) The ID of this resource.
 
 <a id="nestedblock--monitor_threshold_windows"></a>
