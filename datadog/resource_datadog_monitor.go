@@ -321,6 +321,11 @@ func resourceDatadogMonitor() *schema.Resource {
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
+			"enable_samples": {
+				Description: "Whether or not a list of samples which triggered the alert is included. This is only used by CI Test and Pipeline monitors.",
+				Type:        schema.TypeBool,
+				Computed:    true,
+			},
 			"force_delete": {
 				Description: "A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).",
 				Type:        schema.TypeBool,
@@ -627,6 +632,14 @@ func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.Monitor
 
 		if attr, ok := d.GetOk("groupby_simple_monitor"); ok {
 			o.SetGroupbySimpleMonitor(attr.(bool))
+		}
+	}
+
+	if monitorType == datadogV1.MONITORTYPE_CI_PIPELINES_ALERT || monitorType == datadogV1.MONITORTYPE_CI_TESTS_ALERT {
+		if attr, ok := d.GetOk("enable_samples"); ok {
+			o.SetEnableSamples(attr.(bool))
+		} else {
+			o.SetEnableSamples(false)
 		}
 	}
 

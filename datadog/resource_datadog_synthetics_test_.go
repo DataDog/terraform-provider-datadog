@@ -128,10 +128,9 @@ func syntheticsTestRequest() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"method": {
-				Description: "The HTTP method.",
+				Description: "Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.",
 				Type:        schema.TypeString,
 				Optional:    true,
-				//ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewHTTPMethodFromValue),
 			},
 			"url": {
 				Description: "The URL to send the request to.",
@@ -202,8 +201,14 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"call_type": {
+				Description:      "The type of gRPC call to perform.",
+				Type:             schema.TypeString,
+				Optional:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestCallTypeFromValue),
+			},
 			"service": {
-				Description: "For gRPC tests, service to target for healthcheck.",
+				Description: "The gRPC service on which you want to perform the gRPC call.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
@@ -1356,6 +1361,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := k.GetOkWith("message"); ok {
 		request.SetMessage(attr.(string))
 	}
+	if attr, ok := k.GetOkWith("call_type"); ok {
+		request.SetCallType(datadogV1.SyntheticsTestCallType(attr.(string)))
+	}
 	if attr, ok := k.GetOkWith("service"); ok {
 		request.SetService(attr.(string))
 	}
@@ -2237,6 +2245,9 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	}
 	if request.HasMessage() {
 		localRequest["message"] = request.GetMessage()
+	}
+	if request.HasCallType() {
+		localRequest["call_type"] = request.GetCallType()
 	}
 	if request.HasService() {
 		localRequest["service"] = request.GetService()
