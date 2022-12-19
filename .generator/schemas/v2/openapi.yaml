@@ -12684,6 +12684,7 @@ paths:
     post:
       description: Create an archive in your organization.
       operationId: CreateLogsArchive
+      x-terraform-resource: logs_test_archive
       requestBody:
         content:
           application/json:
@@ -12720,6 +12721,7 @@ paths:
     delete:
       description: Delete a given archive from your organization.
       operationId: DeleteLogsArchive
+      x-terraform-resource: logs_test_archive
       parameters:
       - $ref: '#/components/parameters/ArchiveID'
       responses:
@@ -12751,6 +12753,7 @@ paths:
     get:
       description: Get a specific archive from your organization.
       operationId: GetLogsArchive
+      x-terraform-resource: logs_test_archive
       parameters:
       - $ref: '#/components/parameters/ArchiveID'
       responses:
@@ -12795,6 +12798,7 @@ paths:
 
         your current configuration with the new one sent to your Datadog organization.'
       operationId: UpdateLogsArchive
+      x-terraform-resource: logs_test_archive
       parameters:
       - $ref: '#/components/parameters/ArchiveID'
       requestBody:

@@ -23,7 +23,7 @@
 {%- endmacro %}
 
 {%- macro typeObjectStateSetter(name, schema, baseAccessor="resp", required=False) %}
-    {{ name|variable_name }}Dd = {{ baseAccessor }}.Get{{ name|camel_case }}
+    {{ name|variable_name }}Dd := {{ baseAccessor }}.Get{{ name|camel_case }}()
     {{ name|variable_name }}Tf := map[string]interface{}
 
     {%- for attr, childSchema in schema.get("properties", {}).items() %}

@@ -29,6 +29,7 @@ def cli(spec_path, output):
 
     env.filters["attribute_name"] = formatter.attribute_name
     env.filters["camel_case"] = formatter.camel_case
+    env.filters["sanitize_description"] = formatter.sanitize_description
     env.filters["parameter_schema"] = openapi.parameter_schema
     env.filters["parameters"] = openapi.parameters
     env.filters["response_type"] = openapi.get_type_for_response

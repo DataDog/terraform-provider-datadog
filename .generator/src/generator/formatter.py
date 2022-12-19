@@ -69,6 +69,11 @@ SUFFIXES = {
 }
 
 
+def sanitize_description(description):
+    description = description.replace('"', '\\"')
+    return ' '.join(description.splitlines())
+
+
 def escape_reserved_keyword(word):
     """
     Escape reserved language keywords like openapi generator does it

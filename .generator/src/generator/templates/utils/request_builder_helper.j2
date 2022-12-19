@@ -33,16 +33,16 @@
         {%- if simpleType in ["int", "string", "bool"] %}
             {{ baseSetter }}.Set{{ name|camel_case }}(d.Get("{{ name }}").({{ simpleType }}))
         {%- elif simpleType == "int64" %}
-            {{ attr|variable_name }}, _ := strconv.ParseInt(d.Get("{{ name }}"), 10, 64)
-            {{ baseSetter }}.Set{{ name|camel_case }}({{ attr|variable_name }})
+            {{ name|variable_name }}, _ := strconv.ParseInt(d.Get("{{ name }}"), 10, 64)
+            {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }})
         {%- endif %}
     {%- else %}
         if {{ name|variable_name }}, ok := d.GetOk("{{ name }}"); ok {
         {%- if simpleType in ["int", "string", "bool"] %}
             {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }}.({{ simpleType }}))
         {%- elif simpleType == "int64" %}
-            {{ attr|variable_name }}, _ := strconv.ParseInt({{ name|variable_name }}, 10, 64)
-            {{ baseSetter }}.Set{{ name|camel_case }}({{ attr|variable_name }})
+            {{ name|variable_name }}, _ := strconv.ParseInt({{ name|variable_name }}, 10, 64)
+            {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }})
         {%- endif %}
         }
     {%- endif %}
