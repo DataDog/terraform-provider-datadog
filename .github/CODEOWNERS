@@ -41,3 +41,5 @@ datadog/*datadog_timeboard*               @DataDog/integrations-tools-and-librar
 docs/resources/timeboard*                 @DataDog/integrations-tools-and-libraries @DataDog/dashboards @DataDog/documentation
 datadog/*datadog_user*                    @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
 docs/resources/user*                      @DataDog/integrations-tools-and-libraries @DataDog/team-aaa @DataDog/documentation
+datadog/*cloud_configuration*             @DataDog/integrations-tools-and-libraries @DataDog/k9-cloud-security-posture-management
+docs/resources/cloud_configuration*       @DataDog/integrations-tools-and-libraries @DataDog/k9-cloud-security-posture-management @DataDog/documentation

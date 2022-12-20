@@ -20,6 +20,12 @@ import (
 // DatadogProvider holds a reference to the provider
 var DatadogProvider *schema.Provider
 
+// Resource minimal interface common to ResourceData and ResourceDiff
+type Resource interface {
+	Get(string) interface{}
+	GetOk(string) (interface{}, bool)
+}
+
 // TranslateClientError turns an error into a message
 func TranslateClientError(err error, httpresp *http.Response, msg string) error {
 	if msg == "" {
@@ -148,4 +154,17 @@ func DeleteKeyInMap(mapObject map[string]interface{}, keyList []string) {
 	}
 
 	return
+}
+
+// GetStringSlice returns string slice for the given key if present, otherwise returns an empty slice
+func GetStringSlice(d Resource, key string) []string {
+	if v, ok := d.GetOk(key); ok {
+		values := v.([]interface{})
+		stringValues := make([]string, len(values))
+		for i, value := range values {
+			stringValues[i] = value.(string)
+		}
+		return stringValues
+	}
+	return []string{}
 }
