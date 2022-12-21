@@ -10,7 +10,7 @@ func resourceDatadog{{ name|camel_case }}Create(ctx context.Context, d *schema.R
 		{% elif paramName == primaryId["name"] %}
 		id := d.Id()
 		{%- else%}
-		{{ paramName|variable_name }} := d.Get("{{ paramName }}").({{ get_type_for_parameter(param) }}))
+		{{ paramName|variable_name }} := d.Get("{{ paramName }}").({{ get_type_for_parameter(param) }})
 		{%- endif%}
 	{%- endfor %}
 

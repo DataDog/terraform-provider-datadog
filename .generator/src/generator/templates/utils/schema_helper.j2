@@ -12,7 +12,7 @@
 "{{ name }}": {
     Type:        schema.{{ get_terraform_schema_type(schema) }},
     {% if required %}Required:    true,{% else %}Optional:    true,{% endif %}
-    Description: "{{ schema.description|sanitize_description }}",
+    Description: "{{ schema.description|sanitize_description if schema.description else "UPDATE ME" }}",
 },
 {%- endmacro %}
 
@@ -21,7 +21,7 @@
     Type:        schema.TypeList,
     {% if required %}Required:    true,{% else %}Optional:    true,{% endif %}
     MaxItems:    1,
-    Description: "{{ schema.description|sanitize_description }}",
+    Description: "{{ schema.description|sanitize_description if schema.description else "UPDATE ME" }}",
     Elem: &schema.Resource{
         Schema: map[string]*schema.Schema{
         {%- for attr, childSchema in schema.get("properties", {}).items() %}
@@ -37,7 +37,7 @@
 "{{ name }}": {
     Type:        schema.TypeList,
     {% if required %}Required:    true,{% else %}Optional:    true,{% endif %}
-    Description: "{{ schema.description|sanitize_description }}",
+    Description: "{{ schema.description|sanitize_description if schema.description else "UPDATE ME" }}",
     {%- if schema.get("items")|is_primitive%}
     Elem:        &schema.Schema{Type: schema.{{ get_terraform_schema_type(schema.get("items")) }}},
     {%- else %}
