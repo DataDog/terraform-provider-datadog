@@ -12,9 +12,9 @@
 * [datadog_synthetics_test] Add Digest auth by @AlaricCalmette in https://github.com/DataDog/terraform-provider-datadog/pull/1669
 * [datadog_dashboard] Add support for style field in dashboard widget formulas by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1671
 * [datadog_monitor] Add enable_samples monitor options by @liashenko in https://github.com/DataDog/terraform-provider-datadog/pull/1670
+* [datadog_synthetics_test] Add support for oauth authentication by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1668
 ### FEATURES
 * [datadog_logs_archive_order] Add a logs archive order data source by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1661
-* [datadog_synthetics_test] Add support for oauth authentication by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1668
 * [datadog_rum_application] Add a RUM application data source by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1641
 ### NOTES
 * Bump `datadog-api-client` version to v2.6.1 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1678
