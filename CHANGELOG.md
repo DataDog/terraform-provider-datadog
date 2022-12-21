@@ -1,3 +1,31 @@
+## 3.19.0 (December 21, 2022)
+
+### BUGFIXES
+* [datadog_service_definition_yaml] Fix panic on missing name in service definition links by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1660
+* [datadog_logs_custom_pipeline] Handle nested empty filter query by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1655
+* [datadog_integration_aws] Properly handle missing resource when importing by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1657
+* [datadog_logs_archive] mark `path` as optional by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1658
+* [datadog_integration_aws] Change excluded_regions to TypeSet by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1656
+### IMPROVEMENTS
+* [datadog_security_monitoring_rule] Updating schema validation for field type by @symphony-elias in https://github.com/DataDog/terraform-provider-datadog/pull/1640
+* [datadog_logs_metric] Add include_percentiles attribute to distribution compute by @JeanCoquelet in https://github.com/DataDog/terraform-provider-datadog/pull/1645
+* [datadog_synthetics_test] Add Digest auth by @AlaricCalmette in https://github.com/DataDog/terraform-provider-datadog/pull/1669
+* [datadog_dashboard] Add support for style field in dashboard widget formulas by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1671
+* [datadog_monitor] Add enable_samples monitor options by @liashenko in https://github.com/DataDog/terraform-provider-datadog/pull/1670
+* [datadog_synthetics_test] Add support for oauth authentication by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1668
+### FEATURES
+* [datadog_logs_archive_order] Add a logs archive order data source by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1661
+* [datadog_rum_application] Add a RUM application data source by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1641
+### NOTES
+* Bump `datadog-api-client` version to v2.6.1 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1678
+
+## New Contributors
+* @symphony-elias made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1640
+* @JeanCoquelet made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1645
+* @piotrekkr made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1663
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.18.0...v3.19.0
+
 ## 3.18.0 (November 10, 2022)
 
 ### BUGFIXES
