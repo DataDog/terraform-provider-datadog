@@ -10,12 +10,12 @@
 * [datadog_security_monitoring_rule] Updating schema validation for field type by @symphony-elias in https://github.com/DataDog/terraform-provider-datadog/pull/1640
 * [datadog_logs_metric] Add include_percentiles attribute to distribution compute by @JeanCoquelet in https://github.com/DataDog/terraform-provider-datadog/pull/1645
 * [datadog_synthetics_test] Add Digest auth by @AlaricCalmette in https://github.com/DataDog/terraform-provider-datadog/pull/1669
-* [datadog_rum_application] Add a RUM application data source by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1641
 * [datadog_dashboard] Add support for style field in dashboard widget formulas by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1671
+* [datadog_monitor] Add enable_samples monitor options by @liashenko in https://github.com/DataDog/terraform-provider-datadog/pull/1670
 ### FEATURES
 * [datadog_logs_archive_order] Add a logs archive order data source by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1661
 * [datadog_synthetics_test] Add support for oauth authentication by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1668
-* [datadog_monitor] Add enable_samples monitor options by @liashenko in https://github.com/DataDog/terraform-provider-datadog/pull/1670
+* [datadog_rum_application] Add a RUM application data source by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1641
 ### NOTES
 * Bump `datadog-api-client` version to v2.6.1 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1678
 
