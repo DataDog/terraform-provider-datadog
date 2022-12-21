@@ -87,6 +87,53 @@ func TestAccDatadogLogsMetric_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogLogsMetricCount_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueLogsMetric := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogLogsMetricDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogLogsMetricCountBasic(uniqueLogsMetric),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogLogsMetricExists(accProvider, "datadog_logs_metric.testing_logs_metric"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "compute.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "compute.0.aggregation_type", "count"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "filter.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "filter.0.query", "@ident:ha-proxy"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.0.path", "@env"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.0.tag_name", "env"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.1.path", "@http_status_code"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogLogsMetricCountBasicUpdated(uniqueLogsMetric),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogLogsMetricExists(accProvider, "datadog_logs_metric.testing_logs_metric"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.0.path", "@env"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.0.tag_name", "env_updated"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogLogsMetricConfigBasic(uniq string) string {
 	return fmt.Sprintf(`
         resource "datadog_logs_metric" "testing_logs_metric" {
@@ -132,6 +179,52 @@ func testAccCheckDatadogLogsMetricConfigUpdateIncludePercentiles(uniq string) st
 				tag_name = "service"
 			}
         }
+    `, uniq)
+}
+
+func testAccCheckDatadogLogsMetricCountBasic(uniq string) string {
+	return fmt.Sprintf(`
+		resource "datadog_logs_metric" "testing_logs_metric" {
+			name = "%s"
+			compute {
+				aggregation_type = "count"
+			}
+			filter {
+				query = "@ident:ha-proxy"
+			}
+
+			group_by {
+				path     = "@env"
+				tag_name = "env"
+			}
+			group_by {
+				path     = "@http_status_code"
+				tag_name = "http_status_code"
+			}
+		}
+    `, uniq)
+}
+
+func testAccCheckDatadogLogsMetricCountBasicUpdated(uniq string) string {
+	return fmt.Sprintf(`
+	resource "datadog_logs_metric" "testing_logs_metric" {
+		name = "%s"
+		compute {
+			aggregation_type = "count"
+		}
+		filter {
+			query = "@ident:ha-proxy"
+		}
+
+		group_by {
+			path     = "@env"
+			tag_name = "env_updated"
+		}
+		group_by {
+			path     = "@http_status_code"
+			tag_name = "http_status_code"
+		}
+	}
     `, uniq)
 }
 
