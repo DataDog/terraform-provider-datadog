@@ -159,8 +159,13 @@ func getUpdateCompute(d *schema.ResourceData) (*datadogV2.LogsMetricUpdateComput
 	resourceCompute := d.Get("compute").([]interface{})[0].(map[string]interface{})
 	updateCompute := datadogV2.NewLogsMetricUpdateComputeWithDefaults()
 
-	if includePercentiles, ok := resourceCompute["include_percentiles"]; ok {
-		updateCompute.SetIncludePercentiles(includePercentiles.(bool))
+	if aggregationType, ok := resourceCompute["aggregation_type"]; ok {
+		aggregation_type := datadogV2.LogsMetricComputeAggregationType(aggregationType.(string))
+		if aggregation_type == datadogV2.LOGSMETRICCOMPUTEAGGREGATIONTYPE_DISTRIBUTION {
+			if includePercentiles, ok := resourceCompute["include_percentiles"]; ok {
+				updateCompute.SetIncludePercentiles(includePercentiles.(bool))
+			}
+		}
 	}
 
 	return updateCompute, nil
