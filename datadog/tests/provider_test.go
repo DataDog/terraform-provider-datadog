@@ -143,6 +143,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_security_monitoring_default_rule_test":       "security-monitoring",
 	"tests/resource_datadog_security_monitoring_rule_test":               "security-monitoring",
 	"tests/resource_datadog_security_monitoring_filter_test":             "security-monitoring",
+	"tests/resource_datadog_service_account_test":                        "users",
 	"tests/resource_datadog_service_level_objective_test":                "service-level-objectives",
 	"tests/resource_datadog_service_definition_yaml_test":                "service-definition",
 	"tests/resource_datadog_slo_correction_test":                         "slo_correction",
