@@ -3,7 +3,6 @@
 ### BUGFIXES
 * [datadog_logs_metric] Fix `getUpdateCompute ` method for non distribution aggregation type by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1683
 
-
 **Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.19.0...v3.19.1
 
 ## 3.19.0 (December 21, 2022)
