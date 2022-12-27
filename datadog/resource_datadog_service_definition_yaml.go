@@ -55,8 +55,7 @@ func resourceDatadogServiceDefinitionYAML() *schema.Resource {
 			if !ok {
 				return true
 			}
-
-			return oldName != newName
+			return utils.NormalizeTag(oldName) != utils.NormalizeTag(newName)
 		}),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
@@ -105,6 +104,10 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 
 	for _, field := range fieldsWithName {
 		normalizeArrayField(attrMap, field)
+	}
+
+	if service, ok := attrMap["dd-service"].(string); ok {
+		attrMap["dd-service"] = utils.NormalizeTag(service)
 	}
 
 	if tags, ok := attrMap["tags"].([]interface{}); ok {
