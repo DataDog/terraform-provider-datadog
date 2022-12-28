@@ -6,10 +6,15 @@ import (
 
 func TestTagNormalization(t *testing.T) {
 	cases := map[string]string{
-		"foo":     "foo",
-		"Foo":     "foo",
-		"1foo":    "foo",
-		"foo_bar": "foo_bar",
+		"foo":                "foo",
+		"FOO":                "foo",
+		"1foo":               "foo",
+		"foo_":               "foo",
+		":foo":               ":foo",
+		"foo_bar":            "foo_bar",
+		"foo__bar":           "foo_bar",
+		"foo123":             "foo123",
+		"f!@#$%^&*(),./-=_+": "f_./-",
 	}
 	for tag, expected_tag := range cases {
 		normalized := NormalizeTag(tag)
