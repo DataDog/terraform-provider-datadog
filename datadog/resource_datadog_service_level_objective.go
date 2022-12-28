@@ -49,7 +49,12 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Type:        schema.TypeSet,
 				Description: "A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API",
 				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+					StateFunc: func(val any) string {
+						return utils.NormalizeTag(val.(string))
+					},
+				},
 			},
 			"thresholds": {
 				Description: "A list of thresholds and targets that define the service level objectives from the provided SLIs.",
