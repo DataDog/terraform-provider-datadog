@@ -10,15 +10,15 @@ resource "datadog_service_level_objective" "foo" {
   }
 
   thresholds {
-    timeframe       = "7d"
-    target          = 99.9
-    warning         = 99.99
+    timeframe = "7d"
+    target    = 99.9
+    warning   = 99.99
   }
 
   thresholds {
-    timeframe       = "30d"
-    target          = 99.9
-    warning         = 99.99
+    timeframe = "30d"
+    target    = 99.9
+    warning   = 99.99
   }
 
   tags = ["foo:bar", "baz"]
