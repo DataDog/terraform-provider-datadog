@@ -13,16 +13,12 @@ resource "datadog_service_level_objective" "foo" {
     timeframe       = "7d"
     target          = 99.9
     warning         = 99.99
-    target_display  = "99.900"
-    warning_display = "99.990"
   }
 
   thresholds {
     timeframe       = "30d"
     target          = 99.9
     warning         = 99.99
-    target_display  = "99.900"
-    warning_display = "99.990"
   }
 
   tags = ["foo:bar", "baz"]
