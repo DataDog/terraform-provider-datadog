@@ -10,10 +10,10 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-func dataSourceDatadogAwsLogsServices() *schema.Resource {
+func dataSourceDatadogIntegrationAWSLogsServices() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve all AWS log ready services.",
-		ReadContext: dataSourceDatadogAwsLogsServicesRead,
+		ReadContext: dataSourceDatadogIntegrationAWSLogsServicesRead,
 		Schema: map[string]*schema.Schema{
 			// Computed
 			"aws_logs_services": {
@@ -39,7 +39,7 @@ func dataSourceDatadogAwsLogsServices() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogAwsLogsServicesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogIntegrationAWSLogsServicesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

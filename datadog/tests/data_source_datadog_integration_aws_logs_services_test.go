@@ -14,7 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-func TestAccDatadogAwsLogsServicesDatasource(t *testing.T) {
+func TestAccDatadogIntegrationAWSLogsServicesDatasource(t *testing.T) {
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -23,22 +23,22 @@ func TestAccDatadogAwsLogsServicesDatasource(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatasourceAwsLogsServicesConfig(),
+				Config: testAccDatasourceIntegrationAWSLogsServicesConfig(),
 				Check: resource.ComposeTestCheckFunc(
-					dataAwsLogsServicesCountCheck(accProvider),
+					checkDatadogIntegrationAWSLogsServicesCount(accProvider),
 				),
 			},
 		},
 	})
 }
 
-func testAccDatasourceAwsLogsServicesConfig() string {
+func testAccDatasourceIntegrationAWSLogsServicesConfig() string {
 	return `
 data "datadog_integration_aws_logs_services" "foo" {
 }`
 }
 
-func dataAwsLogsServicesCountCheck(accProvider func() (*schema.Provider, error)) func(state *terraform.State) error {
+func checkDatadogIntegrationAWSLogsServicesCount(accProvider func() (*schema.Provider, error)) func(state *terraform.State) error {
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
