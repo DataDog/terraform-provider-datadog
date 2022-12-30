@@ -12,12 +12,12 @@ import (
 
 func dataSourceDatadogAwsLogsServices() *schema.Resource {
 	return &schema.Resource{
-		Description: "Use this data source to retrieve ids of all AWS log ready services.",
+		Description: "Use this data source to retrieve all AWS log ready services.",
 		ReadContext: dataSourceDatadogAwsLogsServicesRead,
 		Schema: map[string]*schema.Schema{
 			// Computed
 			"aws_logs_services": {
-				Description: "List of AWS logs services ids.",
+				Description: "List of AWS log ready services.",
 				Type:        schema.TypeList,
 				Computed:    true,
 				Elem: &schema.Resource{
