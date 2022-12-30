@@ -3,12 +3,12 @@
 page_title: "datadog_aws_logs_services Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve ids of all AWS log ready services.
+  Use this data source to retrieve all AWS log ready services.
 ---
 
 # datadog_aws_logs_services (Data Source)
 
-Use this data source to retrieve ids of all AWS log ready services.
+Use this data source to retrieve all AWS log ready services.
 
 ## Example Usage
 
@@ -22,7 +22,7 @@ data "datadog_aws_logs_services" "services" {}
 
 ### Read-Only
 
-- `aws_logs_services` (List of Object) List of AWS logs services ids. (see [below for nested schema](#nestedatt--aws_logs_services))
+- `aws_logs_services` (List of Object) List of AWS log ready services. (see [below for nested schema](#nestedatt--aws_logs_services))
 - `id` (String) The ID of this resource.
 
 <a id="nestedatt--aws_logs_services"></a>
