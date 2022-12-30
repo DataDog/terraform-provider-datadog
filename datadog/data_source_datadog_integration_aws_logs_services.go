@@ -46,7 +46,7 @@ func dataSourceDatadogAwsLogsServicesRead(ctx context.Context, d *schema.Resourc
 
 	awsLogsServices, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().ListAWSLogsServices(auth)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp, "error querying aws logs services")
+		return utils.TranslateClientErrorDiag(err, httpresp, "error querying AWS logs services")
 	}
 	if err := utils.CheckForUnparsed(awsLogsServices); err != nil {
 		return diag.FromErr(err)

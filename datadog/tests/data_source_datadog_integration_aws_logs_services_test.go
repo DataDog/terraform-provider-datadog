@@ -34,7 +34,7 @@ func TestAccDatadogAwsLogsServicesDatasource(t *testing.T) {
 
 func testAccDatasourceAwsLogsServicesConfig() string {
 	return `
-data "datadog_aws_logs_services" "foo" {
+data "datadog_integration_aws_logs_services" "foo" {
 }`
 }
 
@@ -50,7 +50,7 @@ func dataAwsLogsServicesCountCheck(accProvider func() (*schema.Provider, error))
 			return err
 		}
 
-		resourceAttributes := state.RootModule().Resources["data.datadog_aws_logs_services.foo"].Primary.Attributes
+		resourceAttributes := state.RootModule().Resources["data.datadog_integration_aws_logs_services.foo"].Primary.Attributes
 		awsLogsServicesCount, _ := strconv.Atoi(resourceAttributes["aws_logs_services.#"])
 
 		if awsLogsServicesCount != len(awsLogsServices) {
