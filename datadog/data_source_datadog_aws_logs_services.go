@@ -12,14 +12,28 @@ import (
 
 func dataSourceDatadogAwsLogsServices() *schema.Resource {
 	return &schema.Resource{
-		Description: "Use this data source to retrieve all AWS logs services id's.",
+		Description: "Use this data source to retrieve ids of all AWS log ready services.",
 		ReadContext: dataSourceDatadogAwsLogsServicesRead,
 		Schema: map[string]*schema.Schema{
-			"aws_logs_services_ids": {
-				Description: "List of aws logs services id's",
+			// Computed
+			"aws_logs_services": {
+				Description: "List of AWS logs services ids.",
 				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:        schema.TypeString,
+							Computed:    true,
+							Description: "The id of the AWS log service.",
+						},
+						"label": {
+							Type:        schema.TypeString,
+							Computed:    true,
+							Description: "The name of the AWS log service.",
+						},
+					},
+				},
 			},
 		},
 	}
@@ -38,17 +52,28 @@ func dataSourceDatadogAwsLogsServicesRead(ctx context.Context, d *schema.Resourc
 		return diag.FromErr(err)
 	}
 
-	tfLogsServiceIds := make([]string, 0)
+	tfLogsServices := make([]map[string]interface{}, 0)
 
-	for _, service := range awsLogsServices {
-		tfLogsServiceIds = append(tfLogsServiceIds, service.GetId())
+	for _, awsLogsService := range awsLogsServices {
+
+		// extract agent rule
+		awsLogsServiceTF := make(map[string]interface{})
+		if awsLogsServiceId, ok := awsLogsService.GetIdOk(); ok {
+			awsLogsServiceTF["id"] = *awsLogsServiceId
+		} else {
+			continue
+		}
+		if awsLogsServiceLabel, ok := awsLogsService.GetLabelOk(); ok {
+			awsLogsServiceTF["label"] = *awsLogsServiceLabel
+		}
+		tfLogsServices = append(tfLogsServices, awsLogsServiceTF)
 	}
 
-	sort.SliceStable(tfLogsServiceIds, func(i, j int) bool {
-		return tfLogsServiceIds[i] < tfLogsServiceIds[j]
+	sort.SliceStable(tfLogsServices, func(i, j int) bool {
+		return tfLogsServices[i]["id"].(string) < tfLogsServices[j]["id"].(string)
 	})
 
-	if err := d.Set("aws_logs_services_ids", tfLogsServiceIds); err != nil {
+	if err := d.Set("aws_logs_services", tfLogsServices); err != nil {
 		return diag.FromErr(err)
 	}
 

@@ -51,10 +51,10 @@ func dataAwsLogsServicesCountCheck(accProvider func() (*schema.Provider, error))
 		}
 
 		resourceAttributes := state.RootModule().Resources["data.datadog_aws_logs_services.foo"].Primary.Attributes
-		awsLogsServicesCount, _ := strconv.Atoi(resourceAttributes["aws_logs_services_ids.#"])
+		awsLogsServicesCount, _ := strconv.Atoi(resourceAttributes["aws_logs_services.#"])
 
 		if awsLogsServicesCount != len(awsLogsServices) {
-			return fmt.Errorf("expected %d aws logs services got %d aws logs services",
+			return fmt.Errorf("expected %d aws logs services, got %d aws logs services",
 				awsLogsServicesCount, len(awsLogsServices))
 		}
 
