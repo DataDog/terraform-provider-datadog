@@ -625,6 +625,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 				"datadog_synthetics_test.foo", "config_variable.0.pattern", "{{numeric(3)}}"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "config_variable.0.example", "123"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.0.secure", "true"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.foo", "monitor_id"),
 		),
@@ -721,6 +723,7 @@ resource "datadog_synthetics_test" "foo" {
 	config_variable {
 		type = "text"
 		name = "VARIABLE_NAME"
+		secure = true
 		pattern = "{{numeric(3)}}"
 		example = "123"
 	}

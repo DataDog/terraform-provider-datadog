@@ -1049,7 +1049,7 @@ func syntheticsConfigVariable() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"example": {
-					Description: "Example for the variable.",
+					Description: "Example for the variable. When `secure = true`, this value cannot be returned by the backend. Avoid drift by only making updates to this value from within Terraform.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -1060,7 +1060,7 @@ func syntheticsConfigVariable() *schema.Schema {
 					ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
 				},
 				"pattern": {
-					Description: "Pattern of the variable.",
+					Description: "Pattern of the variable. When `secure = true`, this value cannot be returned by the backend. Avoid drift by only making updates to this value from within Terraform",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -1073,6 +1073,11 @@ func syntheticsConfigVariable() *schema.Schema {
 				"id": {
 					Description: "When type = `global`, ID of the global variable to use.",
 					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"secure": {
+					Description: "Whether the value of this variable will be obfuscated in test results.",
+					Type:        schema.TypeBool,
 					Optional:    true,
 				},
 			},
@@ -1392,6 +1397,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 			variable.SetName(variableMap["name"].(string))
 			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
+			variable.SetSecure(variableMap["secure"].(bool))
 
 			if variable.GetType() != "global" {
 				variable.SetPattern(variableMap["pattern"].(string))
@@ -1979,6 +1985,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 			variable.SetName(variableMap["name"].(string))
 			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
+			variable.SetSecure(variableMap["secure"].(bool))
 
 			if variable.GetType() != "global" {
 				variable.SetPattern(variableMap["pattern"].(string))
@@ -1988,7 +1995,6 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			if variableMap["id"] != "" {
 				variable.SetId(variableMap["id"].(string))
 			}
-
 			configVariables = append(configVariables, variable)
 		}
 	}
@@ -2546,13 +2552,20 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		if v, ok := configVariable.GetNameOk(); ok {
 			localVariable["name"] = *v
 		}
+		if v, ok := configVariable.GetSecureOk(); ok {
+			localVariable["secure"] = *v
+		}
 
 		if configVariable.GetType() != "global" {
 			if v, ok := configVariable.GetExampleOk(); ok {
 				localVariable["example"] = *v
+			} else if localVariable["secure"].(bool) {
+				localVariable["example"] = d.Get(fmt.Sprintf("config_variable.%d.example", i))
 			}
 			if v, ok := configVariable.GetPatternOk(); ok {
 				localVariable["pattern"] = *v
+			} else if localVariable["secure"].(bool) {
+				localVariable["pattern"] = d.Get(fmt.Sprintf("config_variable.%d.pattern", i))
 			}
 		}
 		if v, ok := configVariable.GetIdOk(); ok {
@@ -2858,13 +2871,20 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		if v, ok := configVariable.GetNameOk(); ok {
 			localVariable["name"] = *v
 		}
+		if v, ok := configVariable.GetSecureOk(); ok {
+			localVariable["secure"] = *v
+		}
 
 		if configVariable.GetType() != "global" {
 			if v, ok := configVariable.GetExampleOk(); ok {
 				localVariable["example"] = *v
+			} else if localVariable["secure"].(bool) {
+				localVariable["example"] = d.Get(fmt.Sprintf("config_variable.%d.example", i))
 			}
 			if v, ok := configVariable.GetPatternOk(); ok {
 				localVariable["pattern"] = *v
+			} else if localVariable["secure"].(bool) {
+				localVariable["pattern"] = d.Get(fmt.Sprintf("config_variable.%d.pattern", i))
 			}
 		}
 		if v, ok := configVariable.GetIdOk(); ok {
