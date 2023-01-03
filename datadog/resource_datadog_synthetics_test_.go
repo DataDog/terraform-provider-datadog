@@ -1060,7 +1060,7 @@ func syntheticsConfigVariable() *schema.Schema {
 					ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
 				},
 				"pattern": {
-					Description: "Pattern of the variable. When `secure = true`, this value cannot be returned by the backend. Avoid drift by only making updates to this value from within Terraform",
+					Description: "Pattern of the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
