@@ -114,13 +114,12 @@ func cloudConfigurationRuleCreateContext(ctx context.Context, d *schema.Resource
 		return diag.FromErr(err)
 	}
 
-	if response.SecurityMonitoringStandardRuleResponse != nil {
-		d.SetId(response.SecurityMonitoringStandardRuleResponse.GetId())
-		updateResourceDataFromResponse(d, response.SecurityMonitoringStandardRuleResponse)
-	} else {
+	if response.SecurityMonitoringStandardRuleResponse == nil {
 		return diag.FromErr(fmt.Errorf("SecurityMonitoringStandardRuleResponse is empty"))
 	}
 
+	d.SetId(response.SecurityMonitoringStandardRuleResponse.GetId())
+	updateResourceDataFromResponse(d, response.SecurityMonitoringStandardRuleResponse)
 	return nil
 }
 
