@@ -25,7 +25,7 @@ test: get-test-deps fmtcheck
 
 # Run acceptance tests (this runs integration CRUD tests through the terraform test framework)
 testacc: get-test-deps
-	RECORD=$(RECORD) TF_ACC=1 gotestsum --format testname --debug --packages ./... -- -v $(TESTARGS) -timeout 120m
+	RECORD=$(RECORD) TF_ACC=1 gotestsum --format testname --debug --rerun-fails --packages ./... -- -v $(TESTARGS) -timeout 120m
 
 # Run both unit and acceptance tests
 testall: test testacc
