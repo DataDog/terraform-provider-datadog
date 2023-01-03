@@ -1,0 +1,88 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"cases":[{"notifications":[],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":[]},"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1672670343","options":{"complianceRuleOptions":{"complexRule":false,"regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"resourceType":"gcp_compute_instance"}},"tags":[],"type":"cloud_configuration"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules
+    method: POST
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":[],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false},"keepAlive":21600},"version":1,"createdAt":1672670345106,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":[]},"cases":[{"status":"low","notifications":[],"name":"","condition":"a > 0"}],"id":"xup-hzv-zim","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1672670343"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/xup-hzv-zim
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":[],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false},"keepAlive":21600},"version":1,"createdAt":1672670345106,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":[]},"cases":[{"status":"low","notifications":[],"name":"","condition":"a > 0"}],"id":"xup-hzv-zim","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1672670343"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/xup-hzv-zim
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":[],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false},"keepAlive":21600},"version":1,"createdAt":1672670345106,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":[]},"cases":[{"status":"low","notifications":[],"name":"","condition":"a > 0"}],"id":"xup-hzv-zim","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1672670343"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/xup-hzv-zim
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/xup-hzv-zim
+    method: GET
+  response:
+    body: |
+      {"errors":["Threat detection rule not found: xup-hzv-zim"]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
