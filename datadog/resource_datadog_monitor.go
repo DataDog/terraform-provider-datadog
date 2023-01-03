@@ -23,12 +23,6 @@ import (
 
 const defaultNoDataTimeframeMinutes = 10
 
-// Minimal interface between ResourceData and ResourceDiff so that we can use them interchangeably in buildMonitorStruct
-type builtResource interface {
-	Get(string) interface{}
-	GetOk(string) (interface{}, bool)
-}
-
 var retryTimeout = time.Minute
 
 func resourceDatadogMonitor() *schema.Resource {
@@ -505,7 +499,7 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 	}
 }
 
-func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
+func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
 
 	var thresholds datadogV1.MonitorThresholds
 

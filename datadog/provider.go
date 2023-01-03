@@ -132,6 +132,7 @@ func Provider() *schema.Provider {
 			"datadog_application_key":                      resourceDatadogApplicationKey(),
 			"datadog_authn_mapping":                        resourceDatadogAuthnMapping(),
 			"datadog_child_organization":                   resourceDatadogChildOrganization(),
+			"datadog_cloud_configuration_rule":             resourceDatadogCloudConfigurationRule(),
 			"datadog_cloud_workload_security_agent_rule":   resourceDatadogCloudWorkloadSecurityAgentRule(),
 			"datadog_dashboard":                            resourceDatadogDashboard(),
 			"datadog_dashboard_json":                       resourceDatadogDashboardJSON(),

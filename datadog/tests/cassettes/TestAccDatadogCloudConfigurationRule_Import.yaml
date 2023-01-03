@@ -1,0 +1,88 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"cases":[{"notifications":["@channel"],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":["@resource"]},"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1672670343","options":{"complianceRuleOptions":{"complexRule":true,"regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"resourceType":"gcp_compute_instance"}},"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules
+    method: POST
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true},"keepAlive":21600},"version":1,"createdAt":1672670345089,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":["@resource"]},"cases":[{"status":"low","notifications":["@channel"],"name":"","condition":"a > 0"}],"id":"yyq-oww-rtp","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1672670343"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/yyq-oww-rtp
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true},"keepAlive":21600},"version":1,"createdAt":1672670345089,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":["@resource"]},"cases":[{"status":"low","notifications":["@channel"],"name":"","condition":"a > 0"}],"id":"yyq-oww-rtp","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1672670343"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/yyq-oww-rtp
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true},"keepAlive":21600},"version":1,"createdAt":1672670345089,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":["@resource"]},"cases":[{"status":"low","notifications":["@channel"],"name":"","condition":"a > 0"}],"id":"yyq-oww-rtp","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1672670343"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/yyq-oww-rtp
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/yyq-oww-rtp
+    method: GET
+  response:
+    body: |
+      {"errors":["Threat detection rule not found: yyq-oww-rtp"]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
