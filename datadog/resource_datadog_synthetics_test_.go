@@ -1049,7 +1049,7 @@ func syntheticsConfigVariable() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"example": {
-					Description: "Example for the variable. When `secure = true`, this value cannot be returned by the backend. Avoid drift by only making updates to this value from within Terraform.",
+					Description: "Example for the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -1079,6 +1079,7 @@ func syntheticsConfigVariable() *schema.Schema {
 					Description: "Whether the value of this variable will be obfuscated in test results.",
 					Type:        schema.TypeBool,
 					Optional:    true,
+					Default:     false,
 				},
 			},
 		},
