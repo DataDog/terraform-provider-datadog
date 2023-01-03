@@ -84,6 +84,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_application_key_test":                        "application_keys",
 	"tests/resource_datadog_authn_mapping_test":                          "authn_mapping",
 	"tests/resource_datadog_child_organization_test":                     "organization",
+	"tests/resource_datadog_cloud_configuration_rule_test":               "security-monitoring",
 	"tests/resource_datadog_cloud_workload_security_agent_rule_test":     "cloud_workload_security",
 	"tests/resource_datadog_dashboard_alert_graph_test":                  "dashboards",
 	"tests/resource_datadog_dashboard_alert_value_test":                  "dashboards",

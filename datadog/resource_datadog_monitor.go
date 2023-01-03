@@ -23,12 +23,6 @@ import (
 
 const defaultNoDataTimeframeMinutes = 10
 
-// Minimal interface between ResourceData and ResourceDiff so that we can use them interchangeably in buildMonitorStruct
-type builtResource interface {
-	Get(string) interface{}
-	GetOk(string) (interface{}, bool)
-}
-
 var retryTimeout = time.Minute
 
 func resourceDatadogMonitor() *schema.Resource {
@@ -308,7 +302,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				Optional:    true,
 			},
 			"notify_by": {
-				Description: "Controls what granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by `cluster`, `namespace`, and `pod` can be configured to only notify on each new `cluster` violating the alert conditions by setting `notify_by` to `['cluster']`. Tags mentioned in `notify_by` must be a subset of the grouping tags in the query. For example, a query grouped by `cluster` and `namespace` cannot notify on `region`. Setting `notify_by` to `[*]` configures the monitor to notify as a simple-alert.",
+				Description: "Controls what granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by `cluster`, `namespace`, and `pod` can be configured to only notify on each new `cluster` violating the alert conditions by setting `notify_by` to `['cluster']`. Tags mentioned in `notify_by` must be a subset of the grouping tags in the query. For example, a query grouped by `cluster` and `namespace` cannot notify on `region`. Setting `notify_by` to `[*]` configures the monitor to notify as a simple-alert. **NOTE:** Currently in private beta. To request access, contact Support at support@datadoghq.com",
 				Type:        schema.TypeSet,
 				Optional:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
@@ -505,7 +499,7 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 	}
 }
 
-func buildMonitorStruct(d builtResource) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
+func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
 
 	var thresholds datadogV1.MonitorThresholds
 

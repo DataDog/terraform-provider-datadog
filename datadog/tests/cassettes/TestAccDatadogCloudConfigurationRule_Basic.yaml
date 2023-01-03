@@ -1,0 +1,230 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"cases":[{"notifications":["@channel"],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":["@resource"]},"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672670343","options":{"complianceRuleOptions":{"complexRule":true,"regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"resourceType":"gcp_compute_instance"}},"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules
+    method: POST
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true},"keepAlive":21600},"version":1,"createdAt":1672670345090,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":["@resource"]},"cases":[{"status":"low","notifications":["@channel"],"name":"","condition":"a > 0"}],"id":"ib9-emz-lol","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672670343"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ib9-emz-lol
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true},"keepAlive":21600},"version":1,"createdAt":1672670345090,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":["@resource"]},"cases":[{"status":"low","notifications":["@channel"],"name":"","condition":"a > 0"}],"id":"ib9-emz-lol","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672670343"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ib9-emz-lol
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true},"keepAlive":21600},"version":1,"createdAt":1672670345090,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":["@resource"]},"cases":[{"status":"low","notifications":["@channel"],"name":"","condition":"a > 0"}],"id":"ib9-emz-lol","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672670343"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ib9-emz-lol
+    method: GET
+  response:
+    body: |
+      {"creationAuthorId":1445416,"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true},"keepAlive":21600},"version":1,"createdAt":1672670345090,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":["@resource"]},"cases":[{"status":"low","notifications":["@channel"],"name":"","condition":"a > 0"}],"id":"ib9-emz-lol","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672670343"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"cases":[{"notifications":["@channel-upd"],"status":"high"}],"complianceSignalOptions":{"userActivationStatus":true,"userGroupByFields":["@resource","@resource_type"]},"isEnabled":true,"message":"Acceptance test TF rule - updated","name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672670343 - updated","options":{"complianceRuleOptions":{"complexRule":true,"regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"resourceType":"gcp_compute_disk"},"detectionMethod":"threshold","evaluationWindow":7200,"keepAlive":21600,"maxSignalDuration":86400},"tags":["test:acceptance-updated"]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ib9-emz-lol
+    method: PUT
+  response:
+    body: |
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["test:acceptance-updated"],"type":"cloud_configuration","isEnabled":true,"hasExtendedTitle":true,"message":"Acceptance test TF rule - updated","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_disk","regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"complexRule":true},"keepAlive":21600},"version":2,"isDefault":false,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":true,"defaultGroupByFields":null,"userGroupByFields":["@resource","@resource_type"]},"cases":[{"status":"high","notifications":["@channel-upd"],"name":"","condition":"a > 0"}],"id":"ib9-emz-lol","createdAt":1672670345090,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672670343 - updated"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ib9-emz-lol
+    method: GET
+  response:
+    body: |
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["test:acceptance-updated"],"type":"cloud_configuration","isEnabled":true,"hasExtendedTitle":true,"message":"Acceptance test TF rule - updated","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_disk","regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"complexRule":true},"keepAlive":21600},"version":2,"isDefault":false,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":true,"defaultGroupByFields":null,"userGroupByFields":["@resource","@resource_type"]},"cases":[{"status":"high","notifications":["@channel-upd"],"name":"","condition":"a > 0"}],"id":"ib9-emz-lol","createdAt":1672670345090,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672670343 - updated"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ib9-emz-lol
+    method: GET
+  response:
+    body: |
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["test:acceptance-updated"],"type":"cloud_configuration","isEnabled":true,"hasExtendedTitle":true,"message":"Acceptance test TF rule - updated","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_disk","regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"complexRule":true},"keepAlive":21600},"version":2,"isDefault":false,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":true,"defaultGroupByFields":null,"userGroupByFields":["@resource","@resource_type"]},"cases":[{"status":"high","notifications":["@channel-upd"],"name":"","condition":"a > 0"}],"id":"ib9-emz-lol","createdAt":1672670345090,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672670343 - updated"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ib9-emz-lol
+    method: GET
+  response:
+    body: |
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["test:acceptance-updated"],"type":"cloud_configuration","isEnabled":true,"hasExtendedTitle":true,"message":"Acceptance test TF rule - updated","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_disk","regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"complexRule":true},"keepAlive":21600},"version":2,"isDefault":false,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":true,"defaultGroupByFields":null,"userGroupByFields":["@resource","@resource_type"]},"cases":[{"status":"high","notifications":["@channel-upd"],"name":"","condition":"a > 0"}],"id":"ib9-emz-lol","createdAt":1672670345090,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672670343 - updated"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"cases":[{"notifications":[],"status":"medium"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":[]},"isEnabled":false,"message":"Acceptance test TF rule - updated again","name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672670343 - updated again","options":{"complianceRuleOptions":{"complexRule":false,"regoRule":{"policy":"package datadog # updated again","resourceTypes":["gcp_compute_instance"]},"resourceType":"gcp_compute_instance"},"detectionMethod":"threshold","evaluationWindow":7200,"keepAlive":21600,"maxSignalDuration":86400},"tags":["test:acceptance-updated-again"]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ib9-emz-lol
+    method: PUT
+  response:
+    body: |
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["test:acceptance-updated-again"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule - updated again","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog # updated again","resourceTypes":["gcp_compute_instance"]},"complexRule":false},"keepAlive":21600},"version":3,"isDefault":false,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":[]},"cases":[{"status":"medium","notifications":[],"name":"","condition":"a > 0"}],"id":"ib9-emz-lol","createdAt":1672670345090,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672670343 - updated again"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ib9-emz-lol
+    method: GET
+  response:
+    body: |
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["test:acceptance-updated-again"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule - updated again","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog # updated again","resourceTypes":["gcp_compute_instance"]},"complexRule":false},"keepAlive":21600},"version":3,"isDefault":false,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":[]},"cases":[{"status":"medium","notifications":[],"name":"","condition":"a > 0"}],"id":"ib9-emz-lol","createdAt":1672670345090,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672670343 - updated again"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ib9-emz-lol
+    method: GET
+  response:
+    body: |
+      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["test:acceptance-updated-again"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule - updated again","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog # updated again","resourceTypes":["gcp_compute_instance"]},"complexRule":false},"keepAlive":21600},"version":3,"isDefault":false,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":[]},"cases":[{"status":"medium","notifications":[],"name":"","condition":"a > 0"}],"id":"ib9-emz-lol","createdAt":1672670345090,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672670343 - updated again"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ib9-emz-lol
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ib9-emz-lol
+    method: GET
+  response:
+    body: |
+      {"errors":["Threat detection rule not found: ib9-emz-lol"]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
