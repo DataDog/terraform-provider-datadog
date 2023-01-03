@@ -13,6 +13,7 @@ func TestAccDatadogRUMApplicationDatasourceNameFilter(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
+	t.Parallel()
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
@@ -38,6 +39,7 @@ func TestAccDatadogRUMApplicationDatasourceIDFilter(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
+	t.Parallel()
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
@@ -63,6 +65,7 @@ func TestAccDatadogRUMApplicationDatasourceErrorMultiple(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
+	t.Parallel()
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
@@ -84,7 +87,7 @@ resource "datadog_rum_application" "foo" {
 
 resource "datadog_rum_application" "baz" {
 	name = "%[1]s-extra"
-	type = "browser"
+	type = "android"
 }
 
 data "datadog_rum_application" "bar" {
@@ -105,7 +108,7 @@ resource "datadog_rum_application" "foo" {
 
 resource "datadog_rum_application" "baz" {
 	name = "%[1]s"
-	type = "browser"
+	type = "android"
 }
 
 data "datadog_rum_application" "bar" {
@@ -126,7 +129,7 @@ resource "datadog_rum_application" "foo" {
 
 resource "datadog_rum_application" "baz" {
 	name = "%[1]s"
-	type = "browser"
+	type = "android"
 }
 
 data "datadog_rum_application" "bar" {
