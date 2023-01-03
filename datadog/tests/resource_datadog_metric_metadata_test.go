@@ -15,6 +15,7 @@ import (
 )
 
 func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -46,6 +47,7 @@ func TestAccDatadogMetricMetadata_Basic(t *testing.T) {
 }
 
 func TestAccDatadogMetricMetadata_Updated(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 

@@ -16,6 +16,7 @@ import (
 // We're not testing for schedules because Datadog actively verifies it with Pagerduty
 
 func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
+	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 

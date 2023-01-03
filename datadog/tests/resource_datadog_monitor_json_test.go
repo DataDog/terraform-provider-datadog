@@ -9,6 +9,7 @@ import (
 )
 
 func TestAccDatadogMonitorJSONImport(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueID := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)

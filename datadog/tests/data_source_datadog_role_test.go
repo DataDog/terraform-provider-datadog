@@ -11,6 +11,7 @@ import (
 )
 
 func TestAccDatadogRoleDatasource(t *testing.T) {
+	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
@@ -26,6 +27,7 @@ func TestAccDatadogRoleDatasource(t *testing.T) {
 }
 
 func TestAccDatadogRoleDatasourceExactMatch(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	rolename := strings.ToLower(uniqueEntityName(ctx, t))
 	accProvider := testAccProvider(t, accProviders)

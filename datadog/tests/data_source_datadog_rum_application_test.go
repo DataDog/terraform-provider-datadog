@@ -36,6 +36,7 @@ func TestAccDatadogRUMApplicationDatasourceNameFilter(t *testing.T) {
 }
 
 func TestAccDatadogRUMApplicationDatasourceIDFilter(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
@@ -62,6 +63,7 @@ func TestAccDatadogRUMApplicationDatasourceIDFilter(t *testing.T) {
 }
 
 func TestAccDatadogRUMApplicationDatasourceErrorMultiple(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 

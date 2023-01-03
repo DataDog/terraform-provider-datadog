@@ -44,6 +44,7 @@ resource "datadog_integration_azure" "an_azure_integration" {
 }
 
 func TestAccDatadogIntegrationAzure(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	tenantName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)

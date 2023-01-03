@@ -16,6 +16,7 @@ import (
 )
 
 func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	reg, _ := regexp.Compile("[^a-zA-Z0-9]+")
 	uniqueChannelAccountName := reg.ReplaceAllString(uniqueEntityName(ctx, t), "")

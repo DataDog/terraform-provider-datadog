@@ -43,6 +43,7 @@ resource "datadog_integration_aws_lambda_arn" "main_collector" {
 }
 
 func TestAccDatadogIntegrationAWSLambdaArnAccessKey(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accessKeyID := uniqueAWSAccessKeyID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
@@ -69,6 +70,7 @@ func TestAccDatadogIntegrationAWSLambdaArnAccessKey(t *testing.T) {
 }
 
 func TestAccDatadogIntegrationAWSLambdaArn(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)

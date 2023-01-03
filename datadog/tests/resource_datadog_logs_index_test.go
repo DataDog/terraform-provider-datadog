@@ -20,6 +20,7 @@ func TestAccDatadogLogsIndex_Basic(t *testing.T) {
 		return
 	}
 
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "_", "-"))
 

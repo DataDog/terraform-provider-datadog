@@ -16,6 +16,7 @@ import (
 )
 
 func TestAccDatadogLogsPipelinesDatasource(t *testing.T) {
+	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -64,6 +65,7 @@ func dataLogsPipelinesCountCheck(accProvider func() (*schema.Provider, error)) f
 }
 
 func TestAccDatadogLogsPipelinesDatasourceReadonly(t *testing.T) {
+	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
