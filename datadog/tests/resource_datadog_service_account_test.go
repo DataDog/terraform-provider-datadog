@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -19,25 +20,16 @@ func TestServiceAccountCreate(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: fmt.Sprintf(`
-        data "datadog_role" "ro_role" {
-          filter = "Datadog Read Only Role"
-        }
-
-        resource "datadog_service_account" "some_test_service_account" {
-          email = "some_linked_users_email@test.com"
-          name = "Service account linked to some user"
-          roles = [data.datadog_role.ro_role.id]
-        }`),
+				Config: generateServiceAccountConfig("some_linked_users_email@test.com", "Service account linked to some user", []string{"data.datadog_role.ro_role.id"}),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_service_account.some_test_service_account", "email", "some_linked_users_email@test.com"),
+						"datadog_service_account.automated_test_service_account", "email", "some_linked_users_email@test.com"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_account.some_test_service_account", "name", "Service account linked to some user"),
+						"datadog_service_account.automated_test_service_account", "name", "Service account linked to some user"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_account.some_test_service_account", "disabled", "false"),
+						"datadog_service_account.automated_test_service_account", "disabled", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_account.some_test_service_account", "roles.#", "1"),
+						"datadog_service_account.automated_test_service_account", "roles.#", "1"),
 				),
 			},
 		},
@@ -55,49 +47,46 @@ func TestServiceAccountUpdate(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: fmt.Sprintf(`
-        data "datadog_role" "ro_role" {
-          filter = "Datadog Read Only Role"
-        }
-
-        resource "datadog_service_account" "some_test_updated_service_account" {
-          email = "some_linked_users_email@test.com"
-          name = "Service account linked to some user"
-          roles = [data.datadog_role.ro_role.id]
-        }`),
+				Config: generateServiceAccountConfig("some_linked_users_email@test.com", "Service account linked to some user", []string{"data.datadog_role.ro_role.id"}),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_service_account.some_test_updated_service_account", "email", "some_linked_users_email@test.com"),
+						"datadog_service_account.automated_test_service_account", "email", "some_linked_users_email@test.com"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_account.some_test_updated_service_account", "name", "Service account linked to some user"),
+						"datadog_service_account.automated_test_service_account", "name", "Service account linked to some user"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_account.some_test_updated_service_account", "disabled", "false"),
+						"datadog_service_account.automated_test_service_account", "disabled", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_account.some_test_updated_service_account", "roles.#", "1"),
+						"datadog_service_account.automated_test_service_account", "roles.#", "1"),
 				),
 			},
 			{
-				Config: fmt.Sprintf(`
-        data "datadog_role" "ro_role" {
-          filter = "Datadog Read Only Role"
-        }
-
-        resource "datadog_service_account" "some_test_updated_service_account" {
-          email = "some_linked_users_email@test.com"
-          name = "New name for the service account"
-          roles = []
-        }`),
+				Config: generateServiceAccountConfig("some_linked_users_email@test.com", "New name for the service account", []string{}),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_service_account.some_test_updated_service_account", "email", "some_linked_users_email@test.com"),
+						"datadog_service_account.automated_test_service_account", "email", "some_linked_users_email@test.com"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_account.some_test_updated_service_account", "name", "New name for the service account"),
+						"datadog_service_account.automated_test_service_account", "name", "New name for the service account"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_account.some_test_updated_service_account", "disabled", "false"),
+						"datadog_service_account.automated_test_service_account", "disabled", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_service_account.some_test_updated_service_account", "roles.#", "0"),
+						"datadog_service_account.automated_test_service_account", "roles.#", "0"),
 				),
 			},
 		},
 	})
+}
+
+// Generates a terraform config with a read only role and single service account
+func generateServiceAccountConfig(email, name string, roles []string) string {
+	return fmt.Sprintf(`
+        data "datadog_role" "ro_role" {
+          filter = "Datadog Read Only Role"
+        }
+
+        resource "datadog_service_account" "automated_test_service_account" {
+          email = "%v"
+          name = "%v"
+          roles = [%v]
+        }
+  `, email, name, strings.Join(roles, ","))
 }
