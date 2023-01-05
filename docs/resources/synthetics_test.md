@@ -631,9 +631,10 @@ Required:
 
 Optional:
 
-- `example` (String) Example for the variable.
+- `example` (String) Example for the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
 - `id` (String) When type = `global`, ID of the global variable to use.
-- `pattern` (String) Pattern of the variable.
+- `pattern` (String) Pattern of the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
+- `secure` (Boolean) Whether the value of this variable will be obfuscated in test results.
 
 
 <a id="nestedblock--options_list"></a>
