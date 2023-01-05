@@ -16,6 +16,19 @@ Provides a Datadog Application Key resource. This can be used to create and mana
 # Create a new Datadog Application Key
 resource "datadog_application_key" "foo" {
   name = "foo-application"
+```
+
+If the authorization scopes beta is enabled, you can provide scopes for the key:
+
+# Create a scoped Datadog Application Key
+
+```terraform
+resource "datadog_application_key" "foo_scoped" {
+  name = "foo-application"
+  scopes = [
+    "dashboards_read",
+    "dashboards_write",
+  ]
 }
 ```
 
@@ -25,6 +38,10 @@ resource "datadog_application_key" "foo" {
 ### Required
 
 - `name` (String) Name for Application Key.
+
+### Optional
+
+- `scopes` (List of String) An array of scopes authorized for the key [Key Management #scopes](https://docs.datadoghq.com/account_management/api-app-keys/#scopes)
 
 ### Read-Only
 

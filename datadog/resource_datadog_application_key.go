@@ -27,6 +27,12 @@ func resourceDatadogApplicationKey() *schema.Resource {
 				Type:        schema.TypeString,
 				Required:    true,
 			},
+			"scopes": {
+				Description: "Authorization scopes for the Application Key.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+			},
 			"key": {
 				Description: "The value of the Application Key.",
 				Type:        schema.TypeString,
@@ -58,6 +64,9 @@ func updateApplicationKeyState(d *schema.ResourceData, applicationKeyData *datad
 	applicationKeyAttributes := applicationKeyData.GetAttributes()
 
 	if err := d.Set("name", applicationKeyAttributes.GetName()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("scopes", applicationKeyAttributes.GetScopes()); err != nil {
 		return diag.FromErr(err)
 	}
 	if err := d.Set("key", applicationKeyAttributes.GetKey()); err != nil {

@@ -22,6 +22,10 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 	accProvider := testAccProvider(t, accProviders)
 	applicationKeyName := uniqueEntityName(ctx, t)
 	applicationKeyNameUpdate := applicationKeyName + "-2"
+	applicationKeyScopes := []string{
+		"dashboards_read",
+		"dashboards_write",
+	}
 	resourceName := "datadog_application_key.foo"
 
 	resource.Test(t, resource.TestCase{
@@ -42,6 +46,14 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogApplicationKeyExists(accProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", applicationKeyNameUpdate),
+					testAccCheckDatadogApplicationKeyValueMatches(accProvider, resourceName),
+				),
+			},
+			{
+				Config: testAccCheckDatadogApplicationKeyConfigScopesRequired(applicationKeyName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApplicationKeyExists(accProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "scopes", applicationKeyScopes),
 					testAccCheckDatadogApplicationKeyValueMatches(accProvider, resourceName),
 				),
 			},
@@ -68,6 +80,9 @@ func TestDatadogApplicationKey_import(t *testing.T) {
 				Config: testAccCheckDatadogApplicationKeyConfigRequired(applicationKeyName),
 			},
 			{
+				Config: testAccCheckDatadogApplicationKeyConfigScopesRequired(applicationKeyName),
+			},
+			{
 				ResourceName:      resourceName,
 				ImportState:       true,
 				ImportStateVerify: true,
@@ -80,6 +95,14 @@ func testAccCheckDatadogApplicationKeyConfigRequired(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_application_key" "foo" {
   name = "%s"
+}`, uniq)
+}
+
+func testAccCheckDatadogApplicationKeyConfigScopesRequired(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_application_key" "foo" {
+  name = "%s"
+  scopes = ["dashboards_read", "dashboards_write"]
 }`, uniq)
 }
 
