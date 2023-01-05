@@ -197,11 +197,6 @@ func buildRuleUpdatePayload(d *schema.ResourceData) datadogV2.SecurityMonitoring
 func buildRuleUpdateOptions(d *schema.ResourceData) datadogV2.SecurityMonitoringRuleOptions {
 	options := datadogV2.NewSecurityMonitoringRuleOptions()
 	options.SetComplianceRuleOptions(*buildComplianceRuleOptions(d))
-	// these are bogus values needed to have the regoRule updated. Will be kept until API is fixed
-	options.SetEvaluationWindow(datadogV2.SECURITYMONITORINGRULEEVALUATIONWINDOW_TWO_HOURS)
-	options.SetKeepAlive(datadogV2.SECURITYMONITORINGRULEKEEPALIVE_SIX_HOURS)
-	options.SetMaxSignalDuration(datadogV2.SECURITYMONITORINGRULEMAXSIGNALDURATION_ONE_DAY)
-	options.SetDetectionMethod(datadogV2.SECURITYMONITORINGRULEDETECTIONMETHOD_THRESHOLD)
 	return *options
 }
 
