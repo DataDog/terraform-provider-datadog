@@ -5,6 +5,8 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -26,6 +28,11 @@ func resourceDatadogApplicationKey() *schema.Resource {
 				Description: "Name for Application Key.",
 				Type:        schema.TypeString,
 				Required:    true,
+			},
+			"owner": {
+				Description: "Application Key owner ID",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"key": {
 				Description: "The value of the Application Key.",
@@ -63,6 +70,14 @@ func updateApplicationKeyState(d *schema.ResourceData, applicationKeyData *datad
 	if err := d.Set("key", applicationKeyAttributes.GetKey()); err != nil {
 		return diag.FromErr(err)
 	}
+
+	applicationKeyRelationships := applicationKeyData.GetRelationships()
+	applicationKeyOwner := applicationKeyRelationships.GetOwnedBy()
+	applicationKeyOwnerData := applicationKeyOwner.GetData()
+
+	if err := d.Set("owner", applicationKeyOwnerData.Id); err != nil {
+		return diag.FromErr(err)
+	}
 	return nil
 }
 
@@ -71,15 +86,39 @@ func resourceDatadogApplicationKeyCreate(ctx context.Context, d *schema.Resource
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().CreateCurrentUserApplicationKey(auth, *buildDatadogApplicationKeyCreateV2Struct(d))
-	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating application key")
+	if d.Get("owner") == "" {
+		resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().CreateCurrentUserApplicationKey(auth, *buildDatadogApplicationKeyCreateV2Struct(d))
+		if err != nil {
+			return utils.TranslateClientErrorDiag(err, httpResponse, "error creating application key")
+		}
+
+		applicationKeyData := resp.GetData()
+		d.SetId(applicationKeyData.GetId())
+
+		return updateApplicationKeyState(d, &applicationKeyData)
+	} else {
+		// Managing key for another user requires using v1 API
+		body := datadogV1.ApplicationKey{
+			Name:  datadog.PtrString(d.Get("name").(string)),
+			Owner: datadog.PtrString(d.Get("owner").(string)),
+		}
+		resp, httpResponse, err := apiInstances.GetKeyManagementApiV1().CreateApplicationKey(auth, body)
+
+		if err != nil {
+			return utils.TranslateClientErrorDiag(err, httpResponse, "error creating application key")
+		}
+
+		// Save the ID
+		appkey := resp.GetApplicationKey()
+		/* TODO: remove debugging
+		responseContent, _ := json.MarshalIndent(resp, "", "  ")
+		log.Printf("[INFO] %s", string(responseContent))
+    */
+		d.SetId(appkey.GetHash())
+
+		// Now call v2Update to set the v2 attributes
+		return resourceDatadogApplicationKeyUpdate(ctx, d, meta)
 	}
-
-	applicationKeyData := resp.GetData()
-	d.SetId(applicationKeyData.GetId())
-
-	return updateApplicationKeyState(d, &applicationKeyData)
 }
 
 func resourceDatadogApplicationKeyRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -87,7 +126,7 @@ func resourceDatadogApplicationKeyRead(ctx context.Context, d *schema.ResourceDa
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().GetCurrentUserApplicationKey(auth, d.Id())
+	resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().GetApplicationKey(auth, d.Id(), *datadogV2.NewGetApplicationKeyOptionalParameters())
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
@@ -104,7 +143,7 @@ func resourceDatadogApplicationKeyUpdate(ctx context.Context, d *schema.Resource
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().UpdateCurrentUserApplicationKey(auth, d.Id(), *buildDatadogApplicationKeyUpdateV2Struct(d))
+	resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().UpdateApplicationKey(auth, d.Id(), *buildDatadogApplicationKeyUpdateV2Struct(d))
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating application key")
 	}
@@ -117,7 +156,7 @@ func resourceDatadogApplicationKeyDelete(ctx context.Context, d *schema.Resource
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	if httpResponse, err := apiInstances.GetKeyManagementApiV2().DeleteCurrentUserApplicationKey(auth, d.Id()); err != nil {
+	if httpResponse, err := apiInstances.GetKeyManagementApiV2().DeleteApplicationKey(auth, d.Id()); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting application key")
 	}
 

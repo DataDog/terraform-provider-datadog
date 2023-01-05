@@ -26,6 +26,11 @@ func dataSourceDatadogApplicationKey() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"owner": {
+				Description: "Application Key owner ID",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
 
 			// Computed values
 			"key": {
