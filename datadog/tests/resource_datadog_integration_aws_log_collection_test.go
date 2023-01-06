@@ -55,6 +55,7 @@ resource "datadog_integration_aws_log_collection" "main" {
 }
 
 func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
@@ -81,6 +82,7 @@ func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
 }
 
 func TestAccDatadogIntegrationAWSLogCollectionAccessKey(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accessKeyID := uniqueAWSAccessKeyID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)

@@ -15,6 +15,7 @@ import (
 )
 
 func TestAccDatadogIntegrationOpsgenieServiceObject_Basic(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 	reg, _ := regexp.Compile("[^a-zA-Z0-9\u00a0-\uffef.+\\-_]")

@@ -10,6 +10,7 @@ import (
 )
 
 func TestAccDatadogApiKeyDatasource_matchId(t *testing.T) {
+	t.Parallel()
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
@@ -37,6 +38,7 @@ func TestAccDatadogApiKeyDatasource_matchId(t *testing.T) {
 }
 
 func TestAccDatadogApiKeyDatasource_matchName(t *testing.T) {
+	t.Parallel()
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
@@ -64,6 +66,7 @@ func TestAccDatadogApiKeyDatasource_matchName(t *testing.T) {
 }
 
 func TestAccDatadogApiKeyDatasource_matchIdError(t *testing.T) {
+	t.Parallel()
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
@@ -84,6 +87,7 @@ func TestAccDatadogApiKeyDatasource_matchIdError(t *testing.T) {
 }
 
 func TestAccDatadogApiKeyDatasource_matchNameError(t *testing.T) {
+	t.Parallel()
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
@@ -106,6 +110,7 @@ func TestAccDatadogApiKeyDatasource_matchNameError(t *testing.T) {
 }
 
 func TestAccDatadogApiKeyDatasource_missingParametersError(t *testing.T) {
+	t.Parallel()
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}

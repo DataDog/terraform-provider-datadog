@@ -16,6 +16,7 @@ import (
 const tfAgentRulesSource = "data.datadog_cloud_workload_security_agent_rules.acceptance_test"
 
 func TestAccDatadogCloudWorkloadSecurityAgentRulesDatasource(t *testing.T) {
+	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 

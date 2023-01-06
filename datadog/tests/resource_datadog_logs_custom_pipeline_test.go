@@ -336,6 +336,7 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 }
 
 func TestAccDatadogLogsPipelineEmptyFilterQuery(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	pipelineName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)

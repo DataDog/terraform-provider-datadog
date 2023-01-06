@@ -10,10 +10,10 @@ import (
 )
 
 func TestAccDatadogRUMApplicationDatasourceNameFilter(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
-	t.Parallel()
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
@@ -36,10 +36,10 @@ func TestAccDatadogRUMApplicationDatasourceNameFilter(t *testing.T) {
 }
 
 func TestAccDatadogRUMApplicationDatasourceIDFilter(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
-	t.Parallel()
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
@@ -62,10 +62,10 @@ func TestAccDatadogRUMApplicationDatasourceIDFilter(t *testing.T) {
 }
 
 func TestAccDatadogRUMApplicationDatasourceErrorMultiple(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
-	t.Parallel()
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,

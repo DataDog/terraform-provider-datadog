@@ -14,6 +14,7 @@ import (
 )
 
 func TestAccDatadogWebhook_Basic(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)

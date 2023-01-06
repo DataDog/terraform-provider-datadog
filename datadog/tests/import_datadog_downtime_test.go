@@ -8,6 +8,7 @@ import (
 )
 
 func TestDatadogDowntime_import(t *testing.T) {
+	t.Parallel()
 	resourceName := "datadog_downtime.foo"
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
