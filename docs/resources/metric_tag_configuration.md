@@ -63,4 +63,10 @@ Required:
 - `space` (String) A space aggregation for use in query. Valid values are `avg`, `max`, `min`, `sum`.
 - `time` (String) A time aggregation for use in query. Valid values are `avg`, `count`, `max`, `min`, `sum`.
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+terraform import datadog_metric_tag_configuration.example_dist_metric example.terraform.dist.metric
+```

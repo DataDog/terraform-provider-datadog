@@ -43,4 +43,10 @@ resource "datadog_metric_metadata" "request_time" {
 
 - `id` (String) The ID of this resource.
 
+## Import
 
+Import is supported using the following syntax:
+
+```shell
+terraform import datadog_metric_metadata.request_time request.time
+```
