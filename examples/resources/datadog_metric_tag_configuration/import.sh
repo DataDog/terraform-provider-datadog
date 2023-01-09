@@ -1,0 +1,1 @@
+terraform import datadog_metric_tag_configuration.example_dist_metric example.terraform.dist.metric

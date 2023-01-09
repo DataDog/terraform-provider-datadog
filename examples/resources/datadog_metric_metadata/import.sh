@@ -1,0 +1,1 @@
+terraform import datadog_metric_metadata.request_time request.time
