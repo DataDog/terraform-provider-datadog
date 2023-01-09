@@ -107,6 +107,38 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 					},
 				},
 			},
+			"options": {
+				Description: "Additional options to add for the variable, such as an MFA token.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				MaxItems:    1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"totp_parameters": {
+							Description: "Parameters needed for MFA/TOTP.",
+							Type:        schema.TypeList,
+							Optional:    true,
+							MaxItems: 1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"digits": {
+										Description:  "Number of digits for the OTP.",
+										Type:         schema.TypeInt,
+										Required:     true,
+										ValidateFunc: validation.IntBetween(4, 10),
+									},
+									"refresh_interval": {
+										Description:  "Interval for which to refresh the token (in seconds).",
+										Type:         schema.TypeInt,
+										Required:     true,
+										ValidateFunc: validation.IntBetween(0, 999),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 			"restricted_roles": {
 				Description: "A list of role identifiers to associate with the Synthetics global variable.",
 				Type:        schema.TypeSet,
@@ -231,6 +263,19 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 
 	syntheticsGlobalVariableValue.SetValue(d.Get("value").(string))
 	syntheticsGlobalVariableValue.SetSecure(d.Get("secure").(bool))
+
+	if options, ok := d.GetOk("options.0"); ok {
+		variableOptions := datadogV1.SyntheticsGlobalVariableOptions{}
+		totpParameters := datadogV1.SyntheticsGlobalVariableTOTPParameters{}
+		if digits, ok := options.GetOk("totp_parameters.0.digits"); ok {
+			totpParameters.SetDigits(digits.(int))
+		}
+		if refresh_interval, ok := options.GetOk("totp_parameters.0.refresh_interval"); ok {
+			totpParameters.SetRefreshInterval(refresh_interval.(int))
+		}
+		variableOptions.SetTotpParameters(totpParameters)
+		syntheticsGlobalVariableValue.SetOptions(variableOptions)
+	}
 
 	syntheticsGlobalVariable.SetValue(syntheticsGlobalVariableValue)
 
