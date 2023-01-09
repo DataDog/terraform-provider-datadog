@@ -77,7 +77,23 @@ jobs:
         run: echo ("TF_ACC_TERRAFORM_PATH=" + (Get-Command terraform).Path) >> $env:GITHUB_ENV
       - name: Check Docs Are Up To Date
         run: make check-docs
+      - name: Set regex for tests to run
+        shell: bash
+        run: |
+          changed_files=$(git diff --name-only --relative master datadog/**/*.go)
+
+          if [[ "$changed_files" == *"provider"* ]]; then
+            echo TESTARGS="-run \".*\"" >> $GITHUB_OUTPUT
+          elif [[ ! -z "$changed_files" ]]; then
+            test_re=$(echo $changed_files | \
+                         sed 's/.*_datadog_\(.*\).*.go/\1/' | \
+                         sed -E 's+test|_++g' | \
+                         sed -e "s/\(.*\)/\\(?i\\)\1/" | paste -sd "|")
+            echo TESTARGS="-run \"${test_re}\"" >> $GITHUB_OUTPUTq
+          fi
       - name: Test
-        run: make testall
+        shell: bash
+        run: |
+          [[ -z "${TESTARGS}" ]] && echo "Skipping tests" || make testall
         env:
           RECORD: false
