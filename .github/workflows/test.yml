@@ -47,6 +47,8 @@ jobs:
           git config --global core.eol lf
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Install Go
         uses: actions/setup-go@v3
         with:
@@ -69,7 +71,22 @@ jobs:
         run: echo ("TF_ACC_TERRAFORM_PATH=" + (Get-Command terraform).Path) >> $env:GITHUB_ENV
       - name: Check Docs Are Up To Date
         run: make check-docs
+      - name: Set regex for tests to run
+        shell: bash
+        run: |
+          test_re=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- datadog/*.go datadog/*/*.go go.mod go.sum | \
+            sed 's/.*_datadog_\(.*\).*.go/\1/' | \
+            sed -E 's+test|_++g' | \
+            sed -e "s/\(.*\)/\\(?i\\)\1/" | paste -sd "|")
+          
+          if [[ "$test_re" =~ go.mod|go.sum|provider ]]; then
+            echo TESTARGS="-run \".*\"" >> $GITHUB_ENV
+          elif [[ ! -z "$test_re" ]]; then
+            echo TESTARGS="-run \"${test_re}\"" >> $GITHUB_ENV
+          fi
       - name: Test
-        run: make testall
+        shell: bash
+        run: |
+          [[ -z "${TESTARGS}" ]] && echo "Skipping tests" || make testall
         env:
           RECORD: false
