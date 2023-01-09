@@ -164,9 +164,13 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 	d.Set("type", rule.GetType())
 
 	responseOptions := rule.GetOptions()
-	ruleOptions := []map[string]interface{}{{
-		"decrease_criticality_based_on_env": responseOptions.GetDecreaseCriticalityBasedOnEnv(),
-	}}
+	var ruleOptions []map[string]interface{}
+
+	if *rule.Type == datadogV2.SECURITYMONITORINGRULETYPEREAD_LOG_DETECTION {
+		ruleOptions = append(ruleOptions, map[string]interface{}{
+			"decrease_criticality_based_on_env": responseOptions.GetDecreaseCriticalityBasedOnEnv(),
+		})
+	}
 
 	d.Set("options", &ruleOptions)
 
