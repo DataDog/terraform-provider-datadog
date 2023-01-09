@@ -79,7 +79,7 @@ jobs:
             sed -E 's+test|_++g' | \
             sed -e "s/\(.*\)/\\(?i\\)\1/" | paste -sd "|")
           
-          if [[ "$test_re" =~ go.mod|go.sum|provider ]]; then
+          if [[ "$test_re" =~ go.mod|go.sum|provider ]] || [[ ${{ github.head_ref }} = sherz/* ]]; then
             echo TESTARGS="-run \".*\"" >> $GITHUB_ENV
           elif [[ ! -z "$test_re" ]]; then
             echo TESTARGS="-run \"${test_re}\"" >> $GITHUB_ENV
