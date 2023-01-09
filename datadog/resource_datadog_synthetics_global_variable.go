@@ -118,7 +118,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 							Description: "Parameters needed for MFA/TOTP.",
 							Type:        schema.TypeList,
 							Optional:    true,
-							MaxItems: 1,
+							MaxItems: 	 1,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"digits": {
