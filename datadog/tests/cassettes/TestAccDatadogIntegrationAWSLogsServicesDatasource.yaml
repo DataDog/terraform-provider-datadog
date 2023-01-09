@@ -1,0 +1,105 @@
+---
+version: 1
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/aws/logs/services
+    method: GET
+  response:
+    body: |
+      [{"id":"apigw-access-logs","label":"API Gateway Access Logs"},{"id":"apigw-execution-logs","label":"API Gateway Execution Logs"},{"id":"elbv2","label":"Application ELB Access Logs"},{"id":"elb","label":"Classic ELB Access Logs"},{"id":"cloudfront","label":"CloudFront Access Logs"},{"id":"lambda","label":"Lambda Cloudwatch Logs"},{"id":"redshift","label":"Redshift Logs"},{"id":"s3","label":"S3 Access Logs"}]
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/aws/logs/services
+    method: GET
+  response:
+    body: |
+      [{"id":"apigw-access-logs","label":"API Gateway Access Logs"},{"id":"apigw-execution-logs","label":"API Gateway Execution Logs"},{"id":"elbv2","label":"Application ELB Access Logs"},{"id":"elb","label":"Classic ELB Access Logs"},{"id":"cloudfront","label":"CloudFront Access Logs"},{"id":"lambda","label":"Lambda Cloudwatch Logs"},{"id":"redshift","label":"Redshift Logs"},{"id":"s3","label":"S3 Access Logs"}]
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/aws/logs/services
+    method: GET
+  response:
+    body: |
+      [{"id":"apigw-access-logs","label":"API Gateway Access Logs"},{"id":"apigw-execution-logs","label":"API Gateway Execution Logs"},{"id":"elbv2","label":"Application ELB Access Logs"},{"id":"elb","label":"Classic ELB Access Logs"},{"id":"cloudfront","label":"CloudFront Access Logs"},{"id":"lambda","label":"Lambda Cloudwatch Logs"},{"id":"redshift","label":"Redshift Logs"},{"id":"s3","label":"S3 Access Logs"}]
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/aws/logs/services
+    method: GET
+  response:
+    body: |
+      [{"id":"apigw-access-logs","label":"API Gateway Access Logs"},{"id":"apigw-execution-logs","label":"API Gateway Execution Logs"},{"id":"elbv2","label":"Application ELB Access Logs"},{"id":"elb","label":"Classic ELB Access Logs"},{"id":"cloudfront","label":"CloudFront Access Logs"},{"id":"lambda","label":"Lambda Cloudwatch Logs"},{"id":"redshift","label":"Redshift Logs"},{"id":"s3","label":"S3 Access Logs"}]
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/aws/logs/services
+    method: GET
+  response:
+    body: |
+      [{"id":"apigw-access-logs","label":"API Gateway Access Logs"},{"id":"apigw-execution-logs","label":"API Gateway Execution Logs"},{"id":"elbv2","label":"Application ELB Access Logs"},{"id":"elb","label":"Classic ELB Access Logs"},{"id":"cloudfront","label":"CloudFront Access Logs"},{"id":"lambda","label":"Lambda Cloudwatch Logs"},{"id":"redshift","label":"Redshift Logs"},{"id":"s3","label":"S3 Access Logs"}]
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/aws/logs/services
+    method: GET
+  response:
+    body: |
+      [{"id":"apigw-access-logs","label":"API Gateway Access Logs"},{"id":"apigw-execution-logs","label":"API Gateway Execution Logs"},{"id":"elbv2","label":"Application ELB Access Logs"},{"id":"elb","label":"Classic ELB Access Logs"},{"id":"cloudfront","label":"CloudFront Access Logs"},{"id":"lambda","label":"Lambda Cloudwatch Logs"},{"id":"redshift","label":"Redshift Logs"},{"id":"s3","label":"S3 Access Logs"}]
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
