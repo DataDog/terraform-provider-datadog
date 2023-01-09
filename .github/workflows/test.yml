@@ -83,7 +83,7 @@ jobs:
       - name: Set regex for tests to run
         shell: bash
         run: |
-          changed_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} datadog/**/*.go)
+          changed_files=$(git diff --name-only origin/master -- datadog/**/*.go)
 
           if [[ "$changed_files" == *"provider"* ]]; then
             echo TESTARGS="-run \".*\"" >> $GITHUB_OUTPUT
@@ -92,7 +92,7 @@ jobs:
                          sed 's/.*_datadog_\(.*\).*.go/\1/' | \
                          sed -E 's+test|_++g' | \
                          sed -e "s/\(.*\)/\\(?i\\)\1/" | paste -sd "|")
-            echo TESTARGS="-run \"${test_re}\"" >> $GITHUB_OUTPUTq
+            echo TESTARGS="-run \"${test_re}\"" >> $GITHUB_OUTPUT
           fi
       - name: Test
         shell: bash
