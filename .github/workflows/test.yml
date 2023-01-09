@@ -77,7 +77,8 @@ jobs:
           test_re=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- datadog/*.go datadog/*/*.go go.mod go.sum | \
             sed 's/.*_datadog_\(.*\).*.go/\1/' | \
             sed -E 's+test|_++g' | \
-            sed -e "s/\(.*\)/\\(?i\\)\1/" | paste -sd "|")
+            sed -e "s/\(.*\)/\\(?i\\)\1/" | \
+            xargs | sed -e 's/ /|/g')
           
           if [[ "$test_re" =~ go.mod|go.sum|provider ]] || [[ ${{ github.head_ref }} = release/* ]]; then
             echo TESTARGS="-run \".*\"" >> $GITHUB_ENV
