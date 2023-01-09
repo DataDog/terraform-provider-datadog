@@ -21,7 +21,6 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-
 		Schema: map[string]*schema.Schema{
 			"metric": {
 				Description: "The name of the metric.",

@@ -15,6 +15,7 @@ import (
 var integrationAzureMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationAzure() *schema.Resource {
+
 	return &schema.Resource{
 		Description:   "Provides a Datadog - Microsoft Azure integration resource. This can be used to create and manage the integrations.",
 		CreateContext: resourceDatadogIntegrationAzureCreate,
