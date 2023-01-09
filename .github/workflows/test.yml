@@ -74,8 +74,8 @@ jobs:
       - name: Set regex for tests to run
         shell: bash
         run: |
-          test_re=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- datadog/*.go datadog/*/*.go go.mod go.sum | \
-            sed 's/.*_datadog_\(.*\).*.go/\1/' | \
+          test_re=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- datadog/*.go datadog/*/*.go datadog/internal/* go.mod go.sum | \
+            sed 's/.*_datadog_\(.*\).*.go/\1/' | sed 's/.*\/.*\/\(.*\).*.go/\1/' | \
             sed -E 's+test|_++g' | \
             sed -e "s/\(.*\)/\\(?i\\)\1/" | \
             xargs | sed -e 's/ /|/g')
