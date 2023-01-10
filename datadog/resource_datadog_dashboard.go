@@ -6656,8 +6656,8 @@ func buildDatadogFormula(data map[string]interface{}) datadogV1.WidgetFormula {
 		if palette, ok := style_attr["palette"].(string); ok {
 			datadogFormulaStyle.SetPalette(palette)
 		}
-		if palette_index, ok := style_attr["palette_index"].(int64); ok {
-			datadogFormulaStyle.SetPaletteIndex(palette_index)
+		if palette_index, ok := style_attr["palette_index"].(int); ok {
+			datadogFormulaStyle.SetPaletteIndex(int64(palette_index))
 		}
 		formula.SetStyle(*datadogFormulaStyle)
 	}
