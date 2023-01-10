@@ -38,6 +38,7 @@ resource "datadog_role" "foo" {
 ### Optional
 
 - `permission` (Block Set) Set of objects containing the permission ID and the name of the permissions granted to this role. (see [below for nested schema](#nestedblock--permission))
+- `validate` (Boolean) If set to `false`, skip the validation call done during plan.
 
 ### Read-Only
 
