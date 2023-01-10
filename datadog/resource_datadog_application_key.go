@@ -33,6 +33,11 @@ func resourceDatadogApplicationKey() *schema.Resource {
 				Description: "Application Key owner ID",
 				Type:        schema.TypeString,
 				Optional:    true,
+				ForceNew:    true,
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// ignore existing resources without owner == assume it's current user to avoid breaking existing uses
+					return new == ""
+				},
 			},
 			"key": {
 				Description: "The value of the Application Key.",
@@ -113,7 +118,7 @@ func resourceDatadogApplicationKeyCreate(ctx context.Context, d *schema.Resource
 		/* TODO: remove debugging
 		responseContent, _ := json.MarshalIndent(resp, "", "  ")
 		log.Printf("[INFO] %s", string(responseContent))
-    */
+		*/
 		d.SetId(appkey.GetHash())
 
 		// Now call v2Update to set the v2 attributes
