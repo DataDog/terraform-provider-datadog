@@ -1,3 +1,26 @@
+## 3.20.0 (January 11, 2023)
+
+### BUGFIXES
+* [security_monitoring_default_rule] Fix acceptance tests for default rules by @muffix in https://github.com/DataDog/terraform-provider-datadog/pull/1707
+* [datadog_dashboard] Fix palette_index not set in the API when set in formula style by @valerian-roche in https://github.com/DataDog/terraform-provider-datadog/pull/1714
+### IMPROVEMENTS
+* [service_definition_yaml] Add tag normalization util by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1686
+* [datadog_monitor] Mark `notify_by` field as private beta by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1694
+* [datadog_synthetics_test] Add secure field to synthetics config variable by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1696
+* [datadog_role] Add ability to skip pre-flight `permission` validation by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1703
+### FEATURES
+* [datadog_cloud_configuration_rule] Implemented resource to manage cloud_configuration rules by @symphony-elias in https://github.com/DataDog/terraform-provider-datadog/pull/1677
+* [datadog_service_account] Add service account resource by @mnguyendatadog in https://github.com/DataDog/terraform-provider-datadog/pull/1685
+* [datadog_integration_aws_logs_services] Add an AWS log ready services data source by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1690
+### NOTES
+* [provider] Bump `datadog-api-client` to 2.7.0 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1717
+
+## New Contributors
+* @mnguyendatadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1685
+* @valerian-roche made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1714
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.19.1...v3.20.0
+
 ## 3.19.1 (December 22, 2022)
 
 ### BUGFIXES
