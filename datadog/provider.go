@@ -292,15 +292,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	)
 	config := datadog.NewConfiguration()
 	config.HTTPClient = httpClient
-	// Enable unstable operations
-	config.SetUnstableOperationEnabled("v1.CreateSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v1.GetSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v1.UpdateSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v1.DeleteSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v2.CreateTagConfiguration", true)
-	config.SetUnstableOperationEnabled("v2.DeleteTagConfiguration", true)
-	config.SetUnstableOperationEnabled("v2.ListTagConfigurationByName", true)
-	config.SetUnstableOperationEnabled("v2.UpdateTagConfiguration", true)
 
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
 	config.Debug = logging.IsDebugOrHigher()
