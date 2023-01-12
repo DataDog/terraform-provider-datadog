@@ -60,6 +60,8 @@ func TestAccDatadogLogsMetric_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_metric.testing_logs_metric", "compute.0.path", "@duration"),
 					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "compute.0.include_percentiles", "false"),
+					resource.TestCheckResourceAttr(
 						"datadog_logs_metric.testing_logs_metric", "filter.#", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_metric.testing_logs_metric", "filter.0.query", "service:test"),
@@ -73,6 +75,61 @@ func TestAccDatadogLogsMetric_Basic(t *testing.T) {
 						"datadog_logs_metric.testing_logs_metric", "group_by.1.path", "service"),
 				),
 			},
+			{
+				Config: testAccCheckDatadogLogsMetricConfigUpdateIncludePercentiles(uniqueLogsMetric),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogLogsMetricExists(accProvider, "datadog_logs_metric.testing_logs_metric"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "compute.0.include_percentiles", "true"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogLogsMetricCount_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniqueLogsMetric := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogLogsMetricDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogLogsMetricCountBasic(uniqueLogsMetric),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogLogsMetricExists(accProvider, "datadog_logs_metric.testing_logs_metric"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "compute.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "compute.0.aggregation_type", "count"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "filter.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "filter.0.query", "@ident:ha-proxy"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.0.path", "@env"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.0.tag_name", "env"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.1.path", "@http_status_code"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogLogsMetricCountBasicUpdated(uniqueLogsMetric),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogLogsMetricExists(accProvider, "datadog_logs_metric.testing_logs_metric"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.0.path", "@env"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.0.tag_name", "env_updated"),
+				),
+			},
 		},
 	})
 }
@@ -82,8 +139,9 @@ func testAccCheckDatadogLogsMetricConfigBasic(uniq string) string {
         resource "datadog_logs_metric" "testing_logs_metric" {
 			name = "%s"
 			compute {
-				aggregation_type = "distribution"
-				path             = "@duration"
+				aggregation_type    = "distribution"
+				path                = "@duration"
+				include_percentiles = false
 			}
 			filter {
 				query = "service:test"
@@ -97,6 +155,76 @@ func testAccCheckDatadogLogsMetricConfigBasic(uniq string) string {
 				tag_name = "service"
 			}
         }
+    `, uniq)
+}
+
+func testAccCheckDatadogLogsMetricConfigUpdateIncludePercentiles(uniq string) string {
+	return fmt.Sprintf(`
+        resource "datadog_logs_metric" "testing_logs_metric" {
+			name = "%s"
+			compute {
+				aggregation_type    = "distribution"
+				path                = "@duration"
+				include_percentiles = true
+			}
+			filter {
+				query = "service:test"
+			}
+			group_by {
+				path     = "@my.status"
+				tag_name = "status"
+			}
+			group_by {
+				path     = "service"
+				tag_name = "service"
+			}
+        }
+    `, uniq)
+}
+
+func testAccCheckDatadogLogsMetricCountBasic(uniq string) string {
+	return fmt.Sprintf(`
+		resource "datadog_logs_metric" "testing_logs_metric" {
+			name = "%s"
+			compute {
+				aggregation_type = "count"
+			}
+			filter {
+				query = "@ident:ha-proxy"
+			}
+
+			group_by {
+				path     = "@env"
+				tag_name = "env"
+			}
+			group_by {
+				path     = "@http_status_code"
+				tag_name = "http_status_code"
+			}
+		}
+    `, uniq)
+}
+
+func testAccCheckDatadogLogsMetricCountBasicUpdated(uniq string) string {
+	return fmt.Sprintf(`
+	resource "datadog_logs_metric" "testing_logs_metric" {
+		name = "%s"
+		compute {
+			aggregation_type = "count"
+		}
+		filter {
+			query = "@ident:ha-proxy"
+		}
+
+		group_by {
+			path     = "@env"
+			tag_name = "env_updated"
+		}
+		group_by {
+			path     = "@http_status_code"
+			tag_name = "http_status_code"
+		}
+	}
     `, uniq)
 }
 

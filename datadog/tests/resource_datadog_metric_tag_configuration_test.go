@@ -15,6 +15,7 @@ import (
 )
 
 func TestAccDatadogMetricTagConfiguration_Error(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueMetricTagConfig := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)

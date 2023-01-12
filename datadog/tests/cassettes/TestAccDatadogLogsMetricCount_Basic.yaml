@@ -1,0 +1,162 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"compute":{"aggregation_type":"count"},"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}]},"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509","type":"logs_metrics"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics
+    method: POST
+  response:
+    body: |
+      {"data":{"attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"compute":{},"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}]},"type":"logs_metrics"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    method: PATCH
+  response:
+    body: |
+      {"data":{"attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    method: GET
+  response:
+    body: |
+      {"data":{"attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    method: DELETE
+  response:
+    body: |
+      {}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    method: GET
+  response:
+    body: |
+      {"errors":["not_found(Metric with name 'tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509' not found)"]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""

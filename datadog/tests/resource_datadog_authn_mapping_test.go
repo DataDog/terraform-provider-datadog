@@ -14,6 +14,7 @@ import (
 )
 
 func TestAccDatadogAuthNMapping_CreateUpdate(t *testing.T) {
+	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -45,6 +46,7 @@ func TestAccDatadogAuthNMapping_CreateUpdate(t *testing.T) {
 }
 
 func TestAccDatadogAuthNMapping_import(t *testing.T) {
+	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 

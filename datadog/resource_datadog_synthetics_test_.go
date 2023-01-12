@@ -128,10 +128,9 @@ func syntheticsTestRequest() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"method": {
-				Description:      "The HTTP method.",
-				Type:             schema.TypeString,
-				Optional:         true,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewHTTPMethodFromValue),
+				Description: "Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"url": {
 				Description: "The URL to send the request to.",
@@ -202,8 +201,14 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"call_type": {
+				Description:      "The type of gRPC call to perform.",
+				Type:             schema.TypeString,
+				Optional:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestCallTypeFromValue),
+			},
 			"service": {
-				Description: "For gRPC tests, service to target for healthcheck.",
+				Description: "The gRPC service on which you want to perform the gRPC call.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
@@ -248,7 +253,7 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 					Type:         schema.TypeString,
 					Optional:     true,
 					Default:      "web",
-					ValidateFunc: validation.StringInSlice([]string{"web", "sigv4", "ntlm"}, false),
+					ValidateFunc: validation.StringInSlice([]string{"web", "sigv4", "ntlm", "oauth-client", "oauth-rop", "digest"}, false),
 				},
 				"username": {
 					Description: "Username for authentication.",
@@ -297,6 +302,46 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 					Type:        schema.TypeString,
 					Description: "Workstation for `ntlm` authentication.",
 					Optional:    true,
+				},
+				"access_token_url": {
+					Type:        schema.TypeString,
+					Description: "Access token url for `oauth-client` or `oauth-rop` authentication.",
+					Optional:    true,
+				},
+				"audience": {
+					Type:        schema.TypeString,
+					Description: "Audience for `oauth-client` or `oauth-rop` authentication.",
+					Optional:    true,
+					Default:     "",
+				},
+				"resource": {
+					Type:        schema.TypeString,
+					Description: "Resource for `oauth-client` or `oauth-rop` authentication.",
+					Optional:    true,
+					Default:     "",
+				},
+				"scope": {
+					Type:        schema.TypeString,
+					Description: "Scope for `oauth-client` or `oauth-rop` authentication.",
+					Optional:    true,
+					Default:     "",
+				},
+				"token_api_authentication": {
+					Type:             schema.TypeString,
+					Description:      "Token API Authentication for `oauth-client` or `oauth-rop` authentication.",
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue),
+				},
+				"client_id": {
+					Type:        schema.TypeString,
+					Description: "Client ID for `oauth-client` or `oauth-rop` authentication.",
+					Optional:    true,
+				},
+				"client_secret": {
+					Type:        schema.TypeString,
+					Description: "Client secret for `oauth-client` or `oauth-rop` authentication.",
+					Optional:    true,
+					Sensitive:   true,
 				},
 			},
 		},
@@ -1004,7 +1049,7 @@ func syntheticsConfigVariable() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"example": {
-					Description: "Example for the variable.",
+					Description: "Example for the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -1015,7 +1060,7 @@ func syntheticsConfigVariable() *schema.Schema {
 					ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
 				},
 				"pattern": {
-					Description: "Pattern of the variable.",
+					Description: "Pattern of the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -1029,6 +1074,12 @@ func syntheticsConfigVariable() *schema.Schema {
 					Description: "When type = `global`, ID of the global variable to use.",
 					Type:        schema.TypeString,
 					Optional:    true,
+				},
+				"secure": {
+					Description: "Whether the value of this variable will be obfuscated in test results.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     false,
 				},
 			},
 		},
@@ -1275,7 +1326,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 	request := datadogV1.SyntheticsTestRequest{}
 	if attr, ok := k.GetOkWith("method"); ok {
-		request.SetMethod(datadogV1.HTTPMethod(attr.(string)))
+		request.SetMethod(attr.(string))
 	}
 	if attr, ok := k.GetOkWith("url"); ok {
 		request.SetUrl(attr.(string))
@@ -1316,6 +1367,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := k.GetOkWith("message"); ok {
 		request.SetMessage(attr.(string))
 	}
+	if attr, ok := k.GetOkWith("call_type"); ok {
+		request.SetCallType(datadogV1.SyntheticsTestCallType(attr.(string)))
+	}
 	if attr, ok := k.GetOkWith("service"); ok {
 		request.SetService(attr.(string))
 	}
@@ -1344,6 +1398,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 			variable.SetName(variableMap["name"].(string))
 			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
+			variable.SetSecure(variableMap["secure"].(bool))
 
 			if variable.GetType() != "global" {
 				variable.SetPattern(variableMap["pattern"].(string))
@@ -1380,7 +1435,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			requests := stepMap["request_definition"].([]interface{})
 			if len(requests) > 0 && requests[0] != nil {
 				requestMap := requests[0].(map[string]interface{})
-				request.SetMethod(datadogV1.HTTPMethod(requestMap["method"].(string)))
+				request.SetMethod(requestMap["method"].(string))
 				request.SetUrl(requestMap["url"].(string))
 				request.SetBody(requestMap["body"].(string))
 				if v, ok := requestMap["body_type"].(string); ok && v != "" {
@@ -1575,6 +1630,39 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 
 				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthNTLMAsSyntheticsBasicAuth(basicAuth))
 			}
+
+			if requestBasicAuth["type"] == "oauth-client" {
+				tokenApiAuthentication, _ := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(requestBasicAuth["access_token_url"].(string), requestBasicAuth["client_id"].(string), requestBasicAuth["client_secret"].(string), *tokenApiAuthentication)
+
+				basicAuth.SetAudience(requestBasicAuth["audience"].(string))
+				basicAuth.SetResource(requestBasicAuth["resource"].(string))
+				basicAuth.SetScope(requestBasicAuth["scope"].(string))
+
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthClientAsSyntheticsBasicAuth(basicAuth))
+			}
+
+			if requestBasicAuth["type"] == "oauth-rop" {
+				tokenApiAuthentication, _ := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthROP(
+					requestBasicAuth["access_token_url"].(string),
+					requestBasicAuth["password"].(string),
+					*tokenApiAuthentication,
+					requestBasicAuth["username"].(string))
+
+				basicAuth.SetAudience(requestBasicAuth["audience"].(string))
+				basicAuth.SetClientId(requestBasicAuth["client_id"].(string))
+				basicAuth.SetClientSecret(requestBasicAuth["client_secret"].(string))
+				basicAuth.SetResource(requestBasicAuth["resource"].(string))
+				basicAuth.SetScope(requestBasicAuth["scope"].(string))
+
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthROPAsSyntheticsBasicAuth(basicAuth))
+			}
+
+			if requestBasicAuth["type"] == "digest" {
+				basicAuth := datadogV1.NewSyntheticsBasicAuthDigest(requestBasicAuth["password"].(string), requestBasicAuth["username"].(string))
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthDigestAsSyntheticsBasicAuth(basicAuth))
+			}
 		}
 	}
 
@@ -1762,7 +1850,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	parts := "request_definition.0"
 	k.Add(parts)
 	if attr, ok := k.GetOkWith("method"); ok {
-		request.SetMethod(datadogV1.HTTPMethod(attr.(string)))
+		request.SetMethod(attr.(string))
 	}
 	if attr, ok := k.GetOkWith("url"); ok {
 		request.SetUrl(attr.(string))
@@ -1898,6 +1986,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 			variable.SetName(variableMap["name"].(string))
 			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
+			variable.SetSecure(variableMap["secure"].(bool))
 
 			if variable.GetType() != "global" {
 				variable.SetPattern(variableMap["pattern"].(string))
@@ -1907,7 +1996,6 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			if variableMap["id"] != "" {
 				variable.SetId(variableMap["id"].(string))
 			}
-
 			configVariables = append(configVariables, variable)
 		}
 	}
@@ -2165,6 +2253,9 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	if request.HasMessage() {
 		localRequest["message"] = request.GetMessage()
 	}
+	if request.HasCallType() {
+		localRequest["call_type"] = request.GetCallType()
+	}
 	if request.HasService() {
 		localRequest["service"] = request.GetService()
 	}
@@ -2290,6 +2381,41 @@ func buildLocalBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]st
 		localAuth["domain"] = *basicAuthNtlm.Domain
 		localAuth["workstation"] = *basicAuthNtlm.Workstation
 		localAuth["type"] = "ntlm"
+	}
+
+	if basicAuth.SyntheticsBasicAuthOauthClient != nil {
+		basicAuthOauthClient := basicAuth.SyntheticsBasicAuthOauthClient
+		localAuth["access_token_url"] = basicAuthOauthClient.AccessTokenUrl
+		localAuth["client_id"] = basicAuthOauthClient.ClientId
+		localAuth["client_secret"] = basicAuthOauthClient.ClientSecret
+		localAuth["token_api_authentication"] = string(basicAuthOauthClient.TokenApiAuthentication)
+		localAuth["audience"] = *basicAuthOauthClient.Audience
+		localAuth["scope"] = *basicAuthOauthClient.Scope
+		localAuth["resource"] = *basicAuthOauthClient.Resource
+
+		localAuth["type"] = "oauth-client"
+	}
+	if basicAuth.SyntheticsBasicAuthOauthROP != nil {
+		basicAuthOauthROP := basicAuth.SyntheticsBasicAuthOauthROP
+		localAuth["access_token_url"] = basicAuthOauthROP.AccessTokenUrl
+		localAuth["client_id"] = *basicAuthOauthROP.ClientId
+		localAuth["client_secret"] = *basicAuthOauthROP.ClientSecret
+		localAuth["token_api_authentication"] = string(basicAuthOauthROP.TokenApiAuthentication)
+		localAuth["audience"] = *basicAuthOauthROP.Audience
+		localAuth["scope"] = *basicAuthOauthROP.Scope
+		localAuth["resource"] = *basicAuthOauthROP.Resource
+		localAuth["username"] = basicAuthOauthROP.Username
+		localAuth["password"] = basicAuthOauthROP.Password
+
+		localAuth["type"] = "oauth-rop"
+	}
+
+	if basicAuth.SyntheticsBasicAuthDigest != nil {
+		basicAuthDigest := basicAuth.SyntheticsBasicAuthDigest
+		localAuth["username"] = basicAuthDigest.Username
+		localAuth["password"] = basicAuthDigest.Password
+
+		localAuth["type"] = "digest"
 	}
 
 	return localAuth
@@ -2427,13 +2553,20 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		if v, ok := configVariable.GetNameOk(); ok {
 			localVariable["name"] = *v
 		}
+		if v, ok := configVariable.GetSecureOk(); ok {
+			localVariable["secure"] = *v
+		}
 
 		if configVariable.GetType() != "global" {
 			if v, ok := configVariable.GetExampleOk(); ok {
 				localVariable["example"] = *v
+			} else if localVariable["secure"].(bool) {
+				localVariable["example"] = d.Get(fmt.Sprintf("config_variable.%d.example", i))
 			}
 			if v, ok := configVariable.GetPatternOk(); ok {
 				localVariable["pattern"] = *v
+			} else if localVariable["secure"].(bool) {
+				localVariable["pattern"] = d.Get(fmt.Sprintf("config_variable.%d.pattern", i))
 			}
 		}
 		if v, ok := configVariable.GetIdOk(); ok {
@@ -2739,13 +2872,20 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		if v, ok := configVariable.GetNameOk(); ok {
 			localVariable["name"] = *v
 		}
+		if v, ok := configVariable.GetSecureOk(); ok {
+			localVariable["secure"] = *v
+		}
 
 		if configVariable.GetType() != "global" {
 			if v, ok := configVariable.GetExampleOk(); ok {
 				localVariable["example"] = *v
+			} else if localVariable["secure"].(bool) {
+				localVariable["example"] = d.Get(fmt.Sprintf("config_variable.%d.example", i))
 			}
 			if v, ok := configVariable.GetPatternOk(); ok {
 				localVariable["pattern"] = *v
+			} else if localVariable["secure"].(bool) {
+				localVariable["pattern"] = d.Get(fmt.Sprintf("config_variable.%d.pattern", i))
 			}
 		}
 		if v, ok := configVariable.GetIdOk(); ok {
@@ -2950,8 +3090,6 @@ func convertToString(i interface{}) string {
 		return strconv.FormatFloat(v, 'f', -1, 64)
 	case string:
 		return v
-	case datadogV1.HTTPMethod:
-		return string(v)
 	default:
 		// TODO: manage target for JSON body assertions
 		valStrr, err := json.Marshal(v)

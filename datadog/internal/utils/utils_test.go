@@ -134,6 +134,26 @@ func TestDeleteKeyInMap(t *testing.T) {
 	}
 }
 
+func TestGetStringSlice(t *testing.T) {
+	cases := []struct {
+		testCase string
+		resource map[string]interface{}
+		expected []string
+	}{
+		{"emptyMap", map[string]interface{}{}, []string{}},
+		{"emptyArrayValue", map[string]interface{}{"key": []interface{}{}}, []string{}},
+		{"nonEmptyarrayValue", map[string]interface{}{"key": []interface{}{"value1", "value2"}}, []string{"value1", "value2"}},
+		{"otherKeyInMap", map[string]interface{}{"otherKey": []interface{}{"value1"}}, []string{}},
+	}
+
+	for _, tc := range cases {
+		actual := GetStringSlice(&mockResourceData{tc.resource}, "key")
+		if !reflect.DeepEqual(actual, tc.expected) {
+			t.Errorf("%s: expected %s, but got %s", tc.testCase, tc.expected, actual)
+		}
+	}
+}
+
 func validJSON() string {
 	return `
 {
@@ -153,4 +173,17 @@ func invalidJSON() string {
    }
 }
 `
+}
+
+type mockResourceData struct {
+	values map[string]interface{}
+}
+
+func (r *mockResourceData) Get(key string) interface{} {
+	return r.values[key]
+}
+
+func (r *mockResourceData) GetOk(key string) (interface{}, bool) {
+	v, ok := r.values[key]
+	return v, ok
 }

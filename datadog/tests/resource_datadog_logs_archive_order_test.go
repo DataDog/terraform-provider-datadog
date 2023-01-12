@@ -30,6 +30,7 @@ resource "datadog_logs_archive_order" "archives" {
 }
 
 func TestAccDatadogLogsArchiveOrder_basic(t *testing.T) {
+	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -53,6 +54,7 @@ func TestAccDatadogLogsArchiveOrder_basic(t *testing.T) {
 }
 
 func TestAccDatadogLogsArchiveOrder_empty(t *testing.T) {
+	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 

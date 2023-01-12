@@ -8,6 +8,7 @@ import (
 )
 
 func TestDatadogIntegrationPagerduty_import(t *testing.T) {
+	t.Parallel()
 	resourceName := "datadog_integration_pagerduty.pd"
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)

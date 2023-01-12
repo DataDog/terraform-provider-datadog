@@ -59,6 +59,7 @@ Required:
 
 Optional:
 
+- `include_percentiles` (Boolean) Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have an `aggregation_type` of distribution.
 - `path` (String) The path to the value the log-based metric will aggregate on (only used if the aggregation type is a "distribution"). This field can't be updated after creation.
 
 

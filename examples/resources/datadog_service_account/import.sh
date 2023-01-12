@@ -1,0 +1,1 @@
+terraform import datadog_service_account.example_sa 6f1b44c0-30b2-11eb-86bc-279f7c1ebaa4

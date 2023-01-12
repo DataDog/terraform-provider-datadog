@@ -230,6 +230,31 @@ resource "datadog_logs_custom_pipeline" "empty_filter_query_pipeline" {
 			sources = ["redis.severity"]
 		}
 	}
+
+	processor {
+		category_processor {
+		  target = "foo.severity"
+		  category {
+			name = "debug"
+			filter {
+			  query = ""
+			}
+		  }
+		  name       = "sample category processor"
+		  is_enabled = true
+		}
+	  }
+
+	processor {
+		pipeline {
+			is_enabled = true
+			name       = "Nginx"
+			filter {
+				query = ""
+			}
+
+		}
+	}
 }`, uniq)
 }
 
@@ -311,6 +336,7 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 }
 
 func TestAccDatadogLogsPipelineEmptyFilterQuery(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	pipelineName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
@@ -330,6 +356,10 @@ func TestAccDatadogLogsPipelineEmptyFilterQuery(t *testing.T) {
 						"datadog_logs_custom_pipeline.empty_filter_query_pipeline", "is_enabled", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.empty_filter_query_pipeline", "filter.0.query", ""),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.empty_filter_query_pipeline", "processor.1.category_processor.0.category.0.filter.0.query", ""),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.empty_filter_query_pipeline", "processor.2.pipeline.0.filter.0.query", ""),
 				),
 			},
 		},

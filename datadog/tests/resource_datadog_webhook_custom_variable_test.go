@@ -15,6 +15,7 @@ import (
 )
 
 func TestAccDatadogWebhookCustomVariable_Basic(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueName := strings.ToUpper(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
 	accProvider := testAccProvider(t, accProviders)

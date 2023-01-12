@@ -48,6 +48,7 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
 }
 
 func TestAccDatadogIntegrationGCP(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	client := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)

@@ -17,11 +17,11 @@ import (
 )
 
 func TestAccDatadogIntegrationAwsTagFilter_Basic(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	t.Parallel()
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
@@ -44,11 +44,11 @@ func TestAccDatadogIntegrationAwsTagFilter_Basic(t *testing.T) {
 }
 
 func TestAccDatadogIntegrationAwsTagFilter_BasicAccessKey(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accessKeyID := uniqueAWSAccessKeyID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	t.Parallel()
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,

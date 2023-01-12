@@ -52,13 +52,13 @@ resource "datadog_logs_archive" "my_s3_archive" {
 Required:
 
 - `client_id` (String) Your client id.
-- `container` (String) The container where the archive will be stored.
+- `container` (String) The container where the archive is stored.
 - `storage_account` (String) The associated storage account.
 - `tenant_id` (String) Your tenant id.
 
 Optional:
 
-- `path` (String) The path where the archive will be stored.
+- `path` (String) The path where the archive is stored.
 
 
 <a id="nestedblock--gcs_archive"></a>
@@ -68,8 +68,11 @@ Required:
 
 - `bucket` (String) Name of your GCS bucket.
 - `client_email` (String) Your client email.
-- `path` (String) Path where the archive will be stored.
 - `project_id` (String) Your project id.
+
+Optional:
+
+- `path` (String) Path where the archive is stored.
 
 
 <a id="nestedblock--s3_archive"></a>
@@ -79,8 +82,11 @@ Required:
 
 - `account_id` (String) Your AWS account id.
 - `bucket` (String) Name of your s3 bucket.
-- `path` (String) Path where the archive will be stored.
 - `role_name` (String) Your AWS role name
+
+Optional:
+
+- `path` (String) Path where the archive is stored.
 
 ## Import
 

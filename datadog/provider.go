@@ -105,7 +105,7 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_HOST", "DD_HOST"}, nil),
-				Description: "The API URL. This can also be set via the DD_HOST environment variable. Note that this URL must not end with the /api/ path. For example, https://api.datadoghq.com/ is a correct value, while https://api.datadoghq.com/api/ is not. And if you're working with \"EU\" version of Datadog, use https://api.datadoghq.eu/.",
+				Description: "The API URL. This can also be set via the DD_HOST environment variable. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not. And if you're working with \"EU\" version of Datadog, use `https://api.datadoghq.eu/`. Other Datadog region examples: `https://api.us5.datadoghq.com/`, `https://api.us3.datadoghq.com/` and `https://api.ddog-gov.com/`. See https://docs.datadoghq.com/getting_started/site/ for all available regions.",
 			},
 			"validate": {
 				Type:        schema.TypeBool,
@@ -132,6 +132,7 @@ func Provider() *schema.Provider {
 			"datadog_application_key":                      resourceDatadogApplicationKey(),
 			"datadog_authn_mapping":                        resourceDatadogAuthnMapping(),
 			"datadog_child_organization":                   resourceDatadogChildOrganization(),
+			"datadog_cloud_configuration_rule":             resourceDatadogCloudConfigurationRule(),
 			"datadog_cloud_workload_security_agent_rule":   resourceDatadogCloudWorkloadSecurityAgentRule(),
 			"datadog_dashboard":                            resourceDatadogDashboard(),
 			"datadog_dashboard_json":                       resourceDatadogDashboardJSON(),
@@ -162,6 +163,7 @@ func Provider() *schema.Provider {
 			"datadog_organization_settings":                resourceDatadogOrganizationSettings(),
 			"datadog_role":                                 resourceDatadogRole(),
 			"datadog_rum_application":                      resourceDatadogRUMApplication(),
+			"datadog_service_account":                      resourceDatadogServiceAccount(),
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_security_monitoring_filter":           resourceDatadogSecurityMonitoringFilter(),
@@ -182,7 +184,9 @@ func Provider() *schema.Provider {
 			"datadog_cloud_workload_security_agent_rules": dataSourceDatadogCloudWorkloadSecurityAgentRules(),
 			"datadog_dashboard":                           dataSourceDatadogDashboard(),
 			"datadog_dashboard_list":                      dataSourceDatadogDashboardList(),
+			"datadog_integration_aws_logs_services":       dataSourceDatadogIntegrationAWSLogsServices(),
 			"datadog_ip_ranges":                           dataSourceDatadogIPRanges(),
+			"datadog_logs_archives_order":                 dataSourceDatadogLogsArchivesOrder(),
 			"datadog_logs_indexes":                        dataSourceDatadogLogsIndexes(),
 			"datadog_logs_indexes_order":                  dataSourceDatadogLogsIndexesOrder(),
 			"datadog_logs_pipelines":                      dataSourceDatadogLogsPipelines(),
@@ -191,6 +195,7 @@ func Provider() *schema.Provider {
 			"datadog_permissions":                         dataSourceDatadogPermissions(),
 			"datadog_role":                                dataSourceDatadogRole(),
 			"datadog_roles":                               dataSourceDatadogRoles(),
+			"datadog_rum_application":                     dataSourceDatadogRUMApplication(),
 			"datadog_security_monitoring_rules":           dataSourceDatadogSecurityMonitoringRules(),
 			"datadog_security_monitoring_filters":         dataSourceDatadogSecurityMonitoringFilters(),
 			"datadog_service_level_objective":             dataSourceDatadogServiceLevelObjective(),
@@ -287,15 +292,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	)
 	config := datadog.NewConfiguration()
 	config.HTTPClient = httpClient
-	// Enable unstable operations
-	config.SetUnstableOperationEnabled("v1.CreateSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v1.GetSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v1.UpdateSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v1.DeleteSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v2.CreateTagConfiguration", true)
-	config.SetUnstableOperationEnabled("v2.DeleteTagConfiguration", true)
-	config.SetUnstableOperationEnabled("v2.ListTagConfigurationByName", true)
-	config.SetUnstableOperationEnabled("v2.UpdateTagConfiguration", true)
 
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
 	config.Debug = logging.IsDebugOrHigher()

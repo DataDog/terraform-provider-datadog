@@ -10,7 +10,6 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -29,7 +28,7 @@ func resourceDatadogRole() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		CustomizeDiff: customdiff.ValidateValue("permission", validatePermissionsUnrestricted),
+		CustomizeDiff: resourceDatadogRoleCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -46,6 +45,15 @@ func resourceDatadogRole() *schema.Resource {
 				Type:        schema.TypeInt,
 				Computed:    true,
 				Description: "Number of users that have this role.",
+			},
+			"validate": {
+				Description: "If set to `false`, skip the validation call done during plan.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// This is never sent to the backend, so it should never generate a diff
+					return true
+				},
 			},
 		},
 	}
@@ -89,7 +97,17 @@ func getValidPermissions(ctx context.Context, apiInstances *utils.ApiInstances) 
 	return validPermissions, nil
 }
 
-func validatePermissionsUnrestricted(ctx context.Context, value interface{}, meta interface{}) error {
+func resourceDatadogRoleCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
+		// Explicitly skip validation
+		return nil
+	}
+
+	permissions, ok := diff.GetOkExists("permission")
+	if !ok {
+		return nil
+	}
+
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
@@ -99,7 +117,7 @@ func validatePermissionsUnrestricted(ctx context.Context, value interface{}, met
 		return err
 	}
 
-	perms := value.(*schema.Set)
+	perms := permissions.(*schema.Set)
 	for _, permI := range perms.List() {
 		perm := permI.(map[string]interface{})
 		permID := perm["id"].(string)

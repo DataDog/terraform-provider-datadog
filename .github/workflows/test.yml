@@ -4,6 +4,8 @@ on:
   pull_request:
     branches:
       - master
+  schedule:
+    - cron: "0 1 * * *"
 
 jobs:
   pre-commit:
@@ -43,23 +45,15 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Install Go
         uses: actions/setup-go@v3
         with:
           go-version: 1.18
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/go/pkg/mod
-            ~/.cache/go-build
-            ~/Library/Caches/go-build
-            %LocalAppData%\go-build
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-            ${{ runner.os }}-go-
+          cache: true
       - name: Vet
         run: make vet
       - name: License Check
@@ -77,7 +71,23 @@ jobs:
         run: echo ("TF_ACC_TERRAFORM_PATH=" + (Get-Command terraform).Path) >> $env:GITHUB_ENV
       - name: Check Docs Are Up To Date
         run: make check-docs
+      - name: Set regex for tests to run
+        shell: bash
+        run: |
+          test_re=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- datadog/*.go datadog/*/*.go datadog/internal/* go.mod go.sum | \
+            sed 's/.*_datadog_\(.*\).*.go/\1/' | sed 's/.*\/.*\/\(.*\).*.go/\1/' | \
+            sed -E 's+test|_++g' | \
+            sed -e "s/\(.*\)/\\(?i\\)\1/" | \
+            xargs | sed -e 's/ /|/g')
+          
+          if [[ "$test_re" =~ go.mod|go.sum|provider ]] || [[ ${{ github.head_ref }} = release/* ]]; then
+            echo TESTARGS="-run \".*\"" >> $GITHUB_ENV
+          elif [[ ! -z "$test_re" ]]; then
+            echo TESTARGS="-run \"${test_re}\"" >> $GITHUB_ENV
+          fi
       - name: Test
-        run: make testall
+        shell: bash
+        run: |
+          [[ -z "${TESTARGS}" ]] && echo "Skipping tests" || make testall
         env:
           RECORD: false

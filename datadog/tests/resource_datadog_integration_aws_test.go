@@ -41,6 +41,7 @@ resource "datadog_integration_aws" "account" {
 }
 
 func TestAccDatadogIntegrationAWS(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
@@ -173,6 +174,7 @@ resource "datadog_integration_aws" "account_access_key" {
 }
 
 func TestAccDatadogIntegrationAWSAccessKey(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accessKeyID := uniqueAWSAccessKeyID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)

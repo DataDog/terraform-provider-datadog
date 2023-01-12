@@ -31,6 +31,7 @@ data "datadog_monitor" "test" {
 ### Read-Only
 
 - `enable_logs_sample` (Boolean) Whether or not a list of log values which triggered the alert is included. This is only used by log monitors.
+- `enable_samples` (Boolean) Whether or not a list of samples which triggered the alert is included. This is only used by CI Test and Pipeline monitors.
 - `escalation_message` (String) Message included with a re-notification for this monitor.
 - `evaluation_delay` (Number) Time (in seconds) for which evaluation is delayed. This is only used by metric monitors.
 - `group_retention_duration` (String) The time span after which groups with missing data are dropped from the monitor state. The minimum value is one hour, and the maximum value is 72 hours. Example values are: 60m, 1h, and 2d. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors.

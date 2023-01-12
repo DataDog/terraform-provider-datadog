@@ -39,6 +39,7 @@ resource "datadog_logs_archive" "my_azure_archive" {
 }
 
 func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	tenantName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
@@ -102,6 +103,7 @@ resource "datadog_logs_archive" "my_gcs_archive" {
 }
 
 func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	client := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
@@ -163,6 +165,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
 }
 
 func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
@@ -227,6 +230,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
 }
 
 func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)

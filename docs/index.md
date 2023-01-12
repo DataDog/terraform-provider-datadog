@@ -50,7 +50,7 @@ provider "datadog" {
 ### Optional
 
 - `api_key` (String) (Required unless validate is false) Datadog API key. This can also be set via the DD_API_KEY environment variable.
-- `api_url` (String) The API URL. This can also be set via the DD_HOST environment variable. Note that this URL must not end with the /api/ path. For example, https://api.datadoghq.com/ is a correct value, while https://api.datadoghq.com/api/ is not. And if you're working with "EU" version of Datadog, use https://api.datadoghq.eu/.
+- `api_url` (String) The API URL. This can also be set via the DD_HOST environment variable. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not. And if you're working with "EU" version of Datadog, use `https://api.datadoghq.eu/`. Other Datadog region examples: `https://api.us5.datadoghq.com/`, `https://api.us3.datadoghq.com/` and `https://api.ddog-gov.com/`. See https://docs.datadoghq.com/getting_started/site/ for all available regions.
 - `app_key` (String) (Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.
 - `http_client_retry_enabled` (Boolean) Enables request retries on HTTP status codes 429 and 5xx. Defaults to `true`.
 - `http_client_retry_timeout` (Number) The HTTP request retry timeout period. Defaults to 60 seconds.

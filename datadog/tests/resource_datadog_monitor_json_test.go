@@ -9,11 +9,11 @@ import (
 )
 
 func TestAccDatadogMonitorJSONImport(t *testing.T) {
+	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniqueID := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	t.Parallel()
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,

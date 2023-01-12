@@ -16,6 +16,7 @@ import (
 const tfSecurityFiltersSource = "data.datadog_security_monitoring_filters.acceptance_test"
 
 func TestAccDatadogSecurityMonitoringFilterDatasource(t *testing.T) {
+	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
