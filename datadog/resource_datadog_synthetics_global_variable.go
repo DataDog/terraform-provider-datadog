@@ -108,7 +108,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 				},
 			},
 			"options": {
-				Description: "Additional options to add for the variable, such as an MFA token.",
+				Description: "Additional options for the variable, such as a MFA token.",
 				Type:        schema.TypeList,
 				Optional:    true,
 				MaxItems:    1,

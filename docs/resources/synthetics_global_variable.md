@@ -32,7 +32,7 @@ resource "datadog_synthetics_global_variable" "test_variable" {
 ### Optional
 
 - `description` (String) Description of the global variable.
-- `options` (Block List, Max: 1) Additional options to add for the variable, such as an MFA token. (see [below for nested schema](#nestedblock--options))
+- `options` (Block List, Max: 1) Additional options for the variable, such as a MFA token. (see [below for nested schema](#nestedblock--options))
 - `parse_test_id` (String) Id of the Synthetics test to use for a variable from test.
 - `parse_test_options` (Block List, Max: 1) ID of the Synthetics test to use a source of the global variable value. (see [below for nested schema](#nestedblock--parse_test_options))
 - `restricted_roles` (Set of String) A list of role identifiers to associate with the Synthetics global variable.
