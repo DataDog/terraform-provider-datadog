@@ -371,6 +371,23 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 		d.Set("parse_test_options", []map[string]interface{}{localParseTestOptions})
 	}
 
+	if syntheticsGlobalVariableValue.HasOptions() {
+		syntheticsGlobalVariableOptions := syntheticsGlobalVariableValue.GetOptions()
+		localVariableOptions := make(map[string]interface{})
+		if syntheticsGlobalVariableOptions.HasTotpParameters() {
+			syntheticsGlobalVariableTOTPParameters := syntheticsGlobalVariableOptions.GetTotpParameters()
+			localTotpParameters := make(map[string]interface{})
+			if syntheticsGlobalVariableTOTPParameters.HasDigits() {
+				localTotpParameters["digits"] = syntheticsGlobalVariableTOTPParameters.GetDigits()
+			}
+			if syntheticsGlobalVariableTOTPParameters.HasRefreshInterval() {
+				localTotpParameters["refresh_interval"] = syntheticsGlobalVariableTOTPParameters.GetRefreshInterval()
+			}
+			localVariableOptions["totp_parameters"] = localTotpParameters
+		}
+		d.Set("options", []map[string]interface{}{localVariableOptions})
+	}
+
 	if syntheticsGlobalVariable.HasAttributes() {
 		attributes := syntheticsGlobalVariable.GetAttributes()
 		variableRestrictedRoles := attributes.GetRestrictedRoles()
