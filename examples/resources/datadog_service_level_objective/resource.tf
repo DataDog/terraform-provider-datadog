@@ -21,6 +21,10 @@ resource "datadog_service_level_objective" "foo" {
     warning   = 99.99
   }
 
+  timeframe         = "30d"
+  target_threshold  = 99.9
+  warning_threshold = 99.99
+
   tags = ["foo:bar", "baz"]
 }
 
@@ -44,6 +48,10 @@ resource "datadog_service_level_objective" "bar" {
     target    = 99.9
     warning   = 99.99
   }
+
+  timeframe         = "30d"
+  target_threshold  = 99.9
+  warning_threshold = 99.99
 
   tags = ["foo:bar", "baz"]
 }
