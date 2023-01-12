@@ -264,7 +264,7 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 	syntheticsGlobalVariableValue.SetValue(d.Get("value").(string))
 	syntheticsGlobalVariableValue.SetSecure(d.Get("secure").(bool))
 
-	if options, ok := d.GetOk("options.0"); ok {
+	if _, ok := d.GetOk("options.0"); ok {
 		variableOptions := datadogV1.SyntheticsGlobalVariableOptions{}
 		totpParameters := datadogV1.SyntheticsGlobalVariableTOTPParameters{}
 		if digits, ok := d.GetOk("options.0.totp_parameters.0.digits"); ok {
