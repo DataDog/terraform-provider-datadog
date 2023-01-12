@@ -268,10 +268,10 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 		variableOptions := datadogV1.SyntheticsGlobalVariableOptions{}
 		totpParameters := datadogV1.SyntheticsGlobalVariableTOTPParameters{}
 		if digits, ok := d.GetOk("options.0.totp_parameters.0.digits"); ok {
-			totpParameters.SetDigits(digits.(int32))
+			totpParameters.SetDigits(int32(digits.(int)))
 		}
 		if refresh_interval, ok := d.GetOk("options.0.totp_parameters.0.refresh_interval"); ok {
-			totpParameters.SetRefreshInterval(refresh_interval.(int32))
+			totpParameters.SetRefreshInterval(int32(refresh_interval.(int)))
 		}
 		variableOptions.SetTotpParameters(totpParameters)
 		syntheticsGlobalVariableValue.SetOptions(variableOptions)
