@@ -228,9 +228,9 @@ func createSyntheticsGlobalVariableSecureStep(ctx context.Context, accProvider f
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_global_variable.foo", "secure", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_global_variable.foo", "options.totp_parameters.digits", "6"),
+				"datadog_synthetics_global_variable.foo", "options.0.totp_parameters.0.digits", "6"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_global_variable.foo", "options.totp_parameters.refresh_interval", "30"),
+				"datadog_synthetics_global_variable.foo", "options.0.totp_parameters.0.refresh_interval", "30"),
 		),
 	}
 }
@@ -274,6 +274,10 @@ func updateSyntheticsGlobalVariableSecureStep(ctx context.Context, accProvider f
 				"datadog_synthetics_global_variable.foo", "value", "variable-secure-value-updated"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_global_variable.foo", "secure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "options.0.totp_parameters.0.digits", "6"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "options.0.totp_parameters.0.refresh_interval", "30"),
 		),
 	}
 }
@@ -286,6 +290,12 @@ resource "datadog_synthetics_global_variable" "foo" {
 	tags = ["foo:bar", "baz", "env:test"]
 	value = "variable-secure-value-updated"
 	secure = true
+	options {
+		totp_parameters {
+			digits = 6
+			refresh_interval = 30
+		}
+	}
 }`, uniq)
 }
 
