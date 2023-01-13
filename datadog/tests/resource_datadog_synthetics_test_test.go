@@ -702,7 +702,7 @@ resource "datadog_synthetics_test" "foo" {
 		follow_redirects = true
 		min_failure_duration = 0
 		min_location_failed = 1
-        http_version = "http2"
+		http_version = "http2"
 		retry {
 			count = 1
 		}
