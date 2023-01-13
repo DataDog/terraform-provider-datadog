@@ -28,7 +28,7 @@ func resourceDatadogApplicationKey() *schema.Resource {
 				Required:    true,
 			},
 			"scopes": {
-				Description: "Authorization scopes for the Application Key.",
+				Description: "Authorization scopes for the Application Key. **NOTE:** Currently in private beta. To request access, contact Support at support@datadoghq.com",
 				Type:        schema.TypeList,
 				Optional:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
@@ -45,6 +45,12 @@ func resourceDatadogApplicationKey() *schema.Resource {
 
 func buildDatadogApplicationKeyCreateV2Struct(d *schema.ResourceData) *datadogV2.ApplicationKeyCreateRequest {
 	applicationKeyAttributes := datadogV2.NewApplicationKeyCreateAttributes(d.Get("name").(string))
+	tfScopes := d.Get("scopes").([]interface{})
+	ddScope := make([]string, len(tfScopes))
+	for i, tfScope := range tfScopes {
+		ddScope[i] = tfScope.(string)
+	}
+	applicationKeyAttributes.SetScopes(ddScope)
 	applicationKeyData := datadogV2.NewApplicationKeyCreateData(*applicationKeyAttributes, datadogV2.APPLICATIONKEYSTYPE_APPLICATION_KEYS)
 	applicationKeyRequest := datadogV2.NewApplicationKeyCreateRequest(*applicationKeyData)
 
@@ -54,6 +60,12 @@ func buildDatadogApplicationKeyCreateV2Struct(d *schema.ResourceData) *datadogV2
 func buildDatadogApplicationKeyUpdateV2Struct(d *schema.ResourceData) *datadogV2.ApplicationKeyUpdateRequest {
 	applicationKeyAttributes := datadogV2.NewApplicationKeyUpdateAttributes()
 	applicationKeyAttributes.SetName(d.Get("name").(string))
+	tfScopes := d.Get("scopes").([]interface{})
+	ddScope := make([]string, len(tfScopes))
+	for i, tfScope := range tfScopes {
+		ddScope[i] = tfScope.(string)
+	}
+	applicationKeyAttributes.SetScopes(ddScope)
 	applicationKeyData := datadogV2.NewApplicationKeyUpdateData(*applicationKeyAttributes, d.Id(), datadogV2.APPLICATIONKEYSTYPE_APPLICATION_KEYS)
 	applicationKeyRequest := datadogV2.NewApplicationKeyUpdateRequest(*applicationKeyData)
 

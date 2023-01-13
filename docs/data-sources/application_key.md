@@ -25,6 +25,7 @@ data "datadog_application_key" "foo" {
 
 - `id` (String) Id for Application Key.
 - `name` (String) Name for Application Key.
+- `scopes` (List of String) Authorization scopes for the Application Key.
 
 ### Read-Only
 

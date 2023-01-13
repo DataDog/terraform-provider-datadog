@@ -53,7 +53,7 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 				Config: testAccCheckDatadogApplicationKeyConfigScopesRequired(applicationKeyName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogApplicationKeyExists(accProvider, resourceName),
-					resource.TestCheckResourceAttr(resourceName, "scopes", applicationKeyScopes),
+					resource.TestCheckResourceAttr(resourceName, "scopes.#", fmt.Sprint(len(applicationKeyScopes))),
 					testAccCheckDatadogApplicationKeyValueMatches(accProvider, resourceName),
 				),
 			},
