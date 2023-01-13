@@ -22,9 +22,10 @@ func TestDatadogIntegrationPagerduty_import(t *testing.T) {
 				Config: testAccCheckDatadogIntegrationPagerdutyConfigImported(),
 			},
 			{
-				ResourceName:      resourceName,
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:            resourceName,
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"api_token"},
 			},
 		},
 	})
@@ -35,5 +36,6 @@ func testAccCheckDatadogIntegrationPagerdutyConfigImported() string {
 resource "datadog_integration_pagerduty" "pd" {
   schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
   subdomain = "testdomain"
+  api_token = "********************"
 }`
 }

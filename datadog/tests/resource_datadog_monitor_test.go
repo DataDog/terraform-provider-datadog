@@ -951,7 +951,7 @@ resource "datadog_monitor" "foo" {
   message = "a message"
   priority = 3
 
-  query = "avg(current_1d):avg:system.load.5{*} > 0.5"
+  query = "avg(current_1mo):avg:system.load.5{*} > 0.5"
 
   monitor_thresholds {
 	critical = "0.5"
