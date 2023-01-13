@@ -2,7 +2,7 @@
 version: 1
 interactions:
 - request:
-    body: '{"subdomain":"testdomain","schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"api_token":"secret"}'
+    body: '{"subdomain":"testdomain","schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"api_token":"abcdefghijklmnopqrst"}'
     form: {}
     headers:
       Content-Type:
@@ -13,18 +13,19 @@ interactions:
     body: ""
     headers:
       Content-Type:
-      - text/plain
+      - text/html; charset=utf-8
     status: 204 No Content
     code: 204
     duration: ""
 - request:
     body: ""
     form: {}
-    headers:
+    headers: {}
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: |
+      {"show_all_incidents":false,"filter_services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"api_token":"*****","services":[{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_74909_1631710301_foo","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_74909_1631710301_bar","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_79995_1635873433_bar_2","service_key":"*****"},{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1636450824","service_key":"*****"},{"service_name":"Test-Go-TestPagerDutyLifecycle-1639138041","service_key":"*****"},{"service_name":"Test-Go-TestPagerDutyServicesUpdateErrors-1639502439_1","service_key":"*****"},{"service_name":"12345","service_key":"*****"}],"subdomain":"testdomain"}
     headers:
       Content-Type:
       - application/json
@@ -34,11 +35,12 @@ interactions:
 - request:
     body: ""
     form: {}
-    headers:
+    headers: {}
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: |
+      {"show_all_incidents":false,"filter_services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"api_token":"*****","services":[{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_74909_1631710301_foo","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_74909_1631710301_bar","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_79995_1635873433_bar_2","service_key":"*****"},{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1636450824","service_key":"*****"},{"service_name":"Test-Go-TestPagerDutyLifecycle-1639138041","service_key":"*****"},{"service_name":"Test-Go-TestPagerDutyServicesUpdateErrors-1639502439_1","service_key":"*****"},{"service_name":"12345","service_key":"*****"}],"subdomain":"testdomain"}
     headers:
       Content-Type:
       - application/json
@@ -48,11 +50,12 @@ interactions:
 - request:
     body: ""
     form: {}
-    headers:
+    headers: {}
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: |
+      {"show_all_incidents":false,"filter_services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"api_token":"*****","services":[{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_74909_1631710301_foo","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_74909_1631710301_bar","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_79995_1635873433_bar_2","service_key":"*****"},{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1636450824","service_key":"*****"},{"service_name":"Test-Go-TestPagerDutyLifecycle-1639138041","service_key":"*****"},{"service_name":"Test-Go-TestPagerDutyServicesUpdateErrors-1639502439_1","service_key":"*****"},{"service_name":"12345","service_key":"*****"}],"subdomain":"testdomain"}
     headers:
       Content-Type:
       - application/json
@@ -62,11 +65,12 @@ interactions:
 - request:
     body: ""
     form: {}
-    headers:
+    headers: {}
     url: https://api.datadoghq.com/api/v1/integration/pagerduty
     method: GET
   response:
-    body: '{"services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"subdomain":"testdomain","api_token":"*****"}'
+    body: |
+      {"show_all_incidents":false,"filter_services":[],"schedules":["https://ddog.pagerduty.com/schedules/X123VF"],"api_token":"*****","services":[{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_74909_1631710301_foo","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_74909_1631710301_bar","service_key":"*****"},{"service_name":"tf_TestAccDatadogIntegrationPagerdutyServiceObject_Basic_79995_1635873433_bar_2","service_key":"*****"},{"service_name":"java-lifecyclePagerDutyIntegrationTest-local-1636450824","service_key":"*****"},{"service_name":"Test-Go-TestPagerDutyLifecycle-1639138041","service_key":"*****"},{"service_name":"Test-Go-TestPagerDutyServicesUpdateErrors-1639502439_1","service_key":"*****"},{"service_name":"12345","service_key":"*****"}],"subdomain":"testdomain"}
     headers:
       Content-Type:
       - application/json

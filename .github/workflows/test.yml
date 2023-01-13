@@ -80,7 +80,7 @@ jobs:
             sed -e "s/\(.*\)/\\(?i\\)\1/" | \
             xargs | sed -e 's/ /|/g')
           
-          if [[ "$test_re" =~ go.mod|go.sum|provider ]] || [[ ${{ github.head_ref }} = release/* ]]; then
+          if [[ "$test_re" =~ go.mod|go.sum|provider ]] || [[ "${{ github.head_ref }}" = release/* ]] || [[ "${{ github.event_name }}" == "schedule" ]]; then
             echo TESTARGS="-run \".*\"" >> $GITHUB_ENV
           elif [[ ! -z "$test_re" ]]; then
             echo TESTARGS="-run \"${test_re}\"" >> $GITHUB_ENV
