@@ -28,7 +28,7 @@ func resourceDatadogApplicationKey() *schema.Resource {
 				Required:    true,
 			},
 			"scopes": {
-				Description: "Authorization scopes for the Application Key. **NOTE:** Currently in private beta. To request access, contact Support at support@datadoghq.com",
+				Description: "Authorization scopes for the Application Key.",
 				Type:        schema.TypeList,
 				Optional:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
