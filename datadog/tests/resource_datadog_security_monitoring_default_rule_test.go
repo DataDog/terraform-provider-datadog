@@ -39,6 +39,35 @@ func TestAccDatadogSecurityMonitoringDefaultRule_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringDefaultRule_DeprecationWarning(t *testing.T) {
+	t.Parallel()
+	_, accProviders := testAccProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			// Define an existing rule
+			{
+				Config: testAccDatadogSecurityMonitoringDefaultDatasource(),
+			},
+			// Import the rule
+			{
+				Config:             testAccCheckDatadogSecurityMonitoringDefaultNoop(),
+				ResourceName:       tfSecurityDefaultRuleName,
+				ImportState:        true,
+				ImportStateIdFunc:  idFromDatasource,
+				ImportStatePersist: true,
+			},
+			// Change the "decrease criticality" flag
+			{
+				Config: testAccDatadogSecurityMonitoringDefaultRuleDynamicCriticality(),
+				Check:  testAccCheckDatadogSecurityMonitoringDefaultDynamicCriticality(),
+			},
+		},
+	})
+}
+
 func idFromDatasource(state *terraform.State) (string, error) {
 	resources := state.RootModule().Resources
 	resourceState := resources["data.datadog_security_monitoring_rules.bruteforce"]
