@@ -385,6 +385,7 @@ type securityMonitoringRuleResponseInterface interface {
 	securityMonitoringRuleInterface
 	SetCases(v []datadogV2.SecurityMonitoringRuleCase)
 	GetCases() []datadogV2.SecurityMonitoringRuleCase
+	GetDeprecationDateOk() (*int64, bool)
 }
 
 func resourceDatadogSecurityMonitoringRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -102,6 +103,26 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 	}
 }
 
+func securityMonitoringRuleDeprecationWarning(rule securityMonitoringRuleResponseInterface) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if deprecationTimestampMs, ok := rule.GetDeprecationDateOk(); ok {
+		deprecation := time.UnixMilli(*deprecationTimestampMs)
+
+		warning := diag.Diagnostic{
+			Severity: diag.Warning,
+			Summary:  fmt.Sprintf("Rule will be deprecated on %s.", deprecation.Format("Jan _2 2006")),
+			Detail: "Please consider deleting the associated resource. " +
+				"After the deprecation date, the rule will stop triggering signals. " +
+				"Moreover, the API will reject any call to update the rule, which might break your Terraform pipeline.",
+		}
+
+		diags = append(diags, warning)
+	}
+
+	return diags
+}
+
 func resourceDatadogSecurityMonitoringDefaultRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	return diag.FromErr(errors.New("cannot create a default rule, please import it first before making changes"))
 }
@@ -174,7 +195,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 
 	d.Set("options", &ruleOptions)
 
-	return nil
+	return securityMonitoringRuleDeprecationWarning(rule)
 }
 
 func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -211,13 +232,21 @@ func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *
 		return diag.FromErr(err)
 	}
 
+	var diags diag.Diagnostics
+
 	if shouldUpdate {
-		if _, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().UpdateSecurityMonitoringRule(auth, ruleID, *ruleUpdate); err != nil {
-			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating security monitoring rule on resource creation")
+		ruleResponse, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().UpdateSecurityMonitoringRule(auth, ruleID, *ruleUpdate)
+
+		if err != nil {
+			diags = append(diags, utils.TranslateClientErrorDiag(err, httpResponse, "error updating security monitoring rule on resource creation")...)
 		}
+
+		diags = append(diags, securityMonitoringRuleDeprecationWarning(ruleResponse.SecurityMonitoringStandardRuleResponse)...)
+	} else {
+		diags = append(diags, securityMonitoringRuleDeprecationWarning(rule)...)
 	}
 
-	return nil
+	return diags
 }
 
 func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitoringStandardRuleResponse, d *schema.ResourceData) (*datadogV2.SecurityMonitoringRuleUpdatePayload, bool, error) {
