@@ -107,6 +107,38 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 					},
 				},
 			},
+			"options": {
+				Description: "Additional options for the variable, such as a MFA token.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				MaxItems:    1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"totp_parameters": {
+							Description: "Parameters needed for MFA/TOTP.",
+							Type:        schema.TypeList,
+							Optional:    true,
+							MaxItems:    1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"digits": {
+										Description:  "Number of digits for the OTP.",
+										Type:         schema.TypeInt,
+										Required:     true,
+										ValidateFunc: validation.IntBetween(4, 10),
+									},
+									"refresh_interval": {
+										Description:  "Interval for which to refresh the token (in seconds).",
+										Type:         schema.TypeInt,
+										Required:     true,
+										ValidateFunc: validation.IntBetween(0, 999),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 			"restricted_roles": {
 				Description: "A list of role identifiers to associate with the Synthetics global variable.",
 				Type:        schema.TypeSet,
@@ -232,6 +264,19 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 	syntheticsGlobalVariableValue.SetValue(d.Get("value").(string))
 	syntheticsGlobalVariableValue.SetSecure(d.Get("secure").(bool))
 
+	if _, ok := d.GetOk("options.0"); ok {
+		variableOptions := datadogV1.SyntheticsGlobalVariableOptions{}
+		totpParameters := datadogV1.SyntheticsGlobalVariableTOTPParameters{}
+		if digits, ok := d.GetOk("options.0.totp_parameters.0.digits"); ok {
+			totpParameters.SetDigits(int32(digits.(int)))
+		}
+		if refresh_interval, ok := d.GetOk("options.0.totp_parameters.0.refresh_interval"); ok {
+			totpParameters.SetRefreshInterval(int32(refresh_interval.(int)))
+		}
+		variableOptions.SetTotpParameters(totpParameters)
+		syntheticsGlobalVariableValue.SetOptions(variableOptions)
+	}
+
 	syntheticsGlobalVariable.SetValue(syntheticsGlobalVariableValue)
 
 	if parseTestID, ok := d.GetOk("parse_test_id"); ok {
@@ -324,6 +369,23 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 		}
 
 		d.Set("parse_test_options", []map[string]interface{}{localParseTestOptions})
+	}
+
+	if syntheticsGlobalVariableValue.HasOptions() {
+		syntheticsGlobalVariableOptions := syntheticsGlobalVariableValue.GetOptions()
+		localVariableOptions := make(map[string]interface{})
+		if syntheticsGlobalVariableOptions.HasTotpParameters() {
+			syntheticsGlobalVariableTOTPParameters := syntheticsGlobalVariableOptions.GetTotpParameters()
+			localTotpParameters := make(map[string]interface{})
+			if syntheticsGlobalVariableTOTPParameters.HasDigits() {
+				localTotpParameters["digits"] = syntheticsGlobalVariableTOTPParameters.GetDigits()
+			}
+			if syntheticsGlobalVariableTOTPParameters.HasRefreshInterval() {
+				localTotpParameters["refresh_interval"] = syntheticsGlobalVariableTOTPParameters.GetRefreshInterval()
+			}
+			localVariableOptions["totp_parameters"] = []map[string]interface{}{localTotpParameters}
+		}
+		d.Set("options", []map[string]interface{}{localVariableOptions})
 	}
 
 	if syntheticsGlobalVariable.HasAttributes() {
