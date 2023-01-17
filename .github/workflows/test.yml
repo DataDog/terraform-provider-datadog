@@ -10,15 +10,17 @@ on:
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
-    if: github.event.action != 'closed' && github.event.pull_request.merged != true
+    if: (github.event.action != 'closed' && github.event.pull_request.merged != true) || github.event_name == 'schedule'
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
       - name: Install pre-commit
         run: python -m pip install pre-commit
       - name: set PY
-        run: echo "PY=$(python -c 'import hashlib, sys;print(hashlib.sha256(sys.version.encode()+sys.executable.encode()).hexdigest())')" >> $GITHUB_ENV
-      - uses: actions/cache@v1
+        run: echo "PY=$(python -c 'import platform;print(platform.python_version())')" >> $GITHUB_ENV
+      - uses: actions/cache@v3
         with:
           path: ~/.cache/pre-commit
           key: pre-commit|${{ env.PY }}|${{ hashFiles('.pre-commit-config.yaml') }}
@@ -29,7 +31,8 @@ jobs:
     strategy:
       matrix:
         terraform_version: ["1.1.2"]
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        # platform: [ubuntu-latest, macos-latest, windows-latest]
+        platform: [ubuntu-latest]
         # test old terraform versions only on ubuntu-latest
         include:
           - terraform_version: "0.15.5"
@@ -66,9 +69,9 @@ jobs:
       - name: Set TF_ACC_TERRAFORM_PATH env var on non-windows platform
         if: ${{ matrix.platform != 'windows-latest' }}
         run: echo "TF_ACC_TERRAFORM_PATH=$(which terraform)" >> $GITHUB_ENV
-      - name: Set TF_ACC_TERRAFORM_PATH env var on windows platform
-        if: ${{ matrix.platform == 'windows-latest' }}
-        run: echo ("TF_ACC_TERRAFORM_PATH=" + (Get-Command terraform).Path) >> $env:GITHUB_ENV
+      # - name: Set TF_ACC_TERRAFORM_PATH env var on windows platform
+      #   if: ${{ matrix.platform == 'windows-latest' }}
+      #   run: echo ("TF_ACC_TERRAFORM_PATH=" + (Get-Command terraform).Path) >> $env:GITHUB_ENV
       - name: Check Docs Are Up To Date
         run: make check-docs
       - name: Set regex for tests to run
@@ -80,7 +83,7 @@ jobs:
             sed -e "s/\(.*\)/\\(?i\\)\1/" | \
             xargs | sed -e 's/ /|/g')
           
-          if [[ "$test_re" =~ go.mod|go.sum|provider ]] || [[ ${{ github.head_ref }} = release/* ]]; then
+          if [[ "$test_re" =~ go.mod|go.sum|provider ]] || [[ "${{ github.head_ref }}" = release/* ]] || [[ "${{ github.event_name }}" == "schedule" ]]; then
             echo TESTARGS="-run \".*\"" >> $GITHUB_ENV
           elif [[ ! -z "$test_re" ]]; then
             echo TESTARGS="-run \"${test_re}\"" >> $GITHUB_ENV

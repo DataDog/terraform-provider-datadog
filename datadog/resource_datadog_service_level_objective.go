@@ -97,18 +97,21 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				Description:      "The objective's target in `(0,100)`.",
 				Type:             schema.TypeFloat,
 				Optional:         true,
+				Computed:         true,
 				DiffSuppressFunc: suppressDataDogFloatIntDiff,
 			},
 			"warning_threshold": {
 				Description:      "The objective's warning value in `(0,100)`. This must be greater than the target value.",
 				Type:             schema.TypeFloat,
 				Optional:         true,
+				Computed:         true,
 				DiffSuppressFunc: suppressDataDogFloatIntDiff,
 			},
 			"timeframe": {
 				Description:      "The time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page.",
 				Type:             schema.TypeString,
 				Optional:         true,
+				Computed:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTimeframeFromValue),
 			},
 			"type": {

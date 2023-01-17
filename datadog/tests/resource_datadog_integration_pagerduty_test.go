@@ -32,7 +32,7 @@ func TestAccDatadogIntegrationPagerduty_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "subdomain", "testdomain"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_pagerduty.foo", "api_token", "secret"),
+						"datadog_integration_pagerduty.foo", "api_token", "abcdefghijklmnopqrst"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_pagerduty.foo", "schedules.0", "https://ddog.pagerduty.com/schedules/X123VF"),
 				),
@@ -76,6 +76,6 @@ func testAccCheckDatadogIntegrationPagerdutyConfig() string {
  resource "datadog_integration_pagerduty" "foo" {
    schedules = ["https://ddog.pagerduty.com/schedules/X123VF"]
    subdomain = "testdomain"
-   api_token = "secret"
+   api_token = "abcdefghijklmnopqrst"
  }`
 }
