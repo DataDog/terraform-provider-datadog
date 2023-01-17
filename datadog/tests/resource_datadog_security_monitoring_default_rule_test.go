@@ -40,6 +40,11 @@ func TestAccDatadogSecurityMonitoringDefaultRule_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSecurityMonitoringDefaultRule_DeprecationWarning(t *testing.T) {
+	if !isReplaying() {
+		t.Skip("this is a replay-only test")
+		return
+	}
+
 	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
 
@@ -60,6 +65,10 @@ func TestAccDatadogSecurityMonitoringDefaultRule_DeprecationWarning(t *testing.T
 				ImportStatePersist: true,
 			},
 			// Change the "decrease criticality" flag
+			// For this specific test, we manually changed the cassette recording to set a deprecation date on the rule
+			// As of Jan 17, 2023, the TF testing framework does not provide a way to make assertions on warning
+			// See https://github.com/hashicorp/terraform-plugin-sdk/issues/864
+			// However, this test makes sure nothing breaks when the warning is returned
 			{
 				Config: testAccDatadogSecurityMonitoringDefaultRuleDynamicCriticality(),
 				Check:  testAccCheckDatadogSecurityMonitoringDefaultDynamicCriticality(),
