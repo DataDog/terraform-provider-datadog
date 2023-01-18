@@ -669,6 +669,12 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:        schema.TypeInt,
 					Optional:    true,
 				},
+				"http_version": {
+					Description:      "HTTP version to use for a Synthetics API test.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsHTTPVersionFromValue),
+				},
 			},
 		},
 	}
@@ -1478,6 +1484,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
 		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
 			options.SetTickEvery(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("options_list.0.http_version"); ok {
+			options.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(attr.(string)))
 		}
 		if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
 			options.SetAcceptSelfSigned(attr.(bool))
@@ -3006,6 +3015,9 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 	if actualOptions.HasTickEvery() {
 		localOptionsList["tick_every"] = actualOptions.GetTickEvery()
+	}
+	if actualOptions.HasHttpVersion() {
+		localOptionsList["http_version"] = actualOptions.GetHttpVersion()
 	}
 	if actualOptions.HasAcceptSelfSigned() {
 		localOptionsList["accept_self_signed"] = actualOptions.GetAcceptSelfSigned()
