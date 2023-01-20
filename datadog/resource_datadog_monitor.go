@@ -225,6 +225,11 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 				ConflictsWith: []string{"on_missing_data"},
 			},
+			"notification_preset_name": {
+				Description: "Toggles the display of additional content sent in the monitor notification.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
 			"renotify_interval": {
 				Description: "The number of minutes after the last notification before a monitor will re-notify on the current status. It will only re-notify if it's not resolved.",
 				Type:        schema.TypeInt,
