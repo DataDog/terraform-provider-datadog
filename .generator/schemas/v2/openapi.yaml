@@ -14168,6 +14168,7 @@ paths:
     post:
       description: Create a Cloudflare account.
       operationId: CreateCloudflareAccount
+      x-terraform-resource: integration_cloudflare_account
       requestBody:
         content:
           application/json:
@@ -14200,6 +14201,7 @@ paths:
     delete:
       description: Delete a Cloudflare account.
       operationId: DeleteCloudflareAccount
+      x-terraform-resource: integration_cloudflare_account
       parameters:
       - description: None
         in: path
@@ -14227,6 +14229,7 @@ paths:
     get:
       description: Get a Cloudflare account.
       operationId: GetCloudflareAccount
+      x-terraform-resource: integration_cloudflare_account
       parameters:
       - description: None
         in: path
@@ -14258,6 +14261,7 @@ paths:
     patch:
       description: Update a Cloudflare account.
       operationId: UpdateCloudflareAccount
+      x-terraform-resource: integration_cloudflare_account
       parameters:
       - description: None
         in: path
@@ -14318,6 +14322,7 @@ paths:
     post:
       description: Create a Confluent account.
       operationId: CreateConfluentAccount
+      x-terraform-resource: integration_confluent_account
       requestBody:
         content:
           application/json:
@@ -14348,6 +14353,7 @@ paths:
     delete:
       description: Delete a Confluent account with the provided account ID.
       operationId: DeleteConfluentAccount
+      x-terraform-resource: integration_confluent_account
       parameters:
       - $ref: '#/components/parameters/ConfluentAccountID'
       responses:
@@ -14367,6 +14373,7 @@ paths:
     get:
       description: Get the Confluent account with the provided account ID.
       operationId: GetConfluentAccount
+      x-terraform-resource: integration_confluent_account
       parameters:
       - $ref: '#/components/parameters/ConfluentAccountID'
       responses:
@@ -14390,6 +14397,7 @@ paths:
     patch:
       description: Update the Confluent account with the provided account ID.
       operationId: UpdateConfluentAccount
+      x-terraform-resource: integration_confluent_account
       parameters:
       - $ref: '#/components/parameters/ConfluentAccountID'
       requestBody:
@@ -14447,6 +14455,7 @@ paths:
       description: Create a Confluent resource for the account associated with the
         provided ID.
       operationId: CreateConfluentResource
+      x-terraform-resource: integration_confluent_resource
       parameters:
       - $ref: '#/components/parameters/ConfluentAccountID'
       requestBody:
@@ -14480,6 +14489,7 @@ paths:
       description: Delete a Confluent resource with the provided resource id for the
         account associated with the provided account ID.
       operationId: DeleteConfluentResource
+      x-terraform-resource: integration_confluent_resource
       parameters:
       - $ref: '#/components/parameters/ConfluentAccountID'
       - $ref: '#/components/parameters/ConfluentResourceID'
@@ -14501,6 +14511,7 @@ paths:
       description: Get a Confluent resource with the provided resource id for the
         account associated with the provided account ID.
       operationId: GetConfluentResource
+      x-terraform-resource: integration_confluent_resource
       parameters:
       - $ref: '#/components/parameters/ConfluentAccountID'
       - $ref: '#/components/parameters/ConfluentResourceID'
@@ -14526,6 +14537,7 @@ paths:
       description: Update a Confluent resource with the provided resource id for the
         account associated with the provided account ID.
       operationId: UpdateConfluentResource
+      x-terraform-resource: integration_confluent_resource
       parameters:
       - $ref: '#/components/parameters/ConfluentAccountID'
       - $ref: '#/components/parameters/ConfluentResourceID'
@@ -14587,6 +14599,7 @@ paths:
     post:
       description: Create a Fastly account.
       operationId: CreateFastlyAccount
+      x-terraform-resource: integration_fastly_account
       requestBody:
         content:
           application/json:
@@ -14619,6 +14632,7 @@ paths:
     delete:
       description: Delete a Fastly account.
       operationId: DeleteFastlyAccount
+      x-terraform-resource: integration_fastly_account
       parameters:
       - $ref: '#/components/parameters/FastlyAccountID'
       responses:
@@ -14641,6 +14655,7 @@ paths:
     get:
       description: Get a Fastly account.
       operationId: GetFastlyAccount
+      x-terraform-resource: integration_fastly_account
       parameters:
       - $ref: '#/components/parameters/FastlyAccountID'
       responses:
@@ -14667,6 +14682,7 @@ paths:
     patch:
       description: Update a Fastly account.
       operationId: UpdateFastlyAccount
+      x-terraform-resource: integration_fastly_account
       parameters:
       - $ref: '#/components/parameters/FastlyAccountID'
       requestBody:
@@ -14727,6 +14743,7 @@ paths:
     post:
       description: Create a Fastly service for an account.
       operationId: CreateFastlyService
+      x-terraform-resource: integration_fastly_service
       parameters:
       - $ref: '#/components/parameters/FastlyAccountID'
       requestBody:
@@ -14761,6 +14778,7 @@ paths:
     delete:
       description: Delete a Fastly service for an account.
       operationId: DeleteFastlyService
+      x-terraform-resource: integration_fastly_service
       parameters:
       - $ref: '#/components/parameters/FastlyAccountID'
       - $ref: '#/components/parameters/FastlyServiceID'
@@ -14784,6 +14802,7 @@ paths:
     get:
       description: Get a Fastly service for an account.
       operationId: GetFastlyService
+      x-terraform-resource: integration_fastly_service
       parameters:
       - $ref: '#/components/parameters/FastlyAccountID'
       - $ref: '#/components/parameters/FastlyServiceID'
@@ -14811,6 +14830,7 @@ paths:
     patch:
       description: Update a Fastly service for an account.
       operationId: UpdateFastlyService
+      x-terraform-resource: integration_fastly_service
       parameters:
       - $ref: '#/components/parameters/FastlyAccountID'
       - $ref: '#/components/parameters/FastlyServiceID'
