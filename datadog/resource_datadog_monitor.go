@@ -573,6 +573,10 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	if attr, ok := d.GetOk("no_data_timeframe"); ok && !onMissingDataOk {
 		o.SetNoDataTimeframe(int64(attr.(int)))
 	}
+	attr, ok := d.GetOk("notification_preset_name")
+	if ok {
+		o.SetNotificationPresetName(datadogV1.MonitorOptionsNotificationPresets(attr.(string)))
+	}
 	if attr, ok := d.GetOk("renotify_interval"); ok {
 		o.SetRenotifyInterval(int64(attr.(int)))
 	}
@@ -916,6 +920,9 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return diag.FromErr(err)
 	}
 	if err := d.Set("no_data_timeframe", m.Options.NoDataTimeframe.Get()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("notification_preset_name", m.Options.GetNotificationPresetName()); err != nil {
 		return diag.FromErr(err)
 	}
 	if err := d.Set("renotify_interval", m.Options.GetRenotifyInterval()); err != nil {

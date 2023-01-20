@@ -290,6 +290,8 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "no_data_timeframe", "20"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notification_preset_name", "show_all"),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "40"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_occurrences", "0"),
@@ -435,6 +437,8 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "evaluation_delay", "800"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "no_data_timeframe", "20"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notification_preset_name", "show_all"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "40"),
 					resource.TestCheckResourceAttr(
@@ -1143,6 +1147,7 @@ resource "datadog_monitor" "foo" {
   new_host_delay = 900
   evaluation_delay = 800
   no_data_timeframe = 20
+  notification_preset_name = "show_all"
   renotify_interval = 40
   notify_audit = true
   timeout_h = 10
@@ -1175,6 +1180,7 @@ resource "datadog_monitor" "foo" {
   new_host_delay = 900
   evaluation_delay = 800
   no_data_timeframe = 20
+  notification_preset_name = "show_all"
   renotify_interval = 40
   notify_audit = true
   timeout_h = 10

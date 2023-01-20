@@ -164,6 +164,7 @@ resource "datadog_monitor" "foo" {
 
   notify_no_data = true
   no_data_timeframe = 300
+  notification_preset_name = "show_all"
   new_host_delay = 600
   renotify_interval = 60
   renotify_occurrences = 3

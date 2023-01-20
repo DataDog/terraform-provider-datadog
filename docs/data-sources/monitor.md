@@ -46,6 +46,7 @@ data "datadog_monitor" "test" {
 - `new_group_delay` (Number) Time (in seconds) to skip evaluations for new groups.
 - `new_host_delay` (Number) Time (in seconds) allowing a host to boot and applications to fully start before starting the evaluation of monitor results.
 - `no_data_timeframe` (Number) The number of minutes before the monitor notifies when data stops reporting.
+- `notification_preset_name` (String) Toggles the display of additional content sent in the monitor notification. Valid values are `show_all`, `hide_queries`, `hide_handles`, `hide_all`.
 - `notify_audit` (Boolean) Whether or not tagged users are notified on changes to the monitor.
 - `notify_by` (Set of String) Controls what granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by `cluster`, `namespace`, and `pod` can be configured to only notify on each new `cluster` violating the alert conditions by setting `notify_by` to `['cluster']`. Tags mentioned in `notify_by` must be a subset of the grouping tags in the query. For example, a query grouped by `cluster` and `namespace` cannot notify on `region`. Setting `notify_by` to `[*]` configures the monitor to notify as a simple-alert.
 - `notify_no_data` (Boolean) Whether or not this monitor notifies when data stops reporting.

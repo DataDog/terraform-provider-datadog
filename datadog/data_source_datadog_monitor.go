@@ -151,6 +151,11 @@ func dataSourceDatadogMonitor() *schema.Resource {
 				Type:        schema.TypeInt,
 				Computed:    true,
 			},
+			"notification_preset_name": {
+				Description: "Toggles the display of additional content sent in the monitor notification.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
 			"renotify_interval": {
 				Description: "The number of minutes after the last notification before the monitor re-notifies on the current status.",
 				Type:        schema.TypeInt,
@@ -360,6 +365,7 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	d.Set("on_missing_data", m.Options.GetOnMissingData())
 	d.Set("group_retention_duration", m.Options.GetGroupRetentionDuration())
 	d.Set("no_data_timeframe", m.Options.GetNoDataTimeframe())
+	d.Set("notification_preset_name", m.Options.GetNotificationPresetName())
 	d.Set("renotify_interval", m.Options.GetRenotifyInterval())
 	d.Set("renotify_occurrences", m.Options.GetRenotifyOccurrences())
 	d.Set("renotify_statuses", m.Options.GetRenotifyStatuses())
