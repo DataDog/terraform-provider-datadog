@@ -63,22 +63,8 @@ func TestAcc{{ name|camel_case|upperfirst }}Simple(t *testing.T) {
 func testAccCheckDatadog{{ name|camel_case|upperfirst }}(uniq string) string {
 // Update me to make use of the unique value
 	return fmt.Sprintf(`
-resource "datadog_{{ name }}" "foo" {
-{%- for name, parameter in createOperationParams.items() %}
-    {%- if name != primaryId["name"] %}
-        {%- set parameterSchema = parameter|parameter_schema %}
-        {%- if parameterSchema|is_json_api %}
-            {%- set jsonAttributeSchema = get_json_api_attributes_schema(parameterSchema) %}
-            {%- for attr, schema in jsonAttributeSchema.properties.items() %}
-                {%- set isRequired = attr in jsonAttributeSchema.get("required", []) %}
-                {{- helperMacros.baseSchema(attr, schema, required=isRequired) }}
-            {%- endfor %}
-        {%- else %}
-            {{- helperMacros.baseSchema(name, parameterSchema, required=parameter.get("required")) }}
-        {%- endif %}
-    {% endif%}
-{%- endfor %}
-}`, uniq)
+{{ helperMacros.resourceExample(name, primaryId, createOperationParams) }}
+`, uniq)
 }
 
 func testAccCheckDatadog{{ name|camel_case|upperfirst }}Destroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {

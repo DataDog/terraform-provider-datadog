@@ -59,6 +59,10 @@ def cli(spec_path, output):
     # Templates
     base_resource = env.get_template("base_resource.j2")
     base_resource_test = env.get_template("resource_test.j2")
+    examples = {
+        "resource.tf": env.get_template("resource_example.j2"),
+        "import.sh": env.get_template("resource_import_example.j2"),
+    }
 
     spec = openapi.load(spec_path)
     env.globals["version"] = spec_path.parent.name
@@ -71,3 +75,10 @@ def cli(spec_path, output):
             fp.write(base_resource.render(name=name, operations=operations))
         with resource_test_filename.open("w") as fp:
             fp.write(base_resource_test.render(name=name, operations=operations))
+
+        examples_output = pathlib.Path(f"../examples/resources/{name}/")
+        examples_output.mkdir(parents=True, exist_ok=True)
+        for example_name, template in examples.items():
+            file_name = examples_output / example_name
+            with file_name.open("w") as fp:
+                fp.write(template.render(name=name, operations=operations))
