@@ -33,7 +33,7 @@ resource "datadog_{{ name }}" "foo" {
 
 {%- macro typeArraySchema(name, schema, required=False) %}
     {%- if schema.get("items")|is_primitive %}
-    {{ name }} = {% if schema.get("example") %}{{ schema.example }}{% else %}"UPDATE ME" {%- endif %}
+    {{ name }} = {% if schema.get("example") %}{{ schema.example|replace("'", "\"") }}{% else %}"UPDATE ME" {%- endif %}
     {%- else %}
     {{ name }} {
         {%- for attr, childSchema in schema.get("items").get("properties", {}).items() %}

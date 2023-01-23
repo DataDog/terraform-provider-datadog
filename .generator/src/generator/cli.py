@@ -76,7 +76,7 @@ def cli(spec_path, output):
         with resource_test_filename.open("w") as fp:
             fp.write(base_resource_test.render(name=name, operations=operations))
 
-        examples_output = pathlib.Path(f"../examples/resources/{name}/")
+        examples_output = pathlib.Path(f"../examples/resources/datadog_{name}/")
         examples_output.mkdir(parents=True, exist_ok=True)
         for example_name, template in examples.items():
             file_name = examples_output / example_name
