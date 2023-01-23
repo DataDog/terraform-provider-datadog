@@ -1,6 +1,6 @@
 {%- macro baseStateSetter(name, schema, baseAccessor="resp", required=False) %}
     {%- if schema|is_primitive %}
-        {{- typePremitiveStateSetter(name, schema, baseAccessor=baseAccessor, required=required) }}
+        {{- typePrimitiveStateSetter(name, schema, baseAccessor=baseAccessor, required=required) }}
     {%- elif schema.type == "object" %}
         {{- typeObjectStateSetter(name, schema, baseAccessor=baseAccessor, required=required) }}
     {%- elif schema.type == "array" %}
@@ -8,7 +8,7 @@
     {%- endif %}
 {%- endmacro %}
 
-{%- macro typePremitiveStateSetter(name, schema, baseAccessor="resp", required=False) %}
+{%- macro typePrimitiveStateSetter(name, schema, baseAccessor="resp", required=False) %}
     {%- if required %}
         if err := d.Set("{{ name }}", {{ baseAccessor }}.Get{{ name|camel_case }}()); err != nil {
             return diag.FromErr(err)

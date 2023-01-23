@@ -58,6 +58,7 @@ def cli(spec_path, output):
 
     # Templates
     base_resource = env.get_template("base_resource.j2")
+    base_resource_test = env.get_template("resource_test.j2")
 
     spec = openapi.load(spec_path)
     env.globals["version"] = spec_path.parent.name
@@ -65,5 +66,8 @@ def cli(spec_path, output):
 
     for name, operations in operations_to_generate.items():
         resource_filename = output / f"resource_datadog_{name}.go"
+        resource_test_filename = output / "tests" / f"resource_datadog_{name}_test.go"
         with resource_filename.open("w") as fp:
             fp.write(base_resource.render(name=name, operations=operations))
+        with resource_test_filename.open("w") as fp:
+            fp.write(base_resource_test.render(name=name, operations=operations))
