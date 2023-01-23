@@ -1,0 +1,165 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"description":"optional description","filter":{"query":"hotel:trivago"},"is_enabled":true,"name":"tf-testaccdatadogsensitivedatascannergroup-basic-local-1674547941","product_list":["logs"]},"type":"sensitive_data_scanner_group"},"meta":{}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/groups
+    method: POST
+  response:
+    body: |
+      {"data":{"id":"abM3PSjZRWGWYv64fOXUvg","attributes":{"name":"tf-testaccdatadogsensitivedatascannergroup-basic-local-1674547941","is_enabled":true,"filter":{"query":"hotel:trivago"},"product_list":["logs"],"description":"optional description"},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},"meta":{"version":12454}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"abM3PSjZRWGWYv64fOXUvg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":12454,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"abM3PSjZRWGWYv64fOXUvg","attributes":{"name":"tf-testaccdatadogsensitivedatascannergroup-basic-local-1674547941","is_enabled":true,"filter":{"query":"hotel:trivago"},"product_list":["logs"],"description":"optional description"},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"abM3PSjZRWGWYv64fOXUvg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":12454,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"abM3PSjZRWGWYv64fOXUvg","attributes":{"name":"tf-testaccdatadogsensitivedatascannergroup-basic-local-1674547941","is_enabled":true,"filter":{"query":"hotel:trivago"},"product_list":["logs"],"description":"optional description"},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"abM3PSjZRWGWYv64fOXUvg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":12454,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"abM3PSjZRWGWYv64fOXUvg","attributes":{"name":"tf-testaccdatadogsensitivedatascannergroup-basic-local-1674547941","is_enabled":true,"filter":{"query":"hotel:trivago"},"product_list":["logs"],"description":"optional description"},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"description":"changed description","filter":{"query":"hotel:trivago2.0"},"is_enabled":false,"name":"tf-testaccdatadogsensitivedatascannergroup-basic-local-1674547941","product_list":["logs","apm"]},"id":"abM3PSjZRWGWYv64fOXUvg","type":"sensitive_data_scanner_group"},"meta":{}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/groups/abM3PSjZRWGWYv64fOXUvg
+    method: PATCH
+  response:
+    body: |
+      {"meta":{"version":12455}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"abM3PSjZRWGWYv64fOXUvg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":12455,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"abM3PSjZRWGWYv64fOXUvg","attributes":{"name":"tf-testaccdatadogsensitivedatascannergroup-basic-local-1674547941","is_enabled":false,"filter":{"query":"hotel:trivago2.0"},"product_list":["logs","apm"],"description":"changed description"},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"abM3PSjZRWGWYv64fOXUvg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":12455,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"abM3PSjZRWGWYv64fOXUvg","attributes":{"name":"tf-testaccdatadogsensitivedatascannergroup-basic-local-1674547941","is_enabled":false,"filter":{"query":"hotel:trivago2.0"},"product_list":["logs","apm"],"description":"changed description"},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"meta":{}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/groups/abM3PSjZRWGWYv64fOXUvg
+    method: DELETE
+  response:
+    body: |
+      {"meta":{"version":12456}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[]}}},"meta":{"version":12456,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
