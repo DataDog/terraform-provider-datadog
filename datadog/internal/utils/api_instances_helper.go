@@ -46,6 +46,7 @@ type ApiInstances struct {
 	//V2 APIs
 	auditApiV2                 *datadogV2.AuditApi
 	authNMappingsApiV2         *datadogV2.AuthNMappingsApi
+	confluentCloudApiV2        *datadogV2.ConfluentCloudApi
 	cloudWorkloadSecurityApiV2 *datadogV2.CloudWorkloadSecurityApi
 	dashboardListsApiV2        *datadogV2.DashboardListsApi
 	eventsApiV2                *datadogV2.EventsApi
@@ -490,4 +491,12 @@ func (i *ApiInstances) GetUsersApiV2() *datadogV2.UsersApi {
 		i.usersApiV2 = datadogV2.NewUsersApi(i.HttpClient)
 	}
 	return i.usersApiV2
+}
+
+// GetConfluentCloudApiV2 get instance of UsersApi
+func (i *ApiInstances) GetConfluentCloudApiV2() *datadogV2.ConfluentCloudApi {
+	if i.confluentCloudApiV2 == nil {
+		i.confluentCloudApiV2 = datadogV2.NewConfluentCloudApi(i.HttpClient)
+	}
+	return i.confluentCloudApiV2
 }
