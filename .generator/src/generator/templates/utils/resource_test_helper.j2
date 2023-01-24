@@ -21,7 +21,7 @@ resource "datadog_{{ name }}" "foo" {
     {%- if schema|is_primitive %}
         {{- typePrimitiveSchema(name, schema, required) }}
     {%- elif schema.type == "object" %}
-        {{- typeArraySchema(name, schema, required) }}
+        {{- typeObjectSchema(name, schema, required) }}
     {%- elif schema.type == "array" %}
         {{- typeArraySchema(name, schema, required) }}
     {%- endif %}
@@ -29,6 +29,15 @@ resource "datadog_{{ name }}" "foo" {
 
 {%- macro typePrimitiveSchema(name, schema, required=False) %}
     {{ name }} = {% if schema.get("example") %}{% if schema.type == "string" %}"{% endif %}{{ schema.example }}{% if schema.type == "string" %}"{% endif %}{% else %}"UPDATE ME" {%- endif %}
+{%- endmacro %}
+
+{%- macro typeObjectSchema(name, schema, required=False) %}
+    {{ name }} {
+        {%- for attr, childSchema in schema.get("properties", {}).items() %}
+            {%- set isRequired = attr in childSchema.get("required", []) %}
+            {{- baseSchema(attr, childSchema, required=isRequired) }}
+        {%- endfor%}
+    }
 {%- endmacro %}
 
 {%- macro typeArraySchema(name, schema, required=False) %}
