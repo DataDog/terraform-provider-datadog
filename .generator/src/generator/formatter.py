@@ -26,6 +26,7 @@ KEYWORDS = {
     "import",
     "interface",
     "map",
+    "meta",
     "package",
     "range",
     "return",

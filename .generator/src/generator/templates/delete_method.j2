@@ -1,15 +1,24 @@
+{%- import "utils/request_builder_helper.j2" as requestBuilderMacros %}
 {%- set responseHasThreeValues = "204" not in operations[DELETE_OPERATION]["schema"]["responses"].keys() %}
 
 func resourceDatadog{{ name|camel_case }}Delete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	{%- for name, param in deleteOperationParams.items() %}
-		{%- set paramSchema = get_type_for_parameter(param) %}
+
+	{% for name, param in deleteOperationParams.items() %}
+		{%- set paramType = get_type_for_parameter(param) %}
+        {%- set paramSchema = param|parameter_schema %}
 		{%- if name == primaryId["name"] %}
 		id := d.Id()
-		{%- else%}
-		{{ name|variable_name }} := d.Get("{{ name }}").({{ paramSchema }})
+		{%- elif param|is_primitive %}
+		{{ name|variable_name }} := d.Get("{{ name }}").({{ paramType }})
+		{%- else %}
+		{{ name }} := datadog{{ version|upperfirst }}.New{{ paramType }}WithDefaults()
+            {%- for attr, schema in paramSchema.properties.items() %}
+                {%- set isRequired = attr in paramSchema.get("required", []) %}
+                {{- requestBuilderMacros.baseRequestAttrBuilder(attr, schema, name, required=isRequired) }}
+            {%- endfor %}
 		{%- endif %}
 	{%- endfor %}
 

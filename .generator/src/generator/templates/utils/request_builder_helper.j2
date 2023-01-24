@@ -2,6 +2,12 @@
     {%- if schema|is_primitive %}
         {{ basePrimitiveAttrBuilder(name=name, schema=schema, baseSetter=baseSetter, required=required) }}
     {%- elif schema.type == "object" %}
+        {{ name|variable_name }} := datadog{{ version|upperfirst }}.New{{ get_type(schema) }}WithDefaults()
+        {%- for attr, attrSchema in schema.get("properties").items() %}
+            {%- set isRequired = attr in attrSchema.get("required", []) %}
+            {{ baseRequestAttrBuilder(attr, attrSchema, name|variable_name, required=isRequired) }}
+        {%- endfor %}
+        {{ baseSetter }}.Set{{ name|camel_case }}(*{{ name|variable_name }})
     {%- elif schema.type == "array" %}
         {%- set itemSchema = schema.get("items") %}
         {%- if "enum" not in itemSchema and itemSchema|is_primitive %}
@@ -33,16 +39,16 @@
         {%- if simpleType in ["int", "string", "bool"] %}
             {{ baseSetter }}.Set{{ name|camel_case }}(d.Get("{{ name }}").({{ simpleType }}))
         {%- elif simpleType == "int64" %}
-            {{ name|variable_name }}, _ := strconv.ParseInt(d.Get("{{ name }}"), 10, 64)
-            {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }})
+            {{ name|variable_name }}Int, _ := strconv.ParseInt(d.Get("{{ name }}".(string)), 10, 64)
+            {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }}Int)
         {%- endif %}
     {%- else %}
         if {{ name|variable_name }}, ok := d.GetOk("{{ name }}"); ok {
         {%- if simpleType in ["int", "string", "bool"] %}
             {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }}.({{ simpleType }}))
         {%- elif simpleType == "int64" %}
-            {{ name|variable_name }}, _ := strconv.ParseInt({{ name|variable_name }}, 10, 64)
-            {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }})
+            {{ name|variable_name }}Int, _ := strconv.ParseInt({{ name|variable_name }}.(string), 10, 64)
+            {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }}Int)
         {%- endif %}
         }
     {%- endif %}
