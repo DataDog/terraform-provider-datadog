@@ -37,8 +37,8 @@ func TestAcc{{ name|camel_case|upperfirst }}Simple(t *testing.T) {
 				Config: testAccCheckDatadog{{ name|camel_case|upperfirst }}(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadog{{ name|camel_case|upperfirst }}Exists(accProvider),
-                    {%- for name, parameter in createOperationParams.items() %}
-                        {%- if name != primaryId["name"] %}
+                    {%- for paramName, parameter in createOperationParams.items() %}
+                        {%- if paramName != primaryId["name"] %}
                             {%- set parameterSchema = parameter|parameter_schema %}
                             {%- if parameterSchema|is_json_api %}
                                 {%- set jsonAttributeSchema = get_json_api_attributes_schema(parameterSchema) %}
@@ -46,7 +46,7 @@ func TestAcc{{ name|camel_case|upperfirst }}Simple(t *testing.T) {
                                     {%- set isRequired = attr in jsonAttributeSchema.get("required", []) %}
                                     {%- if schema|is_primitive %}
                                     resource.TestCheckResourceAttr(
-                                        "datadog_{{ name }}.foo", "{{ attr }}", "{{ schema.example }}"),
+                                        "datadog_{{ name }}.foo", "{{ attr }}", "{% if schema.example %}{{ schema.example }}{% else %}UPDATE ME{% endif%}"),
                                     {%- elif schema.type == "object" %}
                                     {%- elif schema.type == "array" %}
                                     {%- endif %}
@@ -63,8 +63,7 @@ func TestAcc{{ name|camel_case|upperfirst }}Simple(t *testing.T) {
 func testAccCheckDatadog{{ name|camel_case|upperfirst }}(uniq string) string {
 // Update me to make use of the unique value
 	return fmt.Sprintf(`
-{{ helperMacros.resourceExample(name, primaryId, createOperationParams) }}
-`, uniq)
+{{- helperMacros.resourceExample(name, primaryId, createOperationParams) }}`, uniq)
 }
 
 func testAccCheckDatadog{{ name|camel_case|upperfirst }}Destroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
@@ -94,7 +93,7 @@ func {{ name|camel_case }}DestroyHelper(auth context.Context, s *terraform.State
                 id := r.Primary.ID
                 {%- else%}
                 {{ name|variable_name }} := r.Primary.Attributes["{{ name }}"]
-                {%- endif%}
+                {%- endif %}
             {%- endfor %}
 
 	        _, httpResp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ getOperationId }}(auth, {% for name, param in readOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})
@@ -137,7 +136,7 @@ func {{ name|camel_case|untitle_case }}ExistsHelper(auth context.Context, s *ter
             id := r.Primary.ID
             {%- else%}
             {{ name|variable_name }} := r.Primary.Attributes["{{ name }}"]
-            {%- endif%}
+            {%- endif %}
         {%- endfor %}
 
         _, httpResp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ getOperationId }}(auth, {% for name, param in readOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})

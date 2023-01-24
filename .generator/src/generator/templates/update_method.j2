@@ -7,12 +7,12 @@ func resourceDatadog{{ name|camel_case }}Update(ctx context.Context, d *schema.R
 	auth := providerConf.Auth
 	{%- for paramName, param in updateOperationParams.items() %}
 		{% if paramName == "body" %}
-		body := build{{ name|camel_case }}{% if not useCreateBodyRequest %}Update{%- endif%}RequestBody(d)
+		body := build{{ name|camel_case }}{% if not useCreateBodyRequest %}Update{%- endif %}RequestBody(d)
 		{% elif paramName == primaryId["name"] %}
 		id := d.Id()
 		{%- else%}
 		{{ paramName|variable_name }} := d.Get("{{ paramName }}").({{ get_type_for_parameter(param) }})
-		{%- endif%}
+		{%- endif %}
 	{%- endfor %}
 
 	resp, httpResp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ updateOperationId }}(auth, {% for paramName, param in updateOperationParams.items() %}{% if paramName == primaryId["name"] %}id{% else %}{% if paramName == "body" %}*{% endif %}{{ paramName|variable_name }}{% endif %}, {% endfor%})
@@ -42,7 +42,7 @@ func build{{ name|camel_case }}UpdateRequestBody(d *schema.ResourceData) *datado
 	{%- endif %}
 
 	req := datadogV2.New{{ get_type(parameterBodySchema) }}WithDefaults()
-	req.Data = *datadogV2.New{{ get_type(parameterBodyDataSchema) }}WithDefaults()
+	req.Data = {% if not parameterBodyDataSchema.required %}*{% endif %}datadogV2.New{{ get_type(parameterBodyDataSchema) }}WithDefaults()
 	req.Data.SetAttributes(*attributes)
 
 	return req

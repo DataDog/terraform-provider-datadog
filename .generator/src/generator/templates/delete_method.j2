@@ -10,7 +10,7 @@ func resourceDatadog{{ name|camel_case }}Delete(ctx context.Context, d *schema.R
 		id := d.Id()
 		{%- else%}
 		{{ name|variable_name }} := d.Get("{{ name }}").({{ paramSchema }})
-		{%- endif%}
+		{%- endif %}
 	{%- endfor %}
 
 	{% if responseHasThreeValues %}_, {% endif %}httpResp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ deleteOperationId }}(auth, {% for name, param in deleteOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})

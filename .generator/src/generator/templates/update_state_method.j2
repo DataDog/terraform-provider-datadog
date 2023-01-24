@@ -13,7 +13,7 @@ func update{{ name|camel_case }}State(d *schema.ResourceData, resp *datadog{{ ve
             {%- set isRequired = attr in jsonApiAttributesSchema.get("required", []) %}
             {{ updateStateMacros.baseStateSetter(attr, schema, baseAccessor="attributes", required=isRequired) }}
         {%- endfor %}
-    {%- endif%}
+    {%- endif %}
 
     return nil
 }

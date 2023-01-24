@@ -11,7 +11,7 @@ func resourceDatadog{{ name|camel_case }}Create(ctx context.Context, d *schema.R
 		id := d.Id()
 		{%- else%}
 		{{ paramName|variable_name }} := d.Get("{{ paramName }}").({{ get_type_for_parameter(param) }})
-		{%- endif%}
+		{%- endif %}
 	{%- endfor %}
 
 	resp, httpResp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ createOperationId }}(auth, {% for paramName, param in createOperationParams.items() %}{% if paramName == primaryId["name"] %}id{% else %}{% if paramName == "body" %}*{% endif %}{{ paramName|variable_name }}{% endif %}, {% endfor%})
@@ -40,7 +40,7 @@ func build{{ name|camel_case }}RequestBody(d *schema.ResourceData) *datadog{{ ve
 	{%- endif %}
 
 	req := datadogV2.New{{ get_type(parameterBodySchema) }}WithDefaults()
-	req.Data = *datadogV2.New{{ get_type(parameterBodyDataSchema) }}WithDefaults()
+	req.Data = {% if not parameterBodyDataSchema.required %}*{% endif %}datadogV2.New{{ get_type(parameterBodyDataSchema) }}WithDefaults()
 	req.Data.SetAttributes(*attributes)
 
 	return req

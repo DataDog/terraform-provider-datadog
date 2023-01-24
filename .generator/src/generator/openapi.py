@@ -141,7 +141,7 @@ def get_terraform_primary_id(operations):
     update_params = parameters(operations[UPDATE_OPERATION]["schema"])
     primary_id = operations[UPDATE_OPERATION]["path"].split("/")[-1][1:-1]
     primary_id_param = update_params.pop(primary_id)
-    
+
     return {
         "schema": parameter_schema(primary_id_param),
         "name": primary_id

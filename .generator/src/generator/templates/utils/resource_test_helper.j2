@@ -12,7 +12,7 @@ resource "datadog_{{ name }}" "foo" {
         {%- else %}
             {{- baseSchema(name, parameterSchema, required=parameter.get("required")) }}
         {%- endif %}
-    {% endif%}
+    {%- endif %}
 {%- endfor %}
 }
 {%- endmacro %}
@@ -50,5 +50,5 @@ resource "datadog_{{ name }}" "foo" {
             {{- baseSchema(attr, childSchema, required=isRequired) }}
         {%- endfor%}
     }
-    {%- endif%}
+    {%- endif %}
 {%- endmacro %}
