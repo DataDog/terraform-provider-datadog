@@ -169,6 +169,7 @@ func Provider() *schema.Provider {
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_security_monitoring_filter":           resourceDatadogSecurityMonitoringFilter(),
 			"datadog_sensitive_data_scanner_group":         resourceDatadogSensitiveDataScannerGroup(),
+			"datadog_sensitive_data_scanner_rule":          resourceDatadogSensitiveDataScannerRule(),
 			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
 			"datadog_service_definition_yaml":              resourceDatadogServiceDefinitionYAML(),
 			"datadog_slo_correction":                       resourceDatadogSloCorrection(),
