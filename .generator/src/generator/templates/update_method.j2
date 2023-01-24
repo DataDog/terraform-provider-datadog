@@ -31,6 +31,7 @@ func resourceDatadog{{ name|camel_case }}Update(ctx context.Context, d *schema.R
 func build{{ name|camel_case }}UpdateRequestBody(d *schema.ResourceData) *datadog{{ version|upperfirst }}.{{ get_type_for_parameter(updateOperationParams["body"]) }} {
 	{%- set parameterBodySchema = updateOperationParams["body"]|parameter_schema %}
     {%- set parameterBodyDataSchema = parameterBodySchema.properties.data %}
+    {%- set isDataRequired = "data" in parameterBodySchema.get("required", []) %}
 	{%- if parameterBodySchema|is_json_api %}
 	{%- set jsonAttributeSchema = get_json_api_attributes_schema(parameterBodySchema) %}
 	attributes := datadog{{ version|upperfirst }}.New{{ get_type(jsonAttributeSchema) }}WithDefaults()
@@ -42,7 +43,7 @@ func build{{ name|camel_case }}UpdateRequestBody(d *schema.ResourceData) *datado
 	{%- endif %}
 
 	req := datadogV2.New{{ get_type(parameterBodySchema) }}WithDefaults()
-	req.Data = {% if not parameterBodyDataSchema.required %}*{% endif %}datadogV2.New{{ get_type(parameterBodyDataSchema) }}WithDefaults()
+	req.Data = {% if isDataRequired %}*{% endif %}datadogV2.New{{ get_type(parameterBodyDataSchema) }}WithDefaults()
 	req.Data.SetAttributes(*attributes)
 
 	return req
