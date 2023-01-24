@@ -4,9 +4,9 @@
     {%- elif schema.type == "object" %}
     {%- elif schema.type == "array" %}
         {%- set itemSchema = schema.get("items") %}
-        {%- if itemSchema|is_primitive %}
+        {%- if "enum" not in itemSchema and itemSchema|is_primitive %}
             {{ name|variable_name }} := []{{ itemSchema|simple_type }}{}
-        {%- elif itemSchema.type == "object" %}
+        {%- else %}
             {{ name|variable_name }} := []datadog{{ version|upperfirst }}.{{ get_type(itemSchema) }}{}
         {%- endif %}
         for _, s := range d.Get("{{ name }}").([]interface{}) {
@@ -51,7 +51,12 @@
 {%- macro baseArrayAttrBuilder(name, schema, baseGetter, baseSetter, required=False) %}
     {%- set itemSchema = schema.get("items") %}
     {%- if itemSchema|is_primitive %}
+        {%- if "enum" in itemSchema %}
+        {{ get_type(itemSchema)|variable_name }}Item, _ := datadogV2.New{{ get_type(itemSchema) }}FromValue(s.({{ itemSchema|simple_type }}))
+        {{ name|variable_name }} = append( {{ name|variable_name }}, *{{ get_type(itemSchema)|variable_name }}Item)
+        {%- else %}
         {{ name|variable_name }} = append( {{ name|variable_name }}, {{ baseGetter }}.({{ itemSchema|simple_type }}))
+        {%- endif %}
     {%- elif itemSchema.type == "object" %}
         {{ baseGetter }}Map := s.(map[string]interface{})
         {{ name|variable_name }}Item := datadog{{ version|upperfirst }}.New{{ get_type(itemSchema) }}WithDefaults()
