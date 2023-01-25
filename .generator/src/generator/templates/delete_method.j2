@@ -11,7 +11,7 @@ func resourceDatadog{{ name|camel_case }}Delete(ctx context.Context, d *schema.R
         {%- set paramSchema = param|parameter_schema %}
 		{%- if name == primaryId["name"] %}
 		id := d.Id()
-		{%- elif param|is_primitive %}
+		{%- elif paramSchema|is_primitive %}
 		{{ name|variable_name }} := d.Get("{{ name }}").({{ paramType }})
 		{%- else %}
 		{{ name }} := datadog{{ version|upperfirst }}.New{{ paramType }}WithDefaults()
