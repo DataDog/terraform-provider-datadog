@@ -265,6 +265,11 @@ func dataSourceDatadogMonitor() *schema.Resource {
 					},
 				},
 			},
+			"notification_preset_name": {
+				Description: "Toggles the display of additional content sent in the monitor notification. Valid values are: `show_all`, `hide_query`, `hide_handles`, and `hide_all`.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -373,6 +378,7 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	d.Set("restricted_roles", restricted_roles)
 	d.Set("groupby_simple_monitor", m.Options.GetGroupbySimpleMonitor())
 	d.Set("notify_by", m.Options.GetNotifyBy())
+	d.Set("notification_preset_name", m.Options.GetNotificationPresetName())
 
 	evaluation_window := make(map[string]interface{})
 	if e, ok := m.Options.SchedulingOptions.GetEvaluationWindowOk(); ok {
