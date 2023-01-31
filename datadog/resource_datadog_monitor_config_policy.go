@@ -57,6 +57,19 @@ func resourceDatadogMonitorConfigPolicy() *schema.Resource {
 	}
 }
 
+func buildMonitorConfigPolicyCreateV2Struct(d *schema.ResourceData) *datadogV2.MonitorConfigPolicyCreateRequest {
+	policyType, _ := datadogV2.NewMonitorConfigPolicyTypeFromValue(d.Get("policy_type").(string))
+
+	return datadogV2.NewMonitorConfigPolicyCreateRequest(
+		datadogV2.MonitorConfigPolicyCreateData{
+			Attributes: datadogV2.MonitorConfigPolicyAttributeCreateRequest{
+				PolicyType: *policyType,
+				Policy:     *buildCreateRequestPolicy(d, *policyType),
+			},
+			Type: datadogV2.MONITORCONFIGPOLICYRESOURCETYPE_MONITOR_CONFIG_POLICY,
+		})
+}
+
 func buildCreateRequestPolicy(d *schema.ResourceData, policyType datadogV2.MonitorConfigPolicyType) *datadogV2.MonitorConfigPolicyPolicyCreateRequest {
 	if policyType == datadogV2.MONITORCONFIGPOLICYTYPE_TAG {
 		tagKey := d.Get("tag_policy.0.tag_key").(string)
@@ -75,6 +88,21 @@ func buildCreateRequestPolicy(d *schema.ResourceData, policyType datadogV2.Monit
 	return nil
 }
 
+func buildMonitorConfigPolicyUpdateV2Struct(d *schema.ResourceData) *datadogV2.MonitorConfigPolicyEditRequest {
+	id := d.Id()
+	policyType, _ := datadogV2.NewMonitorConfigPolicyTypeFromValue(d.Get("policy_type").(string))
+	return datadogV2.NewMonitorConfigPolicyEditRequest(
+		datadogV2.MonitorConfigPolicyEditData{
+			Attributes: datadogV2.MonitorConfigPolicyAttributeEditRequest{
+				Policy:     *buildUpdateRequestPolicy(d, *policyType),
+				PolicyType: *policyType,
+			},
+			Id:   id,
+			Type: datadogV2.MONITORCONFIGPOLICYRESOURCETYPE_MONITOR_CONFIG_POLICY,
+		},
+	)
+}
+
 func buildUpdateRequestPolicy(d *schema.ResourceData, policyType datadogV2.MonitorConfigPolicyType) *datadogV2.MonitorConfigPolicyPolicy {
 	if policyType == datadogV2.MONITORCONFIGPOLICYTYPE_TAG {
 		tagKey := d.Get("tag_policy.0.tag_key").(string)
@@ -91,34 +119,6 @@ func buildUpdateRequestPolicy(d *schema.ResourceData, policyType datadogV2.Monit
 			}}
 	}
 	return nil
-}
-
-func buildMonitorConfigPolicyCreateV2Struct(d *schema.ResourceData) *datadogV2.MonitorConfigPolicyCreateRequest {
-	policyType, _ := datadogV2.NewMonitorConfigPolicyTypeFromValue(d.Get("policy_type").(string))
-
-	return datadogV2.NewMonitorConfigPolicyCreateRequest(
-		datadogV2.MonitorConfigPolicyCreateData{
-			Attributes: datadogV2.MonitorConfigPolicyAttributeCreateRequest{
-				PolicyType: *policyType,
-				Policy:     *buildCreateRequestPolicy(d, *policyType),
-			},
-			Type: datadogV2.MONITORCONFIGPOLICYRESOURCETYPE_MONITOR_CONFIG_POLICY,
-		})
-}
-
-func buildMonitorConfigPolicyUpdateV2Struct(d *schema.ResourceData) *datadogV2.MonitorConfigPolicyEditRequest {
-	id := d.Id()
-	policyType, _ := datadogV2.NewMonitorConfigPolicyTypeFromValue(d.Get("policy_type").(string))
-	return datadogV2.NewMonitorConfigPolicyEditRequest(
-		datadogV2.MonitorConfigPolicyEditData{
-			Attributes: datadogV2.MonitorConfigPolicyAttributeEditRequest{
-				Policy:     *buildUpdateRequestPolicy(d, *policyType),
-				PolicyType: *policyType,
-			},
-			Id:   id,
-			Type: datadogV2.MONITORCONFIGPOLICYRESOURCETYPE_MONITOR_CONFIG_POLICY,
-		},
-	)
 }
 
 func resourceDatadogMonitorConfigPolicyRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
