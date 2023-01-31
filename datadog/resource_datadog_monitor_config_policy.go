@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 func resourceDatadogMonitorConfigPolicy() *schema.Resource {
@@ -21,10 +22,10 @@ func resourceDatadogMonitorConfigPolicy() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"policy_type": {
-				Description: "The monitor config policy type",
-				Type:        schema.TypeString,
-				Required:    true,
-				//ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMonitorConfigPolicyTypeFromValue),
+				Description:      "The monitor config policy type",
+				Type:             schema.TypeString,
+				Required:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMonitorConfigPolicyTypeFromValue),
 			},
 			"tag_policy": {
 				Description: "Config for a tag policy. Only set if `policy_type` is `tag`.",
