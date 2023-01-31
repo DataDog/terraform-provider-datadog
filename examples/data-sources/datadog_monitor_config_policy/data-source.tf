@@ -1,1 +1,1 @@
-data "datadog_monitor_config_policy" "test" {}
+# data "datadog_monitor_config_policy" "test" {}
