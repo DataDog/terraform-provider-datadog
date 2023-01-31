@@ -253,7 +253,7 @@ func resourceDatadogServiceDefinitionUpdate(ctx context.Context, d *schema.Resou
 
 	definition := d.Get("service_definition").(string)
 
-	respByte, resp, err := utils.SendRequest(auth, apiInstances.HttpClient, "POST", serviceDefinitionPath, &definition)
+	respByte, resp, err := utils.SendRequest(auth, apiInstances.HttpClient, "POST", serviceDefinitionPath+"?origin=dd_terraform", &definition)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, resp, "error updating service definition")
 	}
