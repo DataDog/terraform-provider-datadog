@@ -2,6 +2,8 @@ package datadog
 
 import (
 	"context"
+	"fmt"
+	"log"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -36,17 +38,17 @@ func resourceDatadogMonitorConfigPolicy() *schema.Resource {
 						"tag_key": {
 							Type:        schema.TypeString,
 							Description: "The key of the tag",
-							Optional:    true,
+							Required:    true,
 						},
 						"tag_key_required": {
 							Type:        schema.TypeBool,
 							Description: "If a tag key is required for monitor creation",
-							Optional:    true,
+							Required:    true,
 						},
 						"valid_tag_values": {
 							Type:        schema.TypeString,
 							Description: "Valid values for the tag",
-							Optional:    true,
+							Required:    true,
 						},
 					},
 				},
@@ -144,6 +146,10 @@ func resourceDatadogMonitorConfigPolicyCreate(ctx context.Context, d *schema.Res
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+	err := checkPolicyConsistency(d)
+	if err == nil {
+		return diag.FromErr(err)
+	}
 
 	m := buildMonitorConfigPolicyCreateV2Struct(d)
 	mCreated, httpResponse, err := apiInstances.GetMonitorsApiV2().CreateMonitorConfigPolicy(auth, *m)
@@ -162,6 +168,11 @@ func resourceDatadogMonitorConfigPolicyUpdate(ctx context.Context, d *schema.Res
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+
+	err := checkPolicyConsistency(d)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
 	monitorConfigPolicy := buildMonitorConfigPolicyUpdateV2Struct(d)
 
@@ -201,6 +212,18 @@ func updateMonitorConfigPolicyState(d *schema.ResourceData, m *datadogV2.Monitor
 			"tag_key_required": attributes.Policy.MonitorConfigPolicyTagPolicy.GetTagKeyRequired(),
 			"valid_tag_values": attributes.Policy.MonitorConfigPolicyTagPolicy.GetValidTagValues(),
 		})
+	}
+	return nil
+}
+
+func checkPolicyConsistency(d *schema.ResourceData) error {
+	log.Printf("cats %s", d.Get("policy_type").(string))
+	fmt.Printf(d.Get("policy_type").(string))
+	fmt.Printf("CATTTTTTS")
+	if d.Get("policy_type") == "tag" { // string(datadogV2.MONITORCONFIGPOLICYTYPE_TAG) ?
+		if true {
+			return fmt.Errorf("tag_policy values must be set for tag policy_type")
+		}
 	}
 	return nil
 }

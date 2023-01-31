@@ -5,11 +5,9 @@ import (
 
 	"errors"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 func dataSourceDatadogMonitorConfigPolicy() *schema.Resource {
@@ -24,10 +22,9 @@ func dataSourceDatadogMonitorConfigPolicy() *schema.Resource {
 				Computed:    true,
 			},
 			"policy_type": {
-				Description:      "The monitor config policy type",
-				Type:             schema.TypeString,
-				Computed:         true,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMonitorConfigPolicyTypeFromValue),
+				Description: "The monitor config policy type",
+				Type:        schema.TypeString,
+				Computed:    true,
 			},
 			"tag_policy": {
 				Description: "Config for a tag policy. Only set if `policy_type` is `tag`.",
@@ -39,14 +36,17 @@ func dataSourceDatadogMonitorConfigPolicy() *schema.Resource {
 						"tag_key": {
 							Type:        schema.TypeString,
 							Description: "The key of the tag",
+							Computed:    true,
 						},
 						"tag_key_required": {
 							Type:        schema.TypeBool,
 							Description: "If a tag key is required for monitor creation",
+							Computed:    true,
 						},
 						"valid_tag_values": {
 							Type:        schema.TypeString,
 							Description: "Valid values for the tag",
+							Computed:    true,
 						},
 					},
 				},
