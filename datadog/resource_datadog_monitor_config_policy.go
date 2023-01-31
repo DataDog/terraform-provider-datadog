@@ -3,7 +3,6 @@ package datadog
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -46,9 +45,10 @@ func resourceDatadogMonitorConfigPolicy() *schema.Resource {
 							Required:    true,
 						},
 						"valid_tag_values": {
-							Type:        schema.TypeString,
+							Type:        schema.TypeList,
 							Description: "Valid values for the tag",
 							Required:    true,
+							Elem:        &schema.Schema{Type: schema.TypeString},
 						},
 					},
 				},
@@ -59,10 +59,10 @@ func resourceDatadogMonitorConfigPolicy() *schema.Resource {
 
 func buildCreateRequestPolicy(d *schema.ResourceData, policyType datadogV2.MonitorConfigPolicyType) *datadogV2.MonitorConfigPolicyPolicyCreateRequest {
 	if policyType == datadogV2.MONITORCONFIGPOLICYTYPE_TAG {
-		tagKey := d.Get("tag_key").(string)
-		tagKeyRequired := d.Get("tag_key_required").(bool)
+		tagKey := d.Get("tag_policy.0.tag_key").(string)
+		tagKeyRequired := d.Get("tag_policy.0.tag_key_required").(bool)
 		var validTagValues []string
-		for _, s := range d.Get("valid_tag_values").([]interface{}) {
+		for _, s := range d.Get("tag_policy.0.valid_tag_values").([]interface{}) {
 			validTagValues = append(validTagValues, s.(string))
 		}
 		return &datadogV2.MonitorConfigPolicyPolicyCreateRequest{
@@ -77,21 +77,18 @@ func buildCreateRequestPolicy(d *schema.ResourceData, policyType datadogV2.Monit
 
 func buildUpdateRequestPolicy(d *schema.ResourceData, policyType datadogV2.MonitorConfigPolicyType) *datadogV2.MonitorConfigPolicyPolicy {
 	if policyType == datadogV2.MONITORCONFIGPOLICYTYPE_TAG {
-		tagPolicy := datadogV2.NewMonitorConfigPolicyTagPolicy()
-
-		if attr, ok := d.GetOk("tag_key"); ok {
-			tagPolicy.SetTagKey(attr.(string))
+		tagKey := d.Get("tag_policy.0.tag_key").(string)
+		tagKeyRequired := d.Get("tag_policy.0.tag_key_required").(bool)
+		var validTagValues []string
+		for _, s := range d.Get("tag_policy.0.valid_tag_values").([]interface{}) {
+			validTagValues = append(validTagValues, s.(string))
 		}
-		if attr, ok := d.GetOk("tag_key"); ok {
-			tagPolicy.SetTagKeyRequired(attr.(bool))
-		}
-		if attr, ok := d.GetOk("valid_tag_values"); ok {
-			var validTagValues []string
-			for _, s := range attr.([]interface{}) {
-				validTagValues = append(validTagValues, s.(string))
-			}
-		}
-		return &datadogV2.MonitorConfigPolicyPolicy{MonitorConfigPolicyTagPolicy: tagPolicy}
+		return &datadogV2.MonitorConfigPolicyPolicy{
+			MonitorConfigPolicyTagPolicy: &datadogV2.MonitorConfigPolicyTagPolicy{
+				TagKey:         &tagKey,
+				TagKeyRequired: &tagKeyRequired,
+				ValidTagValues: validTagValues,
+			}}
 	}
 	return nil
 }
@@ -147,7 +144,7 @@ func resourceDatadogMonitorConfigPolicyCreate(ctx context.Context, d *schema.Res
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	err := checkPolicyConsistency(d)
-	if err == nil {
+	if err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -217,11 +214,8 @@ func updateMonitorConfigPolicyState(d *schema.ResourceData, m *datadogV2.Monitor
 }
 
 func checkPolicyConsistency(d *schema.ResourceData) error {
-	log.Printf("cats %s", d.Get("policy_type").(string))
-	fmt.Printf(d.Get("policy_type").(string))
-	fmt.Printf("CATTTTTTS")
-	if d.Get("policy_type") == "tag" { // string(datadogV2.MONITORCONFIGPOLICYTYPE_TAG) ?
-		if true {
+	if d.Get("policy_type") == string(datadogV2.MONITORCONFIGPOLICYTYPE_TAG) {
+		if _, ok := d.GetOk("tag_policy"); !ok {
 			return fmt.Errorf("tag_policy values must be set for tag policy_type")
 		}
 	}
