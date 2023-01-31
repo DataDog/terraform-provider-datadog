@@ -4,9 +4,9 @@ import (
 	"context"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 func resourceDatadogMonitorConfigPolicy() *schema.Resource {
@@ -16,65 +16,98 @@ func resourceDatadogMonitorConfigPolicy() *schema.Resource {
 		ReadContext:   resourceDatadogMonitorConfigPolicyRead,
 		UpdateContext: resourceDatadogMonitorConfigPolicyUpdate,
 		DeleteContext: resourceDatadogMonitorConfigPolicyDelete,
-		//CustomizeDiff: resourceDatadogMonitorCustomizeDiff,
-		//Importer: &schema.ResourceImporter{
-		//	StateContext: schema.ImportStatePassthroughContext,
-		//},
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
-			"name": {
-				Description: "Name of Datadog monitor.",
-				Type:        schema.TypeString,
-				Required:    true,
+			"policy_type": {
+				Description:      "The monitor config policy type",
+				Type:             schema.TypeString,
+				Required:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMonitorConfigPolicyTypeFromValue),
+			},
+			"tag_policy": {
+				Description: "Config for a tag policy. Only set if `policy_type` is `tag`.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"tag_key": {
+							Type:        schema.TypeString,
+							Description: "The key of the tag",
+						},
+						"tag_key_required": {
+							Type:        schema.TypeBool,
+							Description: "If a tag key is required for monitor creation",
+						},
+						"valid_tag_values": {
+							Type:        schema.TypeString,
+							Description: "Valid values for the tag",
+						},
+					},
+				},
 			},
 		},
 	}
 }
 
-func buildMonitorConfigPolicyCreateV2Struct(d utils.Resource) *datadogV2.MonitorConfigPolicyCreateRequest {
-	tagKey := d.Get("tag_key").(string)
-	tagKeyRequired := d.Get("tag_key_required").(bool)
-	var validTagValues []string
-	for _, s := range d.Get("valid_tag_values").([]interface{}) {
-		validTagValues = append(validTagValues, s.(string))
+func buildCreateRequestPolicy(d *schema.ResourceData, policyType datadogV2.MonitorConfigPolicyType) *datadogV2.MonitorConfigPolicyPolicyCreateRequest {
+	if policyType == datadogV2.MONITORCONFIGPOLICYTYPE_TAG {
+		tagKey := d.Get("tag_key").(string)
+		tagKeyRequired := d.Get("tag_key_required").(bool)
+		var validTagValues []string
+		for _, s := range d.Get("valid_tag_values").([]interface{}) {
+			validTagValues = append(validTagValues, s.(string))
+		}
+		return &datadogV2.MonitorConfigPolicyPolicyCreateRequest{
+			MonitorConfigPolicyTagPolicyCreateRequest: &datadogV2.MonitorConfigPolicyTagPolicyCreateRequest{
+				TagKey:         tagKey,
+				TagKeyRequired: tagKeyRequired,
+				ValidTagValues: validTagValues,
+			}}
 	}
+	return nil
+}
+
+func buildUpdateRequestPolicy(d *schema.ResourceData, policyType datadogV2.MonitorConfigPolicyType) *datadogV2.MonitorConfigPolicyPolicy {
+	if policyType == datadogV2.MONITORCONFIGPOLICYTYPE_TAG {
+		tagKey := d.Get("tag_key").(string)
+		tagKeyRequired := d.Get("tag_key_required").(bool)
+		var validTagValues []string
+		for _, s := range d.Get("valid_tag_values").([]interface{}) {
+			validTagValues = append(validTagValues, s.(string))
+		}
+		return &datadogV2.MonitorConfigPolicyPolicy{
+			MonitorConfigPolicyTagPolicy: &datadogV2.MonitorConfigPolicyTagPolicy{
+				TagKey:         &tagKey,
+				TagKeyRequired: &tagKeyRequired,
+				ValidTagValues: validTagValues,
+			}}
+	}
+	return nil
+}
+
+func buildMonitorConfigPolicyCreateV2Struct(d *schema.ResourceData) *datadogV2.MonitorConfigPolicyCreateRequest {
+	policyType, _ := datadogV2.NewMonitorConfigPolicyTypeFromValue(d.Get("policy_type").(string))
 
 	return datadogV2.NewMonitorConfigPolicyCreateRequest(
 		datadogV2.MonitorConfigPolicyCreateData{
 			Attributes: datadogV2.MonitorConfigPolicyAttributeCreateRequest{
-				PolicyType: datadogV2.MONITORCONFIGPOLICYTYPE_TAG,
-				Policy: datadogV2.MonitorConfigPolicyPolicyCreateRequest{
-					MonitorConfigPolicyTagPolicyCreateRequest: &datadogV2.MonitorConfigPolicyTagPolicyCreateRequest{
-						TagKey:         tagKey,
-						TagKeyRequired: tagKeyRequired,
-						ValidTagValues: validTagValues,
-					}},
+				PolicyType: *policyType,
+				Policy:     *buildCreateRequestPolicy(d, *policyType),
 			},
 			Type: datadogV2.MONITORCONFIGPOLICYRESOURCETYPE_MONITOR_CONFIG_POLICY,
 		})
 }
 
-func buildMonitorConfigPolicyUpdateV2Struct(d utils.Resource) *datadogV2.MonitorConfigPolicyEditRequest {
-	id := d.Get("id").(string)
-	// TODO optional vars
-	tagKey := d.Get("tag_key").(string)
-	tagKeyRequired := d.Get("tag_key_required").(bool)
-	var validTagValues []string
-	if attr, ok := d.GetOk("valid_tag_values"); ok {
-		for _, s := range attr.([]interface{}) {
-			validTagValues = append(validTagValues, s.(string))
-		}
-	}
-
+func buildMonitorConfigPolicyUpdateV2Struct(d *schema.ResourceData) *datadogV2.MonitorConfigPolicyEditRequest {
+	id := d.Id()
+	policyType, _ := datadogV2.NewMonitorConfigPolicyTypeFromValue(d.Get("policy_type").(string))
 	return datadogV2.NewMonitorConfigPolicyEditRequest(
 		datadogV2.MonitorConfigPolicyEditData{
 			Attributes: datadogV2.MonitorConfigPolicyAttributeEditRequest{
-				Policy: datadogV2.MonitorConfigPolicyPolicy{
-					MonitorConfigPolicyTagPolicy: &datadogV2.MonitorConfigPolicyTagPolicy{
-						TagKey:         &tagKey,
-						TagKeyRequired: &tagKeyRequired,
-						ValidTagValues: validTagValues,
-					}},
-				PolicyType: datadogV2.MONITORCONFIGPOLICYTYPE_TAG,
+				Policy:     *buildUpdateRequestPolicy(d, *policyType),
+				PolicyType: *policyType,
 			},
 			Id:   id,
 			Type: datadogV2.MONITORCONFIGPOLICYRESOURCETYPE_MONITOR_CONFIG_POLICY,
@@ -106,29 +139,13 @@ func resourceDatadogMonitorConfigPolicyRead(ctx context.Context, d *schema.Resou
 	auth := providerConf.Auth
 
 	var monitorConfigPolicyResponse datadogV2.MonitorConfigPolicyResponse
-	err := resource.RetryContext(ctx, d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
-		monitorConfigPolicyResponse, httpresp, err := apiInstances.GetMonitorsApiV2().GetMonitorConfigPolicy(auth, d.Id())
-		if err != nil {
-			if httpresp != nil {
-				if httpresp.StatusCode == 404 {
-					d.SetId("")
-					return nil
-				} else if httpresp.StatusCode == 502 {
-					return resource.RetryableError(utils.TranslateClientError(err, httpresp, "error getting monitor config policy, retrying"))
-				}
-			}
-			return resource.NonRetryableError(utils.TranslateClientError(err, httpresp, "error getting monitor config policy"))
-		}
-		if err := utils.CheckForUnparsed(monitorConfigPolicyResponse); err != nil {
-			return resource.NonRetryableError(err)
-		}
-		return nil
-	})
+	monitorConfigPolicyResponse, httpresp, err := apiInstances.GetMonitorsApiV2().GetMonitorConfigPolicy(auth, d.Id())
 	if err != nil {
-		return diag.FromErr(err)
-	}
-	if d.Id() == "" {
-		return nil
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
+		return utils.TranslateClientErrorDiag(err, httpresp, "error getting monitor config policy")
 	}
 
 	return updateMonitorConfigPolicyState(d, monitorConfigPolicyResponse.Data)
@@ -141,17 +158,17 @@ func resourceDatadogMonitorConfigPolicyUpdate(ctx context.Context, d *schema.Res
 
 	monitorConfigPolicy := buildMonitorConfigPolicyUpdateV2Struct(d)
 
-	monitorConfigPolicyResp, httpresp, err := apiInstances.GetMonitorsApiV2().UpdateMonitorConfigPolicy(
+	mUpdated, httpresp, err := apiInstances.GetMonitorsApiV2().UpdateMonitorConfigPolicy(
 		auth, monitorConfigPolicy.Data.Id, *monitorConfigPolicy,
 	)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating monitor config policy")
 	}
-	if err := utils.CheckForUnparsed(monitorConfigPolicyResp); err != nil {
+	if err := utils.CheckForUnparsed(mUpdated); err != nil {
 		return diag.FromErr(err)
 	}
 
-	return updateMonitorConfigPolicyState(d, monitorConfigPolicyResp.Data)
+	return updateMonitorConfigPolicyState(d, mUpdated.Data)
 }
 
 func resourceDatadogMonitorConfigPolicyDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
