@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+
 	"errors"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
