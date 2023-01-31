@@ -71,18 +71,21 @@ func buildCreateRequestPolicy(d *schema.ResourceData, policyType datadogV2.Monit
 
 func buildUpdateRequestPolicy(d *schema.ResourceData, policyType datadogV2.MonitorConfigPolicyType) *datadogV2.MonitorConfigPolicyPolicy {
 	if policyType == datadogV2.MONITORCONFIGPOLICYTYPE_TAG {
-		tagKey := d.Get("tag_key").(string)
-		tagKeyRequired := d.Get("tag_key_required").(bool)
-		var validTagValues []string
-		for _, s := range d.Get("valid_tag_values").([]interface{}) {
-			validTagValues = append(validTagValues, s.(string))
+		tagPolicy := datadogV2.NewMonitorConfigPolicyTagPolicy()
+
+		if attr, ok := d.GetOk("tag_key"); ok {
+			tagPolicy.SetTagKey(attr.(string))
 		}
-		return &datadogV2.MonitorConfigPolicyPolicy{
-			MonitorConfigPolicyTagPolicy: &datadogV2.MonitorConfigPolicyTagPolicy{
-				TagKey:         &tagKey,
-				TagKeyRequired: &tagKeyRequired,
-				ValidTagValues: validTagValues,
-			}}
+		if attr, ok := d.GetOk("tag_key"); ok {
+			tagPolicy.SetTagKeyRequired(attr.(bool))
+		}
+		if attr, ok := d.GetOk("valid_tag_values"); ok {
+			var validTagValues []string
+			for _, s := range attr.([]interface{}) {
+				validTagValues = append(validTagValues, s.(string))
+			}
+		}
+		return &datadogV2.MonitorConfigPolicyPolicy{MonitorConfigPolicyTagPolicy: tagPolicy}
 	}
 	return nil
 }
@@ -115,24 +118,6 @@ func buildMonitorConfigPolicyUpdateV2Struct(d *schema.ResourceData) *datadogV2.M
 	)
 }
 
-func resourceDatadogMonitorConfigPolicyCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	m := buildMonitorConfigPolicyCreateV2Struct(d)
-	mCreated, httpResponse, err := apiInstances.GetMonitorsApiV2().CreateMonitorConfigPolicy(auth, *m)
-	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating monitor config policy")
-	}
-	if err := utils.CheckForUnparsed(m); err != nil {
-		return diag.FromErr(err)
-	}
-	d.SetId(*mCreated.Data.Id)
-
-	return updateMonitorConfigPolicyState(d, mCreated.Data)
-}
-
 func resourceDatadogMonitorConfigPolicyRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -149,6 +134,24 @@ func resourceDatadogMonitorConfigPolicyRead(ctx context.Context, d *schema.Resou
 	}
 
 	return updateMonitorConfigPolicyState(d, monitorConfigPolicyResponse.Data)
+}
+
+func resourceDatadogMonitorConfigPolicyCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	providerConf := meta.(*ProviderConfiguration)
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
+
+	m := buildMonitorConfigPolicyCreateV2Struct(d)
+	mCreated, httpResponse, err := apiInstances.GetMonitorsApiV2().CreateMonitorConfigPolicy(auth, *m)
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating monitor config policy")
+	}
+	if err := utils.CheckForUnparsed(m); err != nil {
+		return diag.FromErr(err)
+	}
+	d.SetId(*mCreated.Data.Id)
+
+	return updateMonitorConfigPolicyState(d, mCreated.Data)
 }
 
 func resourceDatadogMonitorConfigPolicyUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -185,5 +188,15 @@ func resourceDatadogMonitorConfigPolicyDelete(ctx context.Context, d *schema.Res
 }
 
 func updateMonitorConfigPolicyState(d *schema.ResourceData, m *datadogV2.MonitorConfigPolicyResponseData) diag.Diagnostics {
+	d.SetId(m.GetId())
+	attributes := m.GetAttributes()
+	d.Set("policy_type", attributes.GetPolicyType())
+	if attributes.GetPolicyType() == datadogV2.MONITORCONFIGPOLICYTYPE_TAG {
+		d.Set("tag_policy", map[string]interface{}{
+			"tag_key":          attributes.Policy.MonitorConfigPolicyTagPolicy.GetTagKey(),
+			"tag_key_required": attributes.Policy.MonitorConfigPolicyTagPolicy.GetTagKeyRequired(),
+			"valid_tag_values": attributes.Policy.MonitorConfigPolicyTagPolicy.GetValidTagValues(),
+		})
+	}
 	return nil
 }
