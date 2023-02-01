@@ -206,11 +206,16 @@ func updateMonitorConfigPolicyState(d *schema.ResourceData, m *datadogV2.Monitor
 	attributes := m.GetAttributes()
 	d.Set("policy_type", attributes.GetPolicyType())
 	if attributes.GetPolicyType() == datadogV2.MONITORCONFIGPOLICYTYPE_TAG {
-		d.Set("tag_policy", map[string]interface{}{
+		d.Set("tag_policy", []interface{}{map[string]interface{}{
 			"tag_key":          attributes.Policy.MonitorConfigPolicyTagPolicy.GetTagKey(),
 			"tag_key_required": attributes.Policy.MonitorConfigPolicyTagPolicy.GetTagKeyRequired(),
 			"valid_tag_values": attributes.Policy.MonitorConfigPolicyTagPolicy.GetValidTagValues(),
-		})
+		}})
+		//d.Set("tag_policy", map[string]interface{}{
+		//	"tag_key":          attributes.Policy.MonitorConfigPolicyTagPolicy.GetTagKey(),
+		//	"tag_key_required": attributes.Policy.MonitorConfigPolicyTagPolicy.GetTagKeyRequired(),
+		//	"valid_tag_values": attributes.Policy.MonitorConfigPolicyTagPolicy.GetValidTagValues(),
+		//})
 	}
 	return nil
 }
