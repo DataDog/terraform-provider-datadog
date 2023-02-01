@@ -22,7 +22,7 @@ func dataSourceDatadogMonitorConfigPolicies() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 						"id": {
 							Description: "ID of the monitor config policy",
-							Type:        schema.TypeInt,
+							Type:        schema.TypeString,
 							Computed:    true,
 						},
 						"policy_type": {
@@ -35,6 +35,7 @@ func dataSourceDatadogMonitorConfigPolicies() *schema.Resource {
 							Type:        schema.TypeList,
 							Computed:    true,
 							Optional:    true,
+							MaxItems:    1,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"tag_key": {
@@ -48,9 +49,10 @@ func dataSourceDatadogMonitorConfigPolicies() *schema.Resource {
 										Computed:    true,
 									},
 									"valid_tag_values": {
-										Type:        schema.TypeString,
+										Type:        schema.TypeList,
 										Description: "Valid values for the tag",
 										Computed:    true,
+										Elem:        &schema.Schema{Type: schema.TypeString},
 									},
 								},
 							},
@@ -85,11 +87,11 @@ func dataSourceDatadogMonitorConfigPoliciesRead(ctx context.Context, d *schema.R
 
 		policy := attributes.GetPolicy()
 		if policy.MonitorConfigPolicyTagPolicy != nil {
-			tfMonitorConfigPolicies[i]["tag_policy"] = map[string]interface{}{
+			tfMonitorConfigPolicies[i]["tag_policy"] = []interface{}{map[string]interface{}{
 				"tag_key":          policy.MonitorConfigPolicyTagPolicy.GetTagKey(),
 				"tag_key_required": policy.MonitorConfigPolicyTagPolicy.GetTagKeyRequired(),
 				"valid_tag_values": policy.MonitorConfigPolicyTagPolicy.GetValidTagValues(),
-			}
+			}}
 		}
 	}
 

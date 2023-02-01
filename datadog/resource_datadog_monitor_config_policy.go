@@ -32,6 +32,7 @@ func resourceDatadogMonitorConfigPolicy() *schema.Resource {
 				Description: "Config for a tag policy. Only set if `policy_type` is `tag`.",
 				Type:        schema.TypeList,
 				Optional:    true,
+				MaxItems:    1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"tag_key": {

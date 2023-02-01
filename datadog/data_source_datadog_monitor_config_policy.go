@@ -15,12 +15,12 @@ func dataSourceDatadogMonitorConfigPolicy() *schema.Resource {
 		Description: "Use this data source to retrieve information about an existing monitor config policy for use in other resources.",
 		ReadContext: dataSourceDatadogMonitorConfigPolicyRead,
 		Schema: map[string]*schema.Schema{
-			// Computed values
 			"id": {
 				Description: "ID of the monitor config policy",
-				Type:        schema.TypeInt,
-				Computed:    true,
+				Type:        schema.TypeString,
+				Required:    true,
 			},
+			// Computed values
 			"policy_type": {
 				Description: "The monitor config policy type",
 				Type:        schema.TypeString,
@@ -44,9 +44,10 @@ func dataSourceDatadogMonitorConfigPolicy() *schema.Resource {
 							Computed:    true,
 						},
 						"valid_tag_values": {
-							Type:        schema.TypeString,
+							Type:        schema.TypeList,
 							Description: "Valid values for the tag",
 							Computed:    true,
+							Elem:        &schema.Schema{Type: schema.TypeString},
 						},
 					},
 				},
@@ -60,31 +61,30 @@ func dataSourceDatadogMonitorConfigPolicyRead(ctx context.Context, d *schema.Res
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	if policyId := d.Get("id").(string); policyId != "" {
-		monitorConfigPolicy, httpResponse, err := apiInstances.GetMonitorsApiV2().GetMonitorConfigPolicy(auth, policyId)
-		if err != nil {
-			if httpResponse != nil && httpResponse.StatusCode == 404 {
-				return diag.FromErr(errors.New("monitor config policy does not exist"))
-			}
+	id := d.Get("id").(string)
+	monitorConfigPolicy, httpResponse, err := apiInstances.GetMonitorsApiV2().GetMonitorConfigPolicy(auth, id)
+	if err != nil {
+		if httpResponse != nil && httpResponse.StatusCode == 404 {
+			return diag.FromErr(errors.New("monitor config policy does not exist"))
 		}
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error querying monitor config policy")
-		if err := utils.CheckForUnparsed(monitorConfigPolicy); err != nil {
-			return diag.FromErr(err)
-		}
-
-		d.SetId(monitorConfigPolicy.Data.GetId())
-		d.Set("policy_type", monitorConfigPolicy.Data.Attributes.GetPolicyType())
-
-		attributes := monitorConfigPolicy.Data.GetAttributes()
-		policy := attributes.GetPolicy()
-		if policy.MonitorConfigPolicyTagPolicy != nil {
-			d.Set("tag_policy", map[string]interface{}{
-				"tag_key":          policy.MonitorConfigPolicyTagPolicy.GetTagKey(),
-				"tag_key_required": policy.MonitorConfigPolicyTagPolicy.GetTagKeyRequired(),
-				"valid_tag_values": policy.MonitorConfigPolicyTagPolicy.GetValidTagValues(),
-			})
-		}
+	}
+	if err := utils.CheckForUnparsed(monitorConfigPolicy); err != nil {
+		return diag.FromErr(err)
 	}
 
-	return diag.Errorf("missing id parameter")
+	d.SetId(monitorConfigPolicy.Data.GetId())
+	d.Set("policy_type", monitorConfigPolicy.Data.Attributes.GetPolicyType())
+
+	attributes := monitorConfigPolicy.Data.GetAttributes()
+	policy := attributes.GetPolicy()
+	if policy.MonitorConfigPolicyTagPolicy != nil {
+		d.Set("tag_policy", []interface{}{map[string]interface{}{
+			"tag_key":          policy.MonitorConfigPolicyTagPolicy.GetTagKey(),
+			"tag_key_required": policy.MonitorConfigPolicyTagPolicy.GetTagKeyRequired(),
+			"valid_tag_values": policy.MonitorConfigPolicyTagPolicy.GetValidTagValues(),
+		}})
+		return nil
+	}
+	return nil
 }
