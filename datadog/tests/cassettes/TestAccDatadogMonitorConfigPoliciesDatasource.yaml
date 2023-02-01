@@ -1,0 +1,194 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"policy":{"tag_key":"tagKey1","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"type":"monitor-config-policy"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"monitor-config-policy","attributes":{"policy":{"tag_key":"tagKey1","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"id":"de0c3414-a27c-11ed-8e7c-da7ad0900002"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"policy":{"tag_key":"tagKey2","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"type":"monitor-config-policy"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"monitor-config-policy","attributes":{"policy":{"tag_key_required":false,"tag_key":"tagKey2","valid_tag_values":["value"]},"policy_type":"tag"},"id":"de0c9ca6-a27c-11ed-b9d1-da7ad0900002"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"valid_tag_values":["value"],"tag_key_required":false,"tag_key":"tagKey1"}},"id":"de0c3414-a27c-11ed-8e7c-da7ad0900002"},{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"valid_tag_values":["value"],"tag_key_required":false,"tag_key":"tagKey2"}},"id":"de0c9ca6-a27c-11ed-b9d1-da7ad0900002"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"tag_key":"tagKey1","tag_key_required":false,"valid_tag_values":["value"]}},"id":"de0c3414-a27c-11ed-8e7c-da7ad0900002"},{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"tag_key":"tagKey2","tag_key_required":false,"valid_tag_values":["value"]}},"id":"de0c9ca6-a27c-11ed-b9d1-da7ad0900002"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy/de0c9ca6-a27c-11ed-b9d1-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"monitor-config-policy","attributes":{"policy":{"tag_key_required":false,"tag_key":"tagKey2","valid_tag_values":["value"]},"policy_type":"tag"},"id":"de0c9ca6-a27c-11ed-b9d1-da7ad0900002"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy/de0c3414-a27c-11ed-8e7c-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"monitor-config-policy","attributes":{"policy":{"valid_tag_values":["value"],"tag_key":"tagKey1","tag_key_required":false},"policy_type":"tag"},"id":"de0c3414-a27c-11ed-8e7c-da7ad0900002"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"tag_key":"tagKey1","tag_key_required":false,"valid_tag_values":["value"]}},"id":"de0c3414-a27c-11ed-8e7c-da7ad0900002"},{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"tag_key":"tagKey2","tag_key_required":false,"valid_tag_values":["value"]}},"id":"de0c9ca6-a27c-11ed-b9d1-da7ad0900002"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"monitor-config-policy","id":"de0c3414-a27c-11ed-8e7c-da7ad0900002","attributes":{"policy":{"tag_key":"tagKey1","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"}},{"type":"monitor-config-policy","id":"de0c9ca6-a27c-11ed-b9d1-da7ad0900002","attributes":{"policy":{"tag_key":"tagKey2","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/monitor/policy/de0c9ca6-a27c-11ed-b9d1-da7ad0900002
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/monitor/policy/de0c3414-a27c-11ed-8e7c-da7ad0900002
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/monitor/policy
+    method: GET
+  response:
+    body: |
+      {"data":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
