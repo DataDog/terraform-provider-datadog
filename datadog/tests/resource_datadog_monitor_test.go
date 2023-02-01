@@ -290,6 +290,8 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "no_data_timeframe", "20"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notification_preset_name", "show_all"),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_interval", "40"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "renotify_occurrences", "0"),
@@ -370,6 +372,8 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "type", "query alert"),
 					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notification_preset_name", "hide_query"),
+					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_no_data", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "new_group_delay", "500"),
@@ -427,6 +431,8 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "escalation_message", "the situation has escalated! @pagerduty"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "type", "query alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "notification_preset_name", "show_all"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_no_data", "true"),
 					resource.TestCheckResourceAttr(
@@ -943,49 +949,6 @@ func TestAccDatadogMonitor_SchedulingOptions(t *testing.T) {
 	})
 }
 
-func TestAccDatadogMonitor_NotificationPresetName(t *testing.T) {
-	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	monitorName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogMonitorWithNotificationPresetName(monitorName),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists(accProvider),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "name", monitorName),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "notification_preset_name", "hide_query"),
-				),
-			},
-		},
-	})
-}
-
-func testAccCheckDatadogMonitorWithNotificationPresetName(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_monitor" "foo" {
-  name = "%s"
-  type = "metric alert"
-  message = "a message"
-  priority = 3
-
-  query = "avg(current_1mo):avg:system.load.5{*} > 0.5"
-
-  monitor_thresholds {
-	critical = "0.5"
-  }
-  
-	notification_preset_name = "hide_query"
-}`, uniq)
-}
-
 func testAccCheckDatadogMonitorWithSchedulingOptions(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
@@ -1039,6 +1002,7 @@ resource "datadog_monitor" "foo" {
   require_full_window = true
   locked = false
   tags = ["foo:bar", "baz"]
+  notification_preset_name = "hide_query"
 }`, uniq)
 }
 
@@ -1193,6 +1157,7 @@ resource "datadog_monitor" "foo" {
   require_full_window = false
   locked = true
   tags = ["baz:qux", "quux"]
+  notification_preset_name = "show_all"
 }`, uniq)
 }
 
@@ -1224,6 +1189,7 @@ resource "datadog_monitor" "foo" {
   include_tags = false
   require_full_window = false
   locked = true
+  notification_preset_name = "show_all"
 }`, uniq)
 }
 
