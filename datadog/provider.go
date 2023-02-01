@@ -193,7 +193,6 @@ func Provider() *schema.Provider {
 			"datadog_logs_pipelines":                      dataSourceDatadogLogsPipelines(),
 			"datadog_monitor":                             dataSourceDatadogMonitor(),
 			"datadog_monitors":                            dataSourceDatadogMonitors(),
-			"datadog_monitor_config_policy":               dataSourceDatadogMonitorConfigPolicy(),
 			"datadog_monitor_config_policies":             dataSourceDatadogMonitorConfigPolicies(),
 			"datadog_permissions":                         dataSourceDatadogPermissions(),
 			"datadog_role":                                dataSourceDatadogRole(),

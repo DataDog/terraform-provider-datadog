@@ -24,11 +24,11 @@ func TestAccDatadogMonitorConfigPolicy_Basic(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorConfigPolicyDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigPolicyConfig("tagKey"),
+				Config: testAccCheckDatadogMonitorConfigPolicyConfig("test", "tagKey"),
 				Check:  createTestCheckFunc(accProvider, "tagKey"),
 			},
 			{
-				Config: testAccCheckDatadogMonitorConfigPolicyConfig("tagKeyUpdated"),
+				Config: testAccCheckDatadogMonitorConfigPolicyConfig("test", "tagKeyUpdated"),
 				Check:  createTestCheckFunc(accProvider, "tagKeyUpdated"),
 			},
 		},
@@ -41,13 +41,14 @@ func createTestCheckFunc(accProvider func() (*schema.Provider, error), tagKey st
 		resource.TestCheckResourceAttr("datadog_monitor_config_policy.test", "policy_type", "tag"),
 		resource.TestCheckResourceAttr("datadog_monitor_config_policy.test", "tag_policy.0.tag_key", tagKey),
 		resource.TestCheckResourceAttr("datadog_monitor_config_policy.test", "tag_policy.0.tag_key_required", "false"),
+		resource.TestCheckResourceAttr("datadog_monitor_config_policy.test", "tag_policy.0.valid_tag_values.#", "1"),
 		resource.TestCheckResourceAttr("datadog_monitor_config_policy.test", "tag_policy.0.valid_tag_values.0", "value"),
 	)
 }
 
-func testAccCheckDatadogMonitorConfigPolicyConfig(tagKey string) string {
+func testAccCheckDatadogMonitorConfigPolicyConfig(name string, tagKey string) string {
 	return fmt.Sprintf(`
-  resource "datadog_monitor_config_policy" "test" {
+  resource "datadog_monitor_config_policy" "%s" {
     policy_type = "tag"
     tag_policy {
 		tag_key          = "%s"
@@ -55,7 +56,7 @@ func testAccCheckDatadogMonitorConfigPolicyConfig(tagKey string) string {
 		valid_tag_values = ["value"]
     }
   }
-    `, tagKey)
+    `, name, tagKey)
 }
 
 func testAccCheckDatadogMonitorConfigPolicyExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {
