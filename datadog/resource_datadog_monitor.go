@@ -369,7 +369,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 			},
 			"notification_preset_name": {
-				Description:      "Toggles the display of additional content sent in the monitor notification. Valid values are: `show_all`, `hide_query`, `hide_handles`, and `hide_all`.",
+				Description:      "Toggles the display of additional content sent in the monitor notification.",
 				Type:             schema.TypeString,
 				Optional:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorOptionsNotificationPresetsFromValue),
