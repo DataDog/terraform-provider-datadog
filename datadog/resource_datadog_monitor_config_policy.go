@@ -211,11 +211,6 @@ func updateMonitorConfigPolicyState(d *schema.ResourceData, m *datadogV2.Monitor
 			"tag_key_required": attributes.Policy.MonitorConfigPolicyTagPolicy.GetTagKeyRequired(),
 			"valid_tag_values": attributes.Policy.MonitorConfigPolicyTagPolicy.GetValidTagValues(),
 		}})
-		//d.Set("tag_policy", map[string]interface{}{
-		//	"tag_key":          attributes.Policy.MonitorConfigPolicyTagPolicy.GetTagKey(),
-		//	"tag_key_required": attributes.Policy.MonitorConfigPolicyTagPolicy.GetTagKeyRequired(),
-		//	"valid_tag_values": attributes.Policy.MonitorConfigPolicyTagPolicy.GetValidTagValues(),
-		//})
 	}
 	return nil
 }
