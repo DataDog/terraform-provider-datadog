@@ -92,7 +92,7 @@ func resourceDatadogServiceAccountCreate(ctx context.Context, d *schema.Resource
 	var userID string
 	updated := false
 
-	createResponse, httpresp, err := apiInstances.GetUsersApiV2().CreateServiceAccount(auth, *serviceAccountRequest)
+	createResponse, httpresp, err := apiInstances.GetServiceAccountsApiV2().CreateServiceAccount(auth, *serviceAccountRequest)
 	if err != nil {
 		// Datadog does not actually delete users, so CreateUser might return a 409.
 		// We ignore that case and proceed, likely re-enabling the user.
