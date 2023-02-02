@@ -368,6 +368,12 @@ func resourceDatadogMonitor() *schema.Resource {
 					},
 				},
 			},
+			"notification_preset_name": {
+				Description:      "Toggles the display of additional content sent in the monitor notification.",
+				Type:             schema.TypeString,
+				Optional:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorOptionsNotificationPresetsFromValue),
+			},
 		},
 	}
 }
@@ -663,6 +669,10 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 		}
 		scheduling_options.SetEvaluationWindow(*evaluation_window)
 		o.SetSchedulingOptions(*scheduling_options)
+	}
+
+	if attr, ok := d.GetOk("notification_preset_name"); ok {
+		o.SetNotificationPresetName(datadogV1.MonitorOptionsNotificationPresets(attr.(string)))
 	}
 
 	m := datadogV1.NewMonitor(d.Get("query").(string), monitorType)
@@ -1004,6 +1014,10 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		if err := d.Set("scheduling_options", []interface{}{scheduling_options}); err != nil {
 			return diag.FromErr(err)
 		}
+	}
+
+	if err := d.Set("notification_preset_name", m.Options.GetNotificationPresetName()); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return nil
