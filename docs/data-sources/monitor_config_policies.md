@@ -3,12 +3,12 @@
 page_title: "datadog_monitor_config_policies Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to list several existing monitor config policies for use in other resources.
+  Use this data source to list existing monitor config policies for use in other resources.
 ---
 
 # datadog_monitor_config_policies (Data Source)
 
-Use this data source to list several existing monitor config policies for use in other resources.
+Use this data source to list existing monitor config policies for use in other resources.
 
 ## Example Usage
 
