@@ -38,9 +38,7 @@ func TestAccDatadogMonitorConfigPoliciesDatasource(t *testing.T) {
 
 func testAccDatasourceMonitorConfigPolicies() string {
 	return fmt.Sprintf(`
-	data "datadog_monitor_config_policies" "test" {
-		depends_on   = ["datadog_monitor_config_policy.test1", "datadog_monitor_config_policy.test2"]
-	} 
+	data "datadog_monitor_config_policies" "test" {}
     %s 
     %s`,
 		testAccCheckDatadogMonitorConfigPolicyConfig("test1", "tagKey1"),
