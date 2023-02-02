@@ -10,11 +10,9 @@ import (
 
 func TestAccDatadogMonitorConfigPoliciesDatasource(t *testing.T) {
 	_, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
 	datasource := "data.datadog_monitor_config_policies.test"
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
-		CheckDestroy:      testAccCheckDatadogMonitorConfigPolicyDestroy(accProvider),
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
