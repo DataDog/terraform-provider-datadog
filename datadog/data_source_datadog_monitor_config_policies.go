@@ -11,7 +11,7 @@ import (
 
 func dataSourceDatadogMonitorConfigPolicies() *schema.Resource {
 	return &schema.Resource{
-		Description: "Use this data source to list several existing monitor config policies for use in other resources.",
+		Description: "Use this data source to list existing monitor config policies for use in other resources.",
 		ReadContext: dataSourceDatadogMonitorConfigPoliciesRead,
 		Schema: map[string]*schema.Schema{
 			// Computed values
