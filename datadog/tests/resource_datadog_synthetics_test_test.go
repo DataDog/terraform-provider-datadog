@@ -19,6 +19,7 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
+	variableName := getUniqueVariableName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -27,7 +28,7 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: createSyntheticsAPITestConfig(testName),
+				Config: createSyntheticsAPITestConfig(testName, variableName),
 			},
 			{
 				ResourceName:      "datadog_synthetics_test.foo",
@@ -507,8 +508,9 @@ func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
 
 func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
+	variableName := getUniqueVariableName(ctx, t)
 	return resource.TestStep{
-		Config: createSyntheticsAPITestConfig(testName),
+		Config: createSyntheticsAPITestConfig(testName, variableName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -627,16 +629,27 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 				"datadog_synthetics_test.foo", "config_variable.0.example", "123"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "config_variable.0.secure", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.1.type", "global"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.1.name", "GLOBAL_VAR"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.foo", "monitor_id"),
 		),
 	}
 }
 
-func createSyntheticsAPITestConfig(uniq string) string {
+func createSyntheticsAPITestConfig(uniq string, variableName string) string {
 	return fmt.Sprintf(`
 resource "datadog_role" "bar" {
 	name      = "%[1]s"
+}
+
+resource "datadog_synthetics_global_variable" "global_variable" {
+  name        = "%[2]s"
+  description = "a global variable"
+  tags        = ["foo:bar", "baz"]
+  value       = "variable-value"
 }
 
 resource "datadog_synthetics_test" "foo" {
@@ -728,7 +741,14 @@ resource "datadog_synthetics_test" "foo" {
 		pattern = "{{numeric(3)}}"
 		example = "123"
 	}
-}`, uniq)
+
+	config_variable {
+		type = "global"
+		name = "GLOBAL_VAR"
+		id   = datadog_synthetics_global_variable.global_variable.id
+		secure = false
+	}
+}`, uniq, variableName)
 }
 
 func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {

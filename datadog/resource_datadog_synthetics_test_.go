@@ -1404,11 +1404,11 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 			variable.SetName(variableMap["name"].(string))
 			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
-			variable.SetSecure(variableMap["secure"].(bool))
 
 			if variable.GetType() != "global" {
 				variable.SetPattern(variableMap["pattern"].(string))
 				variable.SetExample(variableMap["example"].(string))
+				variable.SetSecure(variableMap["secure"].(bool))
 			}
 
 			if variableMap["id"] != "" {
@@ -1995,11 +1995,11 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 			variable.SetName(variableMap["name"].(string))
 			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
-			variable.SetSecure(variableMap["secure"].(bool))
 
 			if variable.GetType() != "global" {
 				variable.SetPattern(variableMap["pattern"].(string))
 				variable.SetExample(variableMap["example"].(string))
+				variable.SetSecure(variableMap["secure"].(bool))
 			}
 
 			if variableMap["id"] != "" {
