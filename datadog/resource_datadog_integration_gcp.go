@@ -68,6 +68,12 @@ func resourceDatadogIntegrationGcp() *schema.Resource {
 				Default:     false,
 				Optional:    true,
 			},
+			"cspm_resource_collection_enabled": {
+				Description: "Whether Datadog collects cloud security posture management resources from your GCP project.",
+				Type:        schema.TypeBool,
+				Default:     false,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -104,6 +110,7 @@ func resourceDatadogIntegrationGcpCreate(ctx context.Context, d *schema.Resource
 			ClientX509CertUrl:       datadog.PtrString(defaultClientX509CertURLPrefix + d.Get("client_email").(string)),
 			HostFilters:             datadog.PtrString(d.Get("host_filters").(string)),
 			Automute:                datadog.PtrBool(d.Get("automute").(bool)),
+			IsCspmEnabled:           datadog.PtrBool(d.Get("cspm_resource_collection_enabled").(bool)),
 		},
 	); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating GCP integration")
@@ -134,6 +141,7 @@ func resourceDatadogIntegrationGcpRead(ctx context.Context, d *schema.ResourceDa
 			d.Set("client_email", integration.GetClientEmail())
 			d.Set("host_filters", integration.GetHostFilters())
 			d.Set("automute", integration.GetAutomute())
+			d.Set("cspm_resource_collection_enabled", integration.GetIsCspmEnabled())
 			return nil
 		}
 	}
@@ -151,10 +159,11 @@ func resourceDatadogIntegrationGcpUpdate(ctx context.Context, d *schema.Resource
 
 	if _, httpresp, err := apiInstances.GetGCPIntegrationApiV1().UpdateGCPIntegration(auth,
 		datadogV1.GCPAccount{
-			ProjectId:   datadog.PtrString(d.Id()),
-			ClientEmail: datadog.PtrString(d.Get("client_email").(string)),
-			HostFilters: datadog.PtrString(d.Get("host_filters").(string)),
-			Automute:    datadog.PtrBool(d.Get("automute").(bool)),
+			ProjectId:     datadog.PtrString(d.Id()),
+			ClientEmail:   datadog.PtrString(d.Get("client_email").(string)),
+			HostFilters:   datadog.PtrString(d.Get("host_filters").(string)),
+			Automute:      datadog.PtrBool(d.Get("automute").(bool)),
+			IsCspmEnabled: datadog.PtrBool(d.Get("cspm_resource_collection_enabled").(bool)),
 		},
 	); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating GCP integration")
