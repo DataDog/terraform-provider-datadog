@@ -43,7 +43,7 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 			"api_token": {
 				Description: "Your PagerDuty API token.",
 				Type:        schema.TypeString,
-				Optional:    true,
+				Required:    true,
 				Sensitive:   true,
 			},
 		},

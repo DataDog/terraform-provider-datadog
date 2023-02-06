@@ -45,8 +45,8 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
 
 ### Required
 
-- `subdomain` (String) Your PagerDuty account’s personalized subdomain name.
 - `api_token` (String, Sensitive) Your PagerDuty API token.
+- `subdomain` (String) Your PagerDuty account’s personalized subdomain name.
 
 ### Optional
 
