@@ -1025,8 +1025,9 @@ resource "datadog_synthetics_test" "bar" {
 
 func updateSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t) + "-updated"
+	variableName := getUniqueVariableName(ctx, t)
 	return resource.TestStep{
-		Config: updateSyntheticsAPITestConfig(testName),
+		Config: updateSyntheticsAPITestConfig(testName, variableName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -1087,8 +1088,15 @@ func updateSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 	}
 }
 
-func updateSyntheticsAPITestConfig(uniq string) string {
+func updateSyntheticsAPITestConfig(uniq string, varName string) string {
 	return fmt.Sprintf(`
+resource "datadog_synthetics_global_variable" "global_variable" {
+	name        = "%[2]s"
+	description = "a global variable"
+	tags        = ["foo:bar", "baz"]
+	value       = "variable-value"
+}
+
 resource "datadog_synthetics_test" "foo" {
 	type = "api"
 	subtype = "http"
@@ -1126,12 +1134,19 @@ resource "datadog_synthetics_test" "foo" {
 		}
 	}
 
-	name = "%s"
+	name = "%[1]s"
 	message = "Notify @pagerduty"
 	tags = ["foo:bar", "foo", "env:test"]
 
 	status = "live"
-}`, uniq)
+
+	config_variable {
+		type = "global"
+		name = "GLOBAL_VAR"
+		id   = datadog_synthetics_global_variable.global_variable.id
+		secure = false
+	}
+}`, uniq, varName)
 }
 
 func updateSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
