@@ -131,11 +131,9 @@ func resourceDatadogDowntime() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-					_, startDatePresent := d.GetOk("start_date")
 					now := time.Now().Unix()
-
-					// If "start_date" is set, ignore diff for "start". If "start" isn't set, ignore diff if start is now or in the past
-					return startDatePresent || (newVal == "0" && oldVal != "0" && int64(d.Get("start").(int)) <= now)
+					// If "start" isn't set, ignore diff if start is now or in the past
+					return newVal == "0" && oldVal != "0" && int64(d.Get("start").(int)) <= now
 				},
 				Description: "Specify when this downtime should start. Accepts a Unix timestamp in UTC.",
 			},
@@ -152,12 +150,8 @@ func resourceDatadogDowntime() *schema.Resource {
 				},
 			},
 			"end": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-					_, endDatePresent := d.GetOk("end_date")
-					return endDatePresent
-				},
+				Type:        schema.TypeInt,
+				Optional:    true,
 				Description: "Optionally specify an end date when this downtime should expire. Accepts a Unix timestamp in UTC.",
 			},
 			"end_date": {
@@ -311,9 +305,10 @@ func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, co
 
 	if updating {
 		// when updating, we apply when
-		// * API-returned value is different than configured value
+		// * API-returned value is different from configured value, and it's not a recurring downtime
 		// * the config value has changed
-		if apiTs != configTs || d.HasChange(tsFrom) {
+		_, ok := d.GetOk("recurrence")
+		if d.HasChange(tsFrom) || (apiTs != configTs && !ok) {
 			apply = true
 		}
 	} else {
@@ -326,7 +321,7 @@ func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, co
 
 func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, apiInstances *utils.ApiInstances, updating bool) (*datadogV1.Downtime, error) {
 	// NOTE: for each of start/start_date/end/end_date, we only send the value when
-	// it has changed or if the configured value is different than current value
+	// it has changed or if the configured value is different from current value
 	// (IOW there's a resource drift). This allows users to change other attributes
 	// (e.g. scopes/message/...) without having to update the timestamps/dates to be
 	// in the future (this works thanks to the downtime API allowing not to send these
@@ -348,6 +343,11 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, apiInstanc
 		}
 		currentStart = currdt.GetStart()
 		currentEnd = currdt.GetEnd()
+	}
+
+	startValue, startAttrName := getDowntimeBoundaryTimestamp(d, "start_date", "start")
+	if downtimeBoundaryNeedsApply(d, startAttrName, currentStart, startValue, updating) {
+		dt.SetStart(startValue)
 	}
 
 	endValue, endAttrName := getDowntimeBoundaryTimestamp(d, "end_date", "end")
@@ -399,11 +399,6 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, apiInstanc
 		tags = append(tags, mt.(string))
 	}
 	dt.SetMonitorTags(tags)
-
-	startValue, startAttrName := getDowntimeBoundaryTimestamp(d, "start_date", "start")
-	if downtimeBoundaryNeedsApply(d, startAttrName, currentStart, startValue, updating) {
-		dt.SetStart(startValue)
-	}
 
 	if attr, ok := d.GetOk("timezone"); ok {
 		dt.SetTimezone(attr.(string))
