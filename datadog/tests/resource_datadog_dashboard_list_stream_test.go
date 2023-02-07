@@ -16,7 +16,7 @@ resource "datadog_dashboard" "list_stream_dashboard" {
 			title = "List Stream 1"
 			title_align = "right"
 			title_size = "16"
-            request {
+			request {
 				response_format = "event_list"
 				query {
 					data_source = "rum_issue_stream"
@@ -25,8 +25,8 @@ resource "datadog_dashboard" "list_stream_dashboard" {
 					field = "details"
 					width = "auto"
 				}
-            }
-            request {
+			}
+			request {
 				response_format = "event_list"
 				query {
 					data_source = "apm_issue_stream"
@@ -37,8 +37,8 @@ resource "datadog_dashboard" "list_stream_dashboard" {
 					field = "details"
 					width = "auto"
 				}
-            }
-        }
+			}
+		}
 		widget_layout {
 			height = 43
 			width = 32
@@ -87,7 +87,7 @@ resource "datadog_dashboard" "list_stream_event_dashboard" {
 			title = "List Stream 2"
 			title_align = "right"
 			title_size = "16"
-            request {
+			request {
 				response_format = "event_list"
 				query {
 					data_source = "event_stream"
@@ -98,7 +98,7 @@ resource "datadog_dashboard" "list_stream_event_dashboard" {
 					field = "source"
 					width = "auto"
 				}
-            }
+			}
 		}
 	}
 }
