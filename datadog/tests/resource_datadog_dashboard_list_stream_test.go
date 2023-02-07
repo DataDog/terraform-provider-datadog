@@ -74,3 +74,49 @@ var datadogDashboardListStreamAsserts = []string{
 func TestAccDatadogDashboardListStream(t *testing.T) {
 	testAccDatadogDashboardWidgetUtil(t, datadogDashboardListStreamConfig, "datadog_dashboard.list_stream_dashboard", datadogDashboardListStreamAsserts)
 }
+
+const datadogDashboardListStreamEventsConfig = `
+resource "datadog_dashboard" "list_stream_event_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+
+	widget {
+		list_stream_definition {
+			title = "List Stream 2"
+			title_align = "right"
+			title_size = "16"
+            request {
+				response_format = "event_list"
+				query {
+					data_source = "event_stream"
+					query_string = "example.metric"
+					event_size = "l"
+				}
+				columns {
+					field = "source"
+					width = "auto"
+				}
+            }
+		}
+	}
+}
+`
+
+var datadogDashboardListStreamEventsAsserts = []string{
+	"description = Created using the Datadog provider in Terraform",
+	"layout_type = ordered",
+	"is_read_only = true",
+	"title = {{uniq}}",
+	"widget.0.list_stream_definition.0.request.0.response_format = event_list",
+	"widget.0.list_stream_definition.0.request.0.query.0.data_source = event_stream",
+	"widget.0.list_stream_definition.0.request.0.query.0.query_string = example.metric",
+	"widget.0.list_stream_definition.0.request.0.query.0.event_size = l",
+	"widget.0.list_stream_definition.0.request.0.columns.0.field = source",
+	"widget.0.list_stream_definition.0.request.0.columns.0.width = auto",
+}
+
+func TestAccDatadogDashboardListStreamEvents(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardListStreamEventsConfig, "datadog_dashboard.list_stream_event_dashboard", datadogDashboardListStreamEventsAsserts)
+}
