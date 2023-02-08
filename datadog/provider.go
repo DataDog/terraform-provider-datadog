@@ -92,12 +92,14 @@ func Provider() *schema.Provider {
 			"api_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Sensitive:   true,
 				DefaultFunc: schema.MultiEnvDefaultFunc(APIKeyEnvVars, nil),
 				Description: "(Required unless validate is false) Datadog API key. This can also be set via the DD_API_KEY environment variable.",
 			},
 			"app_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Sensitive:   true,
 				DefaultFunc: schema.MultiEnvDefaultFunc(APPKeyEnvVars, nil),
 				Description: "(Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.",
 			},
