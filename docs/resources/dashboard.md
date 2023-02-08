@@ -4544,6 +4544,7 @@ Required:
 
 Optional:
 
+- `event_size` (String) Size of events displayed in widget. Valid values are `s`, `l`.
 - `indexes` (List of String) List of indexes.
 - `query_string` (String) Widget query.
 - `storage` (String) Storage location (private beta).
@@ -10017,6 +10018,7 @@ Required:
 
 Optional:
 
+- `event_size` (String) Size of events displayed in widget. Valid values are `s`, `l`.
 - `indexes` (List of String) List of indexes.
 - `query_string` (String) Widget query.
 - `storage` (String) Storage location (private beta).
