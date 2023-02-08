@@ -5266,9 +5266,9 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 			if v, ok := q["data_source"].(string); ok && len(v) > 0 {
 				ds := datadogV1.ListStreamSource(v)
 				datadogQuery.SetDataSource(ds)
-			}
-			if v, ok := q["event_size"].(string); ok {
-				datadogQuery.SetEventSize(datadogV1.WidgetEventSize(v))
+				if v, ok := q["event_size"].(string); ds == datadogV1.LISTSTREAMSOURCE_EVENT_STREAM && ok {
+					datadogQuery.SetEventSize(datadogV1.WidgetEventSize(v))
+				}
 			}
 			if v, ok := q["query_string"].(string); ok {
 				datadogQuery.SetQueryString(v)
@@ -7573,13 +7573,13 @@ func buildTerraformListStreamWidgetRequests(datadogListStreamRequests []datadogV
 		if queryString, ok := q.GetQueryStringOk(); ok {
 			queryRequest["query_string"] = queryString
 		}
-		if eventSize, ok := q.GetEventSizeOk(); ok {
-			queryRequest["event_size"] = eventSize
-		}
 		if storage, ok := q.GetStorageOk(); ok {
 			queryRequest["storage"] = storage
 		}
 		queryRequest["data_source"] = string(q.GetDataSource())
+		if eventSize, ok := q.GetEventSizeOk(); q.GetDataSource() == datadogV1.LISTSTREAMSOURCE_EVENT_STREAM && ok {
+			queryRequest["event_size"] = eventSize
+		}
 		terraformRequest["query"] = []map[string]interface{}{queryRequest}
 
 		terraformRequests[i] = terraformRequest
