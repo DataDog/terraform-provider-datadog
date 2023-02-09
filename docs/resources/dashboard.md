@@ -4544,7 +4544,7 @@ Required:
 
 Optional:
 
-- `event_size` (String) Size of events displayed in widget. Valid values are `s`, `l`.
+- `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
 - `indexes` (List of String) List of indexes.
 - `query_string` (String) Widget query.
 - `storage` (String) Storage location (private beta).
@@ -10018,7 +10018,7 @@ Required:
 
 Optional:
 
-- `event_size` (String) Size of events displayed in widget. Valid values are `s`, `l`.
+- `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
 - `indexes` (List of String) List of indexes.
 - `query_string` (String) Widget query.
 - `storage` (String) Storage location (private beta).

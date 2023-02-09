@@ -5212,7 +5212,7 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 						Optional:    true,
 					},
 					"event_size": {
-						Description:      "Size of events displayed in widget.",
+						Description:      "Size of events displayed in widget. Required if `data_source` is `event_stream`.",
 						Type:             schema.TypeString,
 						Optional:         true,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetEventSizeFromValue),
