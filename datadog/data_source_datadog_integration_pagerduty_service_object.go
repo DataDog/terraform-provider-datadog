@@ -43,10 +43,6 @@ func dataSourceDatadogIntegrationPagerdutySORead(ctx context.Context, d *schema.
 			if httpresp != nil && (httpresp.StatusCode == 504 || httpresp.StatusCode == 502) {
 				return resource.RetryableError(utils.TranslateClientError(err, httpresp, "error querying pagerduty integrations, retrying"))
 			}
-			if httpresp != nil && httpresp.StatusCode == 404 {
-				d.Set("service_name", "")
-				return nil
-			}
 			return resource.NonRetryableError(utils.TranslateClientError(err, httpresp, "error querying pagerduty integrations"))
 		}
 
