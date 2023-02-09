@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -167,4 +168,14 @@ func GetStringSlice(d Resource, key string) []string {
 		return stringValues
 	}
 	return []string{}
+}
+
+// GetMultiEnvVar returns first matching env var
+func GetMultiEnvVar(envVars ...string) (string, error) {
+	for _, value := range envVars {
+		if v := os.Getenv(value); v != "" {
+			return v, nil
+		}
+	}
+	return "", fmt.Errorf("unable to retrieve any env vars from list: %v", envVars)
 }
