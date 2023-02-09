@@ -77,6 +77,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_synthetics_locations_test":                "synthetics",
 	"tests/data_source_datadog_synthetics_global_variable_test":          "synthetics",
 	"tests/data_source_datadog_synthetics_test_test":                     "synthetics",
+	"tests/data_source_datadog_pagerduty_service_object_test":            "integration-pagerduty-service-object",
 	"tests/import_datadog_downtime_test":                                 "downtimes",
 	"tests/import_datadog_integration_pagerduty_test":                    "integration-pagerduty",
 	"tests/import_datadog_logs_pipeline_test":                            "logs-pipelines",
