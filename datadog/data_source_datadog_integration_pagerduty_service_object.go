@@ -15,7 +15,7 @@ import (
 
 func dataSourceDatadogIntegrationPagerdutySO() *schema.Resource {
 	return &schema.Resource{
-		Description: "Use this data source to retrieve individual Service Objects of Datadog - PagerDuty integrations. Note that the Datadog - PagerDuty integration must be activated in the Datadog UI in order for this resource to be usable.",
+		Description: "Use this data source to retrieve individual Service Objects of Datadog PagerDuty integrations. Note that the Datadog PagerDuty integration must be activated in the Datadog UI in order for this resource to be usable.",
 		ReadContext: dataSourceDatadogIntegrationPagerdutySORead,
 
 		Schema: map[string]*schema.Schema{
