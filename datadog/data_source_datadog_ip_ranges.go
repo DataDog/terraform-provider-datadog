@@ -50,7 +50,7 @@ func (d *IPRangesDataSource) Configure(ctx context.Context, request datasource.C
 		return
 	}
 
-	providerData, ok := request.ProviderData.(*frameworkProvider)
+	providerData, ok := request.ProviderData.(*FrameworkProvider)
 	if !ok {
 		response.Diagnostics.AddError(
 			"Unexpected Data Source Configure Type",

@@ -26,10 +26,10 @@ import (
 )
 
 var (
-	_ provider.Provider = &frameworkProvider{}
+	_ provider.Provider = &FrameworkProvider{}
 )
 
-type frameworkProvider struct {
+type FrameworkProvider struct {
 	CommunityClient     *datadogCommunity.Client
 	DatadogApiInstances *utils.ApiInstances
 	Auth                context.Context
@@ -48,17 +48,17 @@ type providerSchema struct {
 }
 
 func New() provider.Provider {
-	return &frameworkProvider{}
+	return &FrameworkProvider{}
 }
 
-func (p *frameworkProvider) Metadata(ctx context.Context, request provider.MetadataRequest, response *provider.MetadataResponse) {
+func (p *FrameworkProvider) Metadata(ctx context.Context, request provider.MetadataRequest, response *provider.MetadataResponse) {
 	response.TypeName = "datadog_"
 }
 
-func (p *frameworkProvider) MetaSchema(ctx context.Context, request provider.MetaSchemaRequest, response *provider.MetaSchemaResponse) {
+func (p *FrameworkProvider) MetaSchema(ctx context.Context, request provider.MetaSchemaRequest, response *provider.MetaSchemaResponse) {
 }
 
-func (p *frameworkProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
+func (p *FrameworkProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"api_key": schema.StringAttribute{
@@ -91,7 +91,13 @@ func (p *frameworkProvider) Schema(ctx context.Context, req provider.SchemaReque
 	}
 }
 
-func (p *frameworkProvider) Configure(ctx context.Context, request provider.ConfigureRequest, response *provider.ConfigureResponse) {
+func (p *FrameworkProvider) Configure(ctx context.Context, request provider.ConfigureRequest, response *provider.ConfigureResponse) {
+	if p.Auth != nil && p.CommunityClient != nil && p.DatadogApiInstances != nil {
+		response.DataSourceData = p
+		response.ResourceData = p
+		return
+	}
+
 	var config providerSchema
 	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
 	if response.Diagnostics.HasError() {
@@ -246,7 +252,7 @@ func (p *frameworkProvider) Configure(ctx context.Context, request provider.Conf
 	response.ResourceData = p
 }
 
-func (p *frameworkProvider) Resources(ctx context.Context) []func() resource.Resource {
+func (p *FrameworkProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		//func() resource.Resource {
 		//	return nil
@@ -254,7 +260,7 @@ func (p *frameworkProvider) Resources(ctx context.Context) []func() resource.Res
 	}
 }
 
-func (p *frameworkProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
+func (p *FrameworkProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewIPRangesDataSource,
 	}
