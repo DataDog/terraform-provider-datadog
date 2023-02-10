@@ -50,17 +50,14 @@ func (d *IPRangesDataSource) Configure(ctx context.Context, request datasource.C
 		return
 	}
 
-	providerData, ok := request.ProviderData.(*datadogFrameworkProvider)
-
-	d.Api = providerData.DatadogApiInstances.GetIPRangesApiV1()
-	d.Auth = providerData.Auth
-
+	providerData, ok := request.ProviderData.(*frameworkProvider)
 	if !ok {
 		response.Diagnostics.AddError(
 			"Unexpected Data Source Configure Type",
 			"")
 		return
 	}
+
 	d.Api = providerData.DatadogApiInstances.GetIPRangesApiV1()
 	d.Auth = providerData.Auth
 }

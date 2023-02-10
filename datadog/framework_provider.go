@@ -26,10 +26,10 @@ import (
 )
 
 var (
-	_ provider.Provider = &datadogFrameworkProvider{}
+	_ provider.Provider = &frameworkProvider{}
 )
 
-type datadogFrameworkProvider struct {
+type frameworkProvider struct {
 	CommunityClient     *datadogCommunity.Client
 	DatadogApiInstances *utils.ApiInstances
 	Auth                context.Context
@@ -38,7 +38,7 @@ type datadogFrameworkProvider struct {
 }
 
 // Provider schema struct
-type datadogProviderSchema struct {
+type providerSchema struct {
 	ApiKey                 types.String `tfsdk:"api_key"`
 	AppKey                 types.String `tfsdk:"app_key"`
 	ApiUrl                 types.String `tfsdk:"api_url"`
@@ -48,17 +48,17 @@ type datadogProviderSchema struct {
 }
 
 func New() provider.Provider {
-	return &datadogFrameworkProvider{}
+	return &frameworkProvider{}
 }
 
-func (p *datadogFrameworkProvider) Metadata(ctx context.Context, request provider.MetadataRequest, response *provider.MetadataResponse) {
+func (p *frameworkProvider) Metadata(ctx context.Context, request provider.MetadataRequest, response *provider.MetadataResponse) {
 	response.TypeName = "datadog_"
 }
 
-func (p *datadogFrameworkProvider) MetaSchema(ctx context.Context, request provider.MetaSchemaRequest, response *provider.MetaSchemaResponse) {
+func (p *frameworkProvider) MetaSchema(ctx context.Context, request provider.MetaSchemaRequest, response *provider.MetaSchemaResponse) {
 }
 
-func (p *datadogFrameworkProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
+func (p *frameworkProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"api_key": schema.StringAttribute{
@@ -91,8 +91,8 @@ func (p *datadogFrameworkProvider) Schema(ctx context.Context, req provider.Sche
 	}
 }
 
-func (p *datadogFrameworkProvider) Configure(ctx context.Context, request provider.ConfigureRequest, response *provider.ConfigureResponse) {
-	var config datadogProviderSchema
+func (p *frameworkProvider) Configure(ctx context.Context, request provider.ConfigureRequest, response *provider.ConfigureResponse) {
+	var config providerSchema
 	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -246,7 +246,7 @@ func (p *datadogFrameworkProvider) Configure(ctx context.Context, request provid
 	response.ResourceData = p
 }
 
-func (p *datadogFrameworkProvider) Resources(ctx context.Context) []func() resource.Resource {
+func (p *frameworkProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		//func() resource.Resource {
 		//	return nil
@@ -254,7 +254,7 @@ func (p *datadogFrameworkProvider) Resources(ctx context.Context) []func() resou
 	}
 }
 
-func (p *datadogFrameworkProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
+func (p *frameworkProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewIPRangesDataSource,
 	}
