@@ -44,21 +44,19 @@ func dataSourceDatadogIntegrationPagerdutySORead(ctx context.Context, d *schema.
 				return resource.RetryableError(utils.TranslateClientError(err, httpresp, "error querying pagerduty integrations, retrying"))
 			}
 			if httpresp != nil && httpresp.StatusCode == 404 {
-				d.Set("service_name", "")
-				d.SetId("pagerduty-service-object")
+				d.SetId("")
 				return nil
 			}
 			return resource.NonRetryableError(utils.TranslateClientError(err, httpresp, "error querying pagerduty integrations"))
 		}
 
 		if serviceName, ok := resp.GetServiceNameOk(); !ok {
-			d.Set("service_name", "")
+			d.SetId("")
 			return resource.NonRetryableError(fmt.Errorf("couldn't find a pagerduty integration service named %s", *serviceName))
 		} else {
-			d.Set("service_name", *serviceName)
+			d.SetId(*serviceName)
 		}
 
-		d.SetId("pagerduty-service-object")
 		return nil
 	})
 	if err != nil {
