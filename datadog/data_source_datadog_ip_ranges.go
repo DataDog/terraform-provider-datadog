@@ -68,6 +68,7 @@ func (d *IPRangesDataSource) Metadata(ctx context.Context, request datasource.Me
 
 func (d *IPRangesDataSource) Schema(ctx context.Context, request datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
+		Description:         "Use this data source to retrieve information about Datadog's IP addresses.",
 		MarkdownDescription: "Use this data source to retrieve information about Datadog's IP addresses.",
 		Attributes: map[string]schema.Attribute{
 			// v4
@@ -168,7 +169,7 @@ func (d *IPRangesDataSource) Schema(ctx context.Context, request datasource.Sche
 				Computed:            true,
 				ElementType:         types.StringType,
 			},
-
+			// Datasource ID
 			"id": schema.StringAttribute{
 				Description:         "Data source ID.",
 				MarkdownDescription: "Data source ID.",
@@ -179,7 +180,7 @@ func (d *IPRangesDataSource) Schema(ctx context.Context, request datasource.Sche
 }
 
 func (d *IPRangesDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var data iPRangesDataSourceZoneModel
+	var state iPRangesDataSourceZoneModel
 
 	ipAddresses, _, err := d.Api.GetIPRanges(d.Auth)
 	if err != nil {
@@ -191,7 +192,7 @@ func (d *IPRangesDataSource) Read(ctx context.Context, request datasource.ReadRe
 		return
 	}
 
-	data.ID = types.StringValue("datadog-ip-ranges")
+	state.ID = types.StringValue("datadog-ip-ranges")
 
 	// v4 and v6
 	ipAddressesPtr := &ipAddresses
@@ -205,21 +206,21 @@ func (d *IPRangesDataSource) Read(ctx context.Context, request datasource.ReadRe
 
 	// Set model values from response
 	// v4
-	data.AgentsIpv4, _ = types.ListValueFrom(ctx, types.StringType, agents.GetPrefixesIpv4())
-	data.APIIpv4, _ = types.ListValueFrom(ctx, types.StringType, api.GetPrefixesIpv4())
-	data.APMIpv4, _ = types.ListValueFrom(ctx, types.StringType, apm.GetPrefixesIpv4())
-	data.LogsIpv4, _ = types.ListValueFrom(ctx, types.StringType, logs.GetPrefixesIpv4())
-	data.ProcessIpv4, _ = types.ListValueFrom(ctx, types.StringType, process.GetPrefixesIpv4())
-	data.SyntheticsIpv4, _ = types.ListValueFrom(ctx, types.StringType, synthetics.GetPrefixesIpv4())
-	data.WebhooksIpv4, _ = types.ListValueFrom(ctx, types.StringType, webhook.GetPrefixesIpv4())
+	state.AgentsIpv4, _ = types.ListValueFrom(ctx, types.StringType, agents.GetPrefixesIpv4())
+	state.APIIpv4, _ = types.ListValueFrom(ctx, types.StringType, api.GetPrefixesIpv4())
+	state.APMIpv4, _ = types.ListValueFrom(ctx, types.StringType, apm.GetPrefixesIpv4())
+	state.LogsIpv4, _ = types.ListValueFrom(ctx, types.StringType, logs.GetPrefixesIpv4())
+	state.ProcessIpv4, _ = types.ListValueFrom(ctx, types.StringType, process.GetPrefixesIpv4())
+	state.SyntheticsIpv4, _ = types.ListValueFrom(ctx, types.StringType, synthetics.GetPrefixesIpv4())
+	state.WebhooksIpv4, _ = types.ListValueFrom(ctx, types.StringType, webhook.GetPrefixesIpv4())
 	// v6
-	data.AgentsIpv6, _ = types.ListValueFrom(ctx, types.StringType, agents.GetPrefixesIpv4())
-	data.APIIpv6, _ = types.ListValueFrom(ctx, types.StringType, api.GetPrefixesIpv4())
-	data.APMIpv6, _ = types.ListValueFrom(ctx, types.StringType, apm.GetPrefixesIpv4())
-	data.LogsIpv6, _ = types.ListValueFrom(ctx, types.StringType, logs.GetPrefixesIpv4())
-	data.ProcessIpv6, _ = types.ListValueFrom(ctx, types.StringType, process.GetPrefixesIpv4())
-	data.SyntheticsIpv6, _ = types.ListValueFrom(ctx, types.StringType, synthetics.GetPrefixesIpv4())
-	data.WebhooksIpv6, _ = types.ListValueFrom(ctx, types.StringType, webhook.GetPrefixesIpv4())
+	state.AgentsIpv6, _ = types.ListValueFrom(ctx, types.StringType, agents.GetPrefixesIpv4())
+	state.APIIpv6, _ = types.ListValueFrom(ctx, types.StringType, api.GetPrefixesIpv4())
+	state.APMIpv6, _ = types.ListValueFrom(ctx, types.StringType, apm.GetPrefixesIpv4())
+	state.LogsIpv6, _ = types.ListValueFrom(ctx, types.StringType, logs.GetPrefixesIpv4())
+	state.ProcessIpv6, _ = types.ListValueFrom(ctx, types.StringType, process.GetPrefixesIpv4())
+	state.SyntheticsIpv6, _ = types.ListValueFrom(ctx, types.StringType, synthetics.GetPrefixesIpv4())
+	state.WebhooksIpv6, _ = types.ListValueFrom(ctx, types.StringType, webhook.GetPrefixesIpv4())
 
 	ipv4PrefixesByLocationMap := make(map[string]string)
 	ipv6PrefixesByLocationMap := make(map[string]string)
@@ -236,11 +237,11 @@ func (d *IPRangesDataSource) Read(ctx context.Context, request datasource.ReadRe
 	}
 
 	syntheticsIpv4ByLocationState, _ := types.MapValueFrom(ctx, types.StringType, ipv4PrefixesByLocationMap)
-	data.SyntheticsIpv4ByLocation, _ = types.MapValueFrom(ctx, types.StringType, syntheticsIpv4ByLocationState)
+	state.SyntheticsIpv4ByLocation, _ = types.MapValueFrom(ctx, types.StringType, syntheticsIpv4ByLocationState)
 
 	syntheticsIpv6ByLocationState, _ := types.MapValueFrom(ctx, types.StringType, ipv4PrefixesByLocationMap)
-	data.SyntheticsIpv6ByLocation, _ = types.MapValueFrom(ctx, types.StringType, syntheticsIpv6ByLocationState)
+	state.SyntheticsIpv6ByLocation, _ = types.MapValueFrom(ctx, types.StringType, syntheticsIpv6ByLocationState)
 
 	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &data)...)
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }

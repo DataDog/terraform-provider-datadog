@@ -2,19 +2,21 @@ package test
 
 import (
 	"context"
+	"net/http"
+	"testing"
+
 	common "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov5"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
+	datadogCommunity "github.com/zorkian/go-datadog-api"
+	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-	datadogCommunity "github.com/zorkian/go-datadog-api"
-	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
-	"net/http"
-	"testing"
 )
 
 func buildFrameworkDatadogClient(httpClient *http.Client) *common.APIClient {

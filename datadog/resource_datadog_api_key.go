@@ -3,122 +3,185 @@ package datadog
 import (
 	"context"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func resourceDatadogApiKey() *schema.Resource {
-	return &schema.Resource{
-		Description:   "Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys.",
-		CreateContext: resourceDatadogApiKeyCreate,
-		ReadContext:   resourceDatadogApiKeyRead,
-		UpdateContext: resourceDatadogApiKeyUpdate,
-		DeleteContext: resourceDatadogApiKeyDelete,
-		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
-		},
+var (
+	_ resource.ResourceWithConfigure   = &APIKeyResource{}
+	_ resource.ResourceWithImportState = &APIKeyResource{}
+)
 
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Description: "Name for API Key.",
-				Type:        schema.TypeString,
-				Required:    true,
+func NewAPIKeyResource() resource.Resource {
+	return &APIKeyResource{}
+}
+
+type APIKeyResourceModel struct {
+	ID   types.String `tfsdk:"id"`
+	Name types.String `tfsdk:"name"`
+	Key  types.String `tfsdk:"key"`
+}
+
+type APIKeyResource struct {
+	Api  *datadogV2.KeyManagementApi
+	Auth context.Context
+}
+
+func (r *APIKeyResource) Configure(ctx context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+	if request.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := request.ProviderData.(*FrameworkProvider)
+	if !ok {
+		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
+		return
+	}
+
+	r.Api = providerData.DatadogApiInstances.GetKeyManagementApiV2()
+	r.Auth = providerData.Auth
+}
+
+func (r *APIKeyResource) Metadata(ctx context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = request.ProviderTypeName + "api_key"
+}
+
+func (r *APIKeyResource) Schema(ctx context.Context, request resource.SchemaRequest, response *resource.SchemaResponse) {
+	response.Schema = schema.Schema{
+		Description:         "Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys",
+		MarkdownDescription: "Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys.",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Description:         "Name for API Key.",
+				MarkdownDescription: "Name for API Key.",
+				Required:            true,
 			},
-			"key": {
-				Description: "The value of the API Key.",
-				Type:        schema.TypeString,
-				Computed:    true,
-				Sensitive:   true,
+			"key": schema.StringAttribute{
+				Description:         "The value of the API Key.",
+				MarkdownDescription: "The value of the API Key.",
+				Computed:            true,
+				Sensitive:           true,
+			},
+			// Resource ID
+			"id": schema.StringAttribute{
+				Description:         "Api key resource ID.",
+				MarkdownDescription: "Api key resource ID.",
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 		},
 	}
 }
 
-func buildDatadogApiKeyCreateV2Struct(d *schema.ResourceData) *datadogV2.APIKeyCreateRequest {
-	apiKeyAttributes := datadogV2.NewAPIKeyCreateAttributes(d.Get("name").(string))
+func (r *APIKeyResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state APIKeyResourceModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	resp, _, err := r.Api.CreateAPIKey(r.Auth, *r.buildDatadogApiKeyCreateV2Struct(&state))
+	if err != nil {
+		response.Diagnostics.AddError("error creating api key", err.Error())
+		return
+	}
+
+	apiKeyData := resp.GetData()
+	state.ID = types.StringValue(apiKeyData.GetId())
+	r.updateState(&state, &apiKeyData)
+
+	// Save data into Terraform state
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+func (r *APIKeyResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state APIKeyResourceModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	resp, httpResponse, err := r.Api.GetAPIKey(r.Auth, state.ID.ValueString())
+	if err != nil {
+		if httpResponse != nil && httpResponse.StatusCode == 404 {
+			response.State.RemoveResource(ctx)
+			return
+		}
+		response.Diagnostics.AddError(
+			"error retrieving API Key",
+			err.Error())
+		return
+	}
+
+	apiKeyData := resp.GetData()
+	r.updateState(&state, &apiKeyData)
+
+	// Save data into Terraform state
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+func (r *APIKeyResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state APIKeyResourceModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	resp, _, err := r.Api.UpdateAPIKey(r.Auth, state.ID.ValueString(), *r.buildDatadogApiKeyUpdateV2Struct(&state))
+	if err != nil {
+		response.Diagnostics.AddError("error updating api key", err.Error())
+		return
+	}
+
+	apiKeyData := resp.GetData()
+	state.ID = types.StringValue(apiKeyData.GetId())
+	r.updateState(&state, &apiKeyData)
+
+	// Save data into Terraform state
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+func (r *APIKeyResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state APIKeyResourceModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	if _, err := r.Api.DeleteAPIKey(r.Auth, state.ID.ValueString()); err != nil {
+		response.Diagnostics.AddError("error deleting api key", err.Error())
+	}
+}
+
+func (r *APIKeyResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+}
+
+func (r *APIKeyResource) buildDatadogApiKeyCreateV2Struct(state *APIKeyResourceModel) *datadogV2.APIKeyCreateRequest {
+	apiKeyAttributes := datadogV2.NewAPIKeyCreateAttributes(state.Name.ValueString())
 	apiKeyData := datadogV2.NewAPIKeyCreateData(*apiKeyAttributes, datadogV2.APIKEYSTYPE_API_KEYS)
 	apiKeyRequest := datadogV2.NewAPIKeyCreateRequest(*apiKeyData)
 
 	return apiKeyRequest
 }
 
-func buildDatadogApiKeyUpdateV2Struct(d *schema.ResourceData) *datadogV2.APIKeyUpdateRequest {
-	apiKeyAttributes := datadogV2.NewAPIKeyUpdateAttributes(d.Get("name").(string))
-	apiKeyData := datadogV2.NewAPIKeyUpdateData(*apiKeyAttributes, d.Id(), datadogV2.APIKEYSTYPE_API_KEYS)
+func (r *APIKeyResource) buildDatadogApiKeyUpdateV2Struct(state *APIKeyResourceModel) *datadogV2.APIKeyUpdateRequest {
+	apiKeyAttributes := datadogV2.NewAPIKeyUpdateAttributes(state.Name.ValueString())
+	apiKeyData := datadogV2.NewAPIKeyUpdateData(*apiKeyAttributes, state.ID.ValueString(), datadogV2.APIKEYSTYPE_API_KEYS)
 	apiKeyRequest := datadogV2.NewAPIKeyUpdateRequest(*apiKeyData)
 
 	return apiKeyRequest
 }
 
-func updateApiKeyState(d *schema.ResourceData, apiKeyData *datadogV2.FullAPIKey) diag.Diagnostics {
+func (r *APIKeyResource) updateState(state *APIKeyResourceModel, apiKeyData *datadogV2.FullAPIKey) {
 	apiKeyAttributes := apiKeyData.GetAttributes()
-
-	if err := d.Set("name", apiKeyAttributes.GetName()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("key", apiKeyAttributes.GetKey()); err != nil {
-		return diag.FromErr(err)
-	}
-	return nil
-}
-
-func resourceDatadogApiKeyCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().CreateAPIKey(auth, *buildDatadogApiKeyCreateV2Struct(d))
-	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating api key")
-	}
-
-	apiKeyData := resp.GetData()
-	d.SetId(apiKeyData.GetId())
-
-	return updateApiKeyState(d, &apiKeyData)
-}
-
-func resourceDatadogApiKeyRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().GetAPIKey(auth, d.Id())
-	if err != nil {
-		if httpResponse != nil && httpResponse.StatusCode == 404 {
-			d.SetId("")
-			return nil
-		}
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting api key")
-	}
-	apiKeyData := resp.GetData()
-	return updateApiKeyState(d, &apiKeyData)
-}
-
-func resourceDatadogApiKeyUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	resp, httpResponse, err := apiInstances.GetKeyManagementApiV2().UpdateAPIKey(auth, d.Id(), *buildDatadogApiKeyUpdateV2Struct(d))
-	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating api key")
-	}
-	apiKeyData := resp.GetData()
-	return updateApiKeyState(d, &apiKeyData)
-}
-
-func resourceDatadogApiKeyDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	if httpResponse, err := apiInstances.GetKeyManagementApiV2().DeleteAPIKey(auth, d.Id()); err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting api key")
-	}
-
-	return nil
+	state.Name = types.StringValue(apiKeyAttributes.GetName())
+	state.Key = types.StringValue(apiKeyAttributes.GetKey())
 }

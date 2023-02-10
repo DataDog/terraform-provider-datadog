@@ -83,3 +83,15 @@ func dataSourceDatadogApiKeyRead(ctx context.Context, d *schema.ResourceData, me
 
 	return diag.Errorf("missing id or name parameter")
 }
+
+func updateApiKeyState(d *schema.ResourceData, apiKeyData *datadogV2.FullAPIKey) diag.Diagnostics {
+	apiKeyAttributes := apiKeyData.GetAttributes()
+
+	if err := d.Set("name", apiKeyAttributes.GetName()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("key", apiKeyAttributes.GetKey()); err != nil {
+		return diag.FromErr(err)
+	}
+	return nil
+}

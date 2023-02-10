@@ -254,9 +254,7 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 
 func (p *FrameworkProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		//func() resource.Resource {
-		//	return nil
-		//},
+		NewAPIKeyResource,
 	}
 }
 
