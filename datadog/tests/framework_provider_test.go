@@ -150,6 +150,9 @@ func initHttpClient(ctx context.Context, t *testing.T) (context.Context, *http.C
 	httpClient := cleanhttp.DefaultClient()
 	loggingTransport := logging.NewTransport("Datadog", rec)
 	httpClient.Transport = transport.NewCustomTransport(loggingTransport, transport.CustomTransportOptions{})
+	t.Cleanup(func() {
+		rec.Stop()
+	})
 
 	return ctx, httpClient
 }
