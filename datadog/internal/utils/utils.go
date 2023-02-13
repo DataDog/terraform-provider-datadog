@@ -12,6 +12,9 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	frameworkDiag "github.com/hashicorp/terraform-plugin-framework/diag"
+	frameworkSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/meta"
@@ -197,4 +200,15 @@ func GetMultiEnvVar(envVars ...string) (string, error) {
 		}
 	}
 	return "", fmt.Errorf("unable to retrieve any env vars from list: %v", envVars)
+}
+
+func ResourceIDAttribute() frameworkSchema.StringAttribute {
+	return frameworkSchema.StringAttribute{
+		Description:         "The ID of this resource.",
+		MarkdownDescription: "The ID of this resource.",
+		Computed:            true,
+		PlanModifiers: []planmodifier.String{
+			stringplanmodifier.UseStateForUnknown(),
+		},
+	}
 }

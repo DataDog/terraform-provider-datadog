@@ -170,11 +170,7 @@ func (d *IPRangesDataSource) Schema(ctx context.Context, request datasource.Sche
 				ElementType:         types.StringType,
 			},
 			// Datasource ID
-			"id": schema.StringAttribute{
-				Description:         "Data source ID.",
-				MarkdownDescription: "Data source ID.",
-				Computed:            true,
-			},
+			"id": utils.ResourceIDAttribute(),
 		},
 	}
 }

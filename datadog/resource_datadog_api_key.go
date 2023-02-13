@@ -2,15 +2,14 @@ package datadog
 
 import (
 	"context"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var (
@@ -69,14 +68,7 @@ func (r *APIKeyResource) Schema(ctx context.Context, request resource.SchemaRequ
 				Sensitive:           true,
 			},
 			// Resource ID
-			"id": schema.StringAttribute{
-				Description:         "Api key resource ID.",
-				MarkdownDescription: "Api key resource ID.",
-				Computed:            true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
+			"id": utils.ResourceIDAttribute(),
 		},
 	}
 }
