@@ -94,14 +94,14 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				},
 			},
 			"target_threshold": {
-				Description:      "The objective's target in `(0,100)`. This must match the corresponding thresholds of the primary time frame ",
+				Description:      "The objective's target in `(0,100)`. This must match the corresponding thresholds of the primary time frame.",
 				Type:             schema.TypeFloat,
 				Optional:         true,
 				Computed:         true,
 				DiffSuppressFunc: suppressDataDogFloatIntDiff,
 			},
 			"warning_threshold": {
-				Description:      "The objective's warning value in `(0,100)`. This must be greater than the target value, and match the corresponding thresholds of the primary time frame.",
+				Description:      "The objective's warning value in `(0,100)`. This must be greater than the target value and match the corresponding thresholds of the primary time frame.",
 				Type:             schema.TypeFloat,
 				Optional:         true,
 				Computed:         true,
@@ -122,7 +122,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTypeFromValue),
 			},
 			"force_delete": {
-				Description: "A boolean indicating whether this monitor can be deleted even if it's referenced by other resources (e.g. dashboards).",
+				Description: "A boolean indicating whether this monitor can be deleted even if it's referenced by other resources (for example, dashboards).",
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
