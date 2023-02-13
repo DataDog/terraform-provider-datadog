@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -89,7 +90,7 @@ func (r *APIKeyResource) Create(ctx context.Context, request resource.CreateRequ
 
 	resp, _, err := r.Api.CreateAPIKey(r.Auth, *r.buildDatadogApiKeyCreateV2Struct(&state))
 	if err != nil {
-		response.Diagnostics.AddError("error creating api key", err.Error())
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating api key"))
 		return
 	}
 
@@ -108,15 +109,13 @@ func (r *APIKeyResource) Read(ctx context.Context, request resource.ReadRequest,
 		return
 	}
 
-	resp, httpResponse, err := r.Api.GetAPIKey(r.Auth, state.ID.ValueString())
+	resp, httpResp, err := r.Api.GetAPIKey(r.Auth, state.ID.ValueString())
 	if err != nil {
-		if httpResponse != nil && httpResponse.StatusCode == 404 {
+		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.AddError(
-			"error retrieving API Key",
-			err.Error())
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving API Key"))
 		return
 	}
 
@@ -136,7 +135,7 @@ func (r *APIKeyResource) Update(ctx context.Context, request resource.UpdateRequ
 
 	resp, _, err := r.Api.UpdateAPIKey(r.Auth, state.ID.ValueString(), *r.buildDatadogApiKeyUpdateV2Struct(&state))
 	if err != nil {
-		response.Diagnostics.AddError("error updating api key", err.Error())
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating api key"))
 		return
 	}
 
@@ -156,7 +155,7 @@ func (r *APIKeyResource) Delete(ctx context.Context, request resource.DeleteRequ
 	}
 
 	if _, err := r.Api.DeleteAPIKey(r.Auth, state.ID.ValueString()); err != nil {
-		response.Diagnostics.AddError("error deleting api key", err.Error())
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting api key"))
 	}
 }
 

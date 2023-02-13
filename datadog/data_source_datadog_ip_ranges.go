@@ -184,10 +184,11 @@ func (d *IPRangesDataSource) Read(ctx context.Context, request datasource.ReadRe
 
 	ipAddresses, _, err := d.Api.GetIPRanges(d.Auth)
 	if err != nil {
-		response.Diagnostics.AddError("error getting IPRanges", err.Error())
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting IPRanges"))
 		return
 	}
 	if err := utils.CheckForUnparsed(ipAddresses); err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting IPRanges"))
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}

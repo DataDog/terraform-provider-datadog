@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	frameworkDiag "github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/meta"
@@ -25,6 +26,24 @@ var DatadogProvider *schema.Provider
 type Resource interface {
 	Get(string) interface{}
 	GetOk(string) (interface{}, bool)
+}
+
+// FrameworkErrorDiag return error diag
+func FrameworkErrorDiag(err error, msg string) frameworkDiag.ErrorDiagnostic {
+	var summary string
+
+	switch v := err.(type) {
+	case CustomRequestAPIError:
+		summary = fmt.Sprintf("%v: %s", err, v.Body())
+	case datadog.GenericOpenAPIError:
+		summary = fmt.Sprintf("%v: %s", err, v.Body())
+	case *url.Error:
+		summary = fmt.Sprintf("url.Error: %s ", v.Error())
+	default:
+		summary = v.Error()
+	}
+
+	return frameworkDiag.NewErrorDiagnostic(msg, summary)
 }
 
 // TranslateClientError turns an error into a message
