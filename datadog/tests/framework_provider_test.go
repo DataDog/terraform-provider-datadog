@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
 	"runtime"
 	"testing"
 
@@ -31,7 +32,47 @@ func buildFrameworkDatadogClient(httpClient *http.Client) *common.APIClient {
 	return common.NewAPIClient(config)
 }
 
+func testAccFrameworkPreCheck(t *testing.T) {
+	// This logic was previously done by the PreCheck func (e.g PreCheck: func() { testAccPreCheck(t) })
+	// Since we no longer configure the providers with a callback function, this
+	// step must occur prior to test running.
+	for _, v := range append(datadog.APPKeyEnvVars, datadog.APIKeyEnvVars...) {
+		_ = os.Unsetenv(v)
+	}
+
+	if isReplaying() {
+		return
+	}
+
+	if !isAPIKeySet() {
+		t.Fatalf("%s must be set for acceptance tests", testAPIKeyEnvName)
+	}
+	if !isAPPKeySet() {
+		t.Fatalf("%s must be set for acceptance tests", testAPPKeyEnvName)
+	}
+
+	if !isTestOrg() {
+		t.Fatalf(
+			"The keys you've set potentially belong to a production environment. "+
+				"Tests do all sorts of create/update/delete calls to the organisation, so only run them against a sandbox environment. "+
+				"If you know what you are doing, set the `%s` environment variable to the public ID of your organization. "+
+				"See https://docs.datadoghq.com/api/latest/organizations/#list-your-managed-organizations to get it.",
+			testOrgEnvName,
+		)
+	}
+
+	if err := os.Setenv(datadog.DDAPIKeyEnvName, os.Getenv(testAPIKeyEnvName)); err != nil {
+		t.Fatalf("Error setting API key: %v", err)
+	}
+
+	if err := os.Setenv(datadog.DDAPPKeyEnvName, os.Getenv(testAPPKeyEnvName)); err != nil {
+		t.Fatalf("Error setting API key: %v", err)
+	}
+}
+
 func initAccTestApiClients(ctx context.Context, t *testing.T, httpClient *http.Client) (context.Context, *utils.ApiInstances, *datadogCommunity.Client) {
+	testAccFrameworkPreCheck(t)
+
 	apiKey, _ := utils.GetMultiEnvVar(datadog.APIKeyEnvVars[:]...)
 	appKey, _ := utils.GetMultiEnvVar(datadog.APPKeyEnvVars[:]...)
 	apiURL, _ := utils.GetMultiEnvVar(datadog.APIUrlEnvVars[:]...)

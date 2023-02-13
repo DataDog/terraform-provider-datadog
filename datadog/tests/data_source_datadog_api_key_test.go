@@ -90,7 +90,6 @@ func TestAccDatadogApiKeyDatasource_matchNameError(t *testing.T) {
 	apiKeyName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(frameworkProvider),
 		Steps: []resource.TestStep{
@@ -110,7 +109,6 @@ func TestAccDatadogApiKeyDatasource_missingParametersError(t *testing.T) {
 	_, _, frameworkProvider, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(frameworkProvider),
 		Steps: []resource.TestStep{
