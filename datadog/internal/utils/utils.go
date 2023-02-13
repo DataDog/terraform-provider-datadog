@@ -204,9 +204,8 @@ func GetMultiEnvVar(envVars ...string) (string, error) {
 
 func ResourceIDAttribute() frameworkSchema.StringAttribute {
 	return frameworkSchema.StringAttribute{
-		Description:         "The ID of this resource.",
-		MarkdownDescription: "The ID of this resource.",
-		Computed:            true,
+		Description: "The ID of this resource.",
+		Computed:    true,
 		PlanModifiers: []planmodifier.String{
 			stringplanmodifier.UseStateForUnknown(),
 		},
