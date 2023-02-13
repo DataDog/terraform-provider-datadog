@@ -45,7 +45,7 @@ type IPRangesDataSource struct {
 	Auth context.Context
 }
 
-func (d *IPRangesDataSource) Configure(ctx context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *IPRangesDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	if request.ProviderData == nil {
 		return
 	}
@@ -62,11 +62,11 @@ func (d *IPRangesDataSource) Configure(ctx context.Context, request datasource.C
 	d.Auth = providerData.Auth
 }
 
-func (d *IPRangesDataSource) Metadata(ctx context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+func (d *IPRangesDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
 	response.TypeName = request.ProviderTypeName + "ip_ranges"
 }
 
-func (d *IPRangesDataSource) Schema(ctx context.Context, request datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *IPRangesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description:         "Use this data source to retrieve information about Datadog's IP addresses.",
 		MarkdownDescription: "Use this data source to retrieve information about Datadog's IP addresses.",
@@ -175,7 +175,7 @@ func (d *IPRangesDataSource) Schema(ctx context.Context, request datasource.Sche
 	}
 }
 
-func (d *IPRangesDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+func (d *IPRangesDataSource) Read(ctx context.Context, _ datasource.ReadRequest, response *datasource.ReadResponse) {
 	var state iPRangesDataSourceZoneModel
 
 	ipAddresses, _, err := d.Api.GetIPRanges(d.Auth)

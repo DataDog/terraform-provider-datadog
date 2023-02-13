@@ -32,7 +32,7 @@ type APIKeyResource struct {
 	Auth context.Context
 }
 
-func (r *APIKeyResource) Configure(ctx context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *APIKeyResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	if request.ProviderData == nil {
 		return
 	}
@@ -47,11 +47,11 @@ func (r *APIKeyResource) Configure(ctx context.Context, request resource.Configu
 	r.Auth = providerData.Auth
 }
 
-func (r *APIKeyResource) Metadata(ctx context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+func (r *APIKeyResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = request.ProviderTypeName + "api_key"
 }
 
-func (r *APIKeyResource) Schema(ctx context.Context, request resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *APIKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description:         "Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys",
 		MarkdownDescription: "Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys.",

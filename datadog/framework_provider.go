@@ -52,14 +52,14 @@ func New() provider.Provider {
 	return &FrameworkProvider{}
 }
 
-func (p *FrameworkProvider) Metadata(ctx context.Context, request provider.MetadataRequest, response *provider.MetadataResponse) {
+func (p *FrameworkProvider) Metadata(_ context.Context, _ provider.MetadataRequest, response *provider.MetadataResponse) {
 	response.TypeName = "datadog_"
 }
 
-func (p *FrameworkProvider) MetaSchema(ctx context.Context, request provider.MetaSchemaRequest, response *provider.MetaSchemaResponse) {
+func (p *FrameworkProvider) MetaSchema(_ context.Context, _ provider.MetaSchemaRequest, _ *provider.MetaSchemaResponse) {
 }
 
-func (p *FrameworkProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
+func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"api_key": schema.StringAttribute{
@@ -254,13 +254,13 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 	response.ResourceData = p
 }
 
-func (p *FrameworkProvider) Resources(ctx context.Context) []func() resource.Resource {
+func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewAPIKeyResource,
 	}
 }
 
-func (p *FrameworkProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
+func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewIPRangesDataSource,
 	}
