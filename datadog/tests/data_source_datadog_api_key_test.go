@@ -14,20 +14,18 @@ func TestAccDatadogApiKeyDatasource_matchId(t *testing.T) {
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
-	_, accProviders := testAccProviders(context.Background(), t)
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, _, frameworkProvider, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	apiKeyName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogApiKeyDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceApiKeyIdConfig(apiKeyName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogApiKeyExists(accProvider, "datadog_api_key.api_key_1"),
+					testAccCheckDatadogApiKeyExists(frameworkProvider, "datadog_api_key.api_key_1"),
 					resource.TestCheckResourceAttr("datadog_api_key.api_key_1", "name", fmt.Sprintf("%s 1", apiKeyName)),
 					resource.TestCheckResourceAttr("datadog_api_key.api_key_2", "name", fmt.Sprintf("%s 2", apiKeyName)),
 					resource.TestCheckResourceAttr("data.datadog_api_key.api_key", "name", fmt.Sprintf("%s 1", apiKeyName)),
@@ -42,20 +40,18 @@ func TestAccDatadogApiKeyDatasource_matchName(t *testing.T) {
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
-	_, accProviders := testAccProviders(context.Background(), t)
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, _, frameworkProvider, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	apiKeyName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogApiKeyDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceApiKeyNameConfig(apiKeyName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogApiKeyExists(accProvider, "datadog_api_key.api_key_1"),
+					testAccCheckDatadogApiKeyExists(frameworkProvider, "datadog_api_key.api_key_1"),
 					resource.TestCheckResourceAttr("datadog_api_key.api_key_1", "name", fmt.Sprintf("%s 1", apiKeyName)),
 					resource.TestCheckResourceAttr("datadog_api_key.api_key_2", "name", fmt.Sprintf("%s 2", apiKeyName)),
 					resource.TestCheckResourceAttr("data.datadog_api_key.api_key", "name", fmt.Sprintf("%s 1", apiKeyName)),
@@ -70,13 +66,12 @@ func TestAccDatadogApiKeyDatasource_matchIdError(t *testing.T) {
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
-	_, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	_, _, frameworkProvider, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogApiKeyDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceApiKeyIdOnlyConfig("11111111-2222-3333-4444-555555555555"),
@@ -91,15 +86,13 @@ func TestAccDatadogApiKeyDatasource_matchNameError(t *testing.T) {
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
-	_, accProviders := testAccProviders(context.Background(), t)
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, _, frameworkProvider, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	apiKeyName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogApiKeyDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceApiKeyNameOnlyConfig(apiKeyName),
@@ -114,13 +107,12 @@ func TestAccDatadogApiKeyDatasource_missingParametersError(t *testing.T) {
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
-	_, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	_, _, frameworkProvider, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogApiKeyDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceApiKeyMissingParametersConfig(),
