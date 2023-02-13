@@ -3,12 +3,12 @@
 page_title: "datadog_integration_pagerduty_service_object Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve individual Service Objects of Datadog - PagerDuty integrations. Note that the Datadog - PagerDuty integration must be activated in the Datadog UI in order for this resource to be usable.
+  Use this data source to retrieve individual Service Objects of Datadog PagerDuty integrations. Note that the Datadog PagerDuty integration must be activated in the Datadog UI in order for this resource to be usable.
 ---
 
 # datadog_integration_pagerduty_service_object (Data Source)
 
-Use this data source to retrieve individual Service Objects of Datadog - PagerDuty integrations. Note that the Datadog - PagerDuty integration must be activated in the Datadog UI in order for this resource to be usable.
+Use this data source to retrieve individual Service Objects of Datadog PagerDuty integrations. Note that the Datadog PagerDuty integration must be activated in the Datadog UI in order for this resource to be usable.
 
 ## Example Usage
 
