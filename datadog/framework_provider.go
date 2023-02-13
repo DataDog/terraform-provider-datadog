@@ -19,6 +19,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
@@ -205,6 +206,7 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.HTTPClient = httpClient
 	ddClientConfig.UserAgent = utils.GetUserAgent(ddClientConfig.UserAgent)
+	ddClientConfig.Debug = logging.IsDebugOrHigher()
 
 	if !config.ApiUrl.IsNull() {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
