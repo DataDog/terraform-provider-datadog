@@ -178,6 +178,21 @@ func TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsAPITest_AdvancedScheduling(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsAPITestStepAdvancedScheduling(ctx, accProvider, t),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -749,6 +764,165 @@ resource "datadog_synthetics_test" "foo" {
 		secure = false
 	}
 }`, uniq, variableName)
+}
+
+func createSyntheticsAPITestConfigAdvancedScheduling(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "advanced_scheduling" {
+	type = "api"
+	subtype = "http"
+
+	request_definition {
+		method = "GET"
+		url = "https://www.datadoghq.com"
+		body = "this is a body"
+		body_type = "text/plain"
+		timeout = 30
+		no_saving_response_body = true
+	}
+	request_headers = {
+		Accept = "application/json"
+		X-Datadog-Trace-ID = "123456789"
+	}
+
+	assertion {
+		type = "header"
+		property = "content-type"
+		operator = "contains"
+		target = "application/json"
+	}
+	assertion {
+		type = "statusCode"
+		operator = "is"
+		target = "200"
+	}
+	assertion {
+		type = "responseTime"
+		operator = "lessThan"
+		target = "2000"
+	}
+
+	locations = [ "aws:eu-central-1" ]
+
+	options_list {
+		allow_insecure = true
+		tick_every = 60
+		follow_redirects = true
+		min_failure_duration = 0
+		min_location_failed = 1
+		http_version = "http2"
+		retry {
+			count = 1
+		}
+		monitor_name = "%[1]s-monitor"
+		monitor_priority = 5
+		ci {
+			execution_rule = "blocking"
+		}
+		ignore_server_certificate_error = true
+		scheduling {
+			timeframes {
+				day=1
+				from="07:00"
+				to="18:00"
+			}
+		}
+	}
+
+	name = "%[1]s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
+}`, uniq)
+}
+
+func createSyntheticsAPITestStepAdvancedScheduling(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+	return resource.TestStep{
+		Config: createSyntheticsAPITestConfigAdvancedScheduling(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "subtype", "http"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.url", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.timeout", "30"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.body", "this is a body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.body_type", "text/plain"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.no_saving_response_body", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "assertion.#", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "assertion.0.type", "header"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "assertion.0.property", "content-type"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "assertion.0.operator", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "assertion.0.target", "application/json"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "assertion.1.type", "statusCode"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "assertion.1.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "assertion.1.target", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "assertion.2.type", "responseTime"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "assertion.2.operator", "lessThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "assertion.2.target", "2000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "locations.#", "1"),
+			resource.TestCheckTypeSetElemAttr(
+				"datadog_synthetics_test.advanced_scheduling", "locations.*", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.allow_insecure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.tick_every", "60"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.follow_redirects", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.retry.0.count", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.monitor_name", fmt.Sprintf(`%s-monitor`, testName)),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.monitor_priority", "5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0_list.#", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.ci.0.execution_rule", "blocking"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.ignore_server_certificate_error", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.advanced_scheduling", "monitor_id"),
+		),
+	}
 }
 
 func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {

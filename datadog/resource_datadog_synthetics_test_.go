@@ -517,6 +517,48 @@ func syntheticsTestOptionsRetry() *schema.Schema {
 	}
 }
 
+func syntheticsTestAdvancedSchedulingTimeframes() *schema.Schema {
+	return &schema.Schema{
+		Description: "Array containing objects describing the scheduling pattern to apply to each day.",
+		Type:        schema.TypeSet,
+		Optional:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"day": {
+					Description:  "Number representing the day of the week",
+					Type:         schema.TypeInt,
+					Optional:     true,
+					ValidateFunc: validation.IntBetween(1, 7),
+				},
+				"from": {
+					Description: "The hour of the day on which scheduling starts.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"to": {
+					Description: "The hour of the day on which scheduling ends.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+			},
+		},
+	}
+}
+
+func syntheticsTestAdvancedScheduling() *schema.Schema {
+	return &schema.Schema{
+		Description: "Object containing timeframes and timezone used for advanced scheduling.",
+		Type:        schema.TypeList,
+		MaxItems:    1,
+		Optional:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"timeframes": syntheticsTestAdvancedSchedulingTimeframes(),
+			},
+		},
+	}
+}
+
 func syntheticsTestOptionsList() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
@@ -532,6 +574,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Required:     true,
 					ValidateFunc: validation.IntBetween(30, 604800),
 				},
+				"scheduling": syntheticsTestAdvancedScheduling(),
 				"accept_self_signed": {
 					Description: "For SSL test, whether or not the test should allow self signed certificates.",
 					Type:        schema.TypeBool,
