@@ -17,29 +17,29 @@ func TestAccDatadogApiKey_Update(t *testing.T) {
 		t.Skip("This test doesn't support recording or replaying")
 	}
 	t.Parallel()
-	ctx, _, frameworkProvider, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	apiKeyName := uniqueEntityName(ctx, t)
 	apiKeyNameUpdate := apiKeyName + "-2"
 	resourceName := "datadog_api_key.foo"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(frameworkProvider),
+		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogApiKeyExists(frameworkProvider, resourceName),
+					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", apiKeyName),
-					testAccCheckDatadogApiKeyValueMatches(frameworkProvider, resourceName),
+					testAccCheckDatadogApiKeyValueMatches(providers.frameworkProvider, resourceName),
 				),
 			},
 			{
 				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyNameUpdate),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogApiKeyExists(frameworkProvider, resourceName),
+					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", apiKeyNameUpdate),
-					testAccCheckDatadogApiKeyValueMatches(frameworkProvider, resourceName),
+					testAccCheckDatadogApiKeyValueMatches(providers.frameworkProvider, resourceName),
 				),
 			},
 		},
@@ -52,13 +52,13 @@ func TestDatadogApiKey_import(t *testing.T) {
 	}
 	t.Parallel()
 	resourceName := "datadog_api_key.foo"
-	ctx, _, frameworkProvider, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	apiKeyName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(frameworkProvider),
+		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyName),

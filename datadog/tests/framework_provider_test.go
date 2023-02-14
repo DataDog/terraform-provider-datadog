@@ -24,6 +24,11 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
+type compositeProviderStruct struct {
+	sdkV2Provider     *schema.Provider
+	frameworkProvider *datadog.FrameworkProvider
+}
+
 func buildFrameworkDatadogClient(httpClient *http.Client) *common.APIClient {
 	//Datadog API config.HTTPClient
 	config := common.NewConfiguration()
@@ -99,7 +104,7 @@ func testAccFrameworkMuxProvidersServer(ctx context.Context, sdkV2Provider *sche
 	}
 }
 
-func testAccFrameworkMuxProviders(ctx context.Context, t *testing.T) (context.Context, *schema.Provider, *datadog.FrameworkProvider, map[string]func() (tfprotov5.ProviderServer, error)) {
+func testAccFrameworkMuxProviders(ctx context.Context, t *testing.T) (context.Context, *compositeProviderStruct, map[string]func() (tfprotov5.ProviderServer, error)) {
 	ctx, httpClient := initHttpClient(ctx, t)
 	ctx, apiInstances, communityClient := initAccTestApiClients(ctx, t, httpClient)
 	tClock := testClock(t)
@@ -140,7 +145,12 @@ func testAccFrameworkMuxProviders(ctx context.Context, t *testing.T) (context.Co
 	// Init mux servers
 	muxServer := testAccFrameworkMuxProvidersServer(ctx, sdkV2Provider, frameworkProvider)
 
-	return ctx, sdkV2Provider, frameworkProvider, muxServer
+	providers := &compositeProviderStruct{
+		sdkV2Provider:     sdkV2Provider,
+		frameworkProvider: frameworkProvider,
+	}
+
+	return ctx, providers, muxServer
 }
 
 func initHttpClient(ctx context.Context, t *testing.T) (context.Context, *http.Client) {

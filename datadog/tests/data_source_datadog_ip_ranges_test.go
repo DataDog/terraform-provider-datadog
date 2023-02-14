@@ -9,7 +9,7 @@ import (
 
 func TestAccDatadogIpRangesDatasource_existing(t *testing.T) {
 	t.Parallel()
-	_, _, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
