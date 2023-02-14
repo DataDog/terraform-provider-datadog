@@ -93,6 +93,8 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 }
 
 func (p *FrameworkProvider) Configure(ctx context.Context, request provider.ConfigureRequest, response *provider.ConfigureResponse) {
+	// Provider has already been configured. This should only occur in testing scenario
+	// where a custom HttpClient needs to be used
 	if p.Auth != nil && p.CommunityClient != nil && p.DatadogApiInstances != nil {
 		response.DataSourceData = p
 		response.ResourceData = p
@@ -105,46 +107,11 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 		return
 	}
 
-	if config.ApiKey.IsNull() {
-		apiKey, err := utils.GetMultiEnvVar(APIKeyEnvVars[:]...)
-		if err == nil {
-			config.ApiKey = types.StringValue(apiKey)
-		}
-	}
-
-	if config.AppKey.IsNull() {
-		appKey, err := utils.GetMultiEnvVar(APPKeyEnvVars[:]...)
-		if err == nil {
-			config.AppKey = types.StringValue(appKey)
-		}
-	}
-
-	if config.ApiUrl.IsNull() {
-		apiUrl, err := utils.GetMultiEnvVar(APIUrlEnvVars[:]...)
-		if err == nil {
-			config.ApiUrl = types.StringValue(apiUrl)
-		}
-	}
+	p.ConfigureConfigDefaults(&config)
 
 	if config.Validate.ValueBool() && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
 		response.Diagnostics.AddError("api_key and app_key must be set unless validate = false", "")
 		return
-	}
-
-	if config.HttpClientRetryEnabled.IsNull() {
-		retryEnabled, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_ENABLED")
-		if err == nil {
-			v, _ := strconv.ParseBool(retryEnabled)
-			config.HttpClientRetryEnabled = types.BoolValue(v)
-		}
-	}
-
-	if config.HttpClientRetryTimeout.IsNull() {
-		rTimeout, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_TIMEOUT")
-		if err == nil {
-			v, _ := strconv.Atoi(rTimeout)
-			config.HttpClientRetryTimeout = types.Int64Value(int64(v))
-		}
 	}
 
 	// Initialize the community client
@@ -252,6 +219,45 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 	// Make config available for data sources and resources
 	response.DataSourceData = p
 	response.ResourceData = p
+}
+
+func (p *FrameworkProvider) ConfigureConfigDefaults(config *providerSchema) {
+	if config.ApiKey.IsNull() {
+		apiKey, err := utils.GetMultiEnvVar(APIKeyEnvVars[:]...)
+		if err == nil {
+			config.ApiKey = types.StringValue(apiKey)
+		}
+	}
+
+	if config.AppKey.IsNull() {
+		appKey, err := utils.GetMultiEnvVar(APPKeyEnvVars[:]...)
+		if err == nil {
+			config.AppKey = types.StringValue(appKey)
+		}
+	}
+
+	if config.ApiUrl.IsNull() {
+		apiUrl, err := utils.GetMultiEnvVar(APIUrlEnvVars[:]...)
+		if err == nil {
+			config.ApiUrl = types.StringValue(apiUrl)
+		}
+	}
+
+	if config.HttpClientRetryEnabled.IsNull() {
+		retryEnabled, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_ENABLED")
+		if err == nil {
+			v, _ := strconv.ParseBool(retryEnabled)
+			config.HttpClientRetryEnabled = types.BoolValue(v)
+		}
+	}
+
+	if config.HttpClientRetryTimeout.IsNull() {
+		rTimeout, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_TIMEOUT")
+		if err == nil {
+			v, _ := strconv.Atoi(rTimeout)
+			config.HttpClientRetryTimeout = types.Int64Value(int64(v))
+		}
+	}
 }
 
 func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
