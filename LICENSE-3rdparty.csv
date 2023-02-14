@@ -224,3 +224,5 @@ go.sum,go.opentelemetry.io/proto/otlp,Apache-2.0,
 go.sum,google.golang.org/grpc/cmd/protoc-gen-go-grpc,Apache-2.0,
 go.sum,github.com/DataDog/zstd,BSD-3-Clause,"2016 Datadog, Inc"
 go.sum,github.com/frankban/quicktest,MIT,Copyright (c) 017 Canonical Ltd.
+go.sum,github.com/hashicorp/terraform-plugin-framework,MPL-2.0,2021 HashiCorp, Inc.
+go.sum,github.com/hashicorp/terraform-plugin-mux,MPL-2.0,2020 HashiCorp, Inc.
