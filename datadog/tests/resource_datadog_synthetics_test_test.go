@@ -826,6 +826,7 @@ resource "datadog_synthetics_test" "advanced_scheduling" {
 				from="07:00"
 				to="18:00"
 			}
+			timezone = "America/New_York"
 		}
 	}
 
@@ -907,6 +908,8 @@ func createSyntheticsAPITestStepAdvancedScheduling(ctx context.Context, accProvi
 				"datadog_synthetics_test.advanced_scheduling", "options_list.0.ci.0.execution_rule", "blocking"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "options_list.0.ignore_server_certificate_error", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.scheduling.#", "America/New_York"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "name", testName),
 			resource.TestCheckResourceAttr(

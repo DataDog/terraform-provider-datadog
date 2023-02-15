@@ -521,24 +521,24 @@ func syntheticsTestAdvancedSchedulingTimeframes() *schema.Schema {
 	return &schema.Schema{
 		Description: "Array containing objects describing the scheduling pattern to apply to each day.",
 		Type:        schema.TypeSet,
-		Optional:    true,
+		Required:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"day": {
 					Description:  "Number representing the day of the week",
 					Type:         schema.TypeInt,
-					Optional:     true,
+					Required:     true,
 					ValidateFunc: validation.IntBetween(1, 7),
 				},
 				"from": {
 					Description: "The hour of the day on which scheduling starts.",
 					Type:        schema.TypeString,
-					Optional:    true,
+					Required:    true,
 				},
 				"to": {
 					Description: "The hour of the day on which scheduling ends.",
 					Type:        schema.TypeString,
-					Optional:    true,
+					Required:    true,
 				},
 			},
 		},
@@ -554,6 +554,11 @@ func syntheticsTestAdvancedScheduling() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"timeframes": syntheticsTestAdvancedSchedulingTimeframes(),
+				"timezone": {
+					Description: "Timezone in which the timeframe is based.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
 			},
 		},
 	}
@@ -1548,6 +1553,26 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		}
 		if attr, ok := d.GetOk("options_list.0.allow_insecure"); ok {
 			options.SetAllowInsecure(attr.(bool))
+		}
+
+		if rawScheduling, ok := d.GetOk("options_list.0.scheduling"); ok {
+			optionsScheduling := datadogV1.SyntheticsTestOptionsScheduling{}
+			scheduling := rawScheduling.([]interface{})[0]
+			if rawTimeframes, ok := scheduling.(map[string]interface{})["timeframes"]; ok {
+				var timeFrames []datadogV1.SyntheticsTestOptionsSchedulingTimeframe
+				for _, tf := range rawTimeframes.(*schema.Set).List() {
+					timeframe := datadogV1.NewSyntheticsTestOptionsSchedulingTimeframe()
+					timeframe.SetDay(int32(tf.(map[string]interface{})["day"].(int)))
+					timeframe.SetFrom(tf.(map[string]interface{})["from"].(string))
+					timeframe.SetTo(tf.(map[string]interface{})["to"].(string))
+					timeFrames = append(timeFrames, *timeframe)
+				}
+				optionsScheduling.SetTimeframes(timeFrames)
+			}
+			if timezone, ok := scheduling.(map[string]interface{})["timezone"]; ok {
+				optionsScheduling.SetTimezone(timezone.(string))
+			}
+			options.SetScheduling(optionsScheduling)
 		}
 
 		if retryRaw, ok := d.GetOk("options_list.0.retry"); ok {
@@ -2685,6 +2710,24 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	if actualOptions.HasAllowInsecure() {
 		localOptionsList["allow_insecure"] = actualOptions.GetAllowInsecure()
 	}
+
+	if actualOptions.HasScheduling() {
+		scheduling := actualOptions.GetScheduling()
+		timeFrames := scheduling.GetTimeframes()
+		optionsListScheduling := make(map[string]interface{})
+		optionsListSchedulingTimeframes := make([]map[string]interface{}, 0, len(timeFrames))
+		for _, tf := range timeFrames {
+			timeframe := make(map[string]interface{})
+			timeframe["from"] = tf.GetFrom()
+			timeframe["day"] = tf.GetDay()
+			timeframe["to"] = tf.GetTo()
+			optionsListSchedulingTimeframes = append(optionsListSchedulingTimeframes, timeframe)
+		}
+		optionsListScheduling["timeframes"] = optionsListSchedulingTimeframes
+		optionsListScheduling["timezone"] = scheduling.GetTimezone()
+		localOptionsList["scheduling"] = optionsListScheduling
+	}
+
 	if actualOptions.HasRetry() {
 		retry := actualOptions.GetRetry()
 		optionsListRetry := make(map[string]interface{})
