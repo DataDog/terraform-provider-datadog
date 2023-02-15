@@ -958,7 +958,7 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
-			Description: "The definition for a Run Workflow widget.",
+			Description: "The definition for a Run Workflow widget. **NOTE:** Currently in private beta. To request access, contact Support at support@datadoghq.com.",
 			Elem: &schema.Resource{
 				Schema: getRunWorkflowDefinitionSchema(),
 			},
