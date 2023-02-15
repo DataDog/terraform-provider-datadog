@@ -764,6 +764,7 @@ Optional:
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--note_definition))
 - `query_table_definition` (Block List, Max: 1) The definition for a Query Table widget. (see [below for nested schema](#nestedblock--widget--query_table_definition))
 - `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--query_value_definition))
+- `run_workflow_definition` (Block List, Max: 1) The definition for a Run Workflow widget. (see [below for nested schema](#nestedblock--widget--run_workflow_definition))
 - `scatterplot_definition` (Block List, Max: 1) The definition for a Scatterplot widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition))
 - `service_level_objective_definition` (Block List, Max: 1) The definition for a Service Level Objective widget. (see [below for nested schema](#nestedblock--widget--service_level_objective_definition))
 - `servicemap_definition` (Block List, Max: 1) The definition for a Service Map widget. (see [below for nested schema](#nestedblock--widget--servicemap_definition))
@@ -2161,6 +2162,7 @@ Optional:
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--note_definition))
 - `query_table_definition` (Block List, Max: 1) The definition for a Query Table widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition))
 - `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition))
+- `run_workflow_definition` (Block List, Max: 1) The definition for a Run Workflow widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition))
 - `scatterplot_definition` (Block List, Max: 1) The definition for a Scatterplot widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition))
 - `service_level_objective_definition` (Block List, Max: 1) The definition for a Service Level Objective widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--service_level_objective_definition))
 - `servicemap_definition` (Block List, Max: 1) The definition for a Service Map widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition))
@@ -5811,6 +5813,43 @@ Optional:
 - `min` (String) Specify the minimum value to show on the Y-axis.
 - `scale` (String) Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.
 
+
+
+
+<a id="nestedblock--widget--group_definition--widget--run_workflow_definition"></a>
+### Nested Schema for `widget.group_definition.widget.run_workflow_definition`
+
+Required:
+
+- `workflow_id` (String) Workflow id
+
+Optional:
+
+- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--custom_link))
+- `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--input))
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--run_workflow_definition--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.run_workflow_definition.custom_link`
+
+Optional:
+
+- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
+- `label` (String) The label for the custom link URL.
+- `link` (String) The URL of the custom link.
+- `override_label` (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
+
+
+<a id="nestedblock--widget--group_definition--widget--run_workflow_definition--input"></a>
+### Nested Schema for `widget.group_definition.widget.run_workflow_definition.input`
+
+Required:
+
+- `name` (String) Name of the workflow input.
+- `value` (String) Dashboard template variable. Can be suffixed with '.value' or '.key'.
 
 
 
@@ -11285,6 +11324,43 @@ Optional:
 - `min` (String) Specify the minimum value to show on the Y-axis.
 - `scale` (String) Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.
 
+
+
+
+<a id="nestedblock--widget--run_workflow_definition"></a>
+### Nested Schema for `widget.run_workflow_definition`
+
+Required:
+
+- `workflow_id` (String) Workflow id
+
+Optional:
+
+- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--custom_link))
+- `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--input))
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--run_workflow_definition--custom_link"></a>
+### Nested Schema for `widget.run_workflow_definition.custom_link`
+
+Optional:
+
+- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
+- `label` (String) The label for the custom link URL.
+- `link` (String) The URL of the custom link.
+- `override_label` (String) The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.
+
+
+<a id="nestedblock--widget--run_workflow_definition--input"></a>
+### Nested Schema for `widget.run_workflow_definition.input`
+
+Required:
+
+- `name` (String) Name of the workflow input.
+- `value` (String) Dashboard template variable. Can be suffixed with '.value' or '.key'.
 
 
 
