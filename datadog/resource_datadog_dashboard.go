@@ -954,6 +954,15 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getGeomapDefinitionSchema(),
 			},
 		},
+		"run_workflow_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Run Workflow widget.",
+			Elem: &schema.Resource{
+				Schema: getRunWorkflowDefinitionSchema(),
+			},
+		},
 	}
 }
 
@@ -1099,6 +1108,10 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 	} else if def, ok := terraformWidget["list_stream_definition"].([]interface{}); ok && len(def) > 0 {
 		if listStreamDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.ListStreamWidgetDefinitionAsWidgetDefinition(buildDatadogListStreamDefinition(listStreamDefinition))
+		}
+	} else if def, ok := terraformWidget["run_workflow_definition"].([]interface{}); ok && len(def) > 0 {
+		if runWorkflowDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.RunWorkflowWidgetDefinitionAsWidgetDefinition(buildDatadogRunWorkflowDefinition(runWorkflowDefinition))
 		}
 	} else {
 		return nil, fmt.Errorf("failed to find valid definition in widget configuration")
@@ -1265,6 +1278,9 @@ func buildTerraformWidget(datadogWidget datadogV1.Widget, k *utils.ResourceDataK
 		terraformDefinition := buildTerraformGeomapDefinition(*widgetDefinition.GeomapWidgetDefinition, k.Add("geomap_definition.0"))
 		k.Remove("geomap_definition.0")
 		terraformWidget["geomap_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if widgetDefinition.RunWorkflowWidgetDefinition != nil {
+		terraformDefinition := buildTerraformRunWorkflowDefinition(*widgetDefinition.RunWorkflowWidgetDefinition)
+		terraformWidget["run_workflow_definition"] = []map[string]interface{}{terraformDefinition}
 	} else {
 		return nil, fmt.Errorf("unsupported widget type: %s", widgetDefinition.GetActualInstance())
 	}
@@ -7382,6 +7398,141 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 	}
 
 	return datadogDefinition
+}
+
+//
+// Run workflow Widget Definition helpers
+//
+
+func getRunWorkflowDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"workflow_id": {
+			Description: "Workflow id",
+			Type:        schema.TypeString,
+			Required:    true,
+		},
+		"input": {
+			Description: "Array of workflow inputs to map to dashboard template variables.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"name": {
+						Description: "Name of the workflow input.",
+						Type:        schema.TypeString,
+						Required:    true,
+					},
+					"value": {
+						Description: "Dashboard template variable. Can be suffixed with '.value' or '.key'.",
+						Type:        schema.TypeString,
+						Required:    true,
+					},
+				},
+			},
+		},
+		"title": {
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"title_size": {
+			Description: "The size of the widget's title (defaults to 16).",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"title_align": {
+			Description:      "The alignment of the widget's title.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
+		},
+		"live_span": getWidgetLiveSpanSchema(),
+		"custom_link": {
+			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getWidgetCustomLinkSchema(),
+			},
+		},
+	}
+}
+
+func buildDatadogRunWorkflowDefinition(terraformDefinition map[string]interface{}) *datadogV1.RunWorkflowWidgetDefinition {
+	datadogDefinition := datadogV1.NewRunWorkflowWidgetDefinitionWithDefaults()
+	// Required params
+	datadogDefinition.SetWorkflowId(terraformDefinition["workflow_id"].(string))
+	// Optional params
+	if inputs, ok := terraformDefinition["input"].([]interface{}); ok && len(inputs) != 0 {
+		datadogDefinition.Inputs = *buildDatadogRunWorkflowInputs(&inputs)
+	}
+	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+		datadogDefinition.Title = datadog.PtrString(v)
+	}
+	if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.TitleSize = datadog.PtrString(v)
+	}
+	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
+	}
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+		datadogDefinition.Time = &datadogV1.WidgetTime{
+			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+		}
+	}
+	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
+		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
+	}
+	return datadogDefinition
+}
+func buildDatadogRunWorkflowInputs(terraformInputs *[]interface{}) *[]datadogV1.RunWorkflowWidgetInput {
+	datadogRunWorkflowInputs := make([]datadogV1.RunWorkflowWidgetInput, len(*terraformInputs))
+	for i, terraformInput := range *terraformInputs {
+		terraformRunWorkflowInput := terraformInput.(map[string]interface{})
+		if terraformRunWorkflowInput == nil {
+			continue
+		}
+		datadogInput := datadogV1.NewRunWorkflowWidgetInput(terraformRunWorkflowInput["name"].(string), terraformRunWorkflowInput["value"].(string))
+		datadogRunWorkflowInputs[i] = *datadogInput
+	}
+	return &datadogRunWorkflowInputs
+}
+
+func buildTerraformRunWorkflowDefinition(datadogDefinition datadogV1.RunWorkflowWidgetDefinition) map[string]interface{} {
+	terraformDefinition := map[string]interface{}{}
+	// Required params
+	terraformDefinition["workflow_id"] = datadogDefinition.GetWorkflowId()
+	// Optional params
+	if v, ok := datadogDefinition.GetInputsOk(); ok {
+		terraformDefinition["input"] = buildTerraformRunWorkflowInputs(v)
+	}
+	if v, ok := datadogDefinition.GetTitleOk(); ok {
+		terraformDefinition["title"] = *v
+	}
+	if v, ok := datadogDefinition.GetTitleSizeOk(); ok {
+		terraformDefinition["title_size"] = *v
+	}
+	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
+		terraformDefinition["title_align"] = *v
+	}
+	if v, ok := datadogDefinition.GetTimeOk(); ok {
+		terraformDefinition["live_span"] = v.GetLiveSpan()
+	}
+	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
+		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
+	}
+	return terraformDefinition
+}
+func buildTerraformRunWorkflowInputs(datadogInputs *[]datadogV1.RunWorkflowWidgetInput) *[]map[string]interface{} {
+	terraformRunWorkflowInputs := make([]map[string]interface{}, len(*datadogInputs))
+	for i, input := range *datadogInputs {
+		terraformInput := map[string]interface{}{}
+		// Required params
+		terraformInput["name"] = input.GetName()
+		terraformInput["value"] = input.GetValue()
+		terraformRunWorkflowInputs[i] = terraformInput
+	}
+	return &terraformRunWorkflowInputs
 }
 
 //
