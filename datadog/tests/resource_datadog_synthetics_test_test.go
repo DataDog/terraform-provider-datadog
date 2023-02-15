@@ -909,7 +909,7 @@ func createSyntheticsAPITestStepAdvancedScheduling(ctx context.Context, accProvi
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "options_list.0.ignore_server_certificate_error", "true"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.advanced_scheduling", "options_list.0.scheduling.#", "America/New_York"),
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.scheduling.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "name", testName),
 			resource.TestCheckResourceAttr(
