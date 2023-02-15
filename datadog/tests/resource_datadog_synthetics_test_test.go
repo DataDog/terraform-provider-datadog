@@ -911,6 +911,16 @@ func createSyntheticsAPITestStepAdvancedScheduling(ctx context.Context, accProvi
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "options_list.0.scheduling.#", "1"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.scheduling.0.timeframes.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.scheduling.0.timeframes.0.from", "07:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.scheduling.0.timeframes.0.to", "18:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.scheduling.0.timeframes.0.day", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "options_list.0.scheduling.0.timezone", "America/New_York"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "message", "Notify @datadog.user"),

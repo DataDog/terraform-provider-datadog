@@ -2725,7 +2725,8 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		}
 		optionsListScheduling["timeframes"] = optionsListSchedulingTimeframes
 		optionsListScheduling["timezone"] = scheduling.GetTimezone()
-		localOptionsList["scheduling"] = optionsListScheduling
+		optionsListSchedulingList := []map[string]interface{}{optionsListScheduling}
+		localOptionsList["scheduling"] = optionsListSchedulingList
 	}
 
 	if actualOptions.HasRetry() {
@@ -3148,6 +3149,24 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		ciOptions["execution_rule"] = actualCi.GetExecutionRule()
 
 		localOptionsList["ci"] = []map[string]interface{}{ciOptions}
+	}
+
+	if actualOptions.HasScheduling() {
+		scheduling := actualOptions.GetScheduling()
+		timeFrames := scheduling.GetTimeframes()
+		optionsListScheduling := make(map[string]interface{})
+		optionsListSchedulingTimeframes := make([]map[string]interface{}, 0, len(timeFrames))
+		for _, tf := range timeFrames {
+			timeframe := make(map[string]interface{})
+			timeframe["from"] = tf.GetFrom()
+			timeframe["day"] = tf.GetDay()
+			timeframe["to"] = tf.GetTo()
+			optionsListSchedulingTimeframes = append(optionsListSchedulingTimeframes, timeframe)
+		}
+		optionsListScheduling["timeframes"] = optionsListSchedulingTimeframes
+		optionsListScheduling["timezone"] = scheduling.GetTimezone()
+		optionsListSchedulingList := []map[string]interface{}{optionsListScheduling}
+		localOptionsList["scheduling"] = optionsListSchedulingList
 	}
 
 	if actualOptions.HasIgnoreServerCertificateError() {
