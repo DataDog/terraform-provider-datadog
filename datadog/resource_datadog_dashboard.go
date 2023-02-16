@@ -7407,7 +7407,7 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 func getRunWorkflowDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"workflow_id": {
-			Description: "Workflow id",
+			Description: "Workflow ID",
 			Type:        schema.TypeString,
 			Required:    true,
 		},
@@ -7423,7 +7423,7 @@ func getRunWorkflowDefinitionSchema() map[string]*schema.Schema {
 						Required:    true,
 					},
 					"value": {
-						Description: "Dashboard template variable. Can be suffixed with '.value' or '.key'.",
+						Description: "Dashboard template variable. Can be suffixed with `.value` or `.key`.",
 						Type:        schema.TypeString,
 						Required:    true,
 					},
@@ -7919,7 +7919,7 @@ func getWidgetCustomLinkSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"override_label": {
-			Description: "The label id that refers to a context menu link item. When override_label is provided, the client request omits the label field.",
+			Description: "The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
