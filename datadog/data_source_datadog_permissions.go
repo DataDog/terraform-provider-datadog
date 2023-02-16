@@ -15,6 +15,12 @@ func dataSourceDatadogPermissions() *schema.Resource {
 		ReadContext: dataSourceDatadogPermissionsRead,
 
 		Schema: map[string]*schema.Schema{
+			"include_restricted": {
+				Description: "Whether to include restricted permissions. Restricted permissions are granted by default to all users of a Datadog org, and cannot be manually granted or revoked.",
+				Type:        schema.TypeBool,
+				Default:     false,
+				Optional:    true,
+			},
 			// Computed values
 			"permissions": {
 				Description: "Map of permissions names to their corresponding ID.",
@@ -42,9 +48,9 @@ func dataSourceDatadogPermissionsRead(ctx context.Context, d *schema.ResourceDat
 	}
 	perms := res.GetData()
 	permsNameToID := make(map[string]string, len(perms))
+	includeRestricted := d.Get("include_restricted").(bool)
 	for _, perm := range perms {
-		// Don't list restricted permissions, as they cannot be granted/revoked to/from a role
-		if perm.Attributes.GetRestricted() {
+		if !includeRestricted && perm.Attributes.GetRestricted() {
 			continue
 		}
 		permsNameToID[perm.Attributes.GetName()] = perm.GetId()
