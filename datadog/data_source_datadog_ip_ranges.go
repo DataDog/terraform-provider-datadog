@@ -43,6 +43,12 @@ func dataSourceDatadogIPRanges() *schema.Resource {
 				Computed:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
+			"orchestrator_ipv4": {
+				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the Orchestrator endpoint.",
+				Type:        schema.TypeList,
+				Computed:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+			},
 			"process_ipv4": {
 				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the Process endpoint.",
 				Type:        schema.TypeList,
@@ -87,6 +93,12 @@ func dataSourceDatadogIPRanges() *schema.Resource {
 			},
 			"logs_ipv6": {
 				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the Logs endpoint.",
+				Type:        schema.TypeList,
+				Computed:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+			},
+			"orchestrator_ipv6": {
+				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the Orchestrator endpoint.",
 				Type:        schema.TypeList,
 				Computed:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
@@ -137,6 +149,7 @@ func dataSourceDatadogIPRangesRead(ctx context.Context, d *schema.ResourceData, 
 	api := ipAddressesPtr.GetApi()
 	apm := ipAddressesPtr.GetApm()
 	logs := ipAddressesPtr.GetLogs()
+	orchestrator := ipAddressesPtr.GetOrchestrator()
 	process := ipAddressesPtr.GetProcess()
 	synthetics := ipAddressesPtr.GetSynthetics()
 	webhook := ipAddressesPtr.GetWebhooks()
@@ -158,6 +171,7 @@ func dataSourceDatadogIPRangesRead(ctx context.Context, d *schema.ResourceData, 
 	d.Set("api_ipv4", api.GetPrefixesIpv4())
 	d.Set("apm_ipv4", apm.GetPrefixesIpv4())
 	d.Set("logs_ipv4", logs.GetPrefixesIpv4())
+	d.Set("orchestrator_ipv4", orchestrator.GetPrefixesIpv4())
 	d.Set("process_ipv4", process.GetPrefixesIpv4())
 	d.Set("synthetics_ipv4", synthetics.GetPrefixesIpv4())
 	d.Set("webhooks_ipv4", webhook.GetPrefixesIpv4())
@@ -167,6 +181,7 @@ func dataSourceDatadogIPRangesRead(ctx context.Context, d *schema.ResourceData, 
 	d.Set("api_ipv6", api.GetPrefixesIpv6())
 	d.Set("apm_ipv6", apm.GetPrefixesIpv6())
 	d.Set("logs_ipv6", logs.GetPrefixesIpv6())
+	d.Set("orchestrator_ipv6", orchestrator.GetPrefixesIpv6())
 	d.Set("process_ipv6", process.GetPrefixesIpv6())
 	d.Set("synthetics_ipv6", synthetics.GetPrefixesIpv6())
 	d.Set("webhooks_ipv6", webhook.GetPrefixesIpv6())
