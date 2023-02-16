@@ -665,6 +665,7 @@ Optional:
 - `restricted_roles` (Set of String) A list of role identifiers pulled from the Roles API to restrict read and write access.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--retry))
 - `rum_settings` (Block List, Max: 1) The RUM data collection settings for the Synthetic browser test. (see [below for nested schema](#nestedblock--options_list--rum_settings))
+- `scheduling` (Block List, Max: 1) Object containing timeframes and timezone used for advanced scheduling. (see [below for nested schema](#nestedblock--options_list--scheduling))
 
 <a id="nestedblock--options_list--ci"></a>
 ### Nested Schema for `options_list.ci`
@@ -702,6 +703,25 @@ Optional:
 
 - `application_id` (String) RUM application ID used to collect RUM data for the browser test.
 - `client_token_id` (Number, Sensitive) RUM application API key ID used to collect RUM data for the browser test.
+
+
+<a id="nestedblock--options_list--scheduling"></a>
+### Nested Schema for `options_list.scheduling`
+
+Required:
+
+- `timeframes` (Block Set, Min: 1) Array containing objects describing the scheduling pattern to apply to each day. (see [below for nested schema](#nestedblock--options_list--scheduling--timeframes))
+- `timezone` (String) Timezone in which the timeframe is based.
+
+<a id="nestedblock--options_list--scheduling--timeframes"></a>
+### Nested Schema for `options_list.scheduling.timeframes`
+
+Required:
+
+- `day` (Number) Number representing the day of the week
+- `from` (String) The hour of the day on which scheduling starts.
+- `to` (String) The hour of the day on which scheduling ends.
+
 
 
 
