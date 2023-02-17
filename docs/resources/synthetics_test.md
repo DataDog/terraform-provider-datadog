@@ -680,7 +680,7 @@ Optional:
 
 Optional:
 
-- `renotify_interval` (Number) Specify a renotification frequency.
+- `renotify_interval` (Number) Specify a renotification frequency. Valid values are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`.
 
 
 <a id="nestedblock--options_list--retry"></a>
