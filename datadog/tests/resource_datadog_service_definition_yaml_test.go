@@ -81,6 +81,54 @@ EOF
 
 }
 
+func TestAccDatadogServiceDefinition_Order(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceDefinitionDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogServiceDefinitionOrder(uniq),
+				Check:  checkServiceDefinitionExists(accProvider),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogServiceDefinitionOrder(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_definition_yaml" "service_definition" {
+  service_definition =<<EOF
+schema-version: v2
+dd-service: %s
+contacts:
+  - name: AA
+    type: slack
+    contact: AAA
+  - name: BB
+    type: email
+    contact: BBB
+  - name: AA
+    type: email
+    contact: AAA
+  - name: BB
+    type: email
+    contact: AAA
+  - name: AA
+    type: email
+    contact: BBB
+tags:
+  - 'bbb'
+  - 'aaa'
+EOF
+}`, uniq)
+}
+
 func checkServiceDefinitionExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
