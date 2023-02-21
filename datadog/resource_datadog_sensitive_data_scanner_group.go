@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -93,7 +92,6 @@ func buildScanningGroupAttributes(d *schema.ResourceData) *datadogV2.SensitiveDa
 	}
 
 	if isEnabled := d.Get("is_enabled"); isEnabled != nil {
-		fmt.Println(isEnabled)
 		attributes.SetIsEnabled(isEnabled.(bool))
 	}
 
