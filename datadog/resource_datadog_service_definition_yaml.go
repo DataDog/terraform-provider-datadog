@@ -137,12 +137,12 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 			sort.SliceStable(sorted_contacts, func(i, j int) bool {
 				type_l_val, type_l_ok := sorted_contacts[i]["type"]
 				type_r_val, type_r_ok := sorted_contacts[j]["type"]
-				if !(type_l_val == type_r_val) && type_l_ok && type_r_ok {
+				if type_l_val != type_r_val && type_l_ok && type_r_ok {
 					return type_l_val.(string) < type_r_val.(string)
 				}
 				contact_l_val, contact_l_ok := sorted_contacts[i]["contact"]
 				contact_r_val, contact_r_ok := sorted_contacts[j]["contact"]
-				if !(contact_l_val == contact_r_val) && contact_l_ok && contact_r_ok {
+				if contact_l_val != contact_r_val && contact_l_ok && contact_r_ok {
 					return contact_l_val.(string) < contact_r_val.(string)
 				}
 				name_l_val, name_l_ok := sorted_contacts[i]["name"]
