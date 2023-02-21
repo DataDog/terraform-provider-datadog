@@ -114,14 +114,14 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 		if len(tags) == 0 {
 			delete(attrMap, "tags")
 		} else {
-			normalized_tags := make([]string, 0)
+			normalizedTags := make([]string, 0)
 			for _, tag := range tags {
-				normalized_tags = append(normalized_tags, utils.NormalizeTag(tag.(string)))
+				normalizedTags = append(normalizedTags, utils.NormalizeTag(tag.(string)))
 			}
-			sort.SliceStable(normalized_tags, func(i, j int) bool {
-				return normalized_tags[i] < normalized_tags[j]
+			sort.SliceStable(normalizedTags, func(i, j int) bool {
+				return normalizedTags[i] < normalizedTags[j]
 			})
-			attrMap["tags"] = normalized_tags
+			attrMap["tags"] = normalizedTags
 		}
 	}
 
@@ -129,30 +129,30 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 		if len(contacts) == 0 {
 			delete(attrMap, "contacts")
 		} else {
-			sorted_contacts := make([]map[string]interface{}, 0)
+			sortedContacts := make([]map[string]interface{}, 0)
 			for _, contact := range contacts {
-				sorted_contacts = append(sorted_contacts, contact.(map[string]interface{}))
+				sortedContacts = append(sortedContacts, contact.(map[string]interface{}))
 			}
 
-			sort.SliceStable(sorted_contacts, func(i, j int) bool {
-				type_l_val, type_l_ok := sorted_contacts[i]["type"]
-				type_r_val, type_r_ok := sorted_contacts[j]["type"]
-				if type_l_val != type_r_val && type_l_ok && type_r_ok {
-					return type_l_val.(string) < type_r_val.(string)
+			sort.SliceStable(sortedContacts, func(i, j int) bool {
+				typeLVal, typeLOk := sortedContacts[i]["type"]
+				typeRVal, typeROk := sortedContacts[j]["type"]
+				if typeLVal != typeRVal && typeLOk && typeROk {
+					return typeLVal.(string) < typeRVal.(string)
 				}
-				contact_l_val, contact_l_ok := sorted_contacts[i]["contact"]
-				contact_r_val, contact_r_ok := sorted_contacts[j]["contact"]
-				if contact_l_val != contact_r_val && contact_l_ok && contact_r_ok {
-					return contact_l_val.(string) < contact_r_val.(string)
+				contactLVal, contactLOk := sortedContacts[i]["contact"]
+				contactRVal, contactROk := sortedContacts[j]["contact"]
+				if contactLVal != contactRVal && contactLOk && contactROk {
+					return contactLVal.(string) < contactRVal.(string)
 				}
-				name_l_val, name_l_ok := sorted_contacts[i]["name"]
-				name_r_val, name_r_ok := sorted_contacts[j]["name"]
-				if name_l_ok && name_r_ok {
-					return name_l_val.(string) < name_r_val.(string)
+				nameLVal, nameLOk := sortedContacts[i]["name"]
+				nameRVal, nameROk := sortedContacts[j]["name"]
+				if nameLOk && nameROk {
+					return nameLVal.(string) < nameRVal.(string)
 				}
 				return false
 			})
-			attrMap["contacts"] = sorted_contacts
+			attrMap["contacts"] = sortedContacts
 		}
 	}
 
