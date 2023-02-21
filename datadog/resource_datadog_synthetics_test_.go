@@ -517,6 +517,53 @@ func syntheticsTestOptionsRetry() *schema.Schema {
 	}
 }
 
+func syntheticsTestAdvancedSchedulingTimeframes() *schema.Schema {
+	return &schema.Schema{
+		Description: "Array containing objects describing the scheduling pattern to apply to each day.",
+		Type:        schema.TypeSet,
+		Required:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"day": {
+					Description:  "Number representing the day of the week",
+					Type:         schema.TypeInt,
+					Required:     true,
+					ValidateFunc: validation.IntBetween(1, 7),
+				},
+				"from": {
+					Description: "The hour of the day on which scheduling starts.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"to": {
+					Description: "The hour of the day on which scheduling ends.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+			},
+		},
+	}
+}
+
+func syntheticsTestAdvancedScheduling() *schema.Schema {
+	return &schema.Schema{
+		Description: "Object containing timeframes and timezone used for advanced scheduling.",
+		Type:        schema.TypeList,
+		MaxItems:    1,
+		Optional:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"timeframes": syntheticsTestAdvancedSchedulingTimeframes(),
+				"timezone": {
+					Description: "Timezone in which the timeframe is based.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+			},
+		},
+	}
+}
+
 func syntheticsTestOptionsList() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
@@ -532,6 +579,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Required:     true,
 					ValidateFunc: validation.IntBetween(30, 604800),
 				},
+				"scheduling": syntheticsTestAdvancedScheduling(),
 				"accept_self_signed": {
 					Description: "For SSL test, whether or not the test should allow self signed certificates.",
 					Type:        schema.TypeBool,
@@ -1505,6 +1553,26 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		}
 		if attr, ok := d.GetOk("options_list.0.allow_insecure"); ok {
 			options.SetAllowInsecure(attr.(bool))
+		}
+
+		if rawScheduling, ok := d.GetOk("options_list.0.scheduling"); ok {
+			optionsScheduling := datadogV1.SyntheticsTestOptionsScheduling{}
+			scheduling := rawScheduling.([]interface{})[0]
+			if rawTimeframes, ok := scheduling.(map[string]interface{})["timeframes"]; ok {
+				var timeFrames []datadogV1.SyntheticsTestOptionsSchedulingTimeframe
+				for _, tf := range rawTimeframes.(*schema.Set).List() {
+					timeframe := datadogV1.NewSyntheticsTestOptionsSchedulingTimeframe()
+					timeframe.SetDay(int32(tf.(map[string]interface{})["day"].(int)))
+					timeframe.SetFrom(tf.(map[string]interface{})["from"].(string))
+					timeframe.SetTo(tf.(map[string]interface{})["to"].(string))
+					timeFrames = append(timeFrames, *timeframe)
+				}
+				optionsScheduling.SetTimeframes(timeFrames)
+			}
+			if timezone, ok := scheduling.(map[string]interface{})["timezone"]; ok {
+				optionsScheduling.SetTimezone(timezone.(string))
+			}
+			options.SetScheduling(optionsScheduling)
 		}
 
 		if retryRaw, ok := d.GetOk("options_list.0.retry"); ok {
@@ -2642,6 +2710,25 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	if actualOptions.HasAllowInsecure() {
 		localOptionsList["allow_insecure"] = actualOptions.GetAllowInsecure()
 	}
+
+	if actualOptions.HasScheduling() {
+		scheduling := actualOptions.GetScheduling()
+		timeFrames := scheduling.GetTimeframes()
+		optionsListScheduling := make(map[string]interface{})
+		optionsListSchedulingTimeframes := make([]map[string]interface{}, 0, len(timeFrames))
+		for _, tf := range timeFrames {
+			timeframe := make(map[string]interface{})
+			timeframe["from"] = tf.GetFrom()
+			timeframe["day"] = tf.GetDay()
+			timeframe["to"] = tf.GetTo()
+			optionsListSchedulingTimeframes = append(optionsListSchedulingTimeframes, timeframe)
+		}
+		optionsListScheduling["timeframes"] = optionsListSchedulingTimeframes
+		optionsListScheduling["timezone"] = scheduling.GetTimezone()
+		optionsListSchedulingList := []map[string]interface{}{optionsListScheduling}
+		localOptionsList["scheduling"] = optionsListSchedulingList
+	}
+
 	if actualOptions.HasRetry() {
 		retry := actualOptions.GetRetry()
 		optionsListRetry := make(map[string]interface{})
@@ -3062,6 +3149,24 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		ciOptions["execution_rule"] = actualCi.GetExecutionRule()
 
 		localOptionsList["ci"] = []map[string]interface{}{ciOptions}
+	}
+
+	if actualOptions.HasScheduling() {
+		scheduling := actualOptions.GetScheduling()
+		timeFrames := scheduling.GetTimeframes()
+		optionsListScheduling := make(map[string]interface{})
+		optionsListSchedulingTimeframes := make([]map[string]interface{}, 0, len(timeFrames))
+		for _, tf := range timeFrames {
+			timeframe := make(map[string]interface{})
+			timeframe["from"] = tf.GetFrom()
+			timeframe["day"] = tf.GetDay()
+			timeframe["to"] = tf.GetTo()
+			optionsListSchedulingTimeframes = append(optionsListSchedulingTimeframes, timeframe)
+		}
+		optionsListScheduling["timeframes"] = optionsListSchedulingTimeframes
+		optionsListScheduling["timezone"] = scheduling.GetTimezone()
+		optionsListSchedulingList := []map[string]interface{}{optionsListScheduling}
+		localOptionsList["scheduling"] = optionsListSchedulingList
 	}
 
 	if actualOptions.HasIgnoreServerCertificateError() {

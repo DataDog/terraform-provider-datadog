@@ -25,6 +25,7 @@ type iPRangesDataSourceZoneModel struct {
 	APIIpv4                  types.List `tfsdk:"api_ipv4"`
 	APMIpv4                  types.List `tfsdk:"apm_ipv4"`
 	LogsIpv4                 types.List `tfsdk:"logs_ipv4"`
+	OrchestratorIpv4         types.List `tfsdk:"orchestrator_ipv4"`
 	ProcessIpv4              types.List `tfsdk:"process_ipv4"`
 	SyntheticsIpv4           types.List `tfsdk:"synthetics_ipv4"`
 	SyntheticsIpv4ByLocation types.Map  `tfsdk:"synthetics_ipv4_by_location"`
@@ -34,6 +35,7 @@ type iPRangesDataSourceZoneModel struct {
 	APIIpv6                  types.List `tfsdk:"api_ipv6"`
 	APMIpv6                  types.List `tfsdk:"apm_ipv6"`
 	LogsIpv6                 types.List `tfsdk:"logs_ipv6"`
+	OrchestratorIpv6         types.List `tfsdk:"orchestrator_ipv6"`
 	ProcessIpv6              types.List `tfsdk:"process_ipv6"`
 	SyntheticsIpv6           types.List `tfsdk:"synthetics_ipv6"`
 	SyntheticsIpv6ByLocation types.Map  `tfsdk:"synthetics_ipv6_by_location"`
@@ -91,6 +93,11 @@ func (d *IPRangesDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 				Computed:    true,
 				ElementType: types.StringType,
 			},
+			"orchestrator_ipv4": schema.ListAttribute{
+				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the Orchestrator endpoint.",
+				Computed:    true,
+				ElementType: types.StringType,
+			},
 			"process_ipv4": schema.ListAttribute{
 				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the Process endpoint.",
 				Computed:    true,
@@ -129,6 +136,11 @@ func (d *IPRangesDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 			},
 			"logs_ipv6": schema.ListAttribute{
 				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the Logs endpoint.",
+				Computed:    true,
+				ElementType: types.StringType,
+			},
+			"orchestrator_ipv6": schema.ListAttribute{
+				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the Orchestrator endpoint.",
 				Computed:    true,
 				ElementType: types.StringType,
 			},
@@ -180,6 +192,7 @@ func (d *IPRangesDataSource) Read(ctx context.Context, _ datasource.ReadRequest,
 	api := ipAddressesPtr.GetApi()
 	apm := ipAddressesPtr.GetApm()
 	logs := ipAddressesPtr.GetLogs()
+	orchestrator := ipAddressesPtr.GetOrchestrator()
 	process := ipAddressesPtr.GetProcess()
 	synthetics := ipAddressesPtr.GetSynthetics()
 	webhook := ipAddressesPtr.GetWebhooks()
@@ -190,6 +203,7 @@ func (d *IPRangesDataSource) Read(ctx context.Context, _ datasource.ReadRequest,
 	state.APIIpv4, _ = types.ListValueFrom(ctx, types.StringType, api.GetPrefixesIpv4())
 	state.APMIpv4, _ = types.ListValueFrom(ctx, types.StringType, apm.GetPrefixesIpv4())
 	state.LogsIpv4, _ = types.ListValueFrom(ctx, types.StringType, logs.GetPrefixesIpv4())
+	state.OrchestratorIpv4, _ = types.ListValueFrom(ctx, types.StringType, orchestrator.GetPrefixesIpv4())
 	state.ProcessIpv4, _ = types.ListValueFrom(ctx, types.StringType, process.GetPrefixesIpv4())
 	state.SyntheticsIpv4, _ = types.ListValueFrom(ctx, types.StringType, synthetics.GetPrefixesIpv4())
 	state.WebhooksIpv4, _ = types.ListValueFrom(ctx, types.StringType, webhook.GetPrefixesIpv4())
@@ -198,6 +212,7 @@ func (d *IPRangesDataSource) Read(ctx context.Context, _ datasource.ReadRequest,
 	state.APIIpv6, _ = types.ListValueFrom(ctx, types.StringType, api.GetPrefixesIpv4())
 	state.APMIpv6, _ = types.ListValueFrom(ctx, types.StringType, apm.GetPrefixesIpv4())
 	state.LogsIpv6, _ = types.ListValueFrom(ctx, types.StringType, logs.GetPrefixesIpv4())
+	state.OrchestratorIpv6, _ = types.ListValueFrom(ctx, types.StringType, orchestrator.GetPrefixesIpv6())
 	state.ProcessIpv6, _ = types.ListValueFrom(ctx, types.StringType, process.GetPrefixesIpv4())
 	state.SyntheticsIpv6, _ = types.ListValueFrom(ctx, types.StringType, synthetics.GetPrefixesIpv4())
 	state.WebhooksIpv6, _ = types.ListValueFrom(ctx, types.StringType, webhook.GetPrefixesIpv4())
