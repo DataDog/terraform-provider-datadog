@@ -52,6 +52,7 @@ type ApiInstances struct {
 	incidentServicesApiV2      *datadogV2.IncidentServicesApi
 	incidentTeamsApiV2         *datadogV2.IncidentTeamsApi
 	incidentsApiV2             *datadogV2.IncidentsApi
+	ipAllowlistApiV2           *datadogV2.IPAllowlistApi
 	keyManagementApiV2         *datadogV2.KeyManagementApi
 	logsApiV2                  *datadogV2.LogsApi
 	logsArchivesApiV2          *datadogV2.LogsArchivesApi
@@ -379,6 +380,13 @@ func (i *ApiInstances) GetIncidentsApiV2() *datadogV2.IncidentsApi {
 		i.incidentsApiV2 = datadogV2.NewIncidentsApi(i.HttpClient)
 	}
 	return i.incidentsApiV2
+}
+
+func (i *ApiInstances) GetIPAllowlistApiV2() *datadogV2.IPAllowlistApi {
+	if i.ipAllowlistApiV2 == nil {
+		i.ipAllowlistApiV2 = datadogV2.NewIPAllowlistApi(i.HttpClient)
+	}
+	return i.ipAllowlistApiV2
 }
 
 // GetKeyManagementApiV2 get instance of KeyManagementApi
