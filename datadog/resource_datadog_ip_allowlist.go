@@ -148,7 +148,7 @@ func resourceDatadogIPAllowlistUpdate(ctx context.Context, d *schema.ResourceDat
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
-	if d.HasChange("enabled") || d.HasChange("entries") {
+	if d.HasChange("enabled") || d.HasChange("entry") {
 		ipAllowlistReq, err := buildIPAllowlistUpdateRequest(d)
 		if err != nil {
 			return diag.FromErr(err)
@@ -177,7 +177,7 @@ func buildIPAllowlistUpdateRequest(d *schema.ResourceData) (datadogV2.IPAllowlis
 	enabled := d.Get("enabled")
 	ipAllowlistAttributes.SetEnabled(enabled.(bool))
 
-	if entriesI, ok := d.GetOk("entries"); ok {
+	if entriesI, ok := d.GetOk("entry"); ok {
 		entries := entriesI.(*schema.Set).List()
 		ipAllowlistEntries := make([]datadogV2.IPAllowlistEntry, len(entries))
 		for i, entryI := range entries {
