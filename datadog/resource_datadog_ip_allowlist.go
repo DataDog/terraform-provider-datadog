@@ -8,6 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceDatadogIPAllowlist() *schema.Resource {
@@ -40,9 +41,10 @@ func GetIPAllowlistEntrySchema() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"cidr_block": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "IP address or range of addresses.",
+				Type:         schema.TypeString,
+				Required:     true,
+				Description:  "IP address or range of addresses.",
+				ValidateFunc: validation.IsCIDR,
 			},
 			"note": {
 				Type:        schema.TypeString,
