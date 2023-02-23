@@ -30,7 +30,7 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 			},
 			"product_list": {
 				Description: "List of products the scanning group applies.",
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Required:    true,
 				MaxItems:    4,
 				Elem: &schema.Schema{
@@ -99,12 +99,16 @@ func buildScanningGroupAttributes(d *schema.ResourceData) *datadogV2.SensitiveDa
 		attributes.SetName(name.(string))
 	}
 
-	productList := []datadogV2.SensitiveDataScannerProduct{}
-	for _, s := range d.Get("product_list").([]interface{}) {
-		sensitiveDataScannerProductItem, _ := datadogV2.NewSensitiveDataScannerProductFromValue(s.(string))
-		productList = append(productList, *sensitiveDataScannerProductItem)
+	productList := make([]datadogV2.SensitiveDataScannerProduct, 0)
+	if pList, ok := d.GetOk("product_list"); ok {
+		for _, s := range pList.(*schema.Set).List() {
+			sensitiveDataScannerProductItem, _ := datadogV2.NewSensitiveDataScannerProductFromValue(s.(string))
+			productList = append(productList, *sensitiveDataScannerProductItem)
+		}
+		attributes.SetProductList(productList)
+	} else {
+		attributes.SetProductList(nil)
 	}
-	attributes.SetProductList(productList)
 
 	return attributes
 }
