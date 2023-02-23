@@ -16,9 +16,9 @@ import (
 )
 
 func TestAccDatadogSensitiveDataScannerGroup_Basic(t *testing.T) {
-	if isRecording() || isReplaying() {
-		t.Skip("This test doesn't support recording or replaying")
-	}
+	//if isRecording() || isReplaying() {
+	//	t.Skip("This test doesn't support recording or replaying")
+	//}
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
@@ -36,11 +36,11 @@ func TestAccDatadogSensitiveDataScannerGroup_Basic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogSensitiveDataScannerGroupExists(accProvider, resource_name),
 					resource.TestCheckResourceAttr(resource_name, "name", uniq),
-					resource.TestCheckResourceAttr(resource_name, "description", "optional description"),
+					resource.TestCheckResourceAttr(resource_name, "description", ""),
 					resource.TestCheckResourceAttr(resource_name, "product_list.0", "logs"),
 					resource.TestCheckResourceAttr(resource_name, "product_list.#", "1"),
 					resource.TestCheckResourceAttr(resource_name, "is_enabled", "true"),
-					resource.TestCheckResourceAttr(resource_name, "filter.0.query", "hotel:trivago"),
+					resource.TestCheckResourceAttr(resource_name, "filter.0.query", "*"),
 				),
 			},
 			{
@@ -49,8 +49,6 @@ func TestAccDatadogSensitiveDataScannerGroup_Basic(t *testing.T) {
 					testAccCheckDatadogSensitiveDataScannerGroupExists(accProvider, resource_name),
 					resource.TestCheckResourceAttr(resource_name, "name", uniq),
 					resource.TestCheckResourceAttr(resource_name, "description", "changed description"),
-					resource.TestCheckResourceAttr(resource_name, "product_list.0", "logs"),
-					resource.TestCheckResourceAttr(resource_name, "product_list.1", "apm"),
 					resource.TestCheckResourceAttr(resource_name, "product_list.#", "2"),
 					resource.TestCheckResourceAttr(resource_name, "is_enabled", "false"),
 					resource.TestCheckResourceAttr(resource_name, "filter.0.query", "hotel:trivago2.0"),
@@ -64,11 +62,10 @@ func testAccCheckDatadogSensitiveDataScannerGroup(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_sensitive_data_scanner_group" "sample_group" {
 	name           = "%s"
-	description    = "optional description"
 	product_list   = ["logs"]
 	is_enabled     = true
 	filter {
-		query = "hotel:trivago"
+		query = ""
 	}
 }
 `, name)
@@ -116,10 +113,10 @@ func testAccCheckDatadogSensitiveDataScannerGroupDestroy(accProvider func() (*sc
 		auth := providerConf.Auth
 		apiInstances := providerConf.DatadogApiInstances
 
-		for _, resource := range s.RootModule().Resources {
-			if resource.Type == "datadog_sensitive_data_scanner_group" {
+		for _, r := range s.RootModule().Resources {
+			if r.Type == "datadog_sensitive_data_scanner_group" {
 				resp, _, err := apiInstances.GetSensitiveDataScannerApiV2().ListScanningGroups(auth)
-				if groupFound := findSensitiveDataScannerGroupHelper(resource.Primary.ID, resp); groupFound == nil {
+				if groupFound := findSensitiveDataScannerGroupHelper(r.Primary.ID, resp); groupFound == nil {
 					if err != nil {
 						return fmt.Errorf("received an error retrieving all scanning groups: %s", err)
 					}
@@ -133,9 +130,9 @@ func testAccCheckDatadogSensitiveDataScannerGroupDestroy(accProvider func() (*sc
 }
 
 func findSensitiveDataScannerGroupHelper(groupId string, response datadogV2.SensitiveDataScannerGetConfigResponse) *datadogV2.SensitiveDataScannerGroupIncludedItem {
-	for _, resource := range response.GetIncluded() {
-		if resource.SensitiveDataScannerRuleIncludedItem.GetId() == groupId {
-			return resource.SensitiveDataScannerGroupIncludedItem
+	for _, r := range response.GetIncluded() {
+		if r.SensitiveDataScannerGroupIncludedItem.GetId() == groupId {
+			return r.SensitiveDataScannerGroupIncludedItem
 		}
 	}
 

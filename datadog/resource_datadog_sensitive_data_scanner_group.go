@@ -17,6 +17,9 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 		CreateContext: resourceDatadogSensitiveDataScannerGroupCreate,
 		UpdateContext: resourceDatadogSensitiveDataScannerGroupUpdate,
 		DeleteContext: resourceDatadogSensitiveDataScannerGroupDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Description: "Name of the Datadog scanning group.",
@@ -53,6 +56,12 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 							Description: "Query to filter the events.",
 							Type:        schema.TypeString,
 							Required:    true,
+							DiffSuppressFunc: func(_, oldVal, newVal string, d *schema.ResourceData) bool {
+								if (oldVal == "" && newVal == "*") || (oldVal == "*" && newVal == "") {
+									return true
+								}
+								return false
+							},
 						},
 					},
 				},
@@ -79,26 +88,21 @@ func buildDatadogGroupFilter(tfFilter map[string]interface{}) *datadogV2.Sensiti
 func buildScanningGroupAttributes(d *schema.ResourceData) *datadogV2.SensitiveDataScannerGroupAttributes {
 	attributes := &datadogV2.SensitiveDataScannerGroupAttributes{}
 
+	attributes.SetIsEnabled(d.Get("is_enabled").(bool))
+	attributes.SetName(d.Get("name").(string))
+	attributes.SetDescription(d.Get("description").(string))
+
 	if description, ok := d.GetOk("description"); ok {
 		attributes.SetDescription(description.(string))
 	}
 
-	if tfFilter := d.Get("filter").([]interface{}); len(tfFilter) > 0 {
+	if tfFilter := d.Get("filter").([]interface{}); len(tfFilter) > 0 && tfFilter[0] != nil {
 		attributes.SetFilter(*buildDatadogGroupFilter(tfFilter[0].(map[string]interface{})))
 	} else {
 		filter := datadogV2.NewSensitiveDataScannerFilterWithDefaults()
 		filter.SetQuery("*")
 		attributes.SetFilter(*filter)
 	}
-
-	if isEnabled := d.Get("is_enabled"); isEnabled != nil {
-		attributes.SetIsEnabled(isEnabled.(bool))
-	}
-
-	if name, ok := d.GetOk("name"); ok {
-		attributes.SetName(name.(string))
-	}
-
 	productList := make([]datadogV2.SensitiveDataScannerProduct, 0)
 	if pList, ok := d.GetOk("product_list"); ok {
 		for _, s := range pList.(*schema.Set).List() {
@@ -236,7 +240,7 @@ func updateSensitiveDataScannerGroupState(d *schema.ResourceData, groupAttribute
 
 func findSensitiveDataScannerGroupHelper(groupId string, response datadogV2.SensitiveDataScannerGetConfigResponse) *datadogV2.SensitiveDataScannerGroupIncludedItem {
 	for _, resource := range response.GetIncluded() {
-		if resource.SensitiveDataScannerRuleIncludedItem.GetId() == groupId {
+		if resource.SensitiveDataScannerGroupIncludedItem.GetId() == groupId {
 			return resource.SensitiveDataScannerGroupIncludedItem
 		}
 	}
