@@ -45,11 +45,11 @@ data "datadog_sensitive_data_scanner_standard_pattern" "aws_sp" {
 }
 
 resource "datadog_sensitive_data_scanner_rule" "mylibraryrule" {
-  name                = "My library rule"
-  description         = "A description"
-  group_id            = datadog_sensitive_data_scanner_group.mygroup.id
+  name        = "My library rule"
+  description = "A description"
+  group_id    = datadog_sensitive_data_scanner_group.mygroup.id
   // As standard_pattern_id is provided, the resource MUST NOT contain the "pattern" attribute
-  standard_pattern_id            = data.datadog_sensitive_data_scanner_standard_pattern.aws_sp.id
+  standard_pattern_id = data.datadog_sensitive_data_scanner_standard_pattern.aws_sp.id
   excluded_namespaces = ["username"]
   is_enabled          = true
   tags                = ["sensitive_data:true"]
