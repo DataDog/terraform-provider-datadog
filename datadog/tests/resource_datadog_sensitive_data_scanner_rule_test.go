@@ -145,18 +145,13 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 }
 
 resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
-    name = "%s"
+	name = "%s"
 	description = "a description"
-    excluded_namespaces = ["username"]
-    is_enabled = true
+	excluded_namespaces = ["username"]
+	is_enabled = true
 	group_id = datadog_sensitive_data_scanner_group.sample_group.id
-    pattern = "regex"
-    tags = ["sensitive_data:true"]
-    text_replacement {
-		number_of_chars = 0
-		replacement_string = ""
-		type = "none"
-    }
+	pattern = "regex"
+	tags = ["sensitive_data:true"]
 }
 `, name)
 }
@@ -173,18 +168,18 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 }
 
 resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
-    name = "%s"
+	name = "%s"
 	description = "another description"
-    excluded_namespaces = ["email"]
-    is_enabled = false
+	excluded_namespaces = ["email"]
+	is_enabled = false
 	group_id = datadog_sensitive_data_scanner_group.sample_group.id
-    pattern = "regex"
-    tags = ["sensitive_data:true"]
-    text_replacement {
+	pattern = "regex"
+	tags = ["sensitive_data:true"]
+	text_replacement {
 		number_of_chars = 10
 		replacement_string = ""
 		type = "partial_replacement_from_beginning"
-    }
+	}
 }
 `, name)
 }
@@ -210,18 +205,18 @@ resource "datadog_sensitive_data_scanner_group" "new_group" {
 }
 
 resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
-    name = "%s"
+	name = "%s"
 	description = "another description"
-    excluded_namespaces = ["email"]
-    is_enabled = true
+	excluded_namespaces = ["email"]
+	is_enabled = true
 	group_id = datadog_sensitive_data_scanner_group.new_group.id
-    pattern = "regex"
-    tags = ["sensitive_data:true"]
-    text_replacement {
+	pattern = "regex"
+	tags = ["sensitive_data:true"]
+	text_replacement {
 		number_of_chars = 10
 		replacement_string = ""
 		type = "partial_replacement_from_beginning"
-    }
+	}
 }
 `, name)
 }
@@ -242,17 +237,17 @@ data "datadog_sensitive_data_scanner_standard_pattern" "sample_sp" {
 }
 
 resource "datadog_sensitive_data_scanner_rule" "another_rule" {
-    name = "%s"
+	name = "%s"
 	description = "a description"
-    excluded_namespaces = ["username"]
-    is_enabled = true
+	excluded_namespaces = ["username"]
+	is_enabled = true
 	group_id = datadog_sensitive_data_scanner_group.sample_group.id
 	standard_pattern_id = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.id
 	text_replacement {
 		number_of_chars = 10
 		replacement_string = ""
 		type = "partial_replacement_from_beginning"
-    }
+	}
 }
 `, name)
 }
