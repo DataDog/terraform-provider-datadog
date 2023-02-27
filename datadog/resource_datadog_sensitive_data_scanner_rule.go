@@ -327,11 +327,14 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 			textReplacement["replacement_string"] = replacementString
 		}
 		if replacementType, ok := tR.GetTypeOk(); ok {
-			textReplacement["type"] = replacementType
+			textReplacement["type"] = *replacementType
 		}
 		textReplacementList = append(textReplacementList, textReplacement)
-		if err := d.Set("text_replacement", textReplacementList); err != nil {
-			return diag.FromErr(err)
+		currentReplacement := d.Get("text_replacement").([]interface{})
+		if textReplacement["type"] != "none" && len(currentReplacement) != 0 {
+			if err := d.Set("text_replacement", textReplacementList); err != nil {
+				return diag.FromErr(err)
+			}
 		}
 	}
 	return nil

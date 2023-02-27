@@ -41,12 +41,6 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 						resource_name, "pattern", "regex"),
 					resource.TestCheckResourceAttr(
 						resource_name, "excluded_namespaces.0", "username"),
-					resource.TestCheckResourceAttr(
-						resource_name, "text_replacement.0.number_of_chars", "0"),
-					resource.TestCheckResourceAttr(
-						resource_name, "text_replacement.0.type", "none"),
-					resource.TestCheckResourceAttr(
-						resource_name, "text_replacement.0.replacement_string", ""),
 				),
 			},
 			{
