@@ -1,0 +1,141 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"display":{"message":false,"notified":false,"snapshot":false,"tags":false},"name":"#tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels
+    method: POST
+  response:
+    body: |
+      {"name":"#tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522","display":{"message":false,"snapshot":false,"tags":false,"notified":false}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522
+    method: GET
+  response:
+    body: |
+      {"name":"#tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522","display":{"message":false,"snapshot":false,"tags":false,"notified":false}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522
+    method: GET
+  response:
+    body: |
+      {"name":"#tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522","display":{"message":false,"snapshot":false,"tags":false,"notified":false}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522
+    method: GET
+  response:
+    body: |
+      {"name":"#tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522","display":{"message":false,"snapshot":false,"tags":false,"notified":false}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522
+    method: GET
+  response:
+    body: |
+      {"name":"#tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522","display":{"message":false,"snapshot":false,"tags":false,"notified":false}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522
+    method: GET
+  response:
+    body: |
+      {"name":"#tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522","display":{"message":false,"snapshot":false,"tags":false,"notified":false}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522
+    method: GET
+  response:
+    body: |
+      {"name":"#tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522","display":{"message":false,"snapshot":false,"tags":false,"notified":false}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tf-TestAccDatadogIntegrationSlackChannelDatasource-local-1676313522
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""

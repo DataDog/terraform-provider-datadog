@@ -74,6 +74,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_security_monitoring_filters_test":         "security-monitoring",
 	"tests/data_source_datadog_service_level_objective_test":             "service-level-objectives",
 	"tests/data_source_datadog_service_level_objectives_test":            "service-level-objectives",
+	"tests/data_source_datadog_integration_slack_channel_test":           "integration-slack-channel",
 	"tests/data_source_datadog_synthetics_locations_test":                "synthetics",
 	"tests/data_source_datadog_synthetics_global_variable_test":          "synthetics",
 	"tests/data_source_datadog_synthetics_test_test":                     "synthetics",
