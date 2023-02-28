@@ -65,6 +65,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_monitors_test":                            "monitors",
 	"tests/data_source_datadog_monitor_config_policy_test":               "monitor-config-policies",
 	"tests/data_source_datadog_monitor_config_policies_test":             "monitor-config-policies",
+	"tests/data_source_datadog_pagerduty_service_object_test":            "integration-pagerduty",
 	"tests/data_source_datadog_permissions_test":                         "permissions",
 	"tests/data_source_datadog_role_test":                                "roles",
 	"tests/data_source_datadog_roles_test":                               "roles",
