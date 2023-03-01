@@ -3,7 +3,7 @@ package transport
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"math"
 	"net/http"
 	"strconv"
@@ -31,16 +31,12 @@ type CustomTransportOptions struct {
 
 // RoundTrip method used to retry http errors
 func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	var ccancel context.CancelFunc
-	ctx := req.Context()
-	if _, set := ctx.Deadline(); !set {
-		ctx, ccancel = context.WithTimeout(ctx, t.httpRetryTimeout)
-		defer ccancel()
-	}
+	ctx, ccancel := context.WithTimeout(req.Context(), t.httpRetryTimeout)
+	defer ccancel()
 
 	var rawBody []byte
 	if req.Body != nil && req.Body != http.NoBody {
-		rawBody, _ = ioutil.ReadAll(req.Body)
+		rawBody, _ = io.ReadAll(req.Body)
 		req.Body.Close()
 	}
 	var resp *http.Response
@@ -55,9 +51,9 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		resp, respErr = t.defaultTransport.RoundTrip(newRequest)
 		// Close the body so connection can be re-used
 		if resp != nil {
-			localVarBody, _ := ioutil.ReadAll(resp.Body)
+			localVarBody, _ := io.ReadAll(resp.Body)
 			resp.Body.Close()
-			resp.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+			resp.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 		}
 		if respErr != nil {
 			return resp, respErr
@@ -85,7 +81,7 @@ func (t *CustomTransport) copyRequest(r *http.Request, rawBody *[]byte) *http.Re
 	if r.Body == nil || r.Body == http.NoBody {
 		return &newRequest
 	}
-	newRequest.Body = ioutil.NopCloser(bytes.NewBuffer(*rawBody))
+	newRequest.Body = io.NopCloser(bytes.NewBuffer(*rawBody))
 
 	return &newRequest
 }

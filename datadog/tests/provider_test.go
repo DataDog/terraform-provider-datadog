@@ -5,7 +5,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -270,7 +270,7 @@ func setClock(t *testing.T) clockwork.FakeClock {
 }
 
 func restoreClock(t *testing.T) clockwork.FakeClock {
-	data, err := ioutil.ReadFile(fmt.Sprintf("cassettes/%s.freeze", t.Name()))
+	data, err := os.ReadFile(fmt.Sprintf("cassettes/%s.freeze", t.Name()))
 	if err != nil {
 		t.Logf("Could not load clock: %v", err)
 		return setClock(t)
@@ -431,7 +431,7 @@ func matchInteraction(r *http.Request, i cassette.Request) bool {
 		log.Printf("could not read request body: %v\n", err)
 		return false
 	}
-	r.Body = ioutil.NopCloser(&b)
+	r.Body = io.NopCloser(&b)
 
 	matched := b.String() == "" || b.String() == i.Body
 
