@@ -14,7 +14,6 @@ func TestAccDatadogApplicationKeyDatasource_matchId(t *testing.T) {
 		t.Skip("This test doesn't support recording or replaying")
 	}
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	applicationKeyName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
@@ -43,7 +42,6 @@ func TestAccDatadogApplicationKeyDatasource_matchName(t *testing.T) {
 		t.Skip("This test doesn't support recording or replaying")
 	}
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	applicationKeyName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
@@ -92,7 +90,6 @@ func TestAccDatadogApplicationKeyDatasource_matchNameError(t *testing.T) {
 		t.Skip("This test doesn't support recording or replaying")
 	}
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	applicationKeyName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
