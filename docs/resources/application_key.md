@@ -28,7 +28,7 @@ resource "datadog_application_key" "foo" {
 
 ### Optional
 
-- `scopes` (List of String) Authorization scopes for the Application Key.
+- `scopes` (Set of String) Authorization scopes for the Application Key. Application Keys configured with no scopes have full access.
 
 ### Read-Only
 
