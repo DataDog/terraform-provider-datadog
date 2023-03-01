@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-func TestAccDatadogApplgicationKeyDatasource_matchId(t *testing.T) {
+func TestAccDatadogApplicationKeyDatasource_matchId(t *testing.T) {
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
@@ -31,6 +31,7 @@ func TestAccDatadogApplgicationKeyDatasource_matchId(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_application_key.app_key_1", "name", fmt.Sprintf("%s 1", applicationKeyName)),
 					resource.TestCheckResourceAttr("datadog_application_key.app_key_2", "name", fmt.Sprintf("%s 2", applicationKeyName)),
 					resource.TestCheckResourceAttr("data.datadog_application_key.app_key", "name", fmt.Sprintf("%s 1", applicationKeyName)),
+					resource.TestCheckResourceAttr("data.datadog_application_key.app_key", "scopes.#", "2"),
 				),
 			},
 		},
@@ -134,6 +135,7 @@ func testAccApplicationKeyConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_application_key" "app_key_1" {
   name = "%s 1"
+  scopes = ["dashboards_read", "dashboards_write"]
 }
 
 resource "datadog_application_key" "app_key_2" {
