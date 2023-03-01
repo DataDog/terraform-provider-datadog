@@ -231,11 +231,17 @@ func (d *IPRangesDataSource) Read(ctx context.Context, _ datasource.ReadRequest,
 		ipv6PrefixesByLocationMap[key] = strings.Join(value, ",")
 	}
 
-	syntheticsIpv4ByLocationState, _ := types.MapValueFrom(ctx, types.StringType, ipv4PrefixesByLocationMap)
-	state.SyntheticsIpv4ByLocation, _ = types.MapValueFrom(ctx, types.StringType, syntheticsIpv4ByLocationState)
+	syntheticsIpv4ByLocation, diags := types.MapValueFrom(ctx, types.StringType, ipv4PrefixesByLocationMap)
+	state.SyntheticsIpv4ByLocation = syntheticsIpv4ByLocation
+	response.Diagnostics.Append(diags...)
 
-	syntheticsIpv6ByLocationState, _ := types.MapValueFrom(ctx, types.StringType, ipv4PrefixesByLocationMap)
-	state.SyntheticsIpv6ByLocation, _ = types.MapValueFrom(ctx, types.StringType, syntheticsIpv6ByLocationState)
+	SyntheticsIpv6ByLocation, diags := types.MapValueFrom(ctx, types.StringType, ipv4PrefixesByLocationMap)
+	state.SyntheticsIpv6ByLocation = SyntheticsIpv6ByLocation
+	response.Diagnostics.Append(diags...)
+
+	if response.Diagnostics.HasError() {
+		return
+	}
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
