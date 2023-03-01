@@ -159,6 +159,7 @@ func Provider() *schema.Provider {
 			"datadog_metric_metadata":                      resourceDatadogMetricMetadata(),
 			"datadog_metric_tag_configuration":             resourceDatadogMetricTagConfiguration(),
 			"datadog_monitor":                              resourceDatadogMonitor(),
+			"datadog_monitor_config_policy":                resourceDatadogMonitorConfigPolicy(),
 			"datadog_monitor_json":                         resourceDatadogMonitorJSON(),
 			"datadog_organization_settings":                resourceDatadogOrganizationSettings(),
 			"datadog_role":                                 resourceDatadogRole(),
@@ -167,6 +168,7 @@ func Provider() *schema.Provider {
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_security_monitoring_filter":           resourceDatadogSecurityMonitoringFilter(),
+			"datadog_sensitive_data_scanner_group":         resourceDatadogSensitiveDataScannerGroup(),
 			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
 			"datadog_service_definition_yaml":              resourceDatadogServiceDefinitionYAML(),
 			"datadog_slo_correction":                       resourceDatadogSloCorrection(),
@@ -192,6 +194,7 @@ func Provider() *schema.Provider {
 			"datadog_logs_pipelines":                      dataSourceDatadogLogsPipelines(),
 			"datadog_monitor":                             dataSourceDatadogMonitor(),
 			"datadog_monitors":                            dataSourceDatadogMonitors(),
+			"datadog_monitor_config_policies":             dataSourceDatadogMonitorConfigPolicies(),
 			"datadog_permissions":                         dataSourceDatadogPermissions(),
 			"datadog_role":                                dataSourceDatadogRole(),
 			"datadog_roles":                               dataSourceDatadogRoles(),
@@ -292,15 +295,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	)
 	config := datadog.NewConfiguration()
 	config.HTTPClient = httpClient
-	// Enable unstable operations
-	config.SetUnstableOperationEnabled("v1.CreateSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v1.GetSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v1.UpdateSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v1.DeleteSLOCorrection", true)
-	config.SetUnstableOperationEnabled("v2.CreateTagConfiguration", true)
-	config.SetUnstableOperationEnabled("v2.DeleteTagConfiguration", true)
-	config.SetUnstableOperationEnabled("v2.ListTagConfigurationByName", true)
-	config.SetUnstableOperationEnabled("v2.UpdateTagConfiguration", true)
 
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
 	config.Debug = logging.IsDebugOrHigher()

@@ -75,6 +75,10 @@ resource "datadog_service_level_objective" "foo" {
 	denominator = "sum:my.metric{*}.as_count()"
   }
 
+  target_threshold = 99.5
+  timeframe = "7d"
+  warning_threshold = 99.8
+
   thresholds {
 	timeframe = "7d"
 	target = 99.5

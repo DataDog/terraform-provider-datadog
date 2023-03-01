@@ -36,6 +36,10 @@ resource "datadog_service_level_objective" "foo" {
     warning   = 99.99
   }
 
+  timeframe         = "30d"
+  target_threshold  = 99.9
+  warning_threshold = 99.99
+
   tags = ["foo:bar", "baz"]
 }
 
@@ -60,6 +64,10 @@ resource "datadog_service_level_objective" "bar" {
     warning   = 99.99
   }
 
+  timeframe         = "30d"
+  target_threshold  = 99.9
+  warning_threshold = 99.99
+
   tags = ["foo:bar", "baz"]
 }
 ```
@@ -76,12 +84,15 @@ resource "datadog_service_level_objective" "bar" {
 ### Optional
 
 - `description` (String) A description of this service level objective.
-- `force_delete` (Boolean) A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. dashboards).
+- `force_delete` (Boolean) A boolean indicating whether this monitor can be deleted even if it's referenced by other resources (for example, dashboards).
 - `groups` (Set of String) A static set of groups to filter monitor-based SLOs
 - `monitor_ids` (Set of Number) A static set of monitor IDs to use as part of the SLO
 - `query` (Block List, Max: 1) The metric query of good / total events (see [below for nested schema](#nestedblock--query))
 - `tags` (Set of String) A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
+- `target_threshold` (Number) The objective's target in `(0,100)`. This must match the corresponding thresholds of the primary time frame.
+- `timeframe` (String) The primary time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Valid values are `7d`, `30d`, `90d`, `custom`.
 - `validate` (Boolean) Whether or not to validate the SLO.
+- `warning_threshold` (Number) The objective's warning value in `(0,100)`. This must be greater than the target value and match the corresponding thresholds of the primary time frame.
 
 ### Read-Only
 
@@ -92,12 +103,12 @@ resource "datadog_service_level_objective" "bar" {
 
 Required:
 
-- `target` (Number) The objective's target in`[0,100]`.
+- `target` (Number) The objective's target in `(0,100)`.
 - `timeframe` (String) The time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Valid values are `7d`, `30d`, `90d`, `custom`.
 
 Optional:
 
-- `warning` (Number) The objective's warning value in `[0,100]`. This must be greater than the target value.
+- `warning` (Number) The objective's warning value in `(0,100)`. This must be greater than the target value.
 
 Read-Only:
 

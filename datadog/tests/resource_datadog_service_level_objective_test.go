@@ -35,12 +35,19 @@ resource "datadog_service_level_objective" "foo" {
   thresholds {
 	timeframe = "30d"
 	target = 99
+	warning = 99.5
   }
 
   thresholds {
 	timeframe = "90d"
 	target = 99
   }
+
+  timeframe = "30d"
+
+  target_threshold = 99
+
+  warning_threshold = 99.5
 
   tags = ["foo:bar", "baz"]
 }`, uniq)
@@ -98,6 +105,12 @@ resource "datadog_service_level_objective" "foo" {
 	target = 99.9
   }
 
+  timeframe = "7d"
+
+  target_threshold = 99.5
+
+  warning_threshold = 99.8
+
   tags = ["foo:bar", "baz"]
 }`, uniq)
 }
@@ -144,9 +157,17 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.1.target", "99"),
 					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.1.warning", "99.5"),
+					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.2.timeframe", "90d"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.2.target", "99"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "timeframe", "30d"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "target_threshold", "99"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "warning_threshold", "99.5"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
@@ -188,6 +209,12 @@ func TestAccDatadogServiceLevelObjective_Basic(t *testing.T) {
 						"datadog_service_level_objective.foo", "thresholds.2.timeframe", "90d"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "thresholds.2.target", "99.9"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "timeframe", "7d"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "target_threshold", "99.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "warning_threshold", "99.8"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(

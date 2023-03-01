@@ -1,0 +1,107 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardListStreamEvents-local-1675872790","widgets":[{"definition":{"requests":[{"columns":[{"field":"source","width":"auto"}],"query":{"data_source":"event_stream","event_size":"l","query_string":"example.metric"},"response_format":"event_list"}],"title":"List Stream 2","title_align":"right","title_size":"16","type":"list_stream"}}]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard
+    method: POST
+  response:
+    body: |
+      {"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"ttg-d7z-6dy","title":"tf-TestAccDatadogDashboardListStreamEvents-local-1675872790","url":"/dashboard/ttg-d7z-6dy/tf-testaccdatadogdashboardliststreamevents-local-1675872790","created_at":"2023-02-08T16:13:12.172217+00:00","modified_at":"2023-02-08T16:13:12.172217+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"type":"list_stream","requests":[{"query":{"query_string":"example.metric","data_source":"event_stream","event_size":"l"},"response_format":"event_list","columns":[{"field":"source","width":"auto"}]}],"title_align":"right","title_size":"16","title":"List Stream 2"},"id":8003926046320473}],"layout_type":"ordered"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ttg-d7z-6dy
+    method: GET
+  response:
+    body: |
+      {"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"ttg-d7z-6dy","title":"tf-TestAccDatadogDashboardListStreamEvents-local-1675872790","url":"/dashboard/ttg-d7z-6dy/tf-testaccdatadogdashboardliststreamevents-local-1675872790","created_at":"2023-02-08T16:13:12.172217+00:00","modified_at":"2023-02-08T16:13:12.172217+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"type":"list_stream","requests":[{"query":{"query_string":"example.metric","data_source":"event_stream","event_size":"l"},"response_format":"event_list","columns":[{"field":"source","width":"auto"}]}],"title_align":"right","title_size":"16","title":"List Stream 2"},"id":8003926046320473}],"layout_type":"ordered"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ttg-d7z-6dy
+    method: GET
+  response:
+    body: |
+      {"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"ttg-d7z-6dy","title":"tf-TestAccDatadogDashboardListStreamEvents-local-1675872790","url":"/dashboard/ttg-d7z-6dy/tf-testaccdatadogdashboardliststreamevents-local-1675872790","created_at":"2023-02-08T16:13:12.172217+00:00","modified_at":"2023-02-08T16:13:12.172217+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"type":"list_stream","requests":[{"query":{"query_string":"example.metric","data_source":"event_stream","event_size":"l"},"response_format":"event_list","columns":[{"field":"source","width":"auto"}]}],"title_align":"right","title_size":"16","title":"List Stream 2"},"id":8003926046320473}],"layout_type":"ordered"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ttg-d7z-6dy
+    method: GET
+  response:
+    body: |
+      {"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"ttg-d7z-6dy","title":"tf-TestAccDatadogDashboardListStreamEvents-local-1675872790","url":"/dashboard/ttg-d7z-6dy/tf-testaccdatadogdashboardliststreamevents-local-1675872790","created_at":"2023-02-08T16:13:12.172217+00:00","modified_at":"2023-02-08T16:13:12.172217+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"type":"list_stream","requests":[{"query":{"query_string":"example.metric","data_source":"event_stream","event_size":"l"},"response_format":"event_list","columns":[{"field":"source","width":"auto"}]}],"title_align":"right","title_size":"16","title":"List Stream 2"},"id":8003926046320473}],"layout_type":"ordered"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ttg-d7z-6dy
+    method: DELETE
+  response:
+    body: |
+      {"deleted_dashboard_id":"ttg-d7z-6dy"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ttg-d7z-6dy
+    method: GET
+  response:
+    body: '{"errors":["Dashboard with ID ttg-d7z-6dy not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""

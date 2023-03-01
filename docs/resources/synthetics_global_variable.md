@@ -32,6 +32,7 @@ resource "datadog_synthetics_global_variable" "test_variable" {
 ### Optional
 
 - `description` (String) Description of the global variable.
+- `options` (Block List, Max: 1) Additional options for the variable, such as a MFA token. (see [below for nested schema](#nestedblock--options))
 - `parse_test_id` (String) Id of the Synthetics test to use for a variable from test.
 - `parse_test_options` (Block List, Max: 1) ID of the Synthetics test to use a source of the global variable value. (see [below for nested schema](#nestedblock--parse_test_options))
 - `restricted_roles` (Set of String) A list of role identifiers to associate with the Synthetics global variable.
@@ -41,6 +42,23 @@ resource "datadog_synthetics_global_variable" "test_variable" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--options"></a>
+### Nested Schema for `options`
+
+Optional:
+
+- `totp_parameters` (Block List, Max: 1) Parameters needed for MFA/TOTP. (see [below for nested schema](#nestedblock--options--totp_parameters))
+
+<a id="nestedblock--options--totp_parameters"></a>
+### Nested Schema for `options.totp_parameters`
+
+Required:
+
+- `digits` (Number) Number of digits for the OTP.
+- `refresh_interval` (Number) Interval for which to refresh the token (in seconds).
+
+
 
 <a id="nestedblock--parse_test_options"></a>
 ### Nested Schema for `parse_test_options`

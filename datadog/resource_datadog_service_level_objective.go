@@ -69,7 +69,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 							ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTimeframeFromValue),
 						},
 						"target": {
-							Description:      "The objective's target in`[0,100]`.",
+							Description:      "The objective's target in `(0,100)`.",
 							Type:             schema.TypeFloat,
 							Required:         true,
 							DiffSuppressFunc: suppressDataDogFloatIntDiff,
@@ -80,7 +80,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 							Computed:    true,
 						},
 						"warning": {
-							Description:      "The objective's warning value in `[0,100]`. This must be greater than the target value.",
+							Description:      "The objective's warning value in `(0,100)`. This must be greater than the target value.",
 							Type:             schema.TypeFloat,
 							Optional:         true,
 							DiffSuppressFunc: suppressDataDogFloatIntDiff,
@@ -93,6 +93,27 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 					},
 				},
 			},
+			"target_threshold": {
+				Description:      "The objective's target in `(0,100)`. This must match the corresponding thresholds of the primary time frame.",
+				Type:             schema.TypeFloat,
+				Optional:         true,
+				Computed:         true,
+				DiffSuppressFunc: suppressDataDogFloatIntDiff,
+			},
+			"warning_threshold": {
+				Description:      "The objective's warning value in `(0,100)`. This must be greater than the target value and match the corresponding thresholds of the primary time frame.",
+				Type:             schema.TypeFloat,
+				Optional:         true,
+				Computed:         true,
+				DiffSuppressFunc: suppressDataDogFloatIntDiff,
+			},
+			"timeframe": {
+				Description:      "The primary time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page.",
+				Type:             schema.TypeString,
+				Optional:         true,
+				Computed:         true,
+				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTimeframeFromValue),
+			},
 			"type": {
 				Description:      "The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object).",
 				Type:             schema.TypeString,
@@ -101,7 +122,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTypeFromValue),
 			},
 			"force_delete": {
-				Description: "A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. dashboards).",
+				Description: "A boolean indicating whether this monitor can be deleted even if it's referenced by other resources (for example, dashboards).",
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
@@ -292,6 +313,25 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 		}
 	}
 
+	if tf, ok := d.GetOk("timeframe"); ok {
+		slo.SetTimeframe(datadogV1.SLOTimeframe(tf.(string)))
+		slor.SetTimeframe(datadogV1.SLOTimeframe(tf.(string)))
+	}
+
+	if targetValue, ok := d.GetOk("target_threshold"); ok {
+		if f, ok := floatOk(targetValue); ok {
+			slo.SetTargetThreshold(f)
+			slor.SetTargetThreshold(f)
+		}
+	}
+
+	if warningValue, ok := d.GetOk("warning_threshold"); ok {
+		if f, ok := floatOk(warningValue); ok {
+			slo.SetWarningThreshold(f)
+			slor.SetWarningThreshold(f)
+		}
+	}
+
 	return slo, slor
 }
 
@@ -394,6 +434,21 @@ func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective
 	if err := d.Set("thresholds", thresholds); err != nil {
 		return diag.FromErr(err)
 	}
+	if timeframe, ok := slo.GetTimeframeOk(); ok {
+		if err := d.Set("timeframe", timeframe); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+	if target, ok := slo.GetTargetThresholdOk(); ok {
+		if err := d.Set("target_threshold", target); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+	if warning, ok := slo.GetWarningThresholdOk(); ok {
+		if err := d.Set("warning_threshold", warning); err != nil {
+			return diag.FromErr(err)
+		}
+	}
 	switch slo.GetType() {
 	case datadogV1.SLOTYPE_MONITOR:
 		// monitor type
@@ -455,6 +510,21 @@ func updateSLOStateFromRead(d *schema.ResourceData, slo *datadogV1.SLOResponseDa
 	}
 	if err := d.Set("thresholds", thresholds); err != nil {
 		return diag.FromErr(err)
+	}
+	if timeframe, ok := slo.GetTimeframeOk(); ok {
+		if err := d.Set("timeframe", timeframe); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+	if target, ok := slo.GetTargetThresholdOk(); ok {
+		if err := d.Set("target_threshold", target); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+	if warning, ok := slo.GetWarningThresholdOk(); ok {
+		if err := d.Set("warning_threshold", warning); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	switch slo.GetType() {
 	case datadogV1.SLOTYPE_MONITOR:

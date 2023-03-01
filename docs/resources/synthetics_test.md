@@ -653,6 +653,7 @@ Optional:
 - `disable_cors` (Boolean) Disable Cross-Origin Resource Sharing for browser tests.
 - `disable_csp` (Boolean) Disable Content Security Policy for browser tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
+- `http_version` (String) HTTP version to use for a Synthetics API test. Valid values are `http1`, `http2`, `any`.
 - `ignore_server_certificate_error` (Boolean) Ignore server certificate error.
 - `initial_navigation_timeout` (Number) Timeout before declaring the initial step as failed (in seconds) for browser tests.
 - `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert. Default is `0`.
@@ -664,6 +665,7 @@ Optional:
 - `restricted_roles` (Set of String) A list of role identifiers pulled from the Roles API to restrict read and write access.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--retry))
 - `rum_settings` (Block List, Max: 1) The RUM data collection settings for the Synthetic browser test. (see [below for nested schema](#nestedblock--options_list--rum_settings))
+- `scheduling` (Block List, Max: 1) Object containing timeframes and timezone used for advanced scheduling. (see [below for nested schema](#nestedblock--options_list--scheduling))
 
 <a id="nestedblock--options_list--ci"></a>
 ### Nested Schema for `options_list.ci`
@@ -678,7 +680,7 @@ Optional:
 
 Optional:
 
-- `renotify_interval` (Number) Specify a renotification frequency.
+- `renotify_interval` (Number) Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`.
 
 
 <a id="nestedblock--options_list--retry"></a>
@@ -701,6 +703,25 @@ Optional:
 
 - `application_id` (String) RUM application ID used to collect RUM data for the browser test.
 - `client_token_id` (Number, Sensitive) RUM application API key ID used to collect RUM data for the browser test.
+
+
+<a id="nestedblock--options_list--scheduling"></a>
+### Nested Schema for `options_list.scheduling`
+
+Required:
+
+- `timeframes` (Block Set, Min: 1) Array containing objects describing the scheduling pattern to apply to each day. (see [below for nested schema](#nestedblock--options_list--scheduling--timeframes))
+- `timezone` (String) Timezone in which the timeframe is based.
+
+<a id="nestedblock--options_list--scheduling--timeframes"></a>
+### Nested Schema for `options_list.scheduling.timeframes`
+
+Required:
+
+- `day` (Number) Number representing the day of the week
+- `from` (String) The hour of the day on which scheduling starts.
+- `to` (String) The hour of the day on which scheduling ends.
+
 
 
 

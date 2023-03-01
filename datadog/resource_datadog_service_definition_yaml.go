@@ -114,14 +114,45 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 		if len(tags) == 0 {
 			delete(attrMap, "tags")
 		} else {
-			normalized_tags := make([]string, 0)
+			normalizedTags := make([]string, 0)
 			for _, tag := range tags {
-				normalized_tags = append(normalized_tags, utils.NormalizeTag(tag.(string)))
+				normalizedTags = append(normalizedTags, utils.NormalizeTag(tag.(string)))
 			}
-			sort.SliceStable(normalized_tags, func(i, j int) bool {
-				return normalized_tags[i] < normalized_tags[j]
+			sort.SliceStable(normalizedTags, func(i, j int) bool {
+				return normalizedTags[i] < normalizedTags[j]
 			})
-			attrMap["tags"] = normalized_tags
+			attrMap["tags"] = normalizedTags
+		}
+	}
+
+	if contacts, ok := attrMap["contacts"].([]interface{}); ok {
+		if len(contacts) == 0 {
+			delete(attrMap, "contacts")
+		} else {
+			sortedContacts := make([]map[string]interface{}, 0)
+			for _, contact := range contacts {
+				sortedContacts = append(sortedContacts, contact.(map[string]interface{}))
+			}
+
+			sort.SliceStable(sortedContacts, func(i, j int) bool {
+				typeLVal, typeLOk := sortedContacts[i]["type"]
+				typeRVal, typeROk := sortedContacts[j]["type"]
+				if typeLVal != typeRVal && typeLOk && typeROk {
+					return typeLVal.(string) < typeRVal.(string)
+				}
+				contactLVal, contactLOk := sortedContacts[i]["contact"]
+				contactRVal, contactROk := sortedContacts[j]["contact"]
+				if contactLVal != contactRVal && contactLOk && contactROk {
+					return contactLVal.(string) < contactRVal.(string)
+				}
+				nameLVal, nameLOk := sortedContacts[i]["name"]
+				nameRVal, nameROk := sortedContacts[j]["name"]
+				if nameLOk && nameROk {
+					return nameLVal.(string) < nameRVal.(string)
+				}
+				return false
+			})
+			attrMap["contacts"] = sortedContacts
 		}
 	}
 

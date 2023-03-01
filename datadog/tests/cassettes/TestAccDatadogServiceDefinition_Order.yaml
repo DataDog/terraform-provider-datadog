@@ -1,0 +1,125 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      schema-version: v2
+      dd-service: tf-testaccdatadogservicedefinition_order-local-1676667365
+      contacts:
+        - name: AA
+          type: slack
+          contact: AAA
+        - name: BB
+          type: email
+          contact: BBB
+        - name: AA
+          type: email
+          contact: AAA
+        - name: BB
+          type: email
+          contact: AAA
+        - name: AA
+          type: email
+          contact: BBB
+      tags:
+        - 'bbb'
+        - 'aaa'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/services/definitions
+    method: POST
+  response:
+    body: |
+      {"data":[{"type":"service-definition","attributes":{"meta":{"last-modified-time":"2023-02-17T20:56:07.147085312Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[{"keyword-location":"/properties/contacts/items/$ref/allOf/1/then/properties/contact/pattern","instance-location":"/contacts/0/contact","message":"does not match pattern 'https://[a-zA-Z0-9_\\\\-]+.slack\\\\.com/archives/[a-zA-Z0-9_\\\\-]+'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/1/contact","message":"'BBB' is not valid 'email'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/2/contact","message":"'AAA' is not valid 'email'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/3/contact","message":"'AAA' is not valid 'email'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/4/contact","message":"'BBB' is not valid 'email'"}],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_order-local-1676667365","team":"","contacts":[{"name":"AA","type":"slack","contact":"AAA"},{"name":"BB","type":"email","contact":"BBB"},{"name":"AA","type":"email","contact":"AAA"},{"name":"BB","type":"email","contact":"AAA"},{"name":"AA","type":"email","contact":"BBB"}],"links":[],"repos":[],"docs":[],"tags":["aaa","bbb"],"integrations":{},"extensions":{}}}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_order-local-1676667365
+    method: GET
+  response:
+    body: |
+      {"errors":["Not Found"],"error_details":[{}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_order-local-1676667365
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"service-definition","id":"ed39d34ec39af99b0d532bdf660e768c","attributes":{"meta":{"last-modified-time":"2023-02-17T20:56:07Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[{"keyword-location":"/properties/contacts/items/$ref/allOf/1/then/properties/contact/pattern","instance-location":"/contacts/0/contact","message":"does not match pattern 'https://[a-zA-Z0-9_\\\\-]+.slack\\\\.com/archives/[a-zA-Z0-9_\\\\-]+'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/1/contact","message":"'BBB' is not valid 'email'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/2/contact","message":"'AAA' is not valid 'email'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/3/contact","message":"'AAA' is not valid 'email'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/4/contact","message":"'BBB' is not valid 'email'"}],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_order-local-1676667365","team":"","contacts":[{"name":"AA","type":"email","contact":"AAA"},{"name":"AA","type":"slack","contact":"AAA"},{"name":"BB","type":"email","contact":"AAA"},{"name":"AA","type":"email","contact":"BBB"},{"name":"BB","type":"email","contact":"BBB"}],"links":[],"repos":[],"docs":[],"tags":["aaa","bbb"],"integrations":{},"extensions":{}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_order-local-1676667365
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"service-definition","id":"ed39d34ec39af99b0d532bdf660e768c","attributes":{"meta":{"last-modified-time":"2023-02-17T20:56:07Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[{"keyword-location":"/properties/contacts/items/$ref/allOf/1/then/properties/contact/pattern","instance-location":"/contacts/0/contact","message":"does not match pattern 'https://[a-zA-Z0-9_\\\\-]+.slack\\\\.com/archives/[a-zA-Z0-9_\\\\-]+'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/1/contact","message":"'BBB' is not valid 'email'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/2/contact","message":"'AAA' is not valid 'email'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/3/contact","message":"'AAA' is not valid 'email'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/4/contact","message":"'BBB' is not valid 'email'"}],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_order-local-1676667365","team":"","contacts":[{"name":"AA","type":"email","contact":"AAA"},{"name":"AA","type":"slack","contact":"AAA"},{"name":"BB","type":"email","contact":"AAA"},{"name":"AA","type":"email","contact":"BBB"},{"name":"BB","type":"email","contact":"BBB"}],"links":[],"repos":[],"docs":[],"tags":["aaa","bbb"],"integrations":{},"extensions":{}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_order-local-1676667365
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_order-local-1676667365
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"service-definition","id":"ed39d34ec39af99b0d532bdf660e768c","attributes":{"meta":{"last-modified-time":"2023-02-17T20:56:07Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[{"keyword-location":"/properties/contacts/items/$ref/allOf/1/then/properties/contact/pattern","instance-location":"/contacts/0/contact","message":"does not match pattern 'https://[a-zA-Z0-9_\\\\-]+.slack\\\\.com/archives/[a-zA-Z0-9_\\\\-]+'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/1/contact","message":"'BBB' is not valid 'email'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/2/contact","message":"'AAA' is not valid 'email'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/3/contact","message":"'AAA' is not valid 'email'"},{"keyword-location":"/properties/contacts/items/$ref/allOf/0/then/properties/contact/format","instance-location":"/contacts/4/contact","message":"'BBB' is not valid 'email'"}],"ingested-schema-version":"v2"},"schema":{"schema-version":"v2","dd-service":"tf-testaccdatadogservicedefinition_order-local-1676667365","team":"","contacts":[{"name":"AA","type":"email","contact":"AAA"},{"name":"AA","type":"slack","contact":"AAA"},{"name":"BB","type":"email","contact":"AAA"},{"name":"AA","type":"email","contact":"BBB"},{"name":"BB","type":"email","contact":"BBB"}],"links":[],"repos":[],"docs":[],"tags":["aaa","bbb"],"integrations":{},"extensions":{}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
