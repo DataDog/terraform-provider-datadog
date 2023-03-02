@@ -655,18 +655,22 @@ func buildCreateStandardPayloadQueries(d *schema.ResourceData) []datadogV2.Secur
 
 		if v, ok := query["group_by_fields"]; ok {
 			tfGroupByFields := v.([]interface{})
-			groupByFields := make([]string, len(tfGroupByFields))
-			for i, value := range tfGroupByFields {
-				groupByFields[i] = value.(string)
+			groupByFields := make([]string, 0)
+			for _, value := range tfGroupByFields {
+				if value != nil {
+					groupByFields = append(groupByFields, value.(string))
+				}
 			}
 			payloadQuery.SetGroupByFields(groupByFields)
 		}
 
 		if v, ok := query["distinct_fields"]; ok {
 			tfDistinctFields := v.([]interface{})
-			distinctFields := make([]string, len(tfDistinctFields))
-			for i, value := range tfDistinctFields {
-				distinctFields[i] = value.(string)
+			distinctFields := make([]string, 0)
+			for _, value := range tfDistinctFields {
+				if value != nil {
+					distinctFields = append(distinctFields, value.(string))
+				}
 			}
 			payloadQuery.SetDistinctFields(distinctFields)
 		}
@@ -1075,18 +1079,22 @@ func buildUpdateStandardRuleQuery(tfQuery interface{}) datadogV2.SecurityMonitor
 
 	if v, ok := query["group_by_fields"]; ok {
 		tfGroupByFields := v.([]interface{})
-		groupByFields := make([]string, len(tfGroupByFields))
-		for i, value := range tfGroupByFields {
-			groupByFields[i] = value.(string)
+		groupByFields := make([]string, 0)
+		for _, value := range tfGroupByFields {
+			if value != nil {
+				groupByFields = append(groupByFields, value.(string))
+			}
 		}
 		payloadQuery.SetGroupByFields(groupByFields)
 	}
 
 	if v, ok := query["distinct_fields"]; ok {
 		tfDistinctFields := v.([]interface{})
-		distinctFields := make([]string, len(tfDistinctFields))
-		for i, field := range tfDistinctFields {
-			distinctFields[i] = field.(string)
+		distinctFields := make([]string, 0)
+		for _, value := range tfDistinctFields {
+			if value != nil {
+				distinctFields = append(distinctFields, value.(string))
+			}
 		}
 		payloadQuery.SetDistinctFields(distinctFields)
 	}
