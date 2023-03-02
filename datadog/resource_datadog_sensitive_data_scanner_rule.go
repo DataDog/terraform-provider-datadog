@@ -3,11 +3,12 @@ package datadog
 import (
 	"context"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
@@ -90,9 +91,10 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 							Description: "Required if type == 'replacement_string'.",
 						},
 						"type": {
-							Type:        schema.TypeString,
-							Required:    true,
-							Description: "Type of the replacement text. None means no replacement. hash means the data will be stubbed. replacement_string means that one can chose a text to replace the data. partial_replacement_from_beginning allows a user to partially replace the data from the beginning, and partial_replacement_from_end on the other hand, allows to replace data from the end.",
+							Type:             schema.TypeString,
+							Required:         true,
+							Description:      "Type of the replacement text. None means no replacement. hash means the data will be stubbed. replacement_string means that one can chose a text to replace the data. partial_replacement_from_beginning allows a user to partially replace the data from the beginning, and partial_replacement_from_end on the other hand, allows to replace data from the end.",
+							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSensitiveDataScannerTextReplacementTypeFromValue),
 						},
 					},
 				},

@@ -1,4 +1,3 @@
-
 # Create new sensitive_data_scanner_rule resource in a sensitive_data_scanner_group
 
 resource "datadog_sensitive_data_scanner_group" "mygroup" {
