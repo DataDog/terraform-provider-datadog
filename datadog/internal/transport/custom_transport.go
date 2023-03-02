@@ -88,7 +88,7 @@ func (t *CustomTransport) copyRequest(r *http.Request, rawBody *[]byte) *http.Re
 
 func (t *CustomTransport) retryRequest(response *http.Response, retryCount int) (*time.Duration, bool) {
 	var err error
-	if v := response.Header.Get(rateLimitResetHeader); v != "" && response.StatusCode == 429 {
+	if v := response.Header.Get(rateLimitResetHeader); response.StatusCode == 429 && v != "" {
 		vInt, err := strconv.ParseInt(v, 10, 64)
 		if err == nil {
 			retryDuration := time.Duration(vInt) * time.Second
@@ -96,8 +96,9 @@ func (t *CustomTransport) retryRequest(response *http.Response, retryCount int) 
 		}
 	}
 
-	// Calculate retry for 5xx errors or if unable to parse value of rateLimitResetHeader
-	if response.StatusCode >= 500 || err != nil {
+	// Calculate retry for 5xx errors or if unable to parse value of rateLimitResetHeader,
+	// or if the `rateLimitResetHeader` header is missing or if status code >= 500.
+	if err != nil || response.StatusCode == 429 || response.StatusCode >= 500 {
 		// Calculate the retry val (base * multiplier^retryCount)
 		retryVal := defaultBackOffBase * math.Pow(defaultBackOffMultiplier, float64(retryCount))
 		// retry duration shouldn't exceed default timeout period
