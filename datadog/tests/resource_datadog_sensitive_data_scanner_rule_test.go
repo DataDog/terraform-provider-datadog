@@ -154,7 +154,7 @@ func testAccCheckDatadogSensitiveDataScannerRuleUpdate(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_sensitive_data_scanner_group" "sample_group" {
 	name = "my group"
-	is_enabled = true
+	is_enabled = false
 	product_list = ["logs"]
 	filter {
 		query = "*"
@@ -182,7 +182,7 @@ func testAccCheckDatadogSensitiveDataScannerRuleChangedGroup(name string) string
 	return fmt.Sprintf(`
 resource "datadog_sensitive_data_scanner_group" "sample_group" {
 	name = "my group"
-	is_enabled = true
+	is_enabled = false
 	product_list = ["logs"]
 	filter {
 		query = "*"
