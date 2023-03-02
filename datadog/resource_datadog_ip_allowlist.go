@@ -48,7 +48,7 @@ func GetIPAllowlistEntrySchema() *schema.Resource {
 			},
 			"note": {
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				Description: "Note accompanying IP address.",
 			},
 		},
