@@ -230,13 +230,19 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						Type:        schema.TypeList,
 						Optional:    true,
 						Description: "Field for which the cardinality is measured. Sent as an array.",
-						Elem:        &schema.Schema{Type: schema.TypeString},
+						Elem: &schema.Schema{
+							Type:             schema.TypeString,
+							ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+						},
 					},
 					"group_by_fields": {
 						Type:        schema.TypeList,
 						Optional:    true,
 						Description: "Fields to group by.",
-						Elem:        &schema.Schema{Type: schema.TypeString},
+						Elem: &schema.Schema{
+							Type:             schema.TypeString,
+							ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+						},
 					},
 					"metric": {
 						Type:        schema.TypeString,
