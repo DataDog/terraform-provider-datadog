@@ -434,7 +434,7 @@ func TestAccDatadogDowntime_DiffStart(t *testing.T) {
 	})
 }
 
-func TestAccDatadogDowntime_Duration(t *testing.T) {
+func TestAccDatadogDowntime_BeginningAtDuration(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	downtimeMessage := uniqueEntityName(ctx, t)
@@ -446,13 +446,13 @@ func TestAccDatadogDowntime_Duration(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogDowntimeDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDowntimeConfigDuration(downtimeMessage),
+				Config: testAccCheckDatadogDowntimeConfigBeginningAtDuration(downtimeMessage),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "scope.0", "*"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "start", "1735707600"),
+						"datadog_downtime.foo", "beginning_at", "10:11:00Z"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "duration", "1h30m0s"),
 					resource.TestCheckResourceAttr(
@@ -572,11 +572,11 @@ resource "datadog_downtime" "foo" {
 }`, uniq)
 }
 
-func testAccCheckDatadogDowntimeConfigDuration(uniq string) string {
+func testAccCheckDatadogDowntimeConfigBeginningAtDuration(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
   scope = ["*"]
-  start = 1735707600
+  beginning_at = "11:11:00+01:00"
 	duration = "90m"
 
   recurrence {

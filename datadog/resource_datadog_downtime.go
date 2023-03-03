@@ -106,6 +106,14 @@ func (d *downtimeChild) GetMuteFirstRecoveryNotification() bool {
 	return d.child.GetMuteFirstRecoveryNotification()
 }
 
+func RFC3339TimeOnly() string {
+	return strings.Split(time.RFC3339, "T")[1]
+}
+
+func RFC3339WithoutTime() string {
+	return strings.Split(time.RFC3339, "T")[0] + "T"
+}
+
 func resourceDatadogDowntime() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.",
@@ -148,6 +156,18 @@ func resourceDatadogDowntime() *schema.Resource {
 				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 					oldDate, _ := time.Parse(time.RFC3339, oldVal)
 					newDate, _ := time.Parse(time.RFC3339, newVal)
+					return oldDate.Equal(newDate)
+				},
+			},
+			"beginning_at": {
+				Type:          schema.TypeString,
+				ValidateFunc:  validators.ValidateDatadogDowntimeTimeOnly,
+				ConflictsWith: []string{"start", "start_date"},
+				Optional:      true,
+				Description:   "String representing the beginning time of a recurring downtime. It must be a RFC3339 formatted timestamp without the date part. The date of the the current or next day (depending if the time is passed) will be added to create the downtime. The following examples are valid: `08:53`, `08:53:05Z`, `08:53:05+01:00` ",
+				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+					oldDate, _ := time.Parse(time.RFC3339, RFC3339WithoutTime()+oldVal)
+					newDate, _ := time.Parse(time.RFC3339, RFC3339WithoutTime()+newVal)
 					return oldDate.Equal(newDate)
 				},
 			},
@@ -337,12 +357,12 @@ func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, co
 }
 
 func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, apiInstances *utils.ApiInstances, updating bool) (*datadogV1.Downtime, error) {
-	// NOTE: for each of start/start_date/end/end_date/duration, we only send the
-	// value when it has changed or if the configured value is different than current
-	// value (IOW there's a resource drift). This allows users to change other attributes
-	// (e.g. scopes/message/...) without having to update the timestamps/dates to be
-	// in the future (this works thanks to the downtime API allowing not to send these
-	// values when they shouldn't be touched).
+	// NOTE: for each of start/start_date/beginning_at/end/end_date/duration, we only
+	// send the value when it has changed or if the configured value is different than
+	// current value (IOW there's a resource drift). This allows users to change other
+	// attributes (e.g. scopes/message/...) without having to update the timestamps/dates
+	// to be in the future (this works thanks to the downtime API allowing not to send
+	// these values when they shouldn't be touched).
 	var dt datadogV1.Downtime
 	var currentStart = *datadog.PtrInt64(0)
 	var currentEnd = *datadog.PtrInt64(0)
@@ -362,7 +382,23 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, apiInstanc
 		currentEnd = currdt.GetEnd()
 	}
 
-	startValue, startAttrName := getDowntimeBoundaryTimestamp(d, "start_date", "start")
+	var startValue int64
+	var startAttrName string
+	if startTime, ok := d.GetOk("beginning_at"); ok {
+		// If a start time is set, the current date is added to it and the result is
+		// set as the start value.
+		// If the result is in the past (eg. setting a morning time during the afternoon),
+		// 24 hours are added to set the start value on the next day.
+		startDate := time.Now().Format(RFC3339WithoutTime()) + startTime.(string)
+		start, _ := time.Parse(time.RFC3339, startDate)
+		if start.Before(time.Now()) {
+			start = start.Add(time.Hour * 24)
+		}
+		startValue = start.Unix()
+		startAttrName = "beginning_at"
+	} else {
+		startValue, startAttrName = getDowntimeBoundaryTimestamp(d, "start_date", "start")
+	}
 	if downtimeBoundaryNeedsApply(d, startAttrName, currentStart, startValue, updating) {
 		dt.SetStart(startValue)
 	}
@@ -567,7 +603,12 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild, upd
 
 	// Don't set the `start`, `end` stored in terraform unless in specific cases for recurring downtimes.
 	if updateBounds {
-		if _, ok := d.GetOk("start_date"); ok {
+		if _, ok := d.GetOk("beginning_at"); ok {
+			// Only set beginning_at if used in config to avoid inconsistent plans
+			if err := d.Set("beginning_at", time.Unix(dt.GetStart(), 0).In(time.UTC).Format(RFC3339TimeOnly())); err != nil {
+				return diag.FromErr(err)
+			}
+		} else if _, ok := d.GetOk("start_date"); ok {
 			// Only set start_date if used in config to avoid inconsistent plans
 			if err := d.Set("start_date", time.Unix(dt.GetStart(), 0).In(time.UTC).Format(time.RFC3339)); err != nil {
 				return diag.FromErr(err)

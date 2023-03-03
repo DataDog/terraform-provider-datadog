@@ -188,6 +188,22 @@ func ValidateDatadogDowntimeTimezone(v interface{}, k string) (ws []string, erro
 	return
 }
 
+// ValidateDatadogDowntimeTimeOnly ensures a string is a valid RFC3339 time only
+func ValidateDatadogDowntimeTimeOnly(v interface{}, k string) (ws []string, errors []error) {
+	if _, err := validation.IsRFC3339Time(v, k); len(err) == 0 {
+		errors = append(errors, fmt.Errorf("%q contains a full RFC3339 date: %q. It must only contain the time part", k, v))
+		return
+	}
+
+	value := "2006-01-02T" + v.(string)
+
+	if _, err := validation.IsRFC3339Time(value, k); len(err) > 0 {
+		errors = append(errors, fmt.Errorf("%q contains an invalid RFC3339 time: %q", k, v))
+	}
+
+	return
+}
+
 // ValidateDatadogDowntimeDuration ensures a string is a valid downtime duration
 func ValidateDatadogDowntimeDuration(v interface{}, k string) (ws []string, errors []error) {
 	duration, err := time.ParseDuration(v.(string))
