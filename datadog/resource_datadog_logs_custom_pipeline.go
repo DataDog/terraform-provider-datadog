@@ -17,74 +17,78 @@ import (
 var logCustomPipelineMutex = sync.Mutex{}
 
 const (
-	tfArithmeticProcessor        = "arithmetic_processor"
-	tfAttributeRemapperProcessor = "attribute_remapper"
-	tfCategoryProcessor          = "category_processor"
-	tfDateRemapperProcessor      = "date_remapper"
-	tfGeoIPParserProcessor       = "geo_ip_parser"
-	tfGrokParserProcessor        = "grok_parser"
-	tfLookupProcessor            = "lookup_processor"
-	tfMessageRemapperProcessor   = "message_remapper"
-	tfNestedPipelineProcessor    = "pipeline"
-	tfServiceRemapperProcessor   = "service_remapper"
-	tfStatusRemapperProcessor    = "status_remapper"
-	tfStringBuilderProcessor     = "string_builder_processor"
-	tfTraceIDRemapperProcessor   = "trace_id_remapper"
-	tfURLParserProcessor         = "url_parser"
-	tfUserAgentParserProcessor   = "user_agent_parser"
+	tfArithmeticProcessor           = "arithmetic_processor"
+	tfAttributeRemapperProcessor    = "attribute_remapper"
+	tfCategoryProcessor             = "category_processor"
+	tfDateRemapperProcessor         = "date_remapper"
+	tfGeoIPParserProcessor          = "geo_ip_parser"
+	tfGrokParserProcessor           = "grok_parser"
+	tfLookupProcessor               = "lookup_processor"
+	tfReferenceTableLookupProcessor = "reference_table_lookup_processor"
+	tfMessageRemapperProcessor      = "message_remapper"
+	tfNestedPipelineProcessor       = "pipeline"
+	tfServiceRemapperProcessor      = "service_remapper"
+	tfStatusRemapperProcessor       = "status_remapper"
+	tfStringBuilderProcessor        = "string_builder_processor"
+	tfTraceIDRemapperProcessor      = "trace_id_remapper"
+	tfURLParserProcessor            = "url_parser"
+	tfUserAgentParserProcessor      = "user_agent_parser"
 )
 
 var tfProcessorTypes = map[string]string{
-	tfArithmeticProcessor:        string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR),
-	tfAttributeRemapperProcessor: string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER),
-	tfCategoryProcessor:          string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR),
-	tfDateRemapperProcessor:      string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER),
-	tfGeoIPParserProcessor:       string(datadogV1.LOGSGEOIPPARSERTYPE_GEO_IP_PARSER),
-	tfGrokParserProcessor:        string(datadogV1.LOGSGROKPARSERTYPE_GROK_PARSER),
-	tfLookupProcessor:            string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR),
-	tfMessageRemapperProcessor:   string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER),
-	tfNestedPipelineProcessor:    string(datadogV1.LOGSPIPELINEPROCESSORTYPE_PIPELINE),
-	tfServiceRemapperProcessor:   string(datadogV1.LOGSSERVICEREMAPPERTYPE_SERVICE_REMAPPER),
-	tfStatusRemapperProcessor:    string(datadogV1.LOGSSTATUSREMAPPERTYPE_STATUS_REMAPPER),
-	tfStringBuilderProcessor:     string(datadogV1.LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR),
-	tfTraceIDRemapperProcessor:   string(datadogV1.LOGSTRACEREMAPPERTYPE_TRACE_ID_REMAPPER),
-	tfURLParserProcessor:         string(datadogV1.LOGSURLPARSERTYPE_URL_PARSER),
-	tfUserAgentParserProcessor:   string(datadogV1.LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER),
+	tfArithmeticProcessor:           string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR),
+	tfAttributeRemapperProcessor:    string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER),
+	tfCategoryProcessor:             string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR),
+	tfDateRemapperProcessor:         string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER),
+	tfGeoIPParserProcessor:          string(datadogV1.LOGSGEOIPPARSERTYPE_GEO_IP_PARSER),
+	tfGrokParserProcessor:           string(datadogV1.LOGSGROKPARSERTYPE_GROK_PARSER),
+	tfLookupProcessor:               string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR),
+	tfReferenceTableLookupProcessor: "reference-table-" + string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR),
+	tfMessageRemapperProcessor:      string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER),
+	tfNestedPipelineProcessor:       string(datadogV1.LOGSPIPELINEPROCESSORTYPE_PIPELINE),
+	tfServiceRemapperProcessor:      string(datadogV1.LOGSSERVICEREMAPPERTYPE_SERVICE_REMAPPER),
+	tfStatusRemapperProcessor:       string(datadogV1.LOGSSTATUSREMAPPERTYPE_STATUS_REMAPPER),
+	tfStringBuilderProcessor:        string(datadogV1.LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR),
+	tfTraceIDRemapperProcessor:      string(datadogV1.LOGSTRACEREMAPPERTYPE_TRACE_ID_REMAPPER),
+	tfURLParserProcessor:            string(datadogV1.LOGSURLPARSERTYPE_URL_PARSER),
+	tfUserAgentParserProcessor:      string(datadogV1.LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER),
 }
 
 var tfProcessors = map[string]*schema.Schema{
-	tfArithmeticProcessor:        arithmeticProcessor,
-	tfAttributeRemapperProcessor: attributeRemapper,
-	tfCategoryProcessor:          categoryProcessor,
-	tfDateRemapperProcessor:      dateRemapper,
-	tfGeoIPParserProcessor:       geoIPParser,
-	tfGrokParserProcessor:        grokParser,
-	tfLookupProcessor:            lookupProcessor,
-	tfMessageRemapperProcessor:   messageRemapper,
-	tfServiceRemapperProcessor:   serviceRemapper,
-	tfStatusRemapperProcessor:    statusRemmaper,
-	tfStringBuilderProcessor:     stringBuilderProcessor,
-	tfTraceIDRemapperProcessor:   traceIDRemapper,
-	tfURLParserProcessor:         urlParser,
-	tfUserAgentParserProcessor:   userAgentParser,
+	tfArithmeticProcessor:           arithmeticProcessor,
+	tfAttributeRemapperProcessor:    attributeRemapper,
+	tfCategoryProcessor:             categoryProcessor,
+	tfDateRemapperProcessor:         dateRemapper,
+	tfGeoIPParserProcessor:          geoIPParser,
+	tfGrokParserProcessor:           grokParser,
+	tfLookupProcessor:               lookupProcessor,
+	tfReferenceTableLookupProcessor: referenceTableLookupProcessor,
+	tfMessageRemapperProcessor:      messageRemapper,
+	tfServiceRemapperProcessor:      serviceRemapper,
+	tfStatusRemapperProcessor:       statusRemmaper,
+	tfStringBuilderProcessor:        stringBuilderProcessor,
+	tfTraceIDRemapperProcessor:      traceIDRemapper,
+	tfURLParserProcessor:            urlParser,
+	tfUserAgentParserProcessor:      userAgentParser,
 }
 
 var ddProcessorTypes = map[string]string{
-	string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR):        tfArithmeticProcessor,
-	string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER):            tfAttributeRemapperProcessor,
-	string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR):            tfCategoryProcessor,
-	string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER):                      tfDateRemapperProcessor,
-	string(datadogV1.LOGSGEOIPPARSERTYPE_GEO_IP_PARSER):                       tfGeoIPParserProcessor,
-	string(datadogV1.LOGSGROKPARSERTYPE_GROK_PARSER):                          tfGrokParserProcessor,
-	string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR):                tfLookupProcessor,
-	string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER):                tfMessageRemapperProcessor,
-	string(datadogV1.LOGSPIPELINEPROCESSORTYPE_PIPELINE):                      tfNestedPipelineProcessor,
-	string(datadogV1.LOGSSERVICEREMAPPERTYPE_SERVICE_REMAPPER):                tfServiceRemapperProcessor,
-	string(datadogV1.LOGSSTATUSREMAPPERTYPE_STATUS_REMAPPER):                  tfStatusRemapperProcessor,
-	string(datadogV1.LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR): tfStringBuilderProcessor,
-	string(datadogV1.LOGSTRACEREMAPPERTYPE_TRACE_ID_REMAPPER):                 tfTraceIDRemapperProcessor,
-	string(datadogV1.LOGSURLPARSERTYPE_URL_PARSER):                            tfURLParserProcessor,
-	string(datadogV1.LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER):               tfUserAgentParserProcessor,
+	string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR):              tfArithmeticProcessor,
+	string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER):                  tfAttributeRemapperProcessor,
+	string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR):                  tfCategoryProcessor,
+	string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER):                            tfDateRemapperProcessor,
+	string(datadogV1.LOGSGEOIPPARSERTYPE_GEO_IP_PARSER):                             tfGeoIPParserProcessor,
+	string(datadogV1.LOGSGROKPARSERTYPE_GROK_PARSER):                                tfGrokParserProcessor,
+	string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR):                      tfLookupProcessor,
+	"reference-table-" + string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR): tfReferenceTableLookupProcessor,
+	string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER):                      tfMessageRemapperProcessor,
+	string(datadogV1.LOGSPIPELINEPROCESSORTYPE_PIPELINE):                            tfNestedPipelineProcessor,
+	string(datadogV1.LOGSSERVICEREMAPPERTYPE_SERVICE_REMAPPER):                      tfServiceRemapperProcessor,
+	string(datadogV1.LOGSSTATUSREMAPPERTYPE_STATUS_REMAPPER):                        tfStatusRemapperProcessor,
+	string(datadogV1.LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR):       tfStringBuilderProcessor,
+	string(datadogV1.LOGSTRACEREMAPPERTYPE_TRACE_ID_REMAPPER):                       tfTraceIDRemapperProcessor,
+	string(datadogV1.LOGSURLPARSERTYPE_URL_PARSER):                                  tfURLParserProcessor,
+	string(datadogV1.LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER):                     tfUserAgentParserProcessor,
 }
 
 var arithmeticProcessor = &schema.Schema{
@@ -247,6 +251,22 @@ var lookupProcessor = &schema.Schema{
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"default_lookup": {Description: "Default lookup value to use if there is no entry in the lookup table for the value of the source attribute.", Type: schema.TypeString, Optional: true},
+		},
+	},
+}
+
+var referenceTableLookupProcessor = &schema.Schema{
+	Type:        schema.TypeList,
+	MaxItems:    1,
+	Description: "Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor)",
+	Optional:    true,
+	Elem: &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"name":                    {Description: "Name of the processor", Type: schema.TypeString, Optional: true},
+			"is_enabled":              {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+			"source":                  {Description: "Name of the source attribute used to do the lookup.", Type: schema.TypeString, Required: true},
+			"target":                  {Description: "Name of the attribute that contains the result of the lookup.", Type: schema.TypeString, Required: true},
+			"lookup_enrichment_table": {Description: "Name of the Reference Table for the source attribute and their associated target attribute values.", Type: schema.TypeString, Required: true},
 		},
 	},
 }
@@ -511,6 +531,9 @@ func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]in
 	} else if ddProcessor.LogsLookupProcessor != nil {
 		tfProcessor = buildTerraformLookupProcessor(ddProcessor.LogsLookupProcessor)
 		processorType = string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR)
+	} else if ddProcessor.ReferenceTableLogsLookupProcessor != nil {
+		tfProcessor = buildTerraformReferenceTableLookupProcessor(ddProcessor.ReferenceTableLogsLookupProcessor)
+		processorType = "reference-table-" + string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR)
 	} else if ddProcessor.LogsPipelineProcessor != nil {
 		tfProcessor, err = buildTerraformNestedPipeline(ddProcessor.LogsPipelineProcessor)
 		processorType = string(datadogV1.LOGSPIPELINEPROCESSORTYPE_PIPELINE)
@@ -568,6 +591,16 @@ func buildTerraformLookupProcessor(ddLookup *datadogV1.LogsLookupProcessor) map[
 	}
 
 	return tfProcessor
+}
+
+func buildTerraformReferenceTableLookupProcessor(ddLookup *datadogV1.ReferenceTableLogsLookupProcessor) map[string]interface{} {
+	return map[string]interface{}{
+		"source":                  ddLookup.GetSource(),
+		"target":                  ddLookup.GetTarget(),
+		"lookup_enrichment_table": ddLookup.GetLookupEnrichmentTable(),
+		"name":                    ddLookup.GetName(),
+		"is_enabled":              ddLookup.GetIsEnabled(),
+	}
 }
 
 func buildTerraformNestedPipeline(ddNested *datadogV1.LogsPipelineProcessor) (map[string]interface{}, error) {
@@ -775,6 +808,8 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 		ddProcessor = datadogV1.LogsGrokParserAsLogsProcessor(buildDatadogGrokParser(tfProcessor))
 	case string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR):
 		ddProcessor = datadogV1.LogsLookupProcessorAsLogsProcessor(buildDatadogLookupProcessor(tfProcessor))
+	case "reference-table-" + string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR):
+		ddProcessor = datadogV1.ReferenceTableLogsLookupProcessorAsLogsProcessor(buildDatadogReferenceTableLookupProcessor(tfProcessor))
 	case string(datadogV1.LOGSPIPELINEPROCESSORTYPE_PIPELINE):
 		ddNestedPipeline, err := buildDatadogNestedPipeline(tfProcessor)
 		if err != nil {
@@ -861,6 +896,26 @@ func buildDatadogLookupProcessor(tfProcessor map[string]interface{}) *datadogV1.
 	}
 	if tfDefaultLookup, exists := tfProcessor["default_lookup"].(string); exists && len(tfDefaultLookup) > 0 {
 		ddLookupProcessor.SetDefaultLookup(tfDefaultLookup)
+	}
+	return ddLookupProcessor
+}
+
+func buildDatadogReferenceTableLookupProcessor(tfProcessor map[string]interface{}) *datadogV1.ReferenceTableLogsLookupProcessor {
+	ddLookupProcessor := datadogV1.NewReferenceTableLogsLookupProcessorWithDefaults()
+	if tfSource, exists := tfProcessor["source"].(string); exists {
+		ddLookupProcessor.SetSource(tfSource)
+	}
+	if tfTarget, exists := tfProcessor["target"].(string); exists {
+		ddLookupProcessor.SetTarget(tfTarget)
+	}
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddLookupProcessor.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddLookupProcessor.SetIsEnabled(tfIsEnabled)
+	}
+	if tfReferenceTable, exists := tfProcessor["lookup_enrichment_table"].(string); exists {
+		ddLookupProcessor.SetLookupEnrichmentTable(tfReferenceTable)
 	}
 	return ddLookupProcessor
 }
