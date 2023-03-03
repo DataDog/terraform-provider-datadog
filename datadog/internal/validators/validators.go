@@ -143,15 +143,14 @@ func ValidateEnumValue(newEnumFuncs ...interface{}) schema.SchemaValidateDiagFun
 
 // ValidateDatadogNonEmptyStrings ensures a string isn't empty
 func ValidateNonEmptyStrings(v any, p cty.Path) diag.Diagnostics {
-	value := v.(string)
+	value, ok := v.(string)
 	var diags diag.Diagnostics
-	if value == "" {
-		diag := diag.Diagnostic{
+	if ok && value == "" {
+		return append(diags, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "Invalid value",
 			Detail:   "Empty strings are not supported in this field.",
-		}
-		diags = append(diags, diag)
+		})
 	}
 	return diags
 }
