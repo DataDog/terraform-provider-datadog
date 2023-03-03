@@ -258,7 +258,7 @@ var lookupProcessor = &schema.Schema{
 var referenceTableLookupProcessor = &schema.Schema{
 	Type:        schema.TypeList,
 	MaxItems:    1,
-	Description: "Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor)",
+	Description: "Reference Table Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor)",
 	Optional:    true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{

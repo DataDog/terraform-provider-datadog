@@ -202,6 +202,7 @@ Optional:
 - `lookup_processor` (Block List, Max: 1) Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--lookup_processor))
 - `message_remapper` (Block List, Max: 1) Message Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-message-remapper) (see [below for nested schema](#nestedblock--processor--message_remapper))
 - `pipeline` (Block List, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline))
+- `reference_table_lookup_processor` (Block List, Max: 1) Reference Table Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--reference_table_lookup_processor))
 - `service_remapper` (Block List, Max: 1) Service Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#service-remapper) (see [below for nested schema](#nestedblock--processor--service_remapper))
 - `status_remapper` (Block List, Max: 1) Status Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-status-remapper) (see [below for nested schema](#nestedblock--processor--status_remapper))
 - `string_builder_processor` (Block List, Max: 1) String Builder Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#string-builder-processor) (see [below for nested schema](#nestedblock--processor--string_builder_processor))
@@ -388,6 +389,7 @@ Optional:
 - `grok_parser` (Block List, Max: 1) Grok Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#grok-parser) (see [below for nested schema](#nestedblock--processor--pipeline--processor--grok_parser))
 - `lookup_processor` (Block List, Max: 1) Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--lookup_processor))
 - `message_remapper` (Block List, Max: 1) Message Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-message-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--message_remapper))
+- `reference_table_lookup_processor` (Block List, Max: 1) Reference Table Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--reference_table_lookup_processor))
 - `service_remapper` (Block List, Max: 1) Service Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#service-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--service_remapper))
 - `status_remapper` (Block List, Max: 1) Status Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-status-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--status_remapper))
 - `string_builder_processor` (Block List, Max: 1) String Builder Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#string-builder-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--string_builder_processor))
@@ -540,6 +542,21 @@ Optional:
 - `name` (String) Name of the processor.
 
 
+<a id="nestedblock--processor--pipeline--processor--reference_table_lookup_processor"></a>
+### Nested Schema for `processor.pipeline.processor.reference_table_lookup_processor`
+
+Required:
+
+- `lookup_enrichment_table` (String) Name of the Reference Table for the source attribute and their associated target attribute values.
+- `source` (String) Name of the source attribute used to do the lookup.
+- `target` (String) Name of the attribute that contains the result of the lookup.
+
+Optional:
+
+- `is_enabled` (Boolean) If the processor is enabled or not.
+- `name` (String) Name of the processor
+
+
 <a id="nestedblock--processor--pipeline--processor--service_remapper"></a>
 ### Nested Schema for `processor.pipeline.processor.service_remapper`
 
@@ -624,6 +641,21 @@ Optional:
 - `name` (String) Name of the processor
 
 
+
+
+<a id="nestedblock--processor--reference_table_lookup_processor"></a>
+### Nested Schema for `processor.reference_table_lookup_processor`
+
+Required:
+
+- `lookup_enrichment_table` (String) Name of the Reference Table for the source attribute and their associated target attribute values.
+- `source` (String) Name of the source attribute used to do the lookup.
+- `target` (String) Name of the attribute that contains the result of the lookup.
+
+Optional:
+
+- `is_enabled` (Boolean) If the processor is enabled or not.
+- `name` (String) Name of the processor
 
 
 <a id="nestedblock--processor--service_remapper"></a>
