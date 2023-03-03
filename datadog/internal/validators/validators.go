@@ -187,3 +187,24 @@ func ValidateDatadogDowntimeTimezone(v interface{}, k string) (ws []string, erro
 	}
 	return
 }
+
+// ValidateDatadogDowntimeDuration ensures a string is a valid downtime duration
+func ValidateDatadogDowntimeDuration(v interface{}, k string) (ws []string, errors []error) {
+	duration, err := time.ParseDuration(v.(string))
+	if err != nil {
+		errors = append(errors, fmt.Errorf("%q contains an invalid duration: %q (%v)", k, v, err))
+		return
+	}
+
+	if duration < 0 {
+		errors = append(errors, fmt.Errorf("%q contains a negative duration: %q", k, v))
+		return
+	}
+
+	minute, _ := time.ParseDuration("1m")
+	if duration < minute {
+		errors = append(errors, fmt.Errorf("%q contains a duration smaller than a minute: %q", k, v))
+	}
+
+	return
+}

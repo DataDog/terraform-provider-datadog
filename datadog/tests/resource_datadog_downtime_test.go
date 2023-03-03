@@ -434,6 +434,41 @@ func TestAccDatadogDowntime_DiffStart(t *testing.T) {
 	})
 }
 
+func TestAccDatadogDowntime_Duration(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	downtimeMessage := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogDowntimeDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDowntimeConfigDuration(downtimeMessage),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "scope.0", "*"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "start", "1735707600"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "duration", "1h30m0s"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "recurrence.0.type", "days"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "recurrence.0.period", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "message", downtimeMessage),
+					resource.TestCheckResourceAttr(
+						"datadog_downtime.foo", "monitor_tags.0", "*"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogDowntimeDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
@@ -526,6 +561,23 @@ resource "datadog_downtime" "foo" {
   scope = ["*"]
   start_date = "2099-10-31T11:11:00+01:00"
   end_date = "2099-10-31T21:00:00+01:00"
+
+  recurrence {
+    type   = "days"
+    period = 1
+  }
+
+  message = "%s"
+  monitor_tags = ["*"]
+}`, uniq)
+}
+
+func testAccCheckDatadogDowntimeConfigDuration(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_downtime" "foo" {
+  scope = ["*"]
+  start = 1735707600
+	duration = "90m"
 
   recurrence {
     type   = "days"

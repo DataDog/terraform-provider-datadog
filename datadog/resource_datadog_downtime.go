@@ -172,6 +172,18 @@ func resourceDatadogDowntime() *schema.Resource {
 					return oldDate.Equal(newDate)
 				},
 			},
+			"duration": {
+				Type:          schema.TypeString,
+				ValidateFunc:  validators.ValidateDatadogDowntimeDuration,
+				ConflictsWith: []string{"end", "end_date"},
+				Optional:      true,
+				Description:   "Specify the downtime duration with the same format than the timeadd() function. Negative durations are not allowed and it must be at least 1 minute. The following examples are valid: `90m`, `1.5h`, `1h30m`.",
+				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+					oldDuration, _ := time.ParseDuration(oldVal)
+					newDuration, _ := time.ParseDuration(newVal)
+					return oldDuration == newDuration
+				},
+			},
 			"timezone": {
 				Type:         schema.TypeString,
 				Default:      "UTC",
@@ -325,9 +337,9 @@ func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, co
 }
 
 func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, apiInstances *utils.ApiInstances, updating bool) (*datadogV1.Downtime, error) {
-	// NOTE: for each of start/start_date/end/end_date, we only send the value when
-	// it has changed or if the configured value is different than current value
-	// (IOW there's a resource drift). This allows users to change other attributes
+	// NOTE: for each of start/start_date/end/end_date/duration, we only send the
+	// value when it has changed or if the configured value is different than current
+	// value (IOW there's a resource drift). This allows users to change other attributes
 	// (e.g. scopes/message/...) without having to update the timestamps/dates to be
 	// in the future (this works thanks to the downtime API allowing not to send these
 	// values when they shouldn't be touched).
@@ -350,7 +362,21 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, apiInstanc
 		currentEnd = currdt.GetEnd()
 	}
 
-	endValue, endAttrName := getDowntimeBoundaryTimestamp(d, "end_date", "end")
+	startValue, startAttrName := getDowntimeBoundaryTimestamp(d, "start_date", "start")
+	if downtimeBoundaryNeedsApply(d, startAttrName, currentStart, startValue, updating) {
+		dt.SetStart(startValue)
+	}
+
+	var endValue int64
+	var endAttrName string
+	if duration, ok := d.GetOk("duration"); ok {
+		// If a duration is set, it is added to the start value to set the end value.
+		duration, _ := time.ParseDuration(duration.(string))
+		endValue = startValue + int64(duration/time.Second)
+		endAttrName = "duration"
+	} else {
+		endValue, endAttrName = getDowntimeBoundaryTimestamp(d, "end_date", "end")
+	}
 	if downtimeBoundaryNeedsApply(d, endAttrName, currentEnd, endValue, updating) {
 		dt.SetEnd(endValue)
 	}
@@ -399,11 +425,6 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, apiInstanc
 		tags = append(tags, mt.(string))
 	}
 	dt.SetMonitorTags(tags)
-
-	startValue, startAttrName := getDowntimeBoundaryTimestamp(d, "start_date", "start")
-	if downtimeBoundaryNeedsApply(d, startAttrName, currentStart, startValue, updating) {
-		dt.SetStart(startValue)
-	}
 
 	if attr, ok := d.GetOk("timezone"); ok {
 		dt.SetTimezone(attr.(string))
@@ -556,7 +577,12 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild, upd
 				return diag.FromErr(err)
 			}
 		}
-		if _, ok := d.GetOk("end_date"); ok {
+		if _, ok := d.GetOk("duration"); ok {
+			// Only set duration if used in config to avoid inconsistent plans
+			if err := d.Set("duration", time.Unix(dt.GetEnd(), 0).Sub(time.Unix(dt.GetStart(), 0)).String()); err != nil {
+				return diag.FromErr(err)
+			}
+		} else if _, ok := d.GetOk("end_date"); ok {
 			// Only set end_date if used in config to avoid inconsistent plans
 			if err := d.Set("end_date", time.Unix(dt.GetEnd(), 0).In(time.UTC).Format(time.RFC3339)); err != nil {
 				return diag.FromErr(err)
