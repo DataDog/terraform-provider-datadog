@@ -2,10 +2,14 @@ package datadog
 
 import (
 	"context"
+	"fmt"
+	"hash/crc32"
+	"net"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -32,6 +36,7 @@ func resourceDatadogIPAllowlist() *schema.Resource {
 				Optional:    true,
 				Description: "Set of objects containing an IP address or range of IP addresses in the allowlist and an accompanying note.",
 				Elem:        GetIPAllowlistEntrySchema(),
+				//Set:         hashCIDR,
 			},
 		},
 	}
@@ -41,10 +46,11 @@ func GetIPAllowlistEntrySchema() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"cidr_block": {
-				Type:         schema.TypeString,
-				Required:     true,
-				Description:  "IP address or range of addresses.",
-				ValidateFunc: validation.IsCIDR,
+				Type:             schema.TypeString,
+				Required:         true,
+				Description:      "IP address or range of addresses.",
+				ValidateDiagFunc: cidrValidateFunc,
+				DiffSuppressFunc: diffSuppress,
 			},
 			"note": {
 				Type:        schema.TypeString,
@@ -53,6 +59,62 @@ func GetIPAllowlistEntrySchema() *schema.Resource {
 			},
 		},
 	}
+}
+
+func diffSuppress(k, old, new string, d *schema.ResourceData) bool {
+	return normalizeIPAddress(old) == normalizeIPAddress(new)
+}
+
+func cidrValidateFunc(cidrBlock interface{}, path cty.Path) diag.Diagnostics {
+	_, errors := validation.IsCIDR(cidrBlock, cidrBlock.(string))
+	if len(errors) == 0 {
+		return nil
+	}
+	_, errors = validation.IsIPAddress(cidrBlock, cidrBlock.(string))
+	if len(errors) == 0 {
+		return nil
+	}
+	return diag.Errorf("expected %v to be a valid IP address or CIDR block", cidrBlock)
+}
+
+func normalizeIPAddress(ipAddress interface{}) string {
+	if ipAddress == nil || ipAddress.(string) == "" {
+		return ""
+	}
+	_, ipNet, err := net.ParseCIDR(ipAddress.(string))
+	if err != nil {
+		ip := net.ParseIP(ipAddress.(string))
+		if ip == nil {
+			return ""
+		}
+		// ipAddress is a single IP address
+		// if it is ipv4, the prefix is 32. if ipv6, it is 128
+		prefix := "32"
+		if ip.DefaultMask() == nil {
+			prefix = "128"
+		}
+		return fmt.Sprintf("%v/%v", ip, prefix)
+	}
+	return ipNet.String()
+}
+
+// copy of the deprecated hashcode.String function
+func hashcode(s string) int {
+	v := int(crc32.ChecksumIEEE([]byte(s)))
+	if v >= 0 {
+		return v
+	}
+	if -v >= 0 {
+		return -v
+	}
+	// v == MinInt
+	return 0
+}
+
+func hashCIDR(entry interface{}) int {
+	ip := entry.(map[string]interface{})["cidr_block"].(string)
+	note := entry.(map[string]interface{})["note"].(string)
+	return hashcode(fmt.Sprintf("%s %s", normalizeIPAddress(ip), note))
 }
 
 func updateIPAllowlistState(ctx context.Context, d *schema.ResourceData, ipAllowlistAttrs *datadogV2.IPAllowlistAttributes, apiInstances *utils.ApiInstances) diag.Diagnostics {
@@ -66,17 +128,31 @@ func updateIPAllowlistState(ctx context.Context, d *schema.ResourceData, ipAllow
 }
 
 func updateIPAllowlistEntriesState(ctx context.Context, d *schema.ResourceData, ipAllowlistEntries []datadogV2.IPAllowlistEntry, apiInstances *utils.ApiInstances) diag.Diagnostics {
+	/*var previousEntries map[string]string
+	if entriesI, ok := d.GetOk("entry"); ok {
+		previousEntries = make(map[string]string)
+		entries := entriesI.(*schema.Set).List()
+		for _, entryI := range entries {
+			entry := entryI.(map[string]interface{})
+			cidrStr := normalizeIPAddress(entry["cidr_block"].(string))
+			previousEntries[cidrStr] = entry["cidr_block"].(string)
+		}
+	}*/
+
 	var entries []map[string]string
 	for _, ipAllowlistEntry := range ipAllowlistEntries {
 		ipAllowlistEntryData := ipAllowlistEntry.GetData()
 		ipAllowlistEntryAttributes := ipAllowlistEntryData.GetAttributes()
-		cidr_block, ok_cidr := ipAllowlistEntryAttributes.GetCidrBlockOk()
-		note, ok_note := ipAllowlistEntryAttributes.GetNoteOk()
-		if ok_cidr && ok_note {
+		cidrBlock, okCidr := ipAllowlistEntryAttributes.GetCidrBlockOk()
+		note, okNote := ipAllowlistEntryAttributes.GetNoteOk()
+		if okCidr && okNote {
 			entry := map[string]string{
-				"cidr_block": *cidr_block,
+				"cidr_block": *cidrBlock,
 				"note":       *note,
 			}
+			/*if originalCidr, ok := previousEntries[*cidrBlock]; ok {
+				entry["cidr_block"] = originalCidr
+			}*/
 			entries = append(entries, entry)
 		}
 	}
