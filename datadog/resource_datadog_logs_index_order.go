@@ -24,7 +24,8 @@ func resourceDatadogLogsIndexOrder() *schema.Resource {
 			"name": {
 				Description: "The unique name of the index order resource.",
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
+				Computed:    true,
 			},
 			"indexes": {
 				Description: "The index resource list. Logs are tested against the query filter of each index one by one following the order of the list.",
@@ -48,7 +49,7 @@ func resourceDatadogLogsIndexOrderUpdate(ctx context.Context, d *schema.Resource
 		ddList[i] = tfName.(string)
 	}
 	ddIndexList.IndexNames = ddList
-	var tfID string
+	var tfID = "logs_index_order"
 	if name, exists := d.GetOk("name"); exists {
 		tfID = name.(string)
 	}
@@ -70,6 +71,9 @@ func resourceDatadogLogsIndexOrderUpdate(ctx context.Context, d *schema.Resource
 func updateLogsIndexOrderState(d *schema.ResourceData, order *datadogV1.LogsIndexesOrder) diag.Diagnostics {
 	if err := d.Set("indexes", order.GetIndexNames()); err != nil {
 		return diag.FromErr(err)
+	}
+	if _, ok := d.GetOk("name"); !ok {
+		d.Set("name", d.Id())
 	}
 	return nil
 }
