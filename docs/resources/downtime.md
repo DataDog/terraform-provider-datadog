@@ -50,6 +50,7 @@ resource "datadog_downtime" "foo" {
 
 ### Optional
 
+- `duration` (String) Specify the downtime duration with the same format than the timeadd() function. Negative durations are not allowed and it must be at least 1 minute. The following examples are valid: `90m`, `1.5h`, `1h30m`.
 - `end` (Number) Optionally specify an end date when this downtime should expire. Accepts a Unix timestamp in UTC.
 - `end_date` (String) String representing date and time to end the downtime in RFC3339 format.
 - `message` (String) An optional message to provide when creating the downtime, can include notification handles
