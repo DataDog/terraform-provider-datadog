@@ -120,6 +120,15 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			default_lookup = "default"
 		}
 	}
+	processor {
+		reference_table_lookup_processor {
+			name           = "reftablelookup"
+			is_enabled     = true
+			source         = "sourcefield"
+			target         = "targetfield"
+			lookup_enrichment_table   = "test_reference_table_do_not_delete"
+		}
+	}
 }`, uniq)
 }
 func pipelineConfigForUpdate(uniq string) string {
@@ -212,6 +221,15 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			target = "ip.address"
 			lookup_table = ["key,value", "key2,value2"]
 			default_lookup = "default"
+		}
+	}
+	processor {
+		reference_table_lookup_processor {
+			name           = "reftablelookup"
+			is_enabled     = true
+			source         = "sourcefield"
+			target         = "targetfield"
+			lookup_enrichment_table   = "test_reference_table_do_not_delete"
 		}
 	}
 }`, uniq)
