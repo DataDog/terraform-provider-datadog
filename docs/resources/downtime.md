@@ -50,6 +50,7 @@ resource "datadog_downtime" "foo" {
 
 ### Optional
 
+- `beginning_at` (String) String representing the beginning time of a recurring downtime. It must be a RFC3339 formatted timestamp without the date part. The date of the the current or next day (depending if the time is passed) will be added to create the downtime. The following examples are valid: `08:53`, `08:53:05Z`, `08:53:05+01:00`
 - `duration` (String) Specify the downtime duration with the same format than the timeadd() function. Negative durations are not allowed and it must be at least 1 minute. The following examples are valid: `90m`, `1.5h`, `1h30m`.
 - `end` (Number) Optionally specify an end date when this downtime should expire. Accepts a Unix timestamp in UTC.
 - `end_date` (String) String representing date and time to end the downtime in RFC3339 format.
