@@ -2,7 +2,7 @@ package utils
 
 import (
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 
@@ -22,7 +22,7 @@ func SendRequest(ctx context.Context, client *datadog.APIClient, method, path st
 	}
 
 	var bodyResByte []byte
-	bodyResByte, err = ioutil.ReadAll(httpRes.Body)
+	bodyResByte, err = io.ReadAll(httpRes.Body)
 	defer httpRes.Body.Close()
 	if err != nil {
 		return nil, httpRes, err

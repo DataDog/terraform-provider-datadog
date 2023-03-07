@@ -265,7 +265,7 @@ func TestAccDatadogDowntime_WeekDayRecurring(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "scope.0", "WeekDaysRecurrence"),
+						"datadog_downtime.foo", "scope.0", "scope:WeekDaysRecurrence"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "start", "1735646400"),
 					resource.TestCheckResourceAttr(
@@ -304,7 +304,7 @@ func TestAccDatadogDowntime_RRule(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "scope.0", "RRuleRecurrence"),
+						"datadog_downtime.foo", "scope.0", "scope:RRuleRecurrence"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "start", "1735646400"),
 					resource.TestCheckResourceAttr(
@@ -359,7 +359,7 @@ func TestAccDatadogDowntime_Updated(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeExists(accProvider, "datadog_downtime.foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime.foo", "scope.0", "Updated"),
+						"datadog_downtime.foo", "scope.0", "scope:Updated"),
 					resource.TestCheckResourceAttr(
 						"datadog_downtime.foo", "start", "1735707600"),
 					resource.TestCheckResourceAttr(
@@ -695,7 +695,7 @@ resource "datadog_downtime" "foo" {
 func testAccCheckDatadogDowntimeConfigWeekDaysRecurrence(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
-  scope = ["WeekDaysRecurrence"]
+  scope = ["scope:WeekDaysRecurrence"]
   start = 1735646400
   end   = 1735732799
 
@@ -713,7 +713,7 @@ resource "datadog_downtime" "foo" {
 func testAccCheckDatadogDowntimeConfigRRule(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
-  scope = ["RRuleRecurrence"]
+  scope = ["scope:RRuleRecurrence"]
   start = 1735646400
   end   = 1735732799
 
@@ -730,7 +730,7 @@ resource "datadog_downtime" "foo" {
 func testAccCheckDatadogDowntimeConfigUpdated(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
-  scope = ["Updated"]
+  scope = ["scope:Updated"]
   start = 1735707600
   end   = 1735765200
 
@@ -768,7 +768,7 @@ EOF
 func testAccCheckDatadogDowntimeConfigDiffStart(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_downtime" "foo" {
-  scope = ["somescope"]
+  scope = ["new:somescope"]
 
   monitor_tags = ["*"]
   message = "%s"

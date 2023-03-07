@@ -3,7 +3,7 @@ package transport
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"math"
 	"net/http"
 	"strconv"
@@ -31,16 +31,12 @@ type CustomTransportOptions struct {
 
 // RoundTrip method used to retry http errors
 func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	var ccancel context.CancelFunc
-	ctx := req.Context()
-	if _, set := ctx.Deadline(); !set {
-		ctx, ccancel = context.WithTimeout(ctx, t.httpRetryTimeout)
-		defer ccancel()
-	}
+	ctx, ccancel := context.WithTimeout(req.Context(), t.httpRetryTimeout)
+	defer ccancel()
 
 	var rawBody []byte
 	if req.Body != nil && req.Body != http.NoBody {
-		rawBody, _ = ioutil.ReadAll(req.Body)
+		rawBody, _ = io.ReadAll(req.Body)
 		req.Body.Close()
 	}
 	var resp *http.Response
@@ -55,9 +51,9 @@ func (t *CustomTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		resp, respErr = t.defaultTransport.RoundTrip(newRequest)
 		// Close the body so connection can be re-used
 		if resp != nil {
-			localVarBody, _ := ioutil.ReadAll(resp.Body)
+			localVarBody, _ := io.ReadAll(resp.Body)
 			resp.Body.Close()
-			resp.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+			resp.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 		}
 		if respErr != nil {
 			return resp, respErr
@@ -85,14 +81,14 @@ func (t *CustomTransport) copyRequest(r *http.Request, rawBody *[]byte) *http.Re
 	if r.Body == nil || r.Body == http.NoBody {
 		return &newRequest
 	}
-	newRequest.Body = ioutil.NopCloser(bytes.NewBuffer(*rawBody))
+	newRequest.Body = io.NopCloser(bytes.NewBuffer(*rawBody))
 
 	return &newRequest
 }
 
 func (t *CustomTransport) retryRequest(response *http.Response, retryCount int) (*time.Duration, bool) {
 	var err error
-	if v := response.Header.Get(rateLimitResetHeader); v != "" && response.StatusCode == 429 {
+	if v := response.Header.Get(rateLimitResetHeader); response.StatusCode == 429 && v != "" {
 		vInt, err := strconv.ParseInt(v, 10, 64)
 		if err == nil {
 			retryDuration := time.Duration(vInt) * time.Second
@@ -100,8 +96,9 @@ func (t *CustomTransport) retryRequest(response *http.Response, retryCount int) 
 		}
 	}
 
-	// Calculate retry for 5xx errors or if unable to parse value of rateLimitResetHeader
-	if response.StatusCode >= 500 || err != nil {
+	// Calculate retry for 5xx errors or if unable to parse value of rateLimitResetHeader,
+	// or if the `rateLimitResetHeader` header is missing or if status code >= 500.
+	if err != nil || response.StatusCode == 429 || response.StatusCode >= 500 {
 		// Calculate the retry val (base * multiplier^retryCount)
 		retryVal := defaultBackOffBase * math.Pow(defaultBackOffMultiplier, float64(retryCount))
 		// retry duration shouldn't exceed default timeout period
