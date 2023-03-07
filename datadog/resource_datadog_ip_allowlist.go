@@ -36,7 +36,7 @@ func resourceDatadogIPAllowlist() *schema.Resource {
 				Optional:    true,
 				Description: "Set of objects containing an IP address or range of IP addresses in the allowlist and an accompanying note.",
 				Elem:        GetIPAllowlistEntrySchema(),
-				//Set:         hashCIDR,
+				Set:         hashCIDR,
 			},
 		},
 	}
@@ -46,11 +46,12 @@ func GetIPAllowlistEntrySchema() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"cidr_block": {
-				Type:             schema.TypeString,
-				Required:         true,
-				Description:      "IP address or range of addresses.",
-				ValidateDiagFunc: cidrValidateFunc,
-				DiffSuppressFunc: diffSuppress,
+				Type:                  schema.TypeString,
+				Required:              true,
+				Description:           "IP address or range of addresses.",
+				ValidateDiagFunc:      cidrValidateFunc,
+				DiffSuppressFunc:      diffSuppress,
+				DiffSuppressOnRefresh: true,
 			},
 			"note": {
 				Type:        schema.TypeString,
@@ -77,13 +78,13 @@ func cidrValidateFunc(cidrBlock interface{}, path cty.Path) diag.Diagnostics {
 	return diag.Errorf("expected %v to be a valid IP address or CIDR block", cidrBlock)
 }
 
-func normalizeIPAddress(ipAddress interface{}) string {
-	if ipAddress == nil || ipAddress.(string) == "" {
+func normalizeIPAddress(ipAddress string) string {
+	/*if ipAddress == nil || ipAddress.(string) == "" {
 		return ""
-	}
-	_, ipNet, err := net.ParseCIDR(ipAddress.(string))
+	}*/
+	_, ipNet, err := net.ParseCIDR(ipAddress)
 	if err != nil {
-		ip := net.ParseIP(ipAddress.(string))
+		ip := net.ParseIP(ipAddress)
 		if ip == nil {
 			return ""
 		}
