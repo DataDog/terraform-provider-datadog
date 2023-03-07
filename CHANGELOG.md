@@ -1,3 +1,26 @@
+## 3.22.0 (March 7, 2023)
+
+### BUGFIXES
+* [datadog_service_definition_yaml] Add ordering of contacts in state func by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1785
+* [datadog_security_monitoring_rule] Don't cast nil values in `group_by_fields` or `distinct_fields` by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1796
+* [datadog_logs_index_order] Make name optional and computed by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1799
+### IMPROVEMENTS
+* [datadog_permissions] Add option to show restricted permissions by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1782
+* [datadog_dashboard] Add run-workflow widget definition by @DavidRobertAnsart in https://github.com/DataDog/terraform-provider-datadog/pull/1779
+* [datadog_ip_ranges] Adds orchestrator to the resource by @tbavelier in https://github.com/DataDog/terraform-provider-datadog/pull/1781
+### FEATURES
+* [datadog_synthetics_test] add advanced scheduling by @AlaricCalmette in https://github.com/DataDog/terraform-provider-datadog/pull/1777
+* [datadog_sensitive_data_scanner_group] Generate Sensitive Data Scanner group resources by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1737
+* [datadog_sensitive_data_scanner_rule] Create Sensitive Data Scanner rule resources by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1738
+### NOTES
+* [provider] Bump `terraform-plugin-sdk/v2`to latest by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1765
+
+## New Contributors
+* @tbavelier made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1781
+* @dependabot made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1789
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.21.0...v3.22.0
+
 ## 3.21.0 (February 9, 2023)
 
 ### BUGFIXES
