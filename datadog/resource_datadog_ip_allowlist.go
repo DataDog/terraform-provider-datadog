@@ -79,9 +79,6 @@ func cidrValidateFunc(cidrBlock interface{}, path cty.Path) diag.Diagnostics {
 }
 
 func normalizeIPAddress(ipAddress string) string {
-	/*if ipAddress == nil || ipAddress.(string) == "" {
-		return ""
-	}*/
 	_, ipNet, err := net.ParseCIDR(ipAddress)
 	if err != nil {
 		ip := net.ParseIP(ipAddress)
@@ -129,17 +126,6 @@ func updateIPAllowlistState(ctx context.Context, d *schema.ResourceData, ipAllow
 }
 
 func updateIPAllowlistEntriesState(ctx context.Context, d *schema.ResourceData, ipAllowlistEntries []datadogV2.IPAllowlistEntry, apiInstances *utils.ApiInstances) diag.Diagnostics {
-	/*var previousEntries map[string]string
-	if entriesI, ok := d.GetOk("entry"); ok {
-		previousEntries = make(map[string]string)
-		entries := entriesI.(*schema.Set).List()
-		for _, entryI := range entries {
-			entry := entryI.(map[string]interface{})
-			cidrStr := normalizeIPAddress(entry["cidr_block"].(string))
-			previousEntries[cidrStr] = entry["cidr_block"].(string)
-		}
-	}*/
-
 	var entries []map[string]string
 	for _, ipAllowlistEntry := range ipAllowlistEntries {
 		ipAllowlistEntryData := ipAllowlistEntry.GetData()
@@ -151,9 +137,6 @@ func updateIPAllowlistEntriesState(ctx context.Context, d *schema.ResourceData, 
 				"cidr_block": *cidrBlock,
 				"note":       *note,
 			}
-			/*if originalCidr, ok := previousEntries[*cidrBlock]; ok {
-				entry["cidr_block"] = originalCidr
-			}*/
 			entries = append(entries, entry)
 		}
 	}
