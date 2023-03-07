@@ -11,7 +11,7 @@
 ### FEATURES
 * [datadog_synthetics_test] add advanced scheduling by @AlaricCalmette in https://github.com/DataDog/terraform-provider-datadog/pull/1777
 * [datadog_sensitive_data_scanner_group] Generate Sensitive Data Scanner group resources by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1737
-* [datadog_sensitive_data_scanner_rule] Create Sensitive Data Scanner rule resources by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1738
+* [datadog_sensitive_data_scanner_rule] Create Sensitive Data Scanner rule resource and data source by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1738
 ### NOTES
 * [provider] Bump `terraform-plugin-sdk/v2`to latest by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1765
 * [Provider] Bump datadog api client to 2.10.0 by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/1803
