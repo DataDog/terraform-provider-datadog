@@ -41,7 +41,7 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 				},
 			},
 			"is_enabled": {
-				Description: "Whether or not the scanning group is enabled.",
+				Description: "Whether or not the scanning group is enabled. If the group doesn't contain any rule or if all the rules in it are disabled, the group is force-disabled by our backend",
 				Type:        schema.TypeBool,
 				Required:    true,
 			},
