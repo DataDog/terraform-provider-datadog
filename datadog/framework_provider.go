@@ -80,11 +80,11 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"validate": schema.StringAttribute{
 				Optional:    true,
-				Description: "Enables validation of the provided API and APP keys during provider initialization. Default is true. When false, api_key and app_key won't be checked.",
+				Description: "Enables validation of the provided API and APP keys during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key and app_key won't be checked.",
 			},
 			"http_client_retry_enabled": schema.StringAttribute{
 				Optional:    true,
-				Description: "Enables request retries on HTTP status codes 429 and 5xx. Defaults to `true`.",
+				Description: "Enables request retries on HTTP status codes 429 and 5xx. Valid values are [`true`, `false`]. Defaults to `true`.",
 			},
 			"http_client_retry_timeout": schema.Int64Attribute{
 				Optional:    true,
