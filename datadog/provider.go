@@ -18,6 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
@@ -117,14 +118,16 @@ func Provider() *schema.Provider {
 				Description: "The API URL. This can also be set via the DD_HOST environment variable. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not. And if you're working with \"EU\" version of Datadog, use `https://api.datadoghq.eu/`. Other Datadog region examples: `https://api.us5.datadoghq.com/`, `https://api.us3.datadoghq.com/` and `https://api.ddog-gov.com/`. See https://docs.datadoghq.com/getting_started/site/ for all available regions.",
 			},
 			"validate": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Description: "Enables validation of the provided API and APP keys during provider initialization. Default is true. When false, api_key and app_key won't be checked.",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Description:  "Enables validation of the provided API and APP keys during provider initialization. Default is true. When false, api_key and app_key won't be checked.",
+				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
 			},
 			"http_client_retry_enabled": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Description: "Enables request retries on HTTP status codes 429 and 5xx. Defaults to `true`.",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Description:  "Enables request retries on HTTP status codes 429 and 5xx. Defaults to `true`.",
+				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
 			},
 			"http_client_retry_timeout": {
 				Type:        schema.TypeInt,
@@ -247,17 +250,21 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	httpRetryEnabled := true
-	httpRetryEnabledInterface, ok := d.GetOk("http_client_retry_enabled")
-	if !ok {
+	httpRetryEnabledStr := d.Get("http_client_retry_enabled").(string)
+	if httpRetryEnabledStr == "" {
 		envVal, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_ENABLED")
 		if err == nil {
 			httpRetryEnabled, _ = strconv.ParseBool(envVal)
 		}
 	} else {
-		httpRetryEnabled = httpRetryEnabledInterface.(bool)
+		httpRetryEnabled, _ = strconv.ParseBool(httpRetryEnabledStr)
 	}
 
-	validate := d.Get("validate").(bool)
+	validate := true
+	if v := d.Get("validate").(string); v != "" {
+		validate, _ = strconv.ParseBool(v)
+	}
+
 	if validate && (apiKey == "" || appKey == "") {
 		return nil, diag.FromErr(errors.New("api_key and app_key must be set unless validate = false"))
 	}

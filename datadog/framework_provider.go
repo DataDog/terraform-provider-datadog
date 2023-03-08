@@ -24,10 +24,12 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators/frameworkvalidators"
 )
 
 var (
-	_ provider.Provider = &FrameworkProvider{}
+	_ provider.Provider                     = &FrameworkProvider{}
+	_ provider.ProviderWithConfigValidators = &FrameworkProvider{}
 )
 
 type FrameworkProvider struct {
@@ -43,8 +45,8 @@ type providerSchema struct {
 	ApiKey                 types.String `tfsdk:"api_key"`
 	AppKey                 types.String `tfsdk:"app_key"`
 	ApiUrl                 types.String `tfsdk:"api_url"`
-	Validate               types.Bool   `tfsdk:"validate"`
-	HttpClientRetryEnabled types.Bool   `tfsdk:"http_client_retry_enabled"`
+	Validate               types.String `tfsdk:"validate"`
+	HttpClientRetryEnabled types.String `tfsdk:"http_client_retry_enabled"`
 	HttpClientRetryTimeout types.Int64  `tfsdk:"http_client_retry_timeout"`
 }
 
@@ -76,11 +78,11 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Optional:    true,
 				Description: "The API URL. This can also be set via the DD_HOST environment variable. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not. And if you're working with \"EU\" version of Datadog, use `https://api.datadoghq.eu/`. Other Datadog region examples: `https://api.us5.datadoghq.com/`, `https://api.us3.datadoghq.com/` and `https://api.ddog-gov.com/`. See https://docs.datadoghq.com/getting_started/site/ for all available regions.",
 			},
-			"validate": schema.BoolAttribute{
+			"validate": schema.StringAttribute{
 				Optional:    true,
 				Description: "Enables validation of the provided API and APP keys during provider initialization. Default is true. When false, api_key and app_key won't be checked.",
 			},
-			"http_client_retry_enabled": schema.BoolAttribute{
+			"http_client_retry_enabled": schema.StringAttribute{
 				Optional:    true,
 				Description: "Enables request retries on HTTP status codes 429 and 5xx. Defaults to `true`.",
 			},
@@ -109,7 +111,10 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 
 	p.ConfigureConfigDefaults(&config)
 
-	if config.Validate.ValueBool() && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
+	validate, _ := strconv.ParseBool(config.Validate.ValueString())
+	httpClientRetryEnabled, _ := strconv.ParseBool(config.Validate.ValueString())
+
+	if validate && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
 		response.Diagnostics.AddError("api_key and app_key must be set unless validate = false", "")
 		return
 	}
@@ -129,7 +134,7 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 	))
 	p.CommunityClient.HttpClient = c
 
-	if config.Validate.ValueBool() {
+	if validate {
 		log.Println("[INFO] Datadog client successfully initialized, now validating...")
 		ok, err := p.CommunityClient.Validate()
 		if err != nil {
@@ -147,7 +152,7 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 
 	// Initialize http.Client for the Datadog API Clients
 	httpClient := http.DefaultClient
-	if config.HttpClientRetryEnabled.ValueBool() {
+	if httpClientRetryEnabled {
 		ctOptions := transport.CustomTransportOptions{}
 		if !config.HttpClientRetryTimeout.IsNull() {
 			timeout := time.Duration(config.HttpClientRetryTimeout.ValueInt64()) * time.Second
@@ -246,8 +251,7 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(config *providerSchema) {
 	if config.HttpClientRetryEnabled.IsNull() {
 		retryEnabled, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_ENABLED")
 		if err == nil {
-			v, _ := strconv.ParseBool(retryEnabled)
-			config.HttpClientRetryEnabled = types.BoolValue(v)
+			config.HttpClientRetryEnabled = types.StringValue(retryEnabled)
 		}
 	}
 
@@ -257,6 +261,22 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(config *providerSchema) {
 			v, _ := strconv.Atoi(rTimeout)
 			config.HttpClientRetryTimeout = types.Int64Value(int64(v))
 		}
+	}
+
+	// Configure defaults for booleans.
+	// Remove this once fully migrated to framework
+	if config.Validate.IsNull() {
+		config.Validate = types.StringValue("true")
+	}
+	if config.HttpClientRetryEnabled.IsNull() {
+		config.HttpClientRetryEnabled = types.StringValue("true")
+	}
+}
+
+func (p *FrameworkProvider) ConfigValidators(ctx context.Context) []provider.ConfigValidator {
+	return []provider.ConfigValidator{
+		frameworkvalidators.NewValidateProviderStringValIn("validate", "true", "false"),
+		frameworkvalidators.NewValidateProviderStringValIn("http_client_retry_enabled", "true", "false"),
 	}
 }
 
