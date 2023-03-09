@@ -17,11 +17,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	datadogCommunity "github.com/zorkian/go-datadog-api"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+	datadogCommunity "github.com/zorkian/go-datadog-api"
 )
 
 var (
@@ -270,18 +268,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
-	// Initialize http.Client for the Datadog API Clients
-	httpClient := http.DefaultClient
-	if httpRetryEnabled {
-		ctOptions := transport.CustomTransportOptions{}
-		if v, ok := d.GetOk("http_client_retry_timeout"); ok {
-			timeout := time.Duration(int64(v.(int))) * time.Second
-			ctOptions.Timeout = &timeout
-		}
-		customTransport := transport.NewCustomTransport(httpClient.Transport, ctOptions)
-		httpClient.Transport = customTransport
-	}
-
 	// Initialize the official Datadog V1 API client
 	auth := context.WithValue(
 		context.Background(),
@@ -295,8 +281,15 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			},
 		},
 	)
+	// Initialize http.Client for the Datadog API Clients
+	httpClient := http.DefaultClient
 	config := datadog.NewConfiguration()
 	config.HTTPClient = httpClient
+	config.RetryConfiguration.EnableRetry = httpRetryEnabled
+	if v, ok := d.GetOk("http_client_retry_timeout"); ok {
+		timeout := time.Duration(int64(v.(int))) * time.Second
+		config.RetryConfiguration.HTTPRetryTimeout = timeout
+	}
 
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
 	config.Debug = logging.IsDebugOrHigher()
