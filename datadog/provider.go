@@ -113,7 +113,7 @@ func Provider() *schema.Provider {
 			},
 			"http_client_retry_enabled": {
 				Type:        schema.TypeBool,
-				Optional:    true,
+				Optional:    false,
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_ENABLED", true),
 				Description: "Enables request retries on HTTP status codes 429 and 5xx. Defaults to `true`.",
 			},
@@ -122,6 +122,24 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_TIMEOUT", nil),
 				Description: "The HTTP request retry timeout period. Defaults to 60 seconds.",
+			},
+			"http_client_retry_backOffMultiplier": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_BACKOFF_MULTIPLIER", nil),
+				Description: "The HTTP request retry back off multiplier. Defaults to 2.",
+			},
+			"http_client_retry_backOffBase": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_BACKOFF_BASE", nil),
+				Description: "The HTTP request retry back off base. Defaults to 2.",
+			},
+			"http_client_retry_max_retries": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_MAX_RETRIES", nil),
+				Description: "The HTTP request maximum retry number. Defaults to 3.",
 			},
 		},
 
@@ -268,6 +286,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
+	// Initialize http.Client for the Datadog API Clients
+	httpClient := http.DefaultClient
+
 	// Initialize the official Datadog V1 API client
 	auth := context.WithValue(
 		context.Background(),
@@ -281,14 +302,25 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			},
 		},
 	)
-	// Initialize http.Client for the Datadog API Clients
-	httpClient := http.DefaultClient
+
 	config := datadog.NewConfiguration()
 	config.HTTPClient = httpClient
 	config.RetryConfiguration.EnableRetry = httpRetryEnabled
 	if v, ok := d.GetOk("http_client_retry_timeout"); ok {
 		timeout := time.Duration(int64(v.(int))) * time.Second
 		config.RetryConfiguration.HTTPRetryTimeout = timeout
+	}
+	if v, ok := d.GetOk("http_client_retry_backOffMultiplier"); ok {
+		backOffMultiplier := float64(v.(float64))
+		config.RetryConfiguration.BackOffMultiplier = backOffMultiplier
+	}
+	if v, ok := d.GetOk("http_client_retry_backOffBase"); ok {
+		backOffBase := float64(v.(float64))
+		config.RetryConfiguration.BackOffBase = backOffBase
+	}
+	if v, ok := d.GetOk("http_client_retry_max_retries"); ok {
+		maxRetries := int(v.(int))
+		config.RetryConfiguration.MaxRetries = maxRetries
 	}
 
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
