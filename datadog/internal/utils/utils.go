@@ -94,6 +94,14 @@ func GetUserAgent(clientUserAgent string) string {
 		clientUserAgent)
 }
 
+// GetUserAgentFramework augments the default user agent with provider details for framework provider
+func GetUserAgentFramework(clientUserAgent, tfCLIVersion string) string {
+	return fmt.Sprintf("terraform-provider-datadog/%s (terraform-cli %s) %s",
+		version.ProviderVersion,
+		tfCLIVersion,
+		clientUserAgent)
+}
+
 // GetMetadataFromJSON decodes passed JSON data
 func GetMetadataFromJSON(jsonBytes []byte, unmarshalled interface{}) error {
 	decoder := json.NewDecoder(bytes.NewReader(jsonBytes))

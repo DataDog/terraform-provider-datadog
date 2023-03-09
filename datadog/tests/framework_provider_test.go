@@ -10,6 +10,8 @@ import (
 
 	common "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/hashicorp/go-cleanhttp"
+	frameworkDiag "github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov5"
 	"github.com/hashicorp/terraform-plugin-mux/tf5muxserver"
@@ -111,7 +113,6 @@ func testAccFrameworkMuxProviders(ctx context.Context, t *testing.T) (context.Co
 
 	// Init sdkV2 provider
 	sdkV2Provider := datadog.Provider()
-	sdkV2Provider.ConfigureContextFunc = testProviderConfigure(ctx, httpClient, tClock)
 	sdkV2Provider.ConfigureContextFunc = func(context.Context, *schema.ResourceData) (interface{}, diag.Diagnostics) {
 		return &datadog.ProviderConfiguration{
 			Auth:                ctx,
@@ -129,6 +130,9 @@ func testAccFrameworkMuxProviders(ctx context.Context, t *testing.T) (context.Co
 		DatadogApiInstances: apiInstances,
 
 		Now: tClock.Now,
+		ConfigureCallbackFunc: func(p *datadog.FrameworkProvider, request *provider.ConfigureRequest, config *datadog.ProviderSchema) frameworkDiag.Diagnostics {
+			return nil
+		},
 	}
 
 	// The provider must be initialized prior to setting User-Agent headers

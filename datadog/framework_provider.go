@@ -15,6 +15,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -32,16 +33,18 @@ var (
 	_ provider.ProviderWithConfigValidators = &FrameworkProvider{}
 )
 
+// FrameworkProvider struct
 type FrameworkProvider struct {
 	CommunityClient     *datadogCommunity.Client
 	DatadogApiInstances *utils.ApiInstances
 	Auth                context.Context
 
-	Now func() time.Time
+	ConfigureCallbackFunc func(p *FrameworkProvider, request *provider.ConfigureRequest, config *ProviderSchema) diag.Diagnostics
+	Now                   func() time.Time
 }
 
-// Provider schema struct
-type providerSchema struct {
+// ProviderSchema struct
+type ProviderSchema struct {
 	ApiKey                 types.String `tfsdk:"api_key"`
 	AppKey                 types.String `tfsdk:"app_key"`
 	ApiUrl                 types.String `tfsdk:"api_url"`
@@ -51,7 +54,9 @@ type providerSchema struct {
 }
 
 func New() provider.Provider {
-	return &FrameworkProvider{}
+	return &FrameworkProvider{
+		ConfigureCallbackFunc: defaultConfigureFunc,
+	}
 }
 
 func (p *FrameworkProvider) Metadata(_ context.Context, _ provider.MetadataRequest, response *provider.MetadataResponse) {
@@ -95,15 +100,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 }
 
 func (p *FrameworkProvider) Configure(ctx context.Context, request provider.ConfigureRequest, response *provider.ConfigureResponse) {
-	// Provider has already been configured. This should only occur in testing scenario
-	// where a custom HttpClient needs to be used
-	if p.Auth != nil && p.CommunityClient != nil && p.DatadogApiInstances != nil {
-		response.DataSourceData = p
-		response.ResourceData = p
-		return
-	}
-
-	var config providerSchema
+	var config ProviderSchema
 	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -111,122 +108,17 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 
 	p.ConfigureConfigDefaults(&config)
 
-	validate, _ := strconv.ParseBool(config.Validate.ValueString())
-	httpClientRetryEnabled, _ := strconv.ParseBool(config.Validate.ValueString())
-
-	if validate && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
-		response.Diagnostics.AddError("api_key and app_key must be set unless validate = false", "")
+	response.Diagnostics.Append(p.ConfigureCallbackFunc(p, &request, &config)...)
+	if response.Diagnostics.HasError() {
 		return
 	}
-
-	// Initialize the community client
-	p.CommunityClient = datadogCommunity.NewClient(config.ApiKey.ValueString(), config.AppKey.ValueString())
-	if !config.ApiUrl.IsNull() {
-		p.CommunityClient.SetBaseUrl(config.ApiUrl.ValueString())
-	}
-	c := cleanhttp.DefaultClient()
-	p.CommunityClient.ExtraHeader["User-Agent"] = utils.GetUserAgent(fmt.Sprintf(
-		"datadog-api-client-go/%s (go %s; os %s; arch %s)",
-		"go-datadog-api",
-		runtime.Version(),
-		runtime.GOOS,
-		runtime.GOARCH,
-	))
-	p.CommunityClient.HttpClient = c
-
-	if validate {
-		log.Println("[INFO] Datadog client successfully initialized, now validating...")
-		ok, err := p.CommunityClient.Validate()
-		if err != nil {
-			response.Diagnostics.AddError("[ERROR] Datadog Client validation error", err.Error())
-			return
-		} else if !ok {
-			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
-			response.Diagnostics.AddError("[ERROR] Datadog Client validation error", err.Error())
-			return
-		}
-	} else {
-		log.Println("[INFO] Skipping key validation (validate = false)")
-	}
-	log.Printf("[INFO] Datadog Client successfully validated.")
-
-	// Initialize http.Client for the Datadog API Clients
-	httpClient := http.DefaultClient
-	if httpClientRetryEnabled {
-		ctOptions := transport.CustomTransportOptions{}
-		if !config.HttpClientRetryTimeout.IsNull() {
-			timeout := time.Duration(config.HttpClientRetryTimeout.ValueInt64()) * time.Second
-			ctOptions.Timeout = &timeout
-		}
-		customTransport := transport.NewCustomTransport(httpClient.Transport, ctOptions)
-		httpClient.Transport = customTransport
-	}
-
-	// Initialize the official Datadog V1 API client
-	auth := context.WithValue(
-		context.Background(),
-		datadog.ContextAPIKeys,
-		map[string]datadog.APIKey{
-			"apiKeyAuth": {
-				Key: config.ApiKey.ValueString(),
-			},
-			"appKeyAuth": {
-				Key: config.AppKey.ValueString(),
-			},
-		},
-	)
-	ddClientConfig := datadog.NewConfiguration()
-	ddClientConfig.HTTPClient = httpClient
-	ddClientConfig.UserAgent = utils.GetUserAgent(ddClientConfig.UserAgent)
-	ddClientConfig.Debug = logging.IsDebugOrHigher()
-
-	if !config.ApiUrl.IsNull() {
-		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
-		if parseErr != nil {
-			response.Diagnostics.AddError("invalid API URL", parseErr.Error())
-			return
-		}
-		if parsedAPIURL.Host == "" || parsedAPIURL.Scheme == "" {
-			response.Diagnostics.AddError("missing protocol or host", parseErr.Error())
-			return
-		}
-		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
-		auth = context.WithValue(auth, datadog.ContextServerIndex, 1)
-		auth = context.WithValue(auth, datadog.ContextServerVariables, map[string]string{
-			"name":     parsedAPIURL.Host,
-			"protocol": parsedAPIURL.Scheme,
-		})
-
-		// Configure URL's per operation
-		// IPRangesApiService.GetIPRanges
-		ipRangesDNSNameArr := strings.Split(parsedAPIURL.Hostname(), ".")
-		// Parse out subdomain if it exists
-		if len(ipRangesDNSNameArr) > 2 {
-			ipRangesDNSNameArr = ipRangesDNSNameArr[1:]
-		}
-		ipRangesDNSNameArr = append([]string{baseIPRangesSubdomain}, ipRangesDNSNameArr...)
-
-		auth = context.WithValue(auth, datadog.ContextOperationServerIndices, map[string]int{
-			"v1.IPRangesApi.GetIPRanges": 1,
-		})
-		auth = context.WithValue(auth, datadog.ContextOperationServerVariables, map[string]map[string]string{
-			"v1.IPRangesApi.GetIPRanges": {
-				"name": strings.Join(ipRangesDNSNameArr, "."),
-			},
-		})
-	}
-
-	datadogClient := datadog.NewAPIClient(ddClientConfig)
-
-	p.DatadogApiInstances = &utils.ApiInstances{HttpClient: datadogClient}
-	p.Auth = auth
 
 	// Make config available for data sources and resources
 	response.DataSourceData = p
 	response.ResourceData = p
 }
 
-func (p *FrameworkProvider) ConfigureConfigDefaults(config *providerSchema) {
+func (p *FrameworkProvider) ConfigureConfigDefaults(config *ProviderSchema) {
 	if config.ApiKey.IsNull() {
 		apiKey, err := utils.GetMultiEnvVar(APIKeyEnvVars[:]...)
 		if err == nil {
@@ -290,4 +182,120 @@ func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.D
 	return []func() datasource.DataSource{
 		NewIPRangesDataSource,
 	}
+}
+
+// Helper method to configure the provider
+func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureRequest, config *ProviderSchema) diag.Diagnostics {
+	diags := diag.Diagnostics{}
+	validate, _ := strconv.ParseBool(config.Validate.ValueString())
+	httpClientRetryEnabled, _ := strconv.ParseBool(config.Validate.ValueString())
+
+	if validate && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
+		diags.AddError("api_key and app_key must be set unless validate = false", "")
+		return diags
+	}
+
+	// Initialize the community client
+	p.CommunityClient = datadogCommunity.NewClient(config.ApiKey.ValueString(), config.AppKey.ValueString())
+	if !config.ApiUrl.IsNull() {
+		p.CommunityClient.SetBaseUrl(config.ApiUrl.ValueString())
+	}
+	c := cleanhttp.DefaultClient()
+	p.CommunityClient.ExtraHeader["User-Agent"] = utils.GetUserAgentFramework(fmt.Sprintf(
+		"datadog-api-client-go/%s (go %s; os %s; arch %s)",
+		"go-datadog-api",
+		runtime.Version(),
+		runtime.GOOS,
+		runtime.GOARCH,
+	), request.TerraformVersion)
+	p.CommunityClient.HttpClient = c
+
+	if validate {
+		log.Println("[INFO] Datadog client successfully initialized, now validating...")
+		ok, err := p.CommunityClient.Validate()
+		if err != nil {
+			diags.AddError("[ERROR] Datadog Client validation error", err.Error())
+			return diags
+		} else if !ok {
+			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
+			diags.AddError("[ERROR] Datadog Client validation error", err.Error())
+			return diags
+		}
+	} else {
+		log.Println("[INFO] Skipping key validation (validate = false)")
+	}
+	log.Printf("[INFO] Datadog Client successfully validated.")
+
+	// Initialize http.Client for the Datadog API Clients
+	httpClient := http.DefaultClient
+	if httpClientRetryEnabled {
+		ctOptions := transport.CustomTransportOptions{}
+		if !config.HttpClientRetryTimeout.IsNull() {
+			timeout := time.Duration(config.HttpClientRetryTimeout.ValueInt64()) * time.Second
+			ctOptions.Timeout = &timeout
+		}
+		customTransport := transport.NewCustomTransport(httpClient.Transport, ctOptions)
+		httpClient.Transport = customTransport
+	}
+
+	// Initialize the official Datadog V1 API client
+	auth := context.WithValue(
+		context.Background(),
+		datadog.ContextAPIKeys,
+		map[string]datadog.APIKey{
+			"apiKeyAuth": {
+				Key: config.ApiKey.ValueString(),
+			},
+			"appKeyAuth": {
+				Key: config.AppKey.ValueString(),
+			},
+		},
+	)
+	ddClientConfig := datadog.NewConfiguration()
+	ddClientConfig.HTTPClient = httpClient
+	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
+	ddClientConfig.Debug = logging.IsDebugOrHigher()
+
+	if !config.ApiUrl.IsNull() {
+		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
+		if parseErr != nil {
+			diags.AddError("invalid API URL", parseErr.Error())
+			return diags
+		}
+		if parsedAPIURL.Host == "" || parsedAPIURL.Scheme == "" {
+			diags.AddError("missing protocol or host", parseErr.Error())
+			return diags
+		}
+		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
+		auth = context.WithValue(auth, datadog.ContextServerIndex, 1)
+		auth = context.WithValue(auth, datadog.ContextServerVariables, map[string]string{
+			"name":     parsedAPIURL.Host,
+			"protocol": parsedAPIURL.Scheme,
+		})
+
+		// Configure URL's per operation
+		// IPRangesApiService.GetIPRanges
+		ipRangesDNSNameArr := strings.Split(parsedAPIURL.Hostname(), ".")
+		// Parse out subdomain if it exists
+		if len(ipRangesDNSNameArr) > 2 {
+			ipRangesDNSNameArr = ipRangesDNSNameArr[1:]
+		}
+		ipRangesDNSNameArr = append([]string{baseIPRangesSubdomain}, ipRangesDNSNameArr...)
+
+		auth = context.WithValue(auth, datadog.ContextOperationServerIndices, map[string]int{
+			"v1.IPRangesApi.GetIPRanges": 1,
+		})
+		auth = context.WithValue(auth, datadog.ContextOperationServerVariables, map[string]map[string]string{
+			"v1.IPRangesApi.GetIPRanges": {
+				"name": strings.Join(ipRangesDNSNameArr, "."),
+			},
+		})
+	}
+
+	datadogClient := datadog.NewAPIClient(ddClientConfig)
+
+	p.DatadogApiInstances = &utils.ApiInstances{HttpClient: datadogClient}
+	p.Auth = auth
+
+	return nil
 }
