@@ -113,7 +113,7 @@ func Provider() *schema.Provider {
 			},
 			"http_client_retry_enabled": {
 				Type:        schema.TypeBool,
-				Optional:    false,
+				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_ENABLED", true),
 				Description: "Enables request retries on HTTP status codes 429 and 5xx. Defaults to `true`.",
 			},
@@ -123,13 +123,13 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_TIMEOUT", nil),
 				Description: "The HTTP request retry timeout period. Defaults to 60 seconds.",
 			},
-			"http_client_retry_backOffMultiplier": {
+			"http_client_retry_backoff_multiplier": {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_BACKOFF_MULTIPLIER", nil),
 				Description: "The HTTP request retry back off multiplier. Defaults to 2.",
 			},
-			"http_client_retry_backOffBase": {
+			"http_client_retry_backoff_base": {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_BACKOFF_BASE", nil),
@@ -310,11 +310,11 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		timeout := time.Duration(int64(v.(int))) * time.Second
 		config.RetryConfiguration.HTTPRetryTimeout = timeout
 	}
-	if v, ok := d.GetOk("http_client_retry_backOffMultiplier"); ok {
+	if v, ok := d.GetOk("http_client_retry_backoff_multiplier"); ok {
 		backOffMultiplier := float64(v.(float64))
 		config.RetryConfiguration.BackOffMultiplier = backOffMultiplier
 	}
-	if v, ok := d.GetOk("http_client_retry_backOffBase"); ok {
+	if v, ok := d.GetOk("http_client_retry_backoff_base"); ok {
 		backOffBase := float64(v.(float64))
 		config.RetryConfiguration.BackOffBase = backOffBase
 	}
