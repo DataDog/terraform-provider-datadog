@@ -1424,8 +1424,12 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := k.GetOkWith("call_type"); ok {
 		request.SetCallType(datadogV1.SyntheticsTestCallType(attr.(string)))
 	}
-	if attr, ok := k.GetOkWith("service"); ok {
-		request.SetService(attr.(string))
+	if syntheticsTest.GetSubtype() == "grpc" {
+		if attr, ok := k.GetOkWith("service"); ok {
+			request.SetService(attr.(string))
+		} else {
+			request.SetService("")
+		}
 	}
 	k.Remove(parts)
 
