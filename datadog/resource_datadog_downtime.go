@@ -311,11 +311,17 @@ func downtimeBoundaryNeedsApply(d *schema.ResourceData, tsFrom string, apiTs, co
 
 	if updating {
 		// when updating, we apply when
-		// * API-returned value is different than configured value
 		// * the config value has changed
-		if apiTs != configTs || d.HasChange(tsFrom) {
+		// * API-returned value is different than configured value and there is no recurrence
+		if d.HasChange(tsFrom) {
 			apply = true
+		} else {
+			_, ok := d.GetOk("active_child_id")
+			if !ok && apiTs != configTs {
+				apply = true
+			}
 		}
+
 	} else {
 		// when creating, we always apply
 		apply = true
