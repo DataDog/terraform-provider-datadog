@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"net/http"
 	"net/url"
 	"runtime"
 	"strings"
@@ -286,9 +285,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
-	// Initialize http.Client for the Datadog API Clients
-	httpClient := http.DefaultClient
-
 	// Initialize the official Datadog V1 API client
 	auth := context.WithValue(
 		context.Background(),
@@ -304,7 +300,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	)
 
 	config := datadog.NewConfiguration()
-	config.HTTPClient = httpClient
 	config.RetryConfiguration.EnableRetry = httpRetryEnabled
 	if v, ok := d.GetOk("http_client_retry_timeout"); ok {
 		timeout := time.Duration(int64(v.(int))) * time.Second

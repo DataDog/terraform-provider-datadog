@@ -525,6 +525,7 @@ func buildDatadogClient(httpClient *http.Client) *common.APIClient {
 	config := common.NewConfiguration()
 	config.Debug = isDebug()
 	config.HTTPClient = httpClient
+	config.RetryConfiguration.EnableRetry = true
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
 	return common.NewAPIClient(config)
 }
