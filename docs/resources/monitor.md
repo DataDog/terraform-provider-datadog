@@ -146,12 +146,12 @@ Required:
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--variables--event_query--compute))
 - `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`.
 - `name` (String) The name of query for use in formulas.
+- `search` (Block List, Min: 1, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--event_query--search))
 
 Optional:
 
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--variables--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
-- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--event_query--search))
 
 <a id="nestedblock--variables--event_query--compute"></a>
 ### Nested Schema for `variables.event_query.compute`
@@ -164,6 +164,14 @@ Optional:
 
 - `interval` (Number) A time interval in milliseconds.
 - `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--variables--event_query--search"></a>
+### Nested Schema for `variables.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
 
 
 <a id="nestedblock--variables--event_query--group_by"></a>
@@ -189,15 +197,6 @@ Optional:
 
 - `metric` (String) The metric used for sorting group by results.
 - `order` (String) Direction of sort. Valid values are `asc`, `desc`.
-
-
-
-<a id="nestedblock--variables--event_query--search"></a>
-### Nested Schema for `variables.event_query.search`
-
-Required:
-
-- `query` (String) The events search string.
 
 ## Import
 
