@@ -520,12 +520,14 @@ func buildContext(ctx context.Context, apiKey string, appKey string, apiURL stri
 	return ctx, nil
 }
 
-func buildDatadogClient(httpClient *http.Client) *common.APIClient {
+func buildDatadogClient(ctx context.Context, httpClient *http.Client) *common.APIClient {
 	//Datadog API config.HTTPClient
 	config := common.NewConfiguration()
+	if ctx.Value("http_retry_enable") == true {
+		config.RetryConfiguration.EnableRetry = true
+	}
 	config.Debug = isDebug()
 	config.HTTPClient = httpClient
-	config.RetryConfiguration.EnableRetry = true
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
 	return common.NewAPIClient(config)
 }
@@ -555,7 +557,7 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 
 		return &datadog.ProviderConfiguration{
 			CommunityClient:     communityClient,
-			DatadogApiInstances: &utils.ApiInstances{HttpClient: buildDatadogClient(c)},
+			DatadogApiInstances: &utils.ApiInstances{HttpClient: buildDatadogClient(ctx, c)},
 			Auth:                ctx,
 
 			Now: clock.Now,

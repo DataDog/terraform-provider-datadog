@@ -89,7 +89,12 @@ func TestAccDatadogLogsMetric_Basic(t *testing.T) {
 
 func TestAccDatadogLogsMetric_Basic_Retry(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	if !isReplaying() {
+		t.Skip("This test doesn't support recording")
+	}
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, "http_retry_enable", true)
+	ctx, accProviders := testAccProviders(ctx, t)
 	uniqueLogsMetric := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 	accProvider := testAccProvider(t, accProviders)
 
