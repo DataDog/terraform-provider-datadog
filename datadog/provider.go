@@ -16,9 +16,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	datadogCommunity "github.com/zorkian/go-datadog-api"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
-	datadogCommunity "github.com/zorkian/go-datadog-api"
 )
 
 var (
@@ -126,18 +127,54 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_BACKOFF_MULTIPLIER", nil),
+				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
+					value := v.(int)
+					var diags diag.Diagnostics
+					if value <= 0 {
+						diag := diag.Diagnostic{
+							Severity: diag.Error,
+							Summary:  "Backoff multiplier must be greater than 0",
+						}
+						diags = append(diags, diag)
+					}
+					return diags
+				},
 				Description: "The HTTP request retry back off multiplier. Defaults to 2.",
 			},
 			"http_client_retry_backoff_base": {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_BACKOFF_BASE", nil),
+				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
+					value := v.(int)
+					var diags diag.Diagnostics
+					if value <= 0 {
+						diag := diag.Diagnostic{
+							Severity: diag.Error,
+							Summary:  "Backoff base must be greater than 0",
+						}
+						diags = append(diags, diag)
+					}
+					return diags
+				},
 				Description: "The HTTP request retry back off base. Defaults to 2.",
 			},
 			"http_client_retry_max_retries": {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_MAX_RETRIES", nil),
+				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
+					value := v.(int)
+					var diags diag.Diagnostics
+					if value <= 0 || value > 20 {
+						diag := diag.Diagnostic{
+							Severity: diag.Error,
+							Summary:  "Max retries must be between 0 and 20",
+						}
+						diags = append(diags, diag)
+					}
+					return diags
+				},
 				Description: "The HTTP request maximum retry number. Defaults to 3.",
 			},
 		},
@@ -306,15 +343,15 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		config.RetryConfiguration.HTTPRetryTimeout = timeout
 	}
 	if v, ok := d.GetOk("http_client_retry_backoff_multiplier"); ok {
-		backOffMultiplier := float64(v.(float64))
+		backOffMultiplier := float64(v.(int))
 		config.RetryConfiguration.BackOffMultiplier = backOffMultiplier
 	}
 	if v, ok := d.GetOk("http_client_retry_backoff_base"); ok {
-		backOffBase := float64(v.(float64))
+		backOffBase := float64(v.(int))
 		config.RetryConfiguration.BackOffBase = backOffBase
 	}
 	if v, ok := d.GetOk("http_client_retry_max_retries"); ok {
-		maxRetries := int(v.(int))
+		maxRetries := v.(int)
 		config.RetryConfiguration.MaxRetries = maxRetries
 	}
 
