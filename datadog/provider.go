@@ -127,55 +127,52 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_BACKOFF_MULTIPLIER", nil),
+				Description: "The HTTP request retry back off multiplier. Defaults to 2.",
 				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
-					value := v.(int)
+					value, ok := v.(int)
 					var diags diag.Diagnostics
-					if value <= 0 {
-						diag := diag.Diagnostic{
+					if ok && value <= 0 {
+						return append(diags, diag.Diagnostic{
 							Severity: diag.Error,
-							Summary:  "Backoff multiplier must be greater than 0",
-						}
-						diags = append(diags, diag)
+							Summary:  "Backoff multiplier must be greater than 0.",
+						})
 					}
 					return diags
 				},
-				Description: "The HTTP request retry back off multiplier. Defaults to 2.",
 			},
 			"http_client_retry_backoff_base": {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_BACKOFF_BASE", nil),
+				Description: "The HTTP request retry back off base. Defaults to 2.",
 				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
-					value := v.(int)
+					value, ok := v.(int)
 					var diags diag.Diagnostics
-					if value <= 0 {
-						diag := diag.Diagnostic{
+					if ok && value <= 0 {
+						return append(diags, diag.Diagnostic{
 							Severity: diag.Error,
-							Summary:  "Backoff base must be greater than 0",
-						}
-						diags = append(diags, diag)
+							Summary:  "Backoff base must be greater than 0.",
+						})
 					}
 					return diags
 				},
-				Description: "The HTTP request retry back off base. Defaults to 2.",
 			},
 			"http_client_retry_max_retries": {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_MAX_RETRIES", nil),
+				Description: "The HTTP request maximum retry number. Defaults to 3.",
 				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
-					value := v.(int)
+					value, ok := v.(int)
 					var diags diag.Diagnostics
-					if value <= 0 || value > 20 {
-						diag := diag.Diagnostic{
+					if ok && (value <= 0 || value > 20) {
+						return append(diags, diag.Diagnostic{
 							Severity: diag.Error,
 							Summary:  "Max retries must be between 0 and 20",
-						}
-						diags = append(diags, diag)
+						})
 					}
 					return diags
 				},
-				Description: "The HTTP request maximum retry number. Defaults to 3.",
 			},
 		},
 
