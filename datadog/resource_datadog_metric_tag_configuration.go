@@ -87,7 +87,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				Type:        schema.TypeSet,
 				Elem: &schema.Schema{
 					Type:         schema.TypeString,
-					ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\.\-\_:\/]*[^:]$`), "tags must be valid"), validation.StringLenBetween(1, 200)),
+					ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile(`^[A-Za-z](?:[A-Za-z0-9\.\-\_:\/]*[A-Za-z0-9\.\-\_\/])*$`), "tags must be valid"), validation.StringLenBetween(1, 200)),
 				},
 				Required: true,
 			},
