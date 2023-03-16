@@ -165,10 +165,10 @@ func Provider() *schema.Provider {
 				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
 					value, ok := v.(int)
 					var diags diag.Diagnostics
-					if ok && (value <= 0 || value > 20) {
+					if ok && (value <= 0 || value > 5) {
 						return append(diags, diag.Diagnostic{
 							Severity: diag.Error,
-							Summary:  "Max retries must be between 0 and 20",
+							Summary:  "Max retries must be between 0 and 5",
 						})
 					}
 					return diags
