@@ -146,6 +146,9 @@ func resourceDatadogSensitiveDataScannerRuleCreate(ctx context.Context, d *schem
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
+	sensitiveDataScannerMutex.Lock()
+	defer sensitiveDataScannerMutex.Unlock()
+
 	attributes := buildSensitiveDataScannerRuleAttributes(d)
 
 	req := datadogV2.NewSensitiveDataScannerRuleCreateRequestWithDefaults()
@@ -257,6 +260,9 @@ func resourceDatadogSensitiveDataScannerRuleUpdate(ctx context.Context, d *schem
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
+	sensitiveDataScannerMutex.Lock()
+	defer sensitiveDataScannerMutex.Unlock()
+
 	id := d.Id()
 
 	attributes := buildSensitiveDataScannerRuleAttributes(d)
@@ -282,6 +288,9 @@ func resourceDatadogSensitiveDataScannerRuleDelete(ctx context.Context, d *schem
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+
+	sensitiveDataScannerMutex.Lock()
+	defer sensitiveDataScannerMutex.Unlock()
 
 	id := d.Id()
 	body := datadogV2.NewSensitiveDataScannerRuleDeleteRequestWithDefaults()
