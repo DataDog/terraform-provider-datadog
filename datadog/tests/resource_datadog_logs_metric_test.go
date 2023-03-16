@@ -87,6 +87,60 @@ func TestAccDatadogLogsMetric_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogLogsMetric_Basic_Retry(t *testing.T) {
+	t.Parallel()
+	if !isReplaying() {
+		t.Skip("This test doesn't support recording")
+	}
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, "http_retry_enable", true)
+	ctx, accProviders := testAccProviders(ctx, t)
+	uniqueLogsMetric := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogLogsMetricDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogLogsMetricConfigBasic(uniqueLogsMetric),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogLogsMetricExists(accProvider, "datadog_logs_metric.testing_logs_metric"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "compute.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "compute.0.aggregation_type", "distribution"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "compute.0.path", "@duration"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "compute.0.include_percentiles", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "filter.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "filter.0.query", "service:test"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.0.path", "@my.status"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.0.tag_name", "status"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "group_by.1.path", "service"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogLogsMetricConfigUpdateIncludePercentiles(uniqueLogsMetric),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogLogsMetricExists(accProvider, "datadog_logs_metric.testing_logs_metric"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_metric.testing_logs_metric", "compute.0.include_percentiles", "true"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogLogsMetricCount_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
