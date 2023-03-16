@@ -592,7 +592,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:    true,
 				},
 				"min_failure_duration": {
-					Description: "Minimum amount of time in failure required to trigger an alert. Default is `0`.",
+					Description: "Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.",
 					Type:        schema.TypeInt,
 					Optional:    true,
 				},

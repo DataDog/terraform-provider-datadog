@@ -116,14 +116,14 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						Type:             schema.TypeInt,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleKeepAliveFromValue),
 						Required:         true,
-						Description:      "Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window.",
+						Description:      "Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window (in seconds).",
 					},
 
 					"max_signal_duration": {
 						Type:             schema.TypeInt,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleMaxSignalDurationFromValue),
 						Required:         true,
-						Description:      "A signal will “close” regardless of the query being matched once the time exceeds the maximum duration. This time is calculated from the first seen timestamp.",
+						Description:      "A signal will “close” regardless of the query being matched once the time exceeds the maximum duration (in seconds). This time is calculated from the first seen timestamp.",
 					},
 
 					"new_value_options": {
