@@ -807,6 +807,10 @@ func updateCommonResourceDataFromResponse(d *schema.ResourceData, ruleResponse s
 		filters := extractFiltersFromRuleResponse(ruleResponse.GetFilters())
 		d.Set("filter", filters)
 	}
+
+	if tags, ok := ruleResponse.GetTagsOk(); ok {
+		d.Set("tags", *tags)
+	}
 }
 
 func updateStandardResourceDataFromResponse(d *schema.ResourceData, ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse) {
@@ -881,6 +885,10 @@ func updateSignalResourceDataFromResponse(d *schema.ResourceData, ruleResponse *
 
 	if ruleType, ok := ruleResponse.GetTypeOk(); ok {
 		d.Set("type", *ruleType)
+	}
+
+	if tags, ok := ruleResponse.GetTagsOk(); ok {
+		d.Set("tags", *tags)
 	}
 }
 
