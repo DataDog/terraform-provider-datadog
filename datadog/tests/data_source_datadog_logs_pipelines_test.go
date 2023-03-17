@@ -16,7 +16,6 @@ import (
 )
 
 func TestAccDatadogLogsPipelinesDatasource(t *testing.T) {
-	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
