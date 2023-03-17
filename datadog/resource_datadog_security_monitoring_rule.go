@@ -316,7 +316,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 		},
 
 		"tags": {
-			Type:        schema.TypeList,
+			Type:        schema.TypeSet,
 			Optional:    true,
 			Description: "Tags for generated signals.",
 			Elem:        &schema.Schema{Type: schema.TypeString},
@@ -474,9 +474,9 @@ func buildCreateCommonPayload(d *schema.ResourceData, payload securityMonitoring
 	}
 
 	if v, ok := d.GetOk("tags"); ok {
-		tfTags := v.([]interface{})
-		tags := make([]string, len(tfTags))
-		for i, value := range tfTags {
+		tfTags := v.(*schema.Set)
+		tags := make([]string, tfTags.Len())
+		for i, value := range tfTags.List() {
 			tags[i] = value.(string)
 		}
 		payload.SetTags(tags)
@@ -1066,9 +1066,9 @@ func buildUpdatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 	}
 
 	if v, ok := d.GetOk("tags"); ok {
-		tfTags := v.([]interface{})
-		tags := make([]string, len(tfTags))
-		for i, value := range tfTags {
+		tfTags := v.(*schema.Set)
+		tags := make([]string, tfTags.Len())
+		for i, value := range tfTags.List() {
 			tags[i] = value.(string)
 		}
 		payload.SetTags(tags)
