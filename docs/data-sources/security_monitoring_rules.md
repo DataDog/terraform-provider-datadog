@@ -50,7 +50,7 @@ Read-Only:
 - `options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options))
 - `query` (List of Object) (see [below for nested schema](#nestedobjatt--rules--query))
 - `signal_query` (List of Object) (see [below for nested schema](#nestedobjatt--rules--signal_query))
-- `tags` (List of String)
+- `tags` (Set of String)
 - `type` (String)
 
 <a id="nestedobjatt--rules--case"></a>
