@@ -43,6 +43,6 @@ func datasourceDatadogSDSGroupOrderRead(ctx context.Context, d *schema.ResourceD
 	if err := d.Set("groups", tfList); err != nil {
 		return diag.FromErr(err)
 	}
-	d.SetId("sensitive-data-scanner-group-order")
+	d.SetId(ddGroupList.Data.GetId())
 	return nil
 }

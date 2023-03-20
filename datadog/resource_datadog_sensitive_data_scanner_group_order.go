@@ -21,11 +21,6 @@ func resourceDatadogSDSGroupOrder() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
-			"order_id": {
-				Description: "The list of Sensitive Data Scanner group IDs, in order. Logs are tested against the query filter of each index one by one following the order of the list.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
 			"groups": {
 				Description: "The list of Sensitive Data Scanner group IDs, in order. Logs are tested against the query filter of each index one by one following the order of the list.",
 				Type:        schema.TypeList,
@@ -41,26 +36,30 @@ func resourceDatadogSDSGroupOrderCreate(ctx context.Context, d *schema.ResourceD
 }
 
 func resourceDatadogSDSGroupOrderUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	SDSGroupOrderRequest := datadogV2.NewSensitiveDataScannerConfigRequestWithDefaults()
-	SDSGroupOrderRequestConfig := datadogV2.NewSensitiveDataScannerReorderConfigWithDefaults()
-	SDSGroupOrderRequestRelationships := datadogV2.NewSensitiveDataScannerConfigurationRelationshipsWithDefaults()
-	SDSGroupOrderRequestGroups := datadogV2.NewSensitiveDataScannerGroupListWithDefaults()
+	providerConf := meta.(*ProviderConfiguration)
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
 
-	tfID := d.Get("order_id").(string)
 	tfList := d.Get("groups").([]interface{})
 	ddList := make([]datadogV2.SensitiveDataScannerGroupItem, len(tfList))
 	for i, tfName := range tfList {
 		ddList[i] = *datadogV2.NewSensitiveDataScannerGroupItemWithDefaults()
 		ddList[i].SetId(tfName.(string))
 	}
+	ddSDSGroupsList, httpResponse, err := apiInstances.GetSensitiveDataScannerApiV2().ListScanningGroups(auth)
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting Sensitive Data Scanner groups list")
+	}
+
+	SDSGroupOrderRequest := datadogV2.NewSensitiveDataScannerConfigRequestWithDefaults()
+	SDSGroupOrderRequestConfig := datadogV2.NewSensitiveDataScannerReorderConfigWithDefaults()
+	SDSGroupOrderRequestRelationships := datadogV2.NewSensitiveDataScannerConfigurationRelationshipsWithDefaults()
+	SDSGroupOrderRequestGroups := datadogV2.NewSensitiveDataScannerGroupListWithDefaults()
 	SDSGroupOrderRequestGroups.SetData(ddList)
 	SDSGroupOrderRequestRelationships.SetGroups(*SDSGroupOrderRequestGroups)
 	SDSGroupOrderRequestConfig.SetRelationships(*SDSGroupOrderRequestRelationships)
-	SDSGroupOrderRequestConfig.SetId(tfID)
+	SDSGroupOrderRequestConfig.SetId(ddSDSGroupsList.Data.GetId())
 	SDSGroupOrderRequest.SetData(*SDSGroupOrderRequestConfig)
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
 
 	updatedOrder, httpResponse, err := apiInstances.GetSensitiveDataScannerApiV2().ReorderScanningGroups(auth, *SDSGroupOrderRequest)
 	if err != nil {
@@ -69,7 +68,7 @@ func resourceDatadogSDSGroupOrderUpdate(ctx context.Context, d *schema.ResourceD
 	if err := utils.CheckForUnparsed(updatedOrder); err != nil {
 		return diag.FromErr(err)
 	}
-	d.SetId("sensitive-data-scanner-group-order")
+	d.SetId(ddSDSGroupsList.Data.GetId())
 	return nil
 }
 
@@ -96,6 +95,7 @@ func resourceDatadogSDSGroupOrderRead(ctx context.Context, d *schema.ResourceDat
 	if err := utils.CheckForUnparsed(ddSDSGroupsList); err != nil {
 		return diag.FromErr(err)
 	}
+	d.SetId(ddSDSGroupsList.Data.GetId())
 	return updateSDSGroupOrderState(d, *ddSDSGroupsList.Data.Relationships.Groups)
 }
 

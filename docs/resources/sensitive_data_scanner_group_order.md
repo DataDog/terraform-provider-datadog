@@ -18,7 +18,6 @@ Provides a Datadog Sensitive Data Scanner Group Order API resource. This can be 
 ### Required
 
 - `groups` (List of String) The list of Sensitive Data Scanner group IDs, in order. Logs are tested against the query filter of each index one by one following the order of the list.
-- `order_id` (String) The list of Sensitive Data Scanner group IDs, in order. Logs are tested against the query filter of each index one by one following the order of the list.
 
 ### Read-Only
 
