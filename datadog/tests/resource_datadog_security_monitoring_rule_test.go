@@ -377,10 +377,10 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckWithId(accProvider func() (*s
 			tfSecurityRuleName, "filter.1.action", "require"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "filter.1.query", "does not really require neither"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.0", "i:tomato"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.1", "u:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
 	)
 }
 
@@ -457,10 +457,10 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckNewValueRule(accProvider func
 			tfSecurityRuleName, "options.0.new_value_options.0.learning_duration", "1"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.new_value_options.0.learning_threshold", "0"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.0", "i:tomato"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.1", "u:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
 	)
 }
 
@@ -530,10 +530,10 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckImpossibleTravelRule(accProvi
 			tfSecurityRuleName, "options.0.detection_method", "impossible_travel"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations", "true"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.0", "i:tomato"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.1", "u:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
 	)
 }
 
@@ -603,10 +603,10 @@ func testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvi
 			tfSecurityRuleName, "options.0.detection_method", "impossible_travel"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations", "true"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.0", "i:tomato"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.1", "u:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
 	)
 }
 
@@ -709,10 +709,10 @@ func testAccCheckDatadogSecurityMonitoringCreatedCheckCwsRule(accProvider func()
 			tfSecurityRuleName, "options.0.keep_alive", "600"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.0", "i:tomato"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.1", "u:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "type", "workload_security"),
 	)
@@ -810,10 +810,10 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider func() (*schem
 			tfSecurityRuleName, "filter.0.action", "suppress"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "filter.0.query", "does not really suppress (updated)"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.0", "u:tomato"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.1", "i:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
 	)
 }
 
@@ -893,10 +893,10 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRule(accProvider fu
 			tfSecurityRuleName, "options.0.new_value_options.0.learning_duration", "0"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.new_value_options.0.learning_threshold", "0"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.0", "u:tomato"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.1", "i:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
 	)
 }
 
@@ -968,10 +968,10 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckCwsRule(accProvider func() 
 			tfSecurityRuleName, "options.0.keep_alive", "600"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.0", "u:tomato"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.1", "i:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "type", "workload_security"),
 	)
@@ -1136,10 +1136,10 @@ func testAccCheckDatadogSecurityMonitorCreatedSignalCorrelationCheck(accProvider
 			tfSecurityRuleName, "filter.1.action", "require"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "filter.1.query", "does not really require neither"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.0", "alert:red"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.1", "attack:advanced"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "alert:red"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "attack:advanced"),
 	)
 }
 
@@ -1244,10 +1244,10 @@ func testAccCheckDatadogSecurityMonitoringUpdateSignalCorrelationCheck(accProvid
 			tfSecurityRuleName, "filter.0.action", "suppress"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "filter.0.query", "does not really suppress (updated)"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.0", "alert:red"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.1", "attack:advanced"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "alert:red"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "attack:advanced"),
 	)
 }
 
@@ -1294,10 +1294,10 @@ func testAccCheckDatadogSecurityMonitoringEnabledDefaultCheck(accProvider func()
 			tfSecurityRuleName, "filter.0.action", "suppress"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "filter.0.query", "does not really suppress (updated)"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.0", "u:tomato"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "tags.1", "i:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
 	)
 }
 
