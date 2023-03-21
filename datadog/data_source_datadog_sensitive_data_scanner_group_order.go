@@ -30,7 +30,7 @@ func datasourceDatadogSDSGroupOrderRead(ctx context.Context, d *schema.ResourceD
 	auth := providerConf.Auth
 	ddGroupList, httpResponse, err := apiInstances.GetSensitiveDataScannerApiV2().ListScanningGroups(auth)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting logs index list")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting Sensitive Data Scanner groups list")
 	}
 	if err := utils.CheckForUnparsed(ddGroupList); err != nil {
 		return diag.FromErr(err)
