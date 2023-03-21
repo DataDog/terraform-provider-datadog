@@ -15,7 +15,7 @@ func datasourceDatadogSDSGroupOrder() *schema.Resource {
 		ReadContext: datasourceDatadogSDSGroupOrderRead,
 		Schema: map[string]*schema.Schema{
 			"groups": {
-				Description: "The list of Sensitive Data Scanner group IDs, in order. Logs are tested against the query filter of each index one by one following the order of the list.",
+				Description: "The list of Sensitive Data Scanner group IDs, in order. Groups are applied sequentially following the order of the list.",
 				Type:        schema.TypeList,
 				Computed:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
