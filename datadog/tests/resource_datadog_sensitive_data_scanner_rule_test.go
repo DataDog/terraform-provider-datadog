@@ -87,6 +87,24 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 						resource_name, "text_replacement.0.replacement_string", ""),
 				),
 			},
+			{
+				Config: testAccCheckDatadogSensitiveDataScannerRuleChangedGroupNone(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider, resource_name),
+					resource.TestCheckResourceAttr(
+						resource_name, "description", "another description"),
+					resource.TestCheckResourceAttr(
+						resource_name, "is_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						resource_name, "name", uniq),
+					resource.TestCheckResourceAttr(
+						resource_name, "pattern", "regex"),
+					resource.TestCheckResourceAttr(
+						resource_name, "excluded_namespaces.0", "email"),
+					resource.TestCheckResourceAttr(
+						resource_name, "text_replacement.0.type", "none"),
+				),
+			},
 		},
 	})
 }
@@ -211,6 +229,38 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 		replacement_string = ""
 		type = "partial_replacement_from_beginning"
 	}
+}
+`, name)
+}
+
+func testAccCheckDatadogSensitiveDataScannerRuleChangedGroupNone(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_sensitive_data_scanner_group" "sample_group" {
+	name = "my group"
+	is_enabled = false
+	product_list = ["logs"]
+	filter {
+		query = "*"
+	}
+}
+
+resource "datadog_sensitive_data_scanner_group" "new_group" {
+	name = "another group"
+	is_enabled = true
+	product_list = ["apm"]
+	filter {
+		query = "*"
+	}
+}
+
+resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
+	name = "%s"
+	description = "another description"
+	excluded_namespaces = ["email"]
+	is_enabled = true
+	group_id = datadog_sensitive_data_scanner_group.new_group.id
+	pattern = "regex"
+	tags = ["sensitive_data:true"]
 }
 `, name)
 }
