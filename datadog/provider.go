@@ -135,7 +135,6 @@ func Provider() *schema.Provider {
 			"http_client_retry_backoff_multiplier": {
 				Type:        schema.TypeInt,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_BACKOFF_MULTIPLIER", nil),
 				Description: "The HTTP request retry back off multiplier. Defaults to 2.",
 				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
 					value, ok := v.(int)
@@ -152,7 +151,6 @@ func Provider() *schema.Provider {
 			"http_client_retry_backoff_base": {
 				Type:        schema.TypeInt,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_BACKOFF_BASE", nil),
 				Description: "The HTTP request retry back off base. Defaults to 2.",
 				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
 					value, ok := v.(int)
@@ -169,7 +167,6 @@ func Provider() *schema.Provider {
 			"http_client_retry_max_retries": {
 				Type:        schema.TypeInt,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_MAX_RETRIES", nil),
 				Description: "The HTTP request maximum retry number. Defaults to 3.",
 				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
 					value, ok := v.(int)
