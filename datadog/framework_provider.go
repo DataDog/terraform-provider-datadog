@@ -206,6 +206,9 @@ func (p *FrameworkProvider) ConfigValidators(ctx context.Context) []provider.Con
 	return []provider.ConfigValidator{
 		frameworkvalidators.NewValidateProviderStringValIn("validate", "true", "false"),
 		frameworkvalidators.NewValidateProviderStringValIn("http_client_retry_enabled", "true", "false"),
+		frameworkvalidators.NewValidateProviderInt64AtLeast("http_client_retry_backoff_multiplier", 1),
+		frameworkvalidators.NewValidateProviderInt64AtLeast("http_client_retry_backoff_base", 1),
+		frameworkvalidators.NewValidateProviderInt64Between("http_client_retry_max_retries", 1, 5),
 	}
 }
 
