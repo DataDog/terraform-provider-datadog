@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"net/http"
 	"net/url"
 	"runtime"
 	"strconv"
@@ -44,12 +43,15 @@ type FrameworkProvider struct {
 
 // ProviderSchema struct
 type ProviderSchema struct {
-	ApiKey                 types.String `tfsdk:"api_key"`
-	AppKey                 types.String `tfsdk:"app_key"`
-	ApiUrl                 types.String `tfsdk:"api_url"`
-	Validate               types.String `tfsdk:"validate"`
-	HttpClientRetryEnabled types.String `tfsdk:"http_client_retry_enabled"`
-	HttpClientRetryTimeout types.Int64  `tfsdk:"http_client_retry_timeout"`
+	ApiKey                           types.String `tfsdk:"api_key"`
+	AppKey                           types.String `tfsdk:"app_key"`
+	ApiUrl                           types.String `tfsdk:"api_url"`
+	Validate                         types.String `tfsdk:"validate"`
+	HttpClientRetryEnabled           types.String `tfsdk:"http_client_retry_enabled"`
+	HttpClientRetryTimeout           types.Int64  `tfsdk:"http_client_retry_timeout"`
+	HttpClientRetryBackoffMultiplier types.Int64  `tfsdk:"http_client_retry_backoff_multiplier"`
+	HttpClientRetryBackoffBase       types.Int64  `tfsdk:"http_client_retry_backoff_base"`
+	HttpClientRetryMaxRetries        types.Int64  `tfsdk:"http_client_retry_max_retries"`
 }
 
 func New() provider.Provider {
@@ -93,6 +95,18 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			"http_client_retry_timeout": schema.Int64Attribute{
 				Optional:    true,
 				Description: "The HTTP request retry timeout period. Defaults to 60 seconds.",
+			},
+			"http_client_retry_backoff_multiplier": schema.Int64Attribute{
+				Optional:    true,
+				Description: "The HTTP request retry back off multiplier. Defaults to 2.",
+			},
+			"http_client_retry_backoff_base": schema.Int64Attribute{
+				Optional:    true,
+				Description: "The HTTP request retry back off base. Defaults to 2.",
+			},
+			"http_client_retry_max_retries": schema.Int64Attribute{
+				Optional:    true,
+				Description: "The HTTP request maximum retry number. Defaults to 3.",
 			},
 		},
 	}
@@ -151,6 +165,30 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(config *ProviderSchema) {
 		if err == nil {
 			v, _ := strconv.Atoi(rTimeout)
 			config.HttpClientRetryTimeout = types.Int64Value(int64(v))
+		}
+	}
+
+	if config.HttpClientRetryBackoffMultiplier.IsNull() {
+		rTimeout, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_BACKOFF_MULTIPLIER")
+		if err == nil {
+			v, _ := strconv.Atoi(rTimeout)
+			config.HttpClientRetryBackoffMultiplier = types.Int64Value(int64(v))
+		}
+	}
+
+	if config.HttpClientRetryBackoffBase.IsNull() {
+		rTimeout, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_BACKOFF_BASE")
+		if err == nil {
+			v, _ := strconv.Atoi(rTimeout)
+			config.HttpClientRetryBackoffBase = types.Int64Value(int64(v))
+		}
+	}
+
+	if config.HttpClientRetryMaxRetries.IsNull() {
+		rTimeout, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_MAX_RETRIES")
+		if err == nil {
+			v, _ := strconv.Atoi(rTimeout)
+			config.HttpClientRetryMaxRetries = types.Int64Value(int64(v))
 		}
 	}
 
@@ -225,18 +263,6 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
-	// Initialize http.Client for the Datadog API Clients
-	httpClient := http.DefaultClient
-	if httpClientRetryEnabled {
-		ctOptions := transport.CustomTransportOptions{}
-		if !config.HttpClientRetryTimeout.IsNull() {
-			timeout := time.Duration(config.HttpClientRetryTimeout.ValueInt64()) * time.Second
-			ctOptions.Timeout = &timeout
-		}
-		customTransport := transport.NewCustomTransport(httpClient.Transport, ctOptions)
-		httpClient.Transport = customTransport
-	}
-
 	// Initialize the official Datadog V1 API client
 	auth := context.WithValue(
 		context.Background(),
@@ -251,7 +277,6 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		},
 	)
 	ddClientConfig := datadog.NewConfiguration()
-	ddClientConfig.HTTPClient = httpClient
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
 	ddClientConfig.Debug = logging.IsDebugOrHigher()
 
@@ -289,6 +314,23 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 				"name": strings.Join(ipRangesDNSNameArr, "."),
 			},
 		})
+	}
+
+	if httpClientRetryEnabled {
+		ddClientConfig.RetryConfiguration.EnableRetry = httpClientRetryEnabled
+
+		if !config.HttpClientRetryBackoffMultiplier.IsNull() {
+			timeout := time.Duration(config.HttpClientRetryBackoffMultiplier.ValueInt64()) * time.Second
+			ddClientConfig.RetryConfiguration.HTTPRetryTimeout = timeout
+		}
+
+		if !config.HttpClientRetryBackoffBase.IsNull() {
+			ddClientConfig.RetryConfiguration.BackOffBase = float64(config.HttpClientRetryBackoffMultiplier.ValueInt64())
+		}
+
+		if !config.HttpClientRetryMaxRetries.IsNull() {
+			ddClientConfig.RetryConfiguration.MaxRetries = int(config.HttpClientRetryMaxRetries.ValueInt64())
+		}
 	}
 
 	datadogClient := datadog.NewAPIClient(ddClientConfig)
