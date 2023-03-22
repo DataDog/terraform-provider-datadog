@@ -1,0 +1,167 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"enabled":false,"entries":[{"data":{"attributes":{"cidr_block":"1.2.3.4/32","note":"entry 2"},"type":"ip_allowlist_entry"}},{"data":{"attributes":{"cidr_block":"127.0.0.1/32","note":"entry 1"},"type":"ip_allowlist_entry"}}]},"type":"ip_allowlist"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/ip_allowlist
+    method: PATCH
+  response:
+    body: |
+      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"cidr_block":"1.2.3.4/32","created_at":"2023-02-23T17:07:48.337176+00:00","note":"entry 2","modified_at":"2023-02-23T17:07:48.337176+00:00"},"id":"fdbcb955-64a3-4e1e-bf52-8b7cde1e1b91"}},{"data":{"type":"ip_allowlist_entry","attributes":{"cidr_block":"127.0.0.1/32","created_at":"2023-02-23T17:07:48.337176+00:00","note":"entry 1","modified_at":"2023-02-23T17:07:48.337176+00:00"},"id":"af4a2ae1-d53b-4cf4-927c-25654d778ac0"}}]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/ip_allowlist
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"created_at":"2023-02-23T17:07:48.337176+00:00","note":"entry 2","cidr_block":"1.2.3.4/32","modified_at":"2023-02-23T17:07:48.337176+00:00"},"id":"fdbcb955-64a3-4e1e-bf52-8b7cde1e1b91"}},{"data":{"type":"ip_allowlist_entry","attributes":{"created_at":"2023-02-23T17:07:48.337176+00:00","note":"entry 1","cidr_block":"127.0.0.1/32","modified_at":"2023-02-23T17:07:48.337176+00:00"},"id":"af4a2ae1-d53b-4cf4-927c-25654d778ac0"}}]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/ip_allowlist
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"modified_at":"2023-02-23T17:07:48.337176+00:00","note":"entry 2","created_at":"2023-02-23T17:07:48.337176+00:00","cidr_block":"1.2.3.4/32"},"id":"fdbcb955-64a3-4e1e-bf52-8b7cde1e1b91"}},{"data":{"type":"ip_allowlist_entry","attributes":{"modified_at":"2023-02-23T17:07:48.337176+00:00","note":"entry 1","created_at":"2023-02-23T17:07:48.337176+00:00","cidr_block":"127.0.0.1/32"},"id":"af4a2ae1-d53b-4cf4-927c-25654d778ac0"}}]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"enabled":true,"entries":[{"data":{"attributes":{"cidr_block":"1.2.3.4/32","note":"fake entry"},"type":"ip_allowlist_entry"}},{"data":{"attributes":{"cidr_block":"0.0.0.0/0","note":"all"},"type":"ip_allowlist_entry"}}]},"type":"ip_allowlist"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/ip_allowlist
+    method: PATCH
+  response:
+    body: |
+      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":true,"entries":[{"data":{"type":"ip_allowlist_entry","id":"fdbcb955-64a3-4e1e-bf52-8b7cde1e1b91","attributes":{"created_at":"2023-02-23T17:07:48.337176+00:00","modified_at":"2023-02-23T17:07:49.748461+00:00","cidr_block":"1.2.3.4/32","note":"fake entry"}}},{"data":{"type":"ip_allowlist_entry","id":"2ab4a65d-e466-447a-afb7-d30163d8e498","attributes":{"created_at":"2023-02-23T17:07:49.751819+00:00","modified_at":"2023-02-23T17:07:49.751819+00:00","cidr_block":"0.0.0.0/0","note":"all"}}}]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/ip_allowlist
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":true,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"created_at":"2023-02-23T17:07:49.751819+00:00","modified_at":"2023-02-23T17:07:49.751819+00:00","note":"all","cidr_block":"0.0.0.0/0"},"id":"2ab4a65d-e466-447a-afb7-d30163d8e498"}},{"data":{"type":"ip_allowlist_entry","attributes":{"created_at":"2023-02-23T17:07:48.337176+00:00","modified_at":"2023-02-23T17:07:49.748461+00:00","note":"fake entry","cidr_block":"1.2.3.4/32"},"id":"fdbcb955-64a3-4e1e-bf52-8b7cde1e1b91"}}]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/ip_allowlist
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":true,"entries":[{"data":{"type":"ip_allowlist_entry","id":"2ab4a65d-e466-447a-afb7-d30163d8e498","attributes":{"modified_at":"2023-02-23T17:07:49.751819+00:00","note":"all","created_at":"2023-02-23T17:07:49.751819+00:00","cidr_block":"0.0.0.0/0"}}},{"data":{"type":"ip_allowlist_entry","id":"fdbcb955-64a3-4e1e-bf52-8b7cde1e1b91","attributes":{"modified_at":"2023-02-23T17:07:49.748461+00:00","note":"fake entry","created_at":"2023-02-23T17:07:48.337176+00:00","cidr_block":"1.2.3.4/32"}}}]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"enabled":true,"entries":[{"data":{"attributes":{"cidr_block":"1.2.3.4/32","note":"fake entry"},"type":"ip_allowlist_entry"}}]},"type":"ip_allowlist"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/ip_allowlist
+    method: PATCH
+  response:
+    body: '{"errors":["Cannot enable or keep enabled an IP Allowlist without the current IP address in it"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 400 Bad Request
+    code: 400
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"enabled":false,"entries":[]},"type":"ip_allowlist"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/ip_allowlist
+    method: PATCH
+  response:
+    body: |
+      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/ip_allowlist
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""

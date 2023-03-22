@@ -22,7 +22,6 @@ import (
 	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -31,9 +30,12 @@ type compositeProviderStruct struct {
 	frameworkProvider *datadog.FrameworkProvider
 }
 
-func buildFrameworkDatadogClient(httpClient *http.Client) *common.APIClient {
+func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *common.APIClient {
 	//Datadog API config.HTTPClient
 	config := common.NewConfiguration()
+	if ctx.Value("http_retry_enable") == true {
+		config.RetryConfiguration.EnableRetry = true
+	}
 	config.Debug = isDebug()
 	config.HTTPClient = httpClient
 	return common.NewAPIClient(config)
@@ -92,7 +94,7 @@ func initAccTestApiClients(ctx context.Context, t *testing.T, httpClient *http.C
 	communityClient.HttpClient = c
 
 	ctx, _ = buildContext(ctx, apiKey, appKey, apiURL)
-	apiInstances := &utils.ApiInstances{HttpClient: buildFrameworkDatadogClient(httpClient)}
+	apiInstances := &utils.ApiInstances{HttpClient: buildFrameworkDatadogClient(ctx, httpClient)}
 
 	return ctx, apiInstances, communityClient
 }
@@ -162,8 +164,7 @@ func initHttpClient(ctx context.Context, t *testing.T) (context.Context, *http.C
 	rec := initRecorder(t)
 	ctx = context.WithValue(ctx, clockContextKey("clock"), testClock(t))
 	httpClient := cleanhttp.DefaultClient()
-	loggingTransport := logging.NewTransport("Datadog", rec)
-	httpClient.Transport = transport.NewCustomTransport(loggingTransport, transport.CustomTransportOptions{})
+	httpClient.Transport = logging.NewTransport("Datadog", rec)
 	t.Cleanup(func() {
 		rec.Stop()
 	})

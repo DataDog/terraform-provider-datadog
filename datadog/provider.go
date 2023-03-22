@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"net/http"
 	"net/url"
 	"runtime"
 	"strconv"
@@ -21,7 +20,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
@@ -134,6 +132,57 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				Description: "The HTTP request retry timeout period. Defaults to 60 seconds.",
 			},
+			"http_client_retry_backoff_multiplier": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_BACKOFF_MULTIPLIER", nil),
+				Description: "The HTTP request retry back off multiplier. Defaults to 2.",
+				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
+					value, ok := v.(int)
+					var diags diag.Diagnostics
+					if ok && value <= 0 {
+						return append(diags, diag.Diagnostic{
+							Severity: diag.Error,
+							Summary:  "Backoff multiplier must be greater than 0.",
+						})
+					}
+					return diags
+				},
+			},
+			"http_client_retry_backoff_base": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_BACKOFF_BASE", nil),
+				Description: "The HTTP request retry back off base. Defaults to 2.",
+				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
+					value, ok := v.(int)
+					var diags diag.Diagnostics
+					if ok && value <= 0 {
+						return append(diags, diag.Diagnostic{
+							Severity: diag.Error,
+							Summary:  "Backoff base must be greater than 0.",
+						})
+					}
+					return diags
+				},
+			},
+			"http_client_retry_max_retries": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_MAX_RETRIES", nil),
+				Description: "The HTTP request maximum retry number. Defaults to 3.",
+				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
+					value, ok := v.(int)
+					var diags diag.Diagnostics
+					if ok && (value <= 0 || value > 5) {
+						return append(diags, diag.Diagnostic{
+							Severity: diag.Error,
+							Summary:  "Max retries must be between 0 and 5",
+						})
+					}
+					return diags
+				},
+			},
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
@@ -156,6 +205,7 @@ func Provider() *schema.Provider {
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
 			"datadog_integration_pagerduty_service_object": resourceDatadogIntegrationPagerdutySO(),
 			"datadog_integration_slack_channel":            resourceDatadogIntegrationSlackChannel(),
+			"datadog_ip_allowlist":                         resourceDatadogIPAllowlist(),
 			"datadog_logs_archive":                         resourceDatadogLogsArchive(),
 			"datadog_logs_archive_order":                   resourceDatadogLogsArchiveOrder(),
 			"datadog_logs_custom_pipeline":                 resourceDatadogLogsCustomPipeline(),
@@ -303,26 +353,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
-	// Initialize http.Client for the Datadog API Clients
-	httpClient := http.DefaultClient
-	if httpRetryEnabled {
-		ctOptions := transport.CustomTransportOptions{}
-		timeoutInterface, ok := d.GetOk("http_client_retry_timeout")
-		if ok {
-			timeout := time.Duration(int64(timeoutInterface.(int))) * time.Second
-			ctOptions.Timeout = &timeout
-		} else {
-			envVal, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_TIMEOUT")
-			if err == nil {
-				vInt, _ := strconv.Atoi(envVal)
-				timeout := time.Duration(int64(vInt)) * time.Second
-				ctOptions.Timeout = &timeout
-			}
-		}
-		customTransport := transport.NewCustomTransport(httpClient.Transport, ctOptions)
-		httpClient.Transport = customTransport
-	}
-
 	// Initialize the official Datadog V1 API client
 	auth := context.WithValue(
 		context.Background(),
@@ -336,8 +366,53 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			},
 		},
 	)
+
 	config := datadog.NewConfiguration()
-	config.HTTPClient = httpClient
+	config.RetryConfiguration.EnableRetry = httpRetryEnabled
+
+	if timeoutInterface, ok := d.GetOk("http_client_retry_timeout"); ok {
+		timeout := time.Duration(int64(timeoutInterface.(int))) * time.Second
+		config.RetryConfiguration.HTTPRetryTimeout = timeout
+	} else {
+		envVal, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_TIMEOUT")
+		if err == nil {
+			vInt, _ := strconv.Atoi(envVal)
+			timeout := time.Duration(int64(vInt)) * time.Second
+			config.RetryConfiguration.HTTPRetryTimeout = timeout
+		}
+	}
+
+	if backoffMultiplierInterface, ok := d.GetOk("http_client_retry_backoff_multiplier"); ok {
+		backOffMultiplier := float64(backoffMultiplierInterface.(int))
+		config.RetryConfiguration.BackOffMultiplier = backOffMultiplier
+	} else {
+		envVal, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_BACKOFF_MULTIPLIER")
+		if err == nil {
+			fVal, _ := strconv.ParseFloat(envVal, 64)
+			config.RetryConfiguration.BackOffMultiplier = fVal
+		}
+	}
+
+	if retryBackoffBaseInterface, ok := d.GetOk("http_client_retry_backoff_base"); ok {
+		retryBackoffBase := float64(retryBackoffBaseInterface.(int))
+		config.RetryConfiguration.BackOffBase = retryBackoffBase
+	} else {
+		envVal, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_BACKOFF_BASE")
+		if err == nil {
+			fVal, _ := strconv.ParseFloat(envVal, 64)
+			config.RetryConfiguration.BackOffBase = fVal
+		}
+	}
+
+	if maxRetryInterface, ok := d.GetOk("http_client_retry_max_retries"); ok {
+		config.RetryConfiguration.MaxRetries = maxRetryInterface.(int)
+	} else {
+		envVal, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_MAX_RETRIES")
+		if err == nil {
+			fVal, _ := strconv.Atoi(envVal)
+			config.RetryConfiguration.MaxRetries = fVal
+		}
+	}
 
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
 	config.Debug = logging.IsDebugOrHigher()
