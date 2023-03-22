@@ -28,7 +28,7 @@ type ValidateProviderStringValIn struct {
 }
 
 func (v *ValidateProviderStringValIn) Description(_ context.Context) string {
-	return fmt.Sprintf("value must be one of: %q", v.Values)
+	return fmt.Sprintf("value must be one of: %v", v.Values)
 }
 
 func (v *ValidateProviderStringValIn) MarkdownDescription(ctx context.Context) string {
@@ -77,7 +77,7 @@ type ValidateProviderInt64AtLeast struct {
 }
 
 func (v *ValidateProviderInt64AtLeast) Description(_ context.Context) string {
-	return fmt.Sprintf("value must be at least: %q", v.Min)
+	return fmt.Sprintf("value must be at least: %v", v.Min)
 }
 
 func (v *ValidateProviderInt64AtLeast) MarkdownDescription(ctx context.Context) string {
