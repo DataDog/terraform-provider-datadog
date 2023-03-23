@@ -13,22 +13,23 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/hashicorp/go-cleanhttp"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators/frameworkvalidators"
 )
 
 var (
-	_ provider.Provider                     = &FrameworkProvider{}
-	_ provider.ProviderWithConfigValidators = &FrameworkProvider{}
+	_ provider.Provider = &FrameworkProvider{}
 )
 
 // FrameworkProvider struct
@@ -119,7 +120,10 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 		return
 	}
 
-	p.ConfigureConfigDefaults(&config)
+	diags := p.ConfigureConfigDefaults(ctx, &config)
+	if diags.HasError() {
+		response.Diagnostics.Append(diags...)
+	}
 
 	response.Diagnostics.Append(p.ConfigureCallbackFunc(p, &request, &config)...)
 	if response.Diagnostics.HasError() {
@@ -131,7 +135,9 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 	response.ResourceData = p
 }
 
-func (p *FrameworkProvider) ConfigureConfigDefaults(config *ProviderSchema) {
+func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config *ProviderSchema) diag.Diagnostics {
+	var diags diag.Diagnostics
+
 	if config.ApiKey.IsNull() {
 		apiKey, err := utils.GetMultiEnvVar(APIKeyEnvVars[:]...)
 		if err == nil {
@@ -200,16 +206,52 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(config *ProviderSchema) {
 	if config.HttpClientRetryEnabled.IsNull() {
 		config.HttpClientRetryEnabled = types.StringValue("true")
 	}
+
+	// Run validations on the provider config after defaults and values from
+	// env var has been set.
+	diags.Append(p.ValidateConfigValues(ctx, config)...)
+
+	return diags
 }
 
-func (p *FrameworkProvider) ConfigValidators(ctx context.Context) []provider.ConfigValidator {
-	return []provider.ConfigValidator{
-		frameworkvalidators.NewValidateProviderStringValIn("validate", "true", "false"),
-		frameworkvalidators.NewValidateProviderStringValIn("http_client_retry_enabled", "true", "false"),
-		frameworkvalidators.NewValidateProviderInt64AtLeast("http_client_retry_backoff_multiplier", 1),
-		frameworkvalidators.NewValidateProviderInt64AtLeast("http_client_retry_backoff_base", 1),
-		frameworkvalidators.NewValidateProviderInt64Between("http_client_retry_max_retries", 1, 5),
+func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *ProviderSchema) diag.Diagnostics {
+	var diags diag.Diagnostics
+	// Init validators we need for purposes of config validation only
+	oneOfStringValidator := stringvalidator.OneOf("true", "false")
+	int64AtLeastValidator := int64validator.AtLeast(1)
+	int64BetweenValidator := int64validator.Between(1, 5)
+
+	if !config.Validate.IsNull() {
+		res := validator.StringResponse{}
+		oneOfStringValidator.ValidateString(ctx, validator.StringRequest{ConfigValue: config.Validate}, &res)
+		diags.Append(res.Diagnostics...)
 	}
+
+	if !config.HttpClientRetryEnabled.IsNull() {
+		res := validator.StringResponse{}
+		oneOfStringValidator.ValidateString(ctx, validator.StringRequest{ConfigValue: config.HttpClientRetryEnabled}, &res)
+		diags.Append(res.Diagnostics...)
+	}
+
+	if !config.HttpClientRetryBackoffMultiplier.IsNull() {
+		res := validator.Int64Response{}
+		int64AtLeastValidator.ValidateInt64(ctx, validator.Int64Request{ConfigValue: config.HttpClientRetryBackoffMultiplier}, &res)
+		diags.Append(res.Diagnostics...)
+	}
+
+	if !config.HttpClientRetryBackoffBase.IsNull() {
+		res := validator.Int64Response{}
+		int64AtLeastValidator.ValidateInt64(ctx, validator.Int64Request{ConfigValue: config.HttpClientRetryBackoffBase}, &res)
+		diags.Append(res.Diagnostics...)
+	}
+
+	if !config.HttpClientRetryMaxRetries.IsNull() {
+		res := validator.Int64Response{}
+		int64BetweenValidator.ValidateInt64(ctx, validator.Int64Request{ConfigValue: config.HttpClientRetryMaxRetries}, &res)
+		diags.Append(res.Diagnostics...)
+	}
+
+	return diags
 }
 
 func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
