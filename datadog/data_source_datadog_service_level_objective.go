@@ -47,6 +47,36 @@ func dataSourceDatadogServiceLevelObjective() *schema.Resource {
 				Type:        schema.TypeString,
 				Computed:    true,
 			},
+			"description": {
+				Description: "The description of the service level objective.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
+			"target_threshold": {
+				Description: "The primary target threshold of the service level objective.",
+				Type:        schema.TypeFloat,
+				Computed:    true,
+			},
+			"warning_threshold": {
+				Description: "The primary warning threshold of the service level objective.",
+				Type:        schema.TypeFloat,
+				Computed:    true,
+			},
+			"timeframe": {
+				Description: "The primary timeframe of the service level objective.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
+			"query_numerator": {
+				Description: "The numerator query of the service level objective.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
+			"query_denominator": {
+				Description: "The denominator query of the service level objective.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -91,6 +121,25 @@ func dataSourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.R
 		return diag.FromErr(err)
 	}
 	if err := d.Set("type", slo.GetType()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("description", slo.GetDescription()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("target_threshold", slo.GetTargetThreshold()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("warning_threshold", slo.GetWarningThreshold()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("timeframe", slo.GetTimeframe()); err != nil {
+		return diag.FromErr(err)
+	}
+	sloQ := slo.GetQuery()
+	if err := d.Set("query_numerator", sloQ.GetNumerator()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("query_denominator", sloQ.GetDenominator()); err != nil {
 		return diag.FromErr(err)
 	}
 
