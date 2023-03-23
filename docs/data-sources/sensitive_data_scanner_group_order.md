@@ -16,7 +16,7 @@ Provides a Datadog Sensitive Data Scanner Group Order API data source. This can 
 data "datadog_sensitive_data_scanner_group_order" "foo" {}
 
 resource "datadog_sensitive_data_scanner_group_order" "foobar" {
-    groups = data.datadog_sensitive_data_scanner_group_order.foo.groups
+  groups = data.datadog_sensitive_data_scanner_group_order.foo.groups
 }
 ```
 
