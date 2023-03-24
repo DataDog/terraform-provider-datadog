@@ -73,7 +73,7 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule" {
 - `pattern` (String) Not included if there is a relationship to a standard pattern.
 - `standard_pattern_id` (String) Id of the standard pattern the rule refers to. If provided, then pattern must not be provided.
 - `tags` (List of String) List of tags.
-- `text_replacement` (Block List, Max: 1) Object describing how the scanned event will be replaced. (see [below for nested schema](#nestedblock--text_replacement))
+- `text_replacement` (Block List, Max: 1) Object describing how the scanned event will be replaced. Defaults to `type: none` (see [below for nested schema](#nestedblock--text_replacement))
 
 ### Read-Only
 

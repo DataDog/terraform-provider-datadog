@@ -1,3 +1,23 @@
+## 3.23.0 (March 21, 2023)
+
+### BUGFIXES
+* [datadog_downtime] Ignore start/end comparison on recurring downtimes by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/1811
+* [datadog_monitor] Make search required for f&f monitors by @JoannaYe-Datadog in https://github.com/DataDog/terraform-provider-datadog/pull/1814
+* [datadog_synthetics_test] Allow empty values for service for Synthetics grpc tests by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1813
+* [datadog_sensitive_data_scanner] Add mutex to SDS resource by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1818
+* [datadog_metric_tag_configuration] Fix tag validation for metric tags configs by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1819
+* [datadog_security_monitioring_rule] Set `tags` in state by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1821
+* [datadog_sensitive_data_scanner_rule] Handle diffs when importing by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1823
+### IMPROVEMENTS
+* [datadog_logs_custom_pipeline] Add reference table logs processor by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1800
+### FEATURES
+* [datadog_ip_allowlist] Support IP allowlist management in terraform by @retsguj in https://github.com/DataDog/terraform-provider-datadog/pull/1788
+### NOTES
+* [provider] Remove custom transport by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/1812
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.22.0...v3.23.0
+
 ## 3.22.0 (March 7, 2023)
 
 ### BUGFIXES

@@ -66,7 +66,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - `options` (Block List, Max: 1) Options on rules. (see [below for nested schema](#nestedblock--options))
 - `query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
 - `signal_query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--signal_query))
-- `tags` (List of String) Tags for generated signals.
+- `tags` (Set of String) Tags for generated signals.
 - `type` (String) The rule type. Valid values are `log_detection`, `workload_security`, `signal_correlation`.
 
 ### Read-Only
@@ -101,8 +101,8 @@ Required:
 
 Required:
 
-- `keep_alive` (Number) Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`.
-- `max_signal_duration` (Number) A signal will “close” regardless of the query being matched once the time exceeds the maximum duration. This time is calculated from the first seen timestamp. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
+- `keep_alive` (Number) Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window (in seconds). Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`.
+- `max_signal_duration` (Number) A signal will “close” regardless of the query being matched once the time exceeds the maximum duration (in seconds). This time is calculated from the first seen timestamp. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
 
 Optional:
 
