@@ -99,7 +99,7 @@ func flattenYAMLToString(input map[string]interface{}) (string, error) {
 }
 
 func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]interface{} {
-	// this assumes we only support v2
+	// this assumes we only support >= v2
 	delete(attrMap, "dd-team") //dd-team is a computed field
 
 	for _, field := range fieldsWithName {
@@ -211,8 +211,8 @@ func isValidServiceDefinition(i interface{}, k string) (warnings []string, error
 	}
 
 	if schemaVersion, ok := attrMap["schema-version"].(string); ok {
-		if schemaVersion != "v2" {
-			errors = append(errors, fmt.Errorf("schema-version must be v2, but %s is used", schemaVersion))
+		if schemaVersion != "v2" && schemaVersion != "v2.1" {
+			errors = append(errors, fmt.Errorf("schema-version must be >= v2, but %s is used", schemaVersion))
 		}
 	} else {
 		errors = append(errors, fmt.Errorf("schema-version is missing: %q", k))
