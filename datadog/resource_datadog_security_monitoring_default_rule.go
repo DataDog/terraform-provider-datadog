@@ -116,7 +116,7 @@ func securityMonitoringRuleDeprecationWarning(rule securityMonitoringRuleRespons
 				"After the depreciation date, the rule will stop triggering signals. " +
 				" Moreover, the API will reject any call to update the rule, which might break your Terraform pipeline. " +
 				"The Datadog team performs regular audit of all detection rules to maintain high fidelity signal quality. " +
-				"We will be replacing this rule with an improved third party detection rule after the depreciation date. ",
+				"We will be replacing this rule with an improved third party detection rule after the depreciation date.",
 		}
 
 		diags = append(diags, warning)
