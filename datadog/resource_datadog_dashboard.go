@@ -3211,7 +3211,7 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 func getWidgetFieldSortSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"column": {
-			Description: "The facet path for the column",
+			Description: "The facet path for the column.",
 			Type:        schema.TypeString,
 			Required:    true,
 		},

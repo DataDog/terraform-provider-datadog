@@ -4576,7 +4576,7 @@ Optional:
 
 Required:
 
-- `column` (String) The facet path for the column
+- `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -6737,7 +6737,7 @@ Optional:
 
 Required:
 
-- `column` (String) The facet path for the column
+- `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -10097,7 +10097,7 @@ Optional:
 
 Required:
 
-- `column` (String) The facet path for the column
+- `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -12258,7 +12258,7 @@ Optional:
 
 Required:
 
-- `column` (String) The facet path for the column
+- `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
