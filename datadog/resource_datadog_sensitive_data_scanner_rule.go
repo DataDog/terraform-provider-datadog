@@ -77,7 +77,16 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 				Type:        schema.TypeList,
 				Optional:    true,
 				MaxItems:    1,
-				Description: "Object describing how the scanned event will be replaced.",
+				Description: "Object describing how the scanned event will be replaced. Defaults to `type: none`",
+				DiffSuppressFunc: func(_, _, _ string, d *schema.ResourceData) bool {
+					old, new := d.GetChange("text_replacement.0.type")
+					oldS := old.(string)
+					newS := new.(string)
+					if (oldS == "" && newS == "none") || (oldS == "none" && newS == "") || (oldS == "none" && newS == "none") {
+						return true
+					}
+					return false
+				},
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"number_of_chars": {
@@ -145,6 +154,9 @@ func resourceDatadogSensitiveDataScannerRuleCreate(ctx context.Context, d *schem
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+
+	sensitiveDataScannerMutex.Lock()
+	defer sensitiveDataScannerMutex.Unlock()
 
 	attributes := buildSensitiveDataScannerRuleAttributes(d)
 
@@ -232,8 +244,8 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 	}
 	attributes.SetTags(tags)
 
+	var textReplacement datadogV2.SensitiveDataScannerTextReplacement
 	if _, ok := d.GetOk("text_replacement"); ok {
-		var textReplacement datadogV2.SensitiveDataScannerTextReplacement
 		if numberOfChars, ok := d.GetOk("text_replacement.0.number_of_chars"); ok {
 			textReplacement.SetNumberOfChars(int64(numberOfChars.(int)))
 		}
@@ -246,8 +258,11 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 			typeVarItem, _ := datadogV2.NewSensitiveDataScannerTextReplacementTypeFromValue(typeVar.(string))
 			textReplacement.SetType(*typeVarItem)
 		}
-		attributes.SetTextReplacement(textReplacement)
+	} else {
+		textReplacement.Type = datadogV2.SENSITIVEDATASCANNERTEXTREPLACEMENTTYPE_NONE.Ptr()
 	}
+
+	attributes.SetTextReplacement(textReplacement)
 
 	return attributes
 }
@@ -256,6 +271,9 @@ func resourceDatadogSensitiveDataScannerRuleUpdate(ctx context.Context, d *schem
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+
+	sensitiveDataScannerMutex.Lock()
+	defer sensitiveDataScannerMutex.Unlock()
 
 	id := d.Id()
 
@@ -282,6 +300,9 @@ func resourceDatadogSensitiveDataScannerRuleDelete(ctx context.Context, d *schem
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+
+	sensitiveDataScannerMutex.Lock()
+	defer sensitiveDataScannerMutex.Unlock()
 
 	id := d.Id()
 	body := datadogV2.NewSensitiveDataScannerRuleDeleteRequestWithDefaults()
@@ -332,11 +353,8 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 			textReplacement["type"] = *replacementType
 		}
 		textReplacementList = append(textReplacementList, textReplacement)
-		currentReplacement := d.Get("text_replacement").([]interface{})
-		if textReplacement["type"] != "none" && len(currentReplacement) != 0 {
-			if err := d.Set("text_replacement", textReplacementList); err != nil {
-				return diag.FromErr(err)
-			}
+		if err := d.Set("text_replacement", textReplacementList); err != nil {
+			return diag.FromErr(err)
 		}
 	}
 	return nil

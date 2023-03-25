@@ -592,7 +592,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:    true,
 				},
 				"min_failure_duration": {
-					Description: "Minimum amount of time in failure required to trigger an alert. Default is `0`.",
+					Description: "Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.",
 					Type:        schema.TypeInt,
 					Optional:    true,
 				},
@@ -1424,8 +1424,12 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := k.GetOkWith("call_type"); ok {
 		request.SetCallType(datadogV1.SyntheticsTestCallType(attr.(string)))
 	}
-	if attr, ok := k.GetOkWith("service"); ok {
-		request.SetService(attr.(string))
+	if syntheticsTest.GetSubtype() == "grpc" {
+		if attr, ok := k.GetOkWith("service"); ok {
+			request.SetService(attr.(string))
+		} else {
+			request.SetService("")
+		}
 	}
 	k.Remove(parts)
 

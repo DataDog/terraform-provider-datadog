@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -9,6 +10,8 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
+
+var sensitiveDataScannerMutex = sync.Mutex{}
 
 func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 	return &schema.Resource{
@@ -141,6 +144,9 @@ func resourceDatadogSensitiveDataScannerGroupCreate(ctx context.Context, d *sche
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
+	sensitiveDataScannerMutex.Lock()
+	defer sensitiveDataScannerMutex.Unlock()
+
 	body := buildSensitiveDataScannerGroupCreateRequestBody(d)
 
 	resp, httpResp, err := apiInstances.GetSensitiveDataScannerApiV2().CreateScanningGroup(auth, *body)
@@ -170,6 +176,9 @@ func resourceDatadogSensitiveDataScannerGroupUpdate(ctx context.Context, d *sche
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+
+	sensitiveDataScannerMutex.Lock()
+	defer sensitiveDataScannerMutex.Unlock()
 
 	id := d.Id()
 
@@ -204,6 +213,9 @@ func resourceDatadogSensitiveDataScannerGroupDelete(ctx context.Context, d *sche
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+
+	sensitiveDataScannerMutex.Lock()
+	defer sensitiveDataScannerMutex.Unlock()
 
 	id := d.Id()
 	body := datadogV2.NewSensitiveDataScannerGroupDeleteRequestWithDefaults()

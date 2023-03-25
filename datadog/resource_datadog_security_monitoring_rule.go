@@ -116,14 +116,14 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						Type:             schema.TypeInt,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleKeepAliveFromValue),
 						Required:         true,
-						Description:      "Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window.",
+						Description:      "Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window (in seconds).",
 					},
 
 					"max_signal_duration": {
 						Type:             schema.TypeInt,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleMaxSignalDurationFromValue),
 						Required:         true,
-						Description:      "A signal will “close” regardless of the query being matched once the time exceeds the maximum duration. This time is calculated from the first seen timestamp.",
+						Description:      "A signal will “close” regardless of the query being matched once the time exceeds the maximum duration (in seconds). This time is calculated from the first seen timestamp.",
 					},
 
 					"new_value_options": {
@@ -316,7 +316,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 		},
 
 		"tags": {
-			Type:        schema.TypeList,
+			Type:        schema.TypeSet,
 			Optional:    true,
 			Description: "Tags for generated signals.",
 			Elem:        &schema.Schema{Type: schema.TypeString},
@@ -474,9 +474,9 @@ func buildCreateCommonPayload(d *schema.ResourceData, payload securityMonitoring
 	}
 
 	if v, ok := d.GetOk("tags"); ok {
-		tfTags := v.([]interface{})
-		tags := make([]string, len(tfTags))
-		for i, value := range tfTags {
+		tfTags := v.(*schema.Set)
+		tags := make([]string, tfTags.Len())
+		for i, value := range tfTags.List() {
 			tags[i] = value.(string)
 		}
 		payload.SetTags(tags)
@@ -807,6 +807,10 @@ func updateCommonResourceDataFromResponse(d *schema.ResourceData, ruleResponse s
 		filters := extractFiltersFromRuleResponse(ruleResponse.GetFilters())
 		d.Set("filter", filters)
 	}
+
+	if tags, ok := ruleResponse.GetTagsOk(); ok {
+		d.Set("tags", *tags)
+	}
 }
 
 func updateStandardResourceDataFromResponse(d *schema.ResourceData, ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse) {
@@ -881,6 +885,10 @@ func updateSignalResourceDataFromResponse(d *schema.ResourceData, ruleResponse *
 
 	if ruleType, ok := ruleResponse.GetTypeOk(); ok {
 		d.Set("type", *ruleType)
+	}
+
+	if tags, ok := ruleResponse.GetTagsOk(); ok {
+		d.Set("tags", *tags)
 	}
 }
 
@@ -1058,9 +1066,9 @@ func buildUpdatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 	}
 
 	if v, ok := d.GetOk("tags"); ok {
-		tfTags := v.([]interface{})
-		tags := make([]string, len(tfTags))
-		for i, value := range tfTags {
+		tfTags := v.(*schema.Set)
+		tags := make([]string, tfTags.Len())
+		for i, value := range tfTags.List() {
 			tags[i] = value.(string)
 		}
 		payload.SetTags(tags)

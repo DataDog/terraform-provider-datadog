@@ -18,7 +18,6 @@ import (
 	"time"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/transport"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	common "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -135,6 +134,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_pagerduty_service_object_test":       "integration-pagerduty",
 	"tests/resource_datadog_integration_pagerduty_test":                      "integration-pagerduty",
 	"tests/resource_datadog_integration_slack_channel_test":                  "integration-slack-channel",
+	"tests/resource_datadog_ip_allowlist_test":                               "ip_allowlist",
 	"tests/resource_datadog_logs_archive_test":                               "logs-archive",
 	"tests/resource_datadog_logs_archive_order_test":                         "logs-archive-order",
 	"tests/resource_datadog_logs_index_test":                                 "logs-index",
@@ -521,9 +521,12 @@ func buildContext(ctx context.Context, apiKey string, appKey string, apiURL stri
 	return ctx, nil
 }
 
-func buildDatadogClient(httpClient *http.Client) *common.APIClient {
+func buildDatadogClient(ctx context.Context, httpClient *http.Client) *common.APIClient {
 	//Datadog API config.HTTPClient
 	config := common.NewConfiguration()
+	if ctx.Value("http_retry_enable") == true {
+		config.RetryConfiguration.EnableRetry = true
+	}
 	config.Debug = isDebug()
 	config.HTTPClient = httpClient
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
@@ -555,7 +558,7 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 
 		return &datadog.ProviderConfiguration{
 			CommunityClient:     communityClient,
-			DatadogApiInstances: &utils.ApiInstances{HttpClient: buildDatadogClient(c)},
+			DatadogApiInstances: &utils.ApiInstances{HttpClient: buildDatadogClient(ctx, c)},
 			Auth:                ctx,
 
 			Now: clock.Now,
@@ -578,7 +581,7 @@ func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[s
 	ctx = context.WithValue(ctx, clockContextKey("clock"), testClock(t))
 	c := cleanhttp.DefaultClient()
 	loggingTransport := logging.NewTransport("Datadog", rec)
-	c.Transport = transport.NewCustomTransport(loggingTransport, transport.CustomTransportOptions{})
+	c.Transport = loggingTransport
 	p := testAccProvidersWithHTTPClient(ctx, t, c)
 	t.Cleanup(func() {
 		rec.Stop()

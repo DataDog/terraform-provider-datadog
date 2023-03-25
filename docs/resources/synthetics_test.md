@@ -656,7 +656,7 @@ Optional:
 - `http_version` (String) HTTP version to use for a Synthetics API test. Valid values are `http1`, `http2`, `any`.
 - `ignore_server_certificate_error` (Boolean) Ignore server certificate error.
 - `initial_navigation_timeout` (Number) Timeout before declaring the initial step as failed (in seconds) for browser tests.
-- `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert. Default is `0`.
+- `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.
 - `min_location_failed` (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`.
 - `monitor_name` (String) The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.
 - `monitor_options` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--monitor_options))
