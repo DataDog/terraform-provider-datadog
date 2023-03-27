@@ -207,14 +207,14 @@ func (d *IPRangesDataSource) Read(ctx context.Context, _ datasource.ReadRequest,
 	state.SyntheticsIpv4, _ = types.ListValueFrom(ctx, types.StringType, synthetics.GetPrefixesIpv4())
 	state.WebhooksIpv4, _ = types.ListValueFrom(ctx, types.StringType, webhook.GetPrefixesIpv4())
 	// v6
-	state.AgentsIpv6, _ = types.ListValueFrom(ctx, types.StringType, agents.GetPrefixesIpv4())
-	state.APIIpv6, _ = types.ListValueFrom(ctx, types.StringType, api.GetPrefixesIpv4())
-	state.APMIpv6, _ = types.ListValueFrom(ctx, types.StringType, apm.GetPrefixesIpv4())
-	state.LogsIpv6, _ = types.ListValueFrom(ctx, types.StringType, logs.GetPrefixesIpv4())
+	state.AgentsIpv6, _ = types.ListValueFrom(ctx, types.StringType, agents.GetPrefixesIpv6())
+	state.APIIpv6, _ = types.ListValueFrom(ctx, types.StringType, api.GetPrefixesIpv6())
+	state.APMIpv6, _ = types.ListValueFrom(ctx, types.StringType, apm.GetPrefixesIpv6())
+	state.LogsIpv6, _ = types.ListValueFrom(ctx, types.StringType, logs.GetPrefixesIpv6())
 	state.OrchestratorIpv6, _ = types.ListValueFrom(ctx, types.StringType, orchestrator.GetPrefixesIpv6())
-	state.ProcessIpv6, _ = types.ListValueFrom(ctx, types.StringType, process.GetPrefixesIpv4())
-	state.SyntheticsIpv6, _ = types.ListValueFrom(ctx, types.StringType, synthetics.GetPrefixesIpv4())
-	state.WebhooksIpv6, _ = types.ListValueFrom(ctx, types.StringType, webhook.GetPrefixesIpv4())
+	state.ProcessIpv6, _ = types.ListValueFrom(ctx, types.StringType, process.GetPrefixesIpv6())
+	state.SyntheticsIpv6, _ = types.ListValueFrom(ctx, types.StringType, synthetics.GetPrefixesIpv6())
+	state.WebhooksIpv6, _ = types.ListValueFrom(ctx, types.StringType, webhook.GetPrefixesIpv6())
 
 	ipv4PrefixesByLocationMap := make(map[string]string)
 	ipv6PrefixesByLocationMap := make(map[string]string)
@@ -234,7 +234,7 @@ func (d *IPRangesDataSource) Read(ctx context.Context, _ datasource.ReadRequest,
 	state.SyntheticsIpv4ByLocation = syntheticsIpv4ByLocation
 	response.Diagnostics.Append(diags...)
 
-	SyntheticsIpv6ByLocation, diags := types.MapValueFrom(ctx, types.StringType, ipv4PrefixesByLocationMap)
+	SyntheticsIpv6ByLocation, diags := types.MapValueFrom(ctx, types.StringType, ipv6PrefixesByLocationMap)
 	state.SyntheticsIpv6ByLocation = SyntheticsIpv6ByLocation
 	response.Diagnostics.Append(diags...)
 
