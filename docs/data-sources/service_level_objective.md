@@ -37,11 +37,18 @@ data "datadog_service_level_objective" "api_slo" {
 
 - `description` (String) The description of the service level objective.
 - `name` (String) Name of the Datadog service level objective
-- `query_denominator` (String) The denominator query of the service level objective.
-- `query_numerator` (String) The numerator query of the service level objective.
+- `query` (List of Object) The metric query of good / total events (see [below for nested schema](#nestedatt--query))
 - `target_threshold` (Number) The primary target threshold of the service level objective.
 - `timeframe` (String) The primary timeframe of the service level objective.
 - `type` (String) The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object). Available values are: `metric` and `monitor`.
 - `warning_threshold` (Number) The primary warning threshold of the service level objective.
+
+<a id="nestedatt--query"></a>
+### Nested Schema for `query`
+
+Read-Only:
+
+- `denominator` (String)
+- `numerator` (String)
 
 

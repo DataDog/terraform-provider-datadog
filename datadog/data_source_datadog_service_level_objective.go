@@ -67,15 +67,24 @@ func dataSourceDatadogServiceLevelObjective() *schema.Resource {
 				Type:        schema.TypeString,
 				Computed:    true,
 			},
-			"query_numerator": {
-				Description: "The numerator query of the service level objective.",
-				Type:        schema.TypeString,
+			"query": {
+				Type:        schema.TypeList,
 				Computed:    true,
-			},
-			"query_denominator": {
-				Description: "The denominator query of the service level objective.",
-				Type:        schema.TypeString,
-				Computed:    true,
+				Description: "The metric query of good / total events",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"numerator": {
+							Description: "The sum of all the `good` events.",
+							Type:        schema.TypeString,
+							Computed:    true,
+						},
+						"denominator": {
+							Description: "The sum of the `total` events.",
+							Type:        schema.TypeString,
+							Computed:    true,
+						},
+					},
+				},
 			},
 		},
 	}
@@ -135,11 +144,11 @@ func dataSourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.R
 	if err := d.Set("timeframe", slo.GetTimeframe()); err != nil {
 		return diag.FromErr(err)
 	}
+	query := make(map[string]interface{})
 	sloQ := slo.GetQuery()
-	if err := d.Set("query_numerator", sloQ.GetNumerator()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("query_denominator", sloQ.GetDenominator()); err != nil {
+	query["numerator"] = sloQ.GetNumerator()
+	query["denominator"] = sloQ.GetDenominator()
+	if err := d.Set("query", []map[string]interface{}{query}); err != nil {
 		return diag.FromErr(err)
 	}
 
