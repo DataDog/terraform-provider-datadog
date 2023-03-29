@@ -47,6 +47,45 @@ func dataSourceDatadogServiceLevelObjective() *schema.Resource {
 				Type:        schema.TypeString,
 				Computed:    true,
 			},
+			"description": {
+				Description: "The description of the service level objective.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
+			"target_threshold": {
+				Description: "The primary target threshold of the service level objective.",
+				Type:        schema.TypeFloat,
+				Computed:    true,
+			},
+			"warning_threshold": {
+				Description: "The primary warning threshold of the service level objective.",
+				Type:        schema.TypeFloat,
+				Computed:    true,
+			},
+			"timeframe": {
+				Description: "The primary timeframe of the service level objective.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
+			"query": {
+				Type:        schema.TypeList,
+				Computed:    true,
+				Description: "The metric query of good / total events",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"numerator": {
+							Description: "The sum of all the `good` events.",
+							Type:        schema.TypeString,
+							Computed:    true,
+						},
+						"denominator": {
+							Description: "The sum of the `total` events.",
+							Type:        schema.TypeString,
+							Computed:    true,
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -91,6 +130,25 @@ func dataSourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.R
 		return diag.FromErr(err)
 	}
 	if err := d.Set("type", slo.GetType()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("description", slo.GetDescription()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("target_threshold", slo.GetTargetThreshold()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("warning_threshold", slo.GetWarningThreshold()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("timeframe", slo.GetTimeframe()); err != nil {
+		return diag.FromErr(err)
+	}
+	query := make(map[string]interface{})
+	sloQ := slo.GetQuery()
+	query["numerator"] = sloQ.GetNumerator()
+	query["denominator"] = sloQ.GetDenominator()
+	if err := d.Set("query", []map[string]interface{}{query}); err != nil {
 		return diag.FromErr(err)
 	}
 
