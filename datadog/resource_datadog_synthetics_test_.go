@@ -1714,9 +1714,9 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 
 			if requestBasicAuth["type"] == "oauth-client" {
 				tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
-				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication;
+				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
 				if err == nil {
-					tokenApiAuthenticationValue = *tokenApiAuthentication;
+					tokenApiAuthenticationValue = *tokenApiAuthentication
 				}
 				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(requestBasicAuth["access_token_url"].(string), requestBasicAuth["client_id"].(string), requestBasicAuth["client_secret"].(string), tokenApiAuthenticationValue)
 
@@ -1729,9 +1729,9 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 
 			if requestBasicAuth["type"] == "oauth-rop" {
 				tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
-				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication;
+				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
 				if err == nil {
-					tokenApiAuthenticationValue = *tokenApiAuthentication;
+					tokenApiAuthenticationValue = *tokenApiAuthentication
 				}
 				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthROP(
 					requestBasicAuth["access_token_url"].(string),
