@@ -535,8 +535,23 @@ func buildDatadogClient(ctx context.Context, httpClient *http.Client) *common.AP
 
 func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock clockwork.FakeClock) schema.ConfigureContextFunc {
 	return func(_ context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-		communityClient := datadogCommunity.NewClient(d.Get("api_key").(string), d.Get("app_key").(string))
-		if apiURL := d.Get("api_url").(string); apiURL != "" {
+		apiKey := d.Get("api_key").(string)
+		if apiKey == "" {
+			apiKey, _ = utils.GetMultiEnvVar(datadog.APIKeyEnvVars[:]...)
+		}
+
+		appKey := d.Get("app_key").(string)
+		if appKey == "" {
+			appKey, _ = utils.GetMultiEnvVar(datadog.APPKeyEnvVars[:]...)
+		}
+
+		apiURL := d.Get("api_url").(string)
+		if apiURL == "" {
+			apiURL, _ = utils.GetMultiEnvVar(datadog.APIUrlEnvVars[:]...)
+		}
+
+		communityClient := datadogCommunity.NewClient(apiKey, appKey)
+		if apiURL != "" {
 			communityClient.SetBaseUrl(apiURL)
 		}
 
@@ -551,7 +566,7 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 			runtime.GOARCH,
 		))
 
-		ctx, err := buildContext(ctx, d.Get("api_key").(string), d.Get("app_key").(string), d.Get("api_url").(string))
+		ctx, err := buildContext(ctx, apiKey, appKey, apiURL)
 		if err != nil {
 			return nil, diag.FromErr(err)
 		}
