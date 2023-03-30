@@ -1713,8 +1713,12 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 			}
 
 			if requestBasicAuth["type"] == "oauth-client" {
-				tokenApiAuthentication, _ := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
-				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(requestBasicAuth["access_token_url"].(string), requestBasicAuth["client_id"].(string), requestBasicAuth["client_secret"].(string), *tokenApiAuthentication)
+				tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
+				if err == nil {
+					tokenApiAuthenticationValue = *tokenApiAuthentication
+				}
+				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(requestBasicAuth["access_token_url"].(string), requestBasicAuth["client_id"].(string), requestBasicAuth["client_secret"].(string), tokenApiAuthenticationValue)
 
 				basicAuth.SetAudience(requestBasicAuth["audience"].(string))
 				basicAuth.SetResource(requestBasicAuth["resource"].(string))
@@ -1724,11 +1728,15 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 			}
 
 			if requestBasicAuth["type"] == "oauth-rop" {
-				tokenApiAuthentication, _ := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+				tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
+				if err == nil {
+					tokenApiAuthenticationValue = *tokenApiAuthentication
+				}
 				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthROP(
 					requestBasicAuth["access_token_url"].(string),
 					requestBasicAuth["password"].(string),
-					*tokenApiAuthentication,
+					tokenApiAuthenticationValue,
 					requestBasicAuth["username"].(string))
 
 				basicAuth.SetAudience(requestBasicAuth["audience"].(string))
