@@ -3214,7 +3214,7 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 func getWidgetFieldSortSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"column": {
-			Description: "The facet path for the column",
+			Description: "The facet path for the column.",
 			Type:        schema.TypeString,
 			Required:    true,
 		},
@@ -5067,6 +5067,15 @@ func getSloListRequestSchema() map[string]*schema.Schema {
 						Optional:    true,
 						Default:     100,
 					},
+					"sort": {
+						Description: "The facet and order to sort the data, for example: `{\"column\": \"status.sli\", \"order\": \"desc\"}`.",
+						Type:        schema.TypeList,
+						MaxItems:    1,
+						Optional:    true,
+						Elem: &schema.Resource{
+							Schema: getWidgetFieldSortSchema(),
+						},
+					},
 				},
 			},
 		},
@@ -5110,6 +5119,10 @@ func buildDatadogSloListRequests(terraformRequests *[]interface{}) *[]datadogV1.
 			if v, ok := q["limit"].(int); ok {
 				datadogQuery.SetLimit(int64(v))
 			}
+
+			terraformSort := q["sort"].([]interface{})
+			datadogQuery.SetSort(*buildDatadogSloListSort(&terraformSort))
+
 			datadogSloListRequest.SetQuery(*datadogQuery)
 		}
 		datadogRequests[i] = *datadogSloListRequest
@@ -5117,10 +5130,29 @@ func buildDatadogSloListRequests(terraformRequests *[]interface{}) *[]datadogV1.
 	return &datadogRequests
 }
 
+func buildDatadogSloListSort(terraformSorts *[]interface{}) *[]datadogV1.WidgetFieldSort {
+	datadogSorts := make([]datadogV1.WidgetFieldSort, len(*terraformSorts))
+	for i, s := range *terraformSorts {
+		terraformSort := s.(map[string]interface{})
+
+		datadogSort := datadogV1.NewWidgetFieldSortWithDefaults()
+		if v, ok := terraformSort["column"].(string); ok {
+			datadogSort.SetColumn(v)
+		}
+		if v, ok := terraformSort["order"].(string); ok {
+			order, _ := datadogV1.NewWidgetSortFromValue(v)
+			datadogSort.SetOrder(*order)
+		}
+
+		datadogSorts[i] = *datadogSort
+	}
+	return &datadogSorts
+}
+
 func buildTerraformSloListDefinition(datadogDefinition datadogV1.SLOListWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["request"] = buildTerraformSloListRequests(&datadogDefinition.Requests, k)
+	terraformDefinition["request"] = buildTerraformSloListRequests(&datadogDefinition.Requests)
 	// Optional params
 	if title, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = title
@@ -5134,7 +5166,7 @@ func buildTerraformSloListDefinition(datadogDefinition datadogV1.SLOListWidgetDe
 	return terraformDefinition
 }
 
-func buildTerraformSloListRequests(datadogSloListRequests *[]datadogV1.SLOListWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformSloListRequests(datadogSloListRequests *[]datadogV1.SLOListWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogSloListRequests))
 	for i, datadogRequest := range *datadogSloListRequests {
 		terraformRequest := map[string]interface{}{}
@@ -5149,11 +5181,29 @@ func buildTerraformSloListRequests(datadogSloListRequests *[]datadogV1.SLOListWi
 			if v, ok := datadogQuery.GetLimitOk(); ok {
 				terraformQuery["limit"] = v
 			}
+			if v, ok := datadogQuery.GetSortOk(); ok {
+				terraformQuery["sort"] = buildTerraformSloListSort(v)
+			}
 			terraformRequest["query"] = []map[string]interface{}{terraformQuery}
 		}
 		terraformRequests[i] = terraformRequest
 	}
 	return &terraformRequests
+}
+
+func buildTerraformSloListSort(datadogSorts *[]datadogV1.WidgetFieldSort) *[]map[string]interface{} {
+	terraformSorts := make([]map[string]interface{}, len(*datadogSorts))
+	for i, datadogSort := range *datadogSorts {
+		terraformSort := map[string]interface{}{}
+		if v, ok := datadogSort.GetColumnOk(); ok {
+			terraformSort["column"] = v
+		}
+		if v, ok := datadogSort.GetOrderOk(); ok {
+			terraformSort["order"] = v
+		}
+		terraformSorts[i] = terraformSort
+	}
+	return &terraformSorts
 }
 
 //

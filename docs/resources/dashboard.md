@@ -4576,7 +4576,7 @@ Optional:
 
 Required:
 
-- `column` (String) The facet path for the column
+- `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -6730,6 +6730,16 @@ Required:
 Optional:
 
 - `limit` (Number) Maximum number of results to display in the table.
+- `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "status.sli", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--request--query--sort))
+
+<a id="nestedblock--widget--group_definition--widget--slo_list_definition--request--query--sort"></a>
+### Nested Schema for `widget.group_definition.widget.slo_list_definition.request.query.sort`
+
+Required:
+
+- `column` (String) The facet path for the column.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
 
 
 
@@ -10087,7 +10097,7 @@ Optional:
 
 Required:
 
-- `column` (String) The facet path for the column
+- `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -12241,6 +12251,16 @@ Required:
 Optional:
 
 - `limit` (Number) Maximum number of results to display in the table.
+- `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "status.sli", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--slo_list_definition--request--query--sort))
+
+<a id="nestedblock--widget--slo_list_definition--request--query--sort"></a>
+### Nested Schema for `widget.slo_list_definition.request.query.sort`
+
+Required:
+
+- `column` (String) The facet path for the column.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
 
 
 
