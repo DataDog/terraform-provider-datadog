@@ -22,6 +22,51 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/version"
 )
 
+// DDAPPKeyEnvName name of env var for APP key
+const DDAPPKeyEnvName = "DD_APP_KEY"
+
+// DDAPIKeyEnvName name of env var for API key
+const DDAPIKeyEnvName = "DD_API_KEY"
+
+// DDAPIUrlEnvName name of env var for API key
+const DDAPIUrlEnvName = "DD_HOST"
+
+// DatadogAPPKeyEnvName name of env var for APP key
+const DatadogAPPKeyEnvName = "DATADOG_APP_KEY"
+
+// DatadogAPIKeyEnvName name of env var for API key
+const DatadogAPIKeyEnvName = "DATADOG_API_KEY"
+
+// DatadogAPIUrlEnvName name of env var for API key
+const DatadogAPIUrlEnvName = "DATADOG_HOST"
+
+// DDHTTPRetryEnabled name of env var for retry enabled
+const DDHTTPRetryEnabled = "DD_HTTP_CLIENT_RETRY_ENABLED"
+
+// DDHTTPRetryTimeout name of env var for retry timeout
+const DDHTTPRetryTimeout = "DD_HTTP_CLIENT_RETRY_TIMEOUT"
+
+// DDHTTPRetryBackoffMultiplier name of env var for retry backoff multiplier
+const DDHTTPRetryBackoffMultiplier = "DD_HTTP_CLIENT_RETRY_BACKOFF_MULTIPLIER"
+
+// DDHTTPRetryBackoffBase name of env var for retry backoff base
+const DDHTTPRetryBackoffBase = "DD_HTTP_CLIENT_RETRY_BACKOFF_BASE"
+
+// DDHTTPRetryMaxRetries name of env var for max retries
+const DDHTTPRetryMaxRetries = "DD_HTTP_CLIENT_RETRY_MAX_RETRIES"
+
+// BaseIPRangesSubdomain ip ranges subdomain
+const BaseIPRangesSubdomain = "ip-ranges"
+
+// APPKeyEnvVars names of env var for APP key
+var APPKeyEnvVars = []string{DDAPPKeyEnvName, DatadogAPPKeyEnvName}
+
+// APIKeyEnvVars names of env var for API key
+var APIKeyEnvVars = []string{DDAPIKeyEnvName, DatadogAPIKeyEnvName}
+
+// APIUrlEnvVars names of env var for API key
+var APIUrlEnvVars = []string{DDAPIUrlEnvName, DatadogAPIUrlEnvName}
+
 // DatadogProvider holds a reference to the provider
 var DatadogProvider *schema.Provider
 

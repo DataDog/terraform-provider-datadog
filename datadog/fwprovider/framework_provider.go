@@ -1,4 +1,4 @@
-package datadog
+package fwprovider
 
 import (
 	"context"
@@ -139,35 +139,35 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 	var diags diag.Diagnostics
 
 	if config.ApiKey.IsNull() {
-		apiKey, err := utils.GetMultiEnvVar(APIKeyEnvVars[:]...)
+		apiKey, err := utils.GetMultiEnvVar(utils.APIKeyEnvVars[:]...)
 		if err == nil {
 			config.ApiKey = types.StringValue(apiKey)
 		}
 	}
 
 	if config.AppKey.IsNull() {
-		appKey, err := utils.GetMultiEnvVar(APPKeyEnvVars[:]...)
+		appKey, err := utils.GetMultiEnvVar(utils.APPKeyEnvVars[:]...)
 		if err == nil {
 			config.AppKey = types.StringValue(appKey)
 		}
 	}
 
 	if config.ApiUrl.IsNull() {
-		apiUrl, err := utils.GetMultiEnvVar(APIUrlEnvVars[:]...)
+		apiUrl, err := utils.GetMultiEnvVar(utils.APIUrlEnvVars[:]...)
 		if err == nil {
 			config.ApiUrl = types.StringValue(apiUrl)
 		}
 	}
 
 	if config.HttpClientRetryEnabled.IsNull() {
-		retryEnabled, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_ENABLED")
+		retryEnabled, err := utils.GetMultiEnvVar(utils.DDHTTPRetryEnabled)
 		if err == nil {
 			config.HttpClientRetryEnabled = types.StringValue(retryEnabled)
 		}
 	}
 
 	if config.HttpClientRetryTimeout.IsNull() {
-		rTimeout, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_TIMEOUT")
+		rTimeout, err := utils.GetMultiEnvVar(utils.DDHTTPRetryTimeout)
 		if err == nil {
 			v, _ := strconv.Atoi(rTimeout)
 			config.HttpClientRetryTimeout = types.Int64Value(int64(v))
@@ -175,7 +175,7 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 	}
 
 	if config.HttpClientRetryBackoffMultiplier.IsNull() {
-		rTimeout, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_BACKOFF_MULTIPLIER")
+		rTimeout, err := utils.GetMultiEnvVar(utils.DDHTTPRetryBackoffMultiplier)
 		if err == nil {
 			v, _ := strconv.Atoi(rTimeout)
 			config.HttpClientRetryBackoffMultiplier = types.Int64Value(int64(v))
@@ -183,7 +183,7 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 	}
 
 	if config.HttpClientRetryBackoffBase.IsNull() {
-		rTimeout, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_BACKOFF_BASE")
+		rTimeout, err := utils.GetMultiEnvVar(utils.DDHTTPRetryBackoffBase)
 		if err == nil {
 			v, _ := strconv.Atoi(rTimeout)
 			config.HttpClientRetryBackoffBase = types.Int64Value(int64(v))
@@ -191,7 +191,7 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 	}
 
 	if config.HttpClientRetryMaxRetries.IsNull() {
-		rTimeout, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_MAX_RETRIES")
+		rTimeout, err := utils.GetMultiEnvVar(utils.DDHTTPRetryMaxRetries)
 		if err == nil {
 			v, _ := strconv.Atoi(rTimeout)
 			config.HttpClientRetryMaxRetries = types.Int64Value(int64(v))
@@ -349,7 +349,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		if len(ipRangesDNSNameArr) > 2 {
 			ipRangesDNSNameArr = ipRangesDNSNameArr[1:]
 		}
-		ipRangesDNSNameArr = append([]string{baseIPRangesSubdomain}, ipRangesDNSNameArr...)
+		ipRangesDNSNameArr = append([]string{utils.BaseIPRangesSubdomain}, ipRangesDNSNameArr...)
 
 		auth = context.WithValue(auth, datadog.ContextOperationServerIndices, map[string]int{
 			"v1.IPRangesApi.GetIPRanges": 1,
