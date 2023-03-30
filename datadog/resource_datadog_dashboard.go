@@ -420,6 +420,9 @@ func getTemplateVariableSchema() map[string]*schema.Schema {
 func buildDatadogTemplateVariables(terraformTemplateVariables *[]interface{}) *[]datadogV1.DashboardTemplateVariable {
 	datadogTemplateVariables := make([]datadogV1.DashboardTemplateVariable, len(*terraformTemplateVariables))
 	for i, ttv := range *terraformTemplateVariables {
+		if ttv == nil {
+			continue
+		}
 		terraformTemplateVariable := ttv.(map[string]interface{})
 		var datadogTemplateVariable datadogV1.DashboardTemplateVariable
 		if v, ok := terraformTemplateVariable["name"].(string); ok && len(v) != 0 {
@@ -544,6 +547,9 @@ func buildDatadogTemplateVariablePresets(terraformTemplateVariablePresets *[]int
 			datadogTemplateVariablePresetValues := make([]datadogV1.DashboardTemplateVariablePresetValue, len(templateVariablePresetValues))
 
 			for j, tvp := range templateVariablePresetValues {
+				if tvp == nil {
+					continue
+				}
 				templateVariablePresetValue := tvp.(map[string]interface{})
 				var datadogTemplateVariablePresetValue datadogV1.DashboardTemplateVariablePresetValue
 
