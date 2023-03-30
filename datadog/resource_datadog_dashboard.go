@@ -1802,6 +1802,9 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogChangeRequest.SetFormulas(formulas)
@@ -3876,6 +3879,9 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogQueryValueRequest.SetFormulas(formulas)
@@ -4149,6 +4155,9 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogQueryTableRequest.SetFormulas(formulas)
@@ -5489,6 +5498,9 @@ func buildDatadogGeomapRequests(terraformRequests *[]interface{}) *[]datadogV1.G
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogGeomapRequest.SetFormulas(formulas)
@@ -5978,6 +5990,9 @@ func buildDatadogSunburstRequests(terraformRequests *[]interface{}) *[]datadogV1
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogSunburstRequest.SetFormulas(formulas)
@@ -6921,6 +6936,9 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogTimeseriesRequest.SetFormulas(formulas)
@@ -7202,6 +7220,9 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogToplistRequest.SetFormulas(formulas)
@@ -7605,6 +7626,9 @@ func buildDatadogTreemapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogTreemapRequest.SetFormulas(formulas)
