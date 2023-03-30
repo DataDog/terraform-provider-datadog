@@ -2,146 +2,188 @@ package datadog
 
 import (
 	"context"
-	"log"
 	"strings"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-func dataSourceDatadogIPRanges() *schema.Resource {
-	return &schema.Resource{
-		Description: "Use this data source to retrieve information about Datadog's IP addresses.",
-		ReadContext: dataSourceDatadogIPRangesRead,
+var _ datasource.DataSourceWithConfigure = &IPRangesDataSource{}
 
-		// IP ranges are divided between ipv4 and ipv6
-		Schema: map[string]*schema.Schema{
+func NewIPRangesDataSource() datasource.DataSource {
+	return &IPRangesDataSource{}
+}
+
+type iPRangesDataSourceZoneModel struct {
+	ID types.String `tfsdk:"id"`
+	// v4
+	AgentsIpv4               types.List `tfsdk:"agents_ipv4"`
+	APIIpv4                  types.List `tfsdk:"api_ipv4"`
+	APMIpv4                  types.List `tfsdk:"apm_ipv4"`
+	LogsIpv4                 types.List `tfsdk:"logs_ipv4"`
+	OrchestratorIpv4         types.List `tfsdk:"orchestrator_ipv4"`
+	ProcessIpv4              types.List `tfsdk:"process_ipv4"`
+	SyntheticsIpv4           types.List `tfsdk:"synthetics_ipv4"`
+	SyntheticsIpv4ByLocation types.Map  `tfsdk:"synthetics_ipv4_by_location"`
+	WebhooksIpv4             types.List `tfsdk:"webhooks_ipv4"`
+	// v6
+	AgentsIpv6               types.List `tfsdk:"agents_ipv6"`
+	APIIpv6                  types.List `tfsdk:"api_ipv6"`
+	APMIpv6                  types.List `tfsdk:"apm_ipv6"`
+	LogsIpv6                 types.List `tfsdk:"logs_ipv6"`
+	OrchestratorIpv6         types.List `tfsdk:"orchestrator_ipv6"`
+	ProcessIpv6              types.List `tfsdk:"process_ipv6"`
+	SyntheticsIpv6           types.List `tfsdk:"synthetics_ipv6"`
+	SyntheticsIpv6ByLocation types.Map  `tfsdk:"synthetics_ipv6_by_location"`
+	WebhooksIpv6             types.List `tfsdk:"webhooks_ipv6"`
+}
+
+type IPRangesDataSource struct {
+	Api  *datadogV1.IPRangesApi
+	Auth context.Context
+}
+
+func (d *IPRangesDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+	if request.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := request.ProviderData.(*FrameworkProvider)
+	if !ok {
+		response.Diagnostics.AddError(
+			"Unexpected Data Source Configure Type",
+			"")
+		return
+	}
+
+	d.Api = providerData.DatadogApiInstances.GetIPRangesApiV1()
+	d.Auth = providerData.Auth
+}
+
+func (d *IPRangesDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+	response.TypeName = request.ProviderTypeName + "ip_ranges"
+}
+
+func (d *IPRangesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+	response.Schema = schema.Schema{
+		Description: "Use this data source to retrieve information about Datadog's IP addresses.",
+		Attributes: map[string]schema.Attribute{
 			// v4
-			"agents_ipv4": {
+			"agents_ipv4": schema.ListAttribute{
 				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the Agent endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
-			"api_ipv4": {
+			"api_ipv4": schema.ListAttribute{
 				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the API endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
-			"apm_ipv4": {
+			"apm_ipv4": schema.ListAttribute{
 				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the APM endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
-			"logs_ipv4": {
+			"logs_ipv4": schema.ListAttribute{
 				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the Logs endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
-			"orchestrator_ipv4": {
+			"orchestrator_ipv4": schema.ListAttribute{
 				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the Orchestrator endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
-			"process_ipv4": {
+			"process_ipv4": schema.ListAttribute{
 				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the Process endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
-			"synthetics_ipv4": {
+			"synthetics_ipv4": schema.ListAttribute{
 				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the Synthetics endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
-			"synthetics_ipv4_by_location": {
+			"synthetics_ipv4_by_location": schema.MapAttribute{
 				Description: "A map of IPv4 prefixes (string of concatenated IPs, delimited by ',') by location.",
-				Type:        schema.TypeMap,
 				Computed:    true,
+				ElementType: types.StringType,
 			},
-			"webhooks_ipv4": {
+			"webhooks_ipv4": schema.ListAttribute{
 				Description: "An Array of IPv4 addresses in CIDR format specifying the A records for the Webhooks endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
 			// v6
-			"agents_ipv6": {
+			"agents_ipv6": schema.ListAttribute{
 				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the Agent endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
-			"api_ipv6": {
+			"api_ipv6": schema.ListAttribute{
 				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the API endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
-			"apm_ipv6": {
+			"apm_ipv6": schema.ListAttribute{
 				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the APM endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
-			"logs_ipv6": {
+			"logs_ipv6": schema.ListAttribute{
 				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the Logs endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
-			"orchestrator_ipv6": {
+			"orchestrator_ipv6": schema.ListAttribute{
 				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the Orchestrator endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
-			"process_ipv6": {
+			"process_ipv6": schema.ListAttribute{
 				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the Process endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
-			"synthetics_ipv6": {
+			"synthetics_ipv6": schema.ListAttribute{
 				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the Synthetics endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
-			"synthetics_ipv6_by_location": {
+			"synthetics_ipv6_by_location": schema.MapAttribute{
 				Description: "A map of IPv6 prefixes (string of concatenated IPs, delimited by ',') by location.",
-				Type:        schema.TypeMap,
 				Computed:    true,
+				ElementType: types.StringType,
 			},
-			"webhooks_ipv6": {
+			"webhooks_ipv6": schema.ListAttribute{
 				Description: "An Array of IPv6 addresses in CIDR format specifying the A records for the Webhooks endpoint.",
-				Type:        schema.TypeList,
 				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				ElementType: types.StringType,
 			},
+			// Datasource ID
+			"id": utils.ResourceIDAttribute(),
 		},
 	}
 }
 
-func dataSourceDatadogIPRangesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
+func (d *IPRangesDataSource) Read(ctx context.Context, _ datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state iPRangesDataSourceZoneModel
 
-	ipAddresses, _, err := apiInstances.GetIPRangesApiV1().GetIPRanges(auth)
+	ipAddresses, _, err := d.Api.GetIPRanges(d.Auth)
 	if err != nil {
-		return diag.FromErr(err)
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting IPRanges"))
+		return
 	}
 	if err := utils.CheckForUnparsed(ipAddresses); err != nil {
-		return diag.FromErr(err)
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
 	}
+
+	state.ID = types.StringValue("datadog-ip-ranges")
 
 	// v4 and v6
 	ipAddressesPtr := &ipAddresses
@@ -154,37 +196,25 @@ func dataSourceDatadogIPRangesRead(ctx context.Context, d *schema.ResourceData, 
 	synthetics := ipAddressesPtr.GetSynthetics()
 	webhook := ipAddressesPtr.GetWebhooks()
 
-	if len(agents.GetPrefixesIpv4())+len(api.GetPrefixesIpv4())+
-		len(apm.GetPrefixesIpv4())+len(logs.GetPrefixesIpv4())+
-		len(process.GetPrefixesIpv4())+len(synthetics.GetPrefixesIpv4())+
-		len(webhook.GetPrefixesIpv4())+len(agents.GetPrefixesIpv6())+
-		len(api.GetPrefixesIpv6())+len(apm.GetPrefixesIpv6())+
-		len(logs.GetPrefixesIpv6())+len(process.GetPrefixesIpv6())+
-		len(synthetics.GetPrefixesIpv6())+len(webhook.GetPrefixesIpv6())+
-		len(synthetics.GetPrefixesIpv4ByLocation())+len(synthetics.GetPrefixesIpv6ByLocation()) > 0 {
-		d.SetId("datadog-ip-ranges")
-	}
-
-	// Set ranges when the list is not empty
+	// Set model values from response
 	// v4
-	d.Set("agents_ipv4", agents.GetPrefixesIpv4())
-	d.Set("api_ipv4", api.GetPrefixesIpv4())
-	d.Set("apm_ipv4", apm.GetPrefixesIpv4())
-	d.Set("logs_ipv4", logs.GetPrefixesIpv4())
-	d.Set("orchestrator_ipv4", orchestrator.GetPrefixesIpv4())
-	d.Set("process_ipv4", process.GetPrefixesIpv4())
-	d.Set("synthetics_ipv4", synthetics.GetPrefixesIpv4())
-	d.Set("webhooks_ipv4", webhook.GetPrefixesIpv4())
-
+	state.AgentsIpv4, _ = types.ListValueFrom(ctx, types.StringType, agents.GetPrefixesIpv4())
+	state.APIIpv4, _ = types.ListValueFrom(ctx, types.StringType, api.GetPrefixesIpv4())
+	state.APMIpv4, _ = types.ListValueFrom(ctx, types.StringType, apm.GetPrefixesIpv4())
+	state.LogsIpv4, _ = types.ListValueFrom(ctx, types.StringType, logs.GetPrefixesIpv4())
+	state.OrchestratorIpv4, _ = types.ListValueFrom(ctx, types.StringType, orchestrator.GetPrefixesIpv4())
+	state.ProcessIpv4, _ = types.ListValueFrom(ctx, types.StringType, process.GetPrefixesIpv4())
+	state.SyntheticsIpv4, _ = types.ListValueFrom(ctx, types.StringType, synthetics.GetPrefixesIpv4())
+	state.WebhooksIpv4, _ = types.ListValueFrom(ctx, types.StringType, webhook.GetPrefixesIpv4())
 	// v6
-	d.Set("agents_ipv6", agents.GetPrefixesIpv6())
-	d.Set("api_ipv6", api.GetPrefixesIpv6())
-	d.Set("apm_ipv6", apm.GetPrefixesIpv6())
-	d.Set("logs_ipv6", logs.GetPrefixesIpv6())
-	d.Set("orchestrator_ipv6", orchestrator.GetPrefixesIpv6())
-	d.Set("process_ipv6", process.GetPrefixesIpv6())
-	d.Set("synthetics_ipv6", synthetics.GetPrefixesIpv6())
-	d.Set("webhooks_ipv6", webhook.GetPrefixesIpv6())
+	state.AgentsIpv6, _ = types.ListValueFrom(ctx, types.StringType, agents.GetPrefixesIpv6())
+	state.APIIpv6, _ = types.ListValueFrom(ctx, types.StringType, api.GetPrefixesIpv6())
+	state.APMIpv6, _ = types.ListValueFrom(ctx, types.StringType, apm.GetPrefixesIpv6())
+	state.LogsIpv6, _ = types.ListValueFrom(ctx, types.StringType, logs.GetPrefixesIpv6())
+	state.OrchestratorIpv6, _ = types.ListValueFrom(ctx, types.StringType, orchestrator.GetPrefixesIpv6())
+	state.ProcessIpv6, _ = types.ListValueFrom(ctx, types.StringType, process.GetPrefixesIpv6())
+	state.SyntheticsIpv6, _ = types.ListValueFrom(ctx, types.StringType, synthetics.GetPrefixesIpv6())
+	state.WebhooksIpv6, _ = types.ListValueFrom(ctx, types.StringType, webhook.GetPrefixesIpv6())
 
 	ipv4PrefixesByLocationMap := make(map[string]string)
 	ipv6PrefixesByLocationMap := make(map[string]string)
@@ -200,16 +230,18 @@ func dataSourceDatadogIPRangesRead(ctx context.Context, d *schema.ResourceData, 
 		ipv6PrefixesByLocationMap[key] = strings.Join(value, ",")
 	}
 
-	err = d.Set("synthetics_ipv4_by_location", ipv4PrefixesByLocationMap)
-	if err != nil {
-		log.Printf("[DEBUG] Error setting IPv4 prefixes by location: %s", err)
-		return diag.FromErr(err)
-	}
-	err = d.Set("synthetics_ipv6_by_location", ipv6PrefixesByLocationMap)
-	if err != nil {
-		log.Printf("[DEBUG] Error setting IPv6 prefixes by location: %s", err)
-		return diag.FromErr(err)
+	syntheticsIpv4ByLocation, diags := types.MapValueFrom(ctx, types.StringType, ipv4PrefixesByLocationMap)
+	state.SyntheticsIpv4ByLocation = syntheticsIpv4ByLocation
+	response.Diagnostics.Append(diags...)
+
+	SyntheticsIpv6ByLocation, diags := types.MapValueFrom(ctx, types.StringType, ipv6PrefixesByLocationMap)
+	state.SyntheticsIpv6ByLocation = SyntheticsIpv6ByLocation
+	response.Diagnostics.Append(diags...)
+
+	if response.Diagnostics.HasError() {
+		return
 	}
 
-	return nil
+	// Save data into Terraform state
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
