@@ -530,6 +530,9 @@ func buildDatadogTemplateVariablePresets(terraformTemplateVariablePresets *[]int
 	datadogTemplateVariablePresets := make([]datadogV1.DashboardTemplateVariablePreset, len(*terraformTemplateVariablePresets))
 
 	for i, tvp := range *terraformTemplateVariablePresets {
+		if tvp == nil {
+			continue
+		}
 		templateVariablePreset := tvp.(map[string]interface{})
 		var datadogTemplateVariablePreset datadogV1.DashboardTemplateVariablePreset
 
