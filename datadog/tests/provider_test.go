@@ -537,17 +537,17 @@ func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock c
 	return func(_ context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 		apiKey := d.Get("api_key").(string)
 		if apiKey == "" {
-			apiKey, _ = utils.GetMultiEnvVar(datadog.APIKeyEnvVars[:]...)
+			apiKey, _ = utils.GetMultiEnvVar(utils.APIKeyEnvVars[:]...)
 		}
 
 		appKey := d.Get("app_key").(string)
 		if appKey == "" {
-			appKey, _ = utils.GetMultiEnvVar(datadog.APPKeyEnvVars[:]...)
+			appKey, _ = utils.GetMultiEnvVar(utils.APPKeyEnvVars[:]...)
 		}
 
 		apiURL := d.Get("api_url").(string)
 		if apiURL == "" {
-			apiURL, _ = utils.GetMultiEnvVar(datadog.APIUrlEnvVars[:]...)
+			apiURL, _ = utils.GetMultiEnvVar(utils.APIUrlEnvVars[:]...)
 		}
 
 		communityClient := datadogCommunity.NewClient(apiKey, appKey)
@@ -632,7 +632,7 @@ func TestProvider_impl(t *testing.T) {
 
 func testAccPreCheck(t *testing.T) {
 	// Unset all regular env to avoid mistakenly running tests against wrong org
-	for _, v := range append(datadog.APPKeyEnvVars, datadog.APIKeyEnvVars...) {
+	for _, v := range append(utils.APPKeyEnvVars, utils.APIKeyEnvVars...) {
 		_ = os.Unsetenv(v)
 	}
 
@@ -657,11 +657,11 @@ func testAccPreCheck(t *testing.T) {
 		)
 	}
 
-	if err := os.Setenv(datadog.DDAPIKeyEnvName, os.Getenv(testAPIKeyEnvName)); err != nil {
+	if err := os.Setenv(utils.DDAPIKeyEnvName, os.Getenv(testAPIKeyEnvName)); err != nil {
 		t.Fatalf("Error setting API key: %v", err)
 	}
 
-	if err := os.Setenv(datadog.DDAPPKeyEnvName, os.Getenv(testAPPKeyEnvName)); err != nil {
+	if err := os.Setenv(utils.DDAPPKeyEnvName, os.Getenv(testAPPKeyEnvName)); err != nil {
 		t.Fatalf("Error setting API key: %v", err)
 	}
 }

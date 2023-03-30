@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-mux/tf5muxserver"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
 func main() {
@@ -22,7 +23,7 @@ func main() {
 	flag.Parse()
 
 	providers := []func() tfprotov5.ProviderServer{
-		providerserver.NewProtocol5(datadog.New()),
+		providerserver.NewProtocol5(fwprovider.New()),
 		datadog.Provider().GRPCProvider,
 	}
 

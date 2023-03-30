@@ -6,12 +6,12 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	communityClient "github.com/zorkian/go-datadog-api"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
@@ -132,7 +132,7 @@ func emptyLogsArchiveConfig() string {
    `
 }
 
-func testAccCheckDatadogIntegrationSlackChannelExists(provider *datadog.FrameworkProvider, resourceName string) resource.TestCheckFunc {
+func testAccCheckDatadogIntegrationSlackChannelExists(provider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		apiInstances := provider.DatadogApiInstances
 		auth := provider.Auth
@@ -149,7 +149,7 @@ func testAccCheckDatadogIntegrationSlackChannelExists(provider *datadog.Framewor
 	}
 }
 
-func testAccCheckDatadogIntegrationSlackChannelDestroy(provider *datadog.FrameworkProvider) func(*terraform.State) error {
+func testAccCheckDatadogIntegrationSlackChannelDestroy(provider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		apiInstances := provider.DatadogApiInstances
 		auth := provider.Auth
@@ -179,7 +179,7 @@ func testAccCheckDatadogIntegrationSlackChannelDestroy(provider *datadog.Framewo
 	}
 }
 
-func createSlackIntegration(provider *datadog.FrameworkProvider) resource.TestCheckFunc {
+func createSlackIntegration(provider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		client := provider.CommunityClient
 		slackIntegration := communityClient.IntegrationSlackRequest{
