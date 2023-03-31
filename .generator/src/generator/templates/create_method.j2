@@ -1,15 +1,15 @@
 {%- import "utils/state_helper.j2" as stateMacros %}
 
 func (r *{{ name|camel_case }}Resource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-    var plan, state {{ name|camel_case }}Model
-    response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+    var state {{ name|camel_case }}Model
+    response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
     if response.Diagnostics.HasError() {
         return
     }
 
 	{%- for paramName, param in createOperationParams.items() %}
     {% if paramName == "body" %}
-    body, diags := r.build{{ name|camel_case }}RequestBody(ctx, &plan)
+    body, diags := r.build{{ name|camel_case }}RequestBody(ctx, &state)
     response.Diagnostics.Append(diags...)
     if response.Diagnostics.HasError() {
         return

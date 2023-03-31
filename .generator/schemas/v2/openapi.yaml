@@ -14168,7 +14168,7 @@ paths:
     post:
       description: Create a Cloudflare account.
       operationId: CreateCloudflareAccount
-      x-terraform-resource: integration_cloudflare_account
+
       requestBody:
         content:
           application/json:
@@ -14201,7 +14201,7 @@ paths:
     delete:
       description: Delete a Cloudflare account.
       operationId: DeleteCloudflareAccount
-      x-terraform-resource: integration_cloudflare_account
+
       parameters:
       - description: None
         in: path
@@ -14229,7 +14229,7 @@ paths:
     get:
       description: Get a Cloudflare account.
       operationId: GetCloudflareAccount
-      x-terraform-resource: integration_cloudflare_account
+
       parameters:
       - description: None
         in: path
@@ -14261,7 +14261,7 @@ paths:
     patch:
       description: Update a Cloudflare account.
       operationId: UpdateCloudflareAccount
-      x-terraform-resource: integration_cloudflare_account
+
       parameters:
       - description: None
         in: path

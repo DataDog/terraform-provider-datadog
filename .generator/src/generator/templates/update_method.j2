@@ -2,15 +2,15 @@
 {%- set useCreateBodyRequest = get_type_for_parameter(createOperationParams["body"]) == get_type_for_parameter(updateOperationParams["body"]) %}
 
 func (r *{{ name|camel_case }}Resource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-    var plan, state {{ name|camel_case }}Model
-    response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+    var state {{ name|camel_case }}Model
+    response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
     if response.Diagnostics.HasError() {
         return
     }
 
 	{%- for paramName, param in updateOperationParams.items() %}
     {% if paramName == "body" %}
-    body, diags := r.build{{ name|camel_case }}{% if not useCreateBodyRequest %}Update{%- endif %}RequestBody(ctx, &plan)
+    body, diags := r.build{{ name|camel_case }}{% if not useCreateBodyRequest %}Update{%- endif %}RequestBody(ctx, &state)
     response.Diagnostics.Append(diags...)
     if response.Diagnostics.HasError() {
         return
