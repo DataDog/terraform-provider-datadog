@@ -12,9 +12,7 @@
     {%- endfor %}
 
     {%- for attr, schema in nonPrimitiveListAttr.items() %}
-    {%- set itemSchema = schema.get("items") %}
     {%- set isRequired = attr in schema.get("required", []) %}
-
     {{ baseStateSetter(attr, schema, baseSetter, baseAccessor, required=isRequired) }}
     {%- endfor %}
 {%- endmacro %}

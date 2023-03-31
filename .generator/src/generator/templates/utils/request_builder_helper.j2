@@ -1,13 +1,3 @@
-{%- macro baseRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
-    {%- if schema|is_primitive %}
-        {{- typePrimitiveRequestBuilder(name, schema, baseSetter, baseAccessor, required=required) }}
-    {%- elif schema.type == "object" %}
-        {{- typeObjectRequestBuilder(name, schema, baseSetter, baseAccessor, required=required) }}
-    {%- elif schema.type == "array" %}
-        {{- typeArrayRequestBuilder(name, schema, baseSetter, baseAccessor, required=required) }}
-    {%- endif %}
-{%- endmacro %}
-
 {%- macro requestBuilder(schema, baseSetter, baseAccessor) %}
     {%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = schema|tf_sort_properties_by_type %}
 
@@ -21,10 +11,26 @@
     {{ baseRequestBuilder(attr, attrSchema, baseSetter, baseAccessor, required=isRequired) }}
     {%- endfor %}
 
+    {%- for attr, schema in nonPrimitiveListAttr.items() %}
+    {%- set isRequired = attr in schema.get("required", []) %}
+    {{ baseRequestBuilder(attr, schema, baseSetter, baseAccessor, required=isRequired) }}
+    {%- endfor %}
+
 {%- endmacro %}
 
+{%- macro baseRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
+    {%- if schema|is_primitive %}
+        {{- typePrimitiveRequestBuilder(name, schema, baseSetter, baseAccessor, required=required) }}
+    {%- elif schema.type == "object" %}
+        {{- typeObjectRequestBuilder(name, schema, baseSetter, baseAccessor, required=required) }}
+    {%- elif schema.type == "array" %}
+        {{- typeArrayRequestBuilder(name, schema, baseSetter, baseAccessor, required=required) }}
+    {%- endif %}
+{%- endmacro %}
+
+
 {%- macro typePrimitiveRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
-    {{ baseSetter }}.{{ name|camel_case }} = {% if not required %}datadog.Ptr{{ get_terraform_schema_type(schema) }}({% endif %}{{ baseAccessor }}.{{ name|camel_case }}.Value{{ get_terraform_schema_type(schema) }}(){% if not required %}){% endif %}
+    {{ baseSetter }}.Set{{ name|camel_case }}({{ baseAccessor }}.{{ name|camel_case }}.Value{{ get_terraform_schema_type(schema) }}())
 {%- endmacro %}
 
 {%- macro typeObjectRequestBuilder(name, schema, baseAccessor="resp", required=False) %}
@@ -32,13 +38,16 @@
 
 {%- macro typeArrayRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
     {%- set itemSchema = schema.get("items") %}
+        var {{ name|variable_name }} []{%- if not itemSchema|is_primitive %}datadog{{ version }}.{% endif -%}{{ get_type(itemSchema) }}
     {%- if itemSchema|is_primitive %}
-    	var {{ name|variable_name }} []{{ get_type(itemSchema) }}
     	diags.Append({{ baseAccessor }}.{{ name|camel_case }}.ElementsAs(ctx, &{{ name|variable_name }}, false)...)
-    	{{ baseSetter }}.{{ name|camel_case }} = {{ name|variable_name }}
     {%- else %}
-
+        for _, {{ name|variable_name }}TFItem := range {{ baseAccessor }}.{{ name|camel_case }} {
+            {{ name|variable_name }}DDItem := datadog{{ version }}.New{{ get_type(itemSchema) }}()
+            {{ requestBuilder(itemSchema, name|variable_name~"DDItem", name|variable_name~"TFItem") }}
+        }
     {%- endif %}
+        {{ baseSetter }}.{{ name|camel_case }} = {{ name|variable_name }}
 {%- endmacro %}
 
 {%- macro requestBaseFunc(name, funcName, parameterBodySchema) %}
