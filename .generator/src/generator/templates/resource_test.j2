@@ -96,7 +96,7 @@ func {{ name|camel_case }}DestroyHelper(auth context.Context, s *terraform.State
                 {%- endif %}
             {%- endfor %}
 
-	        _, httpResp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ getOperationId }}(auth, {% for name, param in readOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})
+	        _, httpResp, err := apiInstances.Get{{ apiName }}{{ version }}().{{ getOperationId }}(auth, {% for name, param in readOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
@@ -139,7 +139,7 @@ func {{ name|camel_case|untitle_case }}ExistsHelper(auth context.Context, s *ter
             {%- endif %}
         {%- endfor %}
 
-        _, httpResp, err := apiInstances.Get{{ apiName }}{{ version|upperfirst }}().{{ getOperationId }}(auth, {% for name, param in readOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})
+        _, httpResp, err := apiInstances.Get{{ apiName }}{{ version }}().{{ getOperationId }}(auth, {% for name, param in readOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})
 		if err != nil {
 			return utils.TranslateClientError(err, httpResp, "error retrieving monitor")
 		}

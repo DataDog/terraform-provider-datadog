@@ -1,6 +1,6 @@
 {%- import "utils/request_builder_helper.j2" as requestBuilderMacros %}
 
-func (r *{{ name|camel_case }}Resource) build{{ name|camel_case }}RequestBody(ctx context.Context, plan *{{ name|camel_case }}Model) (*datadog{{ version|upperfirst }}.{{ get_type_for_parameter(createOperationParams["body"]) }}, diag.Diagnostics) {
+func (r *{{ name|camel_case }}Resource) build{{ name|camel_case }}RequestBody(ctx context.Context, plan *{{ name|camel_case }}Model) (*datadog{{ version }}.{{ get_type_for_parameter(createOperationParams["body"]) }}, diag.Diagnostics) {
     diags := diag.Diagnostics{}
 
 	{%- set parameterBodySchema = createOperationParams["body"]|parameter_schema %}
@@ -9,7 +9,7 @@ func (r *{{ name|camel_case }}Resource) build{{ name|camel_case }}RequestBody(ct
 	{%- set jsonAttributeSchema = json_api_attributes_schema(parameterBodySchema) %}
     {%- set parameterBodyDataSchema = parameterBodySchema.properties.data %}
     {%- set isDataRequired = "data" in parameterBodySchema.get("required", []) %}
-	attributes := datadog{{ version|upperfirst }}.New{{ get_type(jsonAttributeSchema) }}WithDefaults()
+	attributes := datadog{{ version }}.New{{ get_type(jsonAttributeSchema) }}WithDefaults()
 
     {{ requestBuilderMacros.requestBuilder(jsonAttributeSchema, "attributes", "plan") }}
 
@@ -19,7 +19,6 @@ func (r *{{ name|camel_case }}Resource) build{{ name|camel_case }}RequestBody(ct
 
     {%- else %}
     {{ requestBuilderMacros.requestBuilder(parameterBodySchema, "req", "plan") }}
-
     {%- endif %}
 
 	return req, diags

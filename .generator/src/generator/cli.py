@@ -23,7 +23,7 @@ from . import utils
 )
 def cli(spec_path, output):
     """
-    Generate a Go code snippet from OpenAPI specification.
+    Generate a terraform code snippet from OpenAPI specification.
     """
     env = Environment(loader=FileSystemLoader(str(pathlib.Path(__file__).parent / "templates")))
 
@@ -67,13 +67,12 @@ def cli(spec_path, output):
 
     version = spec_path.parent.name
     spec = openapi.load(spec_path)
-    env.globals["version"] = version
-    env.globals["package_name"] = f"datadog{version.upper()}"
+    env.globals["version"] = utils.upperfirst(version)
 
     operations_to_generate = openapi.operations_to_generate(spec)
 
     for name, operations in operations_to_generate.items():
-        resource_filename = output / f"resource_datadog_{name}.go"
+        resource_filename = output / f"fwprovider/resource_datadog_{name}.go"
         resource_test_filename = output / "tests" / f"resource_datadog_{name}_test.go"
         with resource_filename.open("w") as fp:
             fp.write(base_resource.render(name=name, operations=operations))

@@ -14455,7 +14455,7 @@ paths:
       description: Create a Confluent resource for the account associated with the
         provided ID.
       operationId: CreateConfluentResource
-      
+      x-terraform-resource: integration_confluent_resource
       parameters:
       - $ref: '#/components/parameters/ConfluentAccountID'
       requestBody:
@@ -14489,7 +14489,7 @@ paths:
       description: Delete a Confluent resource with the provided resource id for the
         account associated with the provided account ID.
       operationId: DeleteConfluentResource
-      
+      x-terraform-resource: integration_confluent_resource
       parameters:
       - $ref: '#/components/parameters/ConfluentAccountID'
       - $ref: '#/components/parameters/ConfluentResourceID'
@@ -14511,7 +14511,7 @@ paths:
       description: Get a Confluent resource with the provided resource id for the
         account associated with the provided account ID.
       operationId: GetConfluentResource
-      
+      x-terraform-resource: integration_confluent_resource
       parameters:
       - $ref: '#/components/parameters/ConfluentAccountID'
       - $ref: '#/components/parameters/ConfluentResourceID'
@@ -14537,7 +14537,7 @@ paths:
       description: Update a Confluent resource with the provided resource id for the
         account associated with the provided account ID.
       operationId: UpdateConfluentResource
-      
+      x-terraform-resource: integration_confluent_resource
       parameters:
       - $ref: '#/components/parameters/ConfluentAccountID'
       - $ref: '#/components/parameters/ConfluentResourceID'

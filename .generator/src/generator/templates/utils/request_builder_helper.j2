@@ -1,18 +1,3 @@
-{%- macro requestBuilder(schema, baseSetter, baseAccessor) %}
-    {%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = schema|tf_sort_properties_by_type %}
-
-    {%- for attr, schema in primitiveAttr.items() %}
-    {%- set isRequired = attr in schema.get("required", []) %}
-    {{- baseRequestBuilder(attr, schema, baseSetter, baseAccessor, required=isRequired) }}
-    {%- endfor %}
-
-    {%- for attr, schema in primitiveArrAttr.items() %}
-    {%- set isRequired = attr in schema.get("required", []) %}
-    {{ baseRequestBuilder(attr, schema, baseSetter, baseAccessor, required=isRequired) }}
-    {%- endfor %}
-
-{%- endmacro %}
-
 {%- macro baseRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
     {%- if schema|is_primitive %}
         {{- typePrimitiveRequestBuilder(name, schema, baseSetter, baseAccessor, required=required) }}
@@ -23,8 +8,23 @@
     {%- endif %}
 {%- endmacro %}
 
+{%- macro requestBuilder(schema, baseSetter, baseAccessor) %}
+    {%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = schema|tf_sort_properties_by_type %}
+
+    {%- for attr, attrSchema in primitiveAttr.items() %}
+    {%- set isRequired = attr in schema.get("required", []) %}
+    {{- baseRequestBuilder(attr, attrSchema, baseSetter, baseAccessor, required=isRequired) }}
+    {%- endfor %}
+
+    {%- for attr, attrSchema in primitiveArrAttr.items() %}
+    {%- set isRequired = attr in schema.get("required", []) %}
+    {{ baseRequestBuilder(attr, attrSchema, baseSetter, baseAccessor, required=isRequired) }}
+    {%- endfor %}
+
+{%- endmacro %}
+
 {%- macro typePrimitiveRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
-    {{ baseSetter }}.{{ name|camel_case }} = {{ baseAccessor }}.{{ name|camel_case }}.Value{{ get_terraform_schema_type(schema) }}()
+    {{ baseSetter }}.{{ name|camel_case }} = {% if not required %}datadog.Ptr{{ get_terraform_schema_type(schema) }}({% endif %}{{ baseAccessor }}.{{ name|camel_case }}.Value{{ get_terraform_schema_type(schema) }}(){% if not required %}){% endif %}
 {%- endmacro %}
 
 {%- macro typeObjectRequestBuilder(name, schema, baseAccessor="resp", required=False) %}
