@@ -14,29 +14,28 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-func TestAcc{{ name|camel_case }}Simple(t *testing.T) {
+func TestAcc{{ name|camel_case }}Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadog{{ name|camel_case }}Destroy(accProvider),
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:      		  testAccCheckDatadog{{ name|camel_case }}Destroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadog{{ name|camel_case }}(uniq),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadog{{ name|camel_case }}Exists(accProvider),
+					testAccCheckDatadog{{ name|camel_case }}Exists(providers.frameworkProvider),
                     {%- for paramName, parameter in createOperationParams.items() %}
                         {%- if paramName != primaryId["name"] %}
                             {%- set parameterSchema = parameter|parameter_schema %}
@@ -66,12 +65,10 @@ func testAccCheckDatadog{{ name|camel_case }}(uniq string) string {
 {{- helperMacros.resourceExample(name, primaryId, createOperationParams) }}`, uniq)
 }
 
-func testAccCheckDatadog{{ name|camel_case }}Destroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func testAccCheckDatadog{{ name|camel_case }}Destroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		if err := {{ name|camel_case }}DestroyHelper(auth, s, apiInstances); err != nil {
 			return err
@@ -110,12 +107,10 @@ func {{ name|camel_case }}DestroyHelper(auth context.Context, s *terraform.State
 	return err
 }
 
-func testAccCheckDatadog{{ name|camel_case }}Exists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func testAccCheckDatadog{{ name|camel_case }}Exists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		if err := {{ name|camel_case|untitle_case }}ExistsHelper(auth, s, apiInstances); err != nil {
 			return err
