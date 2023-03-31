@@ -1,25 +1,10 @@
 {%- import "utils/request_builder_helper.j2" as requestBuilderMacros %}
+{%- set useCreateBodyRequest = get_type_for_parameter(createOperationParams["body"]) == get_type_for_parameter(updateOperationParams["body"]) %}
+{%- set parameterCreateBodySchema = createOperationParams["body"]|parameter_schema %}
+{%- set parameterUpdateBodySchema = updateOperationParams["body"]|parameter_schema %}
 
-func (r *{{ name|camel_case }}Resource) build{{ name|camel_case }}RequestBody(ctx context.Context, plan *{{ name|camel_case }}Model) (*datadog{{ version }}.{{ get_type_for_parameter(createOperationParams["body"]) }}, diag.Diagnostics) {
-    diags := diag.Diagnostics{}
+{{ requestBuilderMacros.requestBaseFunc(name, "build"~name|camel_case~"RequestBody", parameterCreateBodySchema) }}
 
-	{%- set parameterBodySchema = createOperationParams["body"]|parameter_schema %}
-
-	{%- if parameterBodySchema|is_json_api %}
-	{%- set jsonAttributeSchema = json_api_attributes_schema(parameterBodySchema) %}
-    {%- set parameterBodyDataSchema = parameterBodySchema.properties.data %}
-    {%- set isDataRequired = "data" in parameterBodySchema.get("required", []) %}
-	attributes := datadog{{ version }}.New{{ get_type(jsonAttributeSchema) }}WithDefaults()
-
-    {{ requestBuilderMacros.requestBuilder(jsonAttributeSchema, "attributes", "plan") }}
-
-    req := datadogV2.New{{ get_type(parameterBodySchema) }}WithDefaults()
-    req.Data = {% if isDataRequired %}*{% endif %}datadogV2.New{{ get_type(parameterBodyDataSchema) }}WithDefaults()
-    req.Data.SetAttributes(*attributes)
-
-    {%- else %}
-    {{ requestBuilderMacros.requestBuilder(parameterBodySchema, "req", "plan") }}
-    {%- endif %}
-
-	return req, diags
-}
+{% if not useCreateBodyRequest %}
+{{ requestBuilderMacros.requestBaseFunc(name, "build"~name|camel_case~"UpdateRequestBody", parameterUpdateBodySchema) }}
+{% endif %}
