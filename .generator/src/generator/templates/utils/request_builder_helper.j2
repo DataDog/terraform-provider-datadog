@@ -1,0 +1,42 @@
+{%- macro requestBuilder(schema, baseSetter, baseAccessor) %}
+    {%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = schema|tf_sort_properties_by_type %}
+
+    {%- for attr, schema in primitiveAttr.items() %}
+    {%- set isRequired = attr in schema.get("required", []) %}
+    {{- baseRequestBuilder(attr, schema, baseSetter, baseAccessor, required=isRequired) }}
+    {%- endfor %}
+
+    {%- for attr, schema in primitiveArrAttr.items() %}
+    {%- set isRequired = attr in schema.get("required", []) %}
+    {{ baseRequestBuilder(attr, schema, baseSetter, baseAccessor, required=isRequired) }}
+    {%- endfor %}
+
+{%- endmacro %}
+
+{%- macro baseRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
+    {%- if schema|is_primitive %}
+        {{- typePrimitiveRequestBuilder(name, schema, baseSetter, baseAccessor, required=required) }}
+    {%- elif schema.type == "object" %}
+        {{- typeObjectRequestBuilder(name, schema, baseSetter, baseAccessor, required=required) }}
+    {%- elif schema.type == "array" %}
+        {{- typeArrayRequestBuilder(name, schema, baseSetter, baseAccessor, required=required) }}
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro typePrimitiveRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
+    {{ baseSetter }}.{{ name|camel_case }} = {{ baseAccessor }}.{{ name|camel_case }}.Value{{ get_terraform_schema_type(schema) }}()
+{%- endmacro %}
+
+{%- macro typeObjectRequestBuilder(name, schema, baseAccessor="resp", required=False) %}
+{%- endmacro %}
+
+{%- macro typeArrayRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
+    {%- set itemSchema = schema.get("items") %}
+    {%- if itemSchema|is_primitive %}
+    	var {{ name|variable_name }} []{{ get_type(itemSchema) }}
+    	diags.Append({{ baseAccessor }}.{{ name|camel_case }}.ElementsAs(ctx, &{{ name|variable_name }}, false)...)
+    	{{ baseSetter }}.{{ name|camel_case }} = {{ name|variable_name }}
+    {%- else %}
+
+    {%- endif %}
+{%- endmacro %}

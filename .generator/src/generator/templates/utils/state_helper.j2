@@ -1,0 +1,63 @@
+{%- macro updateStateFromSchema(schema, baseSetter, baseAccessor) %}
+    {%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = schema|tf_sort_properties_by_type %}
+
+    {%- for attr, schema in primitiveAttr.items() %}
+    {%- set isRequired = attr in schema.get("required", []) %}
+    {{ baseStateSetter(attr, schema, baseSetter, baseAccessor, required=isRequired) }}
+    {%- endfor %}
+
+    {%- for attr, schema in primitiveArrAttr.items() %}
+    {%- set isRequired = attr in schema.get("required", []) %}
+    {{ baseStateSetter(attr, schema, baseSetter, baseAccessor, required=isRequired) }}
+    {%- endfor %}
+
+    {%- for attr, schema in nonPrimitiveListAttr.items() %}
+    {%- set itemSchema = schema.get("items") %}
+    {%- set isRequired = attr in schema.get("required", []) %}
+
+    {{ baseStateSetter(attr, schema, baseSetter, baseAccessor, required=isRequired) }}
+    {%- endfor %}
+{%- endmacro %}
+
+{%- macro baseStateSetter(name, schema, baseSetter, baseAccessor, required=False) %}
+    {%- if schema|is_primitive %}
+        {{- typePrimitiveStateSetter(name, schema, baseSetter, baseAccessor, required=required) }}
+    {%- elif schema.type == "object" %}
+        {{- typeObjectStateSetter(name, schema, baseSetter, baseAccessor, required=required) }}
+    {%- elif schema.type == "array" %}
+        {{- typeArrayStateSetter(name, schema, baseSetter, baseAccessor, required=required) }}
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro typePrimitiveStateSetter(name, schema, baseSetter, baseAccessor, required=False) %}
+    {{ baseSetter }}.{{ name|camel_case }} = types.{{ get_terraform_schema_type(schema) }}Value({{ baseAccessor }}.Get{{ name|camel_case }}())
+{%- endmacro %}
+
+{%- macro typeObjectStateSetter(name, schema, baseAccessor="resp", required=False) %}
+{%- endmacro %}
+
+{%- macro typeArrayStateSetter(name, schema, baseSetter, baseAccessor, required=False) %}
+    {%- set itemSchema = schema.get("items") %}
+    {%- if itemSchema|is_primitive %}
+    {{ baseSetter }}.{{ name|camel_case }}, _ = types.ListValueFrom(ctx, types.{{ get_terraform_schema_type(itemSchema) }}Type, {{ baseAccessor }}.Get{{ name|camel_case }}())
+    {%- else %}
+    {{ baseSetter }}.{{ name|camel_case }} = []*{{ name|camel_case }}Model{}
+    for _, {{ name|variable_name }}Dd := range {{ baseAccessor }}.Get{{ name|camel_case }}() {
+        {{ name|variable_name }}TfItem := {{ name|camel_case }}Model{}
+
+        {%- for attr, attrSchema in itemSchema.properties.items() %}
+            {{- baseStateSetter(attr, attrSchema, name|variable_name~"TfItem", name|variable_name ~ "Dd") }}
+        {%- endfor %}
+
+        {{ baseSetter }}.{{ name|camel_case }} = append({{ baseSetter }}.{{ name|camel_case }}, &{{ name|variable_name }}TfItem)
+    }
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro getStateFromRequest(name) %}
+    var state {{ name|camel_case }}Model
+    response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+    if response.Diagnostics.HasError() {
+        return
+    }
+{%- endmacro %}

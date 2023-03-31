@@ -1,0 +1,15 @@
+{%- import "utils/state_helper.j2" as stateMacros %}
+
+{%- set readResponseType, readResponseSchema = operations[GET_OPERATION]["schema"]|return_type %}
+{%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = readResponseSchema|tf_sort_properties_by_type %}
+func (r *{{ name|camel_case }}Resource) updateState(ctx context.Context, state *{{ name|camel_case }}Model, resp *datadog{{ version|upperfirst }}.{{ readResponseType }}) {
+{%- if readResponseSchema|is_json_api %}
+{%- set jsonApiAttributesSchema = json_api_attributes_schema(readResponseSchema) %}
+    data := resp.GetData()
+    attributes := data.GetAttributes()
+
+    {{ stateMacros.updateStateFromSchema(jsonApiAttributesSchema, "state", "attributes") }}
+{%- else %}
+    {{ stateMacros.updateStateFromSchema(readResponseSchema, "state", "resp") }}
+{%- endif %}
+}

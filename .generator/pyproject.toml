@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "generator"
+version = "0.1.0"
+description = ""
+authors = ["Datadog <support@datadoghq.com>"]
+license = "Apache-2.0"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+click = "8.0.1"
+PyYAML = "6.0"
+jsonref = "0.2"
+jinja2 = "3.0.3"
+pytest = "^7.1.1"
+pytest-bdd = "^5.0.0"
+python-dateutil = "2.8.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
