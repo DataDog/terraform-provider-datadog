@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"os"
 	"runtime"
 	"testing"
 
@@ -22,12 +21,13 @@ import (
 	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 type compositeProviderStruct struct {
 	sdkV2Provider     *schema.Provider
-	frameworkProvider *datadog.FrameworkProvider
+	frameworkProvider *fwprovider.FrameworkProvider
 }
 
 func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *common.APIClient {
@@ -41,50 +41,15 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	return common.NewAPIClient(config)
 }
 
-func testAccFrameworkPreCheck(t *testing.T) {
+func initAccTestApiClients(ctx context.Context, t *testing.T, httpClient *http.Client) (context.Context, *utils.ApiInstances, *datadogCommunity.Client) {
 	// This logic was previously done by the PreCheck func (e.g PreCheck: func() { testAccPreCheck(t) })
 	// Since we no longer configure the providers with a callback function, this
 	// step must occur prior to test running.
-	for _, v := range append(datadog.APPKeyEnvVars, datadog.APIKeyEnvVars...) {
-		_ = os.Unsetenv(v)
-	}
+	testAccPreCheck(t)
 
-	if isReplaying() {
-		return
-	}
-
-	if !isAPIKeySet() {
-		t.Fatalf("%s must be set for acceptance tests", testAPIKeyEnvName)
-	}
-	if !isAPPKeySet() {
-		t.Fatalf("%s must be set for acceptance tests", testAPPKeyEnvName)
-	}
-
-	if !isTestOrg() {
-		t.Fatalf(
-			"The keys you've set potentially belong to a production environment. "+
-				"Tests do all sorts of create/update/delete calls to the organisation, so only run them against a sandbox environment. "+
-				"If you know what you are doing, set the `%s` environment variable to the public ID of your organization. "+
-				"See https://docs.datadoghq.com/api/latest/organizations/#list-your-managed-organizations to get it.",
-			testOrgEnvName,
-		)
-	}
-
-	if err := os.Setenv(datadog.DDAPIKeyEnvName, os.Getenv(testAPIKeyEnvName)); err != nil {
-		t.Fatalf("Error setting API key: %v", err)
-	}
-
-	if err := os.Setenv(datadog.DDAPPKeyEnvName, os.Getenv(testAPPKeyEnvName)); err != nil {
-		t.Fatalf("Error setting API key: %v", err)
-	}
-}
-
-func initAccTestApiClients(ctx context.Context, t *testing.T, httpClient *http.Client) (context.Context, *utils.ApiInstances, *datadogCommunity.Client) {
-	testAccFrameworkPreCheck(t)
-
-	apiKey, _ := utils.GetMultiEnvVar(datadog.APIKeyEnvVars[:]...)
-	appKey, _ := utils.GetMultiEnvVar(datadog.APPKeyEnvVars[:]...)
-	apiURL, _ := utils.GetMultiEnvVar(datadog.APIUrlEnvVars[:]...)
+	apiKey, _ := utils.GetMultiEnvVar(utils.APIKeyEnvVars[:]...)
+	appKey, _ := utils.GetMultiEnvVar(utils.APPKeyEnvVars[:]...)
+	apiURL, _ := utils.GetMultiEnvVar(utils.APIUrlEnvVars[:]...)
 
 	communityClient := datadogCommunity.NewClient(apiKey, appKey)
 	if apiURL != "" {
@@ -99,7 +64,7 @@ func initAccTestApiClients(ctx context.Context, t *testing.T, httpClient *http.C
 	return ctx, apiInstances, communityClient
 }
 
-func testAccFrameworkMuxProvidersServer(ctx context.Context, sdkV2Provider *schema.Provider, frameworkProvider *datadog.FrameworkProvider) map[string]func() (tfprotov5.ProviderServer, error) {
+func testAccFrameworkMuxProvidersServer(ctx context.Context, sdkV2Provider *schema.Provider, frameworkProvider *fwprovider.FrameworkProvider) map[string]func() (tfprotov5.ProviderServer, error) {
 	return map[string]func() (tfprotov5.ProviderServer, error){
 		"datadog": func() (tfprotov5.ProviderServer, error) {
 			muxServer, err := tf5muxserver.NewMuxServer(ctx, providerserver.NewProtocol5(frameworkProvider), sdkV2Provider.GRPCProvider)
@@ -126,13 +91,13 @@ func testAccFrameworkMuxProviders(ctx context.Context, t *testing.T) (context.Co
 	}
 
 	// Init framework provider
-	frameworkProvider := &datadog.FrameworkProvider{
+	frameworkProvider := &fwprovider.FrameworkProvider{
 		Auth:                ctx,
 		CommunityClient:     communityClient,
 		DatadogApiInstances: apiInstances,
 
 		Now: tClock.Now,
-		ConfigureCallbackFunc: func(p *datadog.FrameworkProvider, request *provider.ConfigureRequest, config *datadog.ProviderSchema) frameworkDiag.Diagnostics {
+		ConfigureCallbackFunc: func(p *fwprovider.FrameworkProvider, request *provider.ConfigureRequest, config *fwprovider.ProviderSchema) frameworkDiag.Diagnostics {
 			return nil
 		},
 	}

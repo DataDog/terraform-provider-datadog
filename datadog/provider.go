@@ -24,10 +24,6 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
-var (
-	baseIPRangesSubdomain = "ip-ranges"
-)
-
 func init() {
 	// Set descriptions to support markdown syntax, this will be used in document generation
 	// and the language server.
@@ -66,33 +62,6 @@ func init() {
 		return strings.TrimSpace(desc)
 	}
 }
-
-// DDAPPKeyEnvName name of env var for APP key
-const DDAPPKeyEnvName = "DD_APP_KEY"
-
-// DDAPIKeyEnvName name of env var for API key
-const DDAPIKeyEnvName = "DD_API_KEY"
-
-// DDAPIUrlEnvName name of env var for API key
-const DDAPIUrlEnvName = "DD_HOST"
-
-// DatadogAPPKeyEnvName name of env var for APP key
-const DatadogAPPKeyEnvName = "DATADOG_APP_KEY"
-
-// DatadogAPIKeyEnvName name of env var for API key
-const DatadogAPIKeyEnvName = "DATADOG_API_KEY"
-
-// DatadogAPIUrlEnvName name of env var for API key
-const DatadogAPIUrlEnvName = "DATADOG_HOST"
-
-// APPKeyEnvVars names of env var for APP key
-var APPKeyEnvVars = []string{DDAPPKeyEnvName, DatadogAPPKeyEnvName}
-
-// APIKeyEnvVars names of env var for API key
-var APIKeyEnvVars = []string{DDAPIKeyEnvName, DatadogAPIKeyEnvName}
-
-// APIUrlEnvVars names of env var for API key
-var APIUrlEnvVars = []string{DDAPIUrlEnvName, DatadogAPIUrlEnvName}
 
 // Provider returns the built datadog provider object
 func Provider() *schema.Provider {
@@ -283,23 +252,23 @@ type ProviderConfiguration struct {
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	apiKey := d.Get("api_key").(string)
 	if apiKey == "" {
-		apiKey, _ = utils.GetMultiEnvVar(APIKeyEnvVars[:]...)
+		apiKey, _ = utils.GetMultiEnvVar(utils.APIKeyEnvVars[:]...)
 	}
 
 	appKey := d.Get("app_key").(string)
 	if appKey == "" {
-		appKey, _ = utils.GetMultiEnvVar(APPKeyEnvVars[:]...)
+		appKey, _ = utils.GetMultiEnvVar(utils.APPKeyEnvVars[:]...)
 	}
 
 	apiURL := d.Get("api_url").(string)
 	if apiURL == "" {
-		apiURL, _ = utils.GetMultiEnvVar(APIUrlEnvVars[:]...)
+		apiURL, _ = utils.GetMultiEnvVar(utils.APIUrlEnvVars[:]...)
 	}
 
 	httpRetryEnabled := true
 	httpRetryEnabledStr := d.Get("http_client_retry_enabled").(string)
 	if httpRetryEnabledStr == "" {
-		envVal, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_ENABLED")
+		envVal, err := utils.GetMultiEnvVar(utils.DDHTTPRetryEnabled)
 		if err == nil {
 			httpRetryEnabled, _ = strconv.ParseBool(envVal)
 		}
@@ -371,7 +340,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		timeout := time.Duration(int64(timeoutInterface.(int))) * time.Second
 		config.RetryConfiguration.HTTPRetryTimeout = timeout
 	} else {
-		envVal, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_TIMEOUT")
+		envVal, err := utils.GetMultiEnvVar(utils.DDHTTPRetryTimeout)
 		if err == nil {
 			vInt, _ := strconv.Atoi(envVal)
 			timeout := time.Duration(int64(vInt)) * time.Second
@@ -383,7 +352,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		backOffMultiplier := float64(backoffMultiplierInterface.(int))
 		config.RetryConfiguration.BackOffMultiplier = backOffMultiplier
 	} else {
-		envVal, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_BACKOFF_MULTIPLIER")
+		envVal, err := utils.GetMultiEnvVar(utils.DDHTTPRetryBackoffMultiplier)
 		if err == nil {
 			fVal, _ := strconv.ParseFloat(envVal, 64)
 			config.RetryConfiguration.BackOffMultiplier = fVal
@@ -394,7 +363,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		retryBackoffBase := float64(retryBackoffBaseInterface.(int))
 		config.RetryConfiguration.BackOffBase = retryBackoffBase
 	} else {
-		envVal, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_BACKOFF_BASE")
+		envVal, err := utils.GetMultiEnvVar(utils.DDHTTPRetryBackoffBase)
 		if err == nil {
 			fVal, _ := strconv.ParseFloat(envVal, 64)
 			config.RetryConfiguration.BackOffBase = fVal
@@ -404,7 +373,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	if maxRetryInterface, ok := d.GetOk("http_client_retry_max_retries"); ok {
 		config.RetryConfiguration.MaxRetries = maxRetryInterface.(int)
 	} else {
-		envVal, err := utils.GetMultiEnvVar("DD_HTTP_CLIENT_RETRY_MAX_RETRIES")
+		envVal, err := utils.GetMultiEnvVar(utils.DDHTTPRetryMaxRetries)
 		if err == nil {
 			fVal, _ := strconv.Atoi(envVal)
 			config.RetryConfiguration.MaxRetries = fVal
@@ -435,7 +404,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		if len(ipRangesDNSNameArr) > 2 {
 			ipRangesDNSNameArr = ipRangesDNSNameArr[1:]
 		}
-		ipRangesDNSNameArr = append([]string{baseIPRangesSubdomain}, ipRangesDNSNameArr...)
+		ipRangesDNSNameArr = append([]string{utils.BaseIPRangesSubdomain}, ipRangesDNSNameArr...)
 
 		auth = context.WithValue(auth, datadog.ContextOperationServerIndices, map[string]int{
 			"v1.IPRangesApi.GetIPRanges": 1,

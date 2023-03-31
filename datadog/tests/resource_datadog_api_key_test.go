@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func TestAccDatadogApiKey_Update(t *testing.T) {
@@ -79,7 +79,7 @@ resource "datadog_api_key" "foo" {
 }`, uniq)
 }
 
-func testAccCheckDatadogApiKeyExists(accProvider *datadog.FrameworkProvider, n string) resource.TestCheckFunc {
+func testAccCheckDatadogApiKeyExists(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
@@ -99,7 +99,7 @@ func datadogApiKeyExistsHelper(ctx context.Context, s *terraform.State, apiInsta
 	return nil
 }
 
-func testAccCheckDatadogApiKeyValueMatches(accProvider *datadog.FrameworkProvider, n string) resource.TestCheckFunc {
+func testAccCheckDatadogApiKeyValueMatches(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
@@ -126,7 +126,7 @@ func datadogApiKeyValueMatches(ctx context.Context, s *terraform.State, apiInsta
 	return nil
 }
 
-func testAccCheckDatadogApiKeyDestroy(accProvider *datadog.FrameworkProvider) func(*terraform.State) error {
+func testAccCheckDatadogApiKeyDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
