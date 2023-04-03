@@ -31,7 +31,7 @@
 
 {%- macro typePrimitiveRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
     {%- if not required %}
-    if {{ baseAccessor }}.{{ name|camel_case }}.IsNull() {
+    if !{{ baseAccessor }}.{{ name|camel_case }}.IsNull() {
     {%- endif %}
     {{ baseSetter }}.Set{{ name|camel_case }}({{ baseAccessor }}.{{ name|camel_case }}.Value{{ get_terraform_schema_type(schema) }}())
     {%- if not required %}
@@ -45,7 +45,7 @@
 {%- macro typeArrayRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
     {%- set itemSchema = schema.get("items") %}
     {%- if not required %}
-    if {{ baseAccessor }}.{{ name|camel_case }}{%- if itemSchema|is_primitive %}.IsNull(){% else %} != nil {% endif %} {
+    if {% if itemSchema|is_primitive %}!{{ baseAccessor }}.{{ name|camel_case }}.IsNull(){% else %}{{ baseAccessor }}.{{ name|camel_case }} != nil {% endif %} {
     {%- endif %}
         var {{ name|variable_name }} []{%- if not itemSchema|is_primitive %}datadog{{ version }}.{% endif -%}{{ get_type(itemSchema) }}
     {%- if itemSchema|is_primitive %}

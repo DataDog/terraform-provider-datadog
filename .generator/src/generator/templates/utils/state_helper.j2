@@ -45,7 +45,7 @@
     {%- if itemSchema|is_primitive %}
 
     {%- if not required %}
-    if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok {
+    if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok && len(*{{ name|variable_name }})  > 0 {
     {%- endif %}
     {{ baseSetter }}.{{ name|camel_case }}, _ = types.ListValueFrom(ctx, types.{{ get_terraform_schema_type(itemSchema) }}Type, {% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}*{{ name|variable_name }}{% endif %})
     {%- if not required %}
@@ -55,7 +55,7 @@
     {%- else %}
 
     {%- if not required %}
-    if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok {
+    if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok && len(*{{ name|variable_name }})  > 0 {
     {%- endif %}
     {{ baseSetter }}.{{ name|camel_case }} = []*{{ name|camel_case }}Model{}
     for _, {{ name|variable_name }}Dd := range {% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}*{{ name|variable_name }}{% endif %} {
