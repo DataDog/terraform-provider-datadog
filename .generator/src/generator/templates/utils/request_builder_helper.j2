@@ -30,7 +30,13 @@
 
 
 {%- macro typePrimitiveRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
+    {%- if not required %}
+    if {{ baseAccessor }}.{{ name|camel_case }}.IsNull() {
+    {%- endif %}
     {{ baseSetter }}.Set{{ name|camel_case }}({{ baseAccessor }}.{{ name|camel_case }}.Value{{ get_terraform_schema_type(schema) }}())
+    {%- if not required %}
+    }
+    {%- endif %}
 {%- endmacro %}
 
 {%- macro typeObjectRequestBuilder(name, schema, baseAccessor="resp", required=False) %}
@@ -38,6 +44,9 @@
 
 {%- macro typeArrayRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
     {%- set itemSchema = schema.get("items") %}
+    {%- if not required %}
+    if {{ baseAccessor }}.{{ name|camel_case }}{%- if itemSchema|is_primitive %}.IsNull(){% else %} != nil {% endif %} {
+    {%- endif %}
         var {{ name|variable_name }} []{%- if not itemSchema|is_primitive %}datadog{{ version }}.{% endif -%}{{ get_type(itemSchema) }}
     {%- if itemSchema|is_primitive %}
     	diags.Append({{ baseAccessor }}.{{ name|camel_case }}.ElementsAs(ctx, &{{ name|variable_name }}, false)...)
@@ -47,7 +56,10 @@
             {{ requestBuilder(itemSchema, name|variable_name~"DDItem", name|variable_name~"TFItem") }}
         }
     {%- endif %}
-        {{ baseSetter }}.{{ name|camel_case }} = {{ name|variable_name }}
+        {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }})
+    {%- if not required %}
+    }
+    {%- endif %}
 {%- endmacro %}
 
 {%- macro requestBaseFunc(name, funcName, parameterBodySchema) %}
