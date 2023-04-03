@@ -1,2 +1,2 @@
 
-terraform import datadog_integration_confluent_resource.new_list ""
+terraform import datadog_integration_confluent_resource.new_list "confluent_account_id:confluent_resource_id"

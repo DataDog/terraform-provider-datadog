@@ -3,13 +3,14 @@ package fwprovider
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -62,7 +63,10 @@ func (r *IntegrationConfluentResourceResource) Schema(_ context.Context, _ resou
 		Attributes: map[string]schema.Attribute{
 			"account_id": schema.StringAttribute{
 				Required:    true,
-				Description: "UPDATE ME",
+				Description: "Confluent Account ID.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"resource_id": schema.StringAttribute{
 				Description: "The ID associated with a Confluent resource.",
@@ -83,7 +87,6 @@ func (r *IntegrationConfluentResourceResource) Schema(_ context.Context, _ resou
 }
 
 func (r *IntegrationConfluentResourceResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	log.Print("yooo check this", request.ID)
 	accountID, resourceID, err := utils.AccountIDAndResourceIDFromID(request.ID)
 	if err != nil {
 		response.Diagnostics.AddError(err.Error(), "")
@@ -246,7 +249,7 @@ func (r *IntegrationConfluentResourceResource) buildIntegrationConfluentResource
 
 	req := datadogV2.NewConfluentResourceRequestWithDefaults()
 	req.Data = *datadogV2.NewConfluentResourceRequestDataWithDefaults()
-	req.Data.SetId(state.ID.ValueString())
+	req.Data.SetId(state.ResourceId.ValueString())
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
