@@ -210,6 +210,15 @@ func AccountNameAndChannelNameFromID(id string) (string, string, error) {
 	return result[0], result[1], nil
 }
 
+// AccountIDAndResourceIDFromID returns confluent resource account_id and resource_id from the ID
+func AccountIDAndResourceIDFromID(id string) (string, string, error) {
+	result := strings.SplitN(id, ":", 2)
+	if len(result) != 2 {
+		return "", "", fmt.Errorf("error extracting account_id and resource_id from id: %s", id)
+	}
+	return result[0], result[1], nil
+}
+
 // ConvertResponseByteToMap converts JSON []byte to map[string]interface{}
 func ConvertResponseByteToMap(b []byte) (map[string]interface{}, error) {
 	convertedMap := make(map[string]interface{})
