@@ -28,7 +28,13 @@
 {%- endmacro %}
 
 {%- macro typePrimitiveStateSetter(name, schema, baseSetter, baseAccessor, required=False) %}
-    {{ baseSetter }}.{{ name|camel_case }} = types.{{ get_terraform_schema_type(schema) }}Value({{ baseAccessor }}.Get{{ name|camel_case }}())
+    {%- if not required %}
+    if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok {
+    {%- endif %}
+    {{ baseSetter }}.{{ name|camel_case }} = types.{{ get_terraform_schema_type(schema) }}Value({% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}*{{ name|variable_name }}{% endif %})
+    {%- if not required %}
+    }
+    {%- endif %}
 {%- endmacro %}
 
 {%- macro typeObjectStateSetter(name, schema, baseAccessor="resp", required=False) %}
@@ -37,10 +43,22 @@
 {%- macro typeArrayStateSetter(name, schema, baseSetter, baseAccessor, required=False) %}
     {%- set itemSchema = schema.get("items") %}
     {%- if itemSchema|is_primitive %}
-    {{ baseSetter }}.{{ name|camel_case }}, _ = types.ListValueFrom(ctx, types.{{ get_terraform_schema_type(itemSchema) }}Type, {{ baseAccessor }}.Get{{ name|camel_case }}())
+
+    {%- if not required %}
+    if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok {
+    {%- endif %}
+    {{ baseSetter }}.{{ name|camel_case }}, _ = types.ListValueFrom(ctx, types.{{ get_terraform_schema_type(itemSchema) }}Type, {% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}*{{ name|variable_name }}{% endif %})
+    {%- if not required %}
+    }
+    {%- endif %}
+
     {%- else %}
+
+    {%- if not required %}
+    if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok {
+    {%- endif %}
     {{ baseSetter }}.{{ name|camel_case }} = []*{{ name|camel_case }}Model{}
-    for _, {{ name|variable_name }}Dd := range {{ baseAccessor }}.Get{{ name|camel_case }}() {
+    for _, {{ name|variable_name }}Dd := range {% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}*{{ name|variable_name }}{% endif %} {
         {{ name|variable_name }}TfItem := {{ name|camel_case }}Model{}
 
         {%- for attr, attrSchema in itemSchema.properties.items() %}
@@ -49,6 +67,10 @@
 
         {{ baseSetter }}.{{ name|camel_case }} = append({{ baseSetter }}.{{ name|camel_case }}, &{{ name|variable_name }}TfItem)
     }
+    {%- if not required %}
+    }
+    {%- endif %}
+
     {%- endif %}
 {%- endmacro %}
 

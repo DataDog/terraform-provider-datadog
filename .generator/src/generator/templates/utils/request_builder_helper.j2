@@ -51,7 +51,7 @@
 {%- endmacro %}
 
 {%- macro requestBaseFunc(name, funcName, parameterBodySchema) %}
-func (r *{{ name|camel_case }}Resource) {{ funcName }}(ctx context.Context, plan *{{ name|camel_case }}Model) (*datadog{{ version }}.{{ get_type(parameterBodySchema) }}, diag.Diagnostics) {
+func (r *{{ name|camel_case }}Resource) {{ funcName }}(ctx context.Context, state *{{ name|camel_case }}Model) (*datadog{{ version }}.{{ get_type(parameterBodySchema) }}, diag.Diagnostics) {
     diags := diag.Diagnostics{}
 
 	{%- if parameterBodySchema|is_json_api %}
@@ -60,14 +60,14 @@ func (r *{{ name|camel_case }}Resource) {{ funcName }}(ctx context.Context, plan
     {%- set isDataRequired = "data" in parameterBodySchema.get("required", []) %}
 	attributes := datadog{{ version }}.New{{ get_type(jsonAttributeSchema) }}WithDefaults()
 
-    {{ requestBuilder(jsonAttributeSchema, "attributes", "plan") }}
+    {{ requestBuilder(jsonAttributeSchema, "attributes", "state") }}
 
     req := datadogV2.New{{ get_type(parameterBodySchema) }}WithDefaults()
     req.Data = {% if isDataRequired %}*{% endif %}datadogV2.New{{ get_type(parameterBodyDataSchema) }}WithDefaults()
     req.Data.SetAttributes(*attributes)
 
     {%- else %}
-    {{ requestBuilder(parameterBodySchema, "req", "plan") }}
+    {{ requestBuilder(parameterBodySchema, "req", "state") }}
     {%- endif %}
 
 	return req, diags
