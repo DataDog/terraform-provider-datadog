@@ -4,9 +4,11 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -24,9 +26,9 @@ type HostListMetadataModel struct {
 	Machine         types.String `tfsdk:"machine"`
 	Platform        types.String `tfsdk:"platform"`
 	Processor       types.String `tfsdk:"processor"`
-	PythonV         types.String `tfsdk:"pythonV"`
-	Socket_FQDN     types.String `tfsdk:"socket-fqdn"`
-	Socket_Hostname types.String `tfsdk:"socket-hostname"`
+	PythonV         types.String `tfsdk:"python_version"`
+	Socket_FQDN     types.String `tfsdk:"socket_fqdn"`
+	Socket_Hostname types.String `tfsdk:"socket_hostname"`
 }
 
 type HostListMetricsModel struct {
@@ -36,19 +38,19 @@ type HostListMetricsModel struct {
 }
 
 type HostListModel struct {
-	Aliases          types.List            `tfsdk:"aliases"`
-	Apps             types.List            `tfsdk:"apps"`
-	AWSName          types.String          `tfsdk:"aws_name"`
-	HostName         types.String          `tfsdk:"host_name"`
-	ID               types.Int64           `tfsdk:"id"`
-	IsMuted          types.Bool            `tfsdk:"is_muted"`
-	LastReportedTime types.Int64           `tfsdk:"last_reported_time"`
-	Meta             HostListMetadataModel `tfsdk:"meta"`
-	Metrics          HostListMetricsModel  `tfsdk:"metrics"`
-	MuteTimeout      types.Int64           `tfsdk:"mute_timeout"`
-	Name             types.String          `tfsdk:"name"`
-	Sources          []types.String        `tfsdk:"sources"`
-	Up               types.Bool            `tfsdk:"up"`
+	Aliases          types.List   `tfsdk:"aliases"`
+	Apps             types.List   `tfsdk:"apps"`
+	AWSName          types.String `tfsdk:"aws_name"`
+	HostName         types.String `tfsdk:"host_name"`
+	ID               types.Int64  `tfsdk:"id"`
+	IsMuted          types.Bool   `tfsdk:"is_muted"`
+	LastReportedTime types.Int64  `tfsdk:"last_reported_time"`
+	Meta             types.Object `tfsdk:"meta"`
+	Metrics          types.Object `tfsdk:"metrics"`
+	MuteTimeout      types.Int64  `tfsdk:"mute_timeout"`
+	Name             types.String `tfsdk:"name"`
+	Sources          types.List   `tfsdk:"sources"`
+	Up               types.Bool   `tfsdk:"up"`
 }
 
 type HostsDataSourceModel struct {
@@ -124,6 +126,45 @@ func (d *hostsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Optional:    true,
 			},
 			// Datasource Results
+			"host_list": schema.ListAttribute{
+				Computed:    true,
+				Description: "List of hosts.",
+				ElementType: types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"id":                 types.Int64Type,
+						"aliases":            types.ListType{ElemType: types.StringType},
+						"apps":               types.ListType{ElemType: types.StringType},
+						"aws_name":           types.StringType,
+						"host_name":          types.StringType,
+						"is_muted":           types.BoolType,
+						"last_reported_time": types.Int64Type,
+						"mute_timeout":       types.Int64Type,
+						"name":               types.StringType,
+						"sources":            types.ListType{ElemType: types.StringType},
+						"up":                 types.BoolType,
+						"metrics": types.ObjectType{
+							AttrTypes: map[string]attr.Type{
+								"cpu":    types.Float64Type,
+								"iowait": types.Float64Type,
+								"load":   types.Float64Type,
+							},
+						},
+						"meta": types.ObjectType{
+							AttrTypes: map[string]attr.Type{
+								"agent_version":   types.StringType,
+								"cpu_cores":       types.Int64Type,
+								"gohai":           types.StringType,
+								"machine":         types.StringType,
+								"platform":        types.StringType,
+								"processor":       types.StringType,
+								"python_version":  types.StringType,
+								"socket_fqdn":     types.StringType,
+								"socket_hostname": types.StringType,
+							},
+						},
+					},
+				},
+			},
 			"total_matching": schema.Int64Attribute{
 				Description: "Number of host matching the query.",
 				Computed:    true,
@@ -133,125 +174,89 @@ func (d *hostsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Computed:    true,
 			},
 		},
-		Blocks: map[string]schema.Block{
-			"host_list": schema.ListNestedBlock{
-				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						"id": schema.Int64Attribute{
-							Computed:    true,
-							Description: "The host ID.",
-						},
-						"aliases": schema.ListAttribute{
-							Computed:    true,
-							Description: "Host aliases collected by Datadog.",
-							ElementType: types.StringType,
-						},
-						"apps": schema.ListAttribute{
-							Computed:    true,
-							Description: "The Datadog integrations reporting metrics for the host.",
-							ElementType: types.StringType,
-						},
-						"aws_name": schema.StringAttribute{
-							Computed:    true,
-							Description: "AWS name of your host.",
-						},
-						"host_name": schema.StringAttribute{
-							Computed:    true,
-							Description: "The host name.",
-						},
-						"is_muted": schema.BoolAttribute{
-							Computed:    true,
-							Description: "Whether a host is muted.",
-						},
-						"last_reported_time": schema.Int64Attribute{
-							Computed:    true,
-							Description: "Last time the host reported a metric data point.",
-						},
-						"mute_timeout": schema.Int64Attribute{
-							Computed:    true,
-							Description: "Timeout of the mute applied to your host.",
-						},
-						"name": schema.StringAttribute{
-							Computed:    true,
-							Description: "The host name.",
-						},
-						"sources": schema.ListAttribute{
-							Computed:    true,
-							Description: "Source or cloud provider associated with your host.",
-							ElementType: types.StringType,
-						},
-						"up": schema.BoolAttribute{
-							Computed:    true,
-							Description: "Whether the expected metrics are received.",
-						},
-					},
-					Blocks: map[string]schema.Block{
-						"metrics": schema.ListNestedBlock{
-							Description: "Host Metrics collected.",
-							NestedObject: schema.NestedBlockObject{
-								Attributes: map[string]schema.Attribute{
-									"cpu": schema.Float64Attribute{
-										Computed:    true,
-										Description: "The percent of CPU used (everything but idle).",
-									},
-									"iowait": schema.Float64Attribute{
-										Computed:    true,
-										Description: "The percent of CPU spent waiting on the IO (not reported for all platforms).",
-									},
-									"load": schema.Float64Attribute{
-										Computed:    true,
-										Description: "The system load over the last 15 minutes.",
-									},
-								},
-							},
-						},
-						"meta": schema.ListNestedBlock{
-							Description: "Metadata associated with your host.",
-							NestedObject: schema.NestedBlockObject{
-								Attributes: map[string]schema.Attribute{
-									"agent_version": schema.StringAttribute{
-										Computed:    true,
-										Description: "The Datadog Agent version.",
-									},
-									"cpu_cores": schema.Int64Attribute{
-										Computed:    true,
-										Description: "The number of cores.",
-									},
-									"gohai": schema.StringAttribute{
-										Computed:    true,
-										Description: "JSON string containing system information.",
-									},
-									"machine": schema.StringAttribute{
-										Computed:    true,
-										Description: "The machine architecture.",
-									},
-									"platform": schema.StringAttribute{
-										Computed:    true,
-										Description: "The OS platform.",
-									},
-									"processor": schema.StringAttribute{
-										Computed:    true,
-										Description: "The processor.",
-									},
-									"pythonV": schema.StringAttribute{
-										Computed:    true,
-										Description: "The Python version.",
-									},
-									"socket-fqdn": schema.StringAttribute{
-										Computed:    true,
-										Description: "The socket fqdn.",
-									},
-									"socket-hostname": schema.StringAttribute{
-										Computed:    true,
-										Description: "The socket hostname.",
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		},
+		// Blocks: map[string]schema.Block{
+		// 	"host_list": schema.ListNestedBlock{
+		// 		NestedObject: schema.NestedBlockObject{
+		// 			Attributes: map[string]schema.Attribute{
+		// 				"id": schema.Int64Attribute{
+		// 					Computed:    true,
+		// 					Description: "The host ID.",
+		// 				},
+		// 				"aliases": schema.ListAttribute{
+		// 					Computed:    true,
+		// 					Description: "Host aliases collected by Datadog.",
+		// 					ElementType: types.StringType,
+		// 				},
+		// 				"apps": schema.ListAttribute{
+		// 					Computed:    true,
+		// 					Description: "The Datadog integrations reporting metrics for the host.",
+		// 					ElementType: types.StringType,
+		// 				},
+		// 				"aws_name": schema.StringAttribute{
+		// 					Computed:    true,
+		// 					Description: "AWS name of your host.",
+		// 				},
+		// 				"host_name": schema.StringAttribute{
+		// 					Computed:    true,
+		// 					Description: "The host name.",
+		// 				},
+		// 				"is_muted": schema.BoolAttribute{
+		// 					Computed:    true,
+		// 					Description: "Whether a host is muted.",
+		// 				},
+		// 				"last_reported_time": schema.Int64Attribute{
+		// 					Computed:    true,
+		// 					Description: "Last time the host reported a metric data point.",
+		// 				},
+		// 				"mute_timeout": schema.Int64Attribute{
+		// 					Computed:    true,
+		// 					Description: "Timeout of the mute applied to your host.",
+		// 				},
+		// 				"name": schema.StringAttribute{
+		// 					Computed:    true,
+		// 					Description: "The host name.",
+		// 				},
+		// 				"sources": schema.ListAttribute{
+		// 					Computed:    true,
+		// 					Description: "Source or cloud provider associated with your host.",
+		// 					ElementType: types.StringType,
+		// 				},
+		// 				"up": schema.BoolAttribute{
+		// 					Computed:    true,
+		// 					Description: "Whether the expected metrics are received.",
+		// 				},
+		// 				"metrics": schema.ListAttribute{
+		// 					Computed:    true,
+		// 					Description: "Host Metrics collected.",
+		// 					ElementType: types.ObjectType{
+		// 						AttrTypes: map[string]attr.Type{
+		// 							"cpu":    types.Float64Type,
+		// 							"iowait": types.Float64Type,
+		// 							"load":   types.Float64Type,
+		// 						},
+		// 					},
+		// 				},
+		// 				"meta": schema.ListAttribute{
+		// 					Computed:    true,
+		// 					Description: "Metadata associated with your host.",
+		// 					ElementType: types.ObjectType{
+		// 						AttrTypes: map[string]attr.Type{
+		// 							"agent_version":   types.StringType,
+		// 							"cpu_cores":       types.Int64Type,
+		// 							"gohai":           types.StringType,
+		// 							"machine":         types.StringType,
+		// 							"platform":        types.StringType,
+		// 							"processor":       types.StringType,
+		// 							"python_version":  types.StringType,
+		// 							"socket_fqdn":     types.StringType,
+		// 							"socket_hostname": types.StringType,
+		// 						},
+		// 					},
+		// 				},
+		// 			},
+		// 		},
+		// 	},
+		// },
 	}
 }
 
@@ -283,7 +288,61 @@ func (d *hostsDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 
 	state.ID = types.StringValue("datadog-hosts")
-	state.AgentsIpv4, _ = types.ListValueFrom(ctx, types.StringType, agents.GetPrefixesIpv4())
+	state.TotalMatching = basetypes.NewInt64Value(ddHostListResponse.GetTotalMatching())
+	state.TotalReturned = basetypes.NewInt64Value(ddHostListResponse.GetTotalReturned())
+
+	var hostList []HostListModel
+	for _, val := range ddHostListResponse.HostList {
+		var hostListEntry HostListModel
+		hostListEntry.Aliases, _ = types.ListValueFrom(ctx, types.StringType, val.GetAliases())
+		hostListEntry.Apps, _ = types.ListValueFrom(ctx, types.StringType, val.GetApps())
+		hostListEntry.AWSName = basetypes.NewStringValue(val.GetAwsName())
+		hostListEntry.HostName = basetypes.NewStringValue(val.GetHostName())
+		hostListEntry.ID = basetypes.NewInt64Value(val.GetId())
+		hostListEntry.IsMuted = basetypes.NewBoolValue(val.GetIsMuted())
+		hostListEntry.LastReportedTime = basetypes.NewInt64Value(val.GetLastReportedTime())
+		hostListEntry.MuteTimeout = basetypes.NewInt64Value(val.GetMuteTimeout())
+		hostListEntry.Name = basetypes.NewStringValue(val.GetName())
+		hostListEntry.Sources, _ = types.ListValueFrom(ctx, types.StringType, val.GetSources())
+		hostListEntry.Up = basetypes.NewBoolValue(val.GetUp())
+		// TODO add metadata and metrics
+		if metrics, ok := val.GetMetricsOk(); ok {
+			hostListEntry.Metrics, _ = types.ObjectValueFrom(ctx, map[string]attr.Type{
+				"cpu":    types.Float64Type,
+				"iowait": types.Float64Type,
+				"load":   types.Float64Type,
+			}, HostListMetricsModel{
+				CPU:    basetypes.NewFloat64Value(metrics.GetCpu()),
+				IOWait: basetypes.NewFloat64Value(metrics.GetIowait()),
+				Load:   basetypes.NewFloat64Value(metrics.GetLoad()),
+			})
+		}
+		if meta, ok := val.GetMetaOk(); ok {
+			hostListEntry.Meta, _ = types.ObjectValueFrom(ctx, map[string]attr.Type{
+				"agent_version":   types.StringType,
+				"cpu_cores":       types.Int64Type,
+				"gohai":           types.StringType,
+				"machine":         types.StringType,
+				"platform":        types.StringType,
+				"processor":       types.StringType,
+				"python_version":  types.StringType,
+				"socket_fqdn":     types.StringType,
+				"socket_hostname": types.StringType,
+			}, HostListMetadataModel{
+				AgentVersion:    basetypes.NewStringValue(meta.GetAgentVersion()),
+				CPU_cores:       basetypes.NewInt64Value(meta.GetCpuCores()),
+				Gohai:           basetypes.NewStringValue(meta.GetGohai()),
+				Machine:         basetypes.NewStringValue(meta.GetMachine()),
+				Platform:        basetypes.NewStringValue(meta.GetPlatform()),
+				Processor:       basetypes.NewStringValue(meta.GetProcessor()),
+				PythonV:         basetypes.NewStringValue(meta.GetPythonV()),
+				Socket_FQDN:     basetypes.NewStringValue(meta.GetSocketFqdn()),
+				Socket_Hostname: basetypes.NewStringValue(meta.GetSocketHostname()),
+			})
+		}
+		hostList = append(hostList, hostListEntry)
+	}
+	state.HostList = hostList
 
 	if resp.Diagnostics.HasError() {
 		return
