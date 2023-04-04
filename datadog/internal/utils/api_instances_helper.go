@@ -46,6 +46,7 @@ type ApiInstances struct {
 	//V2 APIs
 	auditApiV2                 *datadogV2.AuditApi
 	authNMappingsApiV2         *datadogV2.AuthNMappingsApi
+	cloudflareIntegrationApiV2 *datadogV2.CloudflareIntegrationApi
 	cloudWorkloadSecurityApiV2 *datadogV2.CloudWorkloadSecurityApi
 	dashboardListsApiV2        *datadogV2.DashboardListsApi
 	eventsApiV2                *datadogV2.EventsApi
@@ -517,4 +518,12 @@ func (i *ApiInstances) GetUsersApiV2() *datadogV2.UsersApi {
 		i.usersApiV2 = datadogV2.NewUsersApi(i.HttpClient)
 	}
 	return i.usersApiV2
+}
+
+// GetCloudflareIntegrationApiV2 get instance of CloudflareIntegrationApi
+func (i *ApiInstances) GetCloudflareIntegrationApiV2() *datadogV2.CloudflareIntegrationApi {
+	if i.cloudflareIntegrationApiV2 == nil {
+		i.cloudflareIntegrationApiV2 = datadogV2.NewCloudflareIntegrationApi(i.HttpClient)
+	}
+	return i.cloudflareIntegrationApiV2
 }
