@@ -76,7 +76,6 @@ func testAccFrameworkMuxProvidersServer(ctx context.Context, sdkV2Provider *sche
 func testAccFrameworkMuxProviders(ctx context.Context, t *testing.T) (context.Context, *compositeProviderStruct, map[string]func() (tfprotov5.ProviderServer, error)) {
 	ctx, httpClient := initHttpClient(ctx, t)
 	ctx, apiInstances, communityClient := initAccTestApiClients(ctx, t, httpClient)
-	tClock := testClock(t)
 
 	// Init sdkV2 provider
 	sdkV2Provider := datadog.Provider()
@@ -86,7 +85,7 @@ func testAccFrameworkMuxProviders(ctx context.Context, t *testing.T) (context.Co
 			CommunityClient:     communityClient,
 			DatadogApiInstances: apiInstances,
 
-			Now: tClock.Now,
+			Now: clockFromContext(ctx).Now,
 		}, nil
 	}
 
@@ -96,7 +95,7 @@ func testAccFrameworkMuxProviders(ctx context.Context, t *testing.T) (context.Co
 		CommunityClient:     communityClient,
 		DatadogApiInstances: apiInstances,
 
-		Now: tClock.Now,
+		Now: clockFromContext(ctx).Now,
 		ConfigureCallbackFunc: func(p *fwprovider.FrameworkProvider, request *provider.ConfigureRequest, config *fwprovider.ProviderSchema) frameworkDiag.Diagnostics {
 			return nil
 		},
@@ -125,9 +124,9 @@ func testAccFrameworkMuxProviders(ctx context.Context, t *testing.T) (context.Co
 }
 
 func initHttpClient(ctx context.Context, t *testing.T) (context.Context, *http.Client) {
+	ctx = context.WithValue(ctx, clockContextKey("clock"), testClock(t))
 	ctx = testSpan(ctx, t)
 	rec := initRecorder(t)
-	ctx = context.WithValue(ctx, clockContextKey("clock"), testClock(t))
 	httpClient := cleanhttp.DefaultClient()
 	httpClient.Transport = logging.NewTransport("Datadog", rec)
 	t.Cleanup(func() {
