@@ -31,7 +31,7 @@ type IntegrationConfluentResourceModel struct {
 	AccountId    types.String `tfsdk:"account_id"`
 	ResourceId   types.String `tfsdk:"resource_id"`
 	ResourceType types.String `tfsdk:"resource_type"`
-	Tags         types.List   `tfsdk:"tags"`
+	Tags         types.Set    `tfsdk:"tags"`
 }
 
 func NewIntegrationConfluentResourceResource() resource.Resource {
@@ -76,7 +76,7 @@ func (r *IntegrationConfluentResourceResource) Schema(_ context.Context, _ resou
 				Optional:    true,
 				Description: "The resource type of the Resource. Can be `kafka`, `connector`, `ksql`, or `schema_registry`.",
 			},
-			"tags": schema.ListAttribute{
+			"tags": schema.SetAttribute{
 				Optional:    true,
 				Description: "A list of strings representing tags. Can be a single key, or key-value pairs separated by a colon.",
 				ElementType: types.StringType,
@@ -229,7 +229,7 @@ func (r *IntegrationConfluentResourceResource) updateState(ctx context.Context, 
 	}
 
 	if tags, ok := attributes.GetTagsOk(); ok && len(*tags) > 0 {
-		state.Tags, _ = types.ListValueFrom(ctx, types.StringType, *tags)
+		state.Tags, _ = types.SetValueFrom(ctx, types.StringType, *tags)
 	}
 }
 
