@@ -257,6 +257,8 @@ func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *Pr
 func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewAPIKeyResource,
+		NewIntegrationFastlyAccountResource,
+		NewIntegrationFastlyServiceResource,
 	}
 }
 
