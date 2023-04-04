@@ -244,6 +244,12 @@ func prepResource(attrMap map[string]interface{}) map[string]interface{} {
 	// 'restricted_roles' takes precedence over 'is_read_only'
 	if _, ok := attrMap["restricted_roles"].([]interface{}); ok {
 		delete(attrMap, "is_read_only")
+	} else {
+		// `is_read_only` defaults to false.
+		// We set it manually to avoid continous diff when not set.
+		if _, ok := attrMap["is_read_only"]; !ok {
+			attrMap["is_read_only"] = false
+		}
 	}
 	// handle `notify_list` order
 	if notifyList, ok := attrMap["notify_list"].([]interface{}); ok {
