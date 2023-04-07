@@ -4,9 +4,11 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
@@ -112,6 +114,9 @@ func (d *hostsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 			"sort_dir": schema.StringAttribute{
 				Description: "Direction of sort.",
 				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("asc", "desc"),
+				},
 			},
 			"from": schema.Int64Attribute{
 				Description: "Number of seconds since UNIX epoch from which you want to search your hosts.",
@@ -128,7 +133,7 @@ func (d *hostsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 			// Datasource Results
 			"host_list": schema.ListAttribute{
 				Computed:    true,
-				Description: "List of hosts.",
+				Description: "List of hosts (1000 Max).",
 				ElementType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
 						"id":                 types.Int64Type,
