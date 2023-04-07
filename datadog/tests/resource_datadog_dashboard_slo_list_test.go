@@ -18,6 +18,12 @@ resource "datadog_dashboard" "slo_list_dashboard" {
 				query {
 					query_string = "env:prod AND service:my-app"
 					limit = 30
+
+					sort {
+						column = "status.sli"
+						order = "desc"
+					}
+
 				}
 			}
 			title = "my title"
@@ -38,6 +44,8 @@ var datadogDashboardSloListAsserts = []string{
 	"widget.0.slo_list_definition.0.title = my title",
 	"widget.0.slo_list_definition.0.title_size = 16",
 	"widget.0.slo_list_definition.0.title_align = center",
+	"widget.0.slo_list_definition.0.request.0.query.0.sort.0.column = status.sli",
+	"widget.0.slo_list_definition.0.request.0.query.0.sort.0.order = desc",
 }
 
 func TestAccDatadogDashboardSloList(t *testing.T) {

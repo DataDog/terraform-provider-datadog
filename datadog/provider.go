@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/url"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
@@ -16,14 +17,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
-)
-
-var (
-	baseIPRangesSubdomain = "ip-ranges"
 )
 
 func init() {
@@ -65,24 +63,6 @@ func init() {
 	}
 }
 
-// DDAPPKeyEnvName name of env var for APP key
-const DDAPPKeyEnvName = "DD_APP_KEY"
-
-// DDAPIKeyEnvName name of env var for API key
-const DDAPIKeyEnvName = "DD_API_KEY"
-
-// DatadogAPPKeyEnvName name of env var for APP key
-const DatadogAPPKeyEnvName = "DATADOG_APP_KEY"
-
-// DatadogAPIKeyEnvName name of env var for API key
-const DatadogAPIKeyEnvName = "DATADOG_API_KEY"
-
-// APPKeyEnvVars names of env var for APP key
-var APPKeyEnvVars = []string{DDAPPKeyEnvName, DatadogAPPKeyEnvName}
-
-// APIKeyEnvVars names of env var for API key
-var APIKeyEnvVars = []string{DDAPIKeyEnvName, DatadogAPIKeyEnvName}
-
 // Provider returns the built datadog provider object
 func Provider() *schema.Provider {
 	utils.DatadogProvider = &schema.Provider{
@@ -90,43 +70,40 @@ func Provider() *schema.Provider {
 			"api_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				DefaultFunc: schema.MultiEnvDefaultFunc(APIKeyEnvVars, nil),
+				Sensitive:   true,
 				Description: "(Required unless validate is false) Datadog API key. This can also be set via the DD_API_KEY environment variable.",
 			},
 			"app_key": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				DefaultFunc: schema.MultiEnvDefaultFunc(APPKeyEnvVars, nil),
+				Sensitive:   true,
 				Description: "(Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.",
 			},
 			"api_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				DefaultFunc: schema.MultiEnvDefaultFunc([]string{"DATADOG_HOST", "DD_HOST"}, nil),
 				Description: "The API URL. This can also be set via the DD_HOST environment variable. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not. And if you're working with \"EU\" version of Datadog, use `https://api.datadoghq.eu/`. Other Datadog region examples: `https://api.us5.datadoghq.com/`, `https://api.us3.datadoghq.com/` and `https://api.ddog-gov.com/`. See https://docs.datadoghq.com/getting_started/site/ for all available regions.",
 			},
 			"validate": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     true,
-				Description: "Enables validation of the provided API and APP keys during provider initialization. Default is true. When false, api_key and app_key won't be checked.",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Description:  "Enables validation of the provided API and APP keys during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key and app_key won't be checked.",
+				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
 			},
 			"http_client_retry_enabled": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_ENABLED", true),
-				Description: "Enables request retries on HTTP status codes 429 and 5xx. Defaults to `true`.",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Description:  "Enables request retries on HTTP status codes 429 and 5xx. Valid values are [`true`, `false`]. Defaults to `true`.",
+				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
 			},
 			"http_client_retry_timeout": {
 				Type:        schema.TypeInt,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_TIMEOUT", nil),
 				Description: "The HTTP request retry timeout period. Defaults to 60 seconds.",
 			},
 			"http_client_retry_backoff_multiplier": {
 				Type:        schema.TypeInt,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_BACKOFF_MULTIPLIER", nil),
 				Description: "The HTTP request retry back off multiplier. Defaults to 2.",
 				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
 					value, ok := v.(int)
@@ -143,7 +120,6 @@ func Provider() *schema.Provider {
 			"http_client_retry_backoff_base": {
 				Type:        schema.TypeInt,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_BACKOFF_BASE", nil),
 				Description: "The HTTP request retry back off base. Defaults to 2.",
 				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
 					value, ok := v.(int)
@@ -160,7 +136,6 @@ func Provider() *schema.Provider {
 			"http_client_retry_max_retries": {
 				Type:        schema.TypeInt,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("DD_HTTP_CLIENT_RETRY_MAX_RETRIES", nil),
 				Description: "The HTTP request maximum retry number. Defaults to 3.",
 				ValidateDiagFunc: func(v any, p cty.Path) diag.Diagnostics {
 					value, ok := v.(int)
@@ -177,7 +152,6 @@ func Provider() *schema.Provider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
-			"datadog_api_key":                              resourceDatadogApiKey(),
 			"datadog_application_key":                      resourceDatadogApplicationKey(),
 			"datadog_authn_mapping":                        resourceDatadogAuthnMapping(),
 			"datadog_child_organization":                   resourceDatadogChildOrganization(),
@@ -233,13 +207,11 @@ func Provider() *schema.Provider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
-			"datadog_api_key":                                 dataSourceDatadogApiKey(),
 			"datadog_application_key":                         dataSourceDatadogApplicationKey(),
 			"datadog_cloud_workload_security_agent_rules":     dataSourceDatadogCloudWorkloadSecurityAgentRules(),
 			"datadog_dashboard":                               dataSourceDatadogDashboard(),
 			"datadog_dashboard_list":                          dataSourceDatadogDashboardList(),
 			"datadog_integration_aws_logs_services":           dataSourceDatadogIntegrationAWSLogsServices(),
-			"datadog_ip_ranges":                               dataSourceDatadogIPRanges(),
 			"datadog_logs_archives_order":                     dataSourceDatadogLogsArchivesOrder(),
 			"datadog_logs_indexes":                            dataSourceDatadogLogsIndexes(),
 			"datadog_logs_indexes_order":                      dataSourceDatadogLogsIndexesOrder(),
@@ -280,9 +252,35 @@ type ProviderConfiguration struct {
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	apiKey := d.Get("api_key").(string)
+	if apiKey == "" {
+		apiKey, _ = utils.GetMultiEnvVar(utils.APIKeyEnvVars[:]...)
+	}
+
 	appKey := d.Get("app_key").(string)
-	validate := d.Get("validate").(bool)
-	httpRetryEnabled := d.Get("http_client_retry_enabled").(bool)
+	if appKey == "" {
+		appKey, _ = utils.GetMultiEnvVar(utils.APPKeyEnvVars[:]...)
+	}
+
+	apiURL := d.Get("api_url").(string)
+	if apiURL == "" {
+		apiURL, _ = utils.GetMultiEnvVar(utils.APIUrlEnvVars[:]...)
+	}
+
+	httpRetryEnabled := true
+	httpRetryEnabledStr := d.Get("http_client_retry_enabled").(string)
+	if httpRetryEnabledStr == "" {
+		envVal, err := utils.GetMultiEnvVar(utils.DDHTTPRetryEnabled)
+		if err == nil {
+			httpRetryEnabled, _ = strconv.ParseBool(envVal)
+		}
+	} else {
+		httpRetryEnabled, _ = strconv.ParseBool(httpRetryEnabledStr)
+	}
+
+	validate := true
+	if v := d.Get("validate").(string); v != "" {
+		validate, _ = strconv.ParseBool(v)
+	}
 
 	if validate && (apiKey == "" || appKey == "") {
 		return nil, diag.FromErr(errors.New("api_key and app_key must be set unless validate = false"))
@@ -291,7 +289,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	// Initialize the community client
 	communityClient := datadogCommunity.NewClient(apiKey, appKey)
 
-	if apiURL := d.Get("api_url").(string); apiURL != "" {
+	if apiURL != "" {
 		communityClient.SetBaseUrl(apiURL)
 	}
 
@@ -338,26 +336,54 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 	config := datadog.NewConfiguration()
 	config.RetryConfiguration.EnableRetry = httpRetryEnabled
-	if v, ok := d.GetOk("http_client_retry_timeout"); ok {
-		timeout := time.Duration(int64(v.(int))) * time.Second
+
+	if timeoutInterface, ok := d.GetOk("http_client_retry_timeout"); ok {
+		timeout := time.Duration(int64(timeoutInterface.(int))) * time.Second
 		config.RetryConfiguration.HTTPRetryTimeout = timeout
+	} else {
+		envVal, err := utils.GetMultiEnvVar(utils.DDHTTPRetryTimeout)
+		if err == nil {
+			vInt, _ := strconv.Atoi(envVal)
+			timeout := time.Duration(int64(vInt)) * time.Second
+			config.RetryConfiguration.HTTPRetryTimeout = timeout
+		}
 	}
-	if v, ok := d.GetOk("http_client_retry_backoff_multiplier"); ok {
-		backOffMultiplier := float64(v.(int))
+
+	if backoffMultiplierInterface, ok := d.GetOk("http_client_retry_backoff_multiplier"); ok {
+		backOffMultiplier := float64(backoffMultiplierInterface.(int))
 		config.RetryConfiguration.BackOffMultiplier = backOffMultiplier
+	} else {
+		envVal, err := utils.GetMultiEnvVar(utils.DDHTTPRetryBackoffMultiplier)
+		if err == nil {
+			fVal, _ := strconv.ParseFloat(envVal, 64)
+			config.RetryConfiguration.BackOffMultiplier = fVal
+		}
 	}
-	if v, ok := d.GetOk("http_client_retry_backoff_base"); ok {
-		backOffBase := float64(v.(int))
-		config.RetryConfiguration.BackOffBase = backOffBase
+
+	if retryBackoffBaseInterface, ok := d.GetOk("http_client_retry_backoff_base"); ok {
+		retryBackoffBase := float64(retryBackoffBaseInterface.(int))
+		config.RetryConfiguration.BackOffBase = retryBackoffBase
+	} else {
+		envVal, err := utils.GetMultiEnvVar(utils.DDHTTPRetryBackoffBase)
+		if err == nil {
+			fVal, _ := strconv.ParseFloat(envVal, 64)
+			config.RetryConfiguration.BackOffBase = fVal
+		}
 	}
-	if v, ok := d.GetOk("http_client_retry_max_retries"); ok {
-		maxRetries := v.(int)
-		config.RetryConfiguration.MaxRetries = maxRetries
+
+	if maxRetryInterface, ok := d.GetOk("http_client_retry_max_retries"); ok {
+		config.RetryConfiguration.MaxRetries = maxRetryInterface.(int)
+	} else {
+		envVal, err := utils.GetMultiEnvVar(utils.DDHTTPRetryMaxRetries)
+		if err == nil {
+			fVal, _ := strconv.Atoi(envVal)
+			config.RetryConfiguration.MaxRetries = fVal
+		}
 	}
 
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
 	config.Debug = logging.IsDebugOrHigher()
-	if apiURL := d.Get("api_url").(string); apiURL != "" {
+	if apiURL != "" {
 		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
 			return nil, diag.Errorf(`invalid API URL : %v`, parseErr)
@@ -379,7 +405,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		if len(ipRangesDNSNameArr) > 2 {
 			ipRangesDNSNameArr = ipRangesDNSNameArr[1:]
 		}
-		ipRangesDNSNameArr = append([]string{baseIPRangesSubdomain}, ipRangesDNSNameArr...)
+		ipRangesDNSNameArr = append([]string{utils.BaseIPRangesSubdomain}, ipRangesDNSNameArr...)
 
 		auth = context.WithValue(auth, datadog.ContextOperationServerIndices, map[string]int{
 			"v1.IPRangesApi.GetIPRanges": 1,

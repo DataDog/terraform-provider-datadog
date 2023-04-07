@@ -1713,8 +1713,12 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 			}
 
 			if requestBasicAuth["type"] == "oauth-client" {
-				tokenApiAuthentication, _ := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
-				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(requestBasicAuth["access_token_url"].(string), requestBasicAuth["client_id"].(string), requestBasicAuth["client_secret"].(string), *tokenApiAuthentication)
+				tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
+				if err == nil {
+					tokenApiAuthenticationValue = *tokenApiAuthentication
+				}
+				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(requestBasicAuth["access_token_url"].(string), requestBasicAuth["client_id"].(string), requestBasicAuth["client_secret"].(string), tokenApiAuthenticationValue)
 
 				basicAuth.SetAudience(requestBasicAuth["audience"].(string))
 				basicAuth.SetResource(requestBasicAuth["resource"].(string))
@@ -1724,11 +1728,15 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 			}
 
 			if requestBasicAuth["type"] == "oauth-rop" {
-				tokenApiAuthentication, _ := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+				tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
+				if err == nil {
+					tokenApiAuthenticationValue = *tokenApiAuthentication
+				}
 				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthROP(
 					requestBasicAuth["access_token_url"].(string),
 					requestBasicAuth["password"].(string),
-					*tokenApiAuthentication,
+					tokenApiAuthenticationValue,
 					requestBasicAuth["username"].(string))
 
 				basicAuth.SetAudience(requestBasicAuth["audience"].(string))
@@ -2103,6 +2111,26 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		}
 		if attr, ok := d.GetOk("options_list.0.allow_insecure"); ok {
 			options.SetAllowInsecure(attr.(bool))
+		}
+
+		if rawScheduling, ok := d.GetOk("options_list.0.scheduling"); ok {
+			optionsScheduling := datadogV1.SyntheticsTestOptionsScheduling{}
+			scheduling := rawScheduling.([]interface{})[0]
+			if rawTimeframes, ok := scheduling.(map[string]interface{})["timeframes"]; ok {
+				var timeFrames []datadogV1.SyntheticsTestOptionsSchedulingTimeframe
+				for _, tf := range rawTimeframes.(*schema.Set).List() {
+					timeframe := datadogV1.NewSyntheticsTestOptionsSchedulingTimeframe()
+					timeframe.SetDay(int32(tf.(map[string]interface{})["day"].(int)))
+					timeframe.SetFrom(tf.(map[string]interface{})["from"].(string))
+					timeframe.SetTo(tf.(map[string]interface{})["to"].(string))
+					timeFrames = append(timeFrames, *timeframe)
+				}
+				optionsScheduling.SetTimeframes(timeFrames)
+			}
+			if timezone, ok := scheduling.(map[string]interface{})["timezone"]; ok {
+				optionsScheduling.SetTimezone(timezone.(string))
+			}
+			options.SetScheduling(optionsScheduling)
 		}
 
 		if retryRaw, ok := d.GetOk("options_list.0.retry"); ok {

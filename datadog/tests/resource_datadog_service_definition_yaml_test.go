@@ -39,6 +39,25 @@ func TestAccDatadogServiceDefinition_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogServiceDefinition_BasicV2_1(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceDefinitionDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogServiceDefinitionV2_1(uniq),
+				Check:  checkServiceDefinitionExists(accProvider),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogServiceDefinition(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_service_definition_yaml" "service_definition" {
@@ -78,7 +97,44 @@ extensions:
     customField: customValue
 EOF
 }`, uniq)
+}
 
+func testAccCheckDatadogServiceDefinitionV2_1(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_definition_yaml" "service_definition" {
+  service_definition =<<EOF
+schema-version: v2.1
+dd-service: %s
+contacts:
+  - contact: contact@datadoghq.com
+    name: Team Email
+    type: email
+extensions:
+  myorgextension: extensionvalue
+integrations:
+  opsgenie:
+    region: US
+    service-url: https://my-org.opsgenie.com/service/123e4567-e89b-12d3-a456-426614174000
+  pagerduty:
+    service-url: https://my-org.pagerduty.com/service-directory/PMyService
+links:
+  - name: Architecture
+    type: doc
+    provider: Gigoogle drivetHub
+    url: https://my-runbook
+  - name: Runbook
+    type: runbook
+    url: https://my-runbook
+  - name: Source Code
+    type: repo
+    provider: GitHub
+    url: https://github.com/DataDog/schema
+tags:
+  - my:tag
+  - service:tag
+team: my-team  
+EOF
+}`, uniq)
 }
 
 func TestAccDatadogServiceDefinition_Order(t *testing.T) {
@@ -137,7 +193,7 @@ func checkServiceDefinitionExists(accProvider func() (*schema.Provider, error)) 
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
-			err := utils.Retry(200*time.Millisecond, 4, func() error {
+			err := utils.Retry(5000*time.Millisecond, 4, func() error {
 				if _, _, err := utils.SendRequest(auth, httpClient, "GET", "/api/v2/services/definitions/"+r.Primary.ID, nil); err != nil {
 					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving service %s", err)}
 				}

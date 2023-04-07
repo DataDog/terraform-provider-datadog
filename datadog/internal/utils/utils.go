@@ -7,15 +7,65 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	frameworkDiag "github.com/hashicorp/terraform-plugin-framework/diag"
+	frameworkSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/meta"
 
 	"github.com/terraform-providers/terraform-provider-datadog/version"
 )
+
+// DDAPPKeyEnvName name of env var for APP key
+const DDAPPKeyEnvName = "DD_APP_KEY"
+
+// DDAPIKeyEnvName name of env var for API key
+const DDAPIKeyEnvName = "DD_API_KEY"
+
+// DDAPIUrlEnvName name of env var for API key
+const DDAPIUrlEnvName = "DD_HOST"
+
+// DatadogAPPKeyEnvName name of env var for APP key
+const DatadogAPPKeyEnvName = "DATADOG_APP_KEY"
+
+// DatadogAPIKeyEnvName name of env var for API key
+const DatadogAPIKeyEnvName = "DATADOG_API_KEY"
+
+// DatadogAPIUrlEnvName name of env var for API key
+const DatadogAPIUrlEnvName = "DATADOG_HOST"
+
+// DDHTTPRetryEnabled name of env var for retry enabled
+const DDHTTPRetryEnabled = "DD_HTTP_CLIENT_RETRY_ENABLED"
+
+// DDHTTPRetryTimeout name of env var for retry timeout
+const DDHTTPRetryTimeout = "DD_HTTP_CLIENT_RETRY_TIMEOUT"
+
+// DDHTTPRetryBackoffMultiplier name of env var for retry backoff multiplier
+const DDHTTPRetryBackoffMultiplier = "DD_HTTP_CLIENT_RETRY_BACKOFF_MULTIPLIER"
+
+// DDHTTPRetryBackoffBase name of env var for retry backoff base
+const DDHTTPRetryBackoffBase = "DD_HTTP_CLIENT_RETRY_BACKOFF_BASE"
+
+// DDHTTPRetryMaxRetries name of env var for max retries
+const DDHTTPRetryMaxRetries = "DD_HTTP_CLIENT_RETRY_MAX_RETRIES"
+
+// BaseIPRangesSubdomain ip ranges subdomain
+const BaseIPRangesSubdomain = "ip-ranges"
+
+// APPKeyEnvVars names of env var for APP key
+var APPKeyEnvVars = []string{DDAPPKeyEnvName, DatadogAPPKeyEnvName}
+
+// APIKeyEnvVars names of env var for API key
+var APIKeyEnvVars = []string{DDAPIKeyEnvName, DatadogAPIKeyEnvName}
+
+// APIUrlEnvVars names of env var for API key
+var APIUrlEnvVars = []string{DDAPIUrlEnvName, DatadogAPIUrlEnvName}
 
 // DatadogProvider holds a reference to the provider
 var DatadogProvider *schema.Provider
@@ -24,6 +74,24 @@ var DatadogProvider *schema.Provider
 type Resource interface {
 	Get(string) interface{}
 	GetOk(string) (interface{}, bool)
+}
+
+// FrameworkErrorDiag return error diag
+func FrameworkErrorDiag(err error, msg string) frameworkDiag.ErrorDiagnostic {
+	var summary string
+
+	switch v := err.(type) {
+	case CustomRequestAPIError:
+		summary = fmt.Sprintf("%v: %s", err, v.Body())
+	case datadog.GenericOpenAPIError:
+		summary = fmt.Sprintf("%v: %s", err, v.Body())
+	case *url.Error:
+		summary = fmt.Sprintf("url.Error: %s ", v.Error())
+	default:
+		summary = v.Error()
+	}
+
+	return frameworkDiag.NewErrorDiagnostic(msg, summary)
 }
 
 // TranslateClientError turns an error into a message
@@ -68,6 +136,14 @@ func GetUserAgent(clientUserAgent string) string {
 		version.ProviderVersion,
 		meta.SDKVersionString(),
 		DatadogProvider.TerraformVersion,
+		clientUserAgent)
+}
+
+// GetUserAgentFramework augments the default user agent with provider details for framework provider
+func GetUserAgentFramework(clientUserAgent, tfCLIVersion string) string {
+	return fmt.Sprintf("terraform-provider-datadog/%s (terraform-cli %s) %s",
+		version.ProviderVersion,
+		tfCLIVersion,
 		clientUserAgent)
 }
 
@@ -167,4 +243,24 @@ func GetStringSlice(d Resource, key string) []string {
 		return stringValues
 	}
 	return []string{}
+}
+
+// GetMultiEnvVar returns first matching env var
+func GetMultiEnvVar(envVars ...string) (string, error) {
+	for _, value := range envVars {
+		if v := os.Getenv(value); v != "" {
+			return v, nil
+		}
+	}
+	return "", fmt.Errorf("unable to retrieve any env vars from list: %v", envVars)
+}
+
+func ResourceIDAttribute() frameworkSchema.StringAttribute {
+	return frameworkSchema.StringAttribute{
+		Description: "The ID of this resource.",
+		Computed:    true,
+		PlanModifiers: []planmodifier.String{
+			stringplanmodifier.UseStateForUnknown(),
+		},
+	}
 }

@@ -420,6 +420,9 @@ func getTemplateVariableSchema() map[string]*schema.Schema {
 func buildDatadogTemplateVariables(terraformTemplateVariables *[]interface{}) *[]datadogV1.DashboardTemplateVariable {
 	datadogTemplateVariables := make([]datadogV1.DashboardTemplateVariable, len(*terraformTemplateVariables))
 	for i, ttv := range *terraformTemplateVariables {
+		if ttv == nil {
+			continue
+		}
 		terraformTemplateVariable := ttv.(map[string]interface{})
 		var datadogTemplateVariable datadogV1.DashboardTemplateVariable
 		if v, ok := terraformTemplateVariable["name"].(string); ok && len(v) != 0 {
@@ -530,6 +533,9 @@ func buildDatadogTemplateVariablePresets(terraformTemplateVariablePresets *[]int
 	datadogTemplateVariablePresets := make([]datadogV1.DashboardTemplateVariablePreset, len(*terraformTemplateVariablePresets))
 
 	for i, tvp := range *terraformTemplateVariablePresets {
+		if tvp == nil {
+			continue
+		}
 		templateVariablePreset := tvp.(map[string]interface{})
 		var datadogTemplateVariablePreset datadogV1.DashboardTemplateVariablePreset
 
@@ -541,6 +547,9 @@ func buildDatadogTemplateVariablePresets(terraformTemplateVariablePresets *[]int
 			datadogTemplateVariablePresetValues := make([]datadogV1.DashboardTemplateVariablePresetValue, len(templateVariablePresetValues))
 
 			for j, tvp := range templateVariablePresetValues {
+				if tvp == nil {
+					continue
+				}
 				templateVariablePresetValue := tvp.(map[string]interface{})
 				var datadogTemplateVariablePresetValue datadogV1.DashboardTemplateVariablePresetValue
 
@@ -1802,6 +1811,9 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogChangeRequest.SetFormulas(formulas)
@@ -3211,7 +3223,7 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 func getWidgetFieldSortSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"column": {
-			Description: "The facet path for the column",
+			Description: "The facet path for the column.",
 			Type:        schema.TypeString,
 			Required:    true,
 		},
@@ -3876,6 +3888,9 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogQueryValueRequest.SetFormulas(formulas)
@@ -4149,6 +4164,9 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogQueryTableRequest.SetFormulas(formulas)
@@ -5058,6 +5076,15 @@ func getSloListRequestSchema() map[string]*schema.Schema {
 						Optional:    true,
 						Default:     100,
 					},
+					"sort": {
+						Description: "The facet and order to sort the data, for example: `{\"column\": \"status.sli\", \"order\": \"desc\"}`.",
+						Type:        schema.TypeList,
+						MaxItems:    1,
+						Optional:    true,
+						Elem: &schema.Resource{
+							Schema: getWidgetFieldSortSchema(),
+						},
+					},
 				},
 			},
 		},
@@ -5101,6 +5128,10 @@ func buildDatadogSloListRequests(terraformRequests *[]interface{}) *[]datadogV1.
 			if v, ok := q["limit"].(int); ok {
 				datadogQuery.SetLimit(int64(v))
 			}
+
+			terraformSort := q["sort"].([]interface{})
+			datadogQuery.SetSort(*buildDatadogSloListSort(&terraformSort))
+
 			datadogSloListRequest.SetQuery(*datadogQuery)
 		}
 		datadogRequests[i] = *datadogSloListRequest
@@ -5108,10 +5139,29 @@ func buildDatadogSloListRequests(terraformRequests *[]interface{}) *[]datadogV1.
 	return &datadogRequests
 }
 
+func buildDatadogSloListSort(terraformSorts *[]interface{}) *[]datadogV1.WidgetFieldSort {
+	datadogSorts := make([]datadogV1.WidgetFieldSort, len(*terraformSorts))
+	for i, s := range *terraformSorts {
+		terraformSort := s.(map[string]interface{})
+
+		datadogSort := datadogV1.NewWidgetFieldSortWithDefaults()
+		if v, ok := terraformSort["column"].(string); ok {
+			datadogSort.SetColumn(v)
+		}
+		if v, ok := terraformSort["order"].(string); ok {
+			order, _ := datadogV1.NewWidgetSortFromValue(v)
+			datadogSort.SetOrder(*order)
+		}
+
+		datadogSorts[i] = *datadogSort
+	}
+	return &datadogSorts
+}
+
 func buildTerraformSloListDefinition(datadogDefinition datadogV1.SLOListWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["request"] = buildTerraformSloListRequests(&datadogDefinition.Requests, k)
+	terraformDefinition["request"] = buildTerraformSloListRequests(&datadogDefinition.Requests)
 	// Optional params
 	if title, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = title
@@ -5125,7 +5175,7 @@ func buildTerraformSloListDefinition(datadogDefinition datadogV1.SLOListWidgetDe
 	return terraformDefinition
 }
 
-func buildTerraformSloListRequests(datadogSloListRequests *[]datadogV1.SLOListWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformSloListRequests(datadogSloListRequests *[]datadogV1.SLOListWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogSloListRequests))
 	for i, datadogRequest := range *datadogSloListRequests {
 		terraformRequest := map[string]interface{}{}
@@ -5140,11 +5190,29 @@ func buildTerraformSloListRequests(datadogSloListRequests *[]datadogV1.SLOListWi
 			if v, ok := datadogQuery.GetLimitOk(); ok {
 				terraformQuery["limit"] = v
 			}
+			if v, ok := datadogQuery.GetSortOk(); ok {
+				terraformQuery["sort"] = buildTerraformSloListSort(v)
+			}
 			terraformRequest["query"] = []map[string]interface{}{terraformQuery}
 		}
 		terraformRequests[i] = terraformRequest
 	}
 	return &terraformRequests
+}
+
+func buildTerraformSloListSort(datadogSorts *[]datadogV1.WidgetFieldSort) *[]map[string]interface{} {
+	terraformSorts := make([]map[string]interface{}, len(*datadogSorts))
+	for i, datadogSort := range *datadogSorts {
+		terraformSort := map[string]interface{}{}
+		if v, ok := datadogSort.GetColumnOk(); ok {
+			terraformSort["column"] = v
+		}
+		if v, ok := datadogSort.GetOrderOk(); ok {
+			terraformSort["order"] = v
+		}
+		terraformSorts[i] = terraformSort
+	}
+	return &terraformSorts
 }
 
 //
@@ -5489,6 +5557,9 @@ func buildDatadogGeomapRequests(terraformRequests *[]interface{}) *[]datadogV1.G
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogGeomapRequest.SetFormulas(formulas)
@@ -5978,6 +6049,9 @@ func buildDatadogSunburstRequests(terraformRequests *[]interface{}) *[]datadogV1
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogSunburstRequest.SetFormulas(formulas)
@@ -6921,6 +6995,9 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogTimeseriesRequest.SetFormulas(formulas)
@@ -7202,6 +7279,9 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogToplistRequest.SetFormulas(formulas)
@@ -7605,6 +7685,9 @@ func buildDatadogTreemapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
 			formulas := make([]datadogV1.WidgetFormula, len(v))
 			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
 				formulas[i] = buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogTreemapRequest.SetFormulas(formulas)
