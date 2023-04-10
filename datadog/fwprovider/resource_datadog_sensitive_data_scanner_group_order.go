@@ -127,7 +127,6 @@ func (r *SensitiveDataScannerGroupOrder) Update(ctx context.Context, request res
 }
 
 func (r *SensitiveDataScannerGroupOrder) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	return
 }
 
 func (r *SensitiveDataScannerGroupOrder) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
