@@ -23,7 +23,7 @@ data "datadog_api_key" "foo" {
 
 ### Optional
 
-- `id` (String) The ID of this resource.
+- `id` (String) Id for API Key.
 - `name` (String) Name for API Key.
 
 ### Read-Only

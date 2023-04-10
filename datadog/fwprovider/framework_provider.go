@@ -264,7 +264,6 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewIPRangesDataSource,
-		NewAPIKeyDataSource,
 	}
 }
 
