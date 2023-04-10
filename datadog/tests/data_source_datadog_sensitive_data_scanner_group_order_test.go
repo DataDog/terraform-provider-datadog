@@ -12,12 +12,12 @@ import (
 
 func TestAccDatadogSDSGroupOrderDatasource(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "_", "-"))
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceDatadogSDSGroupOrderWithGroupConfig(uniq),
