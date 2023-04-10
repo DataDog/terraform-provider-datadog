@@ -2,10 +2,11 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -28,6 +29,7 @@ type IntegrationFastlyServiceResource struct {
 type IntegrationFastlyServiceModel struct {
 	ID        types.String `tfsdk:"id"`
 	AccountId types.String `tfsdk:"account_id"`
+	ServiceId types.String `tfsdk:"service_id"`
 	Tags      types.Set    `tfsdk:"tags"`
 }
 
@@ -61,25 +63,37 @@ func (r *IntegrationFastlyServiceResource) Schema(_ context.Context, _ resource.
 			"account_id": schema.StringAttribute{
 				Optional:    true,
 				Description: "Fastly Account id.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"tags": schema.SetAttribute{
 				Optional:    true,
 				Description: "A list of tags for the Fastly service.",
 				ElementType: types.StringType,
 			},
-			"id": schema.StringAttribute{
+			"service_id": schema.StringAttribute{
 				Description: "The ID of the Fastly service.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"id": utils.ResourceIDAttribute(),
 		},
 	}
 }
 
 func (r *IntegrationFastlyServiceResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+	accountID, serviceID, err := utils.AccountIDAndServiceIDFromID(request.ID)
+	if err != nil {
+		response.Diagnostics.AddError(err.Error(), "")
+		return
+	}
+
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("account_id"), accountID)...)
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("service_id"), serviceID)...)
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("id"), request.ID)...)
 }
 
 func (r *IntegrationFastlyServiceResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
@@ -88,10 +102,14 @@ func (r *IntegrationFastlyServiceResource) Read(ctx context.Context, request res
 	if response.Diagnostics.HasError() {
 		return
 	}
-	accountId := state.AccountId.ValueString()
 
-	id := state.ID.ValueString()
-	resp, httpResp, err := r.Api.GetFastlyService(r.Auth, accountId, id)
+	accountID, serviceID, err := utils.AccountIDAndServiceIDFromID(state.ID.ValueString())
+	if err != nil {
+		response.Diagnostics.AddError(err.Error(), "")
+		return
+	}
+
+	resp, httpResp, err := r.Api.GetFastlyService(r.Auth, accountID, serviceID)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -148,9 +166,11 @@ func (r *IntegrationFastlyServiceResource) Update(ctx context.Context, request r
 		return
 	}
 
-	accountId := state.AccountId.ValueString()
-
-	id := state.ID.ValueString()
+	accountID, serviceID, err := utils.AccountIDAndServiceIDFromID(state.ID.ValueString())
+	if err != nil {
+		response.Diagnostics.AddError(err.Error(), "")
+		return
+	}
 
 	body, diags := r.buildIntegrationFastlyServiceRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
@@ -158,7 +178,7 @@ func (r *IntegrationFastlyServiceResource) Update(ctx context.Context, request r
 		return
 	}
 
-	resp, _, err := r.Api.UpdateFastlyService(r.Auth, accountId, id, *body)
+	resp, _, err := r.Api.UpdateFastlyService(r.Auth, accountID, serviceID, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationFastlyService"))
 		return
@@ -179,11 +199,14 @@ func (r *IntegrationFastlyServiceResource) Delete(ctx context.Context, request r
 	if response.Diagnostics.HasError() {
 		return
 	}
-	accountId := state.AccountId.ValueString()
 
-	id := state.ID.ValueString()
+	accountID, serviceID, err := utils.AccountIDAndServiceIDFromID(state.ID.ValueString())
+	if err != nil {
+		response.Diagnostics.AddError(err.Error(), "")
+		return
+	}
 
-	httpResp, err := r.Api.DeleteFastlyService(r.Auth, accountId, id)
+	httpResp, err := r.Api.DeleteFastlyService(r.Auth, accountID, serviceID)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
@@ -194,7 +217,7 @@ func (r *IntegrationFastlyServiceResource) Delete(ctx context.Context, request r
 }
 
 func (r *IntegrationFastlyServiceResource) updateState(ctx context.Context, state *IntegrationFastlyServiceModel, resp *datadogV2.FastlyServiceResponse) {
-	state.ID = types.StringValue(resp.Data.GetId())
+	state.ID = types.StringValue(fmt.Sprintf("%s:%s", state.AccountId.ValueString(), resp.Data.Id))
 
 	data := resp.GetData()
 	attributes := data.GetAttributes()
@@ -216,7 +239,7 @@ func (r *IntegrationFastlyServiceResource) buildIntegrationFastlyServiceRequestB
 
 	req := datadogV2.NewFastlyServiceRequestWithDefaults()
 	req.Data = *datadogV2.NewFastlyServiceDataWithDefaults()
-	req.Data.SetId(state.ID.ValueString())
+	req.Data.SetId(state.ServiceId.ValueString())
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags

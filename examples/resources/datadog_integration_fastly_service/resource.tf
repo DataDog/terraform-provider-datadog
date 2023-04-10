@@ -7,5 +7,5 @@ resource "datadog_integration_fastly_account" "foo" {
 resource "datadog_integration_fastly_service" "foo" {
   account_id = datadog_integration_fastly_account.foo.id
   tags       = ["myTag", "myTag2:myValue"]
-  id         = "my-service-id"
+  service_id = "my-service-id"
 }
