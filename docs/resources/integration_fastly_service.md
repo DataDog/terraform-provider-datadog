@@ -22,7 +22,7 @@ resource "datadog_integration_fastly_account" "foo" {
 resource "datadog_integration_fastly_service" "foo" {
   account_id = datadog_integration_fastly_account.foo.id
   tags       = ["myTag", "myTag2:myValue"]
-  id         = "my-service-id"
+  service_id = "my-service-id"
 }
 ```
 
@@ -31,12 +31,16 @@ resource "datadog_integration_fastly_service" "foo" {
 
 ### Required
 
-- `id` (String) The ID of the Fastly service.
+- `service_id` (String) The ID of the Fastly service.
 
 ### Optional
 
 - `account_id` (String) Fastly Account id.
 - `tags` (Set of String) A list of tags for the Fastly service.
+
+### Read-Only
+
+- `id` (String) The ID of this resource.
 
 ## Import
 
