@@ -51,7 +51,7 @@ func (d *SensitiveDataScannerGroupOrderDatasource) Metadata(_ context.Context, r
 
 func (d *SensitiveDataScannerGroupOrderDatasource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Sensitive Data Scanner Group Order API datasource. This can be used to read the order of Datadog Sensitive Data Scanner Groups.",
+		Description: "Provides a Datadog Sensitive Data Scanner Group Order API data source. This can be used to retrieve the order of Datadog Sensitive Data Scanner Groups.",
 		Attributes: map[string]schema.Attribute{
 			"groups": schema.ListAttribute{
 				Description: "The list of Sensitive Data Scanner group IDs, in order. Logs are tested against the query filter of each index one by one following the order of the list.",
