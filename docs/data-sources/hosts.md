@@ -26,7 +26,6 @@ data "datadog_hosts" "foo" {
 
 - `filter` (String) String to filter search results.
 - `from` (Number) Number of seconds since UNIX epoch from which you want to search your hosts.
-- `include_hosts_metadata` (Boolean) Include additional metadata about the hosts (agent_version, machine, platform, processor, etc.).
 - `include_muted_hosts_data` (Boolean) Include information on the muted status of hosts and when the mute expires.
 - `sort_dir` (String) Direction of sort.
 - `sort_field` (String) Sort hosts by this field.
