@@ -17,7 +17,6 @@ func TestAccDatadogHostsDatasource(t *testing.T) {
 			{
 				Config: `data "datadog_hosts" "test" {
 						include_muted_hosts_data = true
-						include_hosts_metadata   = true
 					}`,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet("data.datadog_hosts.test", "total_matching"),
