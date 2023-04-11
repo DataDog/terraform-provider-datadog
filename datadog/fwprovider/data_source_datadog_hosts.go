@@ -2,6 +2,8 @@ package fwprovider
 
 import (
 	"context"
+	"crypto/sha256"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -22,15 +24,15 @@ func NewHostsDataSource() datasource.DataSource {
 }
 
 type HostListMetadataModel struct {
-	AgentVersion    types.String `tfsdk:"agent_version"`
-	CPU_cores       types.Int64  `tfsdk:"cpu_cores"`
-	Gohai           types.String `tfsdk:"gohai"`
-	Machine         types.String `tfsdk:"machine"`
-	Platform        types.String `tfsdk:"platform"`
-	Processor       types.String `tfsdk:"processor"`
-	PythonV         types.String `tfsdk:"python_version"`
-	Socket_FQDN     types.String `tfsdk:"socket_fqdn"`
-	Socket_Hostname types.String `tfsdk:"socket_hostname"`
+	AgentVersion   types.String `tfsdk:"agent_version"`
+	CPUCores       types.Int64  `tfsdk:"cpu_cores"`
+	Gohai          types.String `tfsdk:"gohai"`
+	Machine        types.String `tfsdk:"machine"`
+	Platform       types.String `tfsdk:"platform"`
+	Processor      types.String `tfsdk:"processor"`
+	PythonV        types.String `tfsdk:"python_version"`
+	SocketFQDN     types.String `tfsdk:"socket_fqdn"`
+	SocketHostname types.String `tfsdk:"socket_hostname"`
 }
 
 type HostListMetricsModel struct {
@@ -63,7 +65,6 @@ type HostsDataSourceModel struct {
 	SortDir               types.String `tfsdk:"sort_dir"`
 	From                  types.Int64  `tfsdk:"from"`
 	IncludeMutedHostsData types.Bool   `tfsdk:"include_muted_hosts_data"`
-	IncludeHostsMetadata  types.Bool   `tfsdk:"include_hosts_metadata"`
 	// Results
 	HostList      []HostListModel `tfsdk:"host_list"`
 	TotalMatching types.Int64     `tfsdk:"total_matching"`
@@ -82,9 +83,7 @@ func (d *hostsDataSource) Configure(_ context.Context, request datasource.Config
 
 	providerData, ok := request.ProviderData.(*FrameworkProvider)
 	if !ok {
-		response.Diagnostics.AddError(
-			"Unexpected Data Source Configure Type",
-			"")
+		response.Diagnostics.AddError("Unexpected Data Source Configure Type", "")
 		return
 	}
 
@@ -124,10 +123,6 @@ func (d *hostsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 			},
 			"include_muted_hosts_data": schema.BoolAttribute{
 				Description: "Include information on the muted status of hosts and when the mute expires.",
-				Optional:    true,
-			},
-			"include_hosts_metadata": schema.BoolAttribute{
-				Description: "Include additional metadata about the hosts (agent_version, machine, platform, processor, etc.).",
 				Optional:    true,
 			},
 			// Datasource Results
@@ -191,7 +186,7 @@ func (d *hostsDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	var parameters datadogV1.ListHostsOptionalParameters
 	parameters.WithFilter(state.Filter.ValueString())
 	parameters.WithCount(1000)
-	parameters.WithIncludeHostsMetadata(state.IncludeHostsMetadata.ValueBool())
+	parameters.WithIncludeHostsMetadata(true)
 	parameters.WithIncludeMutedHostsData(state.IncludeMutedHostsData.ValueBool())
 	if !state.SortField.IsNull() {
 		parameters.WithSortField(state.SortField.ValueString())
@@ -209,7 +204,10 @@ func (d *hostsDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		return
 	}
 
-	state.ID = types.StringValue("datadog-hosts")
+	idHash := fmt.Sprintf("%x", sha256.Sum256([]byte(
+		state.Filter.ValueString()+state.From.String()+state.SortField.ValueString()+state.SortDir.ValueString(),
+	)))
+	state.ID = types.StringValue(idHash)
 	state.TotalMatching = basetypes.NewInt64Value(ddHostListResponse.GetTotalMatching())
 	state.TotalReturned = basetypes.NewInt64Value(ddHostListResponse.GetTotalReturned())
 
@@ -251,15 +249,15 @@ func (d *hostsDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				"socket_fqdn":     types.StringType,
 				"socket_hostname": types.StringType,
 			}, HostListMetadataModel{
-				AgentVersion:    basetypes.NewStringValue(meta.GetAgentVersion()),
-				CPU_cores:       basetypes.NewInt64Value(meta.GetCpuCores()),
-				Gohai:           basetypes.NewStringValue(meta.GetGohai()),
-				Machine:         basetypes.NewStringValue(meta.GetMachine()),
-				Platform:        basetypes.NewStringValue(meta.GetPlatform()),
-				Processor:       basetypes.NewStringValue(meta.GetProcessor()),
-				PythonV:         basetypes.NewStringValue(meta.GetPythonV()),
-				Socket_FQDN:     basetypes.NewStringValue(meta.GetSocketFqdn()),
-				Socket_Hostname: basetypes.NewStringValue(meta.GetSocketHostname()),
+				AgentVersion:   basetypes.NewStringValue(meta.GetAgentVersion()),
+				CPUCores:       basetypes.NewInt64Value(meta.GetCpuCores()),
+				Gohai:          basetypes.NewStringValue(meta.GetGohai()),
+				Machine:        basetypes.NewStringValue(meta.GetMachine()),
+				Platform:       basetypes.NewStringValue(meta.GetPlatform()),
+				Processor:      basetypes.NewStringValue(meta.GetProcessor()),
+				PythonV:        basetypes.NewStringValue(meta.GetPythonV()),
+				SocketFQDN:     basetypes.NewStringValue(meta.GetSocketFqdn()),
+				SocketHostname: basetypes.NewStringValue(meta.GetSocketHostname()),
 			})
 		}
 		hostList = append(hostList, hostListEntry)
