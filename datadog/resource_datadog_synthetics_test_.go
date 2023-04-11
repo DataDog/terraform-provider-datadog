@@ -2113,6 +2113,26 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			options.SetAllowInsecure(attr.(bool))
 		}
 
+		if rawScheduling, ok := d.GetOk("options_list.0.scheduling"); ok {
+			optionsScheduling := datadogV1.SyntheticsTestOptionsScheduling{}
+			scheduling := rawScheduling.([]interface{})[0]
+			if rawTimeframes, ok := scheduling.(map[string]interface{})["timeframes"]; ok {
+				var timeFrames []datadogV1.SyntheticsTestOptionsSchedulingTimeframe
+				for _, tf := range rawTimeframes.(*schema.Set).List() {
+					timeframe := datadogV1.NewSyntheticsTestOptionsSchedulingTimeframe()
+					timeframe.SetDay(int32(tf.(map[string]interface{})["day"].(int)))
+					timeframe.SetFrom(tf.(map[string]interface{})["from"].(string))
+					timeframe.SetTo(tf.(map[string]interface{})["to"].(string))
+					timeFrames = append(timeFrames, *timeframe)
+				}
+				optionsScheduling.SetTimeframes(timeFrames)
+			}
+			if timezone, ok := scheduling.(map[string]interface{})["timezone"]; ok {
+				optionsScheduling.SetTimezone(timezone.(string))
+			}
+			options.SetScheduling(optionsScheduling)
+		}
+
 		if retryRaw, ok := d.GetOk("options_list.0.retry"); ok {
 			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
 			retry := retryRaw.([]interface{})[0]
