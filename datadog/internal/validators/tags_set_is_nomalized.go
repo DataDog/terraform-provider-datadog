@@ -10,20 +10,20 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-func StringSetTagsAreNormalized() stringSetTagsAreNormalized {
-	return stringSetTagsAreNormalized{}
+func TagsSetIsNormalized() tagsSetIsNormalized {
+	return tagsSetIsNormalized{}
 }
 
-type stringSetTagsAreNormalized struct{}
+type tagsSetIsNormalized struct{}
 
-func (v stringSetTagsAreNormalized) Description(_ context.Context) string {
+func (v tagsSetIsNormalized) Description(_ context.Context) string {
 	return "Tags must be normalized. See docs https://docs.datadoghq.com/getting_started/tagging/#define-tags"
 }
-func (v stringSetTagsAreNormalized) MarkdownDescription(ctx context.Context) string {
+func (v tagsSetIsNormalized) MarkdownDescription(ctx context.Context) string {
 	return v.Description(ctx)
 }
 
-func (v stringSetTagsAreNormalized) ValidateSet(ctx context.Context, req validator.SetRequest, resp *validator.SetResponse) {
+func (v tagsSetIsNormalized) ValidateSet(ctx context.Context, req validator.SetRequest, resp *validator.SetResponse) {
 	if req.ConfigValue.IsUnknown() || req.ConfigValue.IsNull() {
 		return
 	}
