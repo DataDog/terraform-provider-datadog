@@ -262,9 +262,5 @@ func (d *hostsDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		hostList = append(hostList, hostListEntry)
 	}
 	state.HostList = hostList
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
