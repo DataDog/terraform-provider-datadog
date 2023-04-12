@@ -225,7 +225,6 @@ func (d *hostsDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		hostListEntry.Name = basetypes.NewStringValue(val.GetName())
 		hostListEntry.Sources, _ = types.ListValueFrom(ctx, types.StringType, val.GetSources())
 		hostListEntry.Up = basetypes.NewBoolValue(val.GetUp())
-		// TODO add metadata and metrics
 		if metrics, ok := val.GetMetricsOk(); ok {
 			hostListEntry.Metrics, _ = types.ObjectValueFrom(ctx, map[string]attr.Type{
 				"cpu":    types.Float64Type,
