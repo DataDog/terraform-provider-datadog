@@ -1,6 +1,6 @@
 # Development
 
-Terraform provides helpful [Extending Terraform][1] documentation for best practices around writing provider code. This document provides some guidelines for working with this project.
+Terraform provides helpful [Extending Terraform][1] documentation for best practices around writing provider code. This document provides some guidelines for working with this project. **NOTE**: We currently support [Protocol Version 5][13].
 
 ## Prerequisites:
 
@@ -130,3 +130,4 @@ It needs one changelog label (among `improvement`, `feature`, `bugfix`, `note` a
 [10]: https://www.terraform.io/plugin/sdkv2/debugging
 [11]: https://developer.hashicorp.com/terraform/plugin/framework
 [12]: https://github.com/DataDog/terraform-provider-datadog/tree/master/datadog/fwprovider
+[13]: https://developer.hashicorp.com/terraform/plugin/terraform-plugin-protocol#protocol-version-5
