@@ -30,3 +30,7 @@ type {{ name|camel_case }}Model struct {
 {% for name, schema in nonPrimitiveListAttr.items() %}
 {{- typesHelper.basePropertyTypeBuilder(name, schema) }}
 {% endfor %}
+
+{% for name, schema in nonPrimitiveObjAttr.items() %}
+{{- typesHelper.basePropertyTypeBuilder(name, schema) }}
+{% endfor %}
