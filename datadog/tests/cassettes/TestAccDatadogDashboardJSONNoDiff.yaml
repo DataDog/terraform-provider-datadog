@@ -1,0 +1,81 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {
+         "title": "tf-TestAccDatadogDashboardJSONNoDiff-local-1680648226",
+         "description": "",
+         "widgets": [],
+         "template_variables": [],
+         "layout_type": "ordered",
+         "notify_list": [],
+         "reflow_type": "fixed",
+         "id": "3fa-nkp-wty"
+      }
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard
+    method: POST
+  response:
+    body: |
+      {"id":"8b3-z4a-bmd","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1680648226","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/8b3-z4a-bmd/tf-testaccdatadogdashboardjsonnodiff-local-1680648226","is_read_only":false,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-04-04T22:43:47.490385+00:00","modified_at":"2023-04-04T22:43:47.490385+00:00","reflow_type":"fixed"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/8b3-z4a-bmd
+    method: GET
+  response:
+    body: |
+      {"id":"8b3-z4a-bmd","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1680648226","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/8b3-z4a-bmd/tf-testaccdatadogdashboardjsonnodiff-local-1680648226","is_read_only":false,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-04-04T22:43:47.490385+00:00","modified_at":"2023-04-04T22:43:47.490385+00:00","reflow_type":"fixed"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/8b3-z4a-bmd
+    method: GET
+  response:
+    body: |
+      {"id":"8b3-z4a-bmd","title":"tf-TestAccDatadogDashboardJSONNoDiff-local-1680648226","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/8b3-z4a-bmd/tf-testaccdatadogdashboardjsonnodiff-local-1680648226","is_read_only":false,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-04-04T22:43:47.490385+00:00","modified_at":"2023-04-04T22:43:47.490385+00:00","reflow_type":"fixed"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/8b3-z4a-bmd
+    method: DELETE
+  response:
+    body: |
+      {"deleted_dashboard_id":"8b3-z4a-bmd"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
