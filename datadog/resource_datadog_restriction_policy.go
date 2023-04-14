@@ -91,7 +91,6 @@ func resourceDatadogRestrictionPolicyUpdate(ctx context.Context, d *schema.Resou
 }
 
 func resourceDatadogRestrictionPolicyDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	// TODO replace with restriction policy
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
@@ -125,17 +124,18 @@ func updateRestrictionPolicyState(d *schema.ResourceData, restrictionPolicy *dat
 
 
 func buildRestrictionPolicyUpdateRequest(d *schema.ResourceData) datadogV2.RestrictionPolicyUpdateRequest {
+	restrictionPolicyUpdateRequest := datadogV2.NewRestrictionPolicyUpdateRequestWithDefaults()
 	restrictionPolicy := datadogV2.NewRestrictionPolicyWithDefaults()
 	restrictionPolicyAttributes := restrictionPolicy.GetAttributes()
 
 	// Set bindings
-	restrictionPolicyAttributes.SetBindings(d.Get("bindings").(string))
+	restrictionPolicyAttributes.SetBindings(d.Get("bindings").([]datadogV2.RestrictionPolicyBinding))
 
-	// Set AuthN mapping update data
-	restrictionPolicy.SetAttributes(*restrictionPolicyAttributes)
+	// Set restriction policy update data
+	restrictionPolicy.SetAttributes(restrictionPolicyAttributes)
 	restrictionPolicy.SetId(d.Id())
 
-	// Set AuthN mapping update request
-	restrictionPolicyUpdateRequest.SetData(*restrictionPolicyUpdateData)
+	// Set restriction policy update request
+	restrictionPolicyUpdateRequest.SetData(*restrictionPolicy)
 	return *restrictionPolicyUpdateRequest
 }
