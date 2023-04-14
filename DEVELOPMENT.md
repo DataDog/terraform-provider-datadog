@@ -1,6 +1,6 @@
 # Development
 
-Terraform provides helpful [Extending Terraform][1] documentation for best practices around writing provider code. This document provides some guidelines for working with this project. **NOTE**: We currently support [Protocol Version 5][13].
+Terraform provides helpful [Extending Terraform][1] documentation for best practices around writing provider code. This document provides some guidelines for working with this project.
 
 ## Prerequisites:
 
@@ -13,7 +13,7 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 
 ## Adding new resources
 
-All new resources should be written using [Terraform Plugin Framework][11]. See [here][12] for examples of current resources implemented using Terraform Plugin Framework.
+All new resources should be written using [Terraform Plugin Framework][11]. See [here][12] for examples of current resources implemented using Terraform Plugin Framework. **NOTE**: We currently support [Protocol Version 5][13].
 
 ## Makefile
 
