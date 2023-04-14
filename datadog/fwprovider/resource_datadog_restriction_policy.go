@@ -63,7 +63,7 @@ func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaR
 		Attributes: map[string]schema.Attribute{
 			"resource_id": schema.StringAttribute{
 				Optional:    true,
-				Description: "UPDATE ME",
+                Description: "Identifier for the resource, formatted as type:id.",
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -120,6 +120,11 @@ func (r *RestrictionPolicyResource) Read(ctx context.Context, request resource.R
 }
 
 func (r *RestrictionPolicyResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+    // We don't have a create function
+    return
+}
+
+func (r *RestrictionPolicyResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state RestrictionPolicyModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
