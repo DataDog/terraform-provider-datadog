@@ -11,9 +11,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 var (
@@ -71,6 +73,7 @@ func (r *IntegrationFastlyServiceResource) Schema(_ context.Context, _ resource.
 				Optional:    true,
 				Description: "A list of tags for the Fastly service.",
 				ElementType: types.StringType,
+				Validators:  []validator.Set{validators.TagsSetIsNormalized()},
 			},
 			"service_id": schema.StringAttribute{
 				Description: "The ID of the Fastly service.",
