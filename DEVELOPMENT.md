@@ -11,6 +11,10 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 -   [tfplugindocs][8]
 -   [gotestsum][9] (to run project tests) `gotestsum` executable binary is installed into `$GOPATH/bin` when running `make get-test-deps`. Add the `$GOPATH/bin` directory to your `$PATH`
 
+## Adding new resources
+
+All new resources should be written using [Terraform Plugin Framework][11]. See [here][12] for examples of current resources implemented using Terraform Plugin Framework.
+
 ## Makefile
 
 The root of this project contains a `GNUmakefile` with the purpose of making each development step easier. While some commands are outlined here, please see [GNUmakefile][5] for all available commands.
@@ -124,3 +128,5 @@ It needs one changelog label (among `improvement`, `feature`, `bugfix`, `note` a
 [8]: https://github.com/hashicorp/terraform-plugin-docs
 [9]: https://github.com/gotestyourself/gotestsum
 [10]: https://www.terraform.io/plugin/sdkv2/debugging
+[11]: https://developer.hashicorp.com/terraform/plugin/framework
+[12]: https://github.com/DataDog/terraform-provider-datadog/tree/master/datadog/fwprovider
