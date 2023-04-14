@@ -26,7 +26,7 @@ func resourceDatadogRestrictionPolicy() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"bindings": {
 				Description: "Bindings of relations to principals.",
-				Type:        schema.TypeSet, // TODO replace with binding schema
+				Type:        schema.TypeSet,
 				Required:    true,
 				Elem: GetBindingSchema(),
 			},
@@ -58,13 +58,13 @@ func resourceDatadogRestrictionPolicyRead(ctx context.Context, d *schema.Resourc
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
-	resp, httpResponse, err := apiInstances.GetRestrictionPolicyApiV2().GetRestrictionPolicy(auth, d.Id())
+	resp, httpResponse, err := apiInstances.GetRestrictionPoliciesApiV2().GetRestrictionPolicy(auth, d.Id())
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId((""))
 			return nil
 		}
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting authn mapping")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error getting restriction policy")
 	}
 	restrictionPolicyData := resp.GetData()
 	return updateRestrictionPolicyState(d, &restrictionPolicyData)
@@ -76,10 +76,10 @@ func resourceDatadogRestrictionPolicyUpdate(ctx context.Context, d *schema.Resou
 	auth := meta.(*ProviderConfiguration).Auth
 
 	req := buildRestrictionPolicyUpdateRequest(d)
-	resp, httpResponse, err := apiInstances.GetRestrictionPolicyApiV2().UpdateRestrictionPolicy(auth, d.Id(), req)
+	resp, httpResponse, err := apiInstances.GetRestrictionPoliciesApiV2().UpdateRestrictionPolicy(auth, d.Id(), req)
 
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating role mapping")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating restriction policy")
 	}
 
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -95,9 +95,9 @@ func resourceDatadogRestrictionPolicyDelete(ctx context.Context, d *schema.Resou
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
-	httpResponse, err := apiInstances.GetRestrictionPolicyApiV2().DeleteRestrictionPolicy(auth, d.Id())
+	httpResponse, err := apiInstances.GetRestrictionPoliciesApiV2().DeleteRestrictionPolicy(auth, d.Id())
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting authn mapping")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting restriction policy")
 	}
 
 	return nil
@@ -138,12 +138,4 @@ func buildRestrictionPolicyUpdateRequest(d *schema.ResourceData) datadogV2.Restr
 	// Set AuthN mapping update request
 	restrictionPolicyUpdateRequest.SetData(*restrictionPolicyUpdateData)
 	return *restrictionPolicyUpdateRequest
-}
-
-func buildRoleRelations(d *schema.ResourceData) *datadogV2.RelationshipToRole {
-	roleRelations := datadogV2.NewRelationshipToRoleWithDefaults()
-	roleRelationsData := datadogV2.NewRelationshipToRoleDataWithDefaults()
-	roleRelationsData.SetId(d.Get("role").(string))
-	roleRelations.SetData(*roleRelationsData)
-	return roleRelations
 }
