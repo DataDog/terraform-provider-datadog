@@ -62,6 +62,7 @@ type ApiInstances struct {
 	opsgenieIntegrationApiV2   *datadogV2.OpsgenieIntegrationApi
 	organizationsApiV2         *datadogV2.OrganizationsApi
 	processesApiV2             *datadogV2.ProcessesApi
+	restrictionPolicyApiV2     *datadogV2.RestrictionPoliciesApi
 	rolesApiV2                 *datadogV2.RolesApi
 	rumApiV2                   *datadogV2.RUMApi
 	securityMonitoringApiV2    *datadogV2.SecurityMonitoringApi
@@ -517,4 +518,12 @@ func (i *ApiInstances) GetUsersApiV2() *datadogV2.UsersApi {
 		i.usersApiV2 = datadogV2.NewUsersApi(i.HttpClient)
 	}
 	return i.usersApiV2
+}
+
+// GetRestrictionPoliciesApiV2 get instance of RestrictionPoliciesApi
+func (i *ApiInstances) GetRestrictionPoliciesApiV2() *datadogV2.RestrictionPoliciesApi {
+	if i.restrictionPolicyApiV2 == nil {
+		i.restrictionPolicyApiV2 = datadogV2.NewRestrictionPoliciesApi(i.HttpClient)
+	}
+	return i.restrictionPolicyApiV2
 }
