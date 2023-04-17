@@ -62,6 +62,7 @@ func (r *IntegrationCloudflareAccountResource) Schema(_ context.Context, _ resou
 			"api_key": schema.StringAttribute{
 				Required:    true,
 				Description: "The API key (or token) for the Cloudflare account.",
+				Sensitive:   true,
 			},
 			"email": schema.StringAttribute{
 				Optional:    true,
