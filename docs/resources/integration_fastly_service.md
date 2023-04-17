@@ -21,7 +21,7 @@ resource "datadog_integration_fastly_account" "foo" {
 # Create new integration_fastly_service resource
 resource "datadog_integration_fastly_service" "foo" {
   account_id = datadog_integration_fastly_account.foo.id
-  tags       = ["myTag", "myTag2:myValue"]
+  tags       = ["mytag", "mytag2:myvalue"]
   service_id = "my-service-id"
 }
 ```
