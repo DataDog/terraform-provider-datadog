@@ -202,7 +202,7 @@ func (r *RestrictionPolicyResource) Delete(ctx context.Context, request resource
 
 func (r *RestrictionPolicyResource) updateState(ctx context.Context, state *RestrictionPolicyModel, resp *datadogV2.RestrictionPolicyResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
-
+	state.ResourceId = types.StringValue(resp.Data.GetId())
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
