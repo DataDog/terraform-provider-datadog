@@ -259,6 +259,8 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 		NewAPIKeyResource,
 		NewIntegrationConfluentAccountResource,
 		NewIntegrationConfluentResourceResource,
+		NewIntegrationFastlyAccountResource,
+		NewIntegrationFastlyServiceResource,
 	}
 }
 

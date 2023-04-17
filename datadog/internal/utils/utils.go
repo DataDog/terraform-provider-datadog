@@ -215,6 +215,12 @@ func AccountIDAndResourceIDFromID(id string) (string, string, error) {
 	result := strings.SplitN(id, ":", 2)
 	if len(result) != 2 {
 		return "", "", fmt.Errorf("error extracting account_id and resource_id from id: %s", id)
+
+// AccountIDAndServiceIDFromID returns fastly service resource account_id and service_id from the ID
+func AccountIDAndServiceIDFromID(id string) (string, string, error) {
+	result := strings.SplitN(id, ":", 2)
+	if len(result) != 2 {
+		return "", "", fmt.Errorf("error extracting account_id and service_id from id: %s", id)
 	}
 	return result[0], result[1], nil
 }
