@@ -18,7 +18,7 @@ Provides a Datadog IntegrationConfluentAccount resource. This can be used to cre
 resource "datadog_integration_confluent_account" "foo" {
   api_key    = "TESTAPIKEY123"
   api_secret = "test-api-secret-123"
-  tags       = ["myTag", "myTag2:myValue"]
+  tags       = ["mytag", "mytag2:myvalue"]
 }
 ```
 
@@ -28,7 +28,7 @@ resource "datadog_integration_confluent_account" "foo" {
 ### Required
 
 - `api_key` (String) The API key associated with your Confluent account.
-- `api_secret` (String) The API secret associated with your Confluent account.
+- `api_secret` (String, Sensitive) The API secret associated with your Confluent account.
 
 ### Optional
 
