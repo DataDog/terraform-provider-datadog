@@ -8,6 +8,8 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -63,7 +65,10 @@ func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaR
 		Attributes: map[string]schema.Attribute{
 			"resource_id": schema.StringAttribute{
 				Optional:    true,
-                Description: "Identifier for the resource, formatted as type:id.",
+				Description: "Identifier for the resource, formatted as type:id.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -120,8 +125,32 @@ func (r *RestrictionPolicyResource) Read(ctx context.Context, request resource.R
 }
 
 func (r *RestrictionPolicyResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-    // We don't have a create function
-    return
+	var state RestrictionPolicyModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	resourceId := state.ResourceId.ValueString()
+	body, diags := r.buildRestrictionPolicyRequestBody(ctx, &state)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	resp, _, err := r.Api.UpdateRestrictionPolicy(r.Auth, resourceId, *body)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RestrictionPolicy"))
+		return
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
+	r.updateState(ctx, &state, &resp)
+
+	// Save data into Terraform state
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *RestrictionPolicyResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
@@ -132,14 +161,13 @@ func (r *RestrictionPolicyResource) Update(ctx context.Context, request resource
 	}
 
 	resourceId := state.ResourceId.ValueString()
-
 	body, diags := r.buildRestrictionPolicyRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	resp, _, err := r.Api.UpdateRestrictionPolicy(r.Auth, id, *body)
+	resp, _, err := r.Api.UpdateRestrictionPolicy(r.Auth, resourceId, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RestrictionPolicy"))
 		return
@@ -162,7 +190,6 @@ func (r *RestrictionPolicyResource) Delete(ctx context.Context, request resource
 	}
 
 	id := state.ID.ValueString()
-
 	httpResp, err := r.Api.DeleteRestrictionPolicy(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
@@ -202,19 +229,20 @@ func (r *RestrictionPolicyResource) buildRestrictionPolicyRequestBody(ctx contex
 	if state.Bindings != nil {
 		var bindings []datadogV2.RestrictionPolicyBinding
 		for _, bindingsTFItem := range state.Bindings {
-			bindingsDDItem := datadogV2.NewRestrictionPolicyBinding()
-
+			bindingsDDItem := datadogV2.NewRestrictionPolicyBindingWithDefaults()
 			bindingsDDItem.SetRelation(bindingsTFItem.Relation.ValueString())
 
 			var principals []string
 			diags.Append(bindingsTFItem.Principals.ElementsAs(ctx, &principals, false)...)
 			bindingsDDItem.SetPrincipals(principals)
+			bindings = append(bindings, *bindingsDDItem)
 		}
 		attributes.SetBindings(bindings)
 	}
 
 	req := datadogV2.NewRestrictionPolicyUpdateRequestWithDefaults()
 	req.Data = *datadogV2.NewRestrictionPolicyWithDefaults()
+	req.Data.Id = state.ResourceId.ValueString()
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
