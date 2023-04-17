@@ -60,7 +60,6 @@ func (d *APIKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			"id": schema.StringAttribute{
 				Description: "The ID of this resource.",
 				Optional:    true,
-				Computed:    true,
 			},
 			"key": schema.StringAttribute{
 				Description: "The value of the API Key.",
@@ -87,7 +86,7 @@ func (d *APIKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		}
 		apiKeyData := ddResp.GetData()
 		d.updateState(&state, &apiKeyData)
-	} else {
+	} else if !state.Name.IsNull() {
 		optionalParams := datadogV2.NewListAPIKeysOptionalParameters()
 		optionalParams.WithFilter(state.Name.ValueString())
 
@@ -118,6 +117,9 @@ func (d *APIKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		}
 		apiKeyData := ddResp.GetData()
 		d.updateState(&state, &apiKeyData)
+	} else {
+		resp.Diagnostics.AddError("ID and name cannot both be unset.", "")
+		return
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
