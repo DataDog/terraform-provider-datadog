@@ -109,9 +109,9 @@ func IntegrationConfluentResourceDestroyHelper(auth context.Context, s *terrafor
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
 				}
-				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
+				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Confluent resource %s", err)}
 			}
-			return &utils.RetryableError{Prob: "Monitor still exists"}
+			return &utils.RetryableError{Prob: "Confluent resource still exists"}
 		}
 		return nil
 	})
@@ -140,7 +140,7 @@ func integrationConfluentResourceExistsHelper(auth context.Context, s *terraform
 
 		_, httpResp, err := apiInstances.GetConfluentCloudApiV2().GetConfluentResource(auth, accountId, id)
 		if err != nil {
-			return utils.TranslateClientError(err, httpResp, "error retrieving monitor")
+			return utils.TranslateClientError(err, httpResp, "error retrieving Confluent resource")
 		}
 	}
 	return nil
