@@ -1,0 +1,197 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1680634490","api_secret":"test-api-secret-123"},"type":"confluent-cloud-accounts"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"confluent-cloud-accounts","attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1680634490","resources":[],"tags":[]},"id":"txts705wz3"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]},"id":"12345678910","type":"confluent-cloud-resources"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3/resources
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"confluent-cloud-resources","attributes":{"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]},"id":"12345678910"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"confluent-cloud-accounts","attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1680634490","resources":[{"id":"12345678910","tags":["mytag","mytag2:myvalue"],"resource_type":"kafka"}],"tags":[]},"id":"txts705wz3"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3/resources/12345678910
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"confluent-cloud-resources","attributes":{"tags":["mytag","mytag2:myvalue"],"resource_type":"kafka"},"id":"12345678910"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"confluent-cloud-accounts","attributes":{"tags":[],"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1680634490","resources":[{"tags":["mytag","mytag2:myvalue"],"id":"12345678910","resource_type":"kafka"}]},"id":"txts705wz3"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3/resources/12345678910
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"confluent-cloud-resources","attributes":{"tags":["mytag","mytag2:myvalue"],"resource_type":"kafka"},"id":"12345678910"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"resource_type":"connector","tags":["mytag"]},"id":"12345678910","type":"confluent-cloud-resources"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3/resources/12345678910
+    method: PATCH
+  response:
+    body: |
+      {"data":{"type":"confluent-cloud-resources","id":"12345678910","attributes":{"resource_type":"connector","tags":["mytag"]}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"confluent-cloud-accounts","attributes":{"resources":[{"id":"12345678910","resource_type":"connector","tags":["mytag"]}],"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1680634490","tags":[]},"id":"txts705wz3"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3/resources/12345678910
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"confluent-cloud-resources","id":"12345678910","attributes":{"tags":["mytag"],"resource_type":"connector"}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3/resources/12345678910
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""

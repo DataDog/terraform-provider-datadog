@@ -258,6 +258,10 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 	return []func() resource.Resource{
 		NewAPIKeyResource,
 		NewIntegrationCloudflareAccountResource,
+		NewIntegrationConfluentAccountResource,
+		NewIntegrationConfluentResourceResource,
+		NewIntegrationFastlyAccountResource,
+		NewIntegrationFastlyServiceResource,
 	}
 }
 
