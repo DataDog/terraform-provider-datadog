@@ -47,6 +47,7 @@ type ApiInstances struct {
 	auditApiV2                 *datadogV2.AuditApi
 	authNMappingsApiV2         *datadogV2.AuthNMappingsApi
 	cloudWorkloadSecurityApiV2 *datadogV2.CloudWorkloadSecurityApi
+	confluentCloudApiV2        *datadogV2.ConfluentCloudApi
 	dashboardListsApiV2        *datadogV2.DashboardListsApi
 	eventsApiV2                *datadogV2.EventsApi
 	fastlyIntegrationApiV2     *datadogV2.FastlyIntegrationApi
@@ -520,7 +521,15 @@ func (i *ApiInstances) GetUsersApiV2() *datadogV2.UsersApi {
 	return i.usersApiV2
 }
 
-// GetFastlyIntegrationApiV2 get instance of UsersApi
+// GetConfluentCloudApiV2 get instance of GetConfluentCloudApi
+func (i *ApiInstances) GetConfluentCloudApiV2() *datadogV2.ConfluentCloudApi {
+	if i.confluentCloudApiV2 == nil {
+		i.confluentCloudApiV2 = datadogV2.NewConfluentCloudApi(i.HttpClient)
+	}
+	return i.confluentCloudApiV2
+}
+
+// GetFastlyIntegrationApiV2 get instance of FastlyIntegrationApi
 func (i *ApiInstances) GetFastlyIntegrationApiV2() *datadogV2.FastlyIntegrationApi {
 	if i.fastlyIntegrationApiV2 == nil {
 		i.fastlyIntegrationApiV2 = datadogV2.NewFastlyIntegrationApi(i.HttpClient)
