@@ -35,6 +35,16 @@ type GroupByModel struct {
 	TagName types.String `tfsdk:"tag_name"`
 }
 
+type ComputeModel struct {
+	AggregationType    types.String `tfsdk:"aggregation_type"`
+	IncludePercentiles types.Bool   `tfsdk:"include_percentiles"`
+	Path               types.String `tfsdk:"path"`
+}
+
+type FilterModel struct {
+	Query types.String `tfsdk:"query"`
+}
+
 func NewSpansMetricResource() resource.Resource {
 	return &SpansMetricResource{}
 }
@@ -236,6 +246,30 @@ func (r *SpansMetricResource) updateState(ctx context.Context, state *SpansMetri
 			state.GroupBy = append(state.GroupBy, &groupByTfItem)
 		}
 	}
+
+	if compute, ok := attributes.GetComputeOk(); ok {
+		computeTf := ComputeModel{}
+		if aggregationType, ok := compute.GetAggregationTypeOk(); ok {
+			computeTf.AggregationType = types.StringValue(*aggregationType)
+		}
+		if includePercentiles, ok := compute.GetIncludePercentilesOk(); ok {
+			computeTf.IncludePercentiles = types.BoolValue(*includePercentiles)
+		}
+		if path, ok := compute.GetPathOk(); ok {
+			computeTf.Path = types.StringValue(*path)
+		}
+
+		state.Compute = &computeTf
+	}
+
+	if filter, ok := attributes.GetFilterOk(); ok {
+		filterTf := FilterModel{}
+		if query, ok := filter.GetQueryOk(); ok {
+			filterTf.Query = types.StringValue(*query)
+		}
+
+		state.Filter = &filterTf
+	}
 }
 
 func (r *SpansMetricResource) buildSpansMetricRequestBody(ctx context.Context, state *SpansMetricModel) (*datadogV2.SpansMetricCreateRequest, diag.Diagnostics) {
@@ -253,6 +287,28 @@ func (r *SpansMetricResource) buildSpansMetricRequestBody(ctx context.Context, s
 			}
 		}
 		attributes.SetGroupBy(groupBy)
+	}
+
+	var compute datadogV2.SpansMetricCompute
+
+	compute.SetAggregationType(state.Compute.AggregationType.ValueString())
+	if !state.Compute.IncludePercentiles.IsNull() {
+		compute.SetIncludePercentiles(state.Compute.IncludePercentiles.ValueBool())
+	}
+	if !state.Compute.Path.IsNull() {
+		compute.SetPath(state.Compute.Path.ValueString())
+	}
+
+	attributes.SetCompute(compute)
+
+	if state.Filter != nil {
+		var filter datadogV2.SpansMetricFilter
+
+		if !state.Filter.Query.IsNull() {
+			filter.SetQuery(state.Filter.Query.ValueString())
+		}
+
+		attributes.SetFilter(filter)
 	}
 
 	req := datadogV2.NewSpansMetricCreateRequestWithDefaults()
@@ -277,6 +333,26 @@ func (r *SpansMetricResource) buildSpansMetricUpdateRequestBody(ctx context.Cont
 			}
 		}
 		attributes.SetGroupBy(groupBy)
+	}
+
+	if state.Compute != nil {
+		var compute datadogV2.SpansMetricUpdateCompute
+
+		if !state.Compute.IncludePercentiles.IsNull() {
+			compute.SetIncludePercentiles(state.Compute.IncludePercentiles.ValueBool())
+		}
+
+		attributes.SetCompute(compute)
+	}
+
+	if state.Filter != nil {
+		var filter datadogV2.SpansMetricFilter
+
+		if !state.Filter.Query.IsNull() {
+			filter.SetQuery(state.Filter.Query.ValueString())
+		}
+
+		attributes.SetFilter(filter)
 	}
 
 	req := datadogV2.NewSpansMetricUpdateRequestWithDefaults()
