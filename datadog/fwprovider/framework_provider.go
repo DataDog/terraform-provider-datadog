@@ -258,6 +258,10 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 	return []func() resource.Resource{
 		NewAPIKeyResource,
 		NewSensitiveDataScannerGroupOrder,
+		NewIntegrationConfluentAccountResource,
+		NewIntegrationConfluentResourceResource,
+		NewIntegrationFastlyAccountResource,
+		NewIntegrationFastlyServiceResource,
 	}
 }
 
@@ -265,6 +269,7 @@ func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.D
 	return []func() datasource.DataSource{
 		NewIPRangesDataSource,
 		NewSensitiveDataScannerGroupOrderDatasource,
+		NewAPIKeyDataSource,
 		NewHostsDataSource,
 	}
 }
