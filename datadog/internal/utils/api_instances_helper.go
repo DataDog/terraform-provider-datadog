@@ -527,6 +527,7 @@ func (i *ApiInstances) GetConfluentCloudApiV2() *datadogV2.ConfluentCloudApi {
 		i.confluentCloudApiV2 = datadogV2.NewConfluentCloudApi(i.HttpClient)
 	}
 	return i.confluentCloudApiV2
+}
 
 // GetFastlyIntegrationApiV2 get instance of FastlyIntegrationApi
 func (i *ApiInstances) GetFastlyIntegrationApiV2() *datadogV2.FastlyIntegrationApi {
