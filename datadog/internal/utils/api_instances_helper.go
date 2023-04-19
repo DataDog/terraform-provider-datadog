@@ -544,3 +544,4 @@ func (i *ApiInstances) GetRestrictionPoliciesApiV2() *datadogV2.RestrictionPolic
 		i.restrictionPolicyApiV2 = datadogV2.NewRestrictionPoliciesApi(i.HttpClient)
 	}
 	return i.restrictionPolicyApiV2
+}

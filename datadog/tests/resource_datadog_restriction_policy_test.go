@@ -41,12 +41,12 @@ resource "datadog_restriction_policy" "foo" {
     }
 }`)
 	// return fmt.Sprintf(`
-// resource "datadog_restriction_policy" "foo" {
-    // bindings {
-    // principals = ["role:00000000-0000-1111-0000-000000000000"]
-    // relation = "editor"
-    // }
-// }`, uniq)
+	// resource "datadog_restriction_policy" "foo" {
+	// bindings {
+	// principals = ["role:00000000-0000-1111-0000-000000000000"]
+	// relation = "editor"
+	// }
+	// }`, uniq)
 }
 
 func testAccCheckDatadogRestrictionPolicyDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
