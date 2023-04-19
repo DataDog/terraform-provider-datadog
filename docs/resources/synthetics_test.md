@@ -349,6 +349,9 @@ Required:
 
 - `jsonpath` (String) The JSON path to assert.
 - `operator` (String) The specific operator to use on the path.
+
+Optional:
+
 - `targetvalue` (String) Expected matching value.
 
 
@@ -358,8 +361,11 @@ Required:
 Required:
 
 - `operator` (String) The specific operator to use on the path.
-- `targetvalue` (String) Expected matching value.
 - `xpath` (String) The xpath to assert.
+
+Optional:
+
+- `targetvalue` (String) Expected matching value.
 
 
 
@@ -516,6 +522,9 @@ Required:
 
 - `jsonpath` (String) The JSON path to assert.
 - `operator` (String) The specific operator to use on the path.
+
+Optional:
+
 - `targetvalue` (String) Expected matching value.
 
 
@@ -525,8 +534,11 @@ Required:
 Required:
 
 - `operator` (String) The specific operator to use on the path.
-- `targetvalue` (String) Expected matching value.
 - `xpath` (String) The xpath to assert.
+
+Optional:
+
+- `targetvalue` (String) Expected matching value.
 
 
 
