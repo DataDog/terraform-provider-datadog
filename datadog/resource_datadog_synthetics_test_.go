@@ -458,7 +458,6 @@ func syntheticsAPIAssertion() *schema.Schema {
 							"targetvalue": {
 								Description: "Expected matching value.",
 								Type:        schema.TypeString,
-								Required:    true,
 							},
 						},
 					},
@@ -483,7 +482,6 @@ func syntheticsAPIAssertion() *schema.Schema {
 							"targetvalue": {
 								Description: "Expected matching value.",
 								Type:        schema.TypeString,
-								Required:    true,
 							},
 						},
 					},
