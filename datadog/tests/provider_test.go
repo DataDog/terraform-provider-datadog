@@ -161,6 +161,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_service_level_objective_test":                    "service-level-objectives",
 	"tests/resource_datadog_service_definition_yaml_test":                    "service-definition",
 	"tests/resource_datadog_slo_correction_test":                             "slo_correction",
+	"tests/resource_datadog_spans_metric_test":                               "spans-metric",
 	"tests/resource_datadog_synthetics_test_test":                            "synthetics",
 	"tests/resource_datadog_synthetics_global_variable_test":                 "synthetics",
 	"tests/resource_datadog_synthetics_private_location_test":                "synthetics",
