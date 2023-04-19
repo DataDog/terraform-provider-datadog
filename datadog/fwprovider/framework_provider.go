@@ -257,6 +257,10 @@ func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *Pr
 func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewAPIKeyResource,
+		NewIntegrationConfluentAccountResource,
+		NewIntegrationConfluentResourceResource,
+		NewIntegrationFastlyAccountResource,
+		NewIntegrationFastlyServiceResource,
 		NewRestrictionPolicyResource,
 	}
 }
@@ -264,6 +268,7 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewIPRangesDataSource,
+		NewAPIKeyDataSource,
 		NewHostsDataSource,
 	}
 }

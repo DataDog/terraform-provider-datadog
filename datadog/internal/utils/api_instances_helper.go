@@ -47,8 +47,10 @@ type ApiInstances struct {
 	auditApiV2                 *datadogV2.AuditApi
 	authNMappingsApiV2         *datadogV2.AuthNMappingsApi
 	cloudWorkloadSecurityApiV2 *datadogV2.CloudWorkloadSecurityApi
+	confluentCloudApiV2        *datadogV2.ConfluentCloudApi
 	dashboardListsApiV2        *datadogV2.DashboardListsApi
 	eventsApiV2                *datadogV2.EventsApi
+	fastlyIntegrationApiV2     *datadogV2.FastlyIntegrationApi
 	incidentServicesApiV2      *datadogV2.IncidentServicesApi
 	incidentTeamsApiV2         *datadogV2.IncidentTeamsApi
 	incidentsApiV2             *datadogV2.IncidentsApi
@@ -520,10 +522,25 @@ func (i *ApiInstances) GetUsersApiV2() *datadogV2.UsersApi {
 	return i.usersApiV2
 }
 
+// GetConfluentCloudApiV2 get instance of GetConfluentCloudApi
+func (i *ApiInstances) GetConfluentCloudApiV2() *datadogV2.ConfluentCloudApi {
+	if i.confluentCloudApiV2 == nil {
+		i.confluentCloudApiV2 = datadogV2.NewConfluentCloudApi(i.HttpClient)
+	}
+	return i.confluentCloudApiV2
+}
+
+// GetFastlyIntegrationApiV2 get instance of FastlyIntegrationApi
+func (i *ApiInstances) GetFastlyIntegrationApiV2() *datadogV2.FastlyIntegrationApi {
+	if i.fastlyIntegrationApiV2 == nil {
+		i.fastlyIntegrationApiV2 = datadogV2.NewFastlyIntegrationApi(i.HttpClient)
+	}
+	return i.fastlyIntegrationApiV2
+}
+
 // GetRestrictionPoliciesApiV2 get instance of RestrictionPoliciesApi
 func (i *ApiInstances) GetRestrictionPoliciesApiV2() *datadogV2.RestrictionPoliciesApi {
 	if i.restrictionPolicyApiV2 == nil {
 		i.restrictionPolicyApiV2 = datadogV2.NewRestrictionPoliciesApi(i.HttpClient)
 	}
 	return i.restrictionPolicyApiV2
-}
