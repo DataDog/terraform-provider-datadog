@@ -972,6 +972,53 @@ resource "datadog_monitor" "foo" {
 }`, uniq)
 }
 
+func TestAccDatadogMonitor_SchedulingOptionsHourStart(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorWithSchedulingOptionsHourStart(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.evaluation_window.0.hour_starts", "0"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMonitorWithSchedulingOptionsHourStart(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "metric alert"
+  message = "a message"
+  priority = 3
+
+  query = "avg(current_1h):avg:system.load.5{*} > 0.5"
+
+  monitor_thresholds {
+	critical = "0.5"
+  }
+
+  scheduling_options {
+	evaluation_window {
+	  hour_starts = "0"
+	}
+  }
+}`, uniq)
+}
+
 func testAccCheckDatadogMonitorConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
