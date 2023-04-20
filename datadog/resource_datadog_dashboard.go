@@ -379,8 +379,8 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 	dashboard.NotifyList = *buildDatadogNotifyList(notifyList)
 
 	// Build Tags
-	tags := d.Get("tags").(*schema.Set)
-	dashboard.Tags = *buildDatadogTagsList(tags)
+	tags := d.Get("tags").([]string)
+	dashboard.Tags = *buildDatadogTagsList(&tags)
 
 	// Build TemplateVariables
 	templateVariables := d.Get("template_variable").([]interface{})
@@ -685,10 +685,10 @@ func buildTerraformNotifyList(datadogNotifyList *[]string) *[]string {
 //	Tags helpers
 //
 
-func buildDatadogTagsList(terraformTagsList *schema.Set) *[]string {
-	datadogTagsList := make([]string, len(terraformTagsList.List()))
-	for i, tag := range terraformTagsList.List() {
-		datadogTagsList[i] = tag.(string)
+func buildDatadogTagsList(terraformTagsList *[]string) *[]string {
+	datadogTagsList := make([]string, len(*terraformTagsList))
+	for i, tag := range *terraformTagsList {
+		datadogTagsList[i] = tag
 	}
 	return &datadogTagsList
 }
