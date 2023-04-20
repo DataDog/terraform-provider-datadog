@@ -21,6 +21,7 @@ resource "datadog_dashboard" "ordered_dashboard" {
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = true
+	tags		  = ["team:foobar"]
 	widget {
 		alert_graph_definition {
 			alert_id = "895605"
@@ -456,6 +457,7 @@ resource "datadog_dashboard" "simple_dashboard" {
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = true
+	tags          = ["team:foo"]
 	widget {
 		alert_graph_definition {
 			alert_id = "895605"
@@ -507,6 +509,7 @@ resource "datadog_dashboard" "free_dashboard" {
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = false
+	tags          = ["team:foo"]
 	widget {
 		event_stream_definition {
 			query = "*"
@@ -684,6 +687,7 @@ resource "datadog_dashboard" "simple_dashboard" {
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = true
+	tags          = ["team:foo"]
 	widget {
 		alert_graph_definition {
 			alert_id = "895605"
@@ -740,6 +744,8 @@ var datadogSimpleOrderedDashboardAsserts = []string{
 	"layout_type = ordered",
 	"is_read_only = true",
 	"widget.# = 1",
+	"tags.# = 1",
+	"tags.0 = team:foobar",
 	// Alert Graph widget
 	"widget.0.alert_graph_definition.0.alert_id = 895605",
 	"widget.0.alert_graph_definition.0.viz_type = timeseries",
@@ -773,6 +779,8 @@ var datadogSimpleFreeDashboardAsserts = []string{
 	"layout_type = free",
 	"is_read_only = true",
 	"widget.# = 1",
+	"tags.# = 1",
+	"tags.0 = team:foobar",
 	// Alert Graph widget
 	"widget.0.alert_graph_definition.0.alert_id = 895605",
 	"widget.0.alert_graph_definition.0.viz_type = timeseries",
@@ -809,6 +817,8 @@ var datadogOrderedDashboardAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
 	"is_read_only = true",
+	"tags.# = 1",
+	"tags.0 = team:foobar",
 	"widget.# = 16",
 	// Alert Graph widget
 	"widget.0.alert_graph_definition.0.alert_id = 895605",
@@ -1072,6 +1082,8 @@ var datadogFreeDashboardAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = free",
 	"is_read_only = false",
+	"tags.# = 1",
+	"tags.0 = team:foobar",
 	"widget.# = 8",
 
 	// Event Stream widget
