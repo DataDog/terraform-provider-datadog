@@ -140,7 +140,8 @@ func resourceDatadogDashboard() *schema.Resource {
 			"tags": {
 				Type:        schema.TypeList,
 				Optional:    true,
-				Description: "List of team names of the form `team:<name>` representing ownership of a dashboard.",
+				MaxItems:    5,
+				Description: "A list of tags assigned to the Dashboard. Currently only supports only team names of the form team:<name>.",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 		},
@@ -302,7 +303,7 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 	}
 
 	// Set tags
-	tags := buildTerraformTagsList(&dashboard.Tags)
+	tags := dashboard.GetTags()
 	if err := d.Set("tags", tags); err != nil {
 		return diag.FromErr(err)
 	}
@@ -380,7 +381,7 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 
 	// Build Tags
 	tags := utils.GetStringSlice(d, "tags")
-	dashboard.Tags = *buildDatadogTagsList(&tags)
+	dashboard.Tags = tags
 
 	// Build TemplateVariables
 	templateVariables := d.Get("template_variable").([]interface{})
@@ -679,26 +680,6 @@ func buildTerraformNotifyList(datadogNotifyList *[]string) *[]string {
 		terraformNotifyList[i] = authorHandle
 	}
 	return &terraformNotifyList
-}
-
-//
-//	Tags helpers
-//
-
-func buildDatadogTagsList(terraformTagsList *[]string) *[]string {
-	datadogTagsList := make([]string, len(*terraformTagsList))
-	for i, tag := range *terraformTagsList {
-		datadogTagsList[i] = tag
-	}
-	return &datadogTagsList
-}
-
-func buildTerraformTagsList(datadogTagsList *[]string) *[]string {
-	terraformTagsList := make([]string, len(*datadogTagsList))
-	for i, tag := range *datadogTagsList {
-		terraformTagsList[i] = tag
-	}
-	return &terraformTagsList
 }
 
 //
