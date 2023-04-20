@@ -379,7 +379,7 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 	dashboard.NotifyList = *buildDatadogNotifyList(notifyList)
 
 	// Build Tags
-	tags := d.Get("tags").([]string)
+	tags := utils.GetStringSlice(d, "tags")
 	dashboard.Tags = *buildDatadogTagsList(&tags)
 
 	// Build TemplateVariables
