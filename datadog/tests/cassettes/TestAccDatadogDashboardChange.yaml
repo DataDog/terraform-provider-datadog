@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardChange-local-1637759483","widgets":[{"definition":{"requests":[{"increase_good":false,"q":"sum:system.cpu.user{*} by {service,account}","show_present":false}],"type":"change"}},{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"change_type":"absolute","compare_to":"day_before","increase_good":false,"order_by":"change","order_dir":"desc","q":"sum:system.cpu.user{*} by {service,account}","show_present":true}],"time":{"live_span":"1h"},"title":"Sum of system.cpu.user over * by service,account","title_align":"left","title_size":"16","type":"change"}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardChange-local-1682003519","widgets":[{"definition":{"requests":[{"increase_good":false,"q":"sum:system.cpu.user{*} by {service,account}","show_present":false}],"type":"change"}},{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"change_type":"absolute","compare_to":"day_before","increase_good":false,"order_by":"change","order_dir":"desc","q":"sum:system.cpu.user{*} by {service,account}","show_present":true}],"time":{"live_span":"1h"},"title":"Sum of system.cpu.user over * by service,account","title_align":"left","title_size":"16","type":"change"}}]}
     form: {}
     headers:
       Accept:
@@ -13,7 +13,8 @@ interactions:
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":"Hippolyte Henry","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bvv-eke-dnt","title":"tf-TestAccDatadogDashboardChange-local-1637759483","url":"/dashboard/bvv-eke-dnt/tf-testaccdatadogdashboardchange-local-1637759483","created_at":"2021-11-24T13:11:33.187370+00:00","modified_at":"2021-11-24T13:11:33.187370+00:00","author_handle":"hippolyte.henry@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*} by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":4861750625386599},{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","title":"Sum of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*} by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":5623884993388437}],"layout_type":"ordered"}'
+    body: |
+      {"id":"df5-5ne-ta8","title":"tf-TestAccDatadogDashboardChange-local-1682003519","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/df5-5ne-ta8/tf-testaccdatadogdashboardchange-local-1682003519","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"increase_good":false,"q":"sum:system.cpu.user{*} by {service,account}","show_present":false}],"type":"change"},"id":7300427907732283},{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"change_type":"absolute","compare_to":"day_before","increase_good":false,"order_by":"change","order_dir":"desc","q":"sum:system.cpu.user{*} by {service,account}","show_present":true}],"time":{"live_span":"1h"},"title":"Sum of system.cpu.user over * by service,account","title_align":"left","title_size":"16","type":"change"},"id":1795381691997514}],"notify_list":[],"created_at":"2023-04-20T15:12:00.850545+00:00","modified_at":"2023-04-20T15:12:00.850545+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -26,10 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bvv-eke-dnt
+    url: https://api.datadoghq.com/api/v1/dashboard/df5-5ne-ta8
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":"Hippolyte Henry","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bvv-eke-dnt","title":"tf-TestAccDatadogDashboardChange-local-1637759483","url":"/dashboard/bvv-eke-dnt/tf-testaccdatadogdashboardchange-local-1637759483","created_at":"2021-11-24T13:11:33.187370+00:00","modified_at":"2021-11-24T13:11:33.187370+00:00","author_handle":"hippolyte.henry@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*} by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":4861750625386599},{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","title":"Sum of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*} by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":5623884993388437}],"layout_type":"ordered"}'
+    body: |
+      {"id":"df5-5ne-ta8","title":"tf-TestAccDatadogDashboardChange-local-1682003519","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/df5-5ne-ta8/tf-testaccdatadogdashboardchange-local-1682003519","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"increase_good":false,"q":"sum:system.cpu.user{*} by {service,account}","show_present":false}],"type":"change"},"id":7300427907732283},{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"change_type":"absolute","compare_to":"day_before","increase_good":false,"order_by":"change","order_dir":"desc","q":"sum:system.cpu.user{*} by {service,account}","show_present":true}],"time":{"live_span":"1h"},"title":"Sum of system.cpu.user over * by service,account","title_align":"left","title_size":"16","type":"change"},"id":1795381691997514}],"notify_list":[],"created_at":"2023-04-20T15:12:00.850545+00:00","modified_at":"2023-04-20T15:12:00.850545+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -42,10 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bvv-eke-dnt
+    url: https://api.datadoghq.com/api/v1/dashboard/df5-5ne-ta8
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":"Hippolyte Henry","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bvv-eke-dnt","title":"tf-TestAccDatadogDashboardChange-local-1637759483","url":"/dashboard/bvv-eke-dnt/tf-testaccdatadogdashboardchange-local-1637759483","created_at":"2021-11-24T13:11:33.187370+00:00","modified_at":"2021-11-24T13:11:33.187370+00:00","author_handle":"hippolyte.henry@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*} by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":4861750625386599},{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","title":"Sum of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*} by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":5623884993388437}],"layout_type":"ordered"}'
+    body: |
+      {"id":"df5-5ne-ta8","title":"tf-TestAccDatadogDashboardChange-local-1682003519","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/df5-5ne-ta8/tf-testaccdatadogdashboardchange-local-1682003519","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"increase_good":false,"q":"sum:system.cpu.user{*} by {service,account}","show_present":false}],"type":"change"},"id":7300427907732283},{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"change_type":"absolute","compare_to":"day_before","increase_good":false,"order_by":"change","order_dir":"desc","q":"sum:system.cpu.user{*} by {service,account}","show_present":true}],"time":{"live_span":"1h"},"title":"Sum of system.cpu.user over * by service,account","title_align":"left","title_size":"16","type":"change"},"id":1795381691997514}],"notify_list":[],"created_at":"2023-04-20T15:12:00.850545+00:00","modified_at":"2023-04-20T15:12:00.850545+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -58,10 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bvv-eke-dnt
+    url: https://api.datadoghq.com/api/v1/dashboard/df5-5ne-ta8
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":"Hippolyte Henry","template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bvv-eke-dnt","title":"tf-TestAccDatadogDashboardChange-local-1637759483","url":"/dashboard/bvv-eke-dnt/tf-testaccdatadogdashboardchange-local-1637759483","created_at":"2021-11-24T13:11:33.187370+00:00","modified_at":"2021-11-24T13:11:33.187370+00:00","author_handle":"hippolyte.henry@datadoghq.com","widgets":[{"definition":{"requests":[{"q":"sum:system.cpu.user{*} by {service,account}","show_present":false,"increase_good":false}],"type":"change"},"id":4861750625386599},{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","title":"Sum of system.cpu.user over * by service,account","title_align":"left","time":{"live_span":"1h"},"requests":[{"change_type":"absolute","order_dir":"desc","compare_to":"day_before","q":"sum:system.cpu.user{*} by {service,account}","show_present":true,"increase_good":false,"order_by":"change"}],"type":"change"},"id":5623884993388437}],"layout_type":"ordered"}'
+    body: |
+      {"id":"df5-5ne-ta8","title":"tf-TestAccDatadogDashboardChange-local-1682003519","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/df5-5ne-ta8/tf-testaccdatadogdashboardchange-local-1682003519","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"increase_good":false,"q":"sum:system.cpu.user{*} by {service,account}","show_present":false}],"type":"change"},"id":7300427907732283},{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"change_type":"absolute","compare_to":"day_before","increase_good":false,"order_by":"change","order_dir":"desc","q":"sum:system.cpu.user{*} by {service,account}","show_present":true}],"time":{"live_span":"1h"},"title":"Sum of system.cpu.user over * by service,account","title_align":"left","title_size":"16","type":"change"},"id":1795381691997514}],"notify_list":[],"created_at":"2023-04-20T15:12:00.850545+00:00","modified_at":"2023-04-20T15:12:00.850545+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -74,10 +78,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bvv-eke-dnt
+    url: https://api.datadoghq.com/api/v1/dashboard/df5-5ne-ta8
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"bvv-eke-dnt"}'
+    body: |
+      {"deleted_dashboard_id":"df5-5ne-ta8"}
     headers:
       Content-Type:
       - application/json
@@ -90,10 +95,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bvv-eke-dnt
+    url: https://api.datadoghq.com/api/v1/dashboard/df5-5ne-ta8
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID bvv-eke-dnt not found"]}'
+    body: '{"errors":["Dashboard with ID df5-5ne-ta8 not found"]}'
     headers:
       Content-Type:
       - application/json

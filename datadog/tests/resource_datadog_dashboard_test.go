@@ -457,7 +457,7 @@ resource "datadog_dashboard" "simple_dashboard" {
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = true
-	tags          = ["team:foo"]
+	tags          = ["team:foobar"]
 	widget {
 		alert_graph_definition {
 			alert_id = "895605"
@@ -509,7 +509,7 @@ resource "datadog_dashboard" "free_dashboard" {
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = false
-	tags          = ["team:foo"]
+	tags          = ["team:foobar"]
 	widget {
 		event_stream_definition {
 			query = "*"
@@ -687,7 +687,7 @@ resource "datadog_dashboard" "simple_dashboard" {
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
 	is_read_only  = true
-	tags          = ["team:foo"]
+	tags          = ["team:foobar"]
 	widget {
 		alert_graph_definition {
 			alert_id = "895605"

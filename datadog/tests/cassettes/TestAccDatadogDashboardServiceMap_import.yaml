@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardServiceMap_import-local-1634573105","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"filters":["env:prod","datacenter:dc1"],"service":"master-db","title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","title_size":"16","type":"servicemap"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardServiceMap_import-local-1682003495","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"filters":["env:prod","datacenter:dc1"],"service":"master-db","title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","title_size":"16","type":"servicemap"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
     form: {}
     headers:
       Accept:
@@ -13,7 +13,8 @@ interactions:
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"qra-vt7-b9v","title":"tf-TestAccDatadogDashboardServiceMap_import-local-1634573105","url":"/dashboard/qra-vt7-b9v/tf-testaccdatadogdashboardservicemapimport-local-1634573105","created_at":"2021-10-18T16:05:17.702601+00:00","modified_at":"2021-10-18T16:05:17.702601+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","service":"master-db","title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","filters":["env:prod","datacenter:dc1"],"type":"servicemap"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5390242439866438}],"layout_type":"free"}'
+    body: |
+      {"id":"uts-j2s-k5t","title":"tf-TestAccDatadogDashboardServiceMap_import-local-1682003495","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/uts-j2s-k5t/tf-testaccdatadogdashboardservicemapimport-local-1682003495","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"filters":["env:prod","datacenter:dc1"],"service":"master-db","title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","title_size":"16","type":"servicemap"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":3780088102911668}],"notify_list":[],"created_at":"2023-04-20T15:11:36.838543+00:00","modified_at":"2023-04-20T15:11:36.838543+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -26,10 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/qra-vt7-b9v
+    url: https://api.datadoghq.com/api/v1/dashboard/uts-j2s-k5t
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"qra-vt7-b9v","title":"tf-TestAccDatadogDashboardServiceMap_import-local-1634573105","url":"/dashboard/qra-vt7-b9v/tf-testaccdatadogdashboardservicemapimport-local-1634573105","created_at":"2021-10-18T16:05:17.702601+00:00","modified_at":"2021-10-18T16:05:17.702601+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","service":"master-db","title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","filters":["env:prod","datacenter:dc1"],"type":"servicemap"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5390242439866438}],"layout_type":"free"}'
+    body: |
+      {"id":"uts-j2s-k5t","title":"tf-TestAccDatadogDashboardServiceMap_import-local-1682003495","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/uts-j2s-k5t/tf-testaccdatadogdashboardservicemapimport-local-1682003495","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"filters":["env:prod","datacenter:dc1"],"service":"master-db","title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","title_size":"16","type":"servicemap"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":3780088102911668}],"notify_list":[],"created_at":"2023-04-20T15:11:36.838543+00:00","modified_at":"2023-04-20T15:11:36.838543+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -42,10 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/qra-vt7-b9v
+    url: https://api.datadoghq.com/api/v1/dashboard/uts-j2s-k5t
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"qra-vt7-b9v","title":"tf-TestAccDatadogDashboardServiceMap_import-local-1634573105","url":"/dashboard/qra-vt7-b9v/tf-testaccdatadogdashboardservicemapimport-local-1634573105","created_at":"2021-10-18T16:05:17.702601+00:00","modified_at":"2021-10-18T16:05:17.702601+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","service":"master-db","title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","filters":["env:prod","datacenter:dc1"],"type":"servicemap"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5390242439866438}],"layout_type":"free"}'
+    body: |
+      {"id":"uts-j2s-k5t","title":"tf-TestAccDatadogDashboardServiceMap_import-local-1682003495","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/uts-j2s-k5t/tf-testaccdatadogdashboardservicemapimport-local-1682003495","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"filters":["env:prod","datacenter:dc1"],"service":"master-db","title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","title_size":"16","type":"servicemap"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":3780088102911668}],"notify_list":[],"created_at":"2023-04-20T15:11:36.838543+00:00","modified_at":"2023-04-20T15:11:36.838543+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -58,10 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/qra-vt7-b9v
+    url: https://api.datadoghq.com/api/v1/dashboard/uts-j2s-k5t
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"qra-vt7-b9v","title":"tf-TestAccDatadogDashboardServiceMap_import-local-1634573105","url":"/dashboard/qra-vt7-b9v/tf-testaccdatadogdashboardservicemapimport-local-1634573105","created_at":"2021-10-18T16:05:17.702601+00:00","modified_at":"2021-10-18T16:05:17.702601+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","service":"master-db","title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","filters":["env:prod","datacenter:dc1"],"type":"servicemap"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":5390242439866438}],"layout_type":"free"}'
+    body: |
+      {"id":"uts-j2s-k5t","title":"tf-TestAccDatadogDashboardServiceMap_import-local-1682003495","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/uts-j2s-k5t/tf-testaccdatadogdashboardservicemapimport-local-1682003495","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"filters":["env:prod","datacenter:dc1"],"service":"master-db","title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","title_size":"16","type":"servicemap"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":3780088102911668}],"notify_list":[],"created_at":"2023-04-20T15:11:36.838543+00:00","modified_at":"2023-04-20T15:11:36.838543+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -74,10 +78,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/qra-vt7-b9v
+    url: https://api.datadoghq.com/api/v1/dashboard/uts-j2s-k5t
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"qra-vt7-b9v"}'
+    body: |
+      {"deleted_dashboard_id":"uts-j2s-k5t"}
     headers:
       Content-Type:
       - application/json
@@ -90,10 +95,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/qra-vt7-b9v
+    url: https://api.datadoghq.com/api/v1/dashboard/uts-j2s-k5t
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID qra-vt7-b9v not found"]}'
+    body: '{"errors":["Dashboard with ID uts-j2s-k5t not found"]}'
     headers:
       Content-Type:
       - application/json
