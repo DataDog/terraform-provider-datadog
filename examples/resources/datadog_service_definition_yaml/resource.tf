@@ -1,4 +1,5 @@
-resource "datadog_service_definition_yaml" "service_definition_v2.1" {
+// Service Definition with v2.1 Schema Definition
+resource "datadog_service_definition_yaml" "service_definition_v2_1" {
   service_definition = <<EOF
 schema-version: v2.1
 dd-service: shopping-cart
@@ -42,6 +43,7 @@ extensions:
 EOF
 }
 
+// Service Definition with v2 Schema Definition
 resource "datadog_service_definition_yaml" "service_definition_v2" {
   service_definition = <<EOF
 schema-version: v2
