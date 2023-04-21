@@ -141,7 +141,7 @@ func resourceDatadogDashboard() *schema.Resource {
 				Type:        schema.TypeList,
 				Optional:    true,
 				MaxItems:    5,
-				Description: "A list of tags assigned to the Dashboard. Currently only supports only team names of the form team:<name>.",
+				Description: "A list of tags assigned to the Dashboard. Only team names of the form `team:<name>` are supported.",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 		},
