@@ -1084,6 +1084,7 @@ func syntheticsBrowserVariableElem() *schema.Resource {
 				Description: "Pattern of the variable.",
 				Type:        schema.TypeString,
 				Optional:    true,
+				Default:     "",
 			},
 			"type": {
 				Description:      "Type of browser test variable.",
@@ -2099,15 +2100,16 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			if v, ok := variableMap["name"]; ok {
 				variableName := v.(string)
 				newVariable := datadogV1.NewSyntheticsBrowserVariable(variableName, variableType)
-				if v, ok := variableMap["example"]; ok && v.(string) != "" {
+				if v, ok := variableMap["example"]; ok {
 					newVariable.SetExample(v.(string))
 				}
 				if v, ok := variableMap["id"]; ok && v.(string) != "" {
 					newVariable.SetId(v.(string))
 				}
-				if v, ok := variableMap["pattern"]; ok && v.(string) != "" {
+				if v, ok := variableMap["pattern"]; ok {
 					newVariable.SetPattern(v.(string))
 				}
+
 				config.SetVariables(append(config.GetVariables(), *newVariable))
 			}
 		}

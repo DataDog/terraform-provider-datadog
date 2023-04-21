@@ -2488,6 +2488,7 @@ resource "datadog_synthetics_test" "grpc" {
 
 func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
+
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -2615,6 +2616,10 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_variable.0.example", "597"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.1.type", "email"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.1.name", "EMAIL_VAR"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "config_variable.0.type", "text"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "config_variable.0.name", "VARIABLE_NAME"),
@@ -2720,6 +2725,11 @@ resource "datadog_synthetics_test" "bar" {
 		name = "MY_PATTERN_VAR"
 		pattern = "{{numeric(3)}}"
 		example = "597"
+	}
+
+	browser_variable {
+		name = "EMAIL_VAR"
+		type = "email"
 	}
 
 	config_variable {
