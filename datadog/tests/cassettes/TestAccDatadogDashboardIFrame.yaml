@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardIFrame-local-1626081648","widgets":[{"definition":{"type":"iframe","url":"https://en.wikipedia.org/wiki/Datadog"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardIFrame-local-1682003491","widgets":[{"definition":{"type":"iframe","url":"https://en.wikipedia.org/wiki/Datadog"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
     form: {}
     headers:
       Accept:
@@ -13,7 +13,8 @@ interactions:
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bnd-xf8-mv8","title":"tf-TestAccDatadogDashboardIFrame-local-1626081648","url":"/dashboard/bnd-xf8-mv8/tf-testaccdatadogdashboardiframe-local-1626081648","created_at":"2021-07-12T09:20:51.131795+00:00","modified_at":"2021-07-12T09:20:51.131795+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"url":"https://en.wikipedia.org/wiki/Datadog","type":"iframe"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8407412705213527}],"layout_type":"free"}'
+    body: |
+      {"id":"ygn-jir-5uj","title":"tf-TestAccDatadogDashboardIFrame-local-1682003491","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/ygn-jir-5uj/tf-testaccdatadogdashboardiframe-local-1682003491","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"type":"iframe","url":"https://en.wikipedia.org/wiki/Datadog"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4521267925915103}],"notify_list":[],"created_at":"2023-04-20T15:11:32.700905+00:00","modified_at":"2023-04-20T15:11:32.700905+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -26,10 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bnd-xf8-mv8
+    url: https://api.datadoghq.com/api/v1/dashboard/ygn-jir-5uj
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bnd-xf8-mv8","title":"tf-TestAccDatadogDashboardIFrame-local-1626081648","url":"/dashboard/bnd-xf8-mv8/tf-testaccdatadogdashboardiframe-local-1626081648","created_at":"2021-07-12T09:20:51.131795+00:00","modified_at":"2021-07-12T09:20:51.131795+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"url":"https://en.wikipedia.org/wiki/Datadog","type":"iframe"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8407412705213527}],"layout_type":"free"}'
+    body: |
+      {"id":"ygn-jir-5uj","title":"tf-TestAccDatadogDashboardIFrame-local-1682003491","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/ygn-jir-5uj/tf-testaccdatadogdashboardiframe-local-1682003491","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"type":"iframe","url":"https://en.wikipedia.org/wiki/Datadog"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4521267925915103}],"notify_list":[],"created_at":"2023-04-20T15:11:32.700905+00:00","modified_at":"2023-04-20T15:11:32.700905+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -42,10 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bnd-xf8-mv8
+    url: https://api.datadoghq.com/api/v1/dashboard/ygn-jir-5uj
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bnd-xf8-mv8","title":"tf-TestAccDatadogDashboardIFrame-local-1626081648","url":"/dashboard/bnd-xf8-mv8/tf-testaccdatadogdashboardiframe-local-1626081648","created_at":"2021-07-12T09:20:51.131795+00:00","modified_at":"2021-07-12T09:20:51.131795+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"url":"https://en.wikipedia.org/wiki/Datadog","type":"iframe"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8407412705213527}],"layout_type":"free"}'
+    body: |
+      {"id":"ygn-jir-5uj","title":"tf-TestAccDatadogDashboardIFrame-local-1682003491","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/ygn-jir-5uj/tf-testaccdatadogdashboardiframe-local-1682003491","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"type":"iframe","url":"https://en.wikipedia.org/wiki/Datadog"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4521267925915103}],"notify_list":[],"created_at":"2023-04-20T15:11:32.700905+00:00","modified_at":"2023-04-20T15:11:32.700905+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -58,10 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bnd-xf8-mv8
+    url: https://api.datadoghq.com/api/v1/dashboard/ygn-jir-5uj
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bnd-xf8-mv8","title":"tf-TestAccDatadogDashboardIFrame-local-1626081648","url":"/dashboard/bnd-xf8-mv8/tf-testaccdatadogdashboardiframe-local-1626081648","created_at":"2021-07-12T09:20:51.131795+00:00","modified_at":"2021-07-12T09:20:51.131795+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"url":"https://en.wikipedia.org/wiki/Datadog","type":"iframe"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":8407412705213527}],"layout_type":"free"}'
+    body: |
+      {"id":"ygn-jir-5uj","title":"tf-TestAccDatadogDashboardIFrame-local-1682003491","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/ygn-jir-5uj/tf-testaccdatadogdashboardiframe-local-1682003491","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"type":"iframe","url":"https://en.wikipedia.org/wiki/Datadog"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4521267925915103}],"notify_list":[],"created_at":"2023-04-20T15:11:32.700905+00:00","modified_at":"2023-04-20T15:11:32.700905+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -74,10 +78,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bnd-xf8-mv8
+    url: https://api.datadoghq.com/api/v1/dashboard/ygn-jir-5uj
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"bnd-xf8-mv8"}'
+    body: |
+      {"deleted_dashboard_id":"ygn-jir-5uj"}
     headers:
       Content-Type:
       - application/json
@@ -90,10 +95,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bnd-xf8-mv8
+    url: https://api.datadoghq.com/api/v1/dashboard/ygn-jir-5uj
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID bnd-xf8-mv8 not found"]}'
+    body: '{"errors":["Dashboard with ID ygn-jir-5uj not found"]}'
     headers:
       Content-Type:
       - application/json

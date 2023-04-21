@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardTopList_import-local-1623095460","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"conditional_formats":[{"comparator":"\u003e","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.core.user{account:prod} by {service,app}, 10, 'sum', 'desc')"}],"time":{"live_span":"1w"},"title":"Avg of system.core.user over account:prod by service,app","title_align":"right","title_size":"16","type":"toplist"}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardTopList_import-local-1682003482","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"conditional_formats":[{"comparator":"\u003e","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.core.user{account:prod} by {service,app}, 10, 'sum', 'desc')"}],"time":{"live_span":"1w"},"title":"Avg of system.core.user over account:prod by service,app","title_align":"right","title_size":"16","type":"toplist"}}]}
     form: {}
     headers:
       Accept:
@@ -13,7 +13,8 @@ interactions:
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"vmr-r56-i4k","title":"tf-TestAccDatadogDashboardTopList_import-local-1623095460","url":"/dashboard/vmr-r56-i4k/tf-testaccdatadogdashboardtoplistimport-local-1623095460","created_at":"2021-06-07T19:51:25.312853+00:00","modified_at":"2021-06-07T19:51:25.312853+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","title":"Avg of system.core.user over account:prod by service,app","title_align":"right","time":{"live_span":"1w"},"requests":[{"q":"top(avg:system.core.user{account:prod} by {service,app}, 10, ''sum'', ''desc'')","conditional_formats":[{"palette":"white_on_red","hide_value":false,"value":15000,"comparator":">"}]}],"type":"toplist"},"id":8609368833436790}],"layout_type":"ordered"}'
+    body: |
+      {"id":"sny-erf-695","title":"tf-TestAccDatadogDashboardTopList_import-local-1682003482","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/sny-erf-695/tf-testaccdatadogdashboardtoplistimport-local-1682003482","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.core.user{account:prod} by {service,app}, 10, 'sum', 'desc')"}],"time":{"live_span":"1w"},"title":"Avg of system.core.user over account:prod by service,app","title_align":"right","title_size":"16","type":"toplist"},"id":3708157118082434}],"notify_list":[],"created_at":"2023-04-20T15:11:23.790480+00:00","modified_at":"2023-04-20T15:11:23.790480+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -26,10 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/vmr-r56-i4k
+    url: https://api.datadoghq.com/api/v1/dashboard/sny-erf-695
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"vmr-r56-i4k","title":"tf-TestAccDatadogDashboardTopList_import-local-1623095460","url":"/dashboard/vmr-r56-i4k/tf-testaccdatadogdashboardtoplistimport-local-1623095460","created_at":"2021-06-07T19:51:25.312853+00:00","modified_at":"2021-06-07T19:51:25.312853+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","title":"Avg of system.core.user over account:prod by service,app","title_align":"right","time":{"live_span":"1w"},"requests":[{"q":"top(avg:system.core.user{account:prod} by {service,app}, 10, ''sum'', ''desc'')","conditional_formats":[{"palette":"white_on_red","hide_value":false,"value":15000,"comparator":">"}]}],"type":"toplist"},"id":8609368833436790}],"layout_type":"ordered"}'
+    body: |
+      {"id":"sny-erf-695","title":"tf-TestAccDatadogDashboardTopList_import-local-1682003482","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/sny-erf-695/tf-testaccdatadogdashboardtoplistimport-local-1682003482","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.core.user{account:prod} by {service,app}, 10, 'sum', 'desc')"}],"time":{"live_span":"1w"},"title":"Avg of system.core.user over account:prod by service,app","title_align":"right","title_size":"16","type":"toplist"},"id":3708157118082434}],"notify_list":[],"created_at":"2023-04-20T15:11:23.790480+00:00","modified_at":"2023-04-20T15:11:23.790480+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -42,10 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/vmr-r56-i4k
+    url: https://api.datadoghq.com/api/v1/dashboard/sny-erf-695
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"vmr-r56-i4k","title":"tf-TestAccDatadogDashboardTopList_import-local-1623095460","url":"/dashboard/vmr-r56-i4k/tf-testaccdatadogdashboardtoplistimport-local-1623095460","created_at":"2021-06-07T19:51:25.312853+00:00","modified_at":"2021-06-07T19:51:25.312853+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","title":"Avg of system.core.user over account:prod by service,app","title_align":"right","time":{"live_span":"1w"},"requests":[{"q":"top(avg:system.core.user{account:prod} by {service,app}, 10, ''sum'', ''desc'')","conditional_formats":[{"palette":"white_on_red","hide_value":false,"value":15000,"comparator":">"}]}],"type":"toplist"},"id":8609368833436790}],"layout_type":"ordered"}'
+    body: |
+      {"id":"sny-erf-695","title":"tf-TestAccDatadogDashboardTopList_import-local-1682003482","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/sny-erf-695/tf-testaccdatadogdashboardtoplistimport-local-1682003482","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.core.user{account:prod} by {service,app}, 10, 'sum', 'desc')"}],"time":{"live_span":"1w"},"title":"Avg of system.core.user over account:prod by service,app","title_align":"right","title_size":"16","type":"toplist"},"id":3708157118082434}],"notify_list":[],"created_at":"2023-04-20T15:11:23.790480+00:00","modified_at":"2023-04-20T15:11:23.790480+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -58,10 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/vmr-r56-i4k
+    url: https://api.datadoghq.com/api/v1/dashboard/sny-erf-695
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"vmr-r56-i4k","title":"tf-TestAccDatadogDashboardTopList_import-local-1623095460","url":"/dashboard/vmr-r56-i4k/tf-testaccdatadogdashboardtoplistimport-local-1623095460","created_at":"2021-06-07T19:51:25.312853+00:00","modified_at":"2021-06-07T19:51:25.312853+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","title":"Avg of system.core.user over account:prod by service,app","title_align":"right","time":{"live_span":"1w"},"requests":[{"q":"top(avg:system.core.user{account:prod} by {service,app}, 10, ''sum'', ''desc'')","conditional_formats":[{"palette":"white_on_red","hide_value":false,"value":15000,"comparator":">"}]}],"type":"toplist"},"id":8609368833436790}],"layout_type":"ordered"}'
+    body: |
+      {"id":"sny-erf-695","title":"tf-TestAccDatadogDashboardTopList_import-local-1682003482","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/sny-erf-695/tf-testaccdatadogdashboardtoplistimport-local-1682003482","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.core.user{account:prod} by {service,app}, 10, 'sum', 'desc')"}],"time":{"live_span":"1w"},"title":"Avg of system.core.user over account:prod by service,app","title_align":"right","title_size":"16","type":"toplist"},"id":3708157118082434}],"notify_list":[],"created_at":"2023-04-20T15:11:23.790480+00:00","modified_at":"2023-04-20T15:11:23.790480+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -74,10 +78,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/vmr-r56-i4k
+    url: https://api.datadoghq.com/api/v1/dashboard/sny-erf-695
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"vmr-r56-i4k"}'
+    body: |
+      {"deleted_dashboard_id":"sny-erf-695"}
     headers:
       Content-Type:
       - application/json
@@ -90,10 +95,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/vmr-r56-i4k
+    url: https://api.datadoghq.com/api/v1/dashboard/sny-erf-695
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID vmr-r56-i4k not found"]}'
+    body: '{"errors":["Dashboard with ID sny-erf-695 not found"]}'
     headers:
       Content-Type:
       - application/json
