@@ -1084,6 +1084,7 @@ func syntheticsBrowserVariableElem() *schema.Resource {
 				Description: "Pattern of the variable.",
 				Type:        schema.TypeString,
 				Optional:    true,
+				Default:     "",
 			},
 			"type": {
 				Description:      "Type of browser test variable.",
