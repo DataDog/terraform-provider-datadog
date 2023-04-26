@@ -15,7 +15,7 @@ import (
 func TestAccIntegrationCloudflareAccountBasic(t *testing.T) {
 	t.Parallel()
 	if !isReplaying() {
-		t.Skip("This test doesn't support recording")
+		t.Skip("This test is replay only")
 	}
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -75,9 +75,9 @@ func IntegrationCloudflareAccountDestroyHelper(auth context.Context, s *terrafor
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
 				}
-				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
+				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving cloudflare account %s", err)}
 			}
-			return &utils.RetryableError{Prob: "Monitor still exists"}
+			return &utils.RetryableError{Prob: "cloudflare account still exists"}
 		}
 		return nil
 	})
@@ -105,7 +105,7 @@ func integrationCloudflareAccountExistsHelper(auth context.Context, s *terraform
 
 		_, httpResp, err := apiInstances.GetCloudflareIntegrationApiV2().GetCloudflareAccount(auth, id)
 		if err != nil {
-			return utils.TranslateClientError(err, httpResp, "error retrieving monitor")
+			return utils.TranslateClientError(err, httpResp, "error retrieving cloudflare account")
 		}
 	}
 	return nil
