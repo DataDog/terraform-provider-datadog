@@ -941,8 +941,9 @@ func createSyntheticsAPITestStepAdvancedScheduling(ctx context.Context, accProvi
 
 func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
+	globalVariableName := getUniqueVariableName(ctx, t)
 	return resource.TestStep{
-		Config: createSyntheticsAPITestConfigNewAssertionsOptions(testName),
+		Config: createSyntheticsAPITestConfigNewAssertionsOptions(testName, globalVariableName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -1042,7 +1043,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.operator", "moreThan"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.targetvalue", "{{ TEST_VAR_1 }}"),
+				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.targetvalue", fmt.Sprintf("{{ %s }}", globalVariableName)),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.8.type", "body"),
 			resource.TestCheckResourceAttr(
@@ -1087,8 +1088,15 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 	}
 }
 
-func createSyntheticsAPITestConfigNewAssertionsOptions(uniq string) string {
+func createSyntheticsAPITestConfigNewAssertionsOptions(uniq, globalVariableName string) string {
 	return fmt.Sprintf(`
+resource "datadog_synthetics_global_variable" "test_variable" {
+	name        = "%s"
+	description = "Description of the variable"
+	tags        = ["foo:bar", "env:test"]
+	value       = "variable-value"
+}
+
 resource "datadog_synthetics_test" "bar" {
 	type = "api"
 	subtype = "http"
@@ -1125,6 +1133,13 @@ resource "datadog_synthetics_test" "bar" {
 		name = "TEST"
 		example = "1234"
 		pattern = "{{ numeric(4) }}"
+	}
+
+	config_variable {
+		id = datadog_synthetics_global_variable.test_variable.id
+		name = datadog_synthetics_global_variable.test_variable.name
+		secure = "false"
+		type = "global"
 	}
 
 	assertion {
@@ -1178,7 +1193,7 @@ resource "datadog_synthetics_test" "bar" {
 		targetjsonpath {
 			jsonpath    = "$.mykey"
 			operator    = "moreThan"
-			targetvalue = "{{ TEST_VAR_1 }}"
+			targetvalue = "{{ ${datadog_synthetics_global_variable.test_variable.name} }}"
 		}
 	}
 	assertion {
@@ -1208,7 +1223,7 @@ resource "datadog_synthetics_test" "bar" {
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
-}`, uniq)
+}`, globalVariableName, uniq)
 }
 
 func updateSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
@@ -1339,8 +1354,10 @@ resource "datadog_synthetics_test" "foo" {
 
 func updateSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t) + "updated"
+	globalVariableName := getUniqueVariableName(ctx, t)
+
 	return resource.TestStep{
-		Config: updateSyntheticsAPITestConfigNewAssertionsOptions(testName),
+		Config: updateSyntheticsAPITestConfigNewAssertionsOptions(testName, globalVariableName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -1409,8 +1426,15 @@ func updateSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 	}
 }
 
-func updateSyntheticsAPITestConfigNewAssertionsOptions(uniq string) string {
+func updateSyntheticsAPITestConfigNewAssertionsOptions(uniq, globalVariableName string) string {
 	return fmt.Sprintf(`
+resource "datadog_synthetics_global_variable" "test_variable" {
+	name        = "%s"
+	description = "Description of the variable"
+	tags        = ["foo:bar", "env:test"]
+	value       = "variable-value"
+}
+
 resource "datadog_synthetics_test" "bar" {
 	type = "api"
 	subtype = "http"
@@ -1429,6 +1453,13 @@ resource "datadog_synthetics_test" "bar" {
 			content = "content-key-updated"
 			filename = "key-updated"
 		}
+	}
+
+	config_variable {
+		id = datadog_synthetics_global_variable.test_variable.id
+		name = datadog_synthetics_global_variable.test_variable.name
+		secure = "false"
+		type = "global"
 	}
 
 	assertion {
@@ -1459,7 +1490,7 @@ resource "datadog_synthetics_test" "bar" {
 	tags = ["foo:bar", "foo", "env:test"]
 
 	status = "live"
-}`, uniq)
+}`, globalVariableName, uniq)
 }
 
 func createSyntheticsSSLTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
