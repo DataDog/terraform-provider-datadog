@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardSloList_import-local-1680104112","widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardSloList_import-local-1682003509","widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"}}]}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"id":"h9r-wnw-d5i","title":"tf-TestAccDatadogDashboardSloList_import-local-1680104112","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/h9r-wnw-d5i/tf-testaccdatadogdashboardslolistimport-local-1680104112","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":1500314673424502}],"notify_list":[],"created_at":"2023-03-29T15:35:15.059698+00:00","modified_at":"2023-03-29T15:35:15.059698+00:00","template_variable_presets":[]}
+      {"id":"6wg-xvs-xph","title":"tf-TestAccDatadogDashboardSloList_import-local-1682003509","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/6wg-xvs-xph/tf-testaccdatadogdashboardslolistimport-local-1682003509","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":8700386207499491}],"notify_list":[],"created_at":"2023-04-20T15:11:50.727219+00:00","modified_at":"2023-04-20T15:11:50.727219+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/h9r-wnw-d5i
+    url: https://api.datadoghq.com/api/v1/dashboard/6wg-xvs-xph
     method: GET
   response:
     body: |
-      {"id":"h9r-wnw-d5i","title":"tf-TestAccDatadogDashboardSloList_import-local-1680104112","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/h9r-wnw-d5i/tf-testaccdatadogdashboardslolistimport-local-1680104112","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":1500314673424502}],"notify_list":[],"created_at":"2023-03-29T15:35:15.059698+00:00","modified_at":"2023-03-29T15:35:15.059698+00:00","template_variable_presets":[]}
+      {"id":"6wg-xvs-xph","title":"tf-TestAccDatadogDashboardSloList_import-local-1682003509","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/6wg-xvs-xph/tf-testaccdatadogdashboardslolistimport-local-1682003509","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":8700386207499491}],"notify_list":[],"created_at":"2023-04-20T15:11:50.727219+00:00","modified_at":"2023-04-20T15:11:50.727219+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/h9r-wnw-d5i
+    url: https://api.datadoghq.com/api/v1/dashboard/6wg-xvs-xph
     method: GET
   response:
     body: |
-      {"id":"h9r-wnw-d5i","title":"tf-TestAccDatadogDashboardSloList_import-local-1680104112","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/h9r-wnw-d5i/tf-testaccdatadogdashboardslolistimport-local-1680104112","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":1500314673424502}],"notify_list":[],"created_at":"2023-03-29T15:35:15.059698+00:00","modified_at":"2023-03-29T15:35:15.059698+00:00","template_variable_presets":[]}
+      {"id":"6wg-xvs-xph","title":"tf-TestAccDatadogDashboardSloList_import-local-1682003509","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/6wg-xvs-xph/tf-testaccdatadogdashboardslolistimport-local-1682003509","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":8700386207499491}],"notify_list":[],"created_at":"2023-04-20T15:11:50.727219+00:00","modified_at":"2023-04-20T15:11:50.727219+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/h9r-wnw-d5i
+    url: https://api.datadoghq.com/api/v1/dashboard/6wg-xvs-xph
     method: GET
   response:
     body: |
-      {"id":"h9r-wnw-d5i","title":"tf-TestAccDatadogDashboardSloList_import-local-1680104112","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/h9r-wnw-d5i/tf-testaccdatadogdashboardslolistimport-local-1680104112","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":1500314673424502}],"notify_list":[],"created_at":"2023-03-29T15:35:15.059698+00:00","modified_at":"2023-03-29T15:35:15.059698+00:00","template_variable_presets":[]}
+      {"id":"6wg-xvs-xph","title":"tf-TestAccDatadogDashboardSloList_import-local-1682003509","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/6wg-xvs-xph/tf-testaccdatadogdashboardslolistimport-local-1682003509","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":8700386207499491}],"notify_list":[],"created_at":"2023-04-20T15:11:50.727219+00:00","modified_at":"2023-04-20T15:11:50.727219+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -78,11 +78,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/h9r-wnw-d5i
+    url: https://api.datadoghq.com/api/v1/dashboard/6wg-xvs-xph
     method: DELETE
   response:
     body: |
-      {"deleted_dashboard_id":"h9r-wnw-d5i"}
+      {"deleted_dashboard_id":"6wg-xvs-xph"}
     headers:
       Content-Type:
       - application/json
@@ -95,10 +95,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/h9r-wnw-d5i
+    url: https://api.datadoghq.com/api/v1/dashboard/6wg-xvs-xph
     method: GET
   response:
-    body: '{"errors":["Dashboard with ID h9r-wnw-d5i not found"]}'
+    body: '{"errors":["Dashboard with ID 6wg-xvs-xph not found"]}'
     headers:
       Content-Type:
       - application/json

@@ -2488,6 +2488,7 @@ resource "datadog_synthetics_test" "grpc" {
 
 func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
+
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -2601,6 +2602,8 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.is_critical", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.no_screenshot", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.params.0.check", "contains"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.params.0.value", "content"),
@@ -2614,6 +2617,10 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 				"datadog_synthetics_test.bar", "browser_variable.0.pattern", "{{numeric(3)}}"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_variable.0.example", "597"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.1.type", "email"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.1.name", "EMAIL_VAR"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "config_variable.0.type", "text"),
 			resource.TestCheckResourceAttr(
@@ -2713,6 +2720,7 @@ resource "datadog_synthetics_test" "bar" {
 	        check = "contains"
 	        value = "content"
 	    }
+	    no_screenshot = true
 	}
 
 	browser_variable {
@@ -2720,6 +2728,11 @@ resource "datadog_synthetics_test" "bar" {
 		name = "MY_PATTERN_VAR"
 		pattern = "{{numeric(3)}}"
 		example = "597"
+	}
+
+	browser_variable {
+		name = "EMAIL_VAR"
+		type = "email"
 	}
 
 	config_variable {

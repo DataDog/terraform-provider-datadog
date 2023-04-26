@@ -179,7 +179,7 @@ func updateSLOCorrectionState(d *schema.ResourceData, sloCorrectionData *datadog
 				return diag.FromErr(err)
 			}
 		}
-		if end, ok := sloCorrectionAttributes.GetEndOk(); ok {
+		if end, ok := sloCorrectionAttributes.GetEndOk(); ok && end != nil {
 			if err := d.Set("end", *end); err != nil {
 				return diag.FromErr(err)
 			}

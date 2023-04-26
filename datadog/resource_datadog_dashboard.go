@@ -137,6 +137,13 @@ func resourceDatadogDashboard() *schema.Resource {
 				Description:   "Whether this dashboard is read-only.",
 				Deprecated:    "Prefer using `restricted_roles` to define which roles are required to edit the dashboard.",
 			},
+			"tags": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				MaxItems:    5,
+				Description: "A list of tags assigned to the Dashboard. Only team names of the form `team:<name>` are supported.",
+				Elem:        &schema.Schema{Type: schema.TypeString},
+			},
 		},
 	}
 }
@@ -295,6 +302,12 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 		return diag.FromErr(err)
 	}
 
+	// Set tags
+	tags := dashboard.GetTags()
+	if err := d.Set("tags", tags); err != nil {
+		return diag.FromErr(err)
+	}
+
 	return nil
 }
 
@@ -365,6 +378,10 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 	// Build NotifyList
 	notifyList := d.Get("notify_list").(*schema.Set)
 	dashboard.NotifyList = *buildDatadogNotifyList(notifyList)
+
+	// Build Tags
+	tags := utils.GetStringSlice(d, "tags")
+	dashboard.Tags = tags
 
 	// Build TemplateVariables
 	templateVariables := d.Get("template_variable").([]interface{})

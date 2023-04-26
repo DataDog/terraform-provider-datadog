@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardTopologyMap-local-1663005937","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"query":{"data_source":"service_map","filters":["env:prod","datacenter:dc1"],"service":"master-db"},"request_type":"topology"}],"title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","title_size":"16","type":"topology_map"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardTopologyMap-local-1682003479","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"query":{"data_source":"service_map","filters":["env:prod","datacenter:dc1"],"service":"master-db"},"request_type":"topology"}],"title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","title_size":"16","type":"topology_map"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"una-2fw-cbx","title":"tf-TestAccDatadogDashboardTopologyMap-local-1663005937","url":"/dashboard/una-2fw-cbx/tf-testaccdatadogdashboardtopologymap-local-1663005937","created_at":"2022-09-12T18:05:38.897418+00:00","modified_at":"2022-09-12T18:05:38.897418+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","requests":[{"query":{"data_source":"service_map","service":"master-db","filters":["env:prod","datacenter:dc1"]},"request_type":"topology"}],"type":"topology_map"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7648680492450835}],"layout_type":"free"}
+      {"id":"rnw-5kw-cyp","title":"tf-TestAccDatadogDashboardTopologyMap-local-1682003479","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/rnw-5kw-cyp/tf-testaccdatadogdashboardtopologymap-local-1682003479","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"query":{"data_source":"service_map","filters":["env:prod","datacenter:dc1"],"service":"master-db"},"request_type":"topology"}],"title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","title_size":"16","type":"topology_map"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4565350293732493}],"notify_list":[],"created_at":"2023-04-20T15:11:21.164498+00:00","modified_at":"2023-04-20T15:11:21.164498+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/una-2fw-cbx
+    url: https://api.datadoghq.com/api/v1/dashboard/rnw-5kw-cyp
     method: GET
   response:
     body: |
-      {"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"una-2fw-cbx","title":"tf-TestAccDatadogDashboardTopologyMap-local-1663005937","url":"/dashboard/una-2fw-cbx/tf-testaccdatadogdashboardtopologymap-local-1663005937","created_at":"2022-09-12T18:05:38.897418+00:00","modified_at":"2022-09-12T18:05:38.897418+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","requests":[{"query":{"data_source":"service_map","service":"master-db","filters":["env:prod","datacenter:dc1"]},"request_type":"topology"}],"type":"topology_map"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7648680492450835}],"layout_type":"free"}
+      {"id":"rnw-5kw-cyp","title":"tf-TestAccDatadogDashboardTopologyMap-local-1682003479","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/rnw-5kw-cyp/tf-testaccdatadogdashboardtopologymap-local-1682003479","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"query":{"data_source":"service_map","filters":["env:prod","datacenter:dc1"],"service":"master-db"},"request_type":"topology"}],"title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","title_size":"16","type":"topology_map"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4565350293732493}],"notify_list":[],"created_at":"2023-04-20T15:11:21.164498+00:00","modified_at":"2023-04-20T15:11:21.164498+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/una-2fw-cbx
+    url: https://api.datadoghq.com/api/v1/dashboard/rnw-5kw-cyp
     method: GET
   response:
     body: |
-      {"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"una-2fw-cbx","title":"tf-TestAccDatadogDashboardTopologyMap-local-1663005937","url":"/dashboard/una-2fw-cbx/tf-testaccdatadogdashboardtopologymap-local-1663005937","created_at":"2022-09-12T18:05:38.897418+00:00","modified_at":"2022-09-12T18:05:38.897418+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","requests":[{"query":{"data_source":"service_map","service":"master-db","filters":["env:prod","datacenter:dc1"]},"request_type":"topology"}],"type":"topology_map"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7648680492450835}],"layout_type":"free"}
+      {"id":"rnw-5kw-cyp","title":"tf-TestAccDatadogDashboardTopologyMap-local-1682003479","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/rnw-5kw-cyp/tf-testaccdatadogdashboardtopologymap-local-1682003479","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"query":{"data_source":"service_map","filters":["env:prod","datacenter:dc1"],"service":"master-db"},"request_type":"topology"}],"title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","title_size":"16","type":"topology_map"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4565350293732493}],"notify_list":[],"created_at":"2023-04-20T15:11:21.164498+00:00","modified_at":"2023-04-20T15:11:21.164498+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/una-2fw-cbx
+    url: https://api.datadoghq.com/api/v1/dashboard/rnw-5kw-cyp
     method: GET
   response:
     body: |
-      {"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"una-2fw-cbx","title":"tf-TestAccDatadogDashboardTopologyMap-local-1663005937","url":"/dashboard/una-2fw-cbx/tf-testaccdatadogdashboardtopologymap-local-1663005937","created_at":"2022-09-12T18:05:38.897418+00:00","modified_at":"2022-09-12T18:05:38.897418+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"},{"override_label":"logs","is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists"}],"title_size":"16","title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","requests":[{"query":{"data_source":"service_map","service":"master-db","filters":["env:prod","datacenter:dc1"]},"request_type":"topology"}],"type":"topology_map"},"layout":{"y":5,"width":32,"x":5,"height":43},"id":7648680492450835}],"layout_type":"free"}
+      {"id":"rnw-5kw-cyp","title":"tf-TestAccDatadogDashboardTopologyMap-local-1682003479","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/rnw-5kw-cyp/tf-testaccdatadogdashboardtopologymap-local-1682003479","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"query":{"data_source":"service_map","filters":["env:prod","datacenter:dc1"],"service":"master-db"},"request_type":"topology"}],"title":"env: prod, datacenter:dc1, service: master-db","title_align":"left","title_size":"16","type":"topology_map"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":4565350293732493}],"notify_list":[],"created_at":"2023-04-20T15:11:21.164498+00:00","modified_at":"2023-04-20T15:11:21.164498+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -78,11 +78,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/una-2fw-cbx
+    url: https://api.datadoghq.com/api/v1/dashboard/rnw-5kw-cyp
     method: DELETE
   response:
     body: |
-      {"deleted_dashboard_id":"una-2fw-cbx"}
+      {"deleted_dashboard_id":"rnw-5kw-cyp"}
     headers:
       Content-Type:
       - application/json
@@ -95,11 +95,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/una-2fw-cbx
+    url: https://api.datadoghq.com/api/v1/dashboard/rnw-5kw-cyp
     method: GET
   response:
-    body: |
-      {"errors":["Dashboard with ID una-2fw-cbx not found"]}
+    body: '{"errors":["Dashboard with ID rnw-5kw-cyp not found"]}'
     headers:
       Content-Type:
       - application/json

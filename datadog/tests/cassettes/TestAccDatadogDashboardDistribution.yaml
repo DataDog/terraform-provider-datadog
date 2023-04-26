@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardDistribution-local-1615587207","widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardDistribution-local-1682003509","widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"}}]}
     form: {}
     headers:
       Accept:
@@ -13,7 +13,8 @@ interactions:
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"tg8-bif-m8c","title":"tf-TestAccDatadogDashboardDistribution-local-1615587207","url":"/dashboard/tg8-bif-m8c/tf-testaccdatadogdashboarddistribution-local-1615587207","created_at":"2021-03-12T22:13:29.922982+00:00","modified_at":"2021-03-12T22:13:29.922982+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"distribution","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}]},"id":7626171845985683}],"layout_type":"ordered"}'
+    body: |
+      {"id":"95e-mex-e6e","title":"tf-TestAccDatadogDashboardDistribution-local-1682003509","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/95e-mex-e6e/tf-testaccdatadogdashboarddistribution-local-1682003509","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"},"id":7657809774286974}],"notify_list":[],"created_at":"2023-04-20T15:11:51.227277+00:00","modified_at":"2023-04-20T15:11:51.227277+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -26,10 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/tg8-bif-m8c
+    url: https://api.datadoghq.com/api/v1/dashboard/95e-mex-e6e
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"tg8-bif-m8c","title":"tf-TestAccDatadogDashboardDistribution-local-1615587207","url":"/dashboard/tg8-bif-m8c/tf-testaccdatadogdashboarddistribution-local-1615587207","created_at":"2021-03-12T22:13:29.922982+00:00","modified_at":"2021-03-12T22:13:29.922982+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"distribution","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}]},"id":7626171845985683}],"layout_type":"ordered"}'
+    body: |
+      {"id":"95e-mex-e6e","title":"tf-TestAccDatadogDashboardDistribution-local-1682003509","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/95e-mex-e6e/tf-testaccdatadogdashboarddistribution-local-1682003509","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"},"id":7657809774286974}],"notify_list":[],"created_at":"2023-04-20T15:11:51.227277+00:00","modified_at":"2023-04-20T15:11:51.227277+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -42,10 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/tg8-bif-m8c
+    url: https://api.datadoghq.com/api/v1/dashboard/95e-mex-e6e
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"tg8-bif-m8c","title":"tf-TestAccDatadogDashboardDistribution-local-1615587207","url":"/dashboard/tg8-bif-m8c/tf-testaccdatadogdashboarddistribution-local-1615587207","created_at":"2021-03-12T22:13:29.922982+00:00","modified_at":"2021-03-12T22:13:29.922982+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"distribution","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}]},"id":7626171845985683}],"layout_type":"ordered"}'
+    body: |
+      {"id":"95e-mex-e6e","title":"tf-TestAccDatadogDashboardDistribution-local-1682003509","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/95e-mex-e6e/tf-testaccdatadogdashboarddistribution-local-1682003509","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"},"id":7657809774286974}],"notify_list":[],"created_at":"2023-04-20T15:11:51.227277+00:00","modified_at":"2023-04-20T15:11:51.227277+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -58,10 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/tg8-bif-m8c
+    url: https://api.datadoghq.com/api/v1/dashboard/95e-mex-e6e
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"tg8-bif-m8c","title":"tf-TestAccDatadogDashboardDistribution-local-1615587207","url":"/dashboard/tg8-bif-m8c/tf-testaccdatadogdashboarddistribution-local-1615587207","created_at":"2021-03-12T22:13:29.922982+00:00","modified_at":"2021-03-12T22:13:29.922982+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","show_legend":true,"time":{"live_span":"1h"},"legend_size":"2","type":"distribution","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}]},"id":7626171845985683}],"layout_type":"ordered"}'
+    body: |
+      {"id":"95e-mex-e6e","title":"tf-TestAccDatadogDashboardDistribution-local-1682003509","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/95e-mex-e6e/tf-testaccdatadogdashboarddistribution-local-1682003509","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"},"id":7657809774286974}],"notify_list":[],"created_at":"2023-04-20T15:11:51.227277+00:00","modified_at":"2023-04-20T15:11:51.227277+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -74,10 +78,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/tg8-bif-m8c
+    url: https://api.datadoghq.com/api/v1/dashboard/95e-mex-e6e
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"tg8-bif-m8c"}'
+    body: |
+      {"deleted_dashboard_id":"95e-mex-e6e"}
     headers:
       Content-Type:
       - application/json
@@ -90,10 +95,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/tg8-bif-m8c
+    url: https://api.datadoghq.com/api/v1/dashboard/95e-mex-e6e
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID tg8-bif-m8c not found"]}'
+    body: '{"errors":["Dashboard with ID 95e-mex-e6e not found"]}'
     headers:
       Content-Type:
       - application/json

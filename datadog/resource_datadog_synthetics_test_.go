@@ -458,7 +458,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 							"targetvalue": {
 								Description: "Expected matching value.",
 								Type:        schema.TypeString,
-								Required:    true,
+								Optional:    true,
 							},
 						},
 					},
@@ -483,7 +483,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 							"targetvalue": {
 								Description: "Expected matching value.",
 								Type:        schema.TypeString,
-								Required:    true,
+								Optional:    true,
 							},
 						},
 					},
@@ -864,6 +864,11 @@ func syntheticsTestBrowserStep() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
+				"no_screenshot": {
+					Description: "Prevents saving screenshots of the step.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 			},
 		},
 	}
@@ -1084,6 +1089,7 @@ func syntheticsBrowserVariableElem() *schema.Resource {
 				Description: "Pattern of the variable.",
 				Type:        schema.TypeString,
 				Optional:    true,
+				Default:     "",
 			},
 			"type": {
 				Description:      "Type of browser test variable.",
@@ -2099,15 +2105,16 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			if v, ok := variableMap["name"]; ok {
 				variableName := v.(string)
 				newVariable := datadogV1.NewSyntheticsBrowserVariable(variableName, variableType)
-				if v, ok := variableMap["example"]; ok && v.(string) != "" {
+				if v, ok := variableMap["example"]; ok {
 					newVariable.SetExample(v.(string))
 				}
 				if v, ok := variableMap["id"]; ok && v.(string) != "" {
 					newVariable.SetId(v.(string))
 				}
-				if v, ok := variableMap["pattern"]; ok && v.(string) != "" {
+				if v, ok := variableMap["pattern"]; ok {
 					newVariable.SetPattern(v.(string))
 				}
+
 				config.SetVariables(append(config.GetVariables(), *newVariable))
 			}
 		}
@@ -2179,6 +2186,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			step.SetAllowFailure(stepMap["allow_failure"].(bool))
 			step.SetIsCritical(stepMap["is_critical"].(bool))
 			step.SetTimeout(int64(stepMap["timeout"].(int)))
+			step.SetNoScreenshot(stepMap["no_screenshot"].(bool))
 
 			params := make(map[string]interface{})
 			stepParams := stepMap["params"].([]interface{})[0]
@@ -2765,6 +2773,9 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 
 		if isCritical, ok := step.GetIsCriticalOk(); ok {
 			localStep["is_critical"] = isCritical
+		}
+		if hasNoScreenshot, ok := step.GetNoScreenshotOk(); ok {
+			localStep["no_screenshot"] = hasNoScreenshot
 		}
 
 		localParams := make(map[string]interface{})

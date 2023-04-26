@@ -349,6 +349,9 @@ Required:
 
 - `jsonpath` (String) The JSON path to assert.
 - `operator` (String) The specific operator to use on the path.
+
+Optional:
+
 - `targetvalue` (String) Expected matching value.
 
 
@@ -358,8 +361,11 @@ Required:
 Required:
 
 - `operator` (String) The specific operator to use on the path.
-- `targetvalue` (String) Expected matching value.
 - `xpath` (String) The xpath to assert.
+
+Optional:
+
+- `targetvalue` (String) Expected matching value.
 
 
 
@@ -516,6 +522,9 @@ Required:
 
 - `jsonpath` (String) The JSON path to assert.
 - `operator` (String) The specific operator to use on the path.
+
+Optional:
+
 - `targetvalue` (String) Expected matching value.
 
 
@@ -525,8 +534,11 @@ Required:
 Required:
 
 - `operator` (String) The specific operator to use on the path.
-- `targetvalue` (String) Expected matching value.
 - `xpath` (String) The xpath to assert.
+
+Optional:
+
+- `targetvalue` (String) Expected matching value.
 
 
 
@@ -544,6 +556,7 @@ Optional:
 - `allow_failure` (Boolean) Determines if the step should be allowed to fail.
 - `force_element_update` (Boolean) Force update of the "element" parameter for the step
 - `is_critical` (Boolean) Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.
+- `no_screenshot` (Boolean) Prevents saving screenshots of the step.
 - `timeout` (Number) Used to override the default timeout of a step.
 
 <a id="nestedblock--browser_step--params"></a>
