@@ -14,7 +14,7 @@ import (
 
 func TestAccIntegrationCloudflareAccountBasic(t *testing.T) {
 	t.Parallel()
-	if isRecording() {
+	if !isReplaying() {
 		t.Skip("This test doesn't support recording")
 	}
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
