@@ -2602,6 +2602,8 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.is_critical", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.no_screenshot", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.params.0.check", "contains"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.params.0.value", "content"),
@@ -2718,6 +2720,7 @@ resource "datadog_synthetics_test" "bar" {
 	        check = "contains"
 	        value = "content"
 	    }
+	    no_screenshot = true
 	}
 
 	browser_variable {

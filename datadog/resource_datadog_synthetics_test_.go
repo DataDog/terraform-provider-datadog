@@ -864,6 +864,11 @@ func syntheticsTestBrowserStep() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
+				"no_screenshot": {
+					Description: "Prevents saving screenshots of the step.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 			},
 		},
 	}
@@ -2181,6 +2186,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			step.SetAllowFailure(stepMap["allow_failure"].(bool))
 			step.SetIsCritical(stepMap["is_critical"].(bool))
 			step.SetTimeout(int64(stepMap["timeout"].(int)))
+			step.SetNoScreenshot(stepMap["no_screenshot"].(bool))
 
 			params := make(map[string]interface{})
 			stepParams := stepMap["params"].([]interface{})[0]
@@ -2767,6 +2773,9 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 
 		if isCritical, ok := step.GetIsCriticalOk(); ok {
 			localStep["is_critical"] = isCritical
+		}
+		if hasNoScreenshot, ok := step.GetNoScreenshotOk(); ok {
+			localStep["no_screenshot"] = hasNoScreenshot
 		}
 
 		localParams := make(map[string]interface{})
