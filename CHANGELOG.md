@@ -11,6 +11,7 @@
 * [datadog_synthetics_test] Fix missing default value for browser variables by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1884
 * [datadog_monitor] Fix panic on scheduling option with empty evaluation window by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1885
 * [datadog_synthetics_test] Remove required from jsonpath and xpath targetvalue fields by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1880
+* [datadog_api_key] Set ID in state and change error message back to original by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1892
 ### IMPROVEMENTS
 * [datadog_service_level_objective] Expose more SLO data in the SLO datasource by @ali-sattari in https://github.com/DataDog/terraform-provider-datadog/pull/1829
 * [datadog_monitor] remove Beta notice from notify_by Monitor resource by @Dalje-et in https://github.com/DataDog/terraform-provider-datadog/pull/1840
@@ -19,16 +20,19 @@
 * [datadog_synthetics_test] Refactor options for Synthetics tests by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1861
 * [datadog_api_key] Upgrade API key data source to framework by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1780
 * [datadog_service_definition_yaml] Add v2.1 service definition example by @hyperloglogy in https://github.com/DataDog/terraform-provider-datadog/pull/1883
-* [datadog_dashboard] Implement support for team tags in Dashboards by @DrkSephy in https://github.com/DataDog/terraform-provider-datadog/pull/1881
-### FEATURES
 * [datadog_service_definition_yaml] Add support for v2.1 schema of service catalog by @hyperloglogy in https://github.com/DataDog/terraform-provider-datadog/pull/1833
-* [datadog_hosts] Add a host list datasource by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1847
-* [datadog_integration_fastly] Add Fastly integration resources #1851 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1852
-* [datadog_integration_confluent] Add Confluent integration resources by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1851
+* [datadog_dashboard] Implement support for team tags in Dashboards by @DrkSephy in https://github.com/DataDog/terraform-provider-datadog/pull/1881
 * [datadog_synthetics_test] Add no screenshot option to browser steps by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1887
+### FEATURES
+* [datadog_hosts] Add a host list datasource by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1847
+* [datadog_integration_fastly_account] Add Fastly integration resources #1851 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1852
+* [datadog_integration_fastly_service] Add Fastly integration resources #1851 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1852
+* [datadog_integration_confluent_account] Add Confluent integration resources by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1851
+* [datadog_integration_confluent_resource] Add Confluent integration resources by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1851
 * [datadog_integration_cloudflare_account] Add Cloudflare account resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1853
 ### NOTES
 * [provider] Bump go version to `1.19` and `terraform-plugin-framework` to `1.2.0` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1845
+* [provider] Bump datadog api client to 2.12.0 by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1873
 
 ## New Contributors
 * @apiazza3 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1827
