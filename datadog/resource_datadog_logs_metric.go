@@ -75,7 +75,7 @@ func resourceDatadogLogsMetric() *schema.Resource {
 			},
 
 			"group_by": {
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Optional:    true,
 				Description: "The rules for the group by.",
 				Elem: &schema.Resource{
@@ -183,7 +183,7 @@ func getFilter(d *schema.ResourceData) (*datadogV2.LogsMetricFilter, error) {
 }
 
 func getGroupBys(d *schema.ResourceData) ([]datadogV2.LogsMetricGroupBy, error) {
-	resourceGroupBys := d.Get("group_by").([]interface{})
+	resourceGroupBys := d.Get("group_by").(*schema.Set).List()
 	groupBys := make([]datadogV2.LogsMetricGroupBy, len(resourceGroupBys))
 	for i, v := range resourceGroupBys {
 		if v == nil {

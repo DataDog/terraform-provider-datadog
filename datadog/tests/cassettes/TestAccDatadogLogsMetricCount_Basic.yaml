@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"data":{"attributes":{"compute":{"aggregation_type":"count"},"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}]},"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509","type":"logs_metrics"}}
+      {"data":{"attributes":{"compute":{"aggregation_type":"count"},"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}]},"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","type":"logs_metrics"}}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"data":{"attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509"}}
+      {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
     method: GET
   response:
     body: |
-      {"data":{"attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509"}}
+      {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
     method: GET
   response:
     body: |
-      {"data":{"attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509"}}
+      {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
     method: GET
   response:
     body: |
-      {"data":{"attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509"}}
+      {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
     headers:
       Content-Type:
       - application/json
@@ -74,18 +74,18 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"compute":{},"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}]},"type":"logs_metrics"}}
+      {"data":{"attributes":{"compute":{},"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@http_status_code","tag_name":"http_status_code"},{"path":"@env","tag_name":"env_updated"}]},"type":"logs_metrics"}}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
     method: PATCH
   response:
     body: |
-      {"data":{"attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509"}}
+      {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
     headers:
       Content-Type:
       - application/json
@@ -98,11 +98,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
     method: GET
   response:
     body: |
-      {"data":{"attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509"}}
+      {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
     headers:
       Content-Type:
       - application/json
@@ -115,11 +115,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
     method: GET
   response:
     body: |
-      {"data":{"attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509"}}
+      {"data":{"id":"tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275","attributes":{"filter":{"query":"@ident:ha-proxy"},"group_by":[{"path":"@env","tag_name":"env_updated"},{"path":"@http_status_code","tag_name":"http_status_code"}],"compute":{"aggregation_type":"count"}},"type":"logs_metrics"}}
     headers:
       Content-Type:
       - application/json
@@ -132,16 +132,15 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
     method: DELETE
   response:
-    body: |
-      {}
+    body: ""
     headers:
       Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
     duration: ""
 - request:
     body: ""
@@ -149,11 +148,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509
+    url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275
     method: GET
   response:
     body: |
-      {"errors":["not_found(Metric with name 'tf_TestAccDatadogLogsMetricCount_Basic_local_1671654509' not found)"]}
+      {"errors":["not_found(Metric with name 'tf_TestAccDatadogLogsMetricCount_Basic_local_1682695275' not found)"]}
     headers:
       Content-Type:
       - application/json
