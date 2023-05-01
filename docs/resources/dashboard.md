@@ -6666,9 +6666,9 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `global_time_target` (String) The global time target of the widget.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
-- `additional_query_filters` (String) Additional filters applied to the SLO query. This field is supported for metric type SLOs only.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -12188,9 +12188,9 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `global_time_target` (String) The global time target of the widget.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
-- `additional_query_filters` (String) Additional filters applied to the SLO query. This field is supported for metric type SLOs only.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
