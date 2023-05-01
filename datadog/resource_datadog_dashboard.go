@@ -4954,6 +4954,11 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
+		"additional_query_filters": {
+			Description: "Additional filters applied to the SLO query.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 	}
 }
 
@@ -4991,6 +4996,9 @@ func buildDatadogServiceLevelObjectiveDefinition(terraformDefinition map[string]
 	if v, ok := terraformDefinition["global_time_target"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetGlobalTimeTarget(v)
 	}
+	if v, ok := terraformDefinition["additional_query_filters"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetAdditionalQueryFilters(v)
+	}
 	return datadogDefinition
 }
 
@@ -5026,8 +5034,8 @@ func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition datadogV1.S
 		}
 		terraformDefinition["time_windows"] = terraformTimeWindows
 	}
-	if globalTimeTarget, ok := datadogDefinition.GetGlobalTimeTargetOk(); ok {
-		terraformDefinition["global_time_target"] = globalTimeTarget
+	if AdditionalQueryFilters, ok := datadogDefinition.GetAdditionalQueryFiltersOk(); ok {
+		terraformDefinition["additional_query_filters"] = AdditionalQueryFilters
 	}
 	return terraformDefinition
 }
