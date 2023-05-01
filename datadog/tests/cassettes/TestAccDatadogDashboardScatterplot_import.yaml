@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardScatterplot_import-local-1623093453","widgets":[{"definition":{"color_by_groups":["app"],"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":{"x":{"aggregator":"avg","q":"avg:system.cpu.user{account:prod} by {service, team, app}"},"y":{"aggregator":"avg","q":"avg:system.mem.used{env:prod} by {service, team, app}"}},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user by service,team,app colored by app","title_align":"right","title_size":"16","type":"scatterplot","xaxis":{"include_zero":false,"label":"cpu (%)","max":"100","min":"0","scale":"log"},"yaxis":{"include_zero":false,"label":"mem (Gib)","min":"1","scale":"log"}}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardScatterplot_import-local-1682003514","widgets":[{"definition":{"color_by_groups":["app"],"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":{"x":{"aggregator":"avg","q":"avg:system.cpu.user{account:prod} by {service, team, app}"},"y":{"aggregator":"avg","q":"avg:system.mem.used{env:prod} by {service, team, app}"}},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user by service,team,app colored by app","title_align":"right","title_size":"16","type":"scatterplot","xaxis":{"include_zero":false,"label":"cpu (%)","max":"100","min":"0","scale":"log"},"yaxis":{"include_zero":false,"label":"mem (Gib)","min":"1","scale":"log"}}}]}
     form: {}
     headers:
       Accept:
@@ -13,7 +13,8 @@ interactions:
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bfm-yn2-y68","title":"tf-TestAccDatadogDashboardScatterplot_import-local-1623093453","url":"/dashboard/bfm-yn2-y68/tf-testaccdatadogdashboardscatterplotimport-local-1623093453","created_at":"2021-06-07T19:17:48.614428+00:00","modified_at":"2021-06-07T19:17:48.614428+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod} by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod} by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":7879867335288477}],"layout_type":"ordered"}'
+    body: |
+      {"id":"snf-vxi-hn2","title":"tf-TestAccDatadogDashboardScatterplot_import-local-1682003514","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/snf-vxi-hn2/tf-testaccdatadogdashboardscatterplotimport-local-1682003514","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color_by_groups":["app"],"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":{"x":{"aggregator":"avg","q":"avg:system.cpu.user{account:prod} by {service, team, app}"},"y":{"aggregator":"avg","q":"avg:system.mem.used{env:prod} by {service, team, app}"}},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user by service,team,app colored by app","title_align":"right","title_size":"16","type":"scatterplot","xaxis":{"include_zero":false,"label":"cpu (%)","max":"100","min":"0","scale":"log"},"yaxis":{"include_zero":false,"label":"mem (Gib)","min":"1","scale":"log"}},"id":7473466780853142}],"notify_list":[],"created_at":"2023-04-20T15:11:56.091807+00:00","modified_at":"2023-04-20T15:11:56.091807+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -26,10 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bfm-yn2-y68
+    url: https://api.datadoghq.com/api/v1/dashboard/snf-vxi-hn2
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bfm-yn2-y68","title":"tf-TestAccDatadogDashboardScatterplot_import-local-1623093453","url":"/dashboard/bfm-yn2-y68/tf-testaccdatadogdashboardscatterplotimport-local-1623093453","created_at":"2021-06-07T19:17:48.614428+00:00","modified_at":"2021-06-07T19:17:48.614428+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod} by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod} by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":7879867335288477}],"layout_type":"ordered"}'
+    body: |
+      {"id":"snf-vxi-hn2","title":"tf-TestAccDatadogDashboardScatterplot_import-local-1682003514","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/snf-vxi-hn2/tf-testaccdatadogdashboardscatterplotimport-local-1682003514","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color_by_groups":["app"],"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":{"x":{"aggregator":"avg","q":"avg:system.cpu.user{account:prod} by {service, team, app}"},"y":{"aggregator":"avg","q":"avg:system.mem.used{env:prod} by {service, team, app}"}},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user by service,team,app colored by app","title_align":"right","title_size":"16","type":"scatterplot","xaxis":{"include_zero":false,"label":"cpu (%)","max":"100","min":"0","scale":"log"},"yaxis":{"include_zero":false,"label":"mem (Gib)","min":"1","scale":"log"}},"id":7473466780853142}],"notify_list":[],"created_at":"2023-04-20T15:11:56.091807+00:00","modified_at":"2023-04-20T15:11:56.091807+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -42,10 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bfm-yn2-y68
+    url: https://api.datadoghq.com/api/v1/dashboard/snf-vxi-hn2
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bfm-yn2-y68","title":"tf-TestAccDatadogDashboardScatterplot_import-local-1623093453","url":"/dashboard/bfm-yn2-y68/tf-testaccdatadogdashboardscatterplotimport-local-1623093453","created_at":"2021-06-07T19:17:48.614428+00:00","modified_at":"2021-06-07T19:17:48.614428+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod} by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod} by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":7879867335288477}],"layout_type":"ordered"}'
+    body: |
+      {"id":"snf-vxi-hn2","title":"tf-TestAccDatadogDashboardScatterplot_import-local-1682003514","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/snf-vxi-hn2/tf-testaccdatadogdashboardscatterplotimport-local-1682003514","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color_by_groups":["app"],"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":{"x":{"aggregator":"avg","q":"avg:system.cpu.user{account:prod} by {service, team, app}"},"y":{"aggregator":"avg","q":"avg:system.mem.used{env:prod} by {service, team, app}"}},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user by service,team,app colored by app","title_align":"right","title_size":"16","type":"scatterplot","xaxis":{"include_zero":false,"label":"cpu (%)","max":"100","min":"0","scale":"log"},"yaxis":{"include_zero":false,"label":"mem (Gib)","min":"1","scale":"log"}},"id":7473466780853142}],"notify_list":[],"created_at":"2023-04-20T15:11:56.091807+00:00","modified_at":"2023-04-20T15:11:56.091807+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -58,10 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bfm-yn2-y68
+    url: https://api.datadoghq.com/api/v1/dashboard/snf-vxi-hn2
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"bfm-yn2-y68","title":"tf-TestAccDatadogDashboardScatterplot_import-local-1623093453","url":"/dashboard/bfm-yn2-y68/tf-testaccdatadogdashboardscatterplotimport-local-1623093453","created_at":"2021-06-07T19:17:48.614428+00:00","modified_at":"2021-06-07T19:17:48.614428+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"custom_links":[{"link":"https://app.datadoghq.com/dashboard/lists","label":"Test Custom Link label"}],"title_size":"16","yaxis":{"include_zero":false,"scale":"log","min":"1","label":"mem (Gib)"},"title_align":"right","color_by_groups":["app"],"xaxis":{"include_zero":false,"max":"100","min":"0","scale":"log","label":"cpu (%)"},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user by service,team,app colored by app","requests":{"y":{"q":"avg:system.mem.used{env:prod} by {service, team, app}","aggregator":"avg"},"x":{"q":"avg:system.cpu.user{account:prod} by {service, team, app}","aggregator":"avg"}},"type":"scatterplot"},"id":7879867335288477}],"layout_type":"ordered"}'
+    body: |
+      {"id":"snf-vxi-hn2","title":"tf-TestAccDatadogDashboardScatterplot_import-local-1682003514","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/snf-vxi-hn2/tf-testaccdatadogdashboardscatterplotimport-local-1682003514","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color_by_groups":["app"],"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":{"x":{"aggregator":"avg","q":"avg:system.cpu.user{account:prod} by {service, team, app}"},"y":{"aggregator":"avg","q":"avg:system.mem.used{env:prod} by {service, team, app}"}},"time":{"live_span":"15m"},"title":"system.mem.used and system.cpu.user by service,team,app colored by app","title_align":"right","title_size":"16","type":"scatterplot","xaxis":{"include_zero":false,"label":"cpu (%)","max":"100","min":"0","scale":"log"},"yaxis":{"include_zero":false,"label":"mem (Gib)","min":"1","scale":"log"}},"id":7473466780853142}],"notify_list":[],"created_at":"2023-04-20T15:11:56.091807+00:00","modified_at":"2023-04-20T15:11:56.091807+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -74,10 +78,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bfm-yn2-y68
+    url: https://api.datadoghq.com/api/v1/dashboard/snf-vxi-hn2
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"bfm-yn2-y68"}'
+    body: |
+      {"deleted_dashboard_id":"snf-vxi-hn2"}
     headers:
       Content-Type:
       - application/json
@@ -90,10 +95,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bfm-yn2-y68
+    url: https://api.datadoghq.com/api/v1/dashboard/snf-vxi-hn2
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID bfm-yn2-y68 not found"]}'
+    body: '{"errors":["Dashboard with ID snf-vxi-hn2 not found"]}'
     headers:
       Content-Type:
       - application/json

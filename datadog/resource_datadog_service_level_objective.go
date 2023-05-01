@@ -185,8 +185,6 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 
 // ValidateServiceLevelObjectiveTypeString is a ValidateFunc that ensures the SLO is of one of the supported types
 
-// ValidateServiceLevelObjectiveTypeString is a ValidateFunc that ensures the SLO is of one of the supported types
-
 // Use CustomizeDiff to do monitor validation
 func resourceDatadogServiceLevelObjectiveCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
@@ -313,20 +311,29 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 		}
 	}
 
+	plan := d.GetRawConfig()
 	if tf, ok := d.GetOk("timeframe"); ok {
-		slo.SetTimeframe(datadogV1.SLOTimeframe(tf.(string)))
-		slor.SetTimeframe(datadogV1.SLOTimeframe(tf.(string)))
+		if plan.GetAttr("timeframe").IsNull() {
+			d.Set("timeframe", nil)
+		} else {
+			slo.SetTimeframe(datadogV1.SLOTimeframe(tf.(string)))
+			slor.SetTimeframe(datadogV1.SLOTimeframe(tf.(string)))
+		}
 	}
 
 	if targetValue, ok := d.GetOk("target_threshold"); ok {
-		if f, ok := floatOk(targetValue); ok {
+		if plan.GetAttr("target_threshold").IsNull() {
+			d.Set("target_threshold", nil)
+		} else if f, ok := floatOk(targetValue); ok {
 			slo.SetTargetThreshold(f)
 			slor.SetTargetThreshold(f)
 		}
 	}
 
 	if warningValue, ok := d.GetOk("warning_threshold"); ok {
-		if f, ok := floatOk(warningValue); ok {
+		if plan.GetAttr("warning_threshold").IsNull() {
+			d.Set("warning_threshold", nil)
+		} else if f, ok := floatOk(warningValue); ok {
 			slo.SetWarningThreshold(f)
 			slor.SetWarningThreshold(f)
 		}
