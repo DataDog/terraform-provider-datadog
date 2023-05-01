@@ -5036,7 +5036,8 @@ func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition datadogV1.S
 	}
 	if globalTimeTarget, ok := datadogDefinition.GetGlobalTimeTargetOk(); ok {
 		terraformDefinition["global_time_target"] = globalTimeTarget
-		
+	}
+
 	if AdditionalQueryFilters, ok := datadogDefinition.GetAdditionalQueryFiltersOk(); ok {
 		terraformDefinition["additional_query_filters"] = AdditionalQueryFilters
 	}
