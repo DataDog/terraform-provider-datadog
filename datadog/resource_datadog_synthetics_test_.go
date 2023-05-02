@@ -577,7 +577,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Description:  "How often the test should run (in seconds).",
 					Type:         schema.TypeInt,
 					Required:     true,
-					ValidateFunc: validation.IntBetween(30, 604800),
+					ValidateFunc: validation.IntBetween(300, 604800),
 				},
 				"scheduling": syntheticsTestAdvancedScheduling(),
 				"accept_self_signed": {
