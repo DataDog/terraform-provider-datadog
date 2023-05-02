@@ -574,7 +574,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 				"allow_insecure":   syntheticsAllowInsecureOption(),
 				"follow_redirects": syntheticsFollowRedirectsOption(),
 				"tick_every": {
-					Description:  "How often the test should run (in seconds).",
+					Description:  "How often the test should run (in seconds). Must be between `300` and `604,800`.",
 					Type:         schema.TypeInt,
 					Required:     true,
 					ValidateFunc: validation.IntBetween(300, 604800),

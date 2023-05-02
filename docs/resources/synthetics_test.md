@@ -655,7 +655,7 @@ Optional:
 
 Required:
 
-- `tick_every` (Number) How often the test should run (in seconds).
+- `tick_every` (Number) How often the test should run (in seconds). Must be between `300` and `604,800`.
 
 Optional:
 
