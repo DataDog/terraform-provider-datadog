@@ -2,9 +2,7 @@ package fwprovider
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"log"
 	"net/url"
 	"runtime"
 	"strconv"
@@ -374,6 +372,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	p.DatadogApiInstances = &utils.ApiInstances{HttpClient: datadogClient}
 	p.Auth = auth
 
+	/*  Commented out due to duplicate validation in SDK provider - remove after Framework migration is complete.
 	if validate {
 		log.Println("[INFO] Datadog client successfully initialized, now validating...")
 		resp, _, err := p.DatadogApiInstances.GetAuthenticationApiV1().Validate(auth)
@@ -391,5 +390,6 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		log.Println("[INFO] Skipping key validation (validate = false)")
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
+	*/
 	return nil
 }
