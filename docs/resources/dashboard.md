@@ -6666,6 +6666,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `global_time_target` (String) The global time target of the widget.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
 - `title` (String) The title of the widget.
@@ -12187,6 +12188,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `global_time_target` (String) The global time target of the widget.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
 - `title` (String) The title of the widget.
