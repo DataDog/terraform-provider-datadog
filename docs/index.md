@@ -57,4 +57,4 @@ provider "datadog" {
 - `http_client_retry_enabled` (String) Enables request retries on HTTP status codes 429 and 5xx. Valid values are [`true`, `false`]. Defaults to `true`.
 - `http_client_retry_max_retries` (Number) The HTTP request maximum retry number. Defaults to 3.
 - `http_client_retry_timeout` (Number) The HTTP request retry timeout period. Defaults to 60 seconds.
-- `validate` (String) Enables validation of the provided API and APP keys during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key and app_key won't be checked.
+- `validate` (String) Enables validation of the provided API key during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key won't be checked.

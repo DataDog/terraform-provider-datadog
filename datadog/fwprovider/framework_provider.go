@@ -87,7 +87,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"validate": schema.StringAttribute{
 				Optional:    true,
-				Description: "Enables validation of the provided API and APP keys during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key and app_key won't be checked.",
+				Description: "Enables validation of the provided API key during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key won't be checked.",
 			},
 			"http_client_retry_enabled": schema.StringAttribute{
 				Optional:    true,
@@ -299,22 +299,6 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	), request.TerraformVersion)
 	p.CommunityClient.HttpClient = c
 
-	if validate {
-		log.Println("[INFO] Datadog client successfully initialized, now validating...")
-		ok, err := p.CommunityClient.Validate()
-		if err != nil {
-			diags.AddError("[ERROR] Datadog Client validation error", err.Error())
-			return diags
-		} else if !ok {
-			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
-			diags.AddError("[ERROR] Datadog Client validation error", err.Error())
-			return diags
-		}
-	} else {
-		log.Println("[INFO] Skipping key validation (validate = false)")
-	}
-	log.Printf("[INFO] Datadog Client successfully validated.")
-
 	// Initialize the official Datadog V1 API client
 	auth := context.WithValue(
 		context.Background(),
@@ -390,5 +374,22 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	p.DatadogApiInstances = &utils.ApiInstances{HttpClient: datadogClient}
 	p.Auth = auth
 
+	if validate {
+		log.Println("[INFO] Datadog client successfully initialized, now validating...")
+		resp, _, err := p.DatadogApiInstances.GetAuthenticationApiV1().Validate(auth)
+		if err != nil {
+			diags.AddError("[ERROR] Datadog Client validation error", err.Error())
+			return diags
+		}
+		valid, ok := resp.GetValidOk()
+		if (ok && !*valid) || !ok {
+			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
+			diags.AddError("[ERROR] Datadog Client validation error", err.Error())
+			return diags
+		}
+	} else {
+		log.Println("[INFO] Skipping key validation (validate = false)")
+	}
+	log.Printf("[INFO] Datadog Client successfully validated.")
 	return nil
 }
