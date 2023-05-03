@@ -2429,7 +2429,7 @@ resource "datadog_synthetics_test" "grpc" {
 	assertion {
 		operator = "is"
 		target   = "proto target"
-        type     = "grpcProto"
+		type     = "grpcProto"
 	}
 
 	assertion {
