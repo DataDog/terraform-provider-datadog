@@ -2350,7 +2350,7 @@ func createSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*sche
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_definition.0.service", "Hello"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.grpc", "assertion.#", "2"),
+				"datadog_synthetics_test.grpc", "assertion.#", "4"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "assertion.0.type", "responseTime"),
 			resource.TestCheckResourceAttr(
@@ -2363,6 +2363,20 @@ func createSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*sche
 				"datadog_synthetics_test.grpc", "assertion.1.operator", "is"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "assertion.1.target", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "assertion.2.type", "grpcProto"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "assertion.2.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "assertion.2.target", "proto target"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "assertion.3.type", "grpcMetadata"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "assertion.3.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "assertion.3.target", "123"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "assertion.3.property", "property"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "locations.#", "1"),
 			resource.TestCheckTypeSetElemAttr(
@@ -2410,6 +2424,19 @@ resource "datadog_synthetics_test" "grpc" {
 		operator = "is"
 		type     = "grpcHealthcheckStatus"
 		target   = 1
+	}
+
+	assertion {
+		operator = "is"
+		target   = "proto target"
+        type     = "grpcProto"
+	}
+
+	assertion {
+		operator = "is"
+		target   = "123"
+		property = "property"
+		type     = "grpcMetadata"
 	}
 
 	locations = [ "aws:eu-central-1" ]
