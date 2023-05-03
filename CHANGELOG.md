@@ -1,3 +1,12 @@
+## 3.24.1 (May 3, 2023)
+
+### BUGFIXES
+* [datadog_logs_metric] Convert `group_by` to set by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1896
+* [datadog_dashboard_json] skip prepResource if attrMap is nil by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1898
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.24.0...v3.24.1
+
 ## 3.24.0 (April 26, 2023)
 
 ### BUGFIXES
