@@ -1,3 +1,16 @@
+## 3.25.0 (May 5, 2023)
+
+### BUGFIXES
+* [provider] Update API key validation call to use official SDK by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1902
+### IMPROVEMENTS
+* [datadog_synthetics_test] Add support for new assertions by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1901
+* [datadog_dashboard] Add additional_query_filters to SLO widget by @zhengshizhao in https://github.com/DataDog/terraform-provider-datadog/pull/1899
+### FEATURES
+* [datadog_sensitive_data_scanner_group_order] Add resource and datasource for SDS group order by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1820
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.24.1...v3.25.0
+
 ## 3.24.1 (May 3, 2023)
 
 ### BUGFIXES
