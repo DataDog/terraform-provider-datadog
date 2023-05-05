@@ -270,6 +270,7 @@ func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.D
 		NewSensitiveDataScannerGroupOrderDatasource,
 		NewAPIKeyDataSource,
 		NewHostsDataSource,
+		NewDatadogIntegrationAWSNamespaceRulesDatasource,
 	}
 }
 
