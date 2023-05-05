@@ -19,8 +19,8 @@ func NewSensitiveDataScannerGroupOrderDatasource() datasource.DataSource {
 }
 
 type SensitiveDataScannerGroupOrderDatasourceModel struct {
-	ID     types.String `tfsdk:"id"`
-	Groups types.List   `tfsdk:"groups"`
+	ID       types.String `tfsdk:"id"`
+	GroupIDs types.List   `tfsdk:"group_ids"`
 }
 
 type SensitiveDataScannerGroupOrderDatasource struct {
@@ -53,7 +53,7 @@ func (d *SensitiveDataScannerGroupOrderDatasource) Schema(_ context.Context, _ d
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog Sensitive Data Scanner Group Order API data source. This can be used to retrieve the order of Datadog Sensitive Data Scanner Groups.",
 		Attributes: map[string]schema.Attribute{
-			"groups": schema.ListAttribute{
+			"group_ids": schema.ListAttribute{
 				Description: "The list of Sensitive Data Scanner group IDs, in order. Logs are tested against the query filter of each index one by one following the order of the list.",
 				ElementType: types.StringType,
 				Computed:    true,
@@ -90,7 +90,7 @@ func (d *SensitiveDataScannerGroupOrderDatasource) Read(ctx context.Context, _ d
 		tfList[i] = ddGroup.GetId()
 	}
 
-	state.Groups, _ = types.ListValueFrom(ctx, types.StringType, tfList)
+	state.GroupIDs, _ = types.ListValueFrom(ctx, types.StringType, tfList)
 	state.ID = types.StringValue(groupID)
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)

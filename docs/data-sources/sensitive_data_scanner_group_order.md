@@ -25,7 +25,7 @@ resource "datadog_sensitive_data_scanner_group_order" "foobar" {
 
 ### Read-Only
 
-- `groups` (List of String) The list of Sensitive Data Scanner group IDs, in order. Logs are tested against the query filter of each index one by one following the order of the list.
+- `group_ids` (List of String) The list of Sensitive Data Scanner group IDs, in order. Logs are tested against the query filter of each index one by one following the order of the list.
 - `id` (String) The ID of this resource.
 
 

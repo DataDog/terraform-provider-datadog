@@ -24,8 +24,8 @@ func NewSensitiveDataScannerGroupOrder() resource.Resource {
 }
 
 type SensitiveDataScannerGroupOrderModel struct {
-	ID     types.String `tfsdk:"id"`
-	Groups types.List   `tfsdk:"groups"`
+	ID       types.String `tfsdk:"id"`
+	GroupIDs types.List   `tfsdk:"group_ids"`
 }
 
 type SensitiveDataScannerGroupOrder struct {
@@ -56,7 +56,7 @@ func (r *SensitiveDataScannerGroupOrder) Schema(_ context.Context, _ resource.Sc
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog Sensitive Data Scanner Group Order API resource. This can be used to manage the order of Datadog Sensitive Data Scanner Groups.",
 		Attributes: map[string]schema.Attribute{
-			"groups": schema.ListAttribute{
+			"group_ids": schema.ListAttribute{
 				Description: "The list of Sensitive Data Scanner group IDs, in order. Logs are tested against the query filter of each index one by one following the order of the list.",
 				ElementType: types.StringType,
 				Required:    true,
@@ -107,7 +107,7 @@ func (r *SensitiveDataScannerGroupOrder) Read(ctx context.Context, request resou
 		tfList[i] = ddGroup.GetId()
 	}
 
-	state.Groups, _ = types.ListValueFrom(ctx, types.StringType, tfList)
+	state.GroupIDs, _ = types.ListValueFrom(ctx, types.StringType, tfList)
 	state.ID = types.StringValue(groupID)
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -134,8 +134,8 @@ func (r *SensitiveDataScannerGroupOrder) ImportState(ctx context.Context, reques
 }
 
 func (r *SensitiveDataScannerGroupOrder) updateOrder(state *SensitiveDataScannerGroupOrderModel, diag *diag.Diagnostics) {
-	ddList := make([]datadogV2.SensitiveDataScannerGroupItem, len(state.Groups.Elements()))
-	for i, tfName := range state.Groups.Elements() {
+	ddList := make([]datadogV2.SensitiveDataScannerGroupItem, len(state.GroupIDs.Elements()))
+	for i, tfName := range state.GroupIDs.Elements() {
 		ddList[i] = *datadogV2.NewSensitiveDataScannerGroupItemWithDefaults()
 		ddList[i].SetId(tfName.(types.String).ValueString())
 	}

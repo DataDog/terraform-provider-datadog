@@ -22,7 +22,7 @@ func TestAccDatadogSDSGroupOrderDatasource(t *testing.T) {
 			{
 				Config: testAccDatasourceDatadogSDSGroupOrderWithGroupConfig(uniq),
 				// given the persistent nature of sds groups we can't check for exact value
-				Check: resource.TestMatchResourceAttr("data.datadog_sensitive_data_scanner_group_order.foo", "groups.#", regexp.MustCompile("[^0].*$")),
+				Check: resource.TestMatchResourceAttr("data.datadog_sensitive_data_scanner_group_order.foo", "group_ids.#", regexp.MustCompile("[^0].*$")),
 			},
 		},
 	})

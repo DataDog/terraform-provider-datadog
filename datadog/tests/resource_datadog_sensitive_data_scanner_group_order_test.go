@@ -14,7 +14,7 @@ func GroupOrderConfig(uniq string) string {
 data "datadog_sensitive_data_scanner_group_order" "foo" {}
 
 resource "datadog_sensitive_data_scanner_group_order" "foo" {
-	groups = concat([datadog_sensitive_data_scanner_group.mygroup.id], data.datadog_sensitive_data_scanner_group_order.foo.groups)
+	group_ids = concat([datadog_sensitive_data_scanner_group.mygroup.id], data.datadog_sensitive_data_scanner_group_order.foo.group_ids)
 }
 
 resource "datadog_sensitive_data_scanner_group" "mygroup" {
@@ -41,9 +41,9 @@ func TestAccDatadogSDSGroupOrder_basic(t *testing.T) {
 				Config: GroupOrderConfig(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttrSet(
-						"datadog_sensitive_data_scanner_group_order.foo", "groups.#"),
+						"datadog_sensitive_data_scanner_group_order.foo", "group_ids.#"),
 					resource.TestCheckResourceAttrPair(
-						"datadog_sensitive_data_scanner_group_order.foo", "groups.0",
+						"datadog_sensitive_data_scanner_group_order.foo", "group_ids.0",
 						"datadog_sensitive_data_scanner_group.mygroup", "id"),
 				),
 				ExpectNonEmptyPlan: true,
