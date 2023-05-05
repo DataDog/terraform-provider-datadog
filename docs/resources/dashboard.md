@@ -695,6 +695,7 @@ resource "datadog_dashboard" "free_dashboard" {
 - `notify_list` (Set of String) The list of handles for the users to notify when changes are made to this dashboard.
 - `reflow_type` (String) The reflow type of a new dashboard layout. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts. Valid values are `auto`, `fixed`.
 - `restricted_roles` (Set of String) UUIDs of roles whose associated users are authorized to edit the dashboard.
+- `tags` (List of String) A list of tags assigned to the Dashboard. Only team names of the form `team:<name>` are supported.
 - `template_variable` (Block List) The list of template variables for this dashboard. (see [below for nested schema](#nestedblock--template_variable))
 - `template_variable_preset` (Block List) The list of selectable template variable presets for this dashboard. (see [below for nested schema](#nestedblock--template_variable_preset))
 - `url` (String) The URL of the dashboard.
@@ -6665,6 +6666,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `global_time_target` (String) The global time target of the widget.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
 - `title` (String) The title of the widget.
@@ -12186,6 +12188,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `global_time_target` (String) The global time target of the widget.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
 - `title` (String) The title of the widget.

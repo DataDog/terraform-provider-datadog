@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardCheckStatus-local-1615587209","widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardCheckStatus-local-1682003513","widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"}}]}
     form: {}
     headers:
       Accept:
@@ -13,7 +13,8 @@ interactions:
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"acb-2ue-byt","title":"tf-TestAccDatadogDashboardCheckStatus-local-1615587209","url":"/dashboard/acb-2ue-byt/tf-testaccdatadogdashboardcheckstatus-local-1615587209","created_at":"2021-03-12T22:13:31.042891+00:00","modified_at":"2021-03-12T22:13:31.042891+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Agent Up","title_align":"center","group_by":["app"],"type":"check_status","check":"aws.ec2.host_status","tags":["account:prod"],"grouping":"cluster"},"id":5099384598034811}],"layout_type":"ordered"}'
+    body: |
+      {"id":"pwt-t49-qa6","title":"tf-TestAccDatadogDashboardCheckStatus-local-1682003513","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/pwt-t49-qa6/tf-testaccdatadogdashboardcheckstatus-local-1682003513","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"},"id":7273339007512174}],"notify_list":[],"created_at":"2023-04-20T15:11:54.994278+00:00","modified_at":"2023-04-20T15:11:54.994278+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -26,10 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/acb-2ue-byt
+    url: https://api.datadoghq.com/api/v1/dashboard/pwt-t49-qa6
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"acb-2ue-byt","title":"tf-TestAccDatadogDashboardCheckStatus-local-1615587209","url":"/dashboard/acb-2ue-byt/tf-testaccdatadogdashboardcheckstatus-local-1615587209","created_at":"2021-03-12T22:13:31.042891+00:00","modified_at":"2021-03-12T22:13:31.042891+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Agent Up","title_align":"center","group_by":["app"],"type":"check_status","check":"aws.ec2.host_status","tags":["account:prod"],"grouping":"cluster"},"id":5099384598034811}],"layout_type":"ordered"}'
+    body: |
+      {"id":"pwt-t49-qa6","title":"tf-TestAccDatadogDashboardCheckStatus-local-1682003513","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/pwt-t49-qa6/tf-testaccdatadogdashboardcheckstatus-local-1682003513","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"},"id":7273339007512174}],"notify_list":[],"created_at":"2023-04-20T15:11:54.994278+00:00","modified_at":"2023-04-20T15:11:54.994278+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -42,10 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/acb-2ue-byt
+    url: https://api.datadoghq.com/api/v1/dashboard/pwt-t49-qa6
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"acb-2ue-byt","title":"tf-TestAccDatadogDashboardCheckStatus-local-1615587209","url":"/dashboard/acb-2ue-byt/tf-testaccdatadogdashboardcheckstatus-local-1615587209","created_at":"2021-03-12T22:13:31.042891+00:00","modified_at":"2021-03-12T22:13:31.042891+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Agent Up","title_align":"center","group_by":["app"],"type":"check_status","check":"aws.ec2.host_status","tags":["account:prod"],"grouping":"cluster"},"id":5099384598034811}],"layout_type":"ordered"}'
+    body: |
+      {"id":"pwt-t49-qa6","title":"tf-TestAccDatadogDashboardCheckStatus-local-1682003513","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/pwt-t49-qa6/tf-testaccdatadogdashboardcheckstatus-local-1682003513","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"},"id":7273339007512174}],"notify_list":[],"created_at":"2023-04-20T15:11:54.994278+00:00","modified_at":"2023-04-20T15:11:54.994278+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -58,10 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/acb-2ue-byt
+    url: https://api.datadoghq.com/api/v1/dashboard/pwt-t49-qa6
     method: GET
   response:
-    body: '{"notify_list":[],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"acb-2ue-byt","title":"tf-TestAccDatadogDashboardCheckStatus-local-1615587209","url":"/dashboard/acb-2ue-byt/tf-testaccdatadogdashboardcheckstatus-local-1615587209","created_at":"2021-03-12T22:13:31.042891+00:00","modified_at":"2021-03-12T22:13:31.042891+00:00","author_handle":"frog@datadoghq.com","widgets":[{"definition":{"title_size":"16","title":"Agent Up","title_align":"center","group_by":["app"],"type":"check_status","check":"aws.ec2.host_status","tags":["account:prod"],"grouping":"cluster"},"id":5099384598034811}],"layout_type":"ordered"}'
+    body: |
+      {"id":"pwt-t49-qa6","title":"tf-TestAccDatadogDashboardCheckStatus-local-1682003513","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/pwt-t49-qa6/tf-testaccdatadogdashboardcheckstatus-local-1682003513","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"check":"aws.ec2.host_status","group_by":["app"],"grouping":"cluster","tags":["account:prod"],"title":"Agent Up","title_align":"center","title_size":"16","type":"check_status"},"id":7273339007512174}],"notify_list":[],"created_at":"2023-04-20T15:11:54.994278+00:00","modified_at":"2023-04-20T15:11:54.994278+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -74,10 +78,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/acb-2ue-byt
+    url: https://api.datadoghq.com/api/v1/dashboard/pwt-t49-qa6
     method: DELETE
   response:
-    body: '{"deleted_dashboard_id":"acb-2ue-byt"}'
+    body: |
+      {"deleted_dashboard_id":"pwt-t49-qa6"}
     headers:
       Content-Type:
       - application/json
@@ -90,10 +95,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/acb-2ue-byt
+    url: https://api.datadoghq.com/api/v1/dashboard/pwt-t49-qa6
     method: GET
   response:
-    body: '{"errors": ["Dashboard with ID acb-2ue-byt not found"]}'
+    body: '{"errors":["Dashboard with ID pwt-t49-qa6 not found"]}'
     headers:
       Content-Type:
       - application/json

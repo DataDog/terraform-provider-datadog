@@ -22,6 +22,7 @@ resource "datadog_dashboard" "slo_dashboard" {
 			view_mode = "both"
 			view_type = "detail"
 			global_time_target = "99.0"
+			additional_query_filters = "!host:excluded_host"
 		}
 	}
 }
@@ -42,6 +43,7 @@ var datadogDashboardSLOAsserts = []string{
 	"widget.0.service_level_objective_definition.0.title =",
 	"widget.0.service_level_objective_definition.0.time_windows.2 = global_time",
 	"widget.0.service_level_objective_definition.0.global_time_target = 99.0",
+	"widget.0.service_level_objective_definition.0.additional_query_filters = !host:excluded_host",
 	"layout_type = ordered",
 }
 

@@ -458,7 +458,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 							"targetvalue": {
 								Description: "Expected matching value.",
 								Type:        schema.TypeString,
-								Required:    true,
+								Optional:    true,
 							},
 						},
 					},
@@ -483,7 +483,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 							"targetvalue": {
 								Description: "Expected matching value.",
 								Type:        schema.TypeString,
-								Required:    true,
+								Optional:    true,
 							},
 						},
 					},
@@ -864,6 +864,11 @@ func syntheticsTestBrowserStep() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
+				"no_screenshot": {
+					Description: "Prevents saving screenshots of the step.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 			},
 		},
 	}
@@ -1084,6 +1089,7 @@ func syntheticsBrowserVariableElem() *schema.Resource {
 				Description: "Pattern of the variable.",
 				Type:        schema.TypeString,
 				Optional:    true,
+				Default:     "",
 			},
 			"type": {
 				Description:      "Type of browser test variable.",
@@ -1531,117 +1537,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		config.SetSteps(steps)
 	}
 
-	options := datadogV1.NewSyntheticsTestOptions()
-
-	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
-		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
-			options.SetTickEvery(int64(attr.(int)))
-		}
-		if attr, ok := d.GetOk("options_list.0.http_version"); ok {
-			options.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(attr.(string)))
-		}
-		if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
-			options.SetAcceptSelfSigned(attr.(bool))
-		}
-		if attr, ok := d.GetOk("options_list.0.check_certificate_revocation"); ok {
-			options.SetCheckCertificateRevocation(attr.(bool))
-		}
-		if attr, ok := d.GetOk("options_list.0.min_location_failed"); ok {
-			options.SetMinLocationFailed(int64(attr.(int)))
-		}
-		if attr, ok := d.GetOk("options_list.0.min_failure_duration"); ok {
-			options.SetMinFailureDuration(int64(attr.(int)))
-		}
-		if attr, ok := d.GetOk("options_list.0.follow_redirects"); ok {
-			options.SetFollowRedirects(attr.(bool))
-		}
-		if attr, ok := d.GetOk("options_list.0.allow_insecure"); ok {
-			options.SetAllowInsecure(attr.(bool))
-		}
-
-		if rawScheduling, ok := d.GetOk("options_list.0.scheduling"); ok {
-			optionsScheduling := datadogV1.SyntheticsTestOptionsScheduling{}
-			scheduling := rawScheduling.([]interface{})[0]
-			if rawTimeframes, ok := scheduling.(map[string]interface{})["timeframes"]; ok {
-				var timeFrames []datadogV1.SyntheticsTestOptionsSchedulingTimeframe
-				for _, tf := range rawTimeframes.(*schema.Set).List() {
-					timeframe := datadogV1.NewSyntheticsTestOptionsSchedulingTimeframe()
-					timeframe.SetDay(int32(tf.(map[string]interface{})["day"].(int)))
-					timeframe.SetFrom(tf.(map[string]interface{})["from"].(string))
-					timeframe.SetTo(tf.(map[string]interface{})["to"].(string))
-					timeFrames = append(timeFrames, *timeframe)
-				}
-				optionsScheduling.SetTimeframes(timeFrames)
-			}
-			if timezone, ok := scheduling.(map[string]interface{})["timezone"]; ok {
-				optionsScheduling.SetTimezone(timezone.(string))
-			}
-			options.SetScheduling(optionsScheduling)
-		}
-
-		if retryRaw, ok := d.GetOk("options_list.0.retry"); ok {
-			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
-			retry := retryRaw.([]interface{})[0]
-
-			if count, ok := retry.(map[string]interface{})["count"]; ok {
-				optionsRetry.SetCount(int64(count.(int)))
-			}
-			if interval, ok := retry.(map[string]interface{})["interval"]; ok {
-				optionsRetry.SetInterval(float64(interval.(int)))
-			}
-
-			options.SetRetry(optionsRetry)
-		}
-
-		if monitorOptionsRaw, ok := d.GetOk("options_list.0.monitor_options"); ok {
-			monitorOptions := monitorOptionsRaw.([]interface{})[0]
-			optionsMonitorOptions := datadogV1.SyntheticsTestOptionsMonitorOptions{}
-
-			if renotifyInterval, ok := monitorOptions.(map[string]interface{})["renotify_interval"]; ok {
-				optionsMonitorOptions.SetRenotifyInterval(int64(renotifyInterval.(int)))
-			}
-
-			options.SetMonitorOptions(optionsMonitorOptions)
-		}
-
-		if monitorName, ok := d.GetOk("options_list.0.monitor_name"); ok {
-			options.SetMonitorName(monitorName.(string))
-		}
-
-		if monitorPriority, ok := d.GetOk("options_list.0.monitor_priority"); ok {
-			options.SetMonitorPriority(int32(monitorPriority.(int)))
-		}
-
-		if restricted_roles, ok := d.GetOk("options_list.0.restricted_roles"); ok {
-			roles := []string{}
-			for _, role := range restricted_roles.(*schema.Set).List() {
-				roles = append(roles, role.(string))
-			}
-			options.SetRestrictedRoles(roles)
-		}
-
-		if ciRaw, ok := d.GetOk("options_list.0.ci"); ok {
-			ci := ciRaw.([]interface{})[0]
-			testCiOptions := ci.(map[string]interface{})
-
-			ciOptions := datadogV1.SyntheticsTestCiOptions{}
-			ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(testCiOptions["execution_rule"].(string)))
-
-			options.SetCi(ciOptions)
-		}
-
-		if ignoreServerCertificateError, ok := d.GetOk("options_list.0.ignore_server_certificate_error"); ok {
-			options.SetIgnoreServerCertificateError(ignoreServerCertificateError.(bool))
-		}
-	}
-
-	if attr, ok := d.GetOk("device_ids"); ok {
-		var deviceIds []datadogV1.SyntheticsDeviceID
-		for _, s := range attr.([]interface{}) {
-			deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
-		}
-		options.DeviceIds = deviceIds
-	}
+	options := buildTestOptions(d)
 
 	syntheticsTest.SetConfig(*config)
 	syntheticsTest.SetOptions(*options)
@@ -1933,6 +1829,163 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 	return assertions
 }
 
+func buildTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
+	options := datadogV1.NewSyntheticsTestOptions()
+
+	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
+		// common browser and API tests options
+		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
+			options.SetTickEvery(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("options_list.0.http_version"); ok {
+			options.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(attr.(string)))
+		}
+		if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
+			options.SetAcceptSelfSigned(attr.(bool))
+		}
+		if attr, ok := d.GetOk("options_list.0.check_certificate_revocation"); ok {
+			options.SetCheckCertificateRevocation(attr.(bool))
+		}
+		if attr, ok := d.GetOk("options_list.0.min_location_failed"); ok {
+			options.SetMinLocationFailed(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("options_list.0.min_failure_duration"); ok {
+			options.SetMinFailureDuration(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("options_list.0.follow_redirects"); ok {
+			options.SetFollowRedirects(attr.(bool))
+		}
+		if attr, ok := d.GetOk("options_list.0.allow_insecure"); ok {
+			options.SetAllowInsecure(attr.(bool))
+		}
+
+		if rawScheduling, ok := d.GetOk("options_list.0.scheduling"); ok {
+			optionsScheduling := datadogV1.SyntheticsTestOptionsScheduling{}
+			scheduling := rawScheduling.([]interface{})[0]
+			if rawTimeframes, ok := scheduling.(map[string]interface{})["timeframes"]; ok {
+				var timeFrames []datadogV1.SyntheticsTestOptionsSchedulingTimeframe
+				for _, tf := range rawTimeframes.(*schema.Set).List() {
+					timeframe := datadogV1.NewSyntheticsTestOptionsSchedulingTimeframe()
+					timeframe.SetDay(int32(tf.(map[string]interface{})["day"].(int)))
+					timeframe.SetFrom(tf.(map[string]interface{})["from"].(string))
+					timeframe.SetTo(tf.(map[string]interface{})["to"].(string))
+					timeFrames = append(timeFrames, *timeframe)
+				}
+				optionsScheduling.SetTimeframes(timeFrames)
+			}
+			if timezone, ok := scheduling.(map[string]interface{})["timezone"]; ok {
+				optionsScheduling.SetTimezone(timezone.(string))
+			}
+			options.SetScheduling(optionsScheduling)
+		}
+
+		if retryRaw, ok := d.GetOk("options_list.0.retry"); ok {
+			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
+			retry := retryRaw.([]interface{})[0]
+
+			if count, ok := retry.(map[string]interface{})["count"]; ok {
+				optionsRetry.SetCount(int64(count.(int)))
+			}
+			if interval, ok := retry.(map[string]interface{})["interval"]; ok {
+				optionsRetry.SetInterval(float64(interval.(int)))
+			}
+
+			options.SetRetry(optionsRetry)
+		}
+
+		if monitorOptionsRaw, ok := d.GetOk("options_list.0.monitor_options"); ok {
+			monitorOptions := monitorOptionsRaw.([]interface{})[0]
+			optionsMonitorOptions := datadogV1.SyntheticsTestOptionsMonitorOptions{}
+
+			if renotifyInterval, ok := monitorOptions.(map[string]interface{})["renotify_interval"]; ok {
+				optionsMonitorOptions.SetRenotifyInterval(int64(renotifyInterval.(int)))
+			}
+
+			options.SetMonitorOptions(optionsMonitorOptions)
+		}
+
+		if monitorName, ok := d.GetOk("options_list.0.monitor_name"); ok {
+			options.SetMonitorName(monitorName.(string))
+		}
+
+		if monitorPriority, ok := d.GetOk("options_list.0.monitor_priority"); ok {
+			options.SetMonitorPriority(int32(monitorPriority.(int)))
+		}
+
+		if restricted_roles, ok := d.GetOk("options_list.0.restricted_roles"); ok {
+			roles := []string{}
+			for _, role := range restricted_roles.(*schema.Set).List() {
+				roles = append(roles, role.(string))
+			}
+			options.SetRestrictedRoles(roles)
+		}
+
+		if ciRaw, ok := d.GetOk("options_list.0.ci"); ok {
+			ci := ciRaw.([]interface{})[0]
+			testCiOptions := ci.(map[string]interface{})
+
+			ciOptions := datadogV1.SyntheticsTestCiOptions{}
+			ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(testCiOptions["execution_rule"].(string)))
+
+			options.SetCi(ciOptions)
+		}
+
+		if ignoreServerCertificateError, ok := d.GetOk("options_list.0.ignore_server_certificate_error"); ok {
+			options.SetIgnoreServerCertificateError(ignoreServerCertificateError.(bool))
+		}
+
+		// browser tests specific options
+		if attr, ok := d.GetOk("options_list.0.no_screenshot"); ok {
+			options.SetNoScreenshot(attr.(bool))
+		}
+
+		if rum_settings, ok := d.GetOk("options_list.0.rum_settings.0"); ok {
+			settings := rum_settings.(map[string]interface{})
+			isEnabled := settings["is_enabled"]
+
+			rumSettings := datadogV1.SyntheticsBrowserTestRumSettings{}
+
+			if isEnabled == true {
+				rumSettings.SetIsEnabled(true)
+
+				if applicationId, ok := settings["application_id"]; ok {
+					rumSettings.SetApplicationId(applicationId.(string))
+				}
+
+				if clientTokenId, ok := settings["client_token_id"]; ok {
+					rumSettings.SetClientTokenId(int64(clientTokenId.(int)))
+				}
+			} else {
+				rumSettings.SetIsEnabled(false)
+			}
+
+			options.SetRumSettings(rumSettings)
+		}
+
+		if disableCsp, ok := d.GetOk("options_list.0.disable_csp"); ok {
+			options.SetDisableCsp(disableCsp.(bool))
+		}
+
+		if disableCors, ok := d.GetOk("options_list.0.disable_cors"); ok {
+			options.SetDisableCors(disableCors.(bool))
+		}
+
+		if initialNavigationTimeout, ok := d.GetOk("options_list.0.initial_navigation_timeout"); ok {
+			options.SetInitialNavigationTimeout(int64(initialNavigationTimeout.(int)))
+		}
+
+		if attr, ok := d.GetOk("device_ids"); ok {
+			var deviceIds []datadogV1.SyntheticsDeviceID
+			for _, s := range attr.([]interface{}) {
+				deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
+			}
+			options.DeviceIds = deviceIds
+		}
+	}
+
+	return options
+}
+
 func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsBrowserTest {
 	request := datadogV1.SyntheticsTestRequest{}
 	k := utils.NewResourceDataKey(d, "")
@@ -2052,15 +2105,16 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			if v, ok := variableMap["name"]; ok {
 				variableName := v.(string)
 				newVariable := datadogV1.NewSyntheticsBrowserVariable(variableName, variableType)
-				if v, ok := variableMap["example"]; ok && v.(string) != "" {
+				if v, ok := variableMap["example"]; ok {
 					newVariable.SetExample(v.(string))
 				}
 				if v, ok := variableMap["id"]; ok && v.(string) != "" {
 					newVariable.SetId(v.(string))
 				}
-				if v, ok := variableMap["pattern"]; ok && v.(string) != "" {
+				if v, ok := variableMap["pattern"]; ok {
 					newVariable.SetPattern(v.(string))
 				}
+
 				config.SetVariables(append(config.GetVariables(), *newVariable))
 			}
 		}
@@ -2091,134 +2145,11 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 
 	config.SetConfigVariables(configVariables)
 
-	options := datadogV1.NewSyntheticsTestOptions()
-
-	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
-		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
-			options.SetTickEvery(int64(attr.(int)))
-		}
-		if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
-			options.SetAcceptSelfSigned(attr.(bool))
-		}
-		if attr, ok := d.GetOk("options_list.0.min_location_failed"); ok {
-			options.SetMinLocationFailed(int64(attr.(int)))
-		}
-		if attr, ok := d.GetOk("options_list.0.min_failure_duration"); ok {
-			options.SetMinFailureDuration(int64(attr.(int)))
-		}
-		if attr, ok := d.GetOk("options_list.0.follow_redirects"); ok {
-			options.SetFollowRedirects(attr.(bool))
-		}
-		if attr, ok := d.GetOk("options_list.0.allow_insecure"); ok {
-			options.SetAllowInsecure(attr.(bool))
-		}
-
-		if retryRaw, ok := d.GetOk("options_list.0.retry"); ok {
-			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
-			retry := retryRaw.([]interface{})[0]
-
-			if count, ok := retry.(map[string]interface{})["count"]; ok {
-				optionsRetry.SetCount(int64(count.(int)))
-			}
-			if interval, ok := retry.(map[string]interface{})["interval"]; ok {
-				optionsRetry.SetInterval(float64(interval.(int)))
-			}
-
-			options.SetRetry(optionsRetry)
-		}
-
-		if monitorOptionsRaw, ok := d.GetOk("options_list.0.monitor_options"); ok {
-			monitorOptions := monitorOptionsRaw.([]interface{})[0]
-			optionsMonitorOptions := datadogV1.SyntheticsTestOptionsMonitorOptions{}
-
-			if renotifyInterval, ok := monitorOptions.(map[string]interface{})["renotify_interval"]; ok {
-				optionsMonitorOptions.SetRenotifyInterval(int64(renotifyInterval.(int)))
-			}
-
-			options.SetMonitorOptions(optionsMonitorOptions)
-		}
-
-		if attr, ok := d.GetOk("options_list.0.no_screenshot"); ok {
-			options.SetNoScreenshot(attr.(bool))
-		}
-
-		if monitorName, ok := d.GetOk("options_list.0.monitor_name"); ok {
-			options.SetMonitorName(monitorName.(string))
-		}
-
-		if monitorPriority, ok := d.GetOk("options_list.0.monitor_priority"); ok {
-			options.SetMonitorPriority(int32(monitorPriority.(int)))
-		}
-
-		if restricted_roles, ok := d.GetOk("options_list.0.restricted_roles"); ok {
-			roles := []string{}
-			for _, role := range restricted_roles.(*schema.Set).List() {
-				roles = append(roles, role.(string))
-			}
-			options.SetRestrictedRoles(roles)
-		}
-
-		if ciRaw, ok := d.GetOk("options_list.0.ci"); ok {
-			ci := ciRaw.([]interface{})[0]
-			testCiOptions := ci.(map[string]interface{})
-
-			ciOptions := datadogV1.SyntheticsTestCiOptions{}
-			ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(testCiOptions["execution_rule"].(string)))
-
-			options.SetCi(ciOptions)
-		}
-
-		if rum_settings, ok := d.GetOk("options_list.0.rum_settings.0"); ok {
-			settings := rum_settings.(map[string]interface{})
-			isEnabled := settings["is_enabled"]
-
-			rumSettings := datadogV1.SyntheticsBrowserTestRumSettings{}
-
-			if isEnabled == true {
-				rumSettings.SetIsEnabled(true)
-
-				if applicationId, ok := settings["application_id"]; ok {
-					rumSettings.SetApplicationId(applicationId.(string))
-				}
-
-				if clientTokenId, ok := settings["client_token_id"]; ok {
-					rumSettings.SetClientTokenId(int64(clientTokenId.(int)))
-				}
-			} else {
-				rumSettings.SetIsEnabled(false)
-			}
-
-			options.SetRumSettings(rumSettings)
-		}
-
-		if ignoreServerCertificateError, ok := d.GetOk("options_list.0.ignore_server_certificate_error"); ok {
-			options.SetIgnoreServerCertificateError(ignoreServerCertificateError.(bool))
-		}
-
-		if disableCsp, ok := d.GetOk("options_list.0.disable_csp"); ok {
-			options.SetDisableCsp(disableCsp.(bool))
-		}
-
-		if disableCors, ok := d.GetOk("options_list.0.disable_cors"); ok {
-			options.SetDisableCors(disableCors.(bool))
-		}
-
-		if initialNavigationTimeout, ok := d.GetOk("options_list.0.initial_navigation_timeout"); ok {
-			options.SetInitialNavigationTimeout(int64(initialNavigationTimeout.(int)))
-		}
-	}
-
-	if attr, ok := d.GetOk("device_ids"); ok {
-		var deviceIds []datadogV1.SyntheticsDeviceID
-		for _, s := range attr.([]interface{}) {
-			deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
-		}
-		options.DeviceIds = deviceIds
-	}
-
 	if attr, ok := d.GetOk("set_cookie"); ok {
 		config.SetSetCookie(attr.(string))
 	}
+
+	options := buildTestOptions(d)
 
 	syntheticsTest := datadogV1.NewSyntheticsBrowserTestWithDefaults()
 	syntheticsTest.SetMessage(d.Get("message").(string))
@@ -2255,6 +2186,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 			step.SetAllowFailure(stepMap["allow_failure"].(bool))
 			step.SetIsCritical(stepMap["is_critical"].(bool))
 			step.SetTimeout(int64(stepMap["timeout"].(int)))
+			step.SetNoScreenshot(stepMap["no_screenshot"].(bool))
 
 			params := make(map[string]interface{})
 			stepParams := stepMap["params"].([]interface{})[0]
@@ -2557,6 +2489,124 @@ func buildLocalExtractedValues(extractedValues []datadogV1.SyntheticsParsingOpti
 	return localExtractedValues
 }
 
+func buildLocalOptions(actualOptions datadogV1.SyntheticsTestOptions) []map[string]interface{} {
+	localOptionsList := make(map[string]interface{})
+
+	if actualOptions.HasFollowRedirects() {
+		localOptionsList["follow_redirects"] = actualOptions.GetFollowRedirects()
+	}
+	if actualOptions.HasMinFailureDuration() {
+		localOptionsList["min_failure_duration"] = actualOptions.GetMinFailureDuration()
+	}
+	if actualOptions.HasMinLocationFailed() {
+		localOptionsList["min_location_failed"] = actualOptions.GetMinLocationFailed()
+	}
+	if actualOptions.HasTickEvery() {
+		localOptionsList["tick_every"] = actualOptions.GetTickEvery()
+	}
+	if actualOptions.HasHttpVersion() {
+		localOptionsList["http_version"] = actualOptions.GetHttpVersion()
+	}
+	if actualOptions.HasAcceptSelfSigned() {
+		localOptionsList["accept_self_signed"] = actualOptions.GetAcceptSelfSigned()
+	}
+	if actualOptions.HasCheckCertificateRevocation() {
+		localOptionsList["check_certificate_revocation"] = actualOptions.GetCheckCertificateRevocation()
+	}
+	if actualOptions.HasAllowInsecure() {
+		localOptionsList["allow_insecure"] = actualOptions.GetAllowInsecure()
+	}
+
+	if actualOptions.HasScheduling() {
+		scheduling := actualOptions.GetScheduling()
+		timeFrames := scheduling.GetTimeframes()
+		optionsListScheduling := make(map[string]interface{})
+		optionsListSchedulingTimeframes := make([]map[string]interface{}, 0, len(timeFrames))
+		for _, tf := range timeFrames {
+			timeframe := make(map[string]interface{})
+			timeframe["from"] = tf.GetFrom()
+			timeframe["day"] = tf.GetDay()
+			timeframe["to"] = tf.GetTo()
+			optionsListSchedulingTimeframes = append(optionsListSchedulingTimeframes, timeframe)
+		}
+		optionsListScheduling["timeframes"] = optionsListSchedulingTimeframes
+		optionsListScheduling["timezone"] = scheduling.GetTimezone()
+		optionsListSchedulingList := []map[string]interface{}{optionsListScheduling}
+		localOptionsList["scheduling"] = optionsListSchedulingList
+	}
+
+	if actualOptions.HasRetry() {
+		retry := actualOptions.GetRetry()
+		optionsListRetry := make(map[string]interface{})
+		optionsListRetry["count"] = retry.GetCount()
+
+		if interval, ok := retry.GetIntervalOk(); ok {
+			optionsListRetry["interval"] = interval
+		}
+
+		localOptionsList["retry"] = []map[string]interface{}{optionsListRetry}
+	}
+	if actualOptions.HasMonitorOptions() {
+		actualMonitorOptions := actualOptions.GetMonitorOptions()
+		renotifyInterval := actualMonitorOptions.GetRenotifyInterval()
+
+		optionsListMonitorOptions := make(map[string]int64)
+		optionsListMonitorOptions["renotify_interval"] = renotifyInterval
+		localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
+	}
+	if actualOptions.HasNoScreenshot() {
+		localOptionsList["no_screenshot"] = actualOptions.GetNoScreenshot()
+	}
+	if actualOptions.HasMonitorName() {
+		localOptionsList["monitor_name"] = actualOptions.GetMonitorName()
+	}
+	if actualOptions.HasMonitorPriority() {
+		localOptionsList["monitor_priority"] = actualOptions.GetMonitorPriority()
+	}
+	if actualOptions.HasRestrictedRoles() {
+		localOptionsList["restricted_roles"] = actualOptions.GetRestrictedRoles()
+	}
+	if actualOptions.HasCi() {
+		actualCi := actualOptions.GetCi()
+		ciOptions := make(map[string]interface{})
+		ciOptions["execution_rule"] = actualCi.GetExecutionRule()
+
+		localOptionsList["ci"] = []map[string]interface{}{ciOptions}
+	}
+
+	if rumSettings, ok := actualOptions.GetRumSettingsOk(); ok {
+		localRumSettings := make(map[string]interface{})
+		localRumSettings["is_enabled"] = rumSettings.GetIsEnabled()
+
+		if rumSettings.HasApplicationId() {
+			localRumSettings["application_id"] = rumSettings.GetApplicationId()
+		}
+
+		if rumSettings.HasClientTokenId() {
+			localRumSettings["client_token_id"] = rumSettings.GetClientTokenId()
+		}
+
+		localOptionsList["rum_settings"] = []map[string]interface{}{localRumSettings}
+	}
+	if actualOptions.HasIgnoreServerCertificateError() {
+		localOptionsList["ignore_server_certificate_error"] = actualOptions.GetIgnoreServerCertificateError()
+	}
+	if actualOptions.HasDisableCsp() {
+		localOptionsList["disable_csp"] = actualOptions.GetDisableCsp()
+	}
+	if actualOptions.HasDisableCors() {
+		localOptionsList["disable_cors"] = actualOptions.GetDisableCors()
+	}
+	if actualOptions.HasInitialNavigationTimeout() {
+		localOptionsList["initial_navigation_timeout"] = actualOptions.GetInitialNavigationTimeout()
+	}
+
+	localOptionsLists := make([]map[string]interface{}, 1)
+	localOptionsLists[0] = localOptionsList
+
+	return localOptionsLists
+}
+
 func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsBrowserTest) diag.Diagnostics {
 	if err := d.Set("type", syntheticsTest.GetType()); err != nil {
 		return diag.FromErr(err)
@@ -2702,113 +2752,8 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		return diag.FromErr(err)
 	}
 
-	actualOptions := syntheticsTest.GetOptions()
-	localOptionsList := make(map[string]interface{})
-	if actualOptions.HasFollowRedirects() {
-		localOptionsList["follow_redirects"] = actualOptions.GetFollowRedirects()
-	}
-	if actualOptions.HasMinFailureDuration() {
-		localOptionsList["min_failure_duration"] = actualOptions.GetMinFailureDuration()
-	}
-	if actualOptions.HasMinLocationFailed() {
-		localOptionsList["min_location_failed"] = actualOptions.GetMinLocationFailed()
-	}
-	if actualOptions.HasTickEvery() {
-		localOptionsList["tick_every"] = actualOptions.GetTickEvery()
-	}
-	if actualOptions.HasAcceptSelfSigned() {
-		localOptionsList["accept_self_signed"] = actualOptions.GetAcceptSelfSigned()
-	}
-	if actualOptions.HasAllowInsecure() {
-		localOptionsList["allow_insecure"] = actualOptions.GetAllowInsecure()
-	}
+	localOptionsLists := buildLocalOptions(syntheticsTest.GetOptions())
 
-	if actualOptions.HasScheduling() {
-		scheduling := actualOptions.GetScheduling()
-		timeFrames := scheduling.GetTimeframes()
-		optionsListScheduling := make(map[string]interface{})
-		optionsListSchedulingTimeframes := make([]map[string]interface{}, 0, len(timeFrames))
-		for _, tf := range timeFrames {
-			timeframe := make(map[string]interface{})
-			timeframe["from"] = tf.GetFrom()
-			timeframe["day"] = tf.GetDay()
-			timeframe["to"] = tf.GetTo()
-			optionsListSchedulingTimeframes = append(optionsListSchedulingTimeframes, timeframe)
-		}
-		optionsListScheduling["timeframes"] = optionsListSchedulingTimeframes
-		optionsListScheduling["timezone"] = scheduling.GetTimezone()
-		optionsListSchedulingList := []map[string]interface{}{optionsListScheduling}
-		localOptionsList["scheduling"] = optionsListSchedulingList
-	}
-
-	if actualOptions.HasRetry() {
-		retry := actualOptions.GetRetry()
-		optionsListRetry := make(map[string]interface{})
-		optionsListRetry["count"] = retry.GetCount()
-
-		if interval, ok := retry.GetIntervalOk(); ok {
-			optionsListRetry["interval"] = interval
-		}
-
-		localOptionsList["retry"] = []map[string]interface{}{optionsListRetry}
-	}
-	if actualOptions.HasMonitorOptions() {
-		actualMonitorOptions := actualOptions.GetMonitorOptions()
-		renotifyInterval := actualMonitorOptions.GetRenotifyInterval()
-
-		optionsListMonitorOptions := make(map[string]int64)
-		optionsListMonitorOptions["renotify_interval"] = renotifyInterval
-		localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
-	}
-	if actualOptions.HasNoScreenshot() {
-		localOptionsList["no_screenshot"] = actualOptions.GetNoScreenshot()
-	}
-	if actualOptions.HasMonitorName() {
-		localOptionsList["monitor_name"] = actualOptions.GetMonitorName()
-	}
-	if actualOptions.HasMonitorPriority() {
-		localOptionsList["monitor_priority"] = actualOptions.GetMonitorPriority()
-	}
-	if actualOptions.HasRestrictedRoles() {
-		localOptionsList["restricted_roles"] = actualOptions.GetRestrictedRoles()
-	}
-	if actualOptions.HasCi() {
-		actualCi := actualOptions.GetCi()
-		ciOptions := make(map[string]interface{})
-		ciOptions["execution_rule"] = actualCi.GetExecutionRule()
-
-		localOptionsList["ci"] = []map[string]interface{}{ciOptions}
-	}
-
-	if rumSettings, ok := actualOptions.GetRumSettingsOk(); ok {
-		localRumSettings := make(map[string]interface{})
-		localRumSettings["is_enabled"] = rumSettings.GetIsEnabled()
-
-		if rumSettings.HasApplicationId() {
-			localRumSettings["application_id"] = rumSettings.GetApplicationId()
-		}
-
-		if rumSettings.HasClientTokenId() {
-			localRumSettings["client_token_id"] = rumSettings.GetClientTokenId()
-		}
-
-		localOptionsList["rum_settings"] = []map[string]interface{}{localRumSettings}
-	}
-	if actualOptions.HasIgnoreServerCertificateError() {
-		localOptionsList["ignore_server_certificate_error"] = actualOptions.GetIgnoreServerCertificateError()
-	}
-	if actualOptions.HasDisableCsp() {
-		localOptionsList["disable_csp"] = actualOptions.GetDisableCsp()
-	}
-	if actualOptions.HasDisableCors() {
-		localOptionsList["disable_cors"] = actualOptions.GetDisableCors()
-	}
-	if actualOptions.HasInitialNavigationTimeout() {
-		localOptionsList["initial_navigation_timeout"] = actualOptions.GetInitialNavigationTimeout()
-	}
-
-	localOptionsLists := make([]map[string]interface{}, 1)
-	localOptionsLists[0] = localOptionsList
 	if err := d.Set("options_list", localOptionsLists); err != nil {
 		return diag.FromErr(err)
 	}
@@ -2828,6 +2773,9 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 
 		if isCritical, ok := step.GetIsCriticalOk(); ok {
 			localStep["is_critical"] = isCritical
+		}
+		if hasNoScreenshot, ok := step.GetNoScreenshotOk(); ok {
+			localStep["no_screenshot"] = hasNoScreenshot
 		}
 
 		localParams := make(map[string]interface{})
@@ -3101,92 +3049,8 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		return diag.FromErr(err)
 	}
 
-	actualOptions := syntheticsTest.GetOptions()
-	localOptionsList := make(map[string]interface{})
-	if actualOptions.HasFollowRedirects() {
-		localOptionsList["follow_redirects"] = actualOptions.GetFollowRedirects()
-	}
-	if actualOptions.HasMinFailureDuration() {
-		localOptionsList["min_failure_duration"] = actualOptions.GetMinFailureDuration()
-	}
-	if actualOptions.HasMinLocationFailed() {
-		localOptionsList["min_location_failed"] = actualOptions.GetMinLocationFailed()
-	}
-	if actualOptions.HasTickEvery() {
-		localOptionsList["tick_every"] = actualOptions.GetTickEvery()
-	}
-	if actualOptions.HasHttpVersion() {
-		localOptionsList["http_version"] = actualOptions.GetHttpVersion()
-	}
-	if actualOptions.HasAcceptSelfSigned() {
-		localOptionsList["accept_self_signed"] = actualOptions.GetAcceptSelfSigned()
-	}
-	if actualOptions.HasCheckCertificateRevocation() {
-		localOptionsList["check_certificate_revocation"] = actualOptions.GetCheckCertificateRevocation()
-	}
-	if actualOptions.HasAllowInsecure() {
-		localOptionsList["allow_insecure"] = actualOptions.GetAllowInsecure()
-	}
-	if actualOptions.HasRetry() {
-		retry := actualOptions.GetRetry()
-		optionsListRetry := make(map[string]interface{})
-		optionsListRetry["count"] = retry.GetCount()
+	localOptionsLists := buildLocalOptions(syntheticsTest.GetOptions())
 
-		if interval, ok := retry.GetIntervalOk(); ok {
-			optionsListRetry["interval"] = interval
-		}
-
-		localOptionsList["retry"] = []map[string]interface{}{optionsListRetry}
-	}
-	if actualOptions.HasMonitorOptions() {
-		actualMonitorOptions := actualOptions.GetMonitorOptions()
-		renotifyInterval := actualMonitorOptions.GetRenotifyInterval()
-
-		optionsListMonitorOptions := make(map[string]int64)
-		optionsListMonitorOptions["renotify_interval"] = renotifyInterval
-		localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
-	}
-	if actualOptions.HasMonitorName() {
-		localOptionsList["monitor_name"] = actualOptions.GetMonitorName()
-	}
-	if actualOptions.HasMonitorPriority() {
-		localOptionsList["monitor_priority"] = actualOptions.GetMonitorPriority()
-	}
-	if actualOptions.HasRestrictedRoles() {
-		localOptionsList["restricted_roles"] = actualOptions.GetRestrictedRoles()
-	}
-	if actualOptions.HasCi() {
-		actualCi := actualOptions.GetCi()
-		ciOptions := make(map[string]interface{})
-		ciOptions["execution_rule"] = actualCi.GetExecutionRule()
-
-		localOptionsList["ci"] = []map[string]interface{}{ciOptions}
-	}
-
-	if actualOptions.HasScheduling() {
-		scheduling := actualOptions.GetScheduling()
-		timeFrames := scheduling.GetTimeframes()
-		optionsListScheduling := make(map[string]interface{})
-		optionsListSchedulingTimeframes := make([]map[string]interface{}, 0, len(timeFrames))
-		for _, tf := range timeFrames {
-			timeframe := make(map[string]interface{})
-			timeframe["from"] = tf.GetFrom()
-			timeframe["day"] = tf.GetDay()
-			timeframe["to"] = tf.GetTo()
-			optionsListSchedulingTimeframes = append(optionsListSchedulingTimeframes, timeframe)
-		}
-		optionsListScheduling["timeframes"] = optionsListSchedulingTimeframes
-		optionsListScheduling["timezone"] = scheduling.GetTimezone()
-		optionsListSchedulingList := []map[string]interface{}{optionsListScheduling}
-		localOptionsList["scheduling"] = optionsListSchedulingList
-	}
-
-	if actualOptions.HasIgnoreServerCertificateError() {
-		localOptionsList["ignore_server_certificate_error"] = actualOptions.GetIgnoreServerCertificateError()
-	}
-
-	localOptionsLists := make([]map[string]interface{}, 1)
-	localOptionsLists[0] = localOptionsList
 	if err := d.Set("options_list", localOptionsLists); err != nil {
 		return diag.FromErr(err)
 	}

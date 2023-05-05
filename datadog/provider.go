@@ -87,7 +87,7 @@ func Provider() *schema.Provider {
 			"validate": {
 				Type:         schema.TypeString,
 				Optional:     true,
-				Description:  "Enables validation of the provided API and APP keys during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key and app_key won't be checked.",
+				Description:  "Enables validation of the provided API key during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key won't be checked.",
 				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
 			},
 			"http_client_retry_enabled": {
@@ -206,7 +206,6 @@ func Provider() *schema.Provider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
-			"datadog_api_key":                                 dataSourceDatadogApiKey(),
 			"datadog_application_key":                         dataSourceDatadogApplicationKey(),
 			"datadog_cloud_workload_security_agent_rules":     dataSourceDatadogCloudWorkloadSecurityAgentRules(),
 			"datadog_dashboard":                               dataSourceDatadogDashboard(),
@@ -293,7 +292,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	c := cleanhttp.DefaultClient()
-	c.Transport = logging.NewTransport("Datadog", c.Transport)
+	c.Transport = logging.NewLoggingHTTPTransport(c.Transport)
 	communityClient.ExtraHeader["User-Agent"] = utils.GetUserAgent(fmt.Sprintf(
 		"datadog-api-client-go/%s (go %s; os %s; arch %s)",
 		"go-datadog-api",
@@ -302,22 +301,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		runtime.GOARCH,
 	))
 	communityClient.HttpClient = c
-
-	if validate {
-		log.Println("[INFO] Datadog client successfully initialized, now validating...")
-		ok, err := communityClient.Validate()
-		if err != nil {
-			log.Printf("[ERROR] Datadog Client validation error: %v", err)
-			return nil, diag.FromErr(err)
-		} else if !ok {
-			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
-			log.Printf("[ERROR] Datadog Client validation error: %v", err)
-			return nil, diag.FromErr(err)
-		}
-	} else {
-		log.Println("[INFO] Skipping key validation (validate = false)")
-	}
-	log.Printf("[INFO] Datadog Client successfully validated.")
 
 	// Initialize the official Datadog V1 API client
 	auth := context.WithValue(
@@ -417,10 +400,28 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	datadogClient := datadog.NewAPIClient(config)
+	apiInstances := &utils.ApiInstances{HttpClient: datadogClient}
+	if validate {
+		log.Println("[INFO] Datadog client successfully initialized, now validating...")
+		resp, _, err := apiInstances.GetAuthenticationApiV1().Validate(auth)
+		if err != nil {
+			log.Printf("[ERROR] Datadog Client validation error: %v", err)
+			return nil, diag.FromErr(err)
+		}
+		valid, ok := resp.GetValidOk()
+		if (ok && !*valid) || !ok {
+			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
+			log.Printf("[ERROR] Datadog Client validation error: %v", err)
+			return nil, diag.FromErr(err)
+		}
+	} else {
+		log.Println("[INFO] Skipping key validation (validate = false)")
+	}
+	log.Printf("[INFO] Datadog Client successfully validated.")
 
 	return &ProviderConfiguration{
 		CommunityClient:     communityClient,
-		DatadogApiInstances: &utils.ApiInstances{HttpClient: datadogClient},
+		DatadogApiInstances: apiInstances,
 		Auth:                auth,
 
 		Now: time.Now,

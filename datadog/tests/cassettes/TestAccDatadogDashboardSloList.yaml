@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardSloList-local-1680104112","widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardSloList-local-1682003509","widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"}}]}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"id":"yxp-m9d-gfc","title":"tf-TestAccDatadogDashboardSloList-local-1680104112","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/yxp-m9d-gfc/tf-testaccdatadogdashboardslolist-local-1680104112","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":5630144474074451}],"notify_list":[],"created_at":"2023-03-29T15:35:14.453774+00:00","modified_at":"2023-03-29T15:35:14.453774+00:00","template_variable_presets":[]}
+      {"id":"hg2-iye-ijp","title":"tf-TestAccDatadogDashboardSloList-local-1682003509","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/hg2-iye-ijp/tf-testaccdatadogdashboardslolist-local-1682003509","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":5987315747023667}],"notify_list":[],"created_at":"2023-04-20T15:11:50.913257+00:00","modified_at":"2023-04-20T15:11:50.913257+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/yxp-m9d-gfc
+    url: https://api.datadoghq.com/api/v1/dashboard/hg2-iye-ijp
     method: GET
   response:
     body: |
-      {"id":"yxp-m9d-gfc","title":"tf-TestAccDatadogDashboardSloList-local-1680104112","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/yxp-m9d-gfc/tf-testaccdatadogdashboardslolist-local-1680104112","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":5630144474074451}],"notify_list":[],"created_at":"2023-03-29T15:35:14.453774+00:00","modified_at":"2023-03-29T15:35:14.453774+00:00","template_variable_presets":[]}
+      {"id":"hg2-iye-ijp","title":"tf-TestAccDatadogDashboardSloList-local-1682003509","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/hg2-iye-ijp/tf-testaccdatadogdashboardslolist-local-1682003509","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":5987315747023667}],"notify_list":[],"created_at":"2023-04-20T15:11:50.913257+00:00","modified_at":"2023-04-20T15:11:50.913257+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/yxp-m9d-gfc
+    url: https://api.datadoghq.com/api/v1/dashboard/hg2-iye-ijp
     method: GET
   response:
     body: |
-      {"id":"yxp-m9d-gfc","title":"tf-TestAccDatadogDashboardSloList-local-1680104112","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/yxp-m9d-gfc/tf-testaccdatadogdashboardslolist-local-1680104112","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":5630144474074451}],"notify_list":[],"created_at":"2023-03-29T15:35:14.453774+00:00","modified_at":"2023-03-29T15:35:14.453774+00:00","template_variable_presets":[]}
+      {"id":"hg2-iye-ijp","title":"tf-TestAccDatadogDashboardSloList-local-1682003509","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/hg2-iye-ijp/tf-testaccdatadogdashboardslolist-local-1682003509","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":5987315747023667}],"notify_list":[],"created_at":"2023-04-20T15:11:50.913257+00:00","modified_at":"2023-04-20T15:11:50.913257+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/yxp-m9d-gfc
+    url: https://api.datadoghq.com/api/v1/dashboard/hg2-iye-ijp
     method: GET
   response:
     body: |
-      {"id":"yxp-m9d-gfc","title":"tf-TestAccDatadogDashboardSloList-local-1680104112","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/yxp-m9d-gfc/tf-testaccdatadogdashboardslolist-local-1680104112","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":5630144474074451}],"notify_list":[],"created_at":"2023-03-29T15:35:14.453774+00:00","modified_at":"2023-03-29T15:35:14.453774+00:00","template_variable_presets":[]}
+      {"id":"hg2-iye-ijp","title":"tf-TestAccDatadogDashboardSloList-local-1682003509","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/hg2-iye-ijp/tf-testaccdatadogdashboardslolist-local-1682003509","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"limit":30,"query_string":"env:prod AND service:my-app","sort":[{"column":"status.sli","order":"desc"}]},"request_type":"slo_list"}],"title":"my title","title_align":"center","title_size":"16","type":"slo_list"},"id":5987315747023667}],"notify_list":[],"created_at":"2023-04-20T15:11:50.913257+00:00","modified_at":"2023-04-20T15:11:50.913257+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -78,11 +78,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/yxp-m9d-gfc
+    url: https://api.datadoghq.com/api/v1/dashboard/hg2-iye-ijp
     method: DELETE
   response:
     body: |
-      {"deleted_dashboard_id":"yxp-m9d-gfc"}
+      {"deleted_dashboard_id":"hg2-iye-ijp"}
     headers:
       Content-Type:
       - application/json
@@ -95,10 +95,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/yxp-m9d-gfc
+    url: https://api.datadoghq.com/api/v1/dashboard/hg2-iye-ijp
     method: GET
   response:
-    body: '{"errors":["Dashboard with ID yxp-m9d-gfc not found"]}'
+    body: '{"errors":["Dashboard with ID hg2-iye-ijp not found"]}'
     headers:
       Content-Type:
       - application/json

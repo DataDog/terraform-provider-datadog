@@ -1,0 +1,56 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"api_key":"1234567891012331asdd","email":"test-email@example.com","name":"tf-TestAccIntegrationCloudflareAccountBasic-local-1681129590"},"type":"cloudflare-accounts"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integrations/cloudflare/accounts
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"cloudflare-accounts","attributes":{"email":"test-email@example.com","name":"tf-TestAccIntegrationCloudflareAccountBasic-local-1681129590"},"id":"9e9054f8a21fd8dd20feee8e9fa31447"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integrations/cloudflare/accounts/9e9054f8a21fd8dd20feee8e9fa31447
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"cloudflare-accounts","id":"9e9054f8a21fd8dd20feee8e9fa31447","attributes":{"email":"test-email@example.com","name":"tf-TestAccIntegrationCloudflareAccountBasic-local-1681129590"}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/integrations/cloudflare/accounts/9e9054f8a21fd8dd20feee8e9fa31447
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""

@@ -168,16 +168,16 @@ contacts:
     contact: AAA
   - name: BB
     type: email
-    contact: BBB
+    contact: BBB@example.com
   - name: AA
     type: email
-    contact: AAA
+    contact: AAA@example.com
   - name: BB
     type: email
-    contact: AAA
+    contact: AAA@example.com
   - name: AA
     type: email
-    contact: BBB
+    contact: BBB@example.com
 tags:
   - 'bbb'
   - 'aaa'
