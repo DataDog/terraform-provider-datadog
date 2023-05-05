@@ -19,7 +19,6 @@ func TestAccDatadogIntegrationAWSNamespaceRulesDatasource(t *testing.T) {
 				data "datadog_integration_aws_namespace_rules" "test" {}
 				`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					//ipv4
 					resource.TestCheckResourceAttrSet("data.datadog_integration_aws_namespace_rules.test", "namespace_rules.#"),
 				),
 			},
