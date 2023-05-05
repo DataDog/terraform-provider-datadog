@@ -255,6 +255,7 @@ func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *Pr
 func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewAPIKeyResource,
+		NewSensitiveDataScannerGroupOrder,
 		NewIntegrationCloudflareAccountResource,
 		NewIntegrationConfluentAccountResource,
 		NewIntegrationConfluentResourceResource,
@@ -266,6 +267,7 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewIPRangesDataSource,
+		NewSensitiveDataScannerGroupOrderDatasource,
 		NewAPIKeyDataSource,
 		NewHostsDataSource,
 	}
