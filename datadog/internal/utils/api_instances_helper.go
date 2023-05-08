@@ -70,6 +70,7 @@ type ApiInstances struct {
 	securityMonitoringApiV2    *datadogV2.SecurityMonitoringApi
 	sensitiveDataScannerApiV2  *datadogV2.SensitiveDataScannerApi
 	serviceAccountsApiV2       *datadogV2.ServiceAccountsApi
+	teamsApiV2                 *datadogV2.TeamsApi
 	usageMeteringApiV2         *datadogV2.UsageMeteringApi
 	usersApiV2                 *datadogV2.UsersApi
 }
@@ -544,4 +545,12 @@ func (i *ApiInstances) GetFastlyIntegrationApiV2() *datadogV2.FastlyIntegrationA
 		i.fastlyIntegrationApiV2 = datadogV2.NewFastlyIntegrationApi(i.HttpClient)
 	}
 	return i.fastlyIntegrationApiV2
+}
+
+// GetTeamsApiV2 get instance of TeamsApi
+func (i *ApiInstances) GetTeamsApiV2() *datadogV2.TeamsApi {
+	if i.teamsApiV2 == nil {
+		i.teamsApiV2 = datadogV2.NewTeamsApi(i.HttpClient)
+	}
+	return i.teamsApiV2
 }

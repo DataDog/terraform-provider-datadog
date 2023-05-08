@@ -167,6 +167,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_synthetics_test_test":                            "synthetics",
 	"tests/resource_datadog_synthetics_global_variable_test":                 "synthetics",
 	"tests/resource_datadog_synthetics_private_location_test":                "synthetics",
+	"tests/resource_datadog_team_test":                                       "team",
+	"tests/resource_datadog_team_link_test":                                  "team",
 	"tests/resource_datadog_timeboard_test":                                  "dashboards",
 	"tests/resource_datadog_dashboard_treemap_test":                          "dashboards",
 	"tests/resource_datadog_user_test":                                       "users",
