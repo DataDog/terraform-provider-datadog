@@ -287,7 +287,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 
 	// Initialize the community client
 	p.CommunityClient = datadogCommunity.NewClient(config.ApiKey.ValueString(), config.AppKey.ValueString())
-	if !config.ApiUrl.IsNull() {
+	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		p.CommunityClient.SetBaseUrl(config.ApiUrl.ValueString())
 	}
 	c := cleanhttp.DefaultClient()
@@ -317,7 +317,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
 	ddClientConfig.Debug = logging.IsDebugOrHigher()
 
-	if !config.ApiUrl.IsNull() {
+	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
 		if parseErr != nil {
 			diags.AddError("invalid API URL", parseErr.Error())
