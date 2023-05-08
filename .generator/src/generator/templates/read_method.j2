@@ -20,7 +20,7 @@ func (r *{{ name|camel_case }}Resource) Read(ctx context.Context, request resour
 			response.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving API Key"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving {{ name|camel_case }}"))
 		return
 	}
     if err := utils.CheckForUnparsed(resp); err != nil {
