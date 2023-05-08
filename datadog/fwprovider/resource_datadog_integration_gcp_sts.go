@@ -130,26 +130,41 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 		return
 	}
 
-	// Host filter updates
+	// Host filters.
+	var hostFilters []string
 	delegateInfoResponse := delegateResponse.GetData()
 	delegateAttributes := delegateInfoResponse.GetAttributes()
 	hostFilterPlanElements := plan.HostFilters.Elements()
-
 	listOfHostFilters, err := attributeListToStringList(ctx, hostFilterPlanElements)
 	if err != nil {
 		resp.Diagnostics.AddError("Error converting attribute list to strings",
 			"Error converting attribute list to strings:"+err.Error())
 		return
 	}
+	if len(listOfHostFilters) == 0 {
+		hostFilters = make([]string, 0)
+	} else {
+		hostFilters = listOfHostFilters
+	}
 
-	// Create an entry wthin Datadog for your STS enabled service account.
+	var enableAutomute bool
+	if !plan.Automute.IsNull() {
+		enableAutomute = plan.Automute.ValueBool()
+	}
+
+	var enableCSPM bool
+	if !plan.EnableCspm.IsNull() {
+		enableAutomute = plan.EnableCspm.ValueBool()
+	}
+
+	// Create an entry within Datadog for your STS enabled service account.
 	saInfo := datadogV2.ServiceAccountToBeCreatedData{
 		Data: &datadogV2.ServiceAccountMetadata{
 			Attributes: &datadogV2.AttributeMetadata{
 				ClientEmail:   stringToPointer(plan.ServiceAccountEmail.ValueString()),
-				Automute:      boolToPointer(plan.Automute.ValueBool()),
-				IsCspmEnabled: boolToPointer(plan.EnableCspm.ValueBool()),
-				HostFilters:   listOfHostFilters,
+				Automute:      boolToPointer(enableAutomute),
+				IsCspmEnabled: boolToPointer(enableCSPM),
+				HostFilters:   hostFilters,
 			},
 			Type: stringToPointer(defaultType),
 		},
