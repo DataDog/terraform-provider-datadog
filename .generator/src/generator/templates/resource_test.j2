@@ -98,9 +98,9 @@ func {{ name|camel_case }}DestroyHelper(auth context.Context, s *terraform.State
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
 				}
-				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
+				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving {{ name|camel_case }} %s", err)}
 			}
-			return &utils.RetryableError{Prob: "Monitor still exists"}
+			return &utils.RetryableError{Prob: "{{ name|camel_case }} still exists"}
 		}
 		return nil
 	})
