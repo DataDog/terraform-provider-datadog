@@ -283,20 +283,36 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 		return
 	}
 
-	hostFilterPlanElements := plan.HostFilters.Elements()
-	listOfHostFilters, err := attributeListToStringList(ctx, hostFilterPlanElements)
-	if err != nil {
-		resp.Diagnostics.AddError("Error converting attribute list to strings",
-			"Error converting attribute list to strings:"+err.Error())
-		return
+	var listOfHostFilters []string
+	if plan.HostFilters.IsNull() {
+		listOfHostFilters = make([]string, 0)
+	} else {
+		hostFilterPlanElements := plan.HostFilters.Elements()
+		hostFilters, err := attributeListToStringList(ctx, hostFilterPlanElements)
+		if err != nil {
+			resp.Diagnostics.AddError("Error converting attribute list to strings",
+				"Error converting attribute list to strings:"+err.Error())
+			return
+		}
+		listOfHostFilters = hostFilters
+	}
+
+	var toEnableCSPM bool
+	if !plan.EnableCspm.IsNull() {
+		toEnableCSPM = plan.EnableCspm.ValueBool()
+	}
+
+	var toEnableAutomute bool
+	if !plan.Automute.IsNull() {
+		toEnableAutomute = plan.Automute.ValueBool()
 	}
 
 	updatedSAInfo := datadogV2.DataObjectPatch{
 		Data: &datadogV2.ServiceAccountInfoPatch{
 			Type: stringToPointer(defaultType),
 			Attributes: &datadogV2.ServiceAccountInfoPatchAttributes{
-				IsCspmEnabled: boolToPointer(plan.EnableCspm.ValueBool()),
-				Automute:      boolToPointer(plan.Automute.ValueBool()),
+				IsCspmEnabled: boolToPointer(toEnableCSPM),
+				Automute:      boolToPointer(toEnableAutomute),
 				HostFilters:   listOfHostFilters,
 			},
 		},
