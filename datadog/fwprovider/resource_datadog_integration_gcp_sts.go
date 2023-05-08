@@ -126,7 +126,7 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 	delegateResponse, _, err := r.GcpApi.CreateGCPSTSDelegate(r.Auth, *datadogV2.NewCreateGCPSTSDelegateOptionalParameters())
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating GCP Delegate within Datadog",
-			"Could not create Delegate Service Account, unexpected error:"+err.Error())
+			"Could not create Delegate Service Account, unexpected error: "+err.Error())
 		return
 	}
 
@@ -138,7 +138,7 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 	listOfHostFilters, err := attributeListToStringList(ctx, hostFilterPlanElements)
 	if err != nil {
 		resp.Diagnostics.AddError("Error converting attribute list to strings",
-			"Error converting attribute list to strings:"+err.Error())
+			"Error converting attribute list to strings: "+err.Error())
 		return
 	}
 	if len(listOfHostFilters) == 0 {
@@ -191,7 +191,7 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 	}
 }
 
-// Read resets the Terraform state using the latest "pulled" data. Read() is called when running Terraform Plans.
+// Read resets the Terraform state using the latest "pulled" data.
 func (r *datadogIntegrationGCPSTSResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	// Get Current State.
 	var state datadogIntegrationGCPSTSResourceModel
@@ -215,7 +215,7 @@ func (r *datadogIntegrationGCPSTSResource) Read(ctx context.Context, req resourc
 	stsEnabledAccounts, _, err := r.GcpApi.ListGCPSTSAccounts(r.Auth)
 	if err != nil {
 		resp.Diagnostics.AddError("Error retrieving STS service accounts",
-			"Error listing GCP STS Accounts:"+err.Error())
+			"Error listing GCP STS Accounts: "+err.Error())
 		return
 	}
 
@@ -231,7 +231,7 @@ func (r *datadogIntegrationGCPSTSResource) Read(ctx context.Context, req resourc
 	}
 	if foundAccount == nil {
 		resp.Diagnostics.AddError("Error finding your service account",
-			"Error couldn't find your service account with ID:"+state.GeneratedSaId.ValueString())
+			"Error couldn't find your service account with ID: "+state.GeneratedSaId.ValueString())
 		return
 	}
 
@@ -247,7 +247,7 @@ func (r *datadogIntegrationGCPSTSResource) Read(ctx context.Context, req resourc
 
 	// The section below handles optional fields in Terraform.
 	// If an optional field is not used, Teraform state stores a nil value.
-	// However, The API always returns a value for these optional fields (an empty list, a false boolean, etc).
+	// However, the API always returns a value for these optional fields (an empty list, a false boolean, etc).
 	// If these optional fields aren't used in Terraform Resources, then these fields should remain nil.
 	if state.HostFilters.IsNull() {
 		if len(currentHostFilters) > 0 {
@@ -306,7 +306,7 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 		hostFilters, err := attributeListToStringList(ctx, hostFilterPlanElements)
 		if err != nil {
 			resp.Diagnostics.AddError("Error converting attribute list to strings",
-				"Error converting attribute list to strings:"+err.Error())
+				"Error converting attribute list to strings: "+err.Error())
 			return
 		}
 		listOfHostFilters = hostFilters
@@ -338,7 +338,7 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 	updateResponse, _, err := r.GcpApi.UpdateGCPSTSAccount(r.Auth, uniqueAccountID, updatedSAInfo)
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating your service account",
-			"Error:"+err.Error())
+			"Error: "+err.Error())
 		return
 	}
 
@@ -368,7 +368,7 @@ func (r *datadogIntegrationGCPSTSResource) Delete(ctx context.Context, req resou
 	_, err := r.GcpApi.DeleteGCPSTSAccount(r.Auth, state.GeneratedSaId.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error deleting your service account",
-			"Error encountered when attempting to delete your service account from Datadog"+err.Error())
+			"Error encountered when attempting to delete your service account from Datadog: "+err.Error())
 		return
 	}
 }
