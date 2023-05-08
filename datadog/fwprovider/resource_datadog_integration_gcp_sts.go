@@ -125,6 +125,7 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 		return
 	}
 
+	// Host filter updates
 	delegateInfoResponse := delegateResponse.GetData()
 	delegateAttributes := delegateInfoResponse.GetAttributes()
 	hostFilterPlanElements := plan.HostFilters.Elements()
@@ -224,9 +225,34 @@ func (r *datadogIntegrationGCPSTSResource) Read(ctx context.Context, req resourc
 	}
 	outputListValue, _ := types.ListValue(types.StringType, requiredAttributes)
 
-	state.HostFilters = outputListValue
-	state.Automute = types.BoolValue(accountAttributes.GetAutomute())
-	state.EnableCspm = types.BoolValue(accountAttributes.GetIsCspmEnabled())
+	// The section below handles optional fields in Terraform.
+	// If an optional field is not used, Teraform state stores a nil value.
+	// However, The API always returns a value for these optional fields (an empty list, a false boolean, etc).
+	// If these optional fields aren't used in Terraform Resources, then these fields should remain nil.
+	if state.HostFilters.IsNull() {
+		if len(currentHostFilters) > 0 {
+			state.HostFilters = outputListValue
+		}
+	} else {
+		state.HostFilters = outputListValue
+	}
+
+	if state.Automute.IsNull() {
+		if accountAttributes.GetAutomute() {
+			state.Automute = types.BoolValue(accountAttributes.GetAutomute())
+		}
+	} else {
+		state.Automute = types.BoolValue(accountAttributes.GetAutomute())
+	}
+
+	if state.EnableCspm.IsNull() {
+		if accountAttributes.GetIsCspmEnabled() {
+			state.EnableCspm = types.BoolValue(accountAttributes.GetIsCspmEnabled())
+		}
+	} else {
+		state.EnableCspm = types.BoolValue(accountAttributes.GetIsCspmEnabled())
+	}
+
 	state.ServiceAccountEmail = types.StringValue(accountAttributes.GetClientEmail())
 
 	diags = resp.State.Set(ctx, state)
@@ -272,6 +298,7 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 	}
 
 	uniqueAccountID := currentState.GeneratedSaId.ValueString()
+
 	updateResponse, _, err := r.GcpApi.UpdateGCPSTSAccount(r.Auth, uniqueAccountID, updatedSAInfo)
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating your service account",
@@ -285,16 +312,6 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 	plan.GeneratedSaId = basetypes.NewStringValue(dataBlock.GetId())
 	plan.DelegateEmail = currentState.DelegateEmail
 	plan.ServiceAccountEmail = basetypes.NewStringValue(blockAttributes.GetClientEmail())
-
-	if plan.Automute.IsNull() {
-		plan.Automute = currentState.Automute
-	}
-	if plan.EnableCspm.IsNull() {
-		plan.EnableCspm = currentState.EnableCspm
-	}
-	if plan.HostFilters.IsNull() {
-		plan.HostFilters = currentState.HostFilters
-	}
 
 	diags = resp.State.Set(ctx, plan)
 	resp.Diagnostics.Append(diags...)
