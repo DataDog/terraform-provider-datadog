@@ -139,9 +139,9 @@ func SpansMetricDestroyHelper(auth context.Context, s *terraform.State, apiInsta
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
 				}
-				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
+				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving spans metric %s", err)}
 			}
-			return &utils.RetryableError{Prob: "Monitor still exists"}
+			return &utils.RetryableError{Prob: "spans metric still exists"}
 		}
 		return nil
 	})
@@ -169,7 +169,7 @@ func spansMetricExistsHelper(auth context.Context, s *terraform.State, apiInstan
 
 		_, httpResp, err := apiInstances.GetSpansMetricsApiV2().GetSpansMetric(auth, id)
 		if err != nil {
-			return utils.TranslateClientError(err, httpResp, "error retrieving monitor")
+			return utils.TranslateClientError(err, httpResp, "error retrieving spans metric")
 		}
 	}
 	return nil

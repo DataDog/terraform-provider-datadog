@@ -164,7 +164,7 @@ func (r *SpansMetricResource) Read(ctx context.Context, request resource.ReadReq
 			response.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving API Key"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving spans metric"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -193,7 +193,7 @@ func (r *SpansMetricResource) Create(ctx context.Context, request resource.Creat
 
 	resp, _, err := r.Api.CreateSpansMetric(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving SpansMetric"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving spans metric"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -223,7 +223,7 @@ func (r *SpansMetricResource) Update(ctx context.Context, request resource.Updat
 
 	resp, _, err := r.Api.UpdateSpansMetric(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving SpansMetric"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving spans metric"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -250,7 +250,7 @@ func (r *SpansMetricResource) Delete(ctx context.Context, request resource.Delet
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting spans_metric"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting spans metric"))
 		return
 	}
 }
