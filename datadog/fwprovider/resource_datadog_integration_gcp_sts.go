@@ -34,7 +34,7 @@ func NewDatadogIntegrationGCPSTSResource() resource.Resource {
 // datadogIntegrationGCPSTSResourceModel
 type datadogIntegrationGCPSTSResourceModel struct {
 	ServiceAccountEmail types.String `tfsdk:"service_account_email"`
-	GeneratedSaId       types.String `tfsdk:"generated_sa_id"`
+	ID                  types.String `tfsdk:"id"`
 	DelegateEmail       types.String `tfsdk:"delegate_email"`
 	Automute            types.Bool   `tfsdk:"automute"`
 	EnableCspm          types.Bool   `tfsdk:"enable_cspm"`
@@ -84,7 +84,7 @@ func (r *datadogIntegrationGCPSTSResource) Schema(_ context.Context, _ resource.
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"generated_sa_id": schema.StringAttribute{
+			"id": schema.StringAttribute{
 				Description: "Datadog's Unique ID generated for your STS-enabled GCP service account.",
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
@@ -180,7 +180,7 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 	createdServiceAccountInfo := createResponse.GetData()
 
 	// Set the "computed" values.
-	plan.GeneratedSaId = types.StringValue(createdServiceAccountInfo.GetId())
+	plan.ID = types.StringValue(createdServiceAccountInfo.GetId())
 	plan.DelegateEmail = types.StringValue(delegateAttributes.GetDelegateAccountEmail())
 
 	// Write state.
@@ -224,14 +224,14 @@ func (r *datadogIntegrationGCPSTSResource) Read(ctx context.Context, req resourc
 	for _, accountObject := range stsEnabledAccounts.GetData() {
 		accountUniqueID := accountObject.GetId()
 
-		if accountUniqueID == state.GeneratedSaId.ValueString() {
+		if accountUniqueID == state.ID.ValueString() {
 			foundAccount = &accountObject
 			break
 		}
 	}
 	if foundAccount == nil {
 		resp.Diagnostics.AddError("Error finding your service account",
-			"Error couldn't find your service account with ID: "+state.GeneratedSaId.ValueString())
+			"Error couldn't find your service account with ID: "+state.ID.ValueString())
 		return
 	}
 
@@ -333,7 +333,7 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 		},
 	}
 
-	uniqueAccountID := currentState.GeneratedSaId.ValueString()
+	uniqueAccountID := currentState.ID.ValueString()
 
 	updateResponse, _, err := r.GcpApi.UpdateGCPSTSAccount(r.Auth, uniqueAccountID, updatedSAInfo)
 	if err != nil {
@@ -345,7 +345,7 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 	dataBlock := updateResponse.GetData()
 	blockAttributes := dataBlock.GetAttributes()
 
-	plan.GeneratedSaId = basetypes.NewStringValue(dataBlock.GetId())
+	plan.ID = basetypes.NewStringValue(dataBlock.GetId())
 	plan.DelegateEmail = currentState.DelegateEmail
 	plan.ServiceAccountEmail = basetypes.NewStringValue(blockAttributes.GetClientEmail())
 
@@ -365,7 +365,7 @@ func (r *datadogIntegrationGCPSTSResource) Delete(ctx context.Context, req resou
 		return
 	}
 
-	_, err := r.GcpApi.DeleteGCPSTSAccount(r.Auth, state.GeneratedSaId.ValueString())
+	_, err := r.GcpApi.DeleteGCPSTSAccount(r.Auth, state.ID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error deleting your service account",
 			"Error encountered when attempting to delete your service account from Datadog: "+err.Error())
