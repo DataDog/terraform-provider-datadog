@@ -8,8 +8,12 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -76,6 +80,9 @@ func (r *SpansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 			"name": schema.StringAttribute{
 				Description: "The name of the span-based metric. This field can't be updated after creation.",
 				Required:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -84,11 +91,12 @@ func (r *SpansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"path": schema.StringAttribute{
-							Optional:    true,
+							Required:    true,
 							Description: "The path to the value the span-based metric will be aggregated over.",
 						},
 						"tag_name": schema.StringAttribute{
 							Optional:    true,
+							Computed:    true,
 							Description: "Eventual name of the tag that gets created. By default, the path attribute is used as the tag name.",
 						},
 					},
@@ -97,7 +105,7 @@ func (r *SpansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 			"compute": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"aggregation_type": schema.StringAttribute{
-						Optional:    true,
+						Required:    true,
 						Description: "The type of aggregation to use. This field can't be updated after creation.",
 					},
 					"include_percentiles": schema.BoolAttribute{
@@ -107,15 +115,31 @@ func (r *SpansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 					"path": schema.StringAttribute{
 						Optional:    true,
 						Description: "The path to the value the span-based metric will aggregate on (only used if the aggregation type is a \"distribution\"). This field can't be updated after creation.",
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
 					},
+				},
+				// This attritbute is treated as required by the framework sdk.
+				// See: https://github.com/hashicorp/terraform-plugin-framework/issues/740
+				// In case this will be allowed in the future, explicitly add validation to the object.
+				PlanModifiers: []planmodifier.Object{
+					planmodifiers.ObjectRequired(),
 				},
 			},
 			"filter": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"query": schema.StringAttribute{
 						Optional:    true,
+						Computed:    true,
 						Description: "The search query - following the span search syntax.",
+						Default:     stringdefault.StaticString("*"),
 					},
+				},
+				// This field is marked as required for now since the framework does not allow
+				// blocks with default values.
+				PlanModifiers: []planmodifier.Object{
+					planmodifiers.ObjectRequired(),
 				},
 			},
 		},
@@ -331,8 +355,8 @@ func (r *SpansMetricResource) buildSpansMetricUpdateRequestBody(ctx context.Cont
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewSpansMetricUpdateAttributesWithDefaults()
 
+	groupBy := make([]datadogV2.SpansMetricGroupBy, 0)
 	if state.GroupBy != nil {
-		var groupBy []datadogV2.SpansMetricGroupBy
 		for _, groupByTFItem := range state.GroupBy {
 			groupByDDItem := datadogV2.NewSpansMetricGroupByWithDefaults()
 
@@ -340,9 +364,11 @@ func (r *SpansMetricResource) buildSpansMetricUpdateRequestBody(ctx context.Cont
 			if !groupByTFItem.TagName.IsNull() {
 				groupByDDItem.SetTagName(groupByTFItem.TagName.ValueString())
 			}
+
+			groupBy = append(groupBy, *groupByDDItem)
 		}
-		attributes.SetGroupBy(groupBy)
 	}
+	attributes.SetGroupBy(groupBy)
 
 	if state.Compute != nil {
 		var compute datadogV2.SpansMetricUpdateCompute

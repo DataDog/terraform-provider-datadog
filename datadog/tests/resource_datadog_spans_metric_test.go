@@ -71,6 +71,10 @@ func TestAccSpansMetricBasic(t *testing.T) {
 					testAccCheckDatadogSpansMetricExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_spans_metric.testing_spans_metric", "compute.include_percentiles", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_spans_metric.testing_spans_metric", "group_by.#", "0"),
+					resource.TestCheckResourceAttr(
+						"datadog_spans_metric.testing_spans_metric", "filter.query", "*"),
 				),
 			},
 		},
@@ -201,11 +205,6 @@ func testAccCheckDatadogSpansMetricTestingUpdate(uniq string) string {
 				path                = "@duration"
 			}
 			filter {
-				query = "@http.status_code:200 service:my-service"
-			}
-			group_by {
-				path     = "resource_name"
-				tag_name = "resource_name"
 			}
 		}
 	`, uniq)

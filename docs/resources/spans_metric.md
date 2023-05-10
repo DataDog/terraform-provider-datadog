@@ -52,9 +52,12 @@ resource "datadog_spans_metric" "testing_spans_metric" {
 <a id="nestedblock--compute"></a>
 ### Nested Schema for `compute`
 
-Optional:
+Required:
 
 - `aggregation_type` (String) The type of aggregation to use. This field can't be updated after creation.
+
+Optional:
+
 - `include_percentiles` (Boolean) Toggle to include or exclude percentile aggregations for distribution metrics. Only present when the `aggregation_type` is `distribution`.
 - `path` (String) The path to the value the span-based metric will aggregate on (only used if the aggregation type is a "distribution"). This field can't be updated after creation.
 
@@ -70,9 +73,12 @@ Optional:
 <a id="nestedblock--group_by"></a>
 ### Nested Schema for `group_by`
 
-Optional:
+Required:
 
 - `path` (String) The path to the value the span-based metric will be aggregated over.
+
+Optional:
+
 - `tag_name` (String) Eventual name of the tag that gets created. By default, the path attribute is used as the tag name.
 
 ## Import
