@@ -1,0 +1,110 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"compute":{"aggregation_type":"distribution","include_percentiles":false,"path":"@duration"},"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name","tag_name":"resource_name"}]},"id":"\"tf_TestAccSpansMetricBasic_local_1683740226\"","type":"spans_metrics"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/metrics
+    method: POST
+  response:
+    body: |
+      {"data":{"id":"tf_TestAccSpansMetricBasic_local_1683740226","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name","tag_name":"resource_name"}],"compute":{"aggregation_type":"distribution","path":"@duration","include_percentiles":false}},"type":"spans_metrics"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricBasic_local_1683740226
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"tf_TestAccSpansMetricBasic_local_1683740226","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name","tag_name":"resource_name"}],"compute":{"aggregation_type":"distribution","path":"@duration","include_percentiles":false}},"type":"spans_metrics"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricBasic_local_1683740226
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"tf_TestAccSpansMetricBasic_local_1683740226","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name","tag_name":"resource_name"}],"compute":{"aggregation_type":"distribution","path":"@duration","include_percentiles":false}},"type":"spans_metrics"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"compute":{"include_percentiles":true},"filter":{"query":"*"},"group_by":[]},"type":"spans_metrics"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricBasic_local_1683740226
+    method: PATCH
+  response:
+    body: |
+      {"data":{"id":"tf_TestAccSpansMetricBasic_local_1683740226","attributes":{"filter":{"query":"*"},"group_by":[],"compute":{"aggregation_type":"distribution","path":"@duration","include_percentiles":true}},"type":"spans_metrics"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricBasic_local_1683740226
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"tf_TestAccSpansMetricBasic_local_1683740226","attributes":{"filter":{"query":"*"},"group_by":[],"compute":{"aggregation_type":"distribution","path":"@duration","include_percentiles":true}},"type":"spans_metrics"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricBasic_local_1683740226
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""
