@@ -79,17 +79,14 @@ func TestGCPSTSIntegrationResourceUpdates(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_integration_gcp_sts.foo", "enable_cspm", "true"),
 				),
 			},
-			// Verify removing updates works
 			{
 				Config: testBasicGCPSTSResource(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testGCPIntegrationAccountExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp_sts.foo", "service_account_email", uniq),
-					// Verify computed values
 					resource.TestCheckResourceAttrSet("datadog_integration_gcp_sts.foo", "delegate_email"),
 					resource.TestCheckResourceAttrSet("datadog_integration_gcp_sts.foo", "id"),
-					// Verify nil values
 					resource.TestCheckNoResourceAttr("datadog_integration_gcp_sts.foo", "host_filters"),
 					resource.TestCheckNoResourceAttr("datadog_integration_gcp_sts.foo", "automute"),
 					resource.TestCheckNoResourceAttr("datadog_integration_gcp_sts.foo", "enable_cspm"),
@@ -100,7 +97,7 @@ func TestGCPSTSIntegrationResourceUpdates(t *testing.T) {
 	})
 }
 
-// Update all configurable fields
+// Update all optional, configurable fields
 func testGCPIntegrationUpdate(uniq string) string {
 	return fmt.Sprintf(`
 	resource "datadog_integration_gcp_sts" "foo" {
@@ -147,7 +144,6 @@ func integrationGCPSTSAccountExistsHelper(auth context.Context, s *terraform.Sta
 }
 
 func testBasicGCPSTSResource(uniq string) string {
-	// Update me to make use of the unique value
 	return fmt.Sprintf(`
 resource "datadog_integration_gcp_sts" "foo" {
     service_account_email = "%s"

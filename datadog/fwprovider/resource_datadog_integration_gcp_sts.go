@@ -32,7 +32,6 @@ func NewDatadogIntegrationGCPSTSResource() resource.Resource {
 	return &datadogIntegrationGCPSTSResource{}
 }
 
-// datadogIntegrationGCPSTSResourceModel
 type datadogIntegrationGCPSTSResourceModel struct {
 	ServiceAccountEmail types.String `tfsdk:"service_account_email"`
 	ID                  types.String `tfsdk:"id"`
@@ -46,7 +45,7 @@ const (
 	defaultType = "gcp_service_account"
 )
 
-// Metadata returns the resource type name. Resource Name within Terraform is "datadog_integration_gcp_sts".
+// Metadata returns the resource name.
 func (r *datadogIntegrationGCPSTSResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "integration_gcp_sts"
 }
@@ -66,7 +65,7 @@ func (r *datadogIntegrationGCPSTSResource) Configure(_ context.Context, request 
 	r.GcpApi = providerData.DatadogApiInstances.GetGCPStsIntegrationApiV2()
 }
 
-// Schema defines the configuration used as input within your Terraform Resource.
+// Schema defines the Terraform Resource configuration.
 func (r *datadogIntegrationGCPSTSResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Provides a Datadog - Google Cloud Platform STS integration resource. This can be used to create and manage Datadog Google Cloud Platform STS integrations",
@@ -112,10 +111,9 @@ func (r *datadogIntegrationGCPSTSResource) Schema(_ context.Context, _ resource.
 	}
 }
 
-// Create creates the resource and sets the initial Terraform state.
+// Create sets the initial Terraform state.
 func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 
-	// Get current TF state.
 	var plan datadogIntegrationGCPSTSResourceModel
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -123,7 +121,6 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 		return
 	}
 
-	// Create a Delegate Service Account within Datadog.
 	delegateResponse, _, err := r.GcpApi.CreateGCPSTSDelegate(r.Auth, *datadogV2.NewCreateGCPSTSDelegateOptionalParameters())
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating GCP Delegate within Datadog",
@@ -131,7 +128,6 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 		return
 	}
 
-	// Host filters.
 	var hostFilters []string
 	delegateInfoResponse := delegateResponse.GetData()
 	delegateAttributes := delegateInfoResponse.GetAttributes()
@@ -158,7 +154,6 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 		enableAutomute = plan.EnableCspm.ValueBool()
 	}
 
-	// Create an entry within Datadog for your STS enabled service account.
 	saInfo := datadogV2.ServiceAccountToBeCreatedData{
 		Data: &datadogV2.ServiceAccountMetadata{
 			Attributes: &datadogV2.AttributeMetadata{
@@ -184,7 +179,6 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 	plan.ID = types.StringValue(createdServiceAccountInfo.GetId())
 	plan.DelegateEmail = types.StringValue(delegateAttributes.GetDelegateAccountEmail())
 
-	// Write state.
 	diags = resp.State.Set(ctx, plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -192,9 +186,8 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 	}
 }
 
-// Read resets the Terraform state using the latest "pulled" data.
+// Read re-sets the Terraform state using the latest "pulled" data.
 func (r *datadogIntegrationGCPSTSResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	// Get Current State.
 	var state datadogIntegrationGCPSTSResourceModel
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
@@ -202,7 +195,6 @@ func (r *datadogIntegrationGCPSTSResource) Read(ctx context.Context, req resourc
 		return
 	}
 
-	// Get the Delegate email.
 	delegateResponse, _, err := r.GcpApi.GetGCPSTSDelegate(r.Auth, *datadogV2.NewGetGCPSTSDelegateOptionalParameters())
 	if err != nil {
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving STS delegate"))
@@ -283,7 +275,7 @@ func (r *datadogIntegrationGCPSTSResource) Read(ctx context.Context, req resourc
 	}
 }
 
-// Update re-sets the Terraform state locally and on the Datadog "backend".
+// Update updates the Terraform state locally and on the Datadog "backend".
 func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan datadogIntegrationGCPSTSResourceModel
@@ -357,7 +349,7 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 	}
 }
 
-// Delete deletes the resource, and removes the Terraform state on success.
+// Delete removes the resource from Terraform state.
 func (r *datadogIntegrationGCPSTSResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state datadogIntegrationGCPSTSResourceModel
 	diags := req.State.Get(ctx, &state)
