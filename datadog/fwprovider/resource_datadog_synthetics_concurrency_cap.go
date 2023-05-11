@@ -54,10 +54,10 @@ func (r *SyntheticsConcurrencyCap) Metadata(_ context.Context, request resource.
 
 func (r *SyntheticsConcurrencyCap) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Synthetics On Demand Concurrency Cap API resource. This can be used to manage the Concurrency Cap for Synthetics Tests.",
+		Description: "Provides a Datadog Synthetics On Demand Concurrency Cap API resource. This can be used to manage the Concurrency Cap for Synthetic tests.",
 		Attributes: map[string]schema.Attribute{
 			"on_demand_concurrency_cap": schema.Int64Attribute{
-				Description: "Value of the on-demand concurrency cap, customizing the number of Synthetics tests run in parallel.",
+				Description: "Value of the on-demand concurrency cap, customizing the number of Synthetic tests run in parallel.",
 				Optional:    true,
 				Computed:    true,
 			},

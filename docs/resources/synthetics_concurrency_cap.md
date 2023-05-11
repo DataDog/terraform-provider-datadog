@@ -3,12 +3,12 @@
 page_title: "datadog_synthetics_concurrency_cap Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Synthetics On Demand Concurrency Cap API resource. This can be used to manage the Concurrency Cap for Synthetics Tests.
+  Provides a Datadog Synthetics On Demand Concurrency Cap API resource. This can be used to manage the Concurrency Cap for Synthetic tests.
 ---
 
 # datadog_synthetics_concurrency_cap (Resource)
 
-Provides a Datadog Synthetics On Demand Concurrency Cap API resource. This can be used to manage the Concurrency Cap for Synthetics Tests.
+Provides a Datadog Synthetics On Demand Concurrency Cap API resource. This can be used to manage the Concurrency Cap for Synthetic tests.
 
 
 
@@ -17,7 +17,7 @@ Provides a Datadog Synthetics On Demand Concurrency Cap API resource. This can b
 
 ### Optional
 
-- `on_demand_concurrency_cap` (Number) Value of the on-demand concurrency cap, customizing the number of Synthetics tests run in parallel.
+- `on_demand_concurrency_cap` (Number) Value of the on-demand concurrency cap, customizing the number of Synthetic tests run in parallel.
 
 ### Read-Only
 
