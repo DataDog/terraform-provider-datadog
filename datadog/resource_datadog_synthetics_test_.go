@@ -1148,7 +1148,7 @@ func syntheticsConfigVariable() *schema.Schema {
 
 func syntheticsAllowInsecureOption() *schema.Schema {
 	return &schema.Schema{
-		Description: "Allows loading insecure content for an HTTP request in an API test or in a multistep API test step",
+		Description: "Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.",
 		Type:        schema.TypeBool,
 		Optional:    true,
 	}

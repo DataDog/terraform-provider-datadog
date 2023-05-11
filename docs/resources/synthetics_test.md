@@ -457,7 +457,7 @@ Optional:
 
 Optional:
 
-- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step
+- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.
 - `body` (String) The request body.
 - `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
@@ -660,7 +660,7 @@ Required:
 Optional:
 
 - `accept_self_signed` (Boolean) For SSL test, whether or not the test should allow self signed certificates.
-- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step
+- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.
 - `check_certificate_revocation` (Boolean) For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.
 - `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--options_list--ci))
 - `disable_cors` (Boolean) Disable Cross-Origin Resource Sharing for browser tests.
