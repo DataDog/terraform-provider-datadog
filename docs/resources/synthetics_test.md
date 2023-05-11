@@ -457,7 +457,7 @@ Optional:
 
 Optional:
 
-- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP test.
+- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step
 - `body` (String) The request body.
 - `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
@@ -660,14 +660,14 @@ Required:
 Optional:
 
 - `accept_self_signed` (Boolean) For SSL test, whether or not the test should allow self signed certificates.
-- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP test.
+- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step
 - `check_certificate_revocation` (Boolean) For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.
 - `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--options_list--ci))
 - `disable_cors` (Boolean) Disable Cross-Origin Resource Sharing for browser tests.
 - `disable_csp` (Boolean) Disable Content Security Policy for browser tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - `http_version` (String) HTTP version to use for a Synthetics API test. Valid values are `http1`, `http2`, `any`.
-- `ignore_server_certificate_error` (Boolean) Ignore server certificate error.
+- `ignore_server_certificate_error` (Boolean) Ignore server certificate error for browser tests.
 - `initial_navigation_timeout` (Number) Timeout before declaring the initial step as failed (in seconds) for browser tests.
 - `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.
 - `min_location_failed` (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`.

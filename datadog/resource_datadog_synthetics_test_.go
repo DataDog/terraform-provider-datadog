@@ -698,7 +698,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional: true,
 				},
 				"ignore_server_certificate_error": {
-					Description: "Ignore server certificate error.",
+					Description: "Ignore server certificate error for browser tests.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
@@ -1148,7 +1148,7 @@ func syntheticsConfigVariable() *schema.Schema {
 
 func syntheticsAllowInsecureOption() *schema.Schema {
 	return &schema.Schema{
-		Description: "Allows loading insecure content for an HTTP test.",
+		Description: "Allows loading insecure content for an HTTP request in an API test or in a multistep API test step",
 		Type:        schema.TypeBool,
 		Optional:    true,
 	}
