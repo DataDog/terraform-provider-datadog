@@ -121,7 +121,7 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 		return
 	}
 
-	delegateResponse, _, err := r.GcpApi.CreateGCPSTSDelegate(r.Auth, *datadogV2.NewCreateGCPSTSDelegateOptionalParameters())
+	delegateResponse, _, err := r.GcpApi.MakeDelegateV2(r.Auth, *datadogV2.NewMakeDelegateV2OptionalParameters())
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating GCP Delegate within Datadog",
 			"Could not create Delegate Service Account, unexpected error: "+err.Error())
@@ -166,7 +166,7 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 		},
 	}
 
-	createResponse, _, err := r.GcpApi.CreateGCPSTSAccount(r.Auth, saInfo)
+	createResponse, _, err := r.GcpApi.CreateGCPSTSAccountsV2(r.Auth, saInfo)
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating STS service account",
 			"Error creating an entry within Datadog for your STS enabled service account: "+err.Error())
@@ -195,7 +195,7 @@ func (r *datadogIntegrationGCPSTSResource) Read(ctx context.Context, req resourc
 		return
 	}
 
-	delegateResponse, _, err := r.GcpApi.GetGCPSTSDelegate(r.Auth, *datadogV2.NewGetGCPSTSDelegateOptionalParameters())
+	delegateResponse, _, err := r.GcpApi.GetDelegateV2(r.Auth, *datadogV2.NewGetDelegateV2OptionalParameters())
 	if err != nil {
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving STS delegate"))
 		return
@@ -205,7 +205,7 @@ func (r *datadogIntegrationGCPSTSResource) Read(ctx context.Context, req resourc
 	delegateAttributes := delegateResponseData.GetAttributes()
 	state.DelegateEmail = types.StringValue(delegateAttributes.GetDelegateAccountEmail())
 
-	stsEnabledAccounts, _, err := r.GcpApi.ListGCPSTSAccounts(r.Auth)
+	stsEnabledAccounts, _, err := r.GcpApi.ListGCPSTSAccountsV2(r.Auth)
 	if err != nil {
 		resp.Diagnostics.AddError("Error retrieving STS service accounts",
 			"Error listing GCP STS Accounts: "+err.Error())
@@ -328,7 +328,7 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 
 	uniqueAccountID := currentState.ID.ValueString()
 
-	updateResponse, _, err := r.GcpApi.UpdateGCPSTSAccount(r.Auth, uniqueAccountID, updatedSAInfo)
+	updateResponse, _, err := r.GcpApi.UpdateGCPSTSAccountsV2(r.Auth, uniqueAccountID, updatedSAInfo)
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating your service account",
 			"Error: "+err.Error())
@@ -358,7 +358,7 @@ func (r *datadogIntegrationGCPSTSResource) Delete(ctx context.Context, req resou
 		return
 	}
 
-	_, err := r.GcpApi.DeleteGCPSTSAccount(r.Auth, state.ID.ValueString())
+	_, err := r.GcpApi.DeleteGCPSTSAccountsV2(r.Auth, state.ID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error deleting your service account",
 			"Error encountered when attempting to delete your service account from Datadog: "+err.Error())
