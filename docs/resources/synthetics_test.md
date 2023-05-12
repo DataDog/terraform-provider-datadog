@@ -630,9 +630,9 @@ Required:
 Optional:
 
 - `example` (String) Example for the variable.
-- `id` (String) ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.
+- `id` (String) ID of the global variable to use. This is actually only used (and required) in the case of using a variable of the `global` type.
 - `pattern` (String) Pattern of the variable.
-
+- `secure` (String) Determines whether or not the browser test variable is obfuscated. 
 
 <a id="nestedblock--config_variable"></a>
 ### Nested Schema for `config_variable`

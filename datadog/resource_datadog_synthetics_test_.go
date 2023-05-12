@@ -1097,6 +1097,11 @@ func syntheticsBrowserVariableElem() *schema.Resource {
 				Required:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
 			},
+			"secure": {
+				Description: "Determines whether or not the browser test variable is obfuscated.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
 		},
 	}
 }
