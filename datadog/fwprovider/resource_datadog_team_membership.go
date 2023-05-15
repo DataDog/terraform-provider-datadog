@@ -2,12 +2,15 @@ package fwprovider
 
 import (
 	"context"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -26,6 +29,7 @@ type TeamMembershipResource struct {
 type TeamMembershipModel struct {
 	ID     types.String `tfsdk:"id"`
 	TeamId types.String `tfsdk:"team_id"`
+	UserId types.String `tfsdk:"user_id"`
 	Role   types.String `tfsdk:"role"`
 }
 
@@ -59,13 +63,21 @@ func (r *TeamMembershipResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"team_id": schema.StringAttribute{
 				Required:    true,
 				Description: "ID of the team the team membership is associated with.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"user_id": schema.StringAttribute{
 				Required:    true,
-				Description: "UPDATE ME",
+				Description: "The ID of the user.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"role": schema.StringAttribute{
-				Required:    true,
+				Optional:    true,
 				Description: "The user's role within the team.",
 			},
 			"id": utils.ResourceIDAttribute(),
@@ -74,7 +86,14 @@ func (r *TeamMembershipResource) Schema(_ context.Context, _ resource.SchemaRequ
 }
 
 func (r *TeamMembershipResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+	result := strings.SplitN(request.ID, ":", 2)
+	if len(result) != 2 {
+		response.Diagnostics.AddError("error retrieving team_id or user_id from given ID", "")
+		return
+	}
+
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("team_id"), result[0])...)
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("user_id"), result[1])...)
 }
 
 func (r *TeamMembershipResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
@@ -83,26 +102,40 @@ func (r *TeamMembershipResource) Read(ctx context.Context, request resource.Read
 	if response.Diagnostics.HasError() {
 		return
 	}
+
 	teamId := state.TeamId.ValueString()
-	pageSize := state.PageSize.ValueInt64()
-	pageNumber := state.PageNumber.ValueInt64()
-	sort := state.Sort.ValueString()
-	filterKeyword := state.FilterKeyword.ValueString()
-	resp, httpResp, err := r.Api.GetTeamMemberships(r.Auth, teamId, pageSize, pageNumber, sort, filterKeyword)
-	if err != nil {
-		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
+	pageSize := int64(100)
+	pageNumber := int64(0)
+
+	var userTeams []datadogV2.UserTeam
+	for {
+		resp, _, err := r.Api.GetTeamMemberships(r.Auth, teamId, *datadogV2.NewGetTeamMembershipsOptionalParameters().
+			WithPageSize(pageSize).
+			WithPageNumber(pageNumber))
+		if err != nil {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving TeamMembership"))
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving TeamMembership"))
-		return
-	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-		return
+		if err := utils.CheckForUnparsed(resp); err != nil {
+			response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+			return
+		}
+		if len(resp.GetData()) == 0 || len(resp.GetData()) > 100 {
+			break
+		}
+
+		userTeams = append(userTeams, resp.GetData()...)
+		pageNumber++
 	}
 
-	r.updateState(ctx, &state, &resp)
+	for _, userTeam := range userTeams {
+		// we use team_id:user_id format for importing.
+		// Hence, we need to check wether resource id or user id matches config.
+		if userTeam.GetId() == state.ID.ValueString() || state.UserId.ValueString() == userTeam.Relationships.User.Data.GetId() {
+			r.updateStateFromTeamResponse(ctx, &state, &userTeam)
+			break
+		}
+	}
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -132,7 +165,7 @@ func (r *TeamMembershipResource) Create(ctx context.Context, request resource.Cr
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+	r.updateStateFromTeamResponse(ctx, &state, resp.Data)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -146,8 +179,7 @@ func (r *TeamMembershipResource) Update(ctx context.Context, request resource.Up
 	}
 
 	teamId := state.TeamId.ValueString()
-
-	id := state.ID.ValueString()
+	userId := state.UserId.ValueString()
 
 	body, diags := r.buildTeamMembershipUpdateRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
@@ -155,7 +187,7 @@ func (r *TeamMembershipResource) Update(ctx context.Context, request resource.Up
 		return
 	}
 
-	resp, _, err := r.Api.UpdateTeamMembership(r.Auth, teamId, id, *body)
+	resp, _, err := r.Api.UpdateTeamMembership(r.Auth, teamId, userId, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving TeamMembership"))
 		return
@@ -164,7 +196,7 @@ func (r *TeamMembershipResource) Update(ctx context.Context, request resource.Up
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+	r.updateStateFromTeamResponse(ctx, &state, resp.Data)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -176,11 +208,11 @@ func (r *TeamMembershipResource) Delete(ctx context.Context, request resource.De
 	if response.Diagnostics.HasError() {
 		return
 	}
+
 	teamId := state.TeamId.ValueString()
+	userId := state.UserId.ValueString()
 
-	id := state.ID.ValueString()
-
-	httpResp, err := r.Api.DeleteTeamMembership(r.Auth, teamId, id)
+	httpResp, err := r.Api.DeleteTeamMembership(r.Auth, teamId, userId)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
@@ -190,50 +222,14 @@ func (r *TeamMembershipResource) Delete(ctx context.Context, request resource.De
 	}
 }
 
-func (r *TeamMembershipResource) updateState(ctx context.Context, state *TeamMembershipModel, resp *datadogV2.UserTeamsResponse) {
-	state.ID = types.StringValue(resp.GetUserId())
+func (r *TeamMembershipResource) updateStateFromTeamResponse(ctx context.Context, state *TeamMembershipModel, resp *datadogV2.UserTeam) {
+	state.ID = types.StringValue(resp.GetId())
 
-	if data, ok := resp.GetDataOk(); ok && len(*data) > 0 {
-		state.Data = []*DataModel{}
-		for _, dataDd := range *data {
-			dataTfItem := DataModel{}
-			if attributes, ok := dataDd.GetAttributesOk(); ok {
-				attributesTf := AttributesModel{}
-				if role, ok := attributes.GetRoleOk(); ok {
-					attributesTf.Role = types.StringValue(*role)
-				}
-
-				dataTfItem.Attributes = &attributesTf
-			}
-			if id, ok := dataDd.GetIdOk(); ok {
-				dataTfItem.Id = types.StringValue(*id)
-			}
-			if relationships, ok := dataDd.GetRelationshipsOk(); ok {
-				relationshipsTf := RelationshipsModel{}
-				if user, ok := relationships.GetUserOk(); ok {
-					userTf := UserModel{}
-					if data, ok := user.GetDataOk(); ok {
-						dataTf := DataModel{}
-						if id, ok := data.GetIdOk(); ok {
-							dataTf.Id = types.StringValue(*id)
-						}
-						if typeVar, ok := data.GetTypeOk(); ok {
-							dataTf.Type = types.StringValue(*typeVar)
-						}
-
-						userTf.Data = &dataTf
-					}
-
-					relationshipsTf.User = &userTf
-				}
-
-				dataTfItem.Relationships = &relationshipsTf
-			}
-			if typeVar, ok := dataDd.GetTypeOk(); ok {
-				dataTfItem.Type = types.StringValue(*typeVar)
-			}
-
-			state.Data = append(state.Data, &dataTfItem)
+	if role, ok := resp.Attributes.GetRoleOk(); ok {
+		if role == nil {
+			state.Role = types.StringNull()
+		} else {
+			state.Role = types.StringValue(string(*role))
 		}
 	}
 }
@@ -243,12 +239,20 @@ func (r *TeamMembershipResource) buildTeamMembershipRequestBody(ctx context.Cont
 	attributes := datadogV2.NewUserTeamAttributesWithDefaults()
 
 	if !state.Role.IsNull() {
-		attributes.SetRole(state.Role.ValueString())
+		role, _ := datadogV2.NewUserTeamRoleFromValue(state.Role.ValueString())
+		attributes.SetRole(*role)
 	}
+
+	relationships := datadogV2.NewUserTeamRelationshipsWithDefaults()
+	relationships.User = &datadogV2.RelationshipToUserTeamUser{
+		Data: *datadogV2.NewRelationshipToUserTeamUserDataWithDefaults(),
+	}
+	relationships.User.Data.Id = state.UserId.ValueString()
 
 	req := datadogV2.NewUserTeamRequestWithDefaults()
 	req.Data = *datadogV2.NewUserTeamCreateWithDefaults()
 	req.Data.SetAttributes(*attributes)
+	req.Data.SetRelationships(*relationships)
 
 	return req, diags
 }
@@ -258,7 +262,8 @@ func (r *TeamMembershipResource) buildTeamMembershipUpdateRequestBody(ctx contex
 	attributes := datadogV2.NewUserTeamAttributesWithDefaults()
 
 	if !state.Role.IsNull() {
-		attributes.SetRole(state.Role.ValueString())
+		role, _ := datadogV2.NewUserTeamRoleFromValue(state.Role.ValueString())
+		attributes.SetRole(*role)
 	}
 
 	req := datadogV2.NewUserTeamUpdateRequestWithDefaults()

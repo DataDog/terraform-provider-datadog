@@ -263,6 +263,7 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 		NewIntegrationFastlyServiceResource,
 		NewTeamResource,
 		NewTeamLinkResource,
+		NewTeamMembershipResource,
 	}
 }
 
