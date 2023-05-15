@@ -1075,7 +1075,7 @@ func syntheticsBrowserVariableElem() *schema.Resource {
 				Default:     "",
 			},
 			"id": {
-				Description: "ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.",
+				Description: "ID of the global variable to use. This is actually only used (and required) in the case of using a variable of the `global` type.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
