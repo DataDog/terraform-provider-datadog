@@ -243,13 +243,20 @@ func isTestOrg() bool {
 	if isTestOrgC != nil {
 		return *isTestOrgC
 	}
+
+	var apiURL string
+	if apiURL, _ = utils.GetMultiEnvVar(utils.APIUrlEnvVars[:]...); apiURL == "" {
+		apiURL = "https://api.datadoghq.com"
+	}
+
 	// If keys belong to test org, then this get will succeed, otherwise it will fail with 400
 	publicID := ddTestOrg
 	if v := os.Getenv(testOrgEnvName); v != "" {
 		publicID = v
 	}
+
 	client := &http.Client{}
-	req, _ := http.NewRequest("GET", "https://api.datadoghq.com/api/v1/org/"+publicID, nil)
+	req, _ := http.NewRequest("GET", fmt.Sprintf("%s/%s/%s", strings.TrimRight(apiURL, "/"), "api/v1/org", publicID), nil)
 	req.Header.Add("DD-API-KEY", os.Getenv(testAPIKeyEnvName))
 	req.Header.Add("DD-APPLICATION-KEY", os.Getenv(testAPPKeyEnvName))
 	resp, err := client.Do(req)
