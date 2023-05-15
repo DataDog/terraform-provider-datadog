@@ -151,7 +151,7 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 
 	var enableCSPM bool
 	if !plan.EnableCspm.IsNull() {
-		enableAutomute = plan.EnableCspm.ValueBool()
+		enableCSPM = plan.EnableCspm.ValueBool()
 	}
 
 	saInfo := datadogV2.ServiceAccountToBeCreatedData{
@@ -315,10 +315,10 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 		toEnableAutomute = plan.Automute.ValueBool()
 	}
 
-	updatedSAInfo := datadogV2.DataObjectPatch{
+	updatedSAInfo := datadogV2.AccountPatchBody{
 		Data: &datadogV2.ServiceAccountInfoPatch{
 			Type: stringToPointer(defaultType),
-			Attributes: &datadogV2.ServiceAccountInfoPatchAttributes{
+			Attributes: &datadogV2.AccountAttributes{
 				IsCspmEnabled: boolToPointer(toEnableCSPM),
 				Automute:      boolToPointer(toEnableAutomute),
 				HostFilters:   listOfHostFilters,
