@@ -1,0 +1,1 @@
+terraform import datadog_spans_metric.testing_spans_metric testing.span.metric

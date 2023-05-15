@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -218,7 +219,10 @@ var grokParser = &schema.Schema{
 				Description: "List of sample logs for this parser. It can save up to 5 samples. Each sample takes up to 5000 characters.",
 				Type:        schema.TypeList,
 				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				Elem: &schema.Schema{
+					Type:             schema.TypeString,
+					ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+				},
 			},
 			"grok": {
 				Type:     schema.TypeList,
@@ -992,7 +996,9 @@ func buildDatadogGrokParser(tfProcessor map[string]interface{}) *datadogV1.LogsG
 	if tfSamples, exists := tfProcessor["samples"].([]interface{}); exists && len(tfSamples) > 0 {
 		ddSamples := make([]string, len(tfSamples))
 		for i, tfSample := range tfSamples {
-			ddSamples[i] = tfSample.(string)
+			if tfSampleValue, ok := tfSample.(string); ok {
+				ddSamples[i] = tfSampleValue
+			}
 		}
 		ddGrokParser.SetSamples(ddSamples)
 	}
