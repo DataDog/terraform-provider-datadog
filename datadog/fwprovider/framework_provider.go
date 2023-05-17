@@ -326,7 +326,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 			return diags
 		}
 		if parsedAPIURL.Host == "" || parsedAPIURL.Scheme == "" {
-			diags.AddError("invalid API URL", "API URL missing protocol or host")
+			diags.AddError("invalid API URL", fmt.Sprintf("API URL '%s' missing protocol or host", config.ApiUrl.ValueString()))
 			return diags
 		}
 		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
