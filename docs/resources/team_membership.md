@@ -52,7 +52,7 @@ resource "datadog_team_membership" "foo" {
 Import is supported using the following syntax:
 
 ```shell
-# This resource is imported using team_id and user_id.
+# This resource is imported using team_id and user_id seperated by `:`.
 
-terraform import datadog_team_membership.foo "id"
+terraform import datadog_team_membership.foo "${team_id}:${user_id}"
 ```
