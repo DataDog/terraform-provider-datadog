@@ -6657,6 +6657,53 @@ func getFormulaQuerySchema() *schema.Schema {
 						},
 					},
 				},
+				"slo_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "The slo query using formulas and functions.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionSLODataSourceFromValue),
+								Description:      "The data source for slo queries.",
+							},
+							"slo_id": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "ID of an SLO to query.",
+							},
+							"measure": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionSLOMeasureFromValue),
+								Description:      "SLO measures queries.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Default:     "query1",
+								Description: "The name of query for use in formulas.",
+							},
+							"group_mode": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								Default:          "overall",
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionSLOGroupModeFromValue),
+								Description:      "Group mode to query measures.",
+							},
+							"slo_query_type": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								Default:          "metric",
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionSLOQueryTypeFromValue),
+								Description:      "type of the SLO to query.",
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -8620,6 +8667,31 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 			terraformProcessQuery := map[string]interface{}{}
 			terraformProcessQuery["process_query"] = terraformQueries
 			queries[i] = terraformProcessQuery
+		}
+		terraformSLOqueryDefinition := query.FormulaAndFunctionSLOQueryDefinition
+		if terraformSLOqueryDefinition != nil {
+			if dataSource, ok := terraformSLOqueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if measure, ok := terraformSLOqueryDefinition.GetMeasureOk(); ok {
+				terraformQuery["measure"] = measure
+			}
+			if sloID, ok := terraformSLOqueryDefinition.GetSloIdOk(); ok {
+				terraformQuery["slo_id"] = sloID
+			}
+			if groupMode, ok := terraformSLOqueryDefinition.GetGroupModeOk(); ok {
+				terraformQuery["group_mode"] = groupMode
+			}
+			if sloQueryType, ok := terraformSLOqueryDefinition.GetSloQueryTypeOk(); ok {
+				terraformQuery["slo_query_type"] = sloQueryType
+			}
+			if name, ok := terraformSLOqueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			terraformQueries := []map[string]interface{}{terraformQuery}
+			terraformSLOQuery := map[string]interface{}{}
+			terraformSLOQuery["slo_query"] = terraformQueries
+			queries[i] = terraformSLOQuery
 		}
 	}
 	return queries
