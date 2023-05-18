@@ -30,6 +30,26 @@ var (
 	_ provider.Provider = &FrameworkProvider{}
 )
 
+var Resources = []func() resource.Resource{
+	NewAPIKeyResource,
+	NewSensitiveDataScannerGroupOrder,
+	NewIntegrationCloudflareAccountResource,
+	NewIntegrationConfluentAccountResource,
+	NewIntegrationConfluentResourceResource,
+	NewIntegrationFastlyAccountResource,
+	NewIntegrationFastlyServiceResource,
+	NewSpansMetricResource,
+	NewSyntheticsConcurrencyCapResource,
+}
+
+var Datasources = []func() datasource.DataSource{
+	NewIPRangesDataSource,
+	NewSensitiveDataScannerGroupOrderDatasource,
+	NewAPIKeyDataSource,
+	NewHostsDataSource,
+	NewDatadogIntegrationAWSNamespaceRulesDatasource,
+}
+
 // FrameworkProvider struct
 type FrameworkProvider struct {
 	CommunityClient     *datadogCommunity.Client
@@ -57,6 +77,20 @@ func New() provider.Provider {
 	return &FrameworkProvider{
 		ConfigureCallbackFunc: defaultConfigureFunc,
 	}
+}
+
+func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
+	var wrappedResources []func() resource.Resource
+	for _, f := range Resources {
+		r := f()
+		wrappedResources = append(wrappedResources, func() resource.Resource { return utils.NewFrameworkResourceWrapper(&r) })
+	}
+
+	return wrappedResources
+}
+
+func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
+	return Datasources
 }
 
 func (p *FrameworkProvider) Metadata(_ context.Context, _ provider.MetadataRequest, response *provider.MetadataResponse) {
@@ -250,30 +284,6 @@ func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *Pr
 	}
 
 	return diags
-}
-
-func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
-	return []func() resource.Resource{
-		NewAPIKeyResource,
-		NewSensitiveDataScannerGroupOrder,
-		NewIntegrationCloudflareAccountResource,
-		NewIntegrationConfluentAccountResource,
-		NewIntegrationConfluentResourceResource,
-		NewIntegrationFastlyAccountResource,
-		NewIntegrationFastlyServiceResource,
-		NewSpansMetricResource,
-		NewSyntheticsConcurrencyCapResource,
-	}
-}
-
-func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{
-		NewIPRangesDataSource,
-		NewSensitiveDataScannerGroupOrderDatasource,
-		NewAPIKeyDataSource,
-		NewHostsDataSource,
-		NewDatadogIntegrationAWSNamespaceRulesDatasource,
-	}
 }
 
 // Helper method to configure the provider
