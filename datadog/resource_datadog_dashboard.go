@@ -2133,9 +2133,9 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 			Optional:         true,
 		},
 		"show_year": {
-			Description:      "Whether to show the year in the date column of the widget or not.",
-			Type:             schema.TypeBool,
-			Optional:         true,
+			Description: "Whether to show the year in the date column of the widget or not.",
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 		"title": {
 			Description: "The title of the widget.",
