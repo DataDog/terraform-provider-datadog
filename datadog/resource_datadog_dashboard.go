@@ -2132,6 +2132,11 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetEventSizeFromValue),
 			Optional:         true,
 		},
+		"show_year": {
+			Description:      "Whether to show the year in the date column of the widget or not.",
+			Type:             schema.TypeBool,
+			Optional:         true,
+		},
 		"title": {
 			Description: "The title of the widget.",
 			Type:        schema.TypeString,
