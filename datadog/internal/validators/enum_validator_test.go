@@ -72,7 +72,7 @@ func TestEnumValidatorInt64(t *testing.T) {
 		enumFunc    interface{}
 		expectError bool
 	}
-	stringTests := map[string]testCaseString{
+	int64Tests := map[string]testCaseString{
 		"valid Int64 enum": {
 			val:         types.Int64Value(1),
 			enumFunc:    datadogV1.NewSyntheticsPlayingTabFromValue,
@@ -95,7 +95,7 @@ func TestEnumValidatorInt64(t *testing.T) {
 		},
 	}
 
-	for name, test := range stringTests {
+	for name, test := range int64Tests {
 		name, test := name, test
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
