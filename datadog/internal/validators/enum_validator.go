@@ -29,7 +29,7 @@ func (v enumValidator[T]) Description(ctx context.Context) string {
 }
 
 func (v enumValidator[T]) MarkdownDescription(_ context.Context) string {
-	return "value must be one of:"
+	return fmt.Sprintf("value must be valid one of: %v", v.AllowedEnumValues)
 }
 
 func (v enumValidator[T]) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
