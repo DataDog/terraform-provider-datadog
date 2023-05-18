@@ -23,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -83,7 +84,7 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 	var wrappedResources []func() resource.Resource
 	for _, f := range Resources {
 		r := f()
-		wrappedResources = append(wrappedResources, func() resource.Resource { return utils.NewFrameworkResourceWrapper(&r) })
+		wrappedResources = append(wrappedResources, func() resource.Resource { return fwutils.NewFrameworkResourceWrapper(&r) })
 	}
 
 	return wrappedResources
