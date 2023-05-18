@@ -55,10 +55,6 @@ func NewSpansMetricResource() resource.Resource {
 }
 
 func (r *SpansMetricResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
 	providerData, ok := request.ProviderData.(*FrameworkProvider)
 	if !ok {
 		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
@@ -70,7 +66,7 @@ func (r *SpansMetricResource) Configure(_ context.Context, request resource.Conf
 }
 
 func (r *SpansMetricResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "spans_metric"
+	response.TypeName = "spans_metric"
 }
 
 func (r *SpansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {

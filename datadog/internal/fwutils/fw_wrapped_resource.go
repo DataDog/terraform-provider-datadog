@@ -28,12 +28,16 @@ type FrameworkResourceWrapper struct {
 func (r *FrameworkResourceWrapper) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	rCasted, ok := (*r.innerResource).(resource.ResourceWithConfigure)
 	if ok {
+		if req.ProviderData == nil {
+			return
+		}
 		rCasted.Configure(ctx, req, resp)
 	}
 }
 
 func (r *FrameworkResourceWrapper) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	(*r.innerResource).Metadata(ctx, req, resp)
+	resp.TypeName = req.ProviderTypeName + resp.TypeName
 }
 
 func (r *FrameworkResourceWrapper) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -60,6 +64,7 @@ func (r *FrameworkResourceWrapper) Delete(ctx context.Context, req resource.Dele
 func (r *FrameworkResourceWrapper) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	if rCasted, ok := (*r.innerResource).(resource.ResourceWithImportState); ok {
 		rCasted.ImportState(ctx, req, resp)
+		return
 	}
 
 	resp.Diagnostics.AddError(

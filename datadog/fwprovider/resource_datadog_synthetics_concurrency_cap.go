@@ -36,10 +36,6 @@ type SyntheticsConcurrencyCap struct {
 }
 
 func (r *SyntheticsConcurrencyCap) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
 	providerData, ok := request.ProviderData.(*FrameworkProvider)
 	if !ok {
 		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
@@ -51,7 +47,7 @@ func (r *SyntheticsConcurrencyCap) Configure(_ context.Context, request resource
 }
 
 func (r *SyntheticsConcurrencyCap) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "synthetics_concurrency_cap"
+	response.TypeName = "synthetics_concurrency_cap"
 }
 
 func (r *SyntheticsConcurrencyCap) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {

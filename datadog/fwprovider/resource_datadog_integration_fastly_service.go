@@ -40,10 +40,6 @@ func NewIntegrationFastlyServiceResource() resource.Resource {
 }
 
 func (r *IntegrationFastlyServiceResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
 	providerData, ok := request.ProviderData.(*FrameworkProvider)
 	if !ok {
 		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
@@ -55,7 +51,7 @@ func (r *IntegrationFastlyServiceResource) Configure(_ context.Context, request 
 }
 
 func (r *IntegrationFastlyServiceResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "integration_fastly_service"
+	response.TypeName = "integration_fastly_service"
 }
 
 func (r *IntegrationFastlyServiceResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {

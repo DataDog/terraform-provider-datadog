@@ -41,10 +41,6 @@ func NewIntegrationConfluentResourceResource() resource.Resource {
 }
 
 func (r *IntegrationConfluentResourceResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
 	providerData, ok := request.ProviderData.(*FrameworkProvider)
 	if !ok {
 		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
@@ -56,7 +52,7 @@ func (r *IntegrationConfluentResourceResource) Configure(_ context.Context, requ
 }
 
 func (r *IntegrationConfluentResourceResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "integration_confluent_resource"
+	response.TypeName = "integration_confluent_resource"
 }
 
 func (r *IntegrationConfluentResourceResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {

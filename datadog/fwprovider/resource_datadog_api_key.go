@@ -33,10 +33,6 @@ type APIKeyResource struct {
 }
 
 func (r *APIKeyResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
 	providerData, ok := request.ProviderData.(*FrameworkProvider)
 	if !ok {
 		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
@@ -48,7 +44,7 @@ func (r *APIKeyResource) Configure(_ context.Context, request resource.Configure
 }
 
 func (r *APIKeyResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "api_key"
+	response.TypeName = "api_key"
 }
 
 func (r *APIKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
