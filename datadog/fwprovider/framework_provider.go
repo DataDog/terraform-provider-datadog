@@ -262,9 +262,11 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 		NewIntegrationFastlyAccountResource,
 		NewIntegrationFastlyServiceResource,
 		NewSpansMetricResource,
+    NewSyntheticsConcurrencyCapResource,
 		NewTeamResource,
 		NewTeamLinkResource,
 		NewTeamMembershipResource,
+		NewSyntheticsConcurrencyCapResource,
 	}
 }
 
@@ -328,7 +330,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 			return diags
 		}
 		if parsedAPIURL.Host == "" || parsedAPIURL.Scheme == "" {
-			diags.AddError("missing protocol or host", parseErr.Error())
+			diags.AddError("invalid API URL", fmt.Sprintf("API URL '%s' missing protocol or host", config.ApiUrl.ValueString()))
 			return diags
 		}
 		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
