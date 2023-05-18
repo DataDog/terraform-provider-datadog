@@ -71,7 +71,7 @@ type ApiInstances struct {
 	sensitiveDataScannerApiV2  *datadogV2.SensitiveDataScannerApi
 	serviceAccountsApiV2       *datadogV2.ServiceAccountsApi
 	spansMetricsApiV2          *datadogV2.SpansMetricsApi
-  syntheticsApiV2            *datadogV2.SyntheticsApi
+	syntheticsApiV2            *datadogV2.SyntheticsApi
 	teamsApiV2                 *datadogV2.TeamsApi
 	syntheticsApiV2            *datadogV2.SyntheticsApi
 	usageMeteringApiV2         *datadogV2.UsageMeteringApi
