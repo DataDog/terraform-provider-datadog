@@ -292,7 +292,7 @@ func resourceDatadogRoleDelete(ctx context.Context, d *schema.ResourceData, meta
 	return nil
 }
 
-func buildRoleCreateRequest(d *schema.ResourceData) datadogV2.RoleCreateRequest {
+func buildRoleCreateRequest(d *schema.ResourceData) *datadogV2.RoleCreateRequest {
 	roleCreateRequest := datadogV2.NewRoleCreateRequestWithDefaults()
 	roleCreateData := datadogV2.NewRoleCreateDataWithDefaults()
 	roleCreateAttrs := datadogV2.NewRoleCreateAttributesWithDefaults()
@@ -319,10 +319,10 @@ func buildRoleCreateRequest(d *schema.ResourceData) datadogV2.RoleCreateRequest 
 	roleCreateData.SetRelationships(*roleCreateRelations)
 
 	roleCreateRequest.SetData(*roleCreateData)
-	return *roleCreateRequest
+	return roleCreateRequest
 }
 
-func buildRoleUpdateRequest(d *schema.ResourceData) datadogV2.RoleUpdateRequest {
+func buildRoleUpdateRequest(d *schema.ResourceData) *datadogV2.RoleUpdateRequest {
 	roleUpdateRequest := datadogV2.NewRoleUpdateRequestWithDefaults()
 	roleUpdateData := datadogV2.NewRoleUpdateDataWithDefaults()
 	roleUpdateAttributes := datadogV2.NewRoleUpdateAttributesWithDefaults()
@@ -357,5 +357,5 @@ func buildRoleUpdateRequest(d *schema.ResourceData) datadogV2.RoleUpdateRequest 
 	roleUpdateData.SetRelationships(*roleUpdateRelations)
 
 	roleUpdateRequest.SetData(*roleUpdateData)
-	return *roleUpdateRequest
+	return roleUpdateRequest
 }

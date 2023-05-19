@@ -721,7 +721,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	return m, u
 }
 
-func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.MonitorFormulaAndFunctionEventsDataSource(data["data_source"].(string))
 	computeList := data["compute"].([]interface{})
 	computeMap := computeList[0].(map[string]interface{})
@@ -787,7 +787,8 @@ func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) datad
 		eventQuery.SetGroupBy(emptyGroupBy)
 	}
 
-	return datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(eventQuery)
+	definition := datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(eventQuery)
+	return &definition
 }
 
 // Use CustomizeDiff to do monitor validation
