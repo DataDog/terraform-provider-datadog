@@ -42,7 +42,7 @@ type clockContextKey string
 const ddTestOrg = "fasjyydbcgwwc2uc"
 const testAPIKeyEnvName = "DD_TEST_CLIENT_API_KEY"
 const testAPPKeyEnvName = "DD_TEST_CLIENT_APP_KEY"
-const testAPIUrlEnvName = "DD_TEST_SITE"
+const testAPIUrlEnvName = "DD_TEST_SITE_URL"
 const testOrgEnvName = "DD_TEST_ORG"
 
 var isTestOrgC *bool
