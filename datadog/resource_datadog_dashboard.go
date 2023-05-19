@@ -7039,18 +7039,18 @@ func buildDatadogFormulaAndFunctionSLOQuery(data map[string]interface{}) datadog
 	dataSource := datadogV1.FormulaAndFunctionSLODataSource(data["data_source"].(string))
 	measure := datadogV1.FormulaAndFunctionSLOMeasure(data["measure"].(string))
 
-	SLOQuery := datadogV1.NewFormulaAndFunctionSLOQueryDefinition(dataSource, measure, data["slo_id"].(string))
+	SloQuery := datadogV1.NewFormulaAndFunctionSLOQueryDefinition(dataSource, measure, data["slo_id"].(string))
 
 	if v, ok := data["group_mode"].(string); ok && len(v) != 0 {
-		SLOQuery.SetGroupMode(datadogV1.FormulaAndFunctionSLOGroupMode(v))
+		SloQuery.SetGroupMode(datadogV1.FormulaAndFunctionSLOGroupMode(v))
 	}
 	if v, ok := data["slo_query_type"].(string); ok && len(v) != 0 {
-		SLOQuery.SetSloQueryType(datadogV1.FormulaAndFunctionSLOQueryType(v))
+		SloQuery.SetSloQueryType(datadogV1.FormulaAndFunctionSLOQueryType(v))
 	}
 	if v, ok := data["name"].(string); ok && len(v) != 0 {
-		SLOQuery.SetName(v)
+		SloQuery.SetName(v)
 	}
-	return datadogV1.FormulaAndFunctionProcessQueryDefinitionAsFormulaAndFunctionQueryDefinition(processQuery)
+	return datadogV1.FormulaAndFunctionSLOQueryDefinitionAsFormulaAndFunctionQueryDefinition(SloQuery)
 }
 
 func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadogV1.TimeseriesWidgetRequest {
