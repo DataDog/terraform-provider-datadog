@@ -137,7 +137,7 @@ func resourceDatadogRoleCreate(ctx context.Context, d *schema.ResourceData, meta
 	auth := meta.(*ProviderConfiguration).Auth
 
 	roleReq := buildRoleCreateRequest(d)
-	createResp, httpResponse, err := apiInstances.GetRolesApiV2().CreateRole(auth, roleReq)
+	createResp, httpResponse, err := apiInstances.GetRolesApiV2().CreateRole(auth, *roleReq)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating role")
 	}
@@ -264,7 +264,7 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 
 	if d.HasChange("name") || d.HasChange("permission") {
 		roleReq := buildRoleUpdateRequest(d)
-		resp, httpResponse, err := apiInstances.GetRolesApiV2().UpdateRole(auth, d.Id(), roleReq)
+		resp, httpResponse, err := apiInstances.GetRolesApiV2().UpdateRole(auth, d.Id(), *roleReq)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating role")
 		}

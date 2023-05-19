@@ -616,7 +616,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 				queries := m["event_query"].([]interface{})
 				monitorVariables := make([]datadogV1.MonitorFormulaAndFunctionQueryDefinition, len(queries))
 				for i, q := range queries {
-					monitorVariables[i] = buildMonitorFormulaAndFunctionEventQuery(q.(map[string]interface{}))
+					monitorVariables[i] = *buildMonitorFormulaAndFunctionEventQuery(q.(map[string]interface{}))
 				}
 				o.SetVariables(monitorVariables)
 			}
