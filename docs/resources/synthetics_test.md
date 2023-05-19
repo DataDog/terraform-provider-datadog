@@ -632,7 +632,7 @@ Optional:
 - `example` (String) Example for the variable.
 - `id` (String) ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.
 - `pattern` (String) Pattern of the variable.
-- `secure` (Boolean) Determines whether or not the browser test variable is obfuscated.
+- `secure` (Boolean) Determines whether or not the browser test variable is obfuscated. Can only be used with a browser variable of type `text`
 
 
 <a id="nestedblock--config_variable"></a>
