@@ -1,0 +1,40 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"on_demand_concurrency_cap":2}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/synthetics/settings/on_demand_concurrency_cap
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"on_demand_concurrency_cap","attributes":{"on_demand_concurrency_cap":2}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/synthetics/settings/on_demand_concurrency_cap
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"on_demand_concurrency_cap","attributes":{"on_demand_concurrency_cap":2}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
