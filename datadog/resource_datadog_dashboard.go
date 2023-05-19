@@ -2179,6 +2179,9 @@ func buildDatadogEventStreamDefinition(terraformDefinition map[string]interface{
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
+	if v, ok := terraformDefinition["show_year"].(bool); ok {
+		datadogDefinition.SetShowYear(v)
+	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
@@ -2206,6 +2209,9 @@ func buildTerraformEventStreamDefinition(datadogDefinition datadogV1.EventStream
 	}
 	if datadogDefinition.TitleAlign != nil {
 		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
+	}
+	if datadogDefinition.ShowYear != nil {
+		terraformDefinition["show_year"] = *datadogDefinition.ShowYear
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		terraformDefinition["live_span"] = v.GetLiveSpan()
