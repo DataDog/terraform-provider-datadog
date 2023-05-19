@@ -266,7 +266,6 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 		NewTeamResource,
 		NewTeamLinkResource,
 		NewTeamMembershipResource,
-		NewSyntheticsConcurrencyCapResource,
 	}
 }
 
