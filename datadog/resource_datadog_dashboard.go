@@ -1820,8 +1820,6 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogChangeRequest.SetQueries(queries)
@@ -6698,7 +6696,6 @@ func getFormulaQuerySchema() *schema.Schema {
 							"name": {
 								Type:        schema.TypeString,
 								Optional:    true,
-								Default:     "query1",
 								Description: "The name of query for use in formulas.",
 							},
 							"group_mode": {
