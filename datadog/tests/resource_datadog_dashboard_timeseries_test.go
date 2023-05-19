@@ -742,12 +742,12 @@ var datadogDashboardFormulaAsserts = []string{
 	"widget.2.timeseries_definition.0.request.0.query.0.process_query.0.name = my_process_query",
 	"widget.2.timeseries_definition.0.request.0.query.0.process_query.0.sort = asc",
 	"widget.2.timeseries_definition.0.request.0.query.0.process_query.0.is_normalized_cpu = true",
-	"widget.2.timeseries_definition.0.request.0.query.0.slo_query.0.data_source = slo",
-	"widget.2.timeseries_definition.0.request.0.query.0.slo_query.0.slo_id = b4c7739b2af25f9d947f828730357832",
-	"widget.2.timeseries_definition.0.request.0.query.0.slo_query.0.name = query1",
-	"widget.2.timeseries_definition.0.request.0.query.0.slo_query.0.group_mode = overall",
-	"widget.2.timeseries_definition.0.request.0.query.0.slo_query.0.measure= slo_status",
-	"widget.2.timeseries_definition.0.request.0.query.0.slo_query.0.slo_query_type = metric",
+	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.data_source = slo",
+	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.slo_id = b4c7739b2af25f9d947f828730357832",
+	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.name = query1",
+	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.group_mode = overall",
+	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.measure = slo_status",
+	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.slo_query_type = metric",
 }
 
 func TestAccDatadogDashboardTimeseries(t *testing.T) {
