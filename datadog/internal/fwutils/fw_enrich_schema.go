@@ -7,7 +7,7 @@ import (
 	frameworkSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-func enrichFrameworkResourceSchema(s frameworkSchema.Schema) frameworkSchema.Schema {
+func EnrichFrameworkResourceSchema(s frameworkSchema.Schema) frameworkSchema.Schema {
 	for i, attr := range s.Attributes {
 		s.Attributes[i] = updateDescription(attr)
 	}

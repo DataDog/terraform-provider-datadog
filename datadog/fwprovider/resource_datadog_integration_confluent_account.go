@@ -37,12 +37,7 @@ func NewIntegrationConfluentAccountResource() resource.Resource {
 }
 
 func (r *IntegrationConfluentAccountResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
-		return
-	}
-
+	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetConfluentCloudApiV2()
 	r.Auth = providerData.Auth
 }

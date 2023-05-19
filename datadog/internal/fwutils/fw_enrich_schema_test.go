@@ -65,7 +65,7 @@ func TestEnrichSchema(t *testing.T) {
 
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			updatedSchema := enrichFrameworkResourceSchema(testCase.schema)
+			updatedSchema := EnrichFrameworkResourceSchema(testCase.schema)
 			description := updatedSchema.Attributes["test_attribute"].GetDescription()
 			if description != testCase.expectedDescription {
 				t.Errorf("expected description '%s', got '%s' instead.", testCase.expectedDescription, description)
