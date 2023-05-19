@@ -8704,24 +8704,24 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 			terraformProcessQuery["process_query"] = terraformQueries
 			queries[i] = terraformProcessQuery
 		}
-		terraformSLOqueryDefinition := query.FormulaAndFunctionSLOQueryDefinition
-		if terraformSLOqueryDefinition != nil {
-			if dataSource, ok := terraformSLOqueryDefinition.GetDataSourceOk(); ok {
+		terraformSLOQueryDefinition := query.FormulaAndFunctionSLOQueryDefinition
+		if terraformSLOQueryDefinition != nil {
+			if dataSource, ok := terraformSLOQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
 			}
-			if measure, ok := terraformSLOqueryDefinition.GetMeasureOk(); ok {
+			if measure, ok := terraformSLOQueryDefinition.GetMeasureOk(); ok {
 				terraformQuery["measure"] = measure
 			}
-			if sloID, ok := terraformSLOqueryDefinition.GetSloIdOk(); ok {
+			if sloID, ok := terraformSLOQueryDefinition.GetSloIdOk(); ok {
 				terraformQuery["slo_id"] = sloID
 			}
-			if groupMode, ok := terraformSLOqueryDefinition.GetGroupModeOk(); ok {
+			if groupMode, ok := terraformSLOQueryDefinition.GetGroupModeOk(); ok {
 				terraformQuery["group_mode"] = groupMode
 			}
-			if sloQueryType, ok := terraformSLOqueryDefinition.GetSloQueryTypeOk(); ok {
+			if sloQueryType, ok := terraformSLOQueryDefinition.GetSloQueryTypeOk(); ok {
 				terraformQuery["slo_query_type"] = sloQueryType
 			}
-			if name, ok := terraformSLOqueryDefinition.GetNameOk(); ok {
+			if name, ok := terraformSLOQueryDefinition.GetNameOk(); ok {
 				terraformQuery["name"] = name
 			}
 			terraformQueries := []map[string]interface{}{terraformQuery}
