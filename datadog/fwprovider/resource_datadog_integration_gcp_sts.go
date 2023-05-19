@@ -24,7 +24,7 @@ var (
 // datadogIntegrationGCPSTSResource is the resource implementation.
 type datadogIntegrationGCPSTSResource struct {
 	Auth   context.Context
-	GcpApi *datadogV2.GCPIntegrationSTSApi
+	GcpApi *datadogV2.GCPIntegrationApi
 }
 
 // NewDatadogIntegrationGCPSTSResource is a helper function to simplify the provider implementation.
@@ -62,7 +62,7 @@ func (r *datadogIntegrationGCPSTSResource) Configure(_ context.Context, request 
 	}
 
 	r.Auth = providerData.Auth
-	r.GcpApi = providerData.DatadogApiInstances.GetGCPStsIntegrationApiV2()
+	r.GcpApi = providerData.DatadogApiInstances.GetGCPIntegrationApiV2()
 }
 
 // Schema defines the Terraform Resource configuration.
@@ -154,7 +154,7 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 		enableCSPM = plan.EnableCspm.ValueBool()
 	}
 
-	saInfo := datadogV2.ServiceAccountToBeCreatedData{
+	saInfo := datadogV2.ServiceAccountCreateRequestData{
 		Data: &datadogV2.ServiceAccountMetadata{
 			Attributes: &datadogV2.AttributeMetadata{
 				ClientEmail:   stringToPointer(plan.ServiceAccountEmail.ValueString()),
@@ -213,7 +213,7 @@ func (r *datadogIntegrationGCPSTSResource) Read(ctx context.Context, req resourc
 	}
 
 	// Find Service Account by ID.
-	var foundAccount *datadogV2.GCPSTSAccounts
+	var foundAccount *datadogV2.GCPSTSAccount
 	for _, accountObject := range stsEnabledAccounts.GetData() {
 		accountUniqueID := accountObject.GetId()
 
