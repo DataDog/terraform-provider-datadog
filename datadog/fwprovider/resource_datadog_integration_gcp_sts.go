@@ -154,9 +154,9 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 		enableCSPM = plan.EnableCspm.ValueBool()
 	}
 
-	saInfo := datadogV2.ServiceAccountCreateRequestData{
-		Data: &datadogV2.ServiceAccountMetadata{
-			Attributes: &datadogV2.AttributeMetadata{
+	saInfo := datadogV2.GCPServiceAccountCreateRequestData{
+		Data: &datadogV2.GCPServiceAccountMetadata{
+			Attributes: &datadogV2.GCPServiceAccountAttributes{
 				ClientEmail:   stringToPointer(plan.ServiceAccountEmail.ValueString()),
 				Automute:      boolToPointer(enableAutomute),
 				IsCspmEnabled: boolToPointer(enableCSPM),
@@ -315,10 +315,10 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 		toEnableAutomute = plan.Automute.ValueBool()
 	}
 
-	updatedSAInfo := datadogV2.AccountPatchBody{
-		Data: &datadogV2.ServiceAccountInfoPatch{
+	updatedSAInfo := datadogV2.GCPServiceAccountPatchBody{
+		Data: &datadogV2.GCPServiceAccountInfoPatch{
 			Type: stringToPointer(defaultType),
-			Attributes: &datadogV2.AccountAttributes{
+			Attributes: &datadogV2.GCPServiceAccountAttributes{
 				IsCspmEnabled: boolToPointer(toEnableCSPM),
 				Automute:      boolToPointer(toEnableAutomute),
 				HostFilters:   listOfHostFilters,
