@@ -3,6 +3,7 @@ package fwutils
 import (
 	"fmt"
 	"reflect"
+	"strings"
 
 	frameworkSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
@@ -48,8 +49,8 @@ func getUpdatedDescriptionWithValidators(description string, validators reflect.
 	}
 
 	for i := 0; i < validators.Len(); i++ {
-		allowedValues := validators.Index(i).Elem().FieldByName("AllowedEnumValues")
-		if allowedValues.IsValid() {
+		if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "enumValidator") {
+			allowedValues := validators.Index(i).Elem().FieldByName("AllowedEnumValues")
 			v := reflect.ValueOf(allowedValues.Interface())
 			validValuesMsg := ""
 			sep := ""
