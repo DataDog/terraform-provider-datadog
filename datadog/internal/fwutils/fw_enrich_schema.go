@@ -12,6 +12,20 @@ func EnrichFrameworkResourceSchema(s frameworkSchema.Schema) frameworkSchema.Sch
 		s.Attributes[i] = updateDescription(attr)
 	}
 
+	for _, block := range s.Blocks {
+		switch v := block.(type) {
+		case frameworkSchema.ListNestedBlock:
+			for i, attr := range v.NestedObject.Attributes {
+				v.NestedObject.Attributes[i] = updateDescription(attr)
+			}
+
+		case frameworkSchema.SingleNestedBlock:
+			for i, attr := range v.Attributes {
+				v.Attributes[i] = updateDescription(attr)
+			}
+		}
+	}
+
 	return s
 }
 

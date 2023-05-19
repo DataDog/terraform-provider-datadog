@@ -11,7 +11,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
-func TestEnrichSchema(t *testing.T) {
+func TestEnrichSchemaAttributes(t *testing.T) {
 	t.Parallel()
 
 	type testStruct struct {
@@ -67,6 +67,124 @@ func TestEnrichSchema(t *testing.T) {
 			t.Parallel()
 			updatedSchema := EnrichFrameworkResourceSchema(testCase.schema)
 			description := updatedSchema.Attributes["test_attribute"].GetDescription()
+			if description != testCase.expectedDescription {
+				t.Errorf("expected description '%s', got '%s' instead.", testCase.expectedDescription, description)
+			}
+		})
+	}
+}
+
+func TestEnrichSchemaListNestedBlock(t *testing.T) {
+	t.Parallel()
+
+	type testStruct struct {
+		schema              schema.Schema
+		expectedDescription string
+	}
+	testCases := map[string]testStruct{
+		"description with string enum validator": {
+			schema: schema.Schema{
+				Blocks: map[string]schema.Block{
+					"nested_block": schema.ListNestedBlock{
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"test_attribute": schema.StringAttribute{
+									Required:    true,
+									Description: "Example description.",
+									Validators: []validator.String{
+										validators.NewEnumValidator[validator.String](datadogV2.NewTeamPermissionSettingValueFromValue),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description. Valid values are `admins`, `members`, `organization`, `user_access_manage`, `teams_manage`.",
+		},
+		"description without validator": {
+			schema: schema.Schema{
+				Blocks: map[string]schema.Block{
+					"nested_block": schema.ListNestedBlock{
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"test_attribute": schema.StringAttribute{
+									Required:    true,
+									Description: "Example description.",
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description.",
+		},
+	}
+
+	for name, testCase := range testCases {
+		name, testCase := name, testCase
+
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			updatedSchema := EnrichFrameworkResourceSchema(testCase.schema)
+			description := updatedSchema.Blocks["nested_block"].GetNestedObject().GetAttributes()["test_attribute"].GetDescription()
+			if description != testCase.expectedDescription {
+				t.Errorf("expected description '%s', got '%s' instead.", testCase.expectedDescription, description)
+			}
+		})
+	}
+}
+
+func TestEnrichSchemaSingleNestedBlock(t *testing.T) {
+	t.Parallel()
+
+	type testStruct struct {
+		schema              schema.Schema
+		expectedDescription string
+	}
+	testCases := map[string]testStruct{
+		"description with string enum validator": {
+			schema: schema.Schema{
+				Blocks: map[string]schema.Block{
+					"nested_block": schema.SingleNestedBlock{
+						Attributes: map[string]schema.Attribute{
+							"test_attribute": schema.StringAttribute{
+								Required:    true,
+								Description: "Example description.",
+								Validators: []validator.String{
+									validators.NewEnumValidator[validator.String](datadogV2.NewTeamPermissionSettingValueFromValue),
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description. Valid values are `admins`, `members`, `organization`, `user_access_manage`, `teams_manage`.",
+		},
+		"description without validator": {
+			schema: schema.Schema{
+				Blocks: map[string]schema.Block{
+					"nested_block": schema.SingleNestedBlock{
+						Attributes: map[string]schema.Attribute{
+							"test_attribute": schema.StringAttribute{
+								Required:    true,
+								Description: "Example description.",
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description.",
+		},
+	}
+
+	for name, testCase := range testCases {
+		name, testCase := name, testCase
+
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			updatedSchema := EnrichFrameworkResourceSchema(testCase.schema)
+			description := updatedSchema.Blocks["nested_block"].GetNestedObject().GetAttributes()["test_attribute"].GetDescription()
 			if description != testCase.expectedDescription {
 				t.Errorf("expected description '%s', got '%s' instead.", testCase.expectedDescription, description)
 			}
