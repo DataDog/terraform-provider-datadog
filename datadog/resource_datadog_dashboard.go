@@ -1818,6 +1818,8 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogChangeRequest.SetQueries(queries)
@@ -3896,6 +3898,8 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogQueryValueRequest.SetQueries(queries)
@@ -4171,6 +4175,8 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["apm_resource_stats_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = buildDatadogFormulaAndFunctionAPMResourceStatsQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogQueryTableRequest.SetQueries(queries)
@@ -4528,6 +4534,8 @@ func buildDatadogScatterplotTableRequest(terraformRequest map[string]interface{}
 				queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
 			} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
 				queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+			} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
+				queries[i] = buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
 			}
 		}
 		datadogScatterplotTableRequest.SetQueries(queries)
@@ -5577,6 +5585,8 @@ func buildDatadogGeomapRequests(terraformRequests *[]interface{}) *[]datadogV1.G
 					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogGeomapRequest.SetQueries(queries)
@@ -6070,6 +6080,8 @@ func buildDatadogSunburstRequests(terraformRequests *[]interface{}) *[]datadogV1
 					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogSunburstRequest.SetQueries(queries)
@@ -6657,6 +6669,52 @@ func getFormulaQuerySchema() *schema.Schema {
 						},
 					},
 				},
+				"slo_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "The slo query using formulas and functions.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionSLODataSourceFromValue),
+								Description:      "The data source for slo queries.",
+							},
+							"slo_id": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "ID of an SLO to query.",
+							},
+							"measure": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionSLOMeasureFromValue),
+								Description:      "SLO measures queries.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "The name of query for use in formulas.",
+							},
+							"group_mode": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								Default:          "overall",
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionSLOGroupModeFromValue),
+								Description:      "Group mode to query measures.",
+							},
+							"slo_query_type": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								Default:          "metric",
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionSLOQueryTypeFromValue),
+								Description:      "type of the SLO to query.",
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -6974,6 +7032,24 @@ func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) dat
 	return datadogV1.FormulaAndFunctionProcessQueryDefinitionAsFormulaAndFunctionQueryDefinition(processQuery)
 }
 
+func buildDatadogFormulaAndFunctionSLOQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.FormulaAndFunctionSLODataSource(data["data_source"].(string))
+	measure := datadogV1.FormulaAndFunctionSLOMeasure(data["measure"].(string))
+
+	SloQuery := datadogV1.NewFormulaAndFunctionSLOQueryDefinition(dataSource, measure, data["slo_id"].(string))
+
+	if v, ok := data["group_mode"].(string); ok && len(v) != 0 {
+		SloQuery.SetGroupMode(datadogV1.FormulaAndFunctionSLOGroupMode(v))
+	}
+	if v, ok := data["slo_query_type"].(string); ok && len(v) != 0 {
+		SloQuery.SetSloQueryType(datadogV1.FormulaAndFunctionSLOQueryType(v))
+	}
+	if v, ok := data["name"].(string); ok && len(v) != 0 {
+		SloQuery.SetName(v)
+	}
+	return datadogV1.FormulaAndFunctionSLOQueryDefinitionAsFormulaAndFunctionQueryDefinition(SloQuery)
+}
+
 func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadogV1.TimeseriesWidgetRequest {
 	datadogRequests := make([]datadogV1.TimeseriesWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
@@ -7016,6 +7092,8 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogTimeseriesRequest.SetQueries(queries)
@@ -7299,7 +7377,10 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
 				}
+
 			}
 			datadogToplistRequest.SetQueries(queries)
 			// Toplist requests for formulas and functions always has a response format of "scalar"
@@ -7706,6 +7787,8 @@ func buildDatadogTreemapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 					queries[i] = buildDatadogMetricQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogTreemapRequest.SetQueries(queries)
@@ -8620,6 +8703,31 @@ func buildTerraformQuery(datadogQueries []datadogV1.FormulaAndFunctionQueryDefin
 			terraformProcessQuery := map[string]interface{}{}
 			terraformProcessQuery["process_query"] = terraformQueries
 			queries[i] = terraformProcessQuery
+		}
+		terraformSLOQueryDefinition := query.FormulaAndFunctionSLOQueryDefinition
+		if terraformSLOQueryDefinition != nil {
+			if dataSource, ok := terraformSLOQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if measure, ok := terraformSLOQueryDefinition.GetMeasureOk(); ok {
+				terraformQuery["measure"] = measure
+			}
+			if sloID, ok := terraformSLOQueryDefinition.GetSloIdOk(); ok {
+				terraformQuery["slo_id"] = sloID
+			}
+			if groupMode, ok := terraformSLOQueryDefinition.GetGroupModeOk(); ok {
+				terraformQuery["group_mode"] = groupMode
+			}
+			if sloQueryType, ok := terraformSLOQueryDefinition.GetSloQueryTypeOk(); ok {
+				terraformQuery["slo_query_type"] = sloQueryType
+			}
+			if name, ok := terraformSLOQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			terraformQueries := []map[string]interface{}{terraformQuery}
+			terraformSLOQuery := map[string]interface{}{}
+			terraformSLOQuery["slo_query"] = terraformQueries
+			queries[i] = terraformSLOQuery
 		}
 	}
 	return queries
