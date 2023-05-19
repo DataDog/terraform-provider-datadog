@@ -464,7 +464,6 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 						 aggregator = "sum"
 					}
 				}
-
 			}
 		}
 	}
@@ -510,6 +509,22 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 						name = "my_process_query"
 						sort = "asc"
 						is_normalized_cpu = true
+					}
+				}
+			}
+		}
+	}
+	widget {
+		timeseries_definition {
+			request {
+				query {
+					slo_query {
+						data_source = "slo"
+						slo_id = "b4c7739b2af25f9d947f828730357832"
+						name = "query1"
+						group_mode = "overall"
+						measure = "slo_status"
+						slo_query_type = "metric"
 					}
 				}
 			}
@@ -727,6 +742,12 @@ var datadogDashboardFormulaAsserts = []string{
 	"widget.2.timeseries_definition.0.request.0.query.0.process_query.0.name = my_process_query",
 	"widget.2.timeseries_definition.0.request.0.query.0.process_query.0.sort = asc",
 	"widget.2.timeseries_definition.0.request.0.query.0.process_query.0.is_normalized_cpu = true",
+	"widget.2.timeseries_definition.0.request.0.query.0.slo_query.0.data_source = slo",
+	"widget.2.timeseries_definition.0.request.0.query.0.slo_query.0.slo_id = b4c7739b2af25f9d947f828730357832",
+	"widget.2.timeseries_definition.0.request.0.query.0.slo_query.0.name = query1",
+	"widget.2.timeseries_definition.0.request.0.query.0.slo_query.0.group_mode = overall",
+	"widget.2.timeseries_definition.0.request.0.query.0.slo_query.0.measure= slo_status",
+	"widget.2.timeseries_definition.0.request.0.query.0.slo_query.0.slo_query_type = metric",
 }
 
 func TestAccDatadogDashboardTimeseries(t *testing.T) {
