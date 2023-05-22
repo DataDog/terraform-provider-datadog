@@ -1097,6 +1097,11 @@ func syntheticsBrowserVariableElem() *schema.Resource {
 				Required:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsBrowserVariableTypeFromValue),
 			},
+			"secure": {
+				Description: "Determines whether or not the browser test variable is obfuscated. Can only be used with a browser variable of type `text`",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -2115,6 +2120,9 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 				if v, ok := variableMap["pattern"]; ok {
 					newVariable.SetPattern(v.(string))
 				}
+				if v, ok := variableMap["secure"]; ok && variableType == datadogV1.SYNTHETICSBROWSERVARIABLETYPE_TEXT {
+					newVariable.SetSecure(v.(bool))
+				}
 
 				config.SetVariables(append(config.GetVariables(), *newVariable))
 			}
@@ -2729,14 +2737,21 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		if v, ok := variable.GetNameOk(); ok {
 			localVariable["name"] = *v
 		}
-		if v, ok := variable.GetExampleOk(); ok {
-			localVariable["example"] = *v
-		}
 		if v, ok := variable.GetIdOk(); ok {
 			localVariable["id"] = *v
 		}
+		if v, ok := variable.GetSecureOk(); ok {
+			localVariable["secure"] = *v
+		}
+		if v, ok := variable.GetExampleOk(); ok {
+			localVariable["example"] = *v
+		} else if localVariable["secure"].(bool) {
+			localVariable["example"] = d.Get(fmt.Sprintf("browser_variable.%d.example", i))
+		}
 		if v, ok := variable.GetPatternOk(); ok {
 			localVariable["pattern"] = *v
+		} else if localVariable["secure"].(bool) {
+			localVariable["pattern"] = d.Get(fmt.Sprintf("browser_variable.%d.pattern", i))
 		}
 		localBrowserVariables[i] = localVariable
 	}

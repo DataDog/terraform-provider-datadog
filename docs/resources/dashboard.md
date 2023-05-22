@@ -1063,6 +1063,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--change_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.change_definition.request.query.apm_dependency_stats_query`
@@ -1199,6 +1200,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--change_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.change_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -1700,6 +1717,7 @@ Optional:
 
 - `event_size` (String) The size to use to display an event. Valid values are `s`, `l`.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `show_year` (Boolean) Whether to show the year in the date column of the widget or not.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -1910,6 +1928,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--geomap_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.geomap_definition.request.query.apm_dependency_stats_query`
@@ -2046,6 +2065,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--geomap_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.geomap_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -2461,6 +2496,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.group_definition.widget.change_definition.request.query.apm_dependency_stats_query`
@@ -2597,6 +2633,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -3098,6 +3150,7 @@ Optional:
 
 - `event_size` (String) The size to use to display an event. Valid values are `s`, `l`.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `show_year` (Boolean) Whether to show the year in the date column of the widget or not.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -3308,6 +3361,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.apm_dependency_stats_query`
@@ -3444,6 +3498,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -4922,6 +4992,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.group_definition.widget.query_table_definition.request.query.apm_dependency_stats_query`
@@ -5058,6 +5129,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -5524,6 +5611,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.apm_dependency_stats_query`
@@ -5660,6 +5748,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -5920,6 +6024,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--slo_query))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.apm_dependency_stats_query`
@@ -6056,6 +6161,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -7142,6 +7263,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.apm_dependency_stats_query`
@@ -7278,6 +7400,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -7832,6 +7970,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.apm_dependency_stats_query`
@@ -7968,6 +8107,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -8463,6 +8618,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.apm_dependency_stats_query`
@@ -8599,6 +8755,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -8886,6 +9058,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.group_definition.widget.treemap_definition.request.query.apm_dependency_stats_query`
@@ -9022,6 +9195,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -10444,6 +10633,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--query_table_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.query_table_definition.request.query.apm_dependency_stats_query`
@@ -10580,6 +10770,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--query_table_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.query_table_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -11046,6 +11252,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--query_value_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.query_value_definition.request.query.apm_dependency_stats_query`
@@ -11182,6 +11389,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--query_value_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.query_value_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -11442,6 +11665,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--slo_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.apm_dependency_stats_query`
@@ -11578,6 +11802,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--slo_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -12664,6 +12904,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--sunburst_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.sunburst_definition.request.query.apm_dependency_stats_query`
@@ -12800,6 +13041,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -13354,6 +13611,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--timeseries_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.timeseries_definition.request.query.apm_dependency_stats_query`
@@ -13490,6 +13748,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--timeseries_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -13985,6 +14259,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--toplist_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.toplist_definition.request.query.apm_dependency_stats_query`
@@ -14121,6 +14396,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--toplist_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.toplist_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 
@@ -14408,6 +14699,7 @@ Optional:
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The slo query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--slo_query))
 
 <a id="nestedblock--widget--treemap_definition--request--query--apm_dependency_stats_query"></a>
 ### Nested Schema for `widget.treemap_definition.request.query.apm_dependency_stats_query`
@@ -14544,6 +14836,22 @@ Optional:
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--treemap_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.treemap_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for slo queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
 
 
 

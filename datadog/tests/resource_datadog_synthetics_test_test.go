@@ -2680,6 +2680,12 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_variable.1.name", "EMAIL_VAR"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.2.type", "text"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.2.name", "MY_SECRET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_variable.2.secure", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "config_variable.0.type", "text"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "config_variable.0.name", "VARIABLE_NAME"),
@@ -2791,6 +2797,14 @@ resource "datadog_synthetics_test" "bar" {
 	browser_variable {
 		name = "EMAIL_VAR"
 		type = "email"
+	}
+	
+	browser_variable {
+		type = "text"
+		name = "MY_SECRET"
+		pattern = "secret"
+		example = "secret"
+		secure = true
 	}
 
 	config_variable {
