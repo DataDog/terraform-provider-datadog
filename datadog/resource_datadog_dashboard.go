@@ -7048,7 +7048,7 @@ func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) *da
 	return &definition
 }
 
-func buildDatadogFormulaAndFunctionSLOQuery(data map[string]interface{}) datadogV1.FormulaAndFunctionQueryDefinition {
+func buildDatadogFormulaAndFunctionSLOQuery(data map[string]interface{}) *datadogV1.FormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.FormulaAndFunctionSLODataSource(data["data_source"].(string))
 	measure := datadogV1.FormulaAndFunctionSLOMeasure(data["measure"].(string))
 
@@ -7063,7 +7063,9 @@ func buildDatadogFormulaAndFunctionSLOQuery(data map[string]interface{}) datadog
 	if v, ok := data["name"].(string); ok && len(v) != 0 {
 		SloQuery.SetName(v)
 	}
-	return datadogV1.FormulaAndFunctionSLOQueryDefinitionAsFormulaAndFunctionQueryDefinition(SloQuery)
+
+	definition := datadogV1.FormulaAndFunctionSLOQueryDefinitionAsFormulaAndFunctionQueryDefinition(SloQuery)
+	return &definition
 }
 
 func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadogV1.TimeseriesWidgetRequest {
