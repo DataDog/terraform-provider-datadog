@@ -33,22 +33,22 @@ var (
 
 var Resources = []func() resource.Resource{
 	NewAPIKeyResource,
-	NewSensitiveDataScannerGroupOrder,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
 	NewIntegrationFastlyAccountResource,
 	NewIntegrationFastlyServiceResource,
+	NewSensitiveDataScannerGroupOrder,
 	NewSpansMetricResource,
 	NewSyntheticsConcurrencyCapResource,
 }
 
 var Datasources = []func() datasource.DataSource{
+	NewAPIKeyDataSource,
+	NewDatadogIntegrationAWSNamespaceRulesDatasource,
+	NewHostsDataSource,
 	NewIPRangesDataSource,
 	NewSensitiveDataScannerGroupOrderDatasource,
-	NewAPIKeyDataSource,
-	NewHostsDataSource,
-	NewDatadogIntegrationAWSNamespaceRulesDatasource,
 }
 
 // FrameworkProvider struct
