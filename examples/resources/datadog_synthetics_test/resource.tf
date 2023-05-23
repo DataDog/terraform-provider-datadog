@@ -1,13 +1,13 @@
 # Example Usage (Synthetics API test)
 # Create a new Datadog Synthetics API/HTTP test on https://www.example.org
 resource "datadog_synthetics_test" "test_uptime" {
-  name    = "An Uptime test on example.org"
-  type    = "api"
-  subtype = "http"
-  status = "live"
-  message = "Notify @pagerduty"
+  name      = "An Uptime test on example.org"
+  type      = "api"
+  subtype   = "http"
+  status    = "live"
+  message   = "Notify @pagerduty"
   locations = ["aws:eu-central-1"]
-  tags    = ["foo:bar", "foo", "env:test"]
+  tags      = ["foo:bar", "foo", "env:test"]
 
   request_definition {
     method = "GET"
@@ -15,7 +15,7 @@ resource "datadog_synthetics_test" "test_uptime" {
   }
 
   request_headers = {
-    Content-Type   = "application/json"
+    Content-Type = "application/json"
   }
 
   assertion {
@@ -80,13 +80,13 @@ resource "datadog_synthetics_test" "test_api" {
 # Example Usage (Synthetics SSL test)
 # Create a new Datadog Synthetics API/SSL test on example.org
 resource "datadog_synthetics_test" "test_ssl" {
-  name    = "An API test on example.org"
-  type    = "api"
-  subtype = "ssl"
-  status = "live"
-  message = "Notify @pagerduty"
+  name      = "An API test on example.org"
+  type      = "api"
+  subtype   = "ssl"
+  status    = "live"
+  message   = "Notify @pagerduty"
   locations = ["aws:eu-central-1"]
-  tags    = ["foo:bar", "foo", "env:test"]
+  tags      = ["foo:bar", "foo", "env:test"]
 
   request_definition {
     host = "example.org"
