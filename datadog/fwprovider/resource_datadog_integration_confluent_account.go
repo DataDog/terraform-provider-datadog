@@ -37,22 +37,13 @@ func NewIntegrationConfluentAccountResource() resource.Resource {
 }
 
 func (r *IntegrationConfluentAccountResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
-		return
-	}
-
+	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetConfluentCloudApiV2()
 	r.Auth = providerData.Auth
 }
 
 func (r *IntegrationConfluentAccountResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "integration_confluent_account"
+	response.TypeName = "integration_confluent_account"
 }
 
 func (r *IntegrationConfluentAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {

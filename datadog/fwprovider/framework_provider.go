@@ -23,12 +23,33 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var (
 	_ provider.Provider = &FrameworkProvider{}
 )
+
+var Resources = []func() resource.Resource{
+	NewAPIKeyResource,
+	NewIntegrationCloudflareAccountResource,
+	NewIntegrationConfluentAccountResource,
+	NewIntegrationConfluentResourceResource,
+	NewIntegrationFastlyAccountResource,
+	NewIntegrationFastlyServiceResource,
+	NewSensitiveDataScannerGroupOrder,
+	NewSpansMetricResource,
+	NewSyntheticsConcurrencyCapResource,
+}
+
+var Datasources = []func() datasource.DataSource{
+	NewAPIKeyDataSource,
+	NewDatadogIntegrationAWSNamespaceRulesDatasource,
+	NewHostsDataSource,
+	NewIPRangesDataSource,
+	NewSensitiveDataScannerGroupOrderDatasource,
+}
 
 // FrameworkProvider struct
 type FrameworkProvider struct {
@@ -57,6 +78,20 @@ func New() provider.Provider {
 	return &FrameworkProvider{
 		ConfigureCallbackFunc: defaultConfigureFunc,
 	}
+}
+
+func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
+	var wrappedResources []func() resource.Resource
+	for _, f := range Resources {
+		r := f()
+		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&r) })
+	}
+
+	return wrappedResources
+}
+
+func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
+	return Datasources
 }
 
 func (p *FrameworkProvider) Metadata(_ context.Context, _ provider.MetadataRequest, response *provider.MetadataResponse) {
@@ -252,30 +287,6 @@ func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *Pr
 	return diags
 }
 
-func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
-	return []func() resource.Resource{
-		NewAPIKeyResource,
-		NewSensitiveDataScannerGroupOrder,
-		NewIntegrationCloudflareAccountResource,
-		NewIntegrationConfluentAccountResource,
-		NewIntegrationConfluentResourceResource,
-		NewIntegrationFastlyAccountResource,
-		NewIntegrationFastlyServiceResource,
-		NewSpansMetricResource,
-		NewSyntheticsConcurrencyCapResource,
-	}
-}
-
-func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{
-		NewIPRangesDataSource,
-		NewSensitiveDataScannerGroupOrderDatasource,
-		NewAPIKeyDataSource,
-		NewHostsDataSource,
-		NewDatadogIntegrationAWSNamespaceRulesDatasource,
-	}
-}
-
 // Helper method to configure the provider
 func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureRequest, config *ProviderSchema) diag.Diagnostics {
 	diags := diag.Diagnostics{}
@@ -397,4 +408,103 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	log.Printf("[INFO] Datadog Client successfully validated.")
 	*/
 	return nil
+}
+
+var (
+	_ resource.ResourceWithConfigure        = &FrameworkResourceWrapper{}
+	_ resource.ResourceWithImportState      = &FrameworkResourceWrapper{}
+	_ resource.ResourceWithConfigValidators = &FrameworkResourceWrapper{}
+	_ resource.ResourceWithModifyPlan       = &FrameworkResourceWrapper{}
+	_ resource.ResourceWithUpgradeState     = &FrameworkResourceWrapper{}
+	_ resource.ResourceWithValidateConfig   = &FrameworkResourceWrapper{}
+)
+
+func NewFrameworkResourceWrapper(i *resource.Resource) resource.Resource {
+	return &FrameworkResourceWrapper{
+		innerResource: i,
+	}
+}
+
+type FrameworkResourceWrapper struct {
+	innerResource *resource.Resource
+}
+
+func (r *FrameworkResourceWrapper) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	rCasted, ok := (*r.innerResource).(resource.ResourceWithConfigure)
+	if ok {
+		if req.ProviderData == nil {
+			return
+		}
+		_, ok := req.ProviderData.(*FrameworkProvider)
+		if !ok {
+			resp.Diagnostics.AddError("Unexpected Resource Configure Type", "")
+			return
+		}
+
+		rCasted.Configure(ctx, req, resp)
+	}
+}
+
+func (r *FrameworkResourceWrapper) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	(*r.innerResource).Metadata(ctx, req, resp)
+	resp.TypeName = req.ProviderTypeName + resp.TypeName
+}
+
+func (r *FrameworkResourceWrapper) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	(*r.innerResource).Schema(ctx, req, resp)
+	resp.Schema = fwutils.EnrichFrameworkResourceSchema(resp.Schema)
+}
+
+func (r *FrameworkResourceWrapper) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	(*r.innerResource).Create(ctx, req, resp)
+}
+
+func (r *FrameworkResourceWrapper) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	(*r.innerResource).Read(ctx, req, resp)
+}
+
+func (r *FrameworkResourceWrapper) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	(*r.innerResource).Update(ctx, req, resp)
+}
+
+func (r *FrameworkResourceWrapper) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	(*r.innerResource).Delete(ctx, req, resp)
+}
+
+func (r *FrameworkResourceWrapper) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	if rCasted, ok := (*r.innerResource).(resource.ResourceWithImportState); ok {
+		rCasted.ImportState(ctx, req, resp)
+		return
+	}
+
+	resp.Diagnostics.AddError(
+		"Resource Import Not Implemented",
+		"This resource does not support import. Please contact the provider developer for additional information.",
+	)
+}
+
+func (r *FrameworkResourceWrapper) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
+	if rCasted, ok := (*r.innerResource).(resource.ResourceWithConfigValidators); ok {
+		return rCasted.ConfigValidators(ctx)
+	}
+	return nil
+}
+
+func (r *FrameworkResourceWrapper) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if v, ok := (*r.innerResource).(resource.ResourceWithModifyPlan); ok {
+		v.ModifyPlan(ctx, req, resp)
+	}
+}
+
+func (r *FrameworkResourceWrapper) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
+	if v, ok := (*r.innerResource).(resource.ResourceWithUpgradeState); ok {
+		return v.UpgradeState(ctx)
+	}
+	return nil
+}
+
+func (r *FrameworkResourceWrapper) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	if v, ok := (*r.innerResource).(resource.ResourceWithValidateConfig); ok {
+		v.ValidateConfig(ctx, req, resp)
+	}
 }

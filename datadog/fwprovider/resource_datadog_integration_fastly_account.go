@@ -36,22 +36,13 @@ func NewIntegrationFastlyAccountResource() resource.Resource {
 }
 
 func (r *IntegrationFastlyAccountResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
-		return
-	}
-
+	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetFastlyIntegrationApiV2()
 	r.Auth = providerData.Auth
 }
 
 func (r *IntegrationFastlyAccountResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "integration_fastly_account"
+	response.TypeName = "integration_fastly_account"
 }
 
 func (r *IntegrationFastlyAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
