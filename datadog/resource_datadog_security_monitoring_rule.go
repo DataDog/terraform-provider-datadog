@@ -403,7 +403,7 @@ func resourceDatadogSecurityMonitoringRuleCreate(ctx context.Context, d *schema.
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	response, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().CreateSecurityMonitoringRule(auth, ruleCreate)
+	response, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().CreateSecurityMonitoringRule(auth, *ruleCreate)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating security monitoring rule")
 	}
@@ -446,17 +446,19 @@ func checkQueryConsistency(d *schema.ResourceData) error {
 	return nil
 }
 
-func buildCreatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRuleCreatePayload, error) {
+func buildCreatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRuleCreatePayload, error) {
 
 	if err := checkQueryConsistency(d); err != nil {
-		return datadogV2.SecurityMonitoringRuleCreatePayload{}, err
+		return &datadogV2.SecurityMonitoringRuleCreatePayload{}, err
 	}
 	if isSignalCorrelationSchema(d) {
 		payload, err := buildCreateSignalPayload(d)
-		return datadogV2.SecurityMonitoringSignalRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(&payload), err
+		createPayload := datadogV2.SecurityMonitoringSignalRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(payload)
+		return &createPayload, err
 	}
 	payload, err := buildCreateStandardPayload(d)
-	return datadogV2.SecurityMonitoringStandardRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(&payload), err
+	createPayload := datadogV2.SecurityMonitoringStandardRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(payload)
+	return &createPayload, err
 }
 
 func buildCreateCommonPayload(d *schema.ResourceData, payload securityMonitoringRuleCreateInterface) {
@@ -488,7 +490,7 @@ func buildCreateCommonPayload(d *schema.ResourceData, payload securityMonitoring
 	}
 }
 
-func buildCreateStandardPayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringStandardRuleCreatePayload, error) {
+func buildCreateStandardPayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringStandardRuleCreatePayload, error) {
 	payload := datadogV2.SecurityMonitoringStandardRuleCreatePayload{}
 	buildCreateCommonPayload(d, &payload)
 
@@ -498,31 +500,31 @@ func buildCreateStandardPayload(d *schema.ResourceData) (datadogV2.SecurityMonit
 		if ruleType, err := datadogV2.NewSecurityMonitoringRuleTypeCreateFromValue(v.(string)); err == nil {
 			payload.SetType(*ruleType)
 		} else {
-			return payload, err
+			return &payload, err
 		}
 	}
-	return payload, nil
+	return &payload, nil
 }
 
-func buildCreateSignalPayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringSignalRuleCreatePayload, error) {
+func buildCreateSignalPayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringSignalRuleCreatePayload, error) {
 	payload := datadogV2.SecurityMonitoringSignalRuleCreatePayload{}
 	buildCreateCommonPayload(d, &payload)
 
 	if queries, err := buildCreateSignalPayloadQueries(d); err == nil {
 		payload.SetQueries(queries)
 	} else {
-		return payload, err
+		return &payload, err
 	}
 
 	if v, ok := d.GetOk("type"); ok {
 		if ruleType, err := datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue(v.(string)); err == nil {
 			payload.SetType(*ruleType)
 		} else {
-			return payload, err
+			return &payload, err
 		}
 	}
 
-	return payload, nil
+	return &payload, nil
 }
 
 func buildCreatePayloadCases(d *schema.ResourceData) []datadogV2.SecurityMonitoringRuleCaseCreate {
@@ -972,7 +974,7 @@ func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	response, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().UpdateSecurityMonitoringRule(auth, d.Id(), ruleUpdate)
+	response, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().UpdateSecurityMonitoringRule(auth, d.Id(), *ruleUpdate)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating security monitoring rule")
 	}
@@ -989,10 +991,10 @@ func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.
 	return nil
 }
 
-func buildUpdatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRuleUpdatePayload, error) {
+func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRuleUpdatePayload, error) {
 	payload := datadogV2.SecurityMonitoringRuleUpdatePayload{}
 	if err := checkQueryConsistency(d); err != nil {
-		return datadogV2.SecurityMonitoringRuleUpdatePayload{}, err
+		return &datadogV2.SecurityMonitoringRuleUpdatePayload{}, err
 	}
 
 	tfCases := d.Get("case").([]interface{})
@@ -1055,10 +1057,10 @@ func buildUpdatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 		for idx, tfQuery := range tfQueries {
 			if isSignalCorrelation {
 				if payloadQueries[idx], err = buildUpdateSignalRuleQuery(tfQuery); err != nil {
-					return payload, err
+					return &payload, err
 				}
 			} else {
-				payloadQueries[idx] = buildUpdateStandardRuleQuery(tfQuery)
+				payloadQueries[idx] = *buildUpdateStandardRuleQuery(tfQuery)
 			}
 		}
 
@@ -1079,10 +1081,10 @@ func buildUpdatePayload(d *schema.ResourceData) (datadogV2.SecurityMonitoringRul
 		payload.SetFilters(buildPayloadFilters(tfFilters))
 	}
 
-	return payload, nil
+	return &payload, nil
 }
 
-func buildUpdateStandardRuleQuery(tfQuery interface{}) datadogV2.SecurityMonitoringRuleQuery {
+func buildUpdateStandardRuleQuery(tfQuery interface{}) *datadogV2.SecurityMonitoringRuleQuery {
 	query := tfQuery.(map[string]interface{})
 	payloadQuery := datadogV2.SecurityMonitoringStandardRuleQuery{}
 
@@ -1135,7 +1137,8 @@ func buildUpdateStandardRuleQuery(tfQuery interface{}) datadogV2.SecurityMonitor
 	queryQuery := query["query"].(string)
 	payloadQuery.SetQuery(queryQuery)
 
-	return datadogV2.SecurityMonitoringStandardRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery)
+	standardRuleQuery := datadogV2.SecurityMonitoringStandardRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery)
+	return &standardRuleQuery
 }
 
 func buildUpdateSignalRuleQuery(tfQuery interface{}) (datadogV2.SecurityMonitoringRuleQuery, error) {
