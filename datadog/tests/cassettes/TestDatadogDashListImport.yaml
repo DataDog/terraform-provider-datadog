@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"free","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestDatadogDashListImport-local-1684769015-screen","widgets":[{"definition":{"event_size":"l","query":"*","show_year":false,"time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_stream"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"free","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestDatadogDashListImport-local-1682529591-screen","widgets":[{"definition":{"event_size":"l","query":"*","time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_stream"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"id":"vme-uc7-6xm","title":"tf-TestDatadogDashListImport-local-1684769015-screen","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/vme-uc7-6xm/tf-testdatadogdashlistimport-local-1684769015-screen","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"event_size":"l","query":"*","show_year":false,"time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_stream"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":5333516309290719}],"notify_list":[],"created_at":"2023-05-22T15:23:37.360175+00:00","modified_at":"2023-05-22T15:23:37.360175+00:00","template_variable_presets":[],"tags":[]}
+      {"id":"rxf-5db-53y","title":"tf-TestDatadogDashListImport-local-1682529591-screen","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/rxf-5db-53y/tf-testdatadogdashlistimport-local-1682529591-screen","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"event_size":"l","query":"*","time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_stream"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":6324982369876596}],"notify_list":[],"created_at":"2023-04-26T17:19:53.363443+00:00","modified_at":"2023-04-26T17:19:53.363443+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/vme-uc7-6xm
+    url: https://api.datadoghq.com/api/v1/dashboard/rxf-5db-53y
     method: GET
   response:
     body: |
-      {"id":"vme-uc7-6xm","title":"tf-TestDatadogDashListImport-local-1684769015-screen","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/vme-uc7-6xm/tf-testdatadogdashlistimport-local-1684769015-screen","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"event_size":"l","query":"*","show_year":false,"time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_stream"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":5333516309290719}],"notify_list":[],"created_at":"2023-05-22T15:23:37.360175+00:00","modified_at":"2023-05-22T15:23:37.360175+00:00","template_variable_presets":[],"tags":[]}
+      {"id":"rxf-5db-53y","title":"tf-TestDatadogDashListImport-local-1682529591-screen","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/rxf-5db-53y/tf-testdatadogdashlistimport-local-1682529591-screen","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"event_size":"l","query":"*","time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_stream"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":6324982369876596}],"notify_list":[],"created_at":"2023-04-26T17:19:53.363443+00:00","modified_at":"2023-04-26T17:19:53.363443+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -40,7 +40,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestDatadogDashListImport-local-1684769015-time","widgets":[{"definition":{"alert_id":"1234","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestDatadogDashListImport-local-1682529591-time","widgets":[{"definition":{"alert_id":"1234","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"}}]}
     form: {}
     headers:
       Accept:
@@ -51,7 +51,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"id":"xxd-pbg-ndz","title":"tf-TestDatadogDashListImport-local-1684769015-time","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/xxd-pbg-ndz/tf-testdatadogdashlistimport-local-1684769015-time","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"1234","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"},"id":6487354593474754}],"notify_list":[],"created_at":"2023-05-22T15:23:37.766650+00:00","modified_at":"2023-05-22T15:23:37.766650+00:00","template_variable_presets":[],"tags":[]}
+      {"id":"5uw-8vd-z53","title":"tf-TestDatadogDashListImport-local-1682529591-time","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/5uw-8vd-z53/tf-testdatadogdashlistimport-local-1682529591-time","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"1234","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"},"id":3682516369002652}],"notify_list":[],"created_at":"2023-04-26T17:19:54.110283+00:00","modified_at":"2023-04-26T17:19:54.110283+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -64,11 +64,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/xxd-pbg-ndz
+    url: https://api.datadoghq.com/api/v1/dashboard/5uw-8vd-z53
     method: GET
   response:
     body: |
-      {"id":"xxd-pbg-ndz","title":"tf-TestDatadogDashListImport-local-1684769015-time","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/xxd-pbg-ndz/tf-testdatadogdashlistimport-local-1684769015-time","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"1234","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"},"id":6487354593474754}],"notify_list":[],"created_at":"2023-05-22T15:23:37.766650+00:00","modified_at":"2023-05-22T15:23:37.766650+00:00","template_variable_presets":[],"tags":[]}
+      {"id":"5uw-8vd-z53","title":"tf-TestDatadogDashListImport-local-1682529591-time","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/5uw-8vd-z53/tf-testdatadogdashlistimport-local-1682529591-time","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"1234","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"},"id":3682516369002652}],"notify_list":[],"created_at":"2023-04-26T17:19:54.110283+00:00","modified_at":"2023-04-26T17:19:54.110283+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -77,7 +77,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"name":"tf-TestDatadogDashListImport-local-1684769015"}
+      {"name":"tf-TestDatadogDashListImport-local-1682529591"}
     form: {}
     headers:
       Accept:
@@ -88,7 +88,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-05-22T15:23:38.048325+00:00","dashboards":null,"dashboard_count":0,"id":387660,"is_favorite":false,"modified":"2023-05-22T15:23:38.048331+00:00","name":"tf-TestDatadogDashListImport-local-1684769015","type":"manual_dashboard_list"}
+      {"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-26T17:19:54.538351+00:00","dashboards":null,"dashboard_count":0,"id":381158,"is_favorite":false,"modified":"2023-04-26T17:19:54.538357+00:00","name":"tf-TestDatadogDashListImport-local-1682529591","type":"manual_dashboard_list"}
     headers:
       Content-Type:
       - application/json
@@ -97,18 +97,18 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"dashboards":[{"id":"xxd-pbg-ndz","type":"custom_timeboard"},{"id":"vme-uc7-6xm","type":"custom_screenboard"}]}
+      {"dashboards":[{"id":"5uw-8vd-z53","type":"custom_timeboard"},{"id":"rxf-5db-53y","type":"custom_screenboard"}]}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/dashboard/lists/manual/387660/dashboards
+    url: https://api.datadoghq.com/api/v2/dashboard/lists/manual/381158/dashboards
     method: PUT
   response:
     body: |
-      {"dashboards":[{"type":"custom_timeboard","id":"xxd-pbg-ndz"},{"type":"custom_screenboard","id":"vme-uc7-6xm"}]}
+      {"dashboards":[{"type":"custom_timeboard","id":"5uw-8vd-z53"},{"type":"custom_screenboard","id":"rxf-5db-53y"}]}
     headers:
       Content-Type:
       - application/json
@@ -121,11 +121,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/387660
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/381158
     method: GET
   response:
     body: |
-      {"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-05-22T15:23:38.048325+00:00","dashboards":null,"dashboard_count":2,"id":387660,"is_favorite":false,"modified":"2023-05-22T15:23:38.190360+00:00","name":"tf-TestDatadogDashListImport-local-1684769015","type":"manual_dashboard_list"}
+      {"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-26T17:19:54.538351+00:00","dashboards":null,"dashboard_count":2,"id":381158,"is_favorite":false,"modified":"2023-04-26T17:19:54.756161+00:00","name":"tf-TestDatadogDashListImport-local-1682529591","type":"manual_dashboard_list"}
     headers:
       Content-Type:
       - application/json
@@ -138,11 +138,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/dashboard/lists/manual/387660/dashboards
+    url: https://api.datadoghq.com/api/v2/dashboard/lists/manual/381158/dashboards
     method: GET
   response:
     body: |
-      {"dashboards":[{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-05-22T15:23:37.766650+00:00","is_favorite":false,"is_shared":false,"modified":"2023-05-22T15:23:37.766650+00:00","title":"tf-TestDatadogDashListImport-local-1684769015-time","type":"custom_timeboard","id":"xxd-pbg-ndz","url":"/dashboard/xxd-pbg-ndz/tf-testdatadogdashlistimport-local-1684769015-time","is_read_only":true,"tags":[],"icon":null,"integration_id":null,"popularity":0},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-05-22T15:23:37.360175+00:00","is_favorite":false,"is_shared":false,"modified":"2023-05-22T15:23:37.360175+00:00","title":"tf-TestDatadogDashListImport-local-1684769015-screen","type":"custom_screenboard","id":"vme-uc7-6xm","url":"/dashboard/vme-uc7-6xm/tf-testdatadogdashlistimport-local-1684769015-screen","is_read_only":false,"tags":[],"icon":null,"integration_id":null,"popularity":0}],"total":2}
+      {"dashboards":[{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-26T17:19:54.110283+00:00","is_favorite":false,"is_shared":false,"modified":"2023-04-26T17:19:54.110283+00:00","title":"tf-TestDatadogDashListImport-local-1682529591-time","type":"custom_timeboard","id":"5uw-8vd-z53","url":"/dashboard/5uw-8vd-z53/tf-testdatadogdashlistimport-local-1682529591-time","is_read_only":true,"tags":[],"icon":null,"integration_id":null,"popularity":0},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-26T17:19:53.363443+00:00","is_favorite":false,"is_shared":false,"modified":"2023-04-26T17:19:53.363443+00:00","title":"tf-TestDatadogDashListImport-local-1682529591-screen","type":"custom_screenboard","id":"rxf-5db-53y","url":"/dashboard/rxf-5db-53y/tf-testdatadogdashlistimport-local-1682529591-screen","is_read_only":false,"tags":[],"icon":null,"integration_id":null,"popularity":0}],"total":2}
     headers:
       Content-Type:
       - application/json
@@ -155,11 +155,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/vme-uc7-6xm
+    url: https://api.datadoghq.com/api/v1/dashboard/rxf-5db-53y
     method: GET
   response:
     body: |
-      {"id":"vme-uc7-6xm","title":"tf-TestDatadogDashListImport-local-1684769015-screen","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/vme-uc7-6xm/tf-testdatadogdashlistimport-local-1684769015-screen","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"event_size":"l","query":"*","show_year":false,"time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_stream"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":5333516309290719}],"notify_list":[],"created_at":"2023-05-22T15:23:37.360175+00:00","modified_at":"2023-05-22T15:23:37.360175+00:00","template_variable_presets":[],"tags":[]}
+      {"id":"rxf-5db-53y","title":"tf-TestDatadogDashListImport-local-1682529591-screen","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/rxf-5db-53y/tf-testdatadogdashlistimport-local-1682529591-screen","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"event_size":"l","query":"*","time":{"live_span":"1h"},"title":"Widget Title","title_align":"left","title_size":"16","type":"event_stream"},"layout":{"height":43,"width":32,"x":5,"y":5},"id":6324982369876596}],"notify_list":[],"created_at":"2023-04-26T17:19:53.363443+00:00","modified_at":"2023-04-26T17:19:53.363443+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -172,11 +172,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/xxd-pbg-ndz
+    url: https://api.datadoghq.com/api/v1/dashboard/5uw-8vd-z53
     method: GET
   response:
     body: |
-      {"id":"xxd-pbg-ndz","title":"tf-TestDatadogDashListImport-local-1684769015-time","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/xxd-pbg-ndz/tf-testdatadogdashlistimport-local-1684769015-time","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"1234","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"},"id":6487354593474754}],"notify_list":[],"created_at":"2023-05-22T15:23:37.766650+00:00","modified_at":"2023-05-22T15:23:37.766650+00:00","template_variable_presets":[],"tags":[]}
+      {"id":"5uw-8vd-z53","title":"tf-TestDatadogDashListImport-local-1682529591-time","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/5uw-8vd-z53/tf-testdatadogdashlistimport-local-1682529591-time","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"1234","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"},"id":3682516369002652}],"notify_list":[],"created_at":"2023-04-26T17:19:54.110283+00:00","modified_at":"2023-04-26T17:19:54.110283+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -189,11 +189,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/387660
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/381158
     method: GET
   response:
     body: |
-      {"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-05-22T15:23:38.048325+00:00","dashboards":null,"dashboard_count":2,"id":387660,"is_favorite":false,"modified":"2023-05-22T15:23:38.190360+00:00","name":"tf-TestDatadogDashListImport-local-1684769015","type":"manual_dashboard_list"}
+      {"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-26T17:19:54.538351+00:00","dashboards":null,"dashboard_count":2,"id":381158,"is_favorite":false,"modified":"2023-04-26T17:19:54.756161+00:00","name":"tf-TestDatadogDashListImport-local-1682529591","type":"manual_dashboard_list"}
     headers:
       Content-Type:
       - application/json
@@ -206,11 +206,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/dashboard/lists/manual/387660/dashboards
+    url: https://api.datadoghq.com/api/v2/dashboard/lists/manual/381158/dashboards
     method: GET
   response:
     body: |
-      {"dashboards":[{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-05-22T15:23:37.766650+00:00","is_favorite":false,"is_shared":false,"modified":"2023-05-22T15:23:37.766650+00:00","title":"tf-TestDatadogDashListImport-local-1684769015-time","type":"custom_timeboard","id":"xxd-pbg-ndz","url":"/dashboard/xxd-pbg-ndz/tf-testdatadogdashlistimport-local-1684769015-time","is_read_only":true,"tags":[],"icon":null,"integration_id":null,"popularity":0},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-05-22T15:23:37.360175+00:00","is_favorite":false,"is_shared":false,"modified":"2023-05-22T15:23:37.360175+00:00","title":"tf-TestDatadogDashListImport-local-1684769015-screen","type":"custom_screenboard","id":"vme-uc7-6xm","url":"/dashboard/vme-uc7-6xm/tf-testdatadogdashlistimport-local-1684769015-screen","is_read_only":false,"tags":[],"icon":null,"integration_id":null,"popularity":0}],"total":2}
+      {"dashboards":[{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-26T17:19:54.110283+00:00","is_favorite":false,"is_shared":false,"modified":"2023-04-26T17:19:54.110283+00:00","title":"tf-TestDatadogDashListImport-local-1682529591-time","type":"custom_timeboard","id":"5uw-8vd-z53","url":"/dashboard/5uw-8vd-z53/tf-testdatadogdashlistimport-local-1682529591-time","is_read_only":true,"tags":[],"icon":null,"integration_id":null,"popularity":0},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-26T17:19:53.363443+00:00","is_favorite":false,"is_shared":false,"modified":"2023-04-26T17:19:53.363443+00:00","title":"tf-TestDatadogDashListImport-local-1682529591-screen","type":"custom_screenboard","id":"rxf-5db-53y","url":"/dashboard/rxf-5db-53y/tf-testdatadogdashlistimport-local-1682529591-screen","is_read_only":false,"tags":[],"icon":null,"integration_id":null,"popularity":0}],"total":2}
     headers:
       Content-Type:
       - application/json
@@ -223,11 +223,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/387660
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/381158
     method: GET
   response:
     body: |
-      {"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-05-22T15:23:38.048325+00:00","dashboards":null,"dashboard_count":2,"id":387660,"is_favorite":false,"modified":"2023-05-22T15:23:38.190360+00:00","name":"tf-TestDatadogDashListImport-local-1684769015","type":"manual_dashboard_list"}
+      {"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-26T17:19:54.538351+00:00","dashboards":null,"dashboard_count":2,"id":381158,"is_favorite":false,"modified":"2023-04-26T17:19:54.756161+00:00","name":"tf-TestDatadogDashListImport-local-1682529591","type":"manual_dashboard_list"}
     headers:
       Content-Type:
       - application/json
@@ -240,11 +240,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/dashboard/lists/manual/387660/dashboards
+    url: https://api.datadoghq.com/api/v2/dashboard/lists/manual/381158/dashboards
     method: GET
   response:
     body: |
-      {"dashboards":[{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-05-22T15:23:37.766650+00:00","is_favorite":false,"is_shared":false,"modified":"2023-05-22T15:23:37.766650+00:00","title":"tf-TestDatadogDashListImport-local-1684769015-time","type":"custom_timeboard","id":"xxd-pbg-ndz","url":"/dashboard/xxd-pbg-ndz/tf-testdatadogdashlistimport-local-1684769015-time","is_read_only":true,"tags":[],"icon":null,"integration_id":null,"popularity":0},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-05-22T15:23:37.360175+00:00","is_favorite":false,"is_shared":false,"modified":"2023-05-22T15:23:37.360175+00:00","title":"tf-TestDatadogDashListImport-local-1684769015-screen","type":"custom_screenboard","id":"vme-uc7-6xm","url":"/dashboard/vme-uc7-6xm/tf-testdatadogdashlistimport-local-1684769015-screen","is_read_only":false,"tags":[],"icon":null,"integration_id":null,"popularity":0}],"total":2}
+      {"dashboards":[{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-26T17:19:54.110283+00:00","is_favorite":false,"is_shared":false,"modified":"2023-04-26T17:19:54.110283+00:00","title":"tf-TestDatadogDashListImport-local-1682529591-time","type":"custom_timeboard","id":"5uw-8vd-z53","url":"/dashboard/5uw-8vd-z53/tf-testdatadogdashlistimport-local-1682529591-time","is_read_only":true,"tags":[],"icon":null,"integration_id":null,"popularity":0},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-26T17:19:53.363443+00:00","is_favorite":false,"is_shared":false,"modified":"2023-04-26T17:19:53.363443+00:00","title":"tf-TestDatadogDashListImport-local-1682529591-screen","type":"custom_screenboard","id":"rxf-5db-53y","url":"/dashboard/rxf-5db-53y/tf-testdatadogdashlistimport-local-1682529591-screen","is_read_only":false,"tags":[],"icon":null,"integration_id":null,"popularity":0}],"total":2}
     headers:
       Content-Type:
       - application/json
@@ -257,11 +257,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/387660
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/381158
     method: DELETE
   response:
     body: |
-      {"deleted_dashboard_list_id":387660}
+      {"deleted_dashboard_list_id":381158}
     headers:
       Content-Type:
       - application/json
@@ -274,11 +274,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/xxd-pbg-ndz
+    url: https://api.datadoghq.com/api/v1/dashboard/5uw-8vd-z53
     method: DELETE
   response:
     body: |
-      {"deleted_dashboard_id":"xxd-pbg-ndz"}
+      {"deleted_dashboard_id":"5uw-8vd-z53"}
     headers:
       Content-Type:
       - application/json
@@ -291,11 +291,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/vme-uc7-6xm
+    url: https://api.datadoghq.com/api/v1/dashboard/rxf-5db-53y
     method: DELETE
   response:
     body: |
-      {"deleted_dashboard_id":"vme-uc7-6xm"}
+      {"deleted_dashboard_id":"rxf-5db-53y"}
     headers:
       Content-Type:
       - application/json
@@ -308,10 +308,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/387660
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/381158
     method: GET
   response:
-    body: '{"errors":["Manual Dashboard List with id 387660 not found"]}'
+    body: '{"errors":["Manual Dashboard List with id 381158 not found"]}'
     headers:
       Content-Type:
       - application/json
