@@ -10260,6 +10260,7 @@ Optional:
 - `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
 - `indexes` (List of String) List of indexes.
 - `query_string` (String) Widget query.
+- `show_year` (Boolean) Whether to show the year in the date column of the widget or not.
 - `storage` (String) Storage location (private beta).
 
 
