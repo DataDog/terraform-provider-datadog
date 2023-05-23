@@ -41,7 +41,7 @@ resource "datadog_team_membership" "foo" {
 
 ### Optional
 
-- `role` (String) The user's role within the team.
+- `role` (String) The user's role within the team. Valid values are `admin`.
 
 ### Read-Only
 

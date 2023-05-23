@@ -11,9 +11,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 var (
@@ -38,22 +40,13 @@ func NewTeamMembershipResource() resource.Resource {
 }
 
 func (r *TeamMembershipResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
-		return
-	}
-
+	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetTeamsApiV2()
 	r.Auth = providerData.Auth
 }
 
 func (r *TeamMembershipResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "team_membership"
+	response.TypeName = "team_membership"
 }
 
 func (r *TeamMembershipResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
@@ -79,6 +72,9 @@ func (r *TeamMembershipResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"role": schema.StringAttribute{
 				Optional:    true,
 				Description: "The user's role within the team.",
+				Validators: []validator.String{
+					validators.NewEnumValidator[validator.String](datadogV2.NewUserTeamRoleFromValue),
+				},
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
