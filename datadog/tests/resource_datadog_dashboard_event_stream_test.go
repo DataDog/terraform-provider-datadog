@@ -20,7 +20,6 @@ resource "datadog_dashboard" "event_stream_dashboard" {
 			query = "*"
 			event_size = "l"
 			live_span = "4h"
-			show_year = true
 		}
 		widget_layout {
 			height = 43
@@ -67,7 +66,6 @@ var datadogDashboardEventStreamAsserts = []string{
 	"widget.0.widget_layout.0.y = 5",
 	"widget.0.event_stream_definition.0.title_align = right",
 	"widget.0.event_stream_definition.0.live_span = 4h",
-	"widget.0.event_stream_definition.0.show_year = true",
 	"widget.0.widget_layout.0.width = 32",
 	"widget.0.event_stream_definition.0.event_size = l",
 	"layout_type = free",
