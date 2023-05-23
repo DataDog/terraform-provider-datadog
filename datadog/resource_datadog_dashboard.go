@@ -5349,6 +5349,11 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 						Optional:         true,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetEventSizeFromValue),
 					},
+					"show_year": {
+						Description: "Whether to show the year in the date column of the widget or not.",
+						Type:        schema.TypeBool,
+						Optional:    true,
+					},
 					"indexes": {
 						Description: "List of indexes.",
 						Type:        schema.TypeList,
