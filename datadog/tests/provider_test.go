@@ -42,6 +42,7 @@ type clockContextKey string
 const ddTestOrg = "fasjyydbcgwwc2uc"
 const testAPIKeyEnvName = "DD_TEST_CLIENT_API_KEY"
 const testAPPKeyEnvName = "DD_TEST_CLIENT_APP_KEY"
+const testAPIUrlEnvName = "DD_TEST_SITE_URL"
 const testOrgEnvName = "DD_TEST_ORG"
 
 var isTestOrgC *bool
@@ -247,13 +248,20 @@ func isTestOrg() bool {
 	if isTestOrgC != nil {
 		return *isTestOrgC
 	}
+
+	var apiURL string
+	if apiURL = os.Getenv(testAPIUrlEnvName); apiURL == "" {
+		apiURL = "https://api.datadoghq.com"
+	}
+
 	// If keys belong to test org, then this get will succeed, otherwise it will fail with 400
 	publicID := ddTestOrg
 	if v := os.Getenv(testOrgEnvName); v != "" {
 		publicID = v
 	}
+
 	client := &http.Client{}
-	req, _ := http.NewRequest("GET", "https://api.datadoghq.com/api/v1/org/"+publicID, nil)
+	req, _ := http.NewRequest("GET", fmt.Sprintf("%s/%s/%s", strings.TrimRight(apiURL, "/"), "api/v1/org", publicID), nil)
 	req.Header.Add("DD-API-KEY", os.Getenv(testAPIKeyEnvName))
 	req.Header.Add("DD-APPLICATION-KEY", os.Getenv(testAPPKeyEnvName))
 	resp, err := client.Do(req)
@@ -645,7 +653,12 @@ func TestProvider_impl(t *testing.T) {
 
 func testAccPreCheck(t *testing.T) {
 	// Unset all regular env to avoid mistakenly running tests against wrong org
-	for _, v := range append(utils.APPKeyEnvVars, utils.APIKeyEnvVars...) {
+	var envVars []string
+	envVars = append(envVars, utils.APPKeyEnvVars...)
+	envVars = append(envVars, utils.APIKeyEnvVars...)
+	envVars = append(envVars, utils.APIUrlEnvVars...)
+
+	for _, v := range envVars {
 		_ = os.Unsetenv(v)
 	}
 
@@ -676,6 +689,9 @@ func testAccPreCheck(t *testing.T) {
 
 	if err := os.Setenv(utils.DDAPPKeyEnvName, os.Getenv(testAPPKeyEnvName)); err != nil {
 		t.Fatalf("Error setting API key: %v", err)
+	}
+	if err := os.Setenv(utils.DDAPIUrlEnvName, os.Getenv(testAPIUrlEnvName)); err != nil {
+		t.Fatalf("Error setting API url: %v", err)
 	}
 }
 

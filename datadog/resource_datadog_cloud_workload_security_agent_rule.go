@@ -68,7 +68,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleCreate(ctx context.Context, d 
 		return diag.FromErr(err)
 	}
 
-	return updateCloudWorkloadSecurityAgentRuleState(d, response)
+	return updateCloudWorkloadSecurityAgentRuleState(d, &response)
 }
 
 func resourceDatadogCloudWorkloadSecurityAgentRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -89,7 +89,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleRead(ctx context.Context, d *s
 		return diag.FromErr(err)
 	}
 
-	return updateCloudWorkloadSecurityAgentRuleState(d, agentRuleResponse)
+	return updateCloudWorkloadSecurityAgentRuleState(d, &agentRuleResponse)
 }
 
 func resourceDatadogCloudWorkloadSecurityAgentRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -107,7 +107,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleUpdate(ctx context.Context, d 
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating cloud workload security agent rule")
 	}
 
-	return updateCloudWorkloadSecurityAgentRuleState(d, agentRuleResponse)
+	return updateCloudWorkloadSecurityAgentRuleState(d, &agentRuleResponse)
 }
 
 func resourceDatadogCloudWorkloadSecurityAgentRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -124,7 +124,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleDelete(ctx context.Context, d 
 	return nil
 }
 
-func updateCloudWorkloadSecurityAgentRuleState(d *schema.ResourceData, agentRuleResponse datadogV2.CloudWorkloadSecurityAgentRuleResponse) diag.Diagnostics {
+func updateCloudWorkloadSecurityAgentRuleState(d *schema.ResourceData, agentRuleResponse *datadogV2.CloudWorkloadSecurityAgentRuleResponse) diag.Diagnostics {
 	data := agentRuleResponse.GetData()
 	d.SetId(data.GetId())
 

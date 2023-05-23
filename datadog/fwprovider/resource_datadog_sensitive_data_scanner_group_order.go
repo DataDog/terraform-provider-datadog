@@ -34,22 +34,13 @@ type SensitiveDataScannerGroupOrder struct {
 }
 
 func (r *SensitiveDataScannerGroupOrder) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
-		return
-	}
-
+	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetSensitiveDataScannerApiV2()
 	r.Auth = providerData.Auth
 }
 
 func (r *SensitiveDataScannerGroupOrder) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "sensitive_data_scanner_group_order"
+	response.TypeName = "sensitive_data_scanner_group_order"
 }
 
 func (r *SensitiveDataScannerGroupOrder) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {

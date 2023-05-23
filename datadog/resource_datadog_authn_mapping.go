@@ -49,7 +49,7 @@ func resourceDatadogAuthnMappingCreate(ctx context.Context, d *schema.ResourceDa
 	auth := meta.(*ProviderConfiguration).Auth
 	authNMapReq := buildAuthNMappingCreateRequest(d)
 
-	createResp, httpResponse, err := apiInstances.GetAuthNMappingsApiV2().CreateAuthNMapping(auth, authNMapReq)
+	createResp, httpResponse, err := apiInstances.GetAuthNMappingsApiV2().CreateAuthNMapping(auth, *authNMapReq)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating authn mapping")
 	}
@@ -105,7 +105,7 @@ func resourceDatadogAuthnMappingUpdate(ctx context.Context, d *schema.ResourceDa
 	auth := meta.(*ProviderConfiguration).Auth
 
 	req := buildAuthNMappingUpdateRequest(d)
-	resp, httpResponse, err := apiInstances.GetAuthNMappingsApiV2().UpdateAuthNMapping(auth, d.Id(), req)
+	resp, httpResponse, err := apiInstances.GetAuthNMappingsApiV2().UpdateAuthNMapping(auth, d.Id(), *req)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating role mapping")
@@ -151,7 +151,7 @@ func updateAuthNMappingState(d *schema.ResourceData, authNMapping *datadogV2.Aut
 	return nil
 }
 
-func buildAuthNMappingCreateRequest(d *schema.ResourceData) datadogV2.AuthNMappingCreateRequest {
+func buildAuthNMappingCreateRequest(d *schema.ResourceData) *datadogV2.AuthNMappingCreateRequest {
 	authNMappingCreateRequest := datadogV2.NewAuthNMappingCreateRequestWithDefaults()
 	authNMappingCreateData := datadogV2.NewAuthNMappingCreateDataWithDefaults()
 	authNMappingCreateAttrs := datadogV2.NewAuthNMappingCreateAttributesWithDefaults()
@@ -171,10 +171,10 @@ func buildAuthNMappingCreateRequest(d *schema.ResourceData) datadogV2.AuthNMappi
 
 	// Set AuthN mapping create request
 	authNMappingCreateRequest.SetData(*authNMappingCreateData)
-	return *authNMappingCreateRequest
+	return authNMappingCreateRequest
 }
 
-func buildAuthNMappingUpdateRequest(d *schema.ResourceData) datadogV2.AuthNMappingUpdateRequest {
+func buildAuthNMappingUpdateRequest(d *schema.ResourceData) *datadogV2.AuthNMappingUpdateRequest {
 	authNMappingUpdateRequest := datadogV2.NewAuthNMappingUpdateRequestWithDefaults()
 	authNMappingUpdateData := datadogV2.NewAuthNMappingUpdateDataWithDefaults()
 	authNMappingUpdateAttrs := datadogV2.NewAuthNMappingUpdateAttributesWithDefaults()
@@ -195,7 +195,7 @@ func buildAuthNMappingUpdateRequest(d *schema.ResourceData) datadogV2.AuthNMappi
 
 	// Set AuthN mapping update request
 	authNMappingUpdateRequest.SetData(*authNMappingUpdateData)
-	return *authNMappingUpdateRequest
+	return authNMappingUpdateRequest
 }
 
 func buildRoleRelations(d *schema.ResourceData) *datadogV2.RelationshipToRole {
