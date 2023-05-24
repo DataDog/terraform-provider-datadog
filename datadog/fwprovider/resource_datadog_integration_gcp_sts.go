@@ -2,6 +2,8 @@ package fwprovider
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
@@ -40,10 +42,6 @@ type datadogIntegrationGCPSTSResourceModel struct {
 	EnableCspm          types.Bool   `tfsdk:"enable_cspm"`
 	HostFilters         types.List   `tfsdk:"host_filters"`
 }
-
-const (
-	defaultType = "gcp_service_account"
-)
 
 // Metadata returns the resource name.
 func (r *datadogIntegrationGCPSTSResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -85,7 +83,7 @@ func (r *datadogIntegrationGCPSTSResource) Schema(_ context.Context, _ resource.
 				},
 			},
 			"id": schema.StringAttribute{
-				Description: "Datadog's Unique ID generated for your STS-enabled GCP service account.",
+				Description: "Your STS-enabled GCP service account's unique ID.",
 				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
@@ -121,7 +119,7 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 		return
 	}
 
-	delegateResponse, _, err := r.GcpApi.MakeDelegateV2(r.Auth, *datadogV2.NewMakeDelegateV2OptionalParameters())
+	delegateResponse, _, err := r.GcpApi.MakeGCPSTSDelegate(r.Auth, *datadogV2.NewMakeGCPSTSDelegateOptionalParameters())
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating GCP Delegate within Datadog",
 			"Could not create Delegate Service Account, unexpected error: "+err.Error())
@@ -155,24 +153,23 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 	}
 
 	saInfo := datadogV2.GCPServiceAccountCreateRequestData{
-		Data: &datadogV2.GCPServiceAccountMetadata{
+		Data: &datadogV2.GCPServiceAccountData{
 			Attributes: &datadogV2.GCPServiceAccountAttributes{
 				ClientEmail:   stringToPointer(plan.ServiceAccountEmail.ValueString()),
 				Automute:      boolToPointer(enableAutomute),
 				IsCspmEnabled: boolToPointer(enableCSPM),
 				HostFilters:   hostFilters,
 			},
-			Type: stringToPointer(defaultType),
+			Type: datadogV2.GCPSERVICEACCOUNTTYPE_GCP_SERVICE_ACCOUNT.Ptr(),
 		},
 	}
 
-	createResponse, _, err := r.GcpApi.CreateGCPSTSAccountsV2(r.Auth, saInfo)
+	createResponse, _, err := r.GcpApi.CreateGCPSTSAccount(r.Auth, saInfo)
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating STS service account",
 			"Error creating an entry within Datadog for your STS enabled service account: "+err.Error())
 		return
 	}
-
 	createdServiceAccountInfo := createResponse.GetData()
 
 	// Set the "computed" values.
@@ -195,61 +192,47 @@ func (r *datadogIntegrationGCPSTSResource) Read(ctx context.Context, req resourc
 		return
 	}
 
-	delegateResponse, _, err := r.GcpApi.GetDelegateV2(r.Auth, *datadogV2.NewGetDelegateV2OptionalParameters())
+	delegateResponse, _, err := r.GcpApi.GetGCPSTSDelegate(r.Auth)
 	if err != nil {
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving STS delegate"))
 		return
 	}
 
-	delegateResponseData := delegateResponse.GetData()
-	delegateAttributes := delegateResponseData.GetAttributes()
-	state.DelegateEmail = types.StringValue(delegateAttributes.GetDelegateAccountEmail())
+	delegateEmail, err := extractDelegateAccountEmail(delegateResponse)
+	if err != nil {
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting delegate account email"))
+		return
+	}
+	state.DelegateEmail = delegateEmail
 
-	stsEnabledAccounts, _, err := r.GcpApi.ListGCPSTSAccountsV2(r.Auth)
+	stsEnabledAccounts, _, err := r.GcpApi.ListGCPSTSAccounts(r.Auth)
 	if err != nil {
 		resp.Diagnostics.AddError("Error retrieving STS service accounts",
 			"Error listing GCP STS Accounts: "+err.Error())
 		return
 	}
 
-	// Find Service Account by ID.
-	var foundAccount *datadogV2.GCPSTSAccount
-	for _, accountObject := range stsEnabledAccounts.GetData() {
-		accountUniqueID := accountObject.GetId()
-
-		if accountUniqueID == state.ID.ValueString() {
-			foundAccount = &accountObject
-			break
-		}
-	}
-	if foundAccount == nil {
-		resp.Diagnostics.AddError("Error finding your service account",
-			"Error couldn't find your service account with ID: "+state.ID.ValueString())
+	foundAccount, err := findServiceAccountByUniqueID(stsEnabledAccounts, state.ID.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("Error finding your service account", err.Error())
 		return
 	}
 
-	// Retrieve Host Filters.
-	accountAttributes := foundAccount.GetAttributes()
-	currentHostFilters := accountAttributes.GetHostFilters()
-
-	var requiredAttributes []attr.Value
-	for _, hostFilter := range currentHostFilters {
-		requiredAttributes = append(requiredAttributes, types.StringValue(hostFilter))
-	}
-	outputListValue, _ := types.ListValue(types.StringType, requiredAttributes)
+	outputListValue, hostFilterCount := getHostFilters(foundAccount)
 
 	// The section below handles optional fields in Terraform.
-	// If an optional field is not used, Teraform state stores a nil value.
-	// However, the API always returns a value for these optional fields (an empty list, a false boolean, etc).
-	// If these optional fields aren't used in Terraform Resources, then these fields should remain nil.
+	// If an optional field is not specified, then Terraform state stores a nil value.
+	// However, the Datadog GCP API always responds with a value for these optional fields (an empty list, a false boolean, etc).
+	// If these optional fields aren't specified within Terraform Resources, then these fields should always remain nil.
 	if state.HostFilters.IsNull() {
-		if len(currentHostFilters) > 0 {
+		if hostFilterCount > 0 {
 			state.HostFilters = outputListValue
 		}
 	} else {
 		state.HostFilters = outputListValue
 	}
 
+	accountAttributes := foundAccount.GetAttributes()
 	if state.Automute.IsNull() {
 		if accountAttributes.GetAutomute() {
 			state.Automute = types.BoolValue(accountAttributes.GetAutomute())
@@ -315,9 +298,9 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 		toEnableAutomute = plan.Automute.ValueBool()
 	}
 
-	updatedSAInfo := datadogV2.GCPServiceAccountPatchBody{
-		Data: &datadogV2.GCPServiceAccountInfoPatch{
-			Type: stringToPointer(defaultType),
+	updatedSAInfo := datadogV2.GCPServiceAccountUpdateRequest{
+		Data: &datadogV2.GCPServiceAccountUpdateRequestData{
+			Type: datadogV2.GCPSERVICEACCOUNTTYPE_GCP_SERVICE_ACCOUNT.Ptr(),
 			Attributes: &datadogV2.GCPServiceAccountAttributes{
 				IsCspmEnabled: boolToPointer(toEnableCSPM),
 				Automute:      boolToPointer(toEnableAutomute),
@@ -328,7 +311,7 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 
 	uniqueAccountID := currentState.ID.ValueString()
 
-	updateResponse, _, err := r.GcpApi.UpdateGCPSTSAccountsV2(r.Auth, uniqueAccountID, updatedSAInfo)
+	updateResponse, _, err := r.GcpApi.UpdateGCPSTSAccount(r.Auth, uniqueAccountID, updatedSAInfo)
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating your service account",
 			"Error: "+err.Error())
@@ -358,7 +341,7 @@ func (r *datadogIntegrationGCPSTSResource) Delete(ctx context.Context, req resou
 		return
 	}
 
-	_, err := r.GcpApi.DeleteGCPSTSAccountsV2(r.Auth, state.ID.ValueString())
+	_, err := r.GcpApi.DeleteGCPSTSAccount(r.Auth, state.ID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error deleting your service account",
 			"Error encountered when attempting to delete your service account from Datadog: "+err.Error())
@@ -376,6 +359,54 @@ func stringToPointer(s string) *string {
 
 func boolToPointer(b bool) *bool {
 	return &b
+}
+
+func getHostFilters(account *datadogV2.GCPSTSAccount) (basetypes.ListValue, int) {
+	accountAttributes := account.GetAttributes()
+
+	currentHostFilters := accountAttributes.GetHostFilters()
+
+	var requiredAttributes []attr.Value
+	for _, hostFilter := range currentHostFilters {
+		requiredAttributes = append(requiredAttributes, types.StringValue(hostFilter))
+	}
+
+	outputListValue, _ := types.ListValue(types.StringType, requiredAttributes)
+
+	return outputListValue, len(requiredAttributes)
+}
+
+func extractDelegateAccountEmail(delegateResponse datadogV2.GCPSTSDelegateResponse) (basetypes.StringValue, error) {
+	delegateResponseData := delegateResponse.GetData()
+
+	delegateAttributes := delegateResponseData.GetAttributes()
+
+	delegateAccountEmail := delegateAttributes.GetDelegateAccountEmail()
+	if delegateAccountEmail == "" {
+		return basetypes.StringValue{}, errors.New("error, delegate account email is empty \"\"")
+	}
+
+	return types.StringValue(delegateAttributes.GetDelegateAccountEmail()), nil
+}
+
+func findServiceAccountByUniqueID(accounts datadogV2.GCPSTSEnabledAccountData, accountToFindID string) (*datadogV2.GCPSTSAccount, error) {
+	if accountToFindID == "" {
+		idEmptyError := errors.New("Error your service account's unique account ID is empty \"\"")
+		return nil, idEmptyError
+	}
+
+	var foundAccount *datadogV2.GCPSTSAccount
+
+	for _, accountObject := range accounts.GetData() {
+		accountID := accountObject.GetId()
+
+		if accountID == accountToFindID {
+			foundAccount = &accountObject
+			return foundAccount, nil
+		}
+	}
+
+	return nil, fmt.Errorf("Error your service account with ID '%s' was not found within Datadog's backend", accountToFindID)
 }
 
 func attributeListToStringList(ctx context.Context, listOfAttributes []attr.Value) ([]string, error) {
