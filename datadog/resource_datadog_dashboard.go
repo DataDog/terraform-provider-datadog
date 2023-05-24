@@ -5395,6 +5395,9 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 				if v, ok := q["event_size"].(string); ds == datadogV1.LISTSTREAMSOURCE_EVENT_STREAM && ok {
 					datadogQuery.SetEventSize(datadogV1.WidgetEventSize(v))
 				}
+				if v, ok := q["show_year"].(bool); ds == datadogV1.LISTSTREAMSOURCE_EVENT_STREAM && ok {
+					datadogQuery.SetShowYear(v)
+				}
 			}
 			if v, ok := q["query_string"].(string); ok {
 				datadogQuery.SetQueryString(v)
@@ -7930,6 +7933,9 @@ func buildTerraformListStreamWidgetRequests(datadogListStreamRequests []datadogV
 		queryRequest["data_source"] = string(q.GetDataSource())
 		if eventSize, ok := q.GetEventSizeOk(); ok && q.GetDataSource() == datadogV1.LISTSTREAMSOURCE_EVENT_STREAM {
 			queryRequest["event_size"] = eventSize
+		}
+		if showYear, ok := q.GetShowYearOk(); ok && q.GetDataSource() == datadogV1.LISTSTREAMSOURCE_EVENT_STREAM {
+			queryRequest["show_year"] = showYear
 		}
 		terraformRequest["query"] = []map[string]interface{}{queryRequest}
 
