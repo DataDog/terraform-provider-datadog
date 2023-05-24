@@ -281,8 +281,8 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 		hostFilterPlanElements := plan.HostFilters.Elements()
 		hostFilters, err := attributeListToStringList(ctx, hostFilterPlanElements)
 		if err != nil {
-			resp.Diagnostics.AddError("Error converting attribute list to strings",
-				"Error converting attribute list to strings: "+err.Error())
+			resp.Diagnostics.AddError("Error converting attribute list to a string list",
+				"Error converting attribute list to a string list: "+err.Error())
 			return
 		}
 		listOfHostFilters = hostFilters
@@ -310,7 +310,6 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 	}
 
 	uniqueAccountID := currentState.ID.ValueString()
-
 	updateResponse, _, err := r.GcpApi.UpdateGCPSTSAccount(r.Auth, uniqueAccountID, updatedSAInfo)
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating your service account",
