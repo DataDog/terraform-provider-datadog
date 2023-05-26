@@ -127,9 +127,9 @@ func integrationGCPSTSAccountExistsHelper(auth context.Context, s *terraform.Sta
 		}
 		id := r.Primary.ID
 
-		accounts, httpResp, err := apiInstances.GetGCPStsIntegrationApiV2().ListGCPSTSAccounts(auth)
+		accounts, httpResp, err := apiInstances.GetGCPIntegrationApiV2().ListGCPSTSAccounts(auth)
 		if err != nil {
-			return utils.TranslateClientError(err, httpResp, "error retrieving STS enabled GCP service account")
+			return utils.TranslateClientError(err, httpResp, "error listing STS enabled GCP service accounts")
 		}
 
 		accountWasFound, err := findGCPAccount(id, accounts)
@@ -169,7 +169,7 @@ func GCPSTSIntegrationDestroyHelper(auth context.Context, s *terraform.State, ap
 			}
 			id := r.Primary.ID
 
-			stsEnabledAccounts, _, err := apiInstances.GetGCPStsIntegrationApiV2().ListGCPSTSAccounts(auth)
+			stsEnabledAccounts, _, err := apiInstances.GetGCPIntegrationApiV2().ListGCPSTSAccounts(auth)
 			if err != nil {
 				return &utils.RetryableError{Prob: fmt.Sprintf("error retrieving STS enabled accounts %s", err)}
 			}
@@ -190,7 +190,7 @@ func GCPSTSIntegrationDestroyHelper(auth context.Context, s *terraform.State, ap
 	return err
 }
 
-func findGCPAccount(accountID string, stsEnabledAccounts datadogV2.STSEnabledAccountData) (bool, error) {
+func findGCPAccount(accountID string, stsEnabledAccounts datadogV2.GCPSTSServiceAccountsResponse) (bool, error) {
 	accounts, ok := stsEnabledAccounts.GetDataOk()
 	if !ok {
 		return false, errors.New("error retrieving Data from GCP accounts")
