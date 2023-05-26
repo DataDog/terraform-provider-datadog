@@ -36,22 +36,13 @@ func New{{ name|camel_case }}Resource() resource.Resource {
 }
 
 func (r *{{ name|camel_case }}Resource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
-		return
-	}
-
+	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.Get{{ apiName }}{{ version }}()
 	r.Auth = providerData.Auth
 }
 
 func (r *{{ name|camel_case }}Resource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "{{ name|snake_case }}"
+	response.TypeName = "{{ name|snake_case }}"
 }
 
 {% include "schema.j2" %}
