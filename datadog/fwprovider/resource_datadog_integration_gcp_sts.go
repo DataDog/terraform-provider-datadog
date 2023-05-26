@@ -152,9 +152,9 @@ func (r *datadogIntegrationGCPSTSResource) Create(ctx context.Context, req resou
 		enableCSPM = plan.EnableCspm.ValueBool()
 	}
 
-	saInfo := datadogV2.GCPServiceAccountCreateRequestData{
-		Data: &datadogV2.GCPServiceAccountData{
-			Attributes: &datadogV2.GCPServiceAccountAttributes{
+	saInfo := datadogV2.GCPSTSServiceAccountCreateRequest{
+		Data: &datadogV2.GCPSTSServiceAccountData{
+			Attributes: &datadogV2.GCPSTSServiceAccountAttributes{
 				ClientEmail:   stringToPointer(plan.ServiceAccountEmail.ValueString()),
 				Automute:      boolToPointer(enableAutomute),
 				IsCspmEnabled: boolToPointer(enableCSPM),
@@ -298,10 +298,10 @@ func (r *datadogIntegrationGCPSTSResource) Update(ctx context.Context, req resou
 		toEnableAutomute = plan.Automute.ValueBool()
 	}
 
-	updatedSAInfo := datadogV2.GCPServiceAccountUpdateRequest{
-		Data: &datadogV2.GCPServiceAccountUpdateRequestData{
+	updatedSAInfo := datadogV2.GCPSTSServiceAccountUpdateRequest{
+		Data: &datadogV2.GCPSTSServiceAccountUpdateRequestData{
 			Type: datadogV2.GCPSERVICEACCOUNTTYPE_GCP_SERVICE_ACCOUNT.Ptr(),
-			Attributes: &datadogV2.GCPServiceAccountAttributes{
+			Attributes: &datadogV2.GCPSTSServiceAccountAttributes{
 				IsCspmEnabled: boolToPointer(toEnableCSPM),
 				Automute:      boolToPointer(toEnableAutomute),
 				HostFilters:   listOfHostFilters,
@@ -360,7 +360,7 @@ func boolToPointer(b bool) *bool {
 	return &b
 }
 
-func getHostFilters(account *datadogV2.GCPSTSAccount) (basetypes.ListValue, int) {
+func getHostFilters(account *datadogV2.GCPSTSServiceAccount) (basetypes.ListValue, int) {
 	accountAttributes := account.GetAttributes()
 
 	currentHostFilters := accountAttributes.GetHostFilters()
@@ -375,7 +375,7 @@ func getHostFilters(account *datadogV2.GCPSTSAccount) (basetypes.ListValue, int)
 	return outputListValue, len(requiredAttributes)
 }
 
-func extractDelegateAccountEmail(delegateResponse datadogV2.GCPSTSDelegateResponse) (basetypes.StringValue, error) {
+func extractDelegateAccountEmail(delegateResponse datadogV2.GCPSTSDelegateAccountResponse) (basetypes.StringValue, error) {
 	delegateResponseData := delegateResponse.GetData()
 
 	delegateAttributes := delegateResponseData.GetAttributes()
@@ -388,13 +388,13 @@ func extractDelegateAccountEmail(delegateResponse datadogV2.GCPSTSDelegateRespon
 	return types.StringValue(delegateAttributes.GetDelegateAccountEmail()), nil
 }
 
-func findServiceAccountByUniqueID(accounts datadogV2.GCPSTSEnabledAccountData, accountToFindID string) (*datadogV2.GCPSTSAccount, error) {
+func findServiceAccountByUniqueID(accounts datadogV2.GCPSTSServiceAccountsResponse, accountToFindID string) (*datadogV2.GCPSTSServiceAccount, error) {
 	if accountToFindID == "" {
 		idEmptyError := errors.New("Error your service account's unique account ID is empty \"\"")
 		return nil, idEmptyError
 	}
 
-	var foundAccount *datadogV2.GCPSTSAccount
+	var foundAccount *datadogV2.GCPSTSServiceAccount
 
 	for _, accountObject := range accounts.GetData() {
 		accountID := accountObject.GetId()
