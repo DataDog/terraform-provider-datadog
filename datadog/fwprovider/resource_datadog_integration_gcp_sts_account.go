@@ -29,6 +29,7 @@ type IntegrationGcpStsAccountModel struct {
 	ID            types.String `tfsdk:"id"`
 	Automute      types.Bool   `tfsdk:"automute"`
 	ClientEmail   types.String `tfsdk:"client_email"`
+	DelegateEmail types.String `tfsdk:"delegate_email"`
 	IsCspmEnabled types.Bool   `tfsdk:"is_cspm_enabled"`
 	HostFilters   types.Set    `tfsdk:"host_filters"`
 }
@@ -62,6 +63,10 @@ func (r *IntegrationGcpStsAccountResource) Schema(_ context.Context, _ resource.
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+			},
+			"delegate_email": schema.StringAttribute{
+				Computed:    true,
+				Description: "Datadog's STS Delegate Email.",
 			},
 			"is_cspm_enabled": schema.BoolAttribute{
 				Optional:    true,
@@ -126,6 +131,19 @@ func (r *IntegrationGcpStsAccountResource) Create(ctx context.Context, request r
 	if response.Diagnostics.HasError() {
 		return
 	}
+
+	// This resource is special and uses datadog delagate account.
+	// The datadog delegate account cannot mutated after creation hence it is safe
+	// to call MakeGCPSTSDelegate multiple times. And to ensure it is created, we call it once before creating
+	// gcp sts resource.
+	delegateResponse, _, err := r.Api.MakeGCPSTSDelegate(r.Auth, *datadogV2.NewMakeGCPSTSDelegateOptionalParameters())
+	if err != nil {
+		response.Diagnostics.AddError("Error creating GCP Delegate within Datadog",
+			"Could not create Delegate Service Account, unexpected error: "+err.Error())
+		return
+	}
+	delegateEmail := delegateResponse.Data.Attributes.GetDelegateAccountEmail()
+	state.DelegateEmail = types.StringValue(delegateEmail)
 
 	body, diags := r.buildIntegrationGcpStsAccountRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
