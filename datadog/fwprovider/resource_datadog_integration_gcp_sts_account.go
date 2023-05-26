@@ -8,6 +8,8 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -57,6 +59,9 @@ func (r *IntegrationGcpStsAccountResource) Schema(_ context.Context, _ resource.
 			"client_email": schema.StringAttribute{
 				Required:    true,
 				Description: "Your service account email address.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"is_cspm_enabled": schema.BoolAttribute{
 				Optional:    true,
