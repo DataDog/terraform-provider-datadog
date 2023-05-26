@@ -1,0 +1,144 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"automute":false,"client_email":"tf-TestAccIntegrationGcpStsAccountBasic-local-1685129217@test-project.iam.gserviceaccount.com","host_filters":["tag:one","tag:two"],"is_cspm_enabled":false},"type":"gcp_service_account"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"gcp_service_account","attributes":{"host_filters":["tag:one","tag:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsAccountBasic-local-1685129217@test-project.iam.gserviceaccount.com","is_cspm_enabled":false},"id":"fbd35c1a-8af6-46e9-8cd8-6e9732844bff"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"host_filters":["tag:one","tag:two"],"automute":false,"client_email":"tf-TestAccIntegrationGcpStsAccountBasic-local-1685129217@test-project.iam.gserviceaccount.com"},"meta":{"accessible_projects":[]},"id":"fbd35c1a-8af6-46e9-8cd8-6e9732844bff"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"gcp_service_account","attributes":{"automute":false,"is_cspm_enabled":false,"client_email":"tf-TestAccIntegrationGcpStsAccountBasic-local-1685129217@test-project.iam.gserviceaccount.com","host_filters":["tag:one","tag:two"]},"meta":{"accessible_projects":[]},"id":"fbd35c1a-8af6-46e9-8cd8-6e9732844bff"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"gcp_service_account","attributes":{"client_email":"tf-TestAccIntegrationGcpStsAccountBasic-local-1685129217@test-project.iam.gserviceaccount.com","is_cspm_enabled":false,"automute":false,"host_filters":["tag:one","tag:two"]},"id":"fbd35c1a-8af6-46e9-8cd8-6e9732844bff","meta":{"accessible_projects":[]}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"automute":true,"client_email":"tf-TestAccIntegrationGcpStsAccountBasic-local-1685129217@test-project.iam.gserviceaccount.com","host_filters":[],"is_cspm_enabled":true},"type":"gcp_service_account"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts/fbd35c1a-8af6-46e9-8cd8-6e9732844bff
+    method: PATCH
+  response:
+    body: |
+      {"data":{"type":"gcp_service_account","id":"fbd35c1a-8af6-46e9-8cd8-6e9732844bff","attributes":{"is_cspm_enabled":true,"client_email":"tf-TestAccIntegrationGcpStsAccountBasic-local-1685129217@test-project.iam.gserviceaccount.com","host_filters":[],"automute":true}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"gcp_service_account","id":"fbd35c1a-8af6-46e9-8cd8-6e9732844bff","attributes":{"automute":true,"client_email":"tf-TestAccIntegrationGcpStsAccountBasic-local-1685129217@test-project.iam.gserviceaccount.com","host_filters":[],"is_cspm_enabled":true},"meta":{"accessible_projects":[]}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"gcp_service_account","meta":{"accessible_projects":[]},"attributes":{"client_email":"tf-TestAccIntegrationGcpStsAccountBasic-local-1685129217@test-project.iam.gserviceaccount.com","is_cspm_enabled":true,"host_filters":[],"automute":true},"id":"fbd35c1a-8af6-46e9-8cd8-6e9732844bff"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts/fbd35c1a-8af6-46e9-8cd8-6e9732844bff
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""

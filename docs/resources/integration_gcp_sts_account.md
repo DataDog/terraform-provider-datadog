@@ -15,12 +15,11 @@ Provides a Datadog IntegrationGcpStsAccount resource. This can be used to create
 ```terraform
 # Create new integration_gcp_sts_account resource
 
-
 resource "datadog_integration_gcp_sts_account" "foo" {
-  automute        = "UPDATE ME"
-  client_email    = "datadog-service-account@test-project.iam.gserviceaccount.com"
-  host_filters    = "UPDATE ME"
-  is_cspm_enabled = "UPDATE ME"
+  client_email = "service-account@example.com"
+  host_filters = ["filter_one", "filter_two"]
+  automute = true
+  is_cspm_enabled = true
 }
 ```
 
@@ -34,7 +33,7 @@ resource "datadog_integration_gcp_sts_account" "foo" {
 ### Optional
 
 - `automute` (Boolean) Silence monitors for expected GCE instance shutdowns.
-- `host_filters` (List of String) Your Host Filters.
+- `host_filters` (Set of String) Your Host Filters.
 - `is_cspm_enabled` (Boolean) When enabled, Datadog performs configuration checks across your Google Cloud environment by continuously scanning every resource.
 
 ### Read-Only
@@ -46,5 +45,5 @@ resource "datadog_integration_gcp_sts_account" "foo" {
 Import is supported using the following syntax:
 
 ```shell
-terraform import datadog_integration_gcp_sts_account.new_list ""
+terraform import datadog_integration_gcp_sts_account.foo "9c303af3-b963-45e0-8c8f-469b9e1a213f"
 ```

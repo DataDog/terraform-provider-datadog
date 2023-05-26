@@ -28,7 +28,7 @@ type IntegrationGcpStsAccountModel struct {
 	Automute      types.Bool   `tfsdk:"automute"`
 	ClientEmail   types.String `tfsdk:"client_email"`
 	IsCspmEnabled types.Bool   `tfsdk:"is_cspm_enabled"`
-	HostFilters   types.List   `tfsdk:"host_filters"`
+	HostFilters   types.Set    `tfsdk:"host_filters"`
 }
 
 func NewIntegrationGcpStsAccountResource() resource.Resource {
@@ -63,7 +63,7 @@ func (r *IntegrationGcpStsAccountResource) Schema(_ context.Context, _ resource.
 				Computed:    true,
 				Description: "When enabled, Datadog performs configuration checks across your Google Cloud environment by continuously scanning every resource.",
 			},
-			"host_filters": schema.ListAttribute{
+			"host_filters": schema.SetAttribute{
 				Optional:    true,
 				Description: "Your Host Filters.",
 				ElementType: types.StringType,
@@ -203,7 +203,7 @@ func (r *IntegrationGcpStsAccountResource) updateState(ctx context.Context, stat
 		state.ClientEmail = types.StringValue(*clientEmail)
 	}
 	if hostFilters, ok := attributes.GetHostFiltersOk(); ok && len(*hostFilters) > 0 {
-		state.HostFilters, _ = types.ListValueFrom(ctx, types.StringType, *hostFilters)
+		state.HostFilters, _ = types.SetValueFrom(ctx, types.StringType, *hostFilters)
 	}
 	if isCspmEnabled, ok := attributes.GetIsCspmEnabledOk(); ok {
 		state.IsCspmEnabled = types.BoolValue(*isCspmEnabled)
