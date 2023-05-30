@@ -16,16 +16,16 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &IntegrationGcpStsAccountResource{}
-	_ resource.ResourceWithImportState = &IntegrationGcpStsAccountResource{}
+	_ resource.ResourceWithConfigure   = &IntegrationGcpStsResource{}
+	_ resource.ResourceWithImportState = &IntegrationGcpStsResource{}
 )
 
-type IntegrationGcpStsAccountResource struct {
+type IntegrationGcpStsResource struct {
 	Api  *datadogV2.GCPIntegrationApi
 	Auth context.Context
 }
 
-type IntegrationGcpStsAccountModel struct {
+type IntegrationGcpStsModel struct {
 	ID                   types.String `tfsdk:"id"`
 	Automute             types.Bool   `tfsdk:"automute"`
 	ClientEmail          types.String `tfsdk:"client_email"`
@@ -34,21 +34,21 @@ type IntegrationGcpStsAccountModel struct {
 	HostFilters          types.Set    `tfsdk:"host_filters"`
 }
 
-func NewIntegrationGcpStsAccountResource() resource.Resource {
-	return &IntegrationGcpStsAccountResource{}
+func NewIntegrationGcpStsResource() resource.Resource {
+	return &IntegrationGcpStsResource{}
 }
 
-func (r *IntegrationGcpStsAccountResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *IntegrationGcpStsResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetGCPIntegrationApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *IntegrationGcpStsAccountResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "integration_gcp_sts_account"
+func (r *IntegrationGcpStsResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "integration_gcp_sts"
 }
 
-func (r *IntegrationGcpStsAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *IntegrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog IntegrationGcpStsAccount resource. This can be used to create and manage Datadog integration_gcp_sts_account.",
 		Attributes: map[string]schema.Attribute{
@@ -86,12 +86,12 @@ func (r *IntegrationGcpStsAccountResource) Schema(_ context.Context, _ resource.
 	}
 }
 
-func (r *IntegrationGcpStsAccountResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *IntegrationGcpStsResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *IntegrationGcpStsAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state IntegrationGcpStsAccountModel
+func (r *IntegrationGcpStsResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state IntegrationGcpStsModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -128,8 +128,8 @@ func (r *IntegrationGcpStsAccountResource) Read(ctx context.Context, request res
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationGcpStsAccountResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state IntegrationGcpStsAccountModel
+func (r *IntegrationGcpStsResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state IntegrationGcpStsModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -148,7 +148,7 @@ func (r *IntegrationGcpStsAccountResource) Create(ctx context.Context, request r
 	delegateEmail := delegateResponse.Data.Attributes.GetDelegateAccountEmail()
 	state.DelegateAccountEmail = types.StringValue(delegateEmail)
 
-	body, diags := r.buildIntegrationGcpStsAccountRequestBody(ctx, &state)
+	body, diags := r.buildIntegrationGcpStsRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -169,8 +169,8 @@ func (r *IntegrationGcpStsAccountResource) Create(ctx context.Context, request r
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationGcpStsAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state IntegrationGcpStsAccountModel
+func (r *IntegrationGcpStsResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state IntegrationGcpStsModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -178,7 +178,7 @@ func (r *IntegrationGcpStsAccountResource) Update(ctx context.Context, request r
 
 	id := state.ID.ValueString()
 
-	body, diags := r.buildIntegrationGcpStsAccountUpdateRequestBody(ctx, &state)
+	body, diags := r.buildIntegrationGcpStsUpdateRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -199,8 +199,8 @@ func (r *IntegrationGcpStsAccountResource) Update(ctx context.Context, request r
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationGcpStsAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state IntegrationGcpStsAccountModel
+func (r *IntegrationGcpStsResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state IntegrationGcpStsModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -218,7 +218,7 @@ func (r *IntegrationGcpStsAccountResource) Delete(ctx context.Context, request r
 	}
 }
 
-func (r *IntegrationGcpStsAccountResource) updateState(ctx context.Context, state *IntegrationGcpStsAccountModel, resp *datadogV2.GCPSTSServiceAccount) {
+func (r *IntegrationGcpStsResource) updateState(ctx context.Context, state *IntegrationGcpStsModel, resp *datadogV2.GCPSTSServiceAccount) {
 	state.ID = types.StringValue(resp.GetId())
 
 	attributes := resp.GetAttributes()
@@ -236,7 +236,7 @@ func (r *IntegrationGcpStsAccountResource) updateState(ctx context.Context, stat
 	}
 }
 
-func (r *IntegrationGcpStsAccountResource) buildIntegrationGcpStsAccountRequestBody(ctx context.Context, state *IntegrationGcpStsAccountModel) (*datadogV2.GCPSTSServiceAccountCreateRequest, diag.Diagnostics) {
+func (r *IntegrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx context.Context, state *IntegrationGcpStsModel) (*datadogV2.GCPSTSServiceAccountCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewGCPSTSServiceAccountAttributesWithDefaults()
 
@@ -263,7 +263,7 @@ func (r *IntegrationGcpStsAccountResource) buildIntegrationGcpStsAccountRequestB
 	return req, diags
 }
 
-func (r *IntegrationGcpStsAccountResource) buildIntegrationGcpStsAccountUpdateRequestBody(ctx context.Context, state *IntegrationGcpStsAccountModel) (*datadogV2.GCPSTSServiceAccountUpdateRequest, diag.Diagnostics) {
+func (r *IntegrationGcpStsResource) buildIntegrationGcpStsUpdateRequestBody(ctx context.Context, state *IntegrationGcpStsModel) (*datadogV2.GCPSTSServiceAccountUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewGCPSTSServiceAccountAttributesWithDefaults()
 

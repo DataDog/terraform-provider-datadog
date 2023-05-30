@@ -12,53 +12,53 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-func TestAccIntegrationGcpStsAccountBasic(t *testing.T) {
+func TestAccIntegrationGcpStsBasic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogIntegrationGcpStsAccountDestroy(providers.frameworkProvider),
+		CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogIntegrationGcpStsAccount(uniq),
+				Config: testAccCheckDatadogIntegrationGcpSts(uniq),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogIntegrationGcpStsAccountExists(providers.frameworkProvider),
+					testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts_account.foo", "automute", "false"),
+						"datadog_integration_gcp_sts.foo", "automute", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts_account.foo", "client_email", fmt.Sprintf("%s@test-project.iam.gserviceaccount.com", uniq)),
+						"datadog_integration_gcp_sts.foo", "client_email", fmt.Sprintf("%s@test-project.iam.gserviceaccount.com", uniq)),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts_account.foo", "is_cspm_enabled", "false"),
+						"datadog_integration_gcp_sts.foo", "is_cspm_enabled", "false"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_integration_gcp_sts_account.foo", "host_filters.*", "tag:one"),
+						"datadog_integration_gcp_sts.foo", "host_filters.*", "tag:one"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_integration_gcp_sts_account.foo", "host_filters.*", "tag:two"),
+						"datadog_integration_gcp_sts.foo", "host_filters.*", "tag:two"),
 				),
 			},
 			{
-				Config: testAccCheckDatadogIntegrationGcpStsAccountUpdated(uniq),
+				Config: testAccCheckDatadogIntegrationGcpStsUpdated(uniq),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogIntegrationGcpStsAccountExists(providers.frameworkProvider),
+					testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts_account.foo", "automute", "true"),
+						"datadog_integration_gcp_sts.foo", "automute", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts_account.foo", "client_email", fmt.Sprintf("%s@test-project.iam.gserviceaccount.com", uniq)),
+						"datadog_integration_gcp_sts.foo", "client_email", fmt.Sprintf("%s@test-project.iam.gserviceaccount.com", uniq)),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_gcp_sts_account.foo", "is_cspm_enabled", "true"),
+						"datadog_integration_gcp_sts.foo", "is_cspm_enabled", "true"),
 					resource.TestCheckNoResourceAttr(
-						"datadog_integration_gcp_sts_account.foo", "host_filters"),
+						"datadog_integration_gcp_sts.foo", "host_filters"),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckDatadogIntegrationGcpStsAccount(uniq string) string {
+func testAccCheckDatadogIntegrationGcpSts(uniq string) string {
 	// Update me to make use of the unique value
 	return fmt.Sprintf(`
-resource "datadog_integration_gcp_sts_account" "foo" {
+resource "datadog_integration_gcp_sts" "foo" {
     automute = "false"
     client_email = "%s@test-project.iam.gserviceaccount.com"
     host_filters = ["tag:one", "tag:two"]
@@ -66,17 +66,17 @@ resource "datadog_integration_gcp_sts_account" "foo" {
 }`, uniq)
 }
 
-func testAccCheckDatadogIntegrationGcpStsAccountUpdated(uniq string) string {
+func testAccCheckDatadogIntegrationGcpStsUpdated(uniq string) string {
 	// Update me to make use of the unique value
 	return fmt.Sprintf(`
-resource "datadog_integration_gcp_sts_account" "foo" {
+resource "datadog_integration_gcp_sts" "foo" {
     automute = "true"
     client_email = "%s@test-project.iam.gserviceaccount.com"
     is_cspm_enabled = "true"
 }`, uniq)
 }
 
-func testAccCheckDatadogIntegrationGcpStsAccountDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
+func testAccCheckDatadogIntegrationGcpStsDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
@@ -91,7 +91,7 @@ func testAccCheckDatadogIntegrationGcpStsAccountDestroy(accProvider *fwprovider.
 func IntegrationGcpStsAccountDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "resource_datadog_integration_gcp_sts_account" {
+			if r.Type != "resource_datadog_integration_gcp_sts" {
 				continue
 			}
 
@@ -116,7 +116,7 @@ func IntegrationGcpStsAccountDestroyHelper(auth context.Context, s *terraform.St
 	return err
 }
 
-func testAccCheckDatadogIntegrationGcpStsAccountExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
+func testAccCheckDatadogIntegrationGcpStsExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
@@ -135,7 +135,7 @@ func integrationGcpStsAccountExistsHelper(auth context.Context, s *terraform.Sta
 	}
 
 	for _, r := range s.RootModule().Resources {
-		if r.Type != "resource_datadog_integration_gcp_sts_account" {
+		if r.Type != "resource_datadog_integration_gcp_sts" {
 			continue
 		}
 
