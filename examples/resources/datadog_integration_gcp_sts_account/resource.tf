@@ -1,7 +1,20 @@
-# Create new integration_gcp_sts_account resource
+# Create new integration_gcp_sts resource
 
-resource "datadog_integration_gcp_sts_account" "foo" {
-  client_email    = "service-account@example.com"
+// Service account should have compute.viewer, monitoring.viewer, and cloudasset.viewer roles.
+resource google_service_account datadog_integration {
+  account_id   = "datadog_integration"
+  display_name = "Datadog Integration"
+}
+
+// Grant token creator role to the Datadog principal account.
+resource google_service_account_iam_member sa_iam {
+   service_account_id = google_service_account.datadog_integration.name
+   role = "roles/iam.serviceAccountTokenCreator"
+   member = format("serviceAccount:%s", datadog_integration_gcp_sts.integration_implementation.delegate_account_email)
+}
+
+resource datadog_integration_gcp_sts_account foo {
+  client_email    = google_service_account.datadog_integration.email
   host_filters    = ["filter_one", "filter_two"]
   automute        = true
   is_cspm_enabled = true
