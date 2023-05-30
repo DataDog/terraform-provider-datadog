@@ -26,12 +26,12 @@ type IntegrationGcpStsAccountResource struct {
 }
 
 type IntegrationGcpStsAccountModel struct {
-	ID            types.String `tfsdk:"id"`
-	Automute      types.Bool   `tfsdk:"automute"`
-	ClientEmail   types.String `tfsdk:"client_email"`
-	DelegateEmail types.String `tfsdk:"delegate_email"`
-	IsCspmEnabled types.Bool   `tfsdk:"is_cspm_enabled"`
-	HostFilters   types.Set    `tfsdk:"host_filters"`
+	ID                   types.String `tfsdk:"id"`
+	Automute             types.Bool   `tfsdk:"automute"`
+	ClientEmail          types.String `tfsdk:"client_email"`
+	DelegateAccountEmail types.String `tfsdk:"delegate_account_email"`
+	IsCspmEnabled        types.Bool   `tfsdk:"is_cspm_enabled"`
+	HostFilters          types.Set    `tfsdk:"host_filters"`
 }
 
 func NewIntegrationGcpStsAccountResource() resource.Resource {
@@ -64,9 +64,12 @@ func (r *IntegrationGcpStsAccountResource) Schema(_ context.Context, _ resource.
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-			"delegate_email": schema.StringAttribute{
+			"delegate_account_email": schema.StringAttribute{
 				Computed:    true,
 				Description: "Datadog's STS Delegate Email.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"is_cspm_enabled": schema.BoolAttribute{
 				Optional:    true,
@@ -143,7 +146,7 @@ func (r *IntegrationGcpStsAccountResource) Create(ctx context.Context, request r
 		return
 	}
 	delegateEmail := delegateResponse.Data.Attributes.GetDelegateAccountEmail()
-	state.DelegateEmail = types.StringValue(delegateEmail)
+	state.DelegateAccountEmail = types.StringValue(delegateEmail)
 
 	body, diags := r.buildIntegrationGcpStsAccountRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
