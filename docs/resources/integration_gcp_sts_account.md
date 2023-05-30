@@ -38,7 +38,7 @@ resource "datadog_integration_gcp_sts_account" "foo" {
 
 ### Read-Only
 
-- `delegate_email` (String) Datadog's STS Delegate Email.
+- `delegate_account_email` (String) Datadog's STS Delegate Email.
 - `id` (String) The ID of this resource.
 
 ## Import
