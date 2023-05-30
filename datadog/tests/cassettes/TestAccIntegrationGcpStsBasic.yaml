@@ -1,0 +1,163 @@
+---
+version: 1
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/sts_delegate
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"gcp_sts_delegate","id":"ddgci-45108e579fe252698007@datadog-gci-sts-us1-prod.iam.gserviceaccount.com","attributes":{"delegate_account_email":"ddgci-45108e579fe252698007@datadog-gci-sts-us1-prod.iam.gserviceaccount.com"}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"automute":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1685480167@test-project.iam.gserviceaccount.com","host_filters":["tag:one","tag:two"],"is_cspm_enabled":false},"type":"gcp_service_account"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"gcp_service_account","attributes":{"host_filters":["tag:one","tag:two"],"automute":false,"is_cspm_enabled":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1685480167@test-project.iam.gserviceaccount.com"},"id":"095a6fd4-b396-4df9-a07f-6c8564b77aeb"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"gcp_service_account","attributes":{"host_filters":[],"automute":false,"is_cspm_enabled":false,"client_email":"gray-test-20220225@datadog-eventarc-dev.iam.gserviceaccount.com"},"meta":{"accessible_projects":["datadog-eventarc-dev"]},"id":"c036a628-1e95-411f-b841-b1d76a9d4e18"},{"type":"gcp_service_account","attributes":{"host_filters":[],"automute":false,"is_cspm_enabled":false,"client_email":"audrey-yuan@datadog-cloud-ints-staging.iam.gserviceaccount.com"},"meta":{"accessible_projects":["datadog-cloud-ints-staging"]},"id":"44cdbb2f-b0ac-48c5-b1b9-5d9c7f531edb"},{"type":"gcp_service_account","attributes":{"host_filters":["!asdf:ghjkl"],"automute":false,"is_cspm_enabled":false,"client_email":"ricky-testing-google@datadog-sandbox.iam.gserviceaccount.com"},"meta":{"accessible_projects":["datadog-sandbox"]},"id":"6918f181-ffd2-47e8-972c-466ad086fd0a"},{"type":"gcp_service_account","attributes":{"host_filters":["tag:one","tag:two"],"automute":false,"is_cspm_enabled":false,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1685480167@test-project.iam.gserviceaccount.com"},"meta":{"accessible_projects":[]},"id":"095a6fd4-b396-4df9-a07f-6c8564b77aeb"},{"type":"gcp_service_account","attributes":{"host_filters":[],"automute":false,"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731833"},"meta":{"accessible_projects":[]},"id":"54124e4e-343a-426d-8850-2e064c29de26"},{"type":"gcp_service_account","attributes":{"host_filters":[],"automute":false,"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731837"},"meta":{"accessible_projects":[]},"id":"4cb592e7-2bb6-4fdd-89ea-91771bc4537b"},{"type":"gcp_service_account","attributes":{"host_filters":[],"automute":false,"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731840"},"meta":{"accessible_projects":[]},"id":"b189c6f4-2c30-4c47-a12c-05334d2f758e"},{"type":"gcp_service_account","attributes":{"host_filters":[],"automute":false,"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732057"},"meta":{"accessible_projects":[]},"id":"95767e8c-2409-4a5a-bb80-0d93c19ccea0"},{"type":"gcp_service_account","attributes":{"host_filters":[],"automute":false,"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732061"},"meta":{"accessible_projects":[]},"id":"05934119-a10e-41f2-9544-f467e1a4c427"},{"type":"gcp_service_account","attributes":{"host_filters":[],"automute":false,"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732064"},"meta":{"accessible_projects":[]},"id":"0fe74784-5efc-40bf-9cc8-53139b667aa4"},{"type":"gcp_service_account","attributes":{"host_filters":[],"automute":false,"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732179"},"meta":{"accessible_projects":[]},"id":"87e85cbc-b1e1-4211-b5d0-22edba625d3b"},{"type":"gcp_service_account","attributes":{"host_filters":[],"automute":false,"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732182"},"meta":{"accessible_projects":[]},"id":"9e446765-6961-4668-9a75-8f7681286361"},{"type":"gcp_service_account","attributes":{"host_filters":[],"automute":false,"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732186"},"meta":{"accessible_projects":[]},"id":"da32215a-8abf-4f47-90a5-fdd86020c888"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"gcp_service_account","attributes":{"automute":false,"host_filters":[],"client_email":"gray-test-20220225@datadog-eventarc-dev.iam.gserviceaccount.com","is_cspm_enabled":false},"id":"c036a628-1e95-411f-b841-b1d76a9d4e18","meta":{"accessible_projects":["datadog-eventarc-dev"]}},{"type":"gcp_service_account","attributes":{"automute":false,"host_filters":[],"client_email":"audrey-yuan@datadog-cloud-ints-staging.iam.gserviceaccount.com","is_cspm_enabled":false},"id":"44cdbb2f-b0ac-48c5-b1b9-5d9c7f531edb","meta":{"accessible_projects":["datadog-cloud-ints-staging"]}},{"type":"gcp_service_account","attributes":{"automute":false,"host_filters":["!asdf:ghjkl"],"client_email":"ricky-testing-google@datadog-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false},"id":"6918f181-ffd2-47e8-972c-466ad086fd0a","meta":{"accessible_projects":["datadog-sandbox"]}},{"type":"gcp_service_account","attributes":{"automute":false,"host_filters":["tag:one","tag:two"],"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1685480167@test-project.iam.gserviceaccount.com","is_cspm_enabled":false},"id":"095a6fd4-b396-4df9-a07f-6c8564b77aeb","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731833","is_cspm_enabled":false},"id":"54124e4e-343a-426d-8850-2e064c29de26","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731837","is_cspm_enabled":false},"id":"4cb592e7-2bb6-4fdd-89ea-91771bc4537b","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731840","is_cspm_enabled":false},"id":"b189c6f4-2c30-4c47-a12c-05334d2f758e","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732057","is_cspm_enabled":false},"id":"95767e8c-2409-4a5a-bb80-0d93c19ccea0","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732061","is_cspm_enabled":false},"id":"05934119-a10e-41f2-9544-f467e1a4c427","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732064","is_cspm_enabled":false},"id":"0fe74784-5efc-40bf-9cc8-53139b667aa4","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732179","is_cspm_enabled":false},"id":"87e85cbc-b1e1-4211-b5d0-22edba625d3b","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732182","is_cspm_enabled":false},"id":"9e446765-6961-4668-9a75-8f7681286361","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732186","is_cspm_enabled":false},"id":"da32215a-8abf-4f47-90a5-fdd86020c888","meta":{"accessible_projects":[]}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"host_filters":[],"client_email":"gray-test-20220225@datadog-eventarc-dev.iam.gserviceaccount.com","automute":false},"meta":{"accessible_projects":["datadog-eventarc-dev"]},"id":"c036a628-1e95-411f-b841-b1d76a9d4e18"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"host_filters":[],"client_email":"audrey-yuan@datadog-cloud-ints-staging.iam.gserviceaccount.com","automute":false},"meta":{"accessible_projects":["datadog-cloud-ints-staging"]},"id":"44cdbb2f-b0ac-48c5-b1b9-5d9c7f531edb"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"host_filters":["!asdf:ghjkl"],"client_email":"ricky-testing-google@datadog-sandbox.iam.gserviceaccount.com","automute":false},"meta":{"accessible_projects":["datadog-sandbox"]},"id":"6918f181-ffd2-47e8-972c-466ad086fd0a"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"host_filters":["tag:one","tag:two"],"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1685480167@test-project.iam.gserviceaccount.com","automute":false},"meta":{"accessible_projects":[]},"id":"095a6fd4-b396-4df9-a07f-6c8564b77aeb"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731833","automute":false},"meta":{"accessible_projects":[]},"id":"54124e4e-343a-426d-8850-2e064c29de26"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731837","automute":false},"meta":{"accessible_projects":[]},"id":"4cb592e7-2bb6-4fdd-89ea-91771bc4537b"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731840","automute":false},"meta":{"accessible_projects":[]},"id":"b189c6f4-2c30-4c47-a12c-05334d2f758e"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732057","automute":false},"meta":{"accessible_projects":[]},"id":"95767e8c-2409-4a5a-bb80-0d93c19ccea0"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732061","automute":false},"meta":{"accessible_projects":[]},"id":"05934119-a10e-41f2-9544-f467e1a4c427"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732064","automute":false},"meta":{"accessible_projects":[]},"id":"0fe74784-5efc-40bf-9cc8-53139b667aa4"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732179","automute":false},"meta":{"accessible_projects":[]},"id":"87e85cbc-b1e1-4211-b5d0-22edba625d3b"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732182","automute":false},"meta":{"accessible_projects":[]},"id":"9e446765-6961-4668-9a75-8f7681286361"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732186","automute":false},"meta":{"accessible_projects":[]},"id":"da32215a-8abf-4f47-90a5-fdd86020c888"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"automute":true,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1685480167@test-project.iam.gserviceaccount.com","host_filters":[],"is_cspm_enabled":true},"type":"gcp_service_account"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts/095a6fd4-b396-4df9-a07f-6c8564b77aeb
+    method: PATCH
+  response:
+    body: |
+      {"data":{"type":"gcp_service_account","attributes":{"is_cspm_enabled":true,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1685480167@test-project.iam.gserviceaccount.com","automute":true,"host_filters":[]},"id":"095a6fd4-b396-4df9-a07f-6c8564b77aeb"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"automute":false,"host_filters":[],"client_email":"gray-test-20220225@datadog-eventarc-dev.iam.gserviceaccount.com"},"id":"c036a628-1e95-411f-b841-b1d76a9d4e18","meta":{"accessible_projects":["datadog-eventarc-dev"]}},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"automute":false,"host_filters":[],"client_email":"audrey-yuan@datadog-cloud-ints-staging.iam.gserviceaccount.com"},"id":"44cdbb2f-b0ac-48c5-b1b9-5d9c7f531edb","meta":{"accessible_projects":["datadog-cloud-ints-staging"]}},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"automute":false,"host_filters":["!asdf:ghjkl"],"client_email":"ricky-testing-google@datadog-sandbox.iam.gserviceaccount.com"},"id":"6918f181-ffd2-47e8-972c-466ad086fd0a","meta":{"accessible_projects":["datadog-sandbox"]}},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":true,"automute":true,"host_filters":[],"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1685480167@test-project.iam.gserviceaccount.com"},"id":"095a6fd4-b396-4df9-a07f-6c8564b77aeb","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731833"},"id":"54124e4e-343a-426d-8850-2e064c29de26","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731837"},"id":"4cb592e7-2bb6-4fdd-89ea-91771bc4537b","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731840"},"id":"b189c6f4-2c30-4c47-a12c-05334d2f758e","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732057"},"id":"95767e8c-2409-4a5a-bb80-0d93c19ccea0","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732061"},"id":"05934119-a10e-41f2-9544-f467e1a4c427","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732064"},"id":"0fe74784-5efc-40bf-9cc8-53139b667aa4","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732179"},"id":"87e85cbc-b1e1-4211-b5d0-22edba625d3b","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732182"},"id":"9e446765-6961-4668-9a75-8f7681286361","meta":{"accessible_projects":[]}},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"automute":false,"host_filters":[],"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732186"},"id":"da32215a-8abf-4f47-90a5-fdd86020c888","meta":{"accessible_projects":[]}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"client_email":"gray-test-20220225@datadog-eventarc-dev.iam.gserviceaccount.com","host_filters":[],"automute":false},"meta":{"accessible_projects":["datadog-eventarc-dev"]},"id":"c036a628-1e95-411f-b841-b1d76a9d4e18"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"client_email":"audrey-yuan@datadog-cloud-ints-staging.iam.gserviceaccount.com","host_filters":[],"automute":false},"meta":{"accessible_projects":["datadog-cloud-ints-staging"]},"id":"44cdbb2f-b0ac-48c5-b1b9-5d9c7f531edb"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"client_email":"ricky-testing-google@datadog-sandbox.iam.gserviceaccount.com","host_filters":["!asdf:ghjkl"],"automute":false},"meta":{"accessible_projects":["datadog-sandbox"]},"id":"6918f181-ffd2-47e8-972c-466ad086fd0a"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":true,"client_email":"tf-TestAccIntegrationGcpStsBasic-local-1685480167@test-project.iam.gserviceaccount.com","host_filters":[],"automute":true},"meta":{"accessible_projects":[]},"id":"095a6fd4-b396-4df9-a07f-6c8564b77aeb"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731833","host_filters":[],"automute":false},"meta":{"accessible_projects":[]},"id":"54124e4e-343a-426d-8850-2e064c29de26"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731837","host_filters":[],"automute":false},"meta":{"accessible_projects":[]},"id":"4cb592e7-2bb6-4fdd-89ea-91771bc4537b"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683731840","host_filters":[],"automute":false},"meta":{"accessible_projects":[]},"id":"b189c6f4-2c30-4c47-a12c-05334d2f758e"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732057","host_filters":[],"automute":false},"meta":{"accessible_projects":[]},"id":"95767e8c-2409-4a5a-bb80-0d93c19ccea0"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732061","host_filters":[],"automute":false},"meta":{"accessible_projects":[]},"id":"05934119-a10e-41f2-9544-f467e1a4c427"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732064","host_filters":[],"automute":false},"meta":{"accessible_projects":[]},"id":"0fe74784-5efc-40bf-9cc8-53139b667aa4"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732179","host_filters":[],"automute":false},"meta":{"accessible_projects":[]},"id":"87e85cbc-b1e1-4211-b5d0-22edba625d3b"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732182","host_filters":[],"automute":false},"meta":{"accessible_projects":[]},"id":"9e446765-6961-4668-9a75-8f7681286361"},{"type":"gcp_service_account","attributes":{"is_cspm_enabled":false,"client_email":"tf-TestGCPSTSIntegrationBasic-local-1683732186","host_filters":[],"automute":false},"meta":{"accessible_projects":[]},"id":"da32215a-8abf-4f47-90a5-fdd86020c888"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/integration/gcp/accounts/095a6fd4-b396-4df9-a07f-6c8564b77aeb
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""
