@@ -792,6 +792,11 @@ func syntheticsTestAPIStep() *schema.Schema {
 									},
 								},
 							},
+							"secure": {
+								Type:        schema.TypeBool,
+								Optional:    true,
+								Description: "Determines whether or not the extracted value will be obfuscated.",
+							},
 						},
 					},
 				},
@@ -2471,6 +2476,10 @@ func buildExtractedValues(stepExtractedValues []interface{}) []datadogV1.Synthet
 
 		value.SetParser(parser)
 
+		if secure, ok := extractedValueMap["secure"].(bool); ok {
+			value.SetSecure(secure)
+		}
+
 		values[i] = value
 	}
 
@@ -2485,6 +2494,7 @@ func buildLocalExtractedValues(extractedValues []datadogV1.SyntheticsParsingOpti
 		localExtractedValue["name"] = extractedValue.GetName()
 		localExtractedValue["type"] = string(extractedValue.GetType())
 		localExtractedValue["field"] = extractedValue.GetField()
+		localExtractedValue["secure"] = extractedValue.GetSecure()
 
 		parser := extractedValue.GetParser()
 		localParser := make(map[string]interface{})
