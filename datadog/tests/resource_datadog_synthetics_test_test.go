@@ -4022,6 +4022,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.value", ".*"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.secure", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.allow_failure", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.is_critical", "false"),
@@ -4182,6 +4184,7 @@ resource "datadog_synthetics_test" "multi" {
         type  = "regex"
         value = ".*"
       }
+      secure = true
     }
     allow_failure = true
     is_critical   = false
