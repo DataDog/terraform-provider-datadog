@@ -50,7 +50,7 @@ func (r *IntegrationGcpStsResource) Metadata(_ context.Context, request resource
 
 func (r *IntegrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Integration GCP Sts resource. This can be used to create and manage Datadog integration_gcp_sts.",
+		Description: "Provides a Datadog Integration GCP Sts resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
 		Attributes: map[string]schema.Attribute{
 			"automute": schema.BoolAttribute{
 				Optional:    true,

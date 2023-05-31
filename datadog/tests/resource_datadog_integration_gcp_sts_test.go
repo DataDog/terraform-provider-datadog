@@ -56,7 +56,6 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 }
 
 func testAccCheckDatadogIntegrationGcpSts(uniq string) string {
-	// Update me to make use of the unique value
 	return fmt.Sprintf(`
 resource "datadog_integration_gcp_sts" "foo" {
     automute = "false"
@@ -67,7 +66,6 @@ resource "datadog_integration_gcp_sts" "foo" {
 }
 
 func testAccCheckDatadogIntegrationGcpStsUpdated(uniq string) string {
-	// Update me to make use of the unique value
 	return fmt.Sprintf(`
 resource "datadog_integration_gcp_sts" "foo" {
     automute = "true"
