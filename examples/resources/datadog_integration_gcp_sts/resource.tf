@@ -4,7 +4,7 @@
 resource "google_service_account" "datadog_integration" {
   account_id   = "datadogintegration"
   display_name = "Datadog Integration"
-  project = "gcp-project"
+  project      = "gcp-project"
 }
 
 // Grant token creator role to the Datadog principal account.
