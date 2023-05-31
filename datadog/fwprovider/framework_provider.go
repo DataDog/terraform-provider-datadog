@@ -42,6 +42,9 @@ var Resources = []func() resource.Resource{
 	NewSensitiveDataScannerGroupOrder,
 	NewSpansMetricResource,
 	NewSyntheticsConcurrencyCapResource,
+	NewTeamResource,
+	NewTeamLinkResource,
+	NewTeamMembershipResource,
 }
 
 var Datasources = []func() datasource.DataSource{
