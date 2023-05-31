@@ -3,12 +3,12 @@
 page_title: "datadog_integration_gcp_sts Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog IntegrationGcpStsAccount resource. This can be used to create and manage Datadog integrationgcpsts_account.
+  Provides a Datadog Integration GCP Sts resource. This can be used to create and manage Datadog integrationgcpsts.
 ---
 
 # datadog_integration_gcp_sts (Resource)
 
-Provides a Datadog IntegrationGcpStsAccount resource. This can be used to create and manage Datadog integration_gcp_sts_account.
+Provides a Datadog Integration GCP Sts resource. This can be used to create and manage Datadog integration_gcp_sts.
 
 ## Example Usage
 

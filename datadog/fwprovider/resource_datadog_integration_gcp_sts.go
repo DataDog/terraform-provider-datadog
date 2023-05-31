@@ -50,7 +50,7 @@ func (r *IntegrationGcpStsResource) Metadata(_ context.Context, request resource
 
 func (r *IntegrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog IntegrationGcpStsAccount resource. This can be used to create and manage Datadog integration_gcp_sts_account.",
+		Description: "Provides a Datadog Integration GCP Sts resource. This can be used to create and manage Datadog integration_gcp_sts.",
 		Attributes: map[string]schema.Attribute{
 			"automute": schema.BoolAttribute{
 				Optional:    true,
@@ -102,7 +102,7 @@ func (r *IntegrationGcpStsResource) Read(ctx context.Context, request resource.R
 			response.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationGcpStsAccount"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Integration Gcp Sts"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -156,7 +156,7 @@ func (r *IntegrationGcpStsResource) Create(ctx context.Context, request resource
 
 	resp, _, err := r.Api.CreateGCPSTSAccount(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationGcpStsAccount"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Integration Gcp Sts"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -186,7 +186,7 @@ func (r *IntegrationGcpStsResource) Update(ctx context.Context, request resource
 
 	resp, _, err := r.Api.UpdateGCPSTSAccount(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationGcpStsAccount"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Integration Gcp Sts"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -213,7 +213,7 @@ func (r *IntegrationGcpStsResource) Delete(ctx context.Context, request resource
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting integration_gcp_sts_account"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting integration_gcp_sts"))
 		return
 	}
 }

@@ -131,7 +131,7 @@ func testAccCheckDatadogIntegrationGcpStsExists(accProvider *fwprovider.Framewor
 func integrationGcpStsAccountExistsHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	resp, httpResp, err := apiInstances.GetGCPIntegrationApiV2().ListGCPSTSAccounts(auth)
 	if err != nil {
-		return utils.TranslateClientError(err, httpResp, "error retrieving IntegrationGcpStsAccount")
+		return utils.TranslateClientError(err, httpResp, "error retrieving Integration Gcp Sts")
 	}
 
 	for _, r := range s.RootModule().Resources {
@@ -145,7 +145,7 @@ func integrationGcpStsAccountExistsHelper(auth context.Context, s *terraform.Sta
 					return nil
 				}
 			}
-			return utils.TranslateClientError(err, httpResp, "error retrieving IntegrationGcpStsAccount")
+			return utils.TranslateClientError(err, httpResp, "error retrieving Integration Gcp Sts")
 		}
 	}
 	return nil
