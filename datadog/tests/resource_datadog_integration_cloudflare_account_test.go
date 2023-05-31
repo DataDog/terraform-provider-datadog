@@ -41,7 +41,6 @@ func TestAccIntegrationCloudflareAccountBasic(t *testing.T) {
 }
 
 func testAccCheckDatadogIntegrationCloudflareAccount(uniq string) string {
-	// Update me to make use of the unique value
 	return fmt.Sprintf(`
 resource "datadog_integration_cloudflare_account" "foo" {
     api_key = "1234567891012331asdd"
