@@ -38,6 +38,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationConfluentResourceResource,
 	NewIntegrationFastlyAccountResource,
 	NewIntegrationFastlyServiceResource,
+	NewIntegrationGcpStsResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewSpansMetricResource,
 	NewSyntheticsConcurrencyCapResource,
