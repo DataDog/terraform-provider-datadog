@@ -5349,6 +5349,15 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 						Optional:    true,
 						Description: "Storage location (private beta).",
 					},
+					"sort": {
+						Description: "The facet and order to sort the data, for example: `{\"column\": \"time\", \"order\": \"desc\"}`.",
+						Type:        schema.TypeList,
+						MaxItems:    1,
+						Optional:    true,
+						Elem: &schema.Resource{
+							Schema: getWidgetFieldSortSchema(),
+						},
+					},
 				},
 			},
 		},
@@ -5403,6 +5412,18 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 					indexes = append(indexes, s.(string))
 				}
 				datadogQuery.SetIndexes(indexes)
+			}
+			if terraformSort, ok := q["sort"].([]interface{}); ok && len(terraformSort) > 0 {
+				sortMap := terraformSort[0].(map[string]interface{})
+				datadogSort := datadogV1.NewWidgetFieldSortWithDefaults()
+				if v, ok := sortMap["column"].(string); ok {
+					datadogSort.SetColumn(v)
+				}
+				if v, ok := sortMap["order"].(string); ok {
+					order, _ := datadogV1.NewWidgetSortFromValue(v)
+					datadogSort.SetOrder(*order)
+				}
+				datadogQuery.SetSort(*datadogSort)
 			}
 			datadogListStreamRequest.SetQuery(*datadogQuery)
 
@@ -7933,6 +7954,16 @@ func buildTerraformListStreamWidgetRequests(datadogListStreamRequests *[]datadog
 		queryRequest["data_source"] = string(q.GetDataSource())
 		if eventSize, ok := q.GetEventSizeOk(); ok && q.GetDataSource() == datadogV1.LISTSTREAMSOURCE_EVENT_STREAM {
 			queryRequest["event_size"] = eventSize
+		}
+		if v, ok := q.GetSortOk(); ok {
+			terraformSort := map[string]interface{}{}
+			if v, ok := v.GetColumnOk(); ok {
+				terraformSort["column"] = v
+			}
+			if v, ok := v.GetOrderOk(); ok {
+				terraformSort["order"] = v
+			}
+			queryRequest["sort"] = []interface{}{terraformSort}
 		}
 		terraformRequest["query"] = []map[string]interface{}{queryRequest}
 

@@ -4618,7 +4618,17 @@ Optional:
 - `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
 - `indexes` (List of String) List of indexes.
 - `query_string` (String) Widget query.
+- `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request--query--sort))
 - `storage` (String) Storage location (private beta).
+
+<a id="nestedblock--widget--group_definition--widget--list_stream_definition--request--query--sort"></a>
+### Nested Schema for `widget.group_definition.widget.list_stream_definition.request.query.sort`
+
+Required:
+
+- `column` (String) The facet path for the column.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
 
 
 
@@ -10259,7 +10269,17 @@ Optional:
 - `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
 - `indexes` (List of String) List of indexes.
 - `query_string` (String) Widget query.
+- `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request--query--sort))
 - `storage` (String) Storage location (private beta).
+
+<a id="nestedblock--widget--list_stream_definition--request--query--sort"></a>
+### Nested Schema for `widget.list_stream_definition.request.query.sort`
+
+Required:
+
+- `column` (String) The facet path for the column.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
 
 
 
