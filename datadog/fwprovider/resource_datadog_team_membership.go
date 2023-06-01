@@ -116,11 +116,12 @@ func (r *TeamMembershipResource) Read(ctx context.Context, request resource.Read
 			response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 			return
 		}
-		if len(resp.GetData()) == 0 || len(resp.GetData()) > 100 {
+
+		userTeams = append(userTeams, resp.GetData()...)
+		if len(resp.GetData()) < 100 {
 			break
 		}
 
-		userTeams = append(userTeams, resp.GetData()...)
 		pageNumber++
 	}
 
