@@ -3,12 +3,12 @@
 page_title: "datadog_team_memberships Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about an existing api key.
+  Use this data source to retrieve information about existing Datadog team memberships.
 ---
 
 # datadog_team_memberships (Data Source)
 
-Use this data source to retrieve information about an existing api key.
+Use this data source to retrieve information about existing Datadog team memberships.
 
 ## Example Usage
 
@@ -33,7 +33,7 @@ data "datadog_team_memberships" "foo" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `team_memberships` (List of Object) Free-form markdown description/content for the team's homepage. (see [below for nested schema](#nestedatt--team_memberships))
+- `team_memberships` (List of Object) List of team memberships. (see [below for nested schema](#nestedatt--team_memberships))
 
 <a id="nestedatt--team_memberships"></a>
 ### Nested Schema for `team_memberships`

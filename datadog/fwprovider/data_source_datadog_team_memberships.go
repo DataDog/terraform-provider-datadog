@@ -56,7 +56,7 @@ func (d *DatadogTeamMembershipsDataSource) Metadata(_ context.Context, req datas
 
 func (d *DatadogTeamMembershipsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing api key.",
+		Description: "Use this data source to retrieve information about existing Datadog team memberships.",
 		Attributes: map[string]schema.Attribute{
 			// Datasource ID
 			"id": utils.ResourceIDAttribute(),
@@ -72,7 +72,7 @@ func (d *DatadogTeamMembershipsDataSource) Schema(_ context.Context, _ datasourc
 			// Computed values
 			"team_memberships": schema.ListAttribute{
 				Computed:    true,
-				Description: "Free-form markdown description/content for the team's homepage.",
+				Description: "List of team memberships.",
 				ElementType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
 						"team_id": types.StringType,
@@ -116,7 +116,7 @@ func (d *DatadogTeamMembershipsDataSource) Read(ctx context.Context, req datasou
 		}
 
 		userTeams = append(userTeams, ddResp.GetData()...)
-		if len(ddResp.GetData()) == 0 || len(ddResp.GetData()) < 100 {
+		if len(ddResp.GetData()) < 100 {
 			break
 		}
 		pageNumber++

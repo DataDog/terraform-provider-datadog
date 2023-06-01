@@ -3,12 +3,12 @@
 page_title: "datadog_team Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about an existing api key.
+  Use this data source to retrieve information about an existing Datadog team.
 ---
 
 # datadog_team (Data Source)
 
-Use this data source to retrieve information about an existing api key.
+Use this data source to retrieve information about an existing Datadog team.
 
 ## Example Usage
 

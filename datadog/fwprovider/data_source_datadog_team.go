@@ -59,7 +59,7 @@ func (d *DatadogTeamDataSource) Metadata(_ context.Context, req datasource.Metad
 
 func (d *DatadogTeamDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing api key.",
+		Description: "Use this data source to retrieve information about an existing Datadog team.",
 		Attributes: map[string]schema.Attribute{
 			// Datasource ID
 			"id": utils.ResourceIDAttribute(),
