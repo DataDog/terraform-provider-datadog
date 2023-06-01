@@ -17,7 +17,7 @@ func resourceDatadogServiceAccount() *schema.Resource {
 		CreateContext: resourceDatadogServiceAccountCreate,
 		ReadContext:   resourceDatadogServiceAccountRead,
 		UpdateContext: resourceDatadogServiceAccountUpdate,
-		DeleteContext: resourceDatadogUserDelete,
+		DeleteContext: resourceDatadogServiceAccountDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
