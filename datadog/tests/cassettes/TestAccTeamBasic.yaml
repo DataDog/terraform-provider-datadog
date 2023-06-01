@@ -1,0 +1,108 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"description":"Team description.","handle":"tf-testaccteambasic-local-1683566238","name":"tf-testaccteambasic-local-1683566238"},"type":"team"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"team","id":"302a3cc2-edc4-11ed-b32b-da7ad0900002","attributes":{"name":"tf-testaccteambasic-local-1683566238","handle":"tf-testaccteambasic-local-1683566238","summary":"Team description.","description":"Team description.","color":8,"created_at":"2023-05-08T17:17:19.580098+00:00","modified_at":"2023-05-08T17:17:19.580102+00:00","user_count":0,"link_count":0},"relationships":{"team_links":{"links":{"related":"/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002/permission-settings"}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"team","id":"302a3cc2-edc4-11ed-b32b-da7ad0900002","attributes":{"name":"tf-testaccteambasic-local-1683566238","handle":"tf-testaccteambasic-local-1683566238","summary":"Team description.","description":"Team description.","color":8,"created_at":"2023-05-08T17:17:19.580098+00:00","modified_at":"2023-05-08T17:17:19.580102+00:00","user_count":0,"link_count":0},"relationships":{"team_links":{"links":{"related":"/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002/permission-settings"}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"team","id":"302a3cc2-edc4-11ed-b32b-da7ad0900002","attributes":{"name":"tf-testaccteambasic-local-1683566238","handle":"tf-testaccteambasic-local-1683566238","summary":"Team description.","description":"Team description.","color":8,"created_at":"2023-05-08T17:17:19.580098+00:00","modified_at":"2023-05-08T17:17:19.580102+00:00","user_count":0,"link_count":0},"relationships":{"team_links":{"links":{"related":"/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002/permission-settings"}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"description":"Team description - updated.","handle":"tf-testaccteambasic-local-1683566238-updated","name":"tf-testaccteambasic-local-1683566238-updated"},"type":"team"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002
+    method: PATCH
+  response:
+    body: |
+      {"data":{"type":"team","id":"302a3cc2-edc4-11ed-b32b-da7ad0900002","attributes":{"name":"tf-testaccteambasic-local-1683566238-updated","handle":"tf-testaccteambasic-local-1683566238-updated","summary":"Team description - updated.","description":"Team description - updated.","color":8,"created_at":"2023-05-08T17:17:19.580098+00:00","modified_at":"2023-05-08T17:17:20.914932+00:00","user_count":0,"link_count":0},"relationships":{"team_links":{"links":{"related":"/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002/permission-settings"}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"team","id":"302a3cc2-edc4-11ed-b32b-da7ad0900002","attributes":{"name":"tf-testaccteambasic-local-1683566238-updated","handle":"tf-testaccteambasic-local-1683566238-updated","summary":"Team description - updated.","description":"Team description - updated.","color":8,"created_at":"2023-05-08T17:17:19.580098+00:00","modified_at":"2023-05-08T17:17:20.914932+00:00","user_count":0,"link_count":0},"relationships":{"team_links":{"links":{"related":"/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002/permission-settings"}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/team/302a3cc2-edc4-11ed-b32b-da7ad0900002
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""
