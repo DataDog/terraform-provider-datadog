@@ -29,7 +29,7 @@ data "datadog_team" "foo" {
 ### Read-Only
 
 - `description` (String) Free-form markdown description/content for the team's homepage.
-- `handle` (String) The team's identifier
+- `handle` (String) The team's handle.
 - `id` (String) The ID of this resource.
 - `link_count` (Number) The number of links belonging to the team.
 - `name` (String) The name of the team.

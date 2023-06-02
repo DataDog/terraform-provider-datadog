@@ -80,7 +80,7 @@ func (d *DatadogTeamDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 			},
 			"handle": schema.StringAttribute{
 				Computed:    true,
-				Description: "The team's identifier",
+				Description: "The team's handle.",
 			},
 			"link_count": schema.Int64Attribute{
 				Description: "The number of links belonging to the team.",
