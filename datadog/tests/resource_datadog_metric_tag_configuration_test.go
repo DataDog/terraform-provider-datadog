@@ -37,6 +37,10 @@ func TestAccDatadogMetricTagConfiguration_Error(t *testing.T) {
 				Config:      testAccCheckDatadogMetricTagConfigurationAggregationsError(uniqueMetricTagConfig, "distribution"),
 				ExpectError: regexp.MustCompile("cannot use aggregations with a metric_type of distribution*"),
 			},
+			{
+				Config:      testAccCheckDatadogMetricTagConfigurationExcludeTagsModeError(uniqueMetricTagConfig),
+				ExpectError: regexp.MustCompile("cannot use exclude_tags_mode without configuring any tags"),
+			},
 		},
 	})
 }
@@ -44,9 +48,10 @@ func TestAccDatadogMetricTagConfiguration_Error(t *testing.T) {
 func testAccCheckDatadogMetricTagConfigurationIncludePercentilesError(uniq string, metricType string) string {
 	return fmt.Sprintf(`
         resource "datadog_metric_tag_configuration" "testing_metric_tag_config_icl_count" {
-			metric_name = "%s"
-			metric_type = "%s"
-			tags = ["sport"]
+			metric_name         = "%s"
+			metric_type         = "%s"
+			tags                = ["sport"]
+            exclude_tags_mode   = false
 			include_percentiles = false
         }
     `, uniq, metricType)
@@ -57,7 +62,7 @@ func testAccCheckDatadogMetricTagConfigurationAggregationsError(uniq string, met
         resource "datadog_metric_tag_configuration" "testing_metric_tag_config_aggregations" {
 			metric_name = "%s"
 			metric_type = "%s"
-			tags = ["sport"]
+			tags        = ["sport"]
 			aggregations {
 				time = "sum"
 				space = "sum"
@@ -68,6 +73,24 @@ func testAccCheckDatadogMetricTagConfigurationAggregationsError(uniq string, met
 			}
         }
     `, uniq, metricType)
+}
+func testAccCheckDatadogMetricTagConfigurationExcludeTagsModeError(uniq string) string {
+	return fmt.Sprintf(`
+        resource "datadog_metric_tag_configuration" "testing_metric_tag_config_aggregations" {
+			metric_name       = "%s"
+			metric_type       = "gauge"
+			tags              = []
+            exclude_tags_mode = true
+			aggregations {
+				time = "sum"
+				space = "sum"
+			}
+			aggregations {
+				time = "avg"
+				space = "avg"
+			}
+        }
+    `, uniq)
 }
 
 func testAccCheckDatadogMetricTagConfigurationDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {

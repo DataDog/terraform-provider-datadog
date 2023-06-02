@@ -8,9 +8,10 @@ resource "datadog_metric_tag_configuration" "example_dist_metric" {
 
 # Manage tag configurations for a Datadog count or gauge metric
 resource "datadog_metric_tag_configuration" "example_count_metric" {
-  metric_name = "example.terraform.count.metric"
-  metric_type = "count"
-  tags        = ["sport", "datacenter"]
+  metric_name       = "example.terraform.count.metric"
+  metric_type       = "count"
+  tags              = ["sport", "datacenter"]
+  exclude_tags_mode = false
   aggregations {
     time  = "avg"
     space = "min"

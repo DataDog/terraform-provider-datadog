@@ -23,9 +23,10 @@ resource "datadog_metric_tag_configuration" "example_dist_metric" {
 
 # Manage tag configurations for a Datadog count or gauge metric
 resource "datadog_metric_tag_configuration" "example_count_metric" {
-  metric_name = "example.terraform.count.metric"
-  metric_type = "count"
-  tags        = ["sport", "datacenter"]
+  metric_name       = "example.terraform.count.metric"
+  metric_type       = "count"
+  tags              = ["sport", "datacenter"]
+  exclude_tags_mode = false
   aggregations {
     time  = "avg"
     space = "min"
@@ -49,6 +50,7 @@ resource "datadog_metric_tag_configuration" "example_count_metric" {
 ### Optional
 
 - `aggregations` (Block Set) A list of queryable aggregation combinations for a count, rate, or gauge metric. By default, count and rate metrics require the (time: sum, space: sum) aggregation and gauge metrics require the (time: avg, space: avg) aggregation. Can only be applied to metrics that have a `metric_type` of count, rate, or gauge. (see [below for nested schema](#nestedblock--aggregations))
+- `exclude_tags_mode` (Boolean) Toggle to include/exclude tags as queryable for your metric.  Defaults to false.  Can only be applied to metrics that have one or more tags configured.
 - `include_percentiles` (Boolean) Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a `metric_type` of distribution.
 
 ### Read-Only
