@@ -2403,18 +2403,32 @@ func buildLocalBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]st
 		basicAuthSigv4 := basicAuth.SyntheticsBasicAuthSigv4
 		localAuth["access_key"] = basicAuthSigv4.AccessKey
 		localAuth["secret_key"] = basicAuthSigv4.SecretKey
-		localAuth["region"] = *basicAuthSigv4.Region
-		localAuth["session_token"] = *basicAuthSigv4.SessionToken
-		localAuth["service_name"] = *basicAuthSigv4.ServiceName
+		if v, ok := basicAuthSigv4.GetRegionOk(); ok {
+			localAuth["region"] = *v
+		}
+		if v, ok := basicAuthSigv4.GetSessionTokenOk(); ok {
+			localAuth["session_token"] = *v
+		}
+		if v, ok := basicAuthSigv4.GetServiceNameOk(); ok {
+			localAuth["service_name"] = *v
+		}
 		localAuth["type"] = "sigv4"
 	}
 
 	if basicAuth.SyntheticsBasicAuthNTLM != nil {
 		basicAuthNtlm := basicAuth.SyntheticsBasicAuthNTLM
-		localAuth["username"] = *basicAuthNtlm.Username
-		localAuth["password"] = *basicAuthNtlm.Password
-		localAuth["domain"] = *basicAuthNtlm.Domain
-		localAuth["workstation"] = *basicAuthNtlm.Workstation
+		if v, ok := basicAuthNtlm.GetUsernameOk(); ok {
+			localAuth["username"] = *v
+		}
+		if v, ok := basicAuthNtlm.GetPasswordOk(); ok {
+			localAuth["password"] = *v
+		}
+		if v, ok := basicAuthNtlm.GetDomainOk(); ok {
+			localAuth["domain"] = *v
+		}
+		if v, ok := basicAuthNtlm.GetWorkstationOk(); ok {
+			localAuth["workstation"] = *v
+		}
 		localAuth["type"] = "ntlm"
 	}
 
@@ -2424,21 +2438,36 @@ func buildLocalBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]st
 		localAuth["client_id"] = basicAuthOauthClient.ClientId
 		localAuth["client_secret"] = basicAuthOauthClient.ClientSecret
 		localAuth["token_api_authentication"] = string(basicAuthOauthClient.TokenApiAuthentication)
-		localAuth["audience"] = *basicAuthOauthClient.Audience
-		localAuth["scope"] = *basicAuthOauthClient.Scope
-		localAuth["resource"] = *basicAuthOauthClient.Resource
-
+		if v, ok := basicAuthOauthClient.GetAudienceOk(); ok {
+			localAuth["audience"] = *v
+		}
+		if v, ok := basicAuthOauthClient.GetScopeOk(); ok {
+			localAuth["scope"] = *v
+		}
+		if v, ok := basicAuthOauthClient.GetResourceOk(); ok {
+			localAuth["resource"] = *v
+		}
 		localAuth["type"] = "oauth-client"
 	}
 	if basicAuth.SyntheticsBasicAuthOauthROP != nil {
 		basicAuthOauthROP := basicAuth.SyntheticsBasicAuthOauthROP
 		localAuth["access_token_url"] = basicAuthOauthROP.AccessTokenUrl
-		localAuth["client_id"] = *basicAuthOauthROP.ClientId
-		localAuth["client_secret"] = *basicAuthOauthROP.ClientSecret
+		if v, ok := basicAuthOauthROP.GetClientIdOk(); ok {
+			localAuth["client_id"] = *v
+		}
+		if v, ok := basicAuthOauthROP.GetClientSecretOk(); ok {
+			localAuth["client_secret"] = *v
+		}
 		localAuth["token_api_authentication"] = string(basicAuthOauthROP.TokenApiAuthentication)
-		localAuth["audience"] = *basicAuthOauthROP.Audience
-		localAuth["scope"] = *basicAuthOauthROP.Scope
-		localAuth["resource"] = *basicAuthOauthROP.Resource
+		if v, ok := basicAuthOauthROP.GetAudienceOk(); ok {
+			localAuth["audience"] = *v
+		}
+		if v, ok := basicAuthOauthROP.GetScopeOk(); ok {
+			localAuth["scope"] = *v
+		}
+		if v, ok := basicAuthOauthROP.GetResourceOk(); ok {
+			localAuth["resource"] = *v
+		}
 		localAuth["username"] = basicAuthOauthROP.Username
 		localAuth["password"] = basicAuthOauthROP.Password
 
