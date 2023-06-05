@@ -43,7 +43,7 @@ datadog/*datadog_service_level_objective* @DataDog/integrations-tools-and-librar
 docs/resources/service_level_objective*   @DataDog/integrations-tools-and-libraries @DataDog/slo-app @DataDog/documentation
 datadog/*datadog_synthetics*              @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app
 docs/resources/synthetics*                @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app @DataDog/documentation
-datadog/*datadog_team*                    @DataDog/integrations-tools-and-libraries @DataDog/core-app
+datadog/**/*datadog_team*                 @DataDog/integrations-tools-and-libraries @DataDog/core-app
 docs/resources/team*                      @DataDog/integrations-tools-and-libraries @DataDog/core-app @DataDog/documentation
 datadog/*datadog_timeboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards
 docs/resources/timeboard*                 @DataDog/integrations-tools-and-libraries @DataDog/dashboards @DataDog/documentation
