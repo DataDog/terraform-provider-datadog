@@ -19,10 +19,10 @@
 * [datadog_synthetics_concurrency_cap] Add concurrency cap resource for synthetics tests by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1913
 * [datadog_integration_gcp_sts] generate GCP STS account resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1936
 * [datadog_team] Add support for datadog team resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1908
-* [datadog_team] Add support for datadog team link resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1908
-* [datadog_team] Add support for datadog team membership resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1908
+* [datadog_team_link] Add support for datadog team link resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1908
+* [datadog_team_membership] Add support for datadog team membership resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1908
 * [datadog_team] Add datadog team data source by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1946
-* [datadog_team] Add datadog team memberships data source by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1946
+* [datadog_team_memberships] Add datadog team memberships data source by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1946
 ### NOTES
 * [provider] Bump `datadog-api-client` version to `v2.13.0` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1940
 
