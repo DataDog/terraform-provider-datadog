@@ -42,6 +42,7 @@ type clockContextKey string
 const ddTestOrg = "fasjyydbcgwwc2uc"
 const testAPIKeyEnvName = "DD_TEST_CLIENT_API_KEY"
 const testAPPKeyEnvName = "DD_TEST_CLIENT_APP_KEY"
+const testAPIUrlEnvName = "DD_TEST_SITE_URL"
 const testOrgEnvName = "DD_TEST_ORG"
 
 var isTestOrgC *bool
@@ -56,6 +57,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_dashboard_list_test":                          "dashboard-lists",
 	"tests/data_source_datadog_hosts_test":                                   "hosts",
 	"tests/data_source_datadog_integration_aws_logs_services_test":           "integration-aws",
+	"tests/data_source_datadog_integration_aws_namespace_rules_test":         "integration-aws",
 	"tests/data_source_datadog_ip_ranges_test":                               "ip-ranges",
 	"tests/data_source_datadog_logs_archives_order_test":                     "logs-archive",
 	"tests/data_source_datadog_logs_indexes_order_test":                      "logs-index",
@@ -73,11 +75,14 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_security_monitoring_rules_test":               "security-monitoring",
 	"tests/data_source_datadog_security_monitoring_filters_test":             "security-monitoring",
 	"tests/data_source_datadog_sensitive_data_scanner_standard_pattern_test": "sensitive-data-scanner",
+	"tests/data_source_datadog_sensitive_data_scanner_group_order_test":      "sensitive-data-scanner",
 	"tests/data_source_datadog_service_level_objective_test":                 "service-level-objectives",
 	"tests/data_source_datadog_service_level_objectives_test":                "service-level-objectives",
 	"tests/data_source_datadog_synthetics_locations_test":                    "synthetics",
 	"tests/data_source_datadog_synthetics_global_variable_test":              "synthetics",
 	"tests/data_source_datadog_synthetics_test_test":                         "synthetics",
+	"tests/data_source_datadog_team_memberships_test":                        "team",
+	"tests/data_source_datadog_team_test":                                    "team",
 	"tests/import_datadog_downtime_test":                                     "downtimes",
 	"tests/import_datadog_integration_pagerduty_test":                        "integration-pagerduty",
 	"tests/import_datadog_logs_pipeline_test":                                "logs-pipelines",
@@ -132,8 +137,10 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_aws_tag_filter_test":                 "integration-aws",
 	"tests/resource_datadog_integration_aws_test":                            "integration-aws",
 	"tests/resource_datadog_integration_azure_test":                          "integration-azure",
+	"tests/resource_datadog_integration_cloudflare_account_test":             "integration-cloudflare",
 	"tests/resource_datadog_integration_fastly_account_test":                 "integration-fastly-account",
 	"tests/resource_datadog_integration_gcp_test":                            "integration-gcp",
+	"tests/resource_datadog_integration_gcp_sts_test":                        "integration-gcp",
 	"tests/resource_datadog_integration_opsgenie_service_object_test":        "integration-opsgenie-service",
 	"tests/resource_datadog_integration_pagerduty_service_object_test":       "integration-pagerduty",
 	"tests/resource_datadog_integration_pagerduty_test":                      "integration-pagerduty",
@@ -155,15 +162,21 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_security_monitoring_default_rule_test":           "security-monitoring",
 	"tests/resource_datadog_security_monitoring_rule_test":                   "security-monitoring",
 	"tests/resource_datadog_security_monitoring_filter_test":                 "security-monitoring",
+	"tests/resource_datadog_sensitive_data_scanner_group_order_test":         "sensitive-data-scanner",
 	"tests/resource_datadog_sensitive_data_scanner_group_test":               "sensitive-data-scanner",
 	"tests/resource_datadog_sensitive_data_scanner_rule_test":                "sensitive-data-scanner",
 	"tests/resource_datadog_service_account_test":                            "users",
 	"tests/resource_datadog_service_level_objective_test":                    "service-level-objectives",
 	"tests/resource_datadog_service_definition_yaml_test":                    "service-definition",
 	"tests/resource_datadog_slo_correction_test":                             "slo_correction",
+	"tests/resource_datadog_spans_metric_test":                               "spans-metric",
+	"tests/resource_datadog_synthetics_concurrency_cap_test":                 "synthetics",
 	"tests/resource_datadog_synthetics_test_test":                            "synthetics",
 	"tests/resource_datadog_synthetics_global_variable_test":                 "synthetics",
 	"tests/resource_datadog_synthetics_private_location_test":                "synthetics",
+	"tests/resource_datadog_team_test":                                       "team",
+	"tests/resource_datadog_team_link_test":                                  "team",
+	"tests/resource_datadog_team_membership_test":                            "team",
 	"tests/resource_datadog_timeboard_test":                                  "dashboards",
 	"tests/resource_datadog_dashboard_treemap_test":                          "dashboards",
 	"tests/resource_datadog_user_test":                                       "users",
@@ -238,13 +251,20 @@ func isTestOrg() bool {
 	if isTestOrgC != nil {
 		return *isTestOrgC
 	}
+
+	var apiURL string
+	if apiURL = os.Getenv(testAPIUrlEnvName); apiURL == "" {
+		apiURL = "https://api.datadoghq.com"
+	}
+
 	// If keys belong to test org, then this get will succeed, otherwise it will fail with 400
 	publicID := ddTestOrg
 	if v := os.Getenv(testOrgEnvName); v != "" {
 		publicID = v
 	}
+
 	client := &http.Client{}
-	req, _ := http.NewRequest("GET", "https://api.datadoghq.com/api/v1/org/"+publicID, nil)
+	req, _ := http.NewRequest("GET", fmt.Sprintf("%s/%s/%s", strings.TrimRight(apiURL, "/"), "api/v1/org", publicID), nil)
 	req.Header.Add("DD-API-KEY", os.Getenv(testAPIKeyEnvName))
 	req.Header.Add("DD-APPLICATION-KEY", os.Getenv(testAPPKeyEnvName))
 	resp, err := client.Do(req)
@@ -636,7 +656,12 @@ func TestProvider_impl(t *testing.T) {
 
 func testAccPreCheck(t *testing.T) {
 	// Unset all regular env to avoid mistakenly running tests against wrong org
-	for _, v := range append(utils.APPKeyEnvVars, utils.APIKeyEnvVars...) {
+	var envVars []string
+	envVars = append(envVars, utils.APPKeyEnvVars...)
+	envVars = append(envVars, utils.APIKeyEnvVars...)
+	envVars = append(envVars, utils.APIUrlEnvVars...)
+
+	for _, v := range envVars {
 		_ = os.Unsetenv(v)
 	}
 
@@ -667,6 +692,9 @@ func testAccPreCheck(t *testing.T) {
 
 	if err := os.Setenv(utils.DDAPPKeyEnvName, os.Getenv(testAPPKeyEnvName)); err != nil {
 		t.Fatalf("Error setting API key: %v", err)
+	}
+	if err := os.Setenv(utils.DDAPIUrlEnvName, os.Getenv(testAPIUrlEnvName)); err != nil {
+		t.Fatalf("Error setting API url: %v", err)
 	}
 }
 

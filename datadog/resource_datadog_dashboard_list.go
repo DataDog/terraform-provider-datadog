@@ -116,7 +116,7 @@ func resourceDatadogDashboardListUpdate(ctx context.Context, d *schema.ResourceD
 	if err := utils.CheckForUnparsed(completeDashListV2); err != nil {
 		return diag.FromErr(err)
 	}
-	completeDashListDeleteV2, err := buildDatadogDashboardListDeleteItemsV2(completeDashListV2)
+	completeDashListDeleteV2, err := buildDatadogDashboardListDeleteItemsV2(&completeDashListV2)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating dashboard list delete item")
 	}
@@ -164,7 +164,7 @@ func resourceDatadogDashboardListRead(ctx context.Context, d *schema.ResourceDat
 	if err := utils.CheckForUnparsed(completeItemListV2); err != nil {
 		return diag.FromErr(err)
 	}
-	dashItemListV2, err := buildTerraformDashboardListItemsV2(completeItemListV2)
+	dashItemListV2, err := buildTerraformDashboardListItemsV2(&completeItemListV2)
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
 	}
@@ -194,7 +194,7 @@ func buildDatadogDashboardList(d *schema.ResourceData) (*datadogV1.DashboardList
 	return &dashboardList, nil
 }
 
-func buildDatadogDashboardListDeleteItemsV2(dashboardListItems datadogV2.DashboardListItems) (*datadogV2.DashboardListDeleteItemsRequest, error) {
+func buildDatadogDashboardListDeleteItemsV2(dashboardListItems *datadogV2.DashboardListItems) (*datadogV2.DashboardListDeleteItemsRequest, error) {
 	dashboardListV2ItemsArr := make([]datadogV2.DashboardListItemRequest, 0)
 	for _, dashItem := range dashboardListItems.GetDashboards() {
 		dashType := dashItem.GetType()
@@ -220,7 +220,7 @@ func buildDatadogDashboardListUpdateItemsV2(d *schema.ResourceData) (*datadogV2.
 	return dashboardListV2Items, nil
 }
 
-func buildTerraformDashboardListItemsV2(completeItemListV2 datadogV2.DashboardListItems) ([]map[string]interface{}, error) {
+func buildTerraformDashboardListItemsV2(completeItemListV2 *datadogV2.DashboardListItems) ([]map[string]interface{}, error) {
 	dashItemListV2 := make([]map[string]interface{}, 0, 1)
 	for _, item := range completeItemListV2.GetDashboards() {
 		dashItem := make(map[string]interface{})

@@ -3,25 +3,6 @@ version: 1
 interactions:
 - request:
     body: |
-      {"data":{"attributes":{"email":"a-user@example.com","name":"Test User"},"relationships":{"roles":{"data":[]}},"type":"users"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users
-    method: POST
-  response:
-    body: '{"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"a-user@example.com","created_at":"2021-12-03T16:37:02.407801+00:00","modified_at":"2021-12-03T16:37:02.449074+00:00","email":"a-user@example.com","icon":"https://secure.gravatar.com/avatar/d3f689172d62d7bcc2e4698422091ecf?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 201 Created
-    code: 201
-    duration: ""
-- request:
-    body: |
       {"data":{"attributes":{"email":"z-user@example.com","name":"Test User"},"relationships":{"roles":{"data":[]}},"type":"users"}}
     form: {}
     headers:
@@ -32,12 +13,12 @@ interactions:
     url: https://api.datadoghq.com/api/v2/users
     method: POST
   response:
-    body: '{"data":{"type":"users","id":"3e342c0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"z-user@example.com","created_at":"2021-12-03T16:37:02.411004+00:00","modified_at":"2021-12-03T16:37:02.459957+00:00","email":"z-user@example.com","icon":"https://secure.gravatar.com/avatar/f96d6b5408696ed0088d9dd6a5840d9d?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"errors":["User z-user@example.com already exists"]}'
     headers:
       Content-Type:
       - application/json
-    status: 201 Created
-    code: 201
+    status: 409 Conflict
+    code: 409
     duration: ""
 - request:
     body: |
@@ -51,12 +32,142 @@ interactions:
     url: https://api.datadoghq.com/api/v2/users
     method: POST
   response:
-    body: '{"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"k-user@example.com","created_at":"2021-12-03T16:37:02.412935+00:00","modified_at":"2021-12-03T16:37:02.468597+00:00","email":"k-user@example.com","icon":"https://secure.gravatar.com/avatar/98eadd67eaa2d8c224d446b2e88f0bf2?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: '{"errors":["User k-user@example.com already exists"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 409 Conflict
+    code: 409
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"email":"a-user@example.com","name":"Test User"},"relationships":{"roles":{"data":[]}},"type":"users"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/users
+    method: POST
+  response:
+    body: '{"errors":["User a-user@example.com already exists"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 409 Conflict
+    code: 409
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/users?filter=z-user%40example.com
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"users","id":"41af244c-5dbc-11ec-ada4-da7ad0900002","attributes":{"name":"Test User","handle":"z-user@example.com","created_at":"2021-12-15T15:32:47.885715+00:00","modified_at":"2023-04-20T15:10:00.323061+00:00","email":"z-user@example.com","icon":"https://secure.gravatar.com/avatar/f96d6b5408696ed0088d9dd6a5840d9d?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":157822,"total_filtered_count":1}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"disabled":false,"email":"z-user@example.com","name":"Test User"},"id":"41af244c-5dbc-11ec-ada4-da7ad0900002","type":"users"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/users/41af244c-5dbc-11ec-ada4-da7ad0900002
+    method: PATCH
+  response:
+    body: |
+      {"data":{"type":"users","id":"41af244c-5dbc-11ec-ada4-da7ad0900002","attributes":{"name":"Test User","handle":"z-user@example.com","created_at":"2021-12-15T15:32:47.885715+00:00","modified_at":"2023-04-20T15:11:33.227925+00:00","email":"z-user@example.com","icon":"https://secure.gravatar.com/avatar/f96d6b5408696ed0088d9dd6a5840d9d?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/users?filter=a-user%40example.com
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"a-user@example.com","created_at":"2021-12-03T16:37:02.407801+00:00","modified_at":"2023-04-20T15:11:24.000272+00:00","email":"a-user@example.com","icon":"https://secure.gravatar.com/avatar/d3f689172d62d7bcc2e4698422091ecf?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":157822,"total_filtered_count":1}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":[{"relationships":{"user":{"data":{"id":"41af244c-5dbc-11ec-ada4-da7ad0900002","type":"users"}}},"type":"user_invitations"}]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/user_invitations
+    method: POST
+  response:
+    body: |
+      {"data":[{"type":"user_invitations","id":"a2e67a22-df8d-11ed-9dea-da7ad0900002","attributes":{"uuid":"a2e67a22-df8d-11ed-9dea-da7ad0900002","login_method":null,"invite_type":"basic_reminder","created_at":"2023-04-20T15:11:33.474664+00:00","expires_at":"2023-04-22T15:11:33.400780+00:00"},"relationships":{"user":{"data":{"type":"users","id":"41af244c-5dbc-11ec-ada4-da7ad0900002"}}}}]}
     headers:
       Content-Type:
       - application/json
     status: 201 Created
     code: 201
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"disabled":false,"email":"a-user@example.com","name":"Test User"},"id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","type":"users"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/users/3e3379ee-5457-11ec-a8c2-da7ad0900002
+    method: PATCH
+  response:
+    body: |
+      {"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"a-user@example.com","created_at":"2021-12-03T16:37:02.407801+00:00","modified_at":"2023-04-20T15:11:33.508672+00:00","email":"a-user@example.com","icon":"https://secure.gravatar.com/avatar/d3f689172d62d7bcc2e4698422091ecf?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/users?filter=k-user%40example.com
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"k-user@example.com","created_at":"2021-12-03T16:37:02.412935+00:00","modified_at":"2023-04-20T15:11:24.002595+00:00","email":"k-user@example.com","icon":"https://secure.gravatar.com/avatar/98eadd67eaa2d8c224d446b2e88f0bf2?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":true,"allowed_login_methods":[],"status":"Disabled"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}],"meta":{"page":{"total_count":157822,"total_filtered_count":1}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
     duration: ""
 - request:
     body: |
@@ -70,12 +181,33 @@ interactions:
     url: https://api.datadoghq.com/api/v2/user_invitations
     method: POST
   response:
-    body: '{"data":[{"type":"user_invitations","id":"3e59ea48-5457-11ec-a8c2-da7ad0900002","attributes":{"uuid":"3e59ea48-5457-11ec-a8c2-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2021-12-03T16:37:02.660743+00:00","expires_at":"2021-12-05T16:37:02.584666+00:00"},"relationships":{"user":{"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002"}}}}]}'
+    body: |
+      {"data":[{"type":"user_invitations","id":"a31e8624-df8d-11ed-bb80-da7ad0900002","attributes":{"uuid":"a31e8624-df8d-11ed-bb80-da7ad0900002","login_method":null,"invite_type":"basic_reminder","created_at":"2023-04-20T15:11:33.842138+00:00","expires_at":"2023-04-22T15:11:33.660131+00:00"},"relationships":{"user":{"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002"}}}}]}
     headers:
       Content-Type:
       - application/json
     status: 201 Created
     code: 201
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"disabled":false,"email":"k-user@example.com","name":"Test User"},"id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","type":"users"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/users/3e344a0e-5457-11ec-a8c2-da7ad0900002
+    method: PATCH
+  response:
+    body: |
+      {"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"k-user@example.com","created_at":"2021-12-03T16:37:02.412935+00:00","modified_at":"2023-04-20T15:11:35.219436+00:00","email":"k-user@example.com","icon":"https://secure.gravatar.com/avatar/98eadd67eaa2d8c224d446b2e88f0bf2?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
     duration: ""
 - request:
     body: |
@@ -89,7 +221,8 @@ interactions:
     url: https://api.datadoghq.com/api/v2/user_invitations
     method: POST
   response:
-    body: '{"data":[{"type":"user_invitations","id":"3e5ba28e-5457-11ec-a8c2-da7ad0900002","attributes":{"uuid":"3e5ba28e-5457-11ec-a8c2-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2021-12-03T16:37:02.671419+00:00","expires_at":"2021-12-05T16:37:02.606551+00:00"},"relationships":{"user":{"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002"}}}}]}'
+    body: |
+      {"data":[{"type":"user_invitations","id":"a41188ba-df8d-11ed-b374-da7ad0900002","attributes":{"uuid":"a41188ba-df8d-11ed-b374-da7ad0900002","login_method":null,"invite_type":"basic_reminder","created_at":"2023-04-20T15:11:35.434685+00:00","expires_at":"2023-04-22T15:11:35.360868+00:00"},"relationships":{"user":{"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002"}}}}]}
     headers:
       Content-Type:
       - application/json
@@ -98,26 +231,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":[{"relationships":{"user":{"data":{"id":"3e342c0e-5457-11ec-a8c2-da7ad0900002","type":"users"}}},"type":"user_invitations"}]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/user_invitations
-    method: POST
-  response:
-    body: '{"data":[{"type":"user_invitations","id":"3e5c6a70-5457-11ec-a8c2-da7ad0900002","attributes":{"uuid":"3e5c6a70-5457-11ec-a8c2-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2021-12-03T16:37:02.676470+00:00","expires_at":"2021-12-05T16:37:02.601235+00:00"},"relationships":{"user":{"data":{"type":"users","id":"3e342c0e-5457-11ec-a8c2-da7ad0900002"}}}}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 201 Created
-    code: 201
-    duration: ""
-- request:
-    body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":["z-user@example.com","k-user@example.com","a-user@example.com"],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardNotifyListDiff-local-1638549420","widgets":[]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":["z-user@example.com","k-user@example.com","a-user@example.com"],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardNotifyListDiff-local-1682003487","widgets":[]}
     form: {}
     headers:
       Accept:
@@ -127,7 +241,8 @@ interactions:
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
   response:
-    body: '{"notify_list":["z-user@example.com","k-user@example.com","a-user@example.com"],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"x58-uhn-d4v","title":"tf-TestAccDatadogDashboardNotifyListDiff-local-1638549420","url":"/dashboard/x58-uhn-d4v/tf-testaccdatadogdashboardnotifylistdiff-local-1638549420","created_at":"2021-12-03T16:37:03.087114+00:00","modified_at":"2021-12-03T16:37:03.087114+00:00","author_handle":"frog@datadoghq.com","widgets":[],"layout_type":"ordered"}'
+    body: |
+      {"id":"6ns-8m6-uxc","title":"tf-TestAccDatadogDashboardNotifyListDiff-local-1682003487","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/6ns-8m6-uxc/tf-testaccdatadogdashboardnotifylistdiff-local-1682003487","is_read_only":true,"template_variables":[],"widgets":[],"notify_list":["k-user@example.com","z-user@example.com","a-user@example.com"],"created_at":"2023-04-20T15:11:35.945932+00:00","modified_at":"2023-04-20T15:11:35.945932+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -140,10 +255,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/x58-uhn-d4v
+    url: https://api.datadoghq.com/api/v1/dashboard/6ns-8m6-uxc
     method: GET
   response:
-    body: '{"notify_list":["z-user@example.com","k-user@example.com","a-user@example.com"],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"x58-uhn-d4v","title":"tf-TestAccDatadogDashboardNotifyListDiff-local-1638549420","url":"/dashboard/x58-uhn-d4v/tf-testaccdatadogdashboardnotifylistdiff-local-1638549420","created_at":"2021-12-03T16:37:03.087114+00:00","modified_at":"2021-12-03T16:37:03.087114+00:00","author_handle":"frog@datadoghq.com","widgets":[],"layout_type":"ordered"}'
+    body: |
+      {"id":"6ns-8m6-uxc","title":"tf-TestAccDatadogDashboardNotifyListDiff-local-1682003487","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/6ns-8m6-uxc/tf-testaccdatadogdashboardnotifylistdiff-local-1682003487","is_read_only":true,"template_variables":[],"widgets":[],"notify_list":["k-user@example.com","z-user@example.com","a-user@example.com"],"created_at":"2023-04-20T15:11:35.945932+00:00","modified_at":"2023-04-20T15:11:35.945932+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -156,26 +272,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/x58-uhn-d4v
+    url: https://api.datadoghq.com/api/v1/dashboard/6ns-8m6-uxc
     method: GET
   response:
-    body: '{"notify_list":["z-user@example.com","k-user@example.com","a-user@example.com"],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"x58-uhn-d4v","title":"tf-TestAccDatadogDashboardNotifyListDiff-local-1638549420","url":"/dashboard/x58-uhn-d4v/tf-testaccdatadogdashboardnotifylistdiff-local-1638549420","created_at":"2021-12-03T16:37:03.087114+00:00","modified_at":"2021-12-03T16:37:03.087114+00:00","author_handle":"frog@datadoghq.com","widgets":[],"layout_type":"ordered"}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users/3e3379ee-5457-11ec-a8c2-da7ad0900002
-    method: GET
-  response:
-    body: '{"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"a-user@example.com","created_at":"2021-12-03T16:37:02.407801+00:00","modified_at":"2021-12-03T16:37:02.449074+00:00","email":"a-user@example.com","icon":"https://secure.gravatar.com/avatar/d3f689172d62d7bcc2e4698422091ecf?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
+    body: |
+      {"id":"6ns-8m6-uxc","title":"tf-TestAccDatadogDashboardNotifyListDiff-local-1682003487","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/6ns-8m6-uxc/tf-testaccdatadogdashboardnotifylistdiff-local-1682003487","is_read_only":true,"template_variables":[],"widgets":[],"notify_list":["k-user@example.com","z-user@example.com","a-user@example.com"],"created_at":"2023-04-20T15:11:35.945932+00:00","modified_at":"2023-04-20T15:11:35.945932+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -191,55 +292,8 @@ interactions:
     url: https://api.datadoghq.com/api/v2/users/3e344a0e-5457-11ec-a8c2-da7ad0900002
     method: GET
   response:
-    body: '{"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"k-user@example.com","created_at":"2021-12-03T16:37:02.412935+00:00","modified_at":"2021-12-03T16:37:02.468597+00:00","email":"k-user@example.com","icon":"https://secure.gravatar.com/avatar/98eadd67eaa2d8c224d446b2e88f0bf2?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/users/3e342c0e-5457-11ec-a8c2-da7ad0900002
-    method: GET
-  response:
-    body: '{"data":{"type":"users","id":"3e342c0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"z-user@example.com","created_at":"2021-12-03T16:37:02.411004+00:00","modified_at":"2021-12-03T16:37:02.459957+00:00","email":"z-user@example.com","icon":"https://secure.gravatar.com/avatar/f96d6b5408696ed0088d9dd6a5840d9d?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/x58-uhn-d4v
-    method: GET
-  response:
-    body: '{"notify_list":["z-user@example.com","k-user@example.com","a-user@example.com"],"description":"Created using the Datadog provider in Terraform","author_name":null,"template_variable_presets":[],"template_variables":[],"is_read_only":true,"id":"x58-uhn-d4v","title":"tf-TestAccDatadogDashboardNotifyListDiff-local-1638549420","url":"/dashboard/x58-uhn-d4v/tf-testaccdatadogdashboardnotifylistdiff-local-1638549420","created_at":"2021-12-03T16:37:03.087114+00:00","modified_at":"2021-12-03T16:37:03.087114+00:00","author_handle":"frog@datadoghq.com","widgets":[],"layout_type":"ordered"}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/x58-uhn-d4v
-    method: DELETE
-  response:
-    body: '{"deleted_dashboard_id":"x58-uhn-d4v"}'
+    body: |
+      {"data":{"type":"users","id":"3e344a0e-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"k-user@example.com","created_at":"2021-12-03T16:37:02.412935+00:00","modified_at":"2023-04-20T15:11:35.219436+00:00","email":"k-user@example.com","icon":"https://secure.gravatar.com/avatar/98eadd67eaa2d8c224d446b2e88f0bf2?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
     headers:
       Content-Type:
       - application/json
@@ -253,12 +307,15 @@ interactions:
       Accept:
       - application/json
     url: https://api.datadoghq.com/api/v2/users/3e3379ee-5457-11ec-a8c2-da7ad0900002
-    method: DELETE
+    method: GET
   response:
-    body: ""
+    body: |
+      {"data":{"type":"users","id":"3e3379ee-5457-11ec-a8c2-da7ad0900002","attributes":{"name":"Test User","handle":"a-user@example.com","created_at":"2021-12-03T16:37:02.407801+00:00","modified_at":"2023-04-20T15:11:33.508672+00:00","email":"a-user@example.com","icon":"https://secure.gravatar.com/avatar/d3f689172d62d7bcc2e4698422091ecf?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
     headers:
-    status: 204 No Content
-    code: 204
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
     duration: ""
 - request:
     body: ""
@@ -266,13 +323,16 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/users/3e342c0e-5457-11ec-a8c2-da7ad0900002
-    method: DELETE
+    url: https://api.datadoghq.com/api/v2/users/41af244c-5dbc-11ec-ada4-da7ad0900002
+    method: GET
   response:
-    body: ""
+    body: |
+      {"data":{"type":"users","id":"41af244c-5dbc-11ec-ada4-da7ad0900002","attributes":{"name":"Test User","handle":"z-user@example.com","created_at":"2021-12-15T15:32:47.885715+00:00","modified_at":"2023-04-20T15:11:33.227925+00:00","email":"z-user@example.com","icon":"https://secure.gravatar.com/avatar/f96d6b5408696ed0088d9dd6a5840d9d?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
     headers:
-    status: 204 No Content
-    code: 204
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
     duration: ""
 - request:
     body: ""
@@ -280,11 +340,73 @@ interactions:
     headers:
       Accept:
       - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/6ns-8m6-uxc
+    method: GET
+  response:
+    body: |
+      {"id":"6ns-8m6-uxc","title":"tf-TestAccDatadogDashboardNotifyListDiff-local-1682003487","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/6ns-8m6-uxc/tf-testaccdatadogdashboardnotifylistdiff-local-1682003487","is_read_only":true,"template_variables":[],"widgets":[],"notify_list":["k-user@example.com","z-user@example.com","a-user@example.com"],"created_at":"2023-04-20T15:11:35.945932+00:00","modified_at":"2023-04-20T15:11:35.945932+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/6ns-8m6-uxc
+    method: DELETE
+  response:
+    body: |
+      {"deleted_dashboard_id":"6ns-8m6-uxc"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
     url: https://api.datadoghq.com/api/v2/users/3e344a0e-5457-11ec-a8c2-da7ad0900002
     method: DELETE
   response:
     body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
     headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/users/41af244c-5dbc-11ec-ada4-da7ad0900002
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/users/3e3379ee-5457-11ec-a8c2-da7ad0900002
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
     status: 204 No Content
     code: 204
     duration: ""

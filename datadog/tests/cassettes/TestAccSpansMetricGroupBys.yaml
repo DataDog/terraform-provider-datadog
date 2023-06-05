@@ -1,0 +1,56 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"compute":{"aggregation_type":"count"},"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}]},"id":"\"tf_TestAccSpansMetricGroupBys_local_1682069305\"","type":"spans_metrics"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/metrics
+    method: POST
+  response:
+    body: |
+      {"data":{"id":"tf_TestAccSpansMetricGroupBys_local_1682069305","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}],"compute":{"aggregation_type":"count"}},"type":"spans_metrics"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricGroupBys_local_1682069305
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"tf_TestAccSpansMetricGroupBys_local_1682069305","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name1","tag_name":"my_resource1"},{"path":"resource_name2","tag_name":"my_resource2"}],"compute":{"aggregation_type":"count"}},"type":"spans_metrics"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetricGroupBys_local_1682069305
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""

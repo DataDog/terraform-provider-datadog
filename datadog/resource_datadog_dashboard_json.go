@@ -233,6 +233,11 @@ func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]inter
 }
 
 func prepResource(attrMap map[string]interface{}) map[string]interface{} {
+	// This is an edge case where refresh might be called with an empty definition.
+	if attrMap == nil {
+		return attrMap
+	}
+
 	// Remove computed fields when comparing diffs
 	for _, f := range computedFields {
 		delete(attrMap, f)

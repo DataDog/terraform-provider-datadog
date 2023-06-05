@@ -616,7 +616,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 				queries := m["event_query"].([]interface{})
 				monitorVariables := make([]datadogV1.MonitorFormulaAndFunctionQueryDefinition, len(queries))
 				for i, q := range queries {
-					monitorVariables[i] = buildMonitorFormulaAndFunctionEventQuery(q.(map[string]interface{}))
+					monitorVariables[i] = *buildMonitorFormulaAndFunctionEventQuery(q.(map[string]interface{}))
 				}
 				o.SetVariables(monitorVariables)
 			}
@@ -655,24 +655,26 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 
 	if attr, ok := d.GetOk("scheduling_options"); ok {
 		scheduling_options_list := attr.([]interface{})
-		scheduling_options_map := scheduling_options_list[0].(map[string]interface{})
-		evaluation_window_map := scheduling_options_map["evaluation_window"].([]interface{})[0].(map[string]interface{})
-		scheduling_options := datadogV1.NewMonitorOptionsSchedulingOptions()
-		evaluation_window := datadogV1.NewMonitorOptionsSchedulingOptionsEvaluationWindow()
-		day_month_scheduling := false
-		if day_starts, ok := evaluation_window_map["day_starts"].(string); ok && day_starts != "" {
-			evaluation_window.SetDayStarts(day_starts)
-			day_month_scheduling = true
+		if scheduling_options_map, ok := scheduling_options_list[0].(map[string]interface{}); ok {
+			if evaluation_window_map, ok := scheduling_options_map["evaluation_window"].([]interface{})[0].(map[string]interface{}); ok {
+				scheduling_options := datadogV1.NewMonitorOptionsSchedulingOptions()
+				evaluation_window := datadogV1.NewMonitorOptionsSchedulingOptionsEvaluationWindow()
+				day_month_scheduling := false
+				if day_starts, ok := evaluation_window_map["day_starts"].(string); ok && day_starts != "" {
+					evaluation_window.SetDayStarts(day_starts)
+					day_month_scheduling = true
+				}
+				if month_starts, ok := evaluation_window_map["month_starts"].(int); ok && month_starts != 0 {
+					evaluation_window.SetMonthStarts(int32(month_starts))
+					day_month_scheduling = true
+				}
+				if hour_starts, ok := evaluation_window_map["hour_starts"].(int); ok && !day_month_scheduling {
+					evaluation_window.SetHourStarts(int32(hour_starts))
+				}
+				scheduling_options.SetEvaluationWindow(*evaluation_window)
+				o.SetSchedulingOptions(*scheduling_options)
+			}
 		}
-		if month_starts, ok := evaluation_window_map["month_starts"].(int); ok && month_starts != 0 {
-			evaluation_window.SetMonthStarts(int32(month_starts))
-			day_month_scheduling = true
-		}
-		if hour_starts, ok := evaluation_window_map["hour_starts"].(int); ok && !day_month_scheduling {
-			evaluation_window.SetHourStarts(int32(hour_starts))
-		}
-		scheduling_options.SetEvaluationWindow(*evaluation_window)
-		o.SetSchedulingOptions(*scheduling_options)
 	}
 
 	if attr, ok := d.GetOk("notification_preset_name"); ok {
@@ -719,7 +721,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	return m, u
 }
 
-func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.MonitorFormulaAndFunctionEventsDataSource(data["data_source"].(string))
 	computeList := data["compute"].([]interface{})
 	computeMap := computeList[0].(map[string]interface{})
@@ -785,7 +787,8 @@ func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) datad
 		eventQuery.SetGroupBy(emptyGroupBy)
 	}
 
-	return datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(eventQuery)
+	definition := datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(eventQuery)
+	return &definition
 }
 
 // Use CustomizeDiff to do monitor validation

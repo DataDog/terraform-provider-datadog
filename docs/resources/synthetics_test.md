@@ -41,98 +41,142 @@ url = https://{{ LOCAL_VAR }}
 ```terraform
 # Example Usage (Synthetics API test)
 # Create a new Datadog Synthetics API/HTTP test on https://www.example.org
-resource "datadog_synthetics_test" "test_api" {
-  type    = "api"
-  subtype = "http"
+resource "datadog_synthetics_test" "test_uptime" {
+  name      = "An Uptime test on example.org"
+  type      = "api"
+  subtype   = "http"
+  status    = "live"
+  message   = "Notify @pagerduty"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
   request_definition {
     method = "GET"
     url    = "https://www.example.org"
   }
+
   request_headers = {
-    Content-Type   = "application/json"
-    Authentication = "Token: 1234566789"
+    Content-Type = "application/json"
   }
+
   assertion {
     type     = "statusCode"
     operator = "is"
     target   = "200"
   }
-  locations = ["aws:eu-central-1"]
+
   options_list {
     tick_every = 900
-
     retry {
       count    = 2
       interval = 300
     }
-
     monitor_options {
       renotify_interval = 120
     }
   }
-  name    = "An API test on example.org"
-  message = "Notify @pagerduty"
-  tags    = ["foo:bar", "foo", "env:test"]
+}
 
-  status = "live"
+
+# Example Usage (Authenticated API test)
+# Create a new Datadog Synthetics API/HTTP test on https://www.example.org
+resource "datadog_synthetics_test" "test_api" {
+  name      = "An API test on example.org"
+  type      = "api"
+  subtype   = "http"
+  status    = "live"
+  message   = "Notify @pagerduty"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
+  request_definition {
+    method = "GET"
+    url    = "https://www.example.org"
+  }
+
+  request_headers = {
+    Content-Type   = "application/json"
+    Authentication = "Token: 1234566789"
+  }
+
+  assertion {
+    type     = "statusCode"
+    operator = "is"
+    target   = "200"
+  }
+
+  options_list {
+    tick_every = 900
+    retry {
+      count    = 2
+      interval = 300
+    }
+    monitor_options {
+      renotify_interval = 120
+    }
+  }
 }
 
 
 # Example Usage (Synthetics SSL test)
 # Create a new Datadog Synthetics API/SSL test on example.org
 resource "datadog_synthetics_test" "test_ssl" {
-  type    = "api"
-  subtype = "ssl"
+  name      = "An API test on example.org"
+  type      = "api"
+  subtype   = "ssl"
+  status    = "live"
+  message   = "Notify @pagerduty"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
   request_definition {
     host = "example.org"
     port = 443
   }
+
   assertion {
     type     = "certificate"
     operator = "isInMoreThan"
     target   = 30
   }
-  locations = ["aws:eu-central-1"]
+
   options_list {
     tick_every         = 900
     accept_self_signed = true
   }
-  name    = "An API test on example.org"
-  message = "Notify @pagerduty"
-  tags    = ["foo:bar", "foo", "env:test"]
-
-  status = "live"
 }
 
 
 # Example Usage (Synthetics TCP test)
 # Create a new Datadog Synthetics API/TCP test on example.org
 resource "datadog_synthetics_test" "test_tcp" {
-  type    = "api"
-  subtype = "tcp"
+  name      = "An API test on example.org"
+  type      = "api"
+  subtype   = "tcp"
+  status    = "live"
+  message   = "Notify @pagerduty"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
   request_definition {
     host = "example.org"
     port = 443
   }
+
   assertion {
     type     = "responseTime"
     operator = "lessThan"
     target   = 2000
   }
-  locations = ["aws:eu-central-1"]
-  options_list {
-    tick_every = 900
-  }
-  name    = "An API test on example.org"
-  message = "Notify @pagerduty"
-  tags    = ["foo:bar", "foo", "env:test"]
-
-  status = "live"
 
   config_variable {
     type = "global"
     name = "MY_GLOBAL_VAR"
     id   = "76636cd1-82e2-4aeb-9cfe-51366a8198a2"
+  }
+
+  options_list {
+    tick_every = 900
   }
 }
 
@@ -140,37 +184,40 @@ resource "datadog_synthetics_test" "test_tcp" {
 # Example Usage (Synthetics DNS test)
 # Create a new Datadog Synthetics API/DNS test on example.org
 resource "datadog_synthetics_test" "test_dns" {
-  type    = "api"
-  subtype = "dns"
+  name      = "An API test on example.org"
+  type      = "api"
+  subtype   = "dns"
+  status    = "live"
+  message   = "Notify @pagerduty"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
   request_definition {
     host = "example.org"
   }
+
   assertion {
     type     = "recordSome"
     operator = "is"
     property = "A"
     target   = "0.0.0.0"
   }
-  locations = ["aws:eu-central-1"]
+
   options_list {
     tick_every = 900
   }
-  name    = "An API test on example.org"
-  message = "Notify @pagerduty"
-  tags    = ["foo:bar", "foo", "env:test"]
-
-  status = "live"
 }
 
 
 # Example Usage (Synthetics Multistep API test)
 # Create a new Datadog Synthetics Multistep API test
-resource "datadog_synthetics_test" "test" {
+resource "datadog_synthetics_test" "test_multi_step" {
   name      = "Multistep API test"
   type      = "api"
   subtype   = "multi"
   status    = "live"
   locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
 
   api_step {
     name    = "An API test on example.org"
@@ -219,25 +266,18 @@ resource "datadog_synthetics_test" "test" {
 # Example Usage (Synthetics Browser test)
 # Create a new Datadog Synthetics Browser test starting on https://www.example.org
 resource "datadog_synthetics_test" "test_browser" {
-  type = "browser"
+  name       = "A Browser test on example.org"
+  type       = "browser"
+  status     = "paused"
+  message    = "Notify @qa"
+  device_ids = ["laptop_large"]
+  locations  = ["aws:eu-central-1"]
+  tags       = []
 
   request_definition {
     method = "GET"
     url    = "https://app.datadoghq.com"
   }
-
-  device_ids = ["laptop_large"]
-  locations  = ["aws:eu-central-1"]
-
-  options_list {
-    tick_every = 3600
-  }
-
-  name    = "A Browser test on example.org"
-  message = "Notify @qa"
-  tags    = []
-
-  status = "paused"
 
   browser_step {
     name = "Check current url"
@@ -266,6 +306,10 @@ resource "datadog_synthetics_test" "test_browser" {
     type = "global"
     name = "MY_GLOBAL_VAR"
     id   = "76636cd1-82e2-4aeb-9cfe-51366a8198a2"
+  }
+
+  options_list {
+    tick_every = 3600
   }
 }
 ```
@@ -333,7 +377,7 @@ Optional:
 Required:
 
 - `operator` (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
-- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `connection`.
+- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`.
 
 Optional:
 
@@ -349,6 +393,9 @@ Required:
 
 - `jsonpath` (String) The JSON path to assert.
 - `operator` (String) The specific operator to use on the path.
+
+Optional:
+
 - `targetvalue` (String) Expected matching value.
 
 
@@ -358,8 +405,11 @@ Required:
 Required:
 
 - `operator` (String) The specific operator to use on the path.
-- `targetvalue` (String) Expected matching value.
 - `xpath` (String) The xpath to assert.
+
+Optional:
+
+- `targetvalue` (String) Expected matching value.
 
 
 
@@ -375,6 +425,7 @@ Required:
 Optional:
 
 - `field` (String) When type is `http_header`, name of the header to use to extract the value.
+- `secure` (Boolean) Determines whether or not the extracted value will be obfuscated.
 
 <a id="nestedblock--api_step--extracted_value--parser"></a>
 ### Nested Schema for `api_step.extracted_value.parser`
@@ -451,7 +502,7 @@ Optional:
 
 Optional:
 
-- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP test.
+- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.
 - `body` (String) The request body.
 - `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
@@ -500,7 +551,7 @@ Optional:
 Required:
 
 - `operator` (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
-- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `connection`.
+- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`.
 
 Optional:
 
@@ -516,6 +567,9 @@ Required:
 
 - `jsonpath` (String) The JSON path to assert.
 - `operator` (String) The specific operator to use on the path.
+
+Optional:
+
 - `targetvalue` (String) Expected matching value.
 
 
@@ -525,8 +579,11 @@ Required:
 Required:
 
 - `operator` (String) The specific operator to use on the path.
-- `targetvalue` (String) Expected matching value.
 - `xpath` (String) The xpath to assert.
+
+Optional:
+
+- `targetvalue` (String) Expected matching value.
 
 
 
@@ -544,6 +601,7 @@ Optional:
 - `allow_failure` (Boolean) Determines if the step should be allowed to fail.
 - `force_element_update` (Boolean) Force update of the "element" parameter for the step
 - `is_critical` (Boolean) Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.
+- `no_screenshot` (Boolean) Prevents saving screenshots of the step.
 - `timeout` (Number) Used to override the default timeout of a step.
 
 <a id="nestedblock--browser_step--params"></a>
@@ -619,6 +677,7 @@ Optional:
 - `example` (String) Example for the variable.
 - `id` (String) ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.
 - `pattern` (String) Pattern of the variable.
+- `secure` (Boolean) Determines whether or not the browser test variable is obfuscated. Can only be used with a browser variable of type `text`
 
 
 <a id="nestedblock--config_variable"></a>
@@ -647,14 +706,14 @@ Required:
 Optional:
 
 - `accept_self_signed` (Boolean) For SSL test, whether or not the test should allow self signed certificates.
-- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP test.
+- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.
 - `check_certificate_revocation` (Boolean) For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.
 - `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--options_list--ci))
 - `disable_cors` (Boolean) Disable Cross-Origin Resource Sharing for browser tests.
 - `disable_csp` (Boolean) Disable Content Security Policy for browser tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - `http_version` (String) HTTP version to use for a Synthetics API test. Valid values are `http1`, `http2`, `any`.
-- `ignore_server_certificate_error` (Boolean) Ignore server certificate error.
+- `ignore_server_certificate_error` (Boolean) Ignore server certificate error for browser tests.
 - `initial_navigation_timeout` (Number) Timeout before declaring the initial step as failed (in seconds) for browser tests.
 - `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.
 - `min_location_failed` (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`.

@@ -46,11 +46,13 @@ type ApiInstances struct {
 	//V2 APIs
 	auditApiV2                 *datadogV2.AuditApi
 	authNMappingsApiV2         *datadogV2.AuthNMappingsApi
+	cloudflareIntegrationApiV2 *datadogV2.CloudflareIntegrationApi
 	cloudWorkloadSecurityApiV2 *datadogV2.CloudWorkloadSecurityApi
 	confluentCloudApiV2        *datadogV2.ConfluentCloudApi
 	dashboardListsApiV2        *datadogV2.DashboardListsApi
 	eventsApiV2                *datadogV2.EventsApi
 	fastlyIntegrationApiV2     *datadogV2.FastlyIntegrationApi
+	gcpStsIntegrationApiV2     *datadogV2.GCPIntegrationApi
 	incidentServicesApiV2      *datadogV2.IncidentServicesApi
 	incidentTeamsApiV2         *datadogV2.IncidentTeamsApi
 	incidentsApiV2             *datadogV2.IncidentsApi
@@ -70,6 +72,9 @@ type ApiInstances struct {
 	securityMonitoringApiV2    *datadogV2.SecurityMonitoringApi
 	sensitiveDataScannerApiV2  *datadogV2.SensitiveDataScannerApi
 	serviceAccountsApiV2       *datadogV2.ServiceAccountsApi
+	spansMetricsApiV2          *datadogV2.SpansMetricsApi
+	syntheticsApiV2            *datadogV2.SyntheticsApi
+	teamsApiV2                 *datadogV2.TeamsApi
 	usageMeteringApiV2         *datadogV2.UsageMeteringApi
 	usersApiV2                 *datadogV2.UsersApi
 }
@@ -362,6 +367,14 @@ func (i *ApiInstances) GetEventsApiV2() *datadogV2.EventsApi {
 	return i.eventsApiV2
 }
 
+// GetGCPStsIntegrationApiV2 get instance of GetGCPStsIntegration
+func (i *ApiInstances) GetGCPIntegrationApiV2() *datadogV2.GCPIntegrationApi {
+	if i.gcpStsIntegrationApiV2 == nil {
+		i.gcpStsIntegrationApiV2 = datadogV2.NewGCPIntegrationApi(i.HttpClient)
+	}
+	return i.gcpStsIntegrationApiV2
+}
+
 // GetIncidentServicesApiV2 get instance of IncidentServicesApi
 func (i *ApiInstances) GetIncidentServicesApiV2() *datadogV2.IncidentServicesApi {
 	if i.incidentServicesApiV2 == nil {
@@ -522,6 +535,14 @@ func (i *ApiInstances) GetUsersApiV2() *datadogV2.UsersApi {
 	return i.usersApiV2
 }
 
+// GetCloudflareIntegrationApiV2 get instance of CloudflareIntegrationApi
+func (i *ApiInstances) GetCloudflareIntegrationApiV2() *datadogV2.CloudflareIntegrationApi {
+	if i.cloudflareIntegrationApiV2 == nil {
+		i.cloudflareIntegrationApiV2 = datadogV2.NewCloudflareIntegrationApi(i.HttpClient)
+	}
+	return i.cloudflareIntegrationApiV2
+}
+
 // GetConfluentCloudApiV2 get instance of GetConfluentCloudApi
 func (i *ApiInstances) GetConfluentCloudApiV2() *datadogV2.ConfluentCloudApi {
 	if i.confluentCloudApiV2 == nil {
@@ -544,4 +565,27 @@ func (i *ApiInstances) GetRestrictionPoliciesApiV2() *datadogV2.RestrictionPolic
 		i.restrictionPolicyApiV2 = datadogV2.NewRestrictionPoliciesApi(i.HttpClient)
 	}
 	return i.restrictionPolicyApiV2
+
+// GetTeamsApiV2 get instance of TeamsApi
+func (i *ApiInstances) GetTeamsApiV2() *datadogV2.TeamsApi {
+	if i.teamsApiV2 == nil {
+		i.teamsApiV2 = datadogV2.NewTeamsApi(i.HttpClient)
+	}
+	return i.teamsApiV2
+}
+
+// GetSpansMetricsApiV2 get instance of SpansMetricsApi
+func (i *ApiInstances) GetSpansMetricsApiV2() *datadogV2.SpansMetricsApi {
+	if i.spansMetricsApiV2 == nil {
+		i.spansMetricsApiV2 = datadogV2.NewSpansMetricsApi(i.HttpClient)
+	}
+	return i.spansMetricsApiV2
+}
+
+// GetSyntheticsApiV2 get instance of SyntheticsApi
+func (i *ApiInstances) GetSyntheticsApiV2() *datadogV2.SyntheticsApi {
+	if i.syntheticsApiV2 == nil {
+		i.syntheticsApiV2 = datadogV2.NewSyntheticsApi(i.HttpClient)
+	}
+	return i.syntheticsApiV2
 }

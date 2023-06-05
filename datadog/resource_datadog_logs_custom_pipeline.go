@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -218,7 +219,10 @@ var grokParser = &schema.Schema{
 				Description: "List of sample logs for this parser. It can save up to 5 samples. Each sample takes up to 5000 characters.",
 				Type:        schema.TypeList,
 				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				Elem: &schema.Schema{
+					Type:             schema.TypeString,
+					ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+				},
 			},
 			"grok": {
 				Type:     schema.TypeList,
@@ -756,7 +760,7 @@ func buildDatadogPipeline(d *schema.ResourceData) (*datadogV1.LogsPipeline, erro
 		if !ok {
 			filter = make(map[string]interface{})
 		}
-		ddPipeline.SetFilter(buildDatadogFilter(filter))
+		ddPipeline.SetFilter(*buildDatadogFilter(filter))
 	}
 	ddProcessors, err := buildDatadogProcessors(d.Get("processor").([]interface{}))
 	if err != nil {
@@ -776,7 +780,7 @@ func buildDatadogProcessors(tfProcessors []interface{}) (*[]datadogV1.LogsProces
 				if err != nil {
 					return nil, err
 				}
-				ddProcessors[i] = ddProcessor
+				ddProcessors[i] = *ddProcessor
 				break
 			}
 		}
@@ -784,7 +788,7 @@ func buildDatadogProcessors(tfProcessors []interface{}) (*[]datadogV1.LogsProces
 	return &ddProcessors, nil
 }
 
-func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interface{}) (datadogV1.LogsProcessor, error) {
+func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interface{}) (*datadogV1.LogsProcessor, error) {
 	var ddProcessor = datadogV1.LogsProcessor{}
 	var err error
 	switch ddProcessorType {
@@ -815,13 +819,13 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 	case string(datadogV1.LOGSPIPELINEPROCESSORTYPE_PIPELINE):
 		ddNestedPipeline, err := buildDatadogNestedPipeline(tfProcessor)
 		if err != nil {
-			return ddProcessor, err
+			return &ddProcessor, err
 		}
 		ddProcessor = datadogV1.LogsPipelineProcessorAsLogsProcessor(ddNestedPipeline)
 	case string(datadogV1.LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR):
 		ddStringBuilderProcessor, err := buildDatadogStringBuilderProcessor(tfProcessor)
 		if err != nil {
-			return ddProcessor, err
+			return &ddProcessor, err
 		}
 		ddProcessor = datadogV1.LogsStringBuilderProcessorAsLogsProcessor(ddStringBuilderProcessor)
 	case string(datadogV1.LOGSURLPARSERTYPE_URL_PARSER):
@@ -832,7 +836,7 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 		err = fmt.Errorf("failed to recoginize processor type: %s", ddProcessorType)
 	}
 
-	return ddProcessor, err
+	return &ddProcessor, err
 }
 
 func buildDatadogURLParser(tfProcessor map[string]interface{}) *datadogV1.LogsURLParser {
@@ -929,7 +933,7 @@ func buildDatadogNestedPipeline(tfProcessor map[string]interface{}) (*datadogV1.
 		if !ok {
 			filter = make(map[string]interface{})
 		}
-		ddNestedPipeline.SetFilter(buildDatadogFilter(filter))
+		ddNestedPipeline.SetFilter(*buildDatadogFilter(filter))
 	}
 	if tfProcessors, exists := tfProcessor["processor"].([]interface{}); exists && len(tfProcessors) > 0 {
 		ddProcessors, err := buildDatadogProcessors(tfProcessors)
@@ -992,7 +996,9 @@ func buildDatadogGrokParser(tfProcessor map[string]interface{}) *datadogV1.LogsG
 	if tfSamples, exists := tfProcessor["samples"].([]interface{}); exists && len(tfSamples) > 0 {
 		ddSamples := make([]string, len(tfSamples))
 		for i, tfSample := range tfSamples {
-			ddSamples[i] = tfSample.(string)
+			if tfSampleValue, ok := tfSample.(string); ok {
+				ddSamples[i] = tfSampleValue
+			}
 		}
 		ddGrokParser.SetSamples(ddSamples)
 	}
@@ -1090,7 +1096,7 @@ func buildDatadogCategoryProcessor(tfProcessor map[string]interface{}) *datadogV
 				if !ok {
 					filter = make(map[string]interface{})
 				}
-				ddCategory.SetFilter(buildDatadogFilter(filter))
+				ddCategory.SetFilter(*buildDatadogFilter(filter))
 			}
 
 			ddCategories[i] = ddCategory
@@ -1185,14 +1191,14 @@ func buildDatadogDateRemapperProcessor(tfProcessor map[string]interface{}) *data
 	return ddDate
 }
 
-func buildDatadogFilter(tfFilter map[string]interface{}) datadogV1.LogsFilter {
+func buildDatadogFilter(tfFilter map[string]interface{}) *datadogV1.LogsFilter {
 	ddFilter := datadogV1.LogsFilter{}
 	var query string
 	if tfQuery, exists := tfFilter["query"].(string); exists {
 		query = tfQuery
 	}
 	ddFilter.SetQuery(query)
-	return ddFilter
+	return &ddFilter
 }
 
 func getPipelineSchema(isNested bool) map[string]*schema.Schema {

@@ -2,9 +2,7 @@ package fwprovider
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"log"
 	"net/url"
 	"runtime"
 	"strconv"
@@ -25,12 +23,40 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var (
 	_ provider.Provider = &FrameworkProvider{}
 )
+
+var Resources = []func() resource.Resource{
+	NewAPIKeyResource,
+	NewIntegrationCloudflareAccountResource,
+	NewIntegrationConfluentAccountResource,
+	NewIntegrationConfluentResourceResource,
+	NewIntegrationFastlyAccountResource,
+	NewIntegrationFastlyServiceResource,
+	NewIntegrationGcpStsResource,
+	NewSensitiveDataScannerGroupOrder,
+	NewSpansMetricResource,
+	NewSyntheticsConcurrencyCapResource,
+	NewTeamResource,
+	NewTeamLinkResource,
+	NewTeamMembershipResource,
+	NewRestrictionPolicyResource,
+}
+
+var Datasources = []func() datasource.DataSource{
+	NewAPIKeyDataSource,
+	NewDatadogIntegrationAWSNamespaceRulesDatasource,
+	NewDatadogTeamDataSource,
+	NewDatadogTeamMembershipsDataSource,
+	NewHostsDataSource,
+	NewIPRangesDataSource,
+	NewSensitiveDataScannerGroupOrderDatasource,
+}
 
 // FrameworkProvider struct
 type FrameworkProvider struct {
@@ -61,6 +87,20 @@ func New() provider.Provider {
 	}
 }
 
+func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
+	var wrappedResources []func() resource.Resource
+	for _, f := range Resources {
+		r := f()
+		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&r) })
+	}
+
+	return wrappedResources
+}
+
+func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
+	return Datasources
+}
+
 func (p *FrameworkProvider) Metadata(_ context.Context, _ provider.MetadataRequest, response *provider.MetadataResponse) {
 	response.TypeName = "datadog_"
 }
@@ -87,7 +127,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"validate": schema.StringAttribute{
 				Optional:    true,
-				Description: "Enables validation of the provided API and APP keys during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key and app_key won't be checked.",
+				Description: "Enables validation of the provided API key during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key won't be checked.",
 			},
 			"http_client_retry_enabled": schema.StringAttribute{
 				Optional:    true,
@@ -254,25 +294,6 @@ func (p *FrameworkProvider) ValidateConfigValues(ctx context.Context, config *Pr
 	return diags
 }
 
-func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resource {
-	return []func() resource.Resource{
-		NewAPIKeyResource,
-		NewIntegrationConfluentAccountResource,
-		NewIntegrationConfluentResourceResource,
-		NewIntegrationFastlyAccountResource,
-		NewIntegrationFastlyServiceResource,
-		NewRestrictionPolicyResource,
-	}
-}
-
-func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{
-		NewIPRangesDataSource,
-		NewAPIKeyDataSource,
-		NewHostsDataSource,
-	}
-}
-
 // Helper method to configure the provider
 func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureRequest, config *ProviderSchema) diag.Diagnostics {
 	diags := diag.Diagnostics{}
@@ -286,7 +307,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 
 	// Initialize the community client
 	p.CommunityClient = datadogCommunity.NewClient(config.ApiKey.ValueString(), config.AppKey.ValueString())
-	if !config.ApiUrl.IsNull() {
+	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		p.CommunityClient.SetBaseUrl(config.ApiUrl.ValueString())
 	}
 	c := cleanhttp.DefaultClient()
@@ -298,22 +319,6 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		runtime.GOARCH,
 	), request.TerraformVersion)
 	p.CommunityClient.HttpClient = c
-
-	if validate {
-		log.Println("[INFO] Datadog client successfully initialized, now validating...")
-		ok, err := p.CommunityClient.Validate()
-		if err != nil {
-			diags.AddError("[ERROR] Datadog Client validation error", err.Error())
-			return diags
-		} else if !ok {
-			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
-			diags.AddError("[ERROR] Datadog Client validation error", err.Error())
-			return diags
-		}
-	} else {
-		log.Println("[INFO] Skipping key validation (validate = false)")
-	}
-	log.Printf("[INFO] Datadog Client successfully validated.")
 
 	// Initialize the official Datadog V1 API client
 	auth := context.WithValue(
@@ -332,14 +337,14 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
 	ddClientConfig.Debug = logging.IsDebugOrHigher()
 
-	if !config.ApiUrl.IsNull() {
+	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
 		if parseErr != nil {
 			diags.AddError("invalid API URL", parseErr.Error())
 			return diags
 		}
 		if parsedAPIURL.Host == "" || parsedAPIURL.Scheme == "" {
-			diags.AddError("missing protocol or host", parseErr.Error())
+			diags.AddError("invalid API URL", fmt.Sprintf("API URL '%s' missing protocol or host", config.ApiUrl.ValueString()))
 			return diags
 		}
 		// If api url is passed, set and use the api name and protocol on ServerIndex{1}
@@ -390,5 +395,123 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	p.DatadogApiInstances = &utils.ApiInstances{HttpClient: datadogClient}
 	p.Auth = auth
 
+	/*  Commented out due to duplicate validation in SDK provider - remove after Framework migration is complete.
+	if validate {
+		log.Println("[INFO] Datadog client successfully initialized, now validating...")
+		resp, _, err := p.DatadogApiInstances.GetAuthenticationApiV1().Validate(auth)
+		if err != nil {
+			diags.AddError("[ERROR] Datadog Client validation error", err.Error())
+			return diags
+		}
+		valid, ok := resp.GetValidOk()
+		if (ok && !*valid) || !ok {
+			err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
+			diags.AddError("[ERROR] Datadog Client validation error", err.Error())
+			return diags
+		}
+	} else {
+		log.Println("[INFO] Skipping key validation (validate = false)")
+	}
+	log.Printf("[INFO] Datadog Client successfully validated.")
+	*/
 	return nil
+}
+
+var (
+	_ resource.ResourceWithConfigure        = &FrameworkResourceWrapper{}
+	_ resource.ResourceWithImportState      = &FrameworkResourceWrapper{}
+	_ resource.ResourceWithConfigValidators = &FrameworkResourceWrapper{}
+	_ resource.ResourceWithModifyPlan       = &FrameworkResourceWrapper{}
+	_ resource.ResourceWithUpgradeState     = &FrameworkResourceWrapper{}
+	_ resource.ResourceWithValidateConfig   = &FrameworkResourceWrapper{}
+)
+
+func NewFrameworkResourceWrapper(i *resource.Resource) resource.Resource {
+	return &FrameworkResourceWrapper{
+		innerResource: i,
+	}
+}
+
+type FrameworkResourceWrapper struct {
+	innerResource *resource.Resource
+}
+
+func (r *FrameworkResourceWrapper) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	rCasted, ok := (*r.innerResource).(resource.ResourceWithConfigure)
+	if ok {
+		if req.ProviderData == nil {
+			return
+		}
+		_, ok := req.ProviderData.(*FrameworkProvider)
+		if !ok {
+			resp.Diagnostics.AddError("Unexpected Resource Configure Type", "")
+			return
+		}
+
+		rCasted.Configure(ctx, req, resp)
+	}
+}
+
+func (r *FrameworkResourceWrapper) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	(*r.innerResource).Metadata(ctx, req, resp)
+	resp.TypeName = req.ProviderTypeName + resp.TypeName
+}
+
+func (r *FrameworkResourceWrapper) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	(*r.innerResource).Schema(ctx, req, resp)
+	resp.Schema = fwutils.EnrichFrameworkResourceSchema(resp.Schema)
+}
+
+func (r *FrameworkResourceWrapper) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	(*r.innerResource).Create(ctx, req, resp)
+}
+
+func (r *FrameworkResourceWrapper) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	(*r.innerResource).Read(ctx, req, resp)
+}
+
+func (r *FrameworkResourceWrapper) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	(*r.innerResource).Update(ctx, req, resp)
+}
+
+func (r *FrameworkResourceWrapper) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	(*r.innerResource).Delete(ctx, req, resp)
+}
+
+func (r *FrameworkResourceWrapper) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	if rCasted, ok := (*r.innerResource).(resource.ResourceWithImportState); ok {
+		rCasted.ImportState(ctx, req, resp)
+		return
+	}
+
+	resp.Diagnostics.AddError(
+		"Resource Import Not Implemented",
+		"This resource does not support import. Please contact the provider developer for additional information.",
+	)
+}
+
+func (r *FrameworkResourceWrapper) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
+	if rCasted, ok := (*r.innerResource).(resource.ResourceWithConfigValidators); ok {
+		return rCasted.ConfigValidators(ctx)
+	}
+	return nil
+}
+
+func (r *FrameworkResourceWrapper) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if v, ok := (*r.innerResource).(resource.ResourceWithModifyPlan); ok {
+		v.ModifyPlan(ctx, req, resp)
+	}
+}
+
+func (r *FrameworkResourceWrapper) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
+	if v, ok := (*r.innerResource).(resource.ResourceWithUpgradeState); ok {
+		return v.UpgradeState(ctx)
+	}
+	return nil
+}
+
+func (r *FrameworkResourceWrapper) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	if v, ok := (*r.innerResource).(resource.ResourceWithValidateConfig); ok {
+		v.ValidateConfig(ctx, req, resp)
+	}
 }

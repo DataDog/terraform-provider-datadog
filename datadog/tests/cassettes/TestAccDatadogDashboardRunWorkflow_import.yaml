@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"reflow_type":"auto","template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1676490105","widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"}}]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"reflow_type":"auto","tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1682003513","widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"}}]}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"id":"34c-ec6-wd9","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1676490105","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/34c-ec6-wd9/tf-testaccdatadogdashboardrunworkflowimport-local-1676490105","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":2213610388263656}],"notify_list":[],"created_at":"2023-02-15T19:41:47.145637+00:00","modified_at":"2023-02-15T19:41:47.145637+00:00","template_variable_presets":[],"reflow_type":"auto"}
+      {"id":"vtu-mjp-sfq","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1682003513","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/vtu-mjp-sfq/tf-testaccdatadogdashboardrunworkflowimport-local-1682003513","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":7771643414946276}],"notify_list":[],"created_at":"2023-04-20T15:11:55.259462+00:00","modified_at":"2023-04-20T15:11:55.259462+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/34c-ec6-wd9
+    url: https://api.datadoghq.com/api/v1/dashboard/vtu-mjp-sfq
     method: GET
   response:
     body: |
-      {"id":"34c-ec6-wd9","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1676490105","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/34c-ec6-wd9/tf-testaccdatadogdashboardrunworkflowimport-local-1676490105","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":2213610388263656}],"notify_list":[],"created_at":"2023-02-15T19:41:47.145637+00:00","modified_at":"2023-02-15T19:41:47.145637+00:00","template_variable_presets":[],"reflow_type":"auto"}
+      {"id":"vtu-mjp-sfq","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1682003513","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/vtu-mjp-sfq/tf-testaccdatadogdashboardrunworkflowimport-local-1682003513","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":7771643414946276}],"notify_list":[],"created_at":"2023-04-20T15:11:55.259462+00:00","modified_at":"2023-04-20T15:11:55.259462+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/34c-ec6-wd9
+    url: https://api.datadoghq.com/api/v1/dashboard/vtu-mjp-sfq
     method: GET
   response:
     body: |
-      {"id":"34c-ec6-wd9","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1676490105","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/34c-ec6-wd9/tf-testaccdatadogdashboardrunworkflowimport-local-1676490105","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":2213610388263656}],"notify_list":[],"created_at":"2023-02-15T19:41:47.145637+00:00","modified_at":"2023-02-15T19:41:47.145637+00:00","template_variable_presets":[],"reflow_type":"auto"}
+      {"id":"vtu-mjp-sfq","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1682003513","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/vtu-mjp-sfq/tf-testaccdatadogdashboardrunworkflowimport-local-1682003513","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":7771643414946276}],"notify_list":[],"created_at":"2023-04-20T15:11:55.259462+00:00","modified_at":"2023-04-20T15:11:55.259462+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/34c-ec6-wd9
+    url: https://api.datadoghq.com/api/v1/dashboard/vtu-mjp-sfq
     method: GET
   response:
     body: |
-      {"id":"34c-ec6-wd9","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1676490105","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/34c-ec6-wd9/tf-testaccdatadogdashboardrunworkflowimport-local-1676490105","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":2213610388263656}],"notify_list":[],"created_at":"2023-02-15T19:41:47.145637+00:00","modified_at":"2023-02-15T19:41:47.145637+00:00","template_variable_presets":[],"reflow_type":"auto"}
+      {"id":"vtu-mjp-sfq","title":"tf-TestAccDatadogDashboardRunWorkflow_import-local-1682003513","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/vtu-mjp-sfq/tf-testaccdatadogdashboardrunworkflowimport-local-1682003513","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"inputs":[{"name":"env","value":"$Env.value"},{"name":"Foo","value":"$Env"}],"title":"My workflow widget","title_align":"left","title_size":"13","type":"run_workflow","workflow_id":"2e055f16-8b6a-4cdd-b452-17a34c44b160"},"id":7771643414946276}],"notify_list":[],"created_at":"2023-04-20T15:11:55.259462+00:00","modified_at":"2023-04-20T15:11:55.259462+00:00","template_variable_presets":[],"reflow_type":"auto","tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -78,11 +78,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/34c-ec6-wd9
+    url: https://api.datadoghq.com/api/v1/dashboard/vtu-mjp-sfq
     method: DELETE
   response:
     body: |
-      {"deleted_dashboard_id":"34c-ec6-wd9"}
+      {"deleted_dashboard_id":"vtu-mjp-sfq"}
     headers:
       Content-Type:
       - application/json
@@ -95,10 +95,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/34c-ec6-wd9
+    url: https://api.datadoghq.com/api/v1/dashboard/vtu-mjp-sfq
     method: GET
   response:
-    body: '{"errors":["Dashboard with ID 34c-ec6-wd9 not found"]}'
+    body: '{"errors":["Dashboard with ID vtu-mjp-sfq not found"]}'
     headers:
       Content-Type:
       - application/json

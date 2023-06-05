@@ -118,7 +118,7 @@ func (d *APIKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		apiKeyData := ddResp.GetData()
 		d.updateState(&state, &apiKeyData)
 	} else {
-		resp.Diagnostics.AddError("ID and name cannot both be unset.", "")
+		resp.Diagnostics.AddError("missing id or name parameter", "")
 		return
 	}
 
@@ -127,6 +127,8 @@ func (d *APIKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 
 func (r *APIKeyDataSource) updateState(state *APIKeyDataSourceModel, apiKeyData *datadogV2.FullAPIKey) {
 	apiKeyAttributes := apiKeyData.GetAttributes()
+
+	state.ID = types.StringValue(apiKeyData.GetId())
 	state.Name = types.StringValue(apiKeyAttributes.GetName())
 	state.Key = types.StringValue(apiKeyAttributes.GetKey())
 }

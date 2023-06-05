@@ -93,6 +93,10 @@ resource "datadog_dashboard" "list_stream_event_dashboard" {
 					data_source = "event_stream"
 					query_string = "example.metric"
 					event_size = "l"
+					sort {
+						column = "source"
+						order = "desc"
+					}
 				}
 				columns {
 					field = "source"
@@ -113,6 +117,8 @@ var datadogDashboardListStreamEventsAsserts = []string{
 	"widget.0.list_stream_definition.0.request.0.query.0.data_source = event_stream",
 	"widget.0.list_stream_definition.0.request.0.query.0.query_string = example.metric",
 	"widget.0.list_stream_definition.0.request.0.query.0.event_size = l",
+	"widget.0.list_stream_definition.0.request.0.query.0.sort.0.column = source",
+	"widget.0.list_stream_definition.0.request.0.query.0.sort.0.order = desc",
 	"widget.0.list_stream_definition.0.request.0.columns.0.field = source",
 	"widget.0.list_stream_definition.0.request.0.columns.0.width = auto",
 }
