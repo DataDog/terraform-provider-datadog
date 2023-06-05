@@ -32,13 +32,21 @@ func TestAccRestrictionPolicyBasic(t *testing.T) {
 }
 
 func testAccCheckDatadogRestrictionPolicy(uniq string) string {
+	// Update me to make use of the unique value
 	return fmt.Sprintf(`
-	resource "datadog_restriction_policy" "foo" {
-	bindings {
-	principals = ["role:00000000-0000-1111-0000-000000000000"]
-	relation = "editor"
-	}
-	}`, uniq)
+resource "datadog_restriction_policy" "foo" {
+    bindings {
+    principals = ["role:00000000-0000-1111-0000-000000000000"]
+    relation = "editor"
+    }
+}`)
+	// return fmt.Sprintf(`
+	// resource "datadog_restriction_policy" "foo" {
+	// bindings {
+	// principals = ["role:00000000-0000-1111-0000-000000000000"]
+	// relation = "editor"
+	// }
+	// }`, uniq)
 }
 
 func testAccCheckDatadogRestrictionPolicyDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
