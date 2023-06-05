@@ -47,19 +47,19 @@ func TestAccDatadogMetricTagConfiguration_Error(t *testing.T) {
 
 func testAccCheckDatadogMetricTagConfigurationIncludePercentilesError(uniq string, metricType string) string {
 	return fmt.Sprintf(`
-        resource "datadog_metric_tag_configuration" "testing_metric_tag_config_icl_count" {
+		resource "datadog_metric_tag_configuration" "testing_metric_tag_config_icl_count" {
 			metric_name         = "%s"
 			metric_type         = "%s"
 			tags                = ["sport"]
-            exclude_tags_mode   = false
+			exclude_tags_mode   = false
 			include_percentiles = false
-        }
-    `, uniq, metricType)
+		}
+	`, uniq, metricType)
 }
 
 func testAccCheckDatadogMetricTagConfigurationAggregationsError(uniq string, metricType string) string {
 	return fmt.Sprintf(`
-        resource "datadog_metric_tag_configuration" "testing_metric_tag_config_aggregations" {
+		resource "datadog_metric_tag_configuration" "testing_metric_tag_config_aggregations" {
 			metric_name = "%s"
 			metric_type = "%s"
 			tags        = ["sport"]
@@ -71,16 +71,16 @@ func testAccCheckDatadogMetricTagConfigurationAggregationsError(uniq string, met
 				time = "avg"
 				space = "avg"
 			}
-        }
-    `, uniq, metricType)
+		}
+	`, uniq, metricType)
 }
 func testAccCheckDatadogMetricTagConfigurationExcludeTagsModeError(uniq string) string {
 	return fmt.Sprintf(`
-        resource "datadog_metric_tag_configuration" "testing_metric_tag_config_aggregations" {
+		resource "datadog_metric_tag_configuration" "testing_metric_tag_config_aggregations" {
 			metric_name       = "%s"
 			metric_type       = "gauge"
 			tags              = []
-            exclude_tags_mode = true
+			exclude_tags_mode = true
 			aggregations {
 				time = "sum"
 				space = "sum"
@@ -89,8 +89,8 @@ func testAccCheckDatadogMetricTagConfigurationExcludeTagsModeError(uniq string) 
 				time = "avg"
 				space = "avg"
 			}
-        }
-    `, uniq)
+		}
+	`, uniq)
 }
 
 func testAccCheckDatadogMetricTagConfigurationDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
