@@ -158,6 +158,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_monitor_config_policy_test":                      "monitor-config-policies",
 	"tests/resource_datadog_monitor_json_test":                               "monitors-json",
 	"tests/resource_datadog_organization_settings_test":                      "organization",
+	"tests/resource_datadog_restriction_policy_test":                         "restriction-policy",
 	"tests/resource_datadog_role_test":                                       "roles",
 	"tests/resource_datadog_screenboard_test":                                "dashboards",
 	"tests/resource_datadog_security_monitoring_default_rule_test":           "security-monitoring",
