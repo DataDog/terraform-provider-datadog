@@ -1,0 +1,26 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"bindings":[{"principals":["role:00000000-0000-1111-0000-000000000000"],"relation":"editor"}]},"id":"","type":"restriction_policy"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/restriction_policy/
+    method: POST
+  response:
+    body: |-
+      <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+      <title>Redirecting...</title>
+      <h1>Redirecting...</h1>
+      <p>You should be redirected automatically to target URL: <a href="/api/v2/restriction_policy">/api/v2/restriction_policy</a>.  If not click the link.
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 308 Permanent Redirect
+    code: 308
+    duration: ""

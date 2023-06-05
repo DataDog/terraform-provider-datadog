@@ -56,7 +56,7 @@ func (r *RestrictionPolicyResource) Configure(_ context.Context, request resourc
 }
 
 func (r *RestrictionPolicyResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "restriction_policy"
+	response.TypeName = "restriction_policy"
 }
 
 func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
