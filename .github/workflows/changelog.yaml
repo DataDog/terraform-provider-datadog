@@ -27,7 +27,7 @@ jobs:
           private_key: ${{ secrets.PIPELINE_GITHUB_APP_PRIVATE_KEY }}
       - name: Check PR title
         if: github.event.pull_request.draft == false && false == contains(join(github.event.pull_request.labels.*.name, ','), 'changelog/note') && false == contains(join(github.event.pull_request.labels.*.name, ','), 'changelog/no-changelog')
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           github-token: ${{ steps.get_token.outputs.token }}
           script: |
