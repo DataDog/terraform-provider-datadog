@@ -1,0 +1,2 @@
+
+terraform import datadog_service_account_application_key.new_list ""
