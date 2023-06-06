@@ -64,7 +64,7 @@ func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaR
 		Description: "Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction_policy.",
 		Attributes: map[string]schema.Attribute{
 			"resource_id": schema.StringAttribute{
-				Optional:    true,
+				Required:    true,
 				Description: "Identifier for the resource, formatted as type:id.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),

@@ -14,15 +14,14 @@ import (
 
 func TestAccRestrictionPolicyBasic(t *testing.T) {
 	t.Parallel()
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	uniq := uniqueEntityName(ctx, t)
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRestrictionPolicyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogRestrictionPolicy(uniq),
+				Config: testAccCheckDatadogRestrictionPolicy(),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRestrictionPolicyExists(providers.frameworkProvider),
 				),
@@ -31,22 +30,24 @@ func TestAccRestrictionPolicyBasic(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogRestrictionPolicy(uniq string) string {
-	// Update me to make use of the unique value
-	return fmt.Sprintf(`
-resource "datadog_restriction_policy" "foo" {
-    bindings {
-    principals = ["role:00000000-0000-1111-0000-000000000000"]
-    relation = "editor"
-    }
-}`)
-	// return fmt.Sprintf(`
-	// resource "datadog_restriction_policy" "foo" {
-	// bindings {
-	// principals = ["role:00000000-0000-1111-0000-000000000000"]
-	// relation = "editor"
-	// }
-	// }`, uniq)
+func testAccCheckDatadogRestrictionPolicy() string {
+	return `
+        data "datadog_role" "foo" {
+          filter = "Datadog Admin Role"
+        }
+        resource "datadog_dashboard" "bar" {
+          title        = "Free Layout Dashboard"
+          description  = "Created using the Datadog provider in Terraform"
+          layout_type  = "free"
+          is_read_only = "false"
+        }
+        resource "datadog_restriction_policy" "baz" {
+            resource_id = "dashboard:${datadog_dashboard.bar.id}"
+            bindings {
+            principals = ["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:${data.datadog_role.foo.id}"]
+            relation = "editor"
+            }
+        }`
 }
 
 func testAccCheckDatadogRestrictionPolicyDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
@@ -74,9 +75,9 @@ func RestrictionPolicyDestroyHelper(auth context.Context, s *terraform.State, ap
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
 				}
-				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
+				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Restriction Policy %s", err)}
 			}
-			return &utils.RetryableError{Prob: "Monitor still exists"}
+			return &utils.RetryableError{Prob: "Restriction Policy still exists"}
 		}
 		return nil
 	})
@@ -104,7 +105,7 @@ func restrictionPolicyExistsHelper(auth context.Context, s *terraform.State, api
 
 		_, httpResp, err := apiInstances.GetRestrictionPoliciesApiV2().GetRestrictionPolicy(auth, id)
 		if err != nil {
-			return utils.TranslateClientError(err, httpResp, "error retrieving monitor")
+			return utils.TranslateClientError(err, httpResp, "error retrieving restriction policy")
 		}
 	}
 	return nil
