@@ -3,12 +3,12 @@
 page_title: "datadog_service_account_application_key Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog ServiceAccountApplicationKey resource. This can be used to create and manage Datadog Service Account Application Keys. Note that Service Account keys cannot be used to manage other Service Accounts.
+  Provides a Datadog ServiceAccountApplicationKey resource. This can be used to create and manage Datadog Service Account Application Keys.
 ---
 
 # datadog_service_account_application_key (Resource)
 
-Provides a Datadog ServiceAccountApplicationKey resource. This can be used to create and manage Datadog Service Account Application Keys. Note that Service Account keys cannot be used to manage other Service Accounts.
+Provides a Datadog ServiceAccountApplicationKey resource. This can be used to create and manage Datadog Service Account Application Keys.
 
 ## Example Usage
 
