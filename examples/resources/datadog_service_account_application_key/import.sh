@@ -1,2 +1,1 @@
-# todo - fix this
-terraform import datadog_service_account_application_key.this ""
+terraform import datadog_service_account_application_key.this "<service_account_id>:<application_key_id>"

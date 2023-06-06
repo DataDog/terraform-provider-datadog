@@ -51,7 +51,7 @@ func (r *ServiceAccountApplicationKeyResource) Metadata(_ context.Context, reque
 
 func (r *ServiceAccountApplicationKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog ServiceAccountApplicationKey resource. This can be used to create and manage Datadog service_account_application_key.",
+		Description: "Provides a Datadog ServiceAccountApplicationKey resource. This can be used to create and manage Datadog Service Account Application Keys. Note that Service Account keys cannot be used to manage other Service Accounts.",
 		Attributes: map[string]schema.Attribute{
 			"service_account_id": schema.StringAttribute{
 				Required:    true,

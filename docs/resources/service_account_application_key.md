@@ -3,12 +3,12 @@
 page_title: "datadog_service_account_application_key Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog ServiceAccountApplicationKey resource. This can be used to create and manage Datadog serviceaccountapplication_key.
+  Provides a Datadog ServiceAccountApplicationKey resource. This can be used to create and manage Datadog Service Account Application Keys. Note that Service Account keys cannot be used to manage other Service Accounts.
 ---
 
 # datadog_service_account_application_key (Resource)
 
-Provides a Datadog ServiceAccountApplicationKey resource. This can be used to create and manage Datadog service_account_application_key.
+Provides a Datadog ServiceAccountApplicationKey resource. This can be used to create and manage Datadog Service Account Application Keys. Note that Service Account keys cannot be used to manage other Service Accounts.
 
 ## Example Usage
 
@@ -40,6 +40,5 @@ resource "datadog_service_account_application_key" "foo" {
 Import is supported using the following syntax:
 
 ```shell
-# todo - fix this
-terraform import datadog_service_account_application_key.this ""
+terraform import datadog_service_account_application_key.this "<service_account_id>:<application_key_id>"
 ```
