@@ -2,12 +2,15 @@ package fwprovider
 
 import (
 	"context"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
-	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -27,7 +30,9 @@ type ServiceAccountApplicationKeyModel struct {
 	ID               types.String `tfsdk:"id"`
 	ServiceAccountId types.String `tfsdk:"service_account_id"`
 	Name             types.String `tfsdk:"name"`
-	Scopes           types.List   `tfsdk:"scopes"`
+	Key              types.String `tfsdk:"key"`
+	CreatedAt        types.String `tfsdk:"created_at"`
+	Last4            types.String `tfsdk:"last4"`
 }
 
 func NewServiceAccountApplicationKeyResource() resource.Resource {
@@ -49,17 +54,31 @@ func (r *ServiceAccountApplicationKeyResource) Schema(_ context.Context, _ resou
 		Description: "Provides a Datadog ServiceAccountApplicationKey resource. This can be used to create and manage Datadog service_account_application_key.",
 		Attributes: map[string]schema.Attribute{
 			"service_account_id": schema.StringAttribute{
-				Optional:    true,
-				Description: "UPDATE ME",
+				Required:    true,
+				Description: "ID of the service account that owns this key.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"name": schema.StringAttribute{
 				Required:    true,
 				Description: "Name of the application key.",
 			},
-			"scopes": schema.ListAttribute{
-				Optional:    true,
-				Description: "Array of scopes to grant the application key. This feature is in private beta, please contact Datadog support to enable scopes for your application keys.",
-				ElementType: types.StringType,
+			"key": schema.StringAttribute{
+				Computed:  true,
+				Sensitive: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+				Description: "The value of the service account application key.",
+			},
+			"created_at": schema.StringAttribute{
+				Computed:    true,
+				Description: "Creation date of the application key.",
+			},
+			"last4": schema.StringAttribute{
+				Computed:    true,
+				Description: "The last four characters of the application key.",
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -67,7 +86,15 @@ func (r *ServiceAccountApplicationKeyResource) Schema(_ context.Context, _ resou
 }
 
 func (r *ServiceAccountApplicationKeyResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+	result := strings.SplitN(request.ID, ":", 2)
+	if len(result) != 2 {
+		response.Diagnostics.AddError("error retrieving service_account_id or application_key_id from given ID", "")
+		return
+	}
+
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("service_account_id"), result[0])...)
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("id"), result[1])...)
+
 }
 
 func (r *ServiceAccountApplicationKeyResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
@@ -93,7 +120,7 @@ func (r *ServiceAccountApplicationKeyResource) Read(ctx context.Context, request
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
+	r.updateStatePartialKey(ctx, &state, &resp)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -123,7 +150,7 @@ func (r *ServiceAccountApplicationKeyResource) Create(ctx context.Context, reque
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+	r.updateStateFullKey(ctx, &state, &resp)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -155,7 +182,7 @@ func (r *ServiceAccountApplicationKeyResource) Update(ctx context.Context, reque
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+	r.updateStatePartialKey(ctx, &state, &resp)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -181,7 +208,7 @@ func (r *ServiceAccountApplicationKeyResource) Delete(ctx context.Context, reque
 	}
 }
 
-func (r *ServiceAccountApplicationKeyResource) updateState(ctx context.Context, state *ServiceAccountApplicationKeyModel, resp *datadogV2.PartialApplicationKeyResponse) {
+func (r *ServiceAccountApplicationKeyResource) updateStatePartialKey(ctx context.Context, state *ServiceAccountApplicationKeyModel, resp *datadogV2.PartialApplicationKeyResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 
 	data := resp.GetData()
@@ -198,9 +225,28 @@ func (r *ServiceAccountApplicationKeyResource) updateState(ctx context.Context, 
 	if name, ok := attributes.GetNameOk(); ok {
 		state.Name = types.StringValue(*name)
 	}
+}
 
-	if scopes, ok := attributes.GetScopesOk(); ok && len(*scopes) > 0 {
-		state.Scopes, _ = types.ListValueFrom(ctx, types.StringType, *scopes)
+func (r *ServiceAccountApplicationKeyResource) updateStateFullKey(ctx context.Context, state *ServiceAccountApplicationKeyModel, resp *datadogV2.ApplicationKeyResponse) {
+	state.ID = types.StringValue(resp.Data.GetId())
+
+	data := resp.GetData()
+	attributes := data.GetAttributes()
+
+	if key, ok := attributes.GetKeyOk(); ok {
+		state.Key = types.StringValue(*key)
+	}
+
+	if createdAt, ok := attributes.GetCreatedAtOk(); ok {
+		state.CreatedAt = types.StringValue(*createdAt)
+	}
+
+	if last4, ok := attributes.GetLast4Ok(); ok {
+		state.Last4 = types.StringValue(*last4)
+	}
+
+	if name, ok := attributes.GetNameOk(); ok {
+		state.Name = types.StringValue(*name)
 	}
 }
 
@@ -209,12 +255,6 @@ func (r *ServiceAccountApplicationKeyResource) buildServiceAccountApplicationKey
 	attributes := datadogV2.NewApplicationKeyCreateAttributesWithDefaults()
 
 	attributes.SetName(state.Name.ValueString())
-
-	if !state.Scopes.IsNull() {
-		var scopes []string
-		diags.Append(state.Scopes.ElementsAs(ctx, &scopes, false)...)
-		attributes.SetScopes(scopes)
-	}
 
 	req := datadogV2.NewApplicationKeyCreateRequestWithDefaults()
 	req.Data = *datadogV2.NewApplicationKeyCreateDataWithDefaults()
@@ -231,15 +271,13 @@ func (r *ServiceAccountApplicationKeyResource) buildServiceAccountApplicationKey
 		attributes.SetName(state.Name.ValueString())
 	}
 
-	if !state.Scopes.IsNull() {
-		var scopes []string
-		diags.Append(state.Scopes.ElementsAs(ctx, &scopes, false)...)
-		attributes.SetScopes(scopes)
-	}
-
 	req := datadogV2.NewApplicationKeyUpdateRequestWithDefaults()
 	req.Data = *datadogV2.NewApplicationKeyUpdateDataWithDefaults()
 	req.Data.SetAttributes(*attributes)
+
+	if !state.ID.IsNull() {
+		req.Data.SetId(state.ID.ValueString())
+	}
 
 	return req, diags
 }

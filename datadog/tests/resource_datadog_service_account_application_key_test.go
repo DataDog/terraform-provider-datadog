@@ -16,7 +16,7 @@ func TestAccServiceAccountApplicationKeyBasic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
-
+	uniqUpdated := uniq + "updated"
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogServiceAccountApplicationKeyDestroy(providers.frameworkProvider),
@@ -25,9 +25,16 @@ func TestAccServiceAccountApplicationKeyBasic(t *testing.T) {
 				Config: testAccCheckDatadogServiceAccountApplicationKey(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogServiceAccountApplicationKeyExists(providers.frameworkProvider),
-
 					resource.TestCheckResourceAttr(
-						"datadog_service_account_application_key.foo", "name", "Application Key for managing dashboards"),
+						"datadog_service_account_application_key.foo", "name", uniq),
+				),
+			},
+			{
+				Config: testAccCheckDatadogServiceAccountApplicationKey(uniqUpdated),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceAccountApplicationKeyExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_service_account_application_key.foo", "name", uniqUpdated),
 				),
 			},
 		},
@@ -35,12 +42,15 @@ func TestAccServiceAccountApplicationKeyBasic(t *testing.T) {
 }
 
 func testAccCheckDatadogServiceAccountApplicationKey(uniq string) string {
-	// Update me to make use of the unique value
 	return fmt.Sprintf(`
+resource "datadog_service_account" "bar" {
+	email = "new@example.com"
+	name  = "testTerraformServiceAccountApplicationKeys"
+}
+
 resource "datadog_service_account_application_key" "foo" {
-    service_account_id = "00000000-0000-1234-0000-000000000000"
-    name = "Application Key for managing dashboards"
-    scopes = ["dashboards_read", "dashboards_write", "dashboards_public_share"]
+    service_account_id = datadog_service_account.bar.id
+    name = "%s"
 }`, uniq)
 }
 
