@@ -32,7 +32,7 @@ resource "datadog_service_account_application_key" "foo" {
 
 - `created_at` (String) Creation date of the application key.
 - `id` (String) The ID of this resource.
-- `key` (String, Sensitive) The value of the service account application key.
+- `key` (String, Sensitive) The value of the service account application key. This value cannot be imported.
 - `last4` (String) The last four characters of the application key.
 
 ## Import
@@ -40,5 +40,6 @@ resource "datadog_service_account_application_key" "foo" {
 Import is supported using the following syntax:
 
 ```shell
+# Importing a Service Account's Application Key cannot import the value of the key.
 terraform import datadog_service_account_application_key.this "<service_account_id>:<application_key_id>"
 ```

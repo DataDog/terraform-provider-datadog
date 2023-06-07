@@ -70,7 +70,7 @@ func (r *ServiceAccountApplicationKeyResource) Schema(_ context.Context, _ resou
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
-				Description: "The value of the service account application key.",
+				Description: "The value of the service account application key. This value cannot be imported.",
 			},
 			"created_at": schema.StringAttribute{
 				Computed:    true,

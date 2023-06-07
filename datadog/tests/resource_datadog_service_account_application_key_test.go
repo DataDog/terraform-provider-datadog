@@ -27,6 +27,14 @@ func TestAccServiceAccountApplicationKeyBasic(t *testing.T) {
 					testAccCheckDatadogServiceAccountApplicationKeyExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_service_account_application_key.foo", "name", uniq),
+					resource.TestCheckResourceAttrSet(
+						"datadog_service_account_application_key.foo", "key"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_service_account_application_key.foo", "created_at"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_service_account_application_key.foo", "last4"),
+					resource.TestCheckResourceAttrPair(
+						"datadog_service_account_application_key.foo", "service_account_id", "datadog_service_account.bar", "id"),
 				),
 			},
 			{
@@ -35,7 +43,44 @@ func TestAccServiceAccountApplicationKeyBasic(t *testing.T) {
 					testAccCheckDatadogServiceAccountApplicationKeyExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_service_account_application_key.foo", "name", uniqUpdated),
+					resource.TestCheckResourceAttrSet(
+						"datadog_service_account_application_key.foo", "key"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_service_account_application_key.foo", "created_at"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_service_account_application_key.foo", "last4"),
+					resource.TestCheckResourceAttrPair(
+						"datadog_service_account_application_key.foo", "service_account_id", "datadog_service_account.bar", "id"),
 				),
+			},
+		},
+	})
+}
+
+func TestServiceAccountApplicationKeyBasic_import(t *testing.T) {
+	t.Parallel()
+	resourceName := "datadog_service_account_application_key.foo"
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogServiceAccountApplicationKeyDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogServiceAccountApplicationKey(uniq),
+			},
+			{
+				ResourceName: resourceName,
+				ImportStateIdFunc: func(state *terraform.State) (string, error) {
+					resources := state.RootModule().Resources
+					resourceState := resources[resourceName]
+					return resourceState.Primary.Attributes["service_account_id"] + ":" + resourceState.Primary.Attributes["id"], nil
+				},
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"key"},
 			},
 		},
 	})
