@@ -39,7 +39,7 @@ func testAccCheckDatadogRestrictionPolicy() string {
           title        = "Free Layout Dashboard"
           description  = "Created using the Datadog provider in Terraform"
           layout_type  = "free"
-          is_read_only = "false"
+          is_read_only = "true"
         }
         resource "datadog_restriction_policy" "baz" {
             resource_id = "dashboard:${datadog_dashboard.bar.id}"

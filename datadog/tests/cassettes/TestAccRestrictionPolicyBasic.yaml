@@ -37,7 +37,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"free","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"Free Layout Dashboard","widgets":[]}
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"Free Layout Dashboard","widgets":[]}
     form: {}
     headers:
       Accept:
@@ -48,7 +48,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"id":"bhj-3yc-uwx","title":"Free Layout Dashboard","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/bhj-3yc-uwx/free-layout-dashboard","is_read_only":false,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-06-06T21:05:42.548297+00:00","modified_at":"2023-06-06T21:05:42.548297+00:00","template_variable_presets":[],"tags":[]}
+      {"id":"3mi-wc8-gma","title":"Free Layout Dashboard","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/3mi-wc8-gma/free-layout-dashboard","is_read_only":true,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-06-07T18:06:54.914519+00:00","modified_at":"2023-06-07T18:06:54.914519+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bhj-3yc-uwx
+    url: https://api.datadoghq.com/api/v1/dashboard/3mi-wc8-gma
     method: GET
   response:
     body: |
-      {"id":"bhj-3yc-uwx","title":"Free Layout Dashboard","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/bhj-3yc-uwx/free-layout-dashboard","is_read_only":false,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-06-06T21:05:42.548297+00:00","modified_at":"2023-06-06T21:05:42.548297+00:00","template_variable_presets":[],"tags":[]}
+      {"id":"3mi-wc8-gma","title":"Free Layout Dashboard","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/3mi-wc8-gma/free-layout-dashboard","is_read_only":true,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-06-07T18:06:54.914519+00:00","modified_at":"2023-06-07T18:06:54.914519+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -74,18 +74,18 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"bindings":[{"principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:94172442-be03-11e9-a77a-3b7612558ac1"],"relation":"editor"}]},"id":"dashboard:bhj-3yc-uwx","type":"restriction_policy"}}
+      {"data":{"attributes":{"bindings":[{"principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:94172442-be03-11e9-a77a-3b7612558ac1"],"relation":"editor"}]},"id":"dashboard:3mi-wc8-gma","type":"restriction_policy"}}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/restriction_policy/dashboard:bhj-3yc-uwx
+    url: https://api.datadoghq.com/api/v2/restriction_policy/dashboard:3mi-wc8-gma
     method: POST
   response:
     body: |
-      {"data":{"type":"restriction_policy","id":"dashboard:bhj-3yc-uwx","attributes":{"bindings":[{"relation":"editor","principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:94172442-be03-11e9-a77a-3b7612558ac1"]}]}}}
+      {"data":{"type":"restriction_policy","id":"dashboard:3mi-wc8-gma","attributes":{"bindings":[{"relation":"editor","principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:94172442-be03-11e9-a77a-3b7612558ac1"]}]}}}
     headers:
       Content-Type:
       - application/json
@@ -132,11 +132,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bhj-3yc-uwx
+    url: https://api.datadoghq.com/api/v1/dashboard/3mi-wc8-gma
     method: GET
   response:
     body: |
-      {"id":"bhj-3yc-uwx","title":"Free Layout Dashboard","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/bhj-3yc-uwx/free-layout-dashboard","is_read_only":true,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-06-06T21:05:42.548297+00:00","modified_at":"2023-06-06T21:05:42.548297+00:00","template_variable_presets":[],"tags":[]}
+      {"id":"3mi-wc8-gma","title":"Free Layout Dashboard","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"free","url":"/dashboard/3mi-wc8-gma/free-layout-dashboard","is_read_only":true,"template_variables":[],"widgets":[],"notify_list":[],"created_at":"2023-06-07T18:06:54.914519+00:00","modified_at":"2023-06-07T18:06:54.914519+00:00","template_variable_presets":[],"tags":[]}
     headers:
       Content-Type:
       - application/json
@@ -149,11 +149,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/restriction_policy/dashboard:bhj-3yc-uwx
+    url: https://api.datadoghq.com/api/v2/restriction_policy/dashboard:3mi-wc8-gma
     method: GET
   response:
     body: |
-      {"data":{"type":"restriction_policy","id":"dashboard:bhj-3yc-uwx","attributes":{"bindings":[{"relation":"editor","principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:94172442-be03-11e9-a77a-3b7612558ac1"]}]}}}
+      {"data":{"type":"restriction_policy","id":"dashboard:3mi-wc8-gma","attributes":{"bindings":[{"relation":"editor","principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:94172442-be03-11e9-a77a-3b7612558ac1"]}]}}}
     headers:
       Content-Type:
       - application/json
@@ -183,7 +183,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/restriction_policy/dashboard:bhj-3yc-uwx
+    url: https://api.datadoghq.com/api/v2/restriction_policy/dashboard:3mi-wc8-gma
     method: DELETE
   response:
     body: ""
@@ -199,11 +199,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/bhj-3yc-uwx
+    url: https://api.datadoghq.com/api/v1/dashboard/3mi-wc8-gma
     method: DELETE
   response:
     body: |
-      {"deleted_dashboard_id":"bhj-3yc-uwx"}
+      {"deleted_dashboard_id":"3mi-wc8-gma"}
     headers:
       Content-Type:
       - application/json
