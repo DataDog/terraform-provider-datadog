@@ -1628,14 +1628,14 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(requestBasicAuth["access_token_url"].(string), requestBasicAuth["client_id"].(string), requestBasicAuth["client_secret"].(string), tokenApiAuthenticationValue)
 
 				// optional fields for oauth must not be included if they have no value, or the authentication will fail
-				if requestBasicAuth["audience"] != "" {
-					basicAuth.SetAudience(requestBasicAuth["audience"].(string))
+				if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
+					basicAuth.SetAudience(v)
 				}
-				if requestBasicAuth["resource"] != "" {
-					basicAuth.SetResource(requestBasicAuth["resource"].(string))
+				if v, ok := requestBasicAuth["resource"].(string); ok && v != "" {
+					basicAuth.SetResource(v)
 				}
-				if requestBasicAuth["scope"] != "" {
-					basicAuth.SetScope(requestBasicAuth["scope"].(string))
+				if v, ok := requestBasicAuth["scope"].(string); ok && v != "" {
+					basicAuth.SetScope(v)
 				}
 
 				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthClientAsSyntheticsBasicAuth(basicAuth))
@@ -1654,14 +1654,14 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 					requestBasicAuth["username"].(string))
 
 				// optional fields for oauth must not be included if they have no value, or the authentication will fail
-				if requestBasicAuth["audience"] != "" {
-					basicAuth.SetAudience(requestBasicAuth["audience"].(string))
+				if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
+					basicAuth.SetAudience(v)
 				}
-				if requestBasicAuth["resource"] != "" {
-					basicAuth.SetResource(requestBasicAuth["resource"].(string))
+				if v, ok := requestBasicAuth["resource"].(string); ok && v != "" {
+					basicAuth.SetResource(v)
 				}
-				if requestBasicAuth["scope"] != "" {
-					basicAuth.SetScope(requestBasicAuth["scope"].(string))
+				if v, ok := requestBasicAuth["scope"].(string); ok && v != "" {
+					basicAuth.SetScope(v)
 				}
 				basicAuth.SetClientId(requestBasicAuth["client_id"].(string))
 				basicAuth.SetClientSecret(requestBasicAuth["client_secret"].(string))
