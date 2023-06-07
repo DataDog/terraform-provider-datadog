@@ -1627,9 +1627,16 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 				}
 				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(requestBasicAuth["access_token_url"].(string), requestBasicAuth["client_id"].(string), requestBasicAuth["client_secret"].(string), tokenApiAuthenticationValue)
 
-				basicAuth.SetAudience(requestBasicAuth["audience"].(string))
-				basicAuth.SetResource(requestBasicAuth["resource"].(string))
-				basicAuth.SetScope(requestBasicAuth["scope"].(string))
+				// optional fields for oauth must not be included if they have no value, or the authentication will fail
+				if requestBasicAuth["audience"] != "" {
+					basicAuth.SetAudience(requestBasicAuth["audience"].(string))
+				}
+				if requestBasicAuth["resource"] != "" {
+					basicAuth.SetResource(requestBasicAuth["resource"].(string))
+				}
+				if requestBasicAuth["scope"] != "" {
+					basicAuth.SetScope(requestBasicAuth["scope"].(string))
+				}
 
 				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthClientAsSyntheticsBasicAuth(basicAuth))
 			}
@@ -1646,11 +1653,18 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 					tokenApiAuthenticationValue,
 					requestBasicAuth["username"].(string))
 
-				basicAuth.SetAudience(requestBasicAuth["audience"].(string))
+				// optional fields for oauth must not be included if they have no value, or the authentication will fail
+				if requestBasicAuth["audience"] != "" {
+					basicAuth.SetAudience(requestBasicAuth["audience"].(string))
+				}
+				if requestBasicAuth["resource"] != "" {
+					basicAuth.SetResource(requestBasicAuth["resource"].(string))
+				}
+				if requestBasicAuth["scope"] != "" {
+					basicAuth.SetScope(requestBasicAuth["scope"].(string))
+				}
 				basicAuth.SetClientId(requestBasicAuth["client_id"].(string))
 				basicAuth.SetClientSecret(requestBasicAuth["client_secret"].(string))
-				basicAuth.SetResource(requestBasicAuth["resource"].(string))
-				basicAuth.SetScope(requestBasicAuth["scope"].(string))
 
 				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthROPAsSyntheticsBasicAuth(basicAuth))
 			}
