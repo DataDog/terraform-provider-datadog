@@ -94,6 +94,8 @@ func (r *ServiceAccountApplicationKeyResource) ImportState(ctx context.Context, 
 
 	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("service_account_id"), result[0])...)
 	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("id"), result[1])...)
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("key"), "")...)
+	response.Diagnostics.AddWarning("Note - Importing a Service Account Application Key will not import the key value.", "")
 
 }
 
