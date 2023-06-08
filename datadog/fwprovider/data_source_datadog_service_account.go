@@ -136,12 +136,11 @@ func (d *DatadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 			return
 		}
 		userData = ddResp.Data
-	} else if !state.Filter.IsNull() {
-		filter := state.Filter.ValueString()
-		filter_status := state.FilterStatus.ValueString()
-		optionalParams := datadogV2.ListUsersOptionalParameters{
-			Filter:       &filter,
-			FilterStatus: &filter_status,
+	} else {
+		optionalParams := datadogV2.ListUsersOptionalParameters{}
+		optionalParams.WithFilter(state.Filter.ValueString())
+		if !state.FilterStatus.IsNull() {
+			optionalParams.WithFilterStatus(state.FilterStatus.ValueString())
 		}
 
 		ddResp, _, err := d.Api.ListUsers(d.Auth, optionalParams)
