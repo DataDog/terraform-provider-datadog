@@ -57,7 +57,7 @@ func TestAccServiceAccountApplicationKeyBasic(t *testing.T) {
 	})
 }
 
-func TestServiceAccountApplicationKeyBasic_import(t *testing.T) {
+func TestAccServiceAccountApplicationKeyBasic_import(t *testing.T) {
 	t.Parallel()
 	resourceName := "datadog_service_account_application_key.foo"
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
