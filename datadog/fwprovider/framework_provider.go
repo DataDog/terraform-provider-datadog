@@ -39,13 +39,13 @@ var Resources = []func() resource.Resource{
 	NewIntegrationFastlyAccountResource,
 	NewIntegrationFastlyServiceResource,
 	NewIntegrationGcpStsResource,
+	NewRestrictionPolicyResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewSpansMetricResource,
 	NewSyntheticsConcurrencyCapResource,
 	NewTeamResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
-	NewRestrictionPolicyResource,
 }
 
 var Datasources = []func() datasource.DataSource{

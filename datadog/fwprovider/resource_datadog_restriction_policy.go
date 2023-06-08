@@ -41,16 +41,7 @@ func NewRestrictionPolicyResource() resource.Resource {
 }
 
 func (r *RestrictionPolicyResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
-		return
-	}
-
+	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetRestrictionPoliciesApiV2()
 	r.Auth = providerData.Auth
 }
@@ -110,7 +101,7 @@ func (r *RestrictionPolicyResource) Read(ctx context.Context, request resource.R
 			response.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving API Key"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RestrictionPolicy"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
