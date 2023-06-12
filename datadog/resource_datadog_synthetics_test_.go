@@ -1391,64 +1391,59 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		syntheticsTest.SetSubtype(datadogV1.SYNTHETICSTESTDETAILSSUBTYPE_HTTP)
 	}
 
-	k := utils.NewResourceDataKey(d, "")
-	parts := "request_definition.0"
-	k.Add(parts)
-
 	request := datadogV1.SyntheticsTestRequest{}
-	if attr, ok := k.GetOkWith("method"); ok {
+	if attr, ok := d.GetOk("request_definition.0.method"); ok {
 		request.SetMethod(attr.(string))
 	}
-	if attr, ok := k.GetOkWith("url"); ok {
+	if attr, ok := d.GetOk("request_definition.0.url"); ok {
 		request.SetUrl(attr.(string))
 	}
-	if attr, ok := k.GetOkWith("body"); ok {
+	if attr, ok := d.GetOk("request_definition.0.body"); ok {
 		request.SetBody(attr.(string))
 	}
-	if attr, ok := k.GetOkWith("body_type"); ok {
+	if attr, ok := d.GetOk("request_definition.0.body_type"); ok {
 		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
 	}
-	if attr, ok := k.GetOkWith("timeout"); ok {
+	if attr, ok := d.GetOk("request_definition.0.timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
 	}
-	if attr, ok := k.GetOkWith("host"); ok {
+	if attr, ok := d.GetOk("request_definition.0.host"); ok {
 		request.SetHost(attr.(string))
 	}
-	if attr, ok := k.GetOkWith("port"); ok {
+	if attr, ok := d.GetOk("request_definition.0.port"); ok {
 		request.SetPort(int64(attr.(int)))
 	}
-	if attr, ok := k.GetOkWith("dns_server"); ok {
+	if attr, ok := d.GetOk("request_definition.0.dns_server"); ok {
 		request.SetDnsServer(attr.(string))
 	}
-	if attr, ok := k.GetOkWith("dns_server_port"); ok {
+	if attr, ok := d.GetOk("request_definition.0.dns_server_port"); ok {
 		request.SetDnsServerPort(int32(attr.(int)))
 	}
-	if attr, ok := k.GetOkWith("no_saving_response_body"); ok {
+	if attr, ok := d.GetOk("request_definition.0.no_saving_response_body"); ok {
 		request.SetNoSavingResponseBody(attr.(bool))
 	}
-	if attr, ok := k.GetOkWith("number_of_packets"); ok {
+	if attr, ok := d.GetOk("request_definition.0.number_of_packets"); ok {
 		request.SetNumberOfPackets(int32(attr.(int)))
 	}
-	if attr, ok := k.GetOkWith("should_track_hops"); ok {
+	if attr, ok := d.GetOk("request_definition.0.should_track_hops"); ok {
 		request.SetShouldTrackHops(attr.(bool))
 	}
-	if attr, ok := k.GetOkWith("servername"); ok {
+	if attr, ok := d.GetOk("request_definition.0.servername"); ok {
 		request.SetServername(attr.(string))
 	}
-	if attr, ok := k.GetOkWith("message"); ok {
+	if attr, ok := d.GetOk("request_definition.0.message"); ok {
 		request.SetMessage(attr.(string))
 	}
-	if attr, ok := k.GetOkWith("call_type"); ok {
+	if attr, ok := d.GetOk("request_definition.0.call_type"); ok {
 		request.SetCallType(datadogV1.SyntheticsTestCallType(attr.(string)))
 	}
 	if syntheticsTest.GetSubtype() == "grpc" {
-		if attr, ok := k.GetOkWith("service"); ok {
+		if attr, ok := d.GetOk("request_definition.0.service"); ok {
 			request.SetService(attr.(string))
 		} else {
 			request.SetService("")
 		}
 	}
-	k.Remove(parts)
 
 	request = *completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}), d.Get("request_proxy").([]interface{}))
 
@@ -2013,25 +2008,22 @@ func buildTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
 
 func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsBrowserTest {
 	request := datadogV1.SyntheticsTestRequest{}
-	k := utils.NewResourceDataKey(d, "")
-	parts := "request_definition.0"
-	k.Add(parts)
-	if attr, ok := k.GetOkWith("method"); ok {
+	if attr, ok := d.GetOk("request_definition.0.method"); ok {
 		request.SetMethod(attr.(string))
 	}
-	if attr, ok := k.GetOkWith("url"); ok {
+	if attr, ok := d.GetOk("request_definition.0.url"); ok {
 		request.SetUrl(attr.(string))
 	}
-	if attr, ok := k.GetOkWith("body"); ok {
+	if attr, ok := d.GetOk("request_definition.0.body"); ok {
 		request.SetBody(attr.(string))
 	}
-	if attr, ok := k.GetOkWith("body_type"); ok {
+	if attr, ok := d.GetOk("request_definition.0.body_type"); ok {
 		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
 	}
-	if attr, ok := k.GetOkWith("timeout"); ok {
+	if attr, ok := d.GetOk("request_definition.0.timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
 	}
-	if attr, ok := k.GetOkWith("certificate_domains"); ok {
+	if attr, ok := d.GetOk("request_definition.0.certificate_domains"); ok {
 		var certificateDomains []string
 
 		for _, s := range attr.([]interface{}) {
@@ -2039,7 +2031,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		}
 		request.SetCertificateDomains(certificateDomains)
 	}
-	k.Remove(parts)
+
 	if attr, ok := d.GetOk("request_query"); ok {
 		query := attr.(map[string]interface{})
 		if len(query) > 0 {
