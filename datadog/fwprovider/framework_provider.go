@@ -546,7 +546,7 @@ func (r *FrameworkDatasourceWrapper) Configure(ctx context.Context, req datasour
 		}
 		_, ok := req.ProviderData.(*FrameworkProvider)
 		if !ok {
-			resp.Diagnostics.AddError("Unexpected Resource Configure Type", "")
+			resp.Diagnostics.AddError("Unexpected Data Source Configure Type", "")
 			return
 		}
 
