@@ -2798,12 +2798,12 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		}
 		if v, ok := variable.GetExampleOk(); ok {
 			localVariable["example"] = *v
-		} else if localVariable["secure"].(bool) {
+		} else if v, ok := localVariable["secure"].(bool); ok && v {
 			localVariable["example"] = d.Get(fmt.Sprintf("browser_variable.%d.example", i))
 		}
 		if v, ok := variable.GetPatternOk(); ok {
 			localVariable["pattern"] = *v
-		} else if localVariable["secure"].(bool) {
+		} else if v, ok := localVariable["secure"].(bool); ok && v {
 			localVariable["pattern"] = d.Get(fmt.Sprintf("browser_variable.%d.pattern", i))
 		}
 		localBrowserVariables[i] = localVariable
@@ -3004,12 +3004,12 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		if configVariable.GetType() != "global" {
 			if v, ok := configVariable.GetExampleOk(); ok {
 				localVariable["example"] = *v
-			} else if localVariable["secure"].(bool) {
+			} else if v, ok := localVariable["secure"].(bool); ok && v {
 				localVariable["example"] = d.Get(fmt.Sprintf("config_variable.%d.example", i))
 			}
 			if v, ok := configVariable.GetPatternOk(); ok {
 				localVariable["pattern"] = *v
-			} else if localVariable["secure"].(bool) {
+			} else if v, ok := localVariable["secure"].(bool); ok && v {
 				localVariable["pattern"] = d.Get(fmt.Sprintf("config_variable.%d.pattern", i))
 			}
 		}
