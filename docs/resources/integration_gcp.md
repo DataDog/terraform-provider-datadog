@@ -3,12 +3,12 @@
 page_title: "datadog_integration_gcp Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  This resource is deprecated — use the datadogintegrationgcp_sts resource instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.
+  This resource is deprecated — use the datadog_integration_gcp_sts resource instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.
 ---
 
 # datadog_integration_gcp (Resource)
 
-This resource is deprecated — use the datadog_integration_gcp_sts resource instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.
+This resource is deprecated — use the `datadog_integration_gcp_sts resource` instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.
 
 ## Example Usage
 

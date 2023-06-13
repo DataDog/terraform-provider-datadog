@@ -16,7 +16,7 @@ var integrationGcpMutex = sync.Mutex{}
 
 func resourceDatadogIntegrationGcp() *schema.Resource {
 	return &schema.Resource{
-		Description:        "This resource is deprecated — use the datadog_integration_gcp_sts resource instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
+		Description:        "This resource is deprecated — use the `datadog_integration_gcp_sts resource` instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
 		DeprecationMessage: "This resource is deprecated — use the datadog_integration_gcp_sts resource instead.",
 		CreateContext:      resourceDatadogIntegrationGcpCreate,
 		ReadContext:        resourceDatadogIntegrationGcpRead,
