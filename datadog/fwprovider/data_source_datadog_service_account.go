@@ -42,22 +42,13 @@ type DatadogServiceAccountDatasource struct {
 }
 
 func (r *DatadogServiceAccountDatasource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
-		return
-	}
-
+	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetUsersApiV2()
 	r.Auth = providerData.Auth
 }
 
 func (d *DatadogServiceAccountDatasource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "service_account"
+	resp.TypeName = "service_account"
 }
 
 func (d *DatadogServiceAccountDatasource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
