@@ -51,7 +51,7 @@ func (r *ServiceAccountApplicationKeyResource) Metadata(_ context.Context, reque
 
 func (r *ServiceAccountApplicationKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog ServiceAccountApplicationKey resource. This can be used to create and manage Datadog Service Account Application Keys.",
+		Description: "Provides a Datadog `service_account_application_key` resource. This can be used to create and manage Datadog service account application keys.",
 		Attributes: map[string]schema.Attribute{
 			"service_account_id": schema.StringAttribute{
 				Required:    true,
@@ -95,7 +95,7 @@ func (r *ServiceAccountApplicationKeyResource) ImportState(ctx context.Context, 
 	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("service_account_id"), result[0])...)
 	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("id"), result[1])...)
 	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("key"), "")...)
-	response.Diagnostics.AddWarning("Note - Importing a Service Account Application Key will not import the key value.", "")
+	response.Diagnostics.AddWarning("Importing a service account application key will not import the key value.", "")
 
 }
 

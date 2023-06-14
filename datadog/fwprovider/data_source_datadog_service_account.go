@@ -53,11 +53,11 @@ func (d *DatadogServiceAccountDatasource) Metadata(_ context.Context, req dataso
 
 func (d *DatadogServiceAccountDatasource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing Datadog Service Account.",
+		Description: "Use this data source to retrieve information about an existing Datadog service account.",
 		Attributes: map[string]schema.Attribute{
 			// Datasource Parameters
 			"id": schema.StringAttribute{
-				Description: "The Service Account's ID.",
+				Description: "The service account's ID.",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -104,7 +104,7 @@ func (d *DatadogServiceAccountDatasource) Schema(_ context.Context, _ datasource
 			},
 			"roles": schema.ListAttribute{
 				Computed:    true,
-				Description: "Roles assigned to this Service Account",
+				Description: "Roles assigned to this service account.",
 				ElementType: types.StringType,
 			},
 		},
