@@ -77,22 +77,13 @@ type hostsDataSource struct {
 }
 
 func (d *hostsDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Data Source Configure Type", "")
-		return
-	}
-
+	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetHostsApiV1()
 	d.Auth = providerData.Auth
 }
 
 func (d *hostsDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "hosts"
+	response.TypeName = "hosts"
 }
 
 func (d *hostsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {

@@ -29,24 +29,13 @@ type DatadogIntegrationAWSNamespaceRulesDatasource struct {
 }
 
 func (d *DatadogIntegrationAWSNamespaceRulesDatasource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError(
-			"Unexpected Data Source Configure Type",
-			"")
-		return
-	}
-
+	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetAWSIntegrationApiV1()
 	d.Auth = providerData.Auth
 }
 
 func (d *DatadogIntegrationAWSNamespaceRulesDatasource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "integration_aws_namespace_rules"
+	response.TypeName = "integration_aws_namespace_rules"
 }
 
 func (d *DatadogIntegrationAWSNamespaceRulesDatasource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
