@@ -109,7 +109,6 @@ func (d *DatadogServiceAccountDatasource) Schema(_ context.Context, _ datasource
 			},
 		},
 	}
-
 }
 
 func (d *DatadogServiceAccountDatasource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
@@ -126,6 +125,11 @@ func (d *DatadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 			resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog service account by ID"))
 			return
 		}
+		attr := ddResp.Data.GetAttributes()
+		if serviceAccount, ok := attr.GetServiceAccountOk(); ok && !*serviceAccount {
+			resp.Diagnostics.AddError("Obtained entity was not a service account", "")
+			return
+		}
 		userData = ddResp.Data
 	} else {
 		optionalParams := datadogV2.ListUsersOptionalParameters{}
@@ -140,20 +144,22 @@ func (d *DatadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 			return
 		}
 
-		if len(ddResp.Data) > 1 {
+		var serviceAccounts []datadogV2.User
+		for _, user := range ddResp.Data {
+			attr := user.GetAttributes()
+			if serviceAccount, ok := attr.GetServiceAccountOk(); ok && *serviceAccount {
+				serviceAccounts = append(serviceAccounts, user)
+			}
+		}
+		if len(serviceAccounts) > 1 {
 			resp.Diagnostics.AddError("filter keyword returned more than one result, use more specific search criteria", "")
 			return
 		}
-		if len(ddResp.Data) == 0 {
+		if len(serviceAccounts) == 0 {
 			resp.Diagnostics.AddError("filter keyword returned no results", "")
 			return
 		}
-		userData = &ddResp.Data[0]
-	}
-	attr := userData.GetAttributes()
-	if serviceAccount, ok := attr.GetServiceAccountOk(); ok && !*serviceAccount {
-		resp.Diagnostics.AddError("Obtained entity was not a service account", "")
-		return
+		userData = &serviceAccounts[0]
 	}
 	d.updateState(ctx, &state, userData)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
