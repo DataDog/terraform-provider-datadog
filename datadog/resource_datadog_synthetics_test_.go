@@ -1762,20 +1762,22 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 						if ok {
 							subTarget.SetOperator(operator.(string))
 						}
-						if v, ok := targetMap["targetvalue"]; ok {
-							switch datadogV1.SyntheticsAssertionOperator(operator.(string)) {
-							case
-								datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
-								datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
-								if match, _ := regexp.MatchString("{{\\s*([^{}]*?)\\s*}}", v.(string)); match {
-									subTarget.SetTargetValue(v)
-								} else {
-									if floatValue, err := strconv.ParseFloat(v.(string), 64); err == nil {
-										subTarget.SetTargetValue(floatValue)
+						if operator.(string) != "isUndefined" {
+							if v, ok := targetMap["targetvalue"]; ok {
+								switch datadogV1.SyntheticsAssertionOperator(operator.(string)) {
+								case
+									datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
+									datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
+									if match, _ := regexp.MatchString("{{\\s*([^{}]*?)\\s*}}", v.(string)); match {
+										subTarget.SetTargetValue(v)
+									} else {
+										if floatValue, err := strconv.ParseFloat(v.(string), 64); err == nil {
+											subTarget.SetTargetValue(floatValue)
+										}
 									}
+								default:
+									subTarget.SetTargetValue(v)
 								}
-							default:
-								subTarget.SetTargetValue(v)
 							}
 						}
 						assertionJSONPathTarget.SetTarget(*subTarget)
