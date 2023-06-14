@@ -126,7 +126,7 @@ func (d *DatadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 			return
 		}
 		attr := ddResp.Data.GetAttributes()
-		if serviceAccount, ok := attr.GetServiceAccountOk(); ok && !*serviceAccount {
+		if !attr.GetServiceAccount() {
 			resp.Diagnostics.AddError("Obtained entity was not a service account", "")
 			return
 		}
@@ -147,7 +147,7 @@ func (d *DatadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 		var serviceAccounts []datadogV2.User
 		for _, user := range ddResp.Data {
 			attr := user.GetAttributes()
-			if serviceAccount, ok := attr.GetServiceAccountOk(); ok && *serviceAccount {
+			if attr.GetServiceAccount() {
 				serviceAccounts = append(serviceAccounts, user)
 			}
 		}
