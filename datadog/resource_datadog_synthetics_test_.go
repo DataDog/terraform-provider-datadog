@@ -17,7 +17,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -1192,17 +1192,17 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 
 		var getSyntheticsApiTestResponse datadogV1.SyntheticsAPITest
 		var httpResponseGet *_nethttp.Response
-		err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		err = retry.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *retry.RetryError {
 			getSyntheticsApiTestResponse, httpResponseGet, err = apiInstances.GetSyntheticsApiV1().GetAPITest(auth, createdSyntheticsTest.GetPublicId())
 			if err != nil {
 				if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
-					return resource.RetryableError(fmt.Errorf("synthetics api test not created yet"))
+					return retry.RetryableError(fmt.Errorf("synthetics api test not created yet"))
 				}
 
-				return resource.NonRetryableError(err)
+				return retry.NonRetryableError(err)
 			}
 			if err := utils.CheckForUnparsed(getSyntheticsApiTestResponse); err != nil {
-				return resource.NonRetryableError(err)
+				return retry.NonRetryableError(err)
 			}
 
 			return nil
@@ -1227,17 +1227,17 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 
 		var getSyntheticsBrowserTestResponse datadogV1.SyntheticsBrowserTest
 		var httpResponseGet *_nethttp.Response
-		err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		err = retry.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *retry.RetryError {
 			getSyntheticsBrowserTestResponse, httpResponseGet, err = apiInstances.GetSyntheticsApiV1().GetBrowserTest(auth, createdSyntheticsTest.GetPublicId())
 			if err != nil {
 				if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
-					return resource.RetryableError(fmt.Errorf("synthetics browser test not created yet"))
+					return retry.RetryableError(fmt.Errorf("synthetics browser test not created yet"))
 				}
 
-				return resource.NonRetryableError(err)
+				return retry.NonRetryableError(err)
 			}
 			if err := utils.CheckForUnparsed(getSyntheticsBrowserTestResponse); err != nil {
-				return resource.NonRetryableError(err)
+				return retry.NonRetryableError(err)
 			}
 
 			return nil

@@ -10,9 +10,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	dd "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func testAccCheckDatadogIntegrationAzureConfig(uniq string) string {
