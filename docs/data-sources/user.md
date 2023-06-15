@@ -19,6 +19,10 @@ Use this data source to retrieve information about an existing user to use it in
 
 - `filter` (String) Filter all users by the given string.
 
+### Optional
+
+- `exact_match` (Boolean) When true, `filter` string is exact matched againts the users `email`, followed by `name` attribute.
+
 ### Read-Only
 
 - `email` (String) Email of the user.
