@@ -16,7 +16,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -816,7 +816,7 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	return resource.RetryContext(ctx, retryTimeout, func() *resource.RetryError {
+	return retry.RetryContext(ctx, retryTimeout, func() *retry.RetryError {
 		var httpresp *http.Response
 		if hasID {
 			_, httpresp, err = apiInstances.GetMonitorsApiV1().ValidateExistingMonitor(auth, id, *m)
@@ -825,9 +825,9 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 		}
 		if err != nil {
 			if httpresp != nil && (httpresp.StatusCode == 502 || httpresp.StatusCode == 504) {
-				return resource.RetryableError(utils.TranslateClientError(err, httpresp, "error validating monitor, retrying"))
+				return retry.RetryableError(utils.TranslateClientError(err, httpresp, "error validating monitor, retrying"))
 			}
-			return resource.NonRetryableError(utils.TranslateClientError(err, httpresp, "error validating monitor"))
+			return retry.NonRetryableError(utils.TranslateClientError(err, httpresp, "error validating monitor"))
 		}
 		return nil
 	})
@@ -1119,7 +1119,7 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 		m        datadogV1.Monitor
 		httpresp *http.Response
 	)
-	if err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
+	if err = retry.RetryContext(ctx, d.Timeout(schema.TimeoutRead), func() *retry.RetryError {
 		m, httpresp, err = apiInstances.GetMonitorsApiV1().GetMonitor(auth, i)
 		if err != nil {
 			if httpresp != nil {
@@ -1127,13 +1127,13 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 					d.SetId("")
 					return nil
 				} else if httpresp.StatusCode == 502 {
-					return resource.RetryableError(utils.TranslateClientError(err, httpresp, "error getting monitor, retrying"))
+					return retry.RetryableError(utils.TranslateClientError(err, httpresp, "error getting monitor, retrying"))
 				}
 			}
-			return resource.NonRetryableError(utils.TranslateClientError(err, httpresp, "error getting monitor"))
+			return retry.NonRetryableError(utils.TranslateClientError(err, httpresp, "error getting monitor"))
 		}
 		if err := utils.CheckForUnparsed(m); err != nil {
-			return resource.NonRetryableError(err)
+			return retry.NonRetryableError(err)
 		}
 		return nil
 	}); err != nil {
