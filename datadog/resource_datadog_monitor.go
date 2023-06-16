@@ -695,7 +695,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	u.SetPriority(int64(d.Get("priority").(int)))
 	u.SetOptions(o)
 
-	roles := make([]string, 0)
+	var roles []string
 	if attr, ok := d.GetOk("restricted_roles"); ok {
 		for _, r := range attr.(*schema.Set).List() {
 			roles = append(roles, r.(string))
@@ -703,10 +703,9 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 		sort.Strings(roles)
 		m.SetRestrictedRoles(roles)
 		u.SetRestrictedRoles(roles)
-	} else {
-		m.SetRestrictedRoles(nil)
-		u.SetRestrictedRoles(nil)
 	}
+	m.SetRestrictedRoles(roles)
+	u.SetRestrictedRoles(roles)
 
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
@@ -974,7 +973,7 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return diag.FromErr(err)
 	}
 
-	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok && len(*restrictedRoles) > 0 {
+	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok && restrictedRoles != nil && len(*restrictedRoles) > 0 {
 		// This helper function is defined in `resource_datadog_dashboard`
 		restrictedRolesCopy := buildTerraformRestrictedRoles(restrictedRoles)
 		if err := d.Set("restricted_roles", restrictedRolesCopy); err != nil {
