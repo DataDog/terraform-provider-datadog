@@ -297,7 +297,7 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 	}
 
 	// Set notify list
-	notifyList := buildTerraformNotifyList(&dashboard.NotifyList)
+	notifyList := buildTerraformNotifyList(dashboard.NotifyList.Get())
 	if err := d.Set("notify_list", notifyList); err != nil {
 		return diag.FromErr(err)
 	}
@@ -377,11 +377,11 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 
 	// Build NotifyList
 	notifyList := d.Get("notify_list").(*schema.Set)
-	dashboard.NotifyList = *buildDatadogNotifyList(notifyList)
+	dashboard.SetNotifyList(*buildDatadogNotifyList(notifyList))
 
 	// Build Tags
 	tags := utils.GetStringSlice(d, "tags")
-	dashboard.Tags = tags
+	dashboard.SetTags(tags)
 
 	// Build TemplateVariables
 	templateVariables := d.Get("template_variable").([]interface{})
