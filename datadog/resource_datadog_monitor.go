@@ -701,8 +701,6 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 			roles = append(roles, r.(string))
 		}
 		sort.Strings(roles)
-		m.SetRestrictedRoles(roles)
-		u.SetRestrictedRoles(roles)
 	}
 	m.SetRestrictedRoles(roles)
 	u.SetRestrictedRoles(roles)
