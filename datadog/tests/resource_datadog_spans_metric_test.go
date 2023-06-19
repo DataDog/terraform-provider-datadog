@@ -221,12 +221,12 @@ func testAccCheckDatadogSpansMetricTestingCountGroupBys(uniq string) string {
 				query = "@http.status_code:200 service:my-service"
 			}
 			group_by {
-				path     = "resource_name1"
-				tag_name = "my_resource1"
-			}
-			group_by {
 				path     = "resource_name2"
 				tag_name = "my_resource2"
+			}
+			group_by {
+				path     = "resource_name1"
+				tag_name = "my_resource1"
 			}
 		}
 	`, uniq)
