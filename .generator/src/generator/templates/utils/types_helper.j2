@@ -39,13 +39,13 @@ type {{ name|camel_case }}Model struct {
 
 {%- if nonPrimitiveListAttr %}
 {%- for name, schema in nonPrimitiveListAttr.items() %}
-{{- typesHelper.basePropertyTypeBuilder(name, schema) }}
+{{- basePropertyTypeBuilder(name, schema) }}
 {%- endfor %}
 {%- endif %}
 
 {%- if nonPrimitiveObjAttr %}
 {%- for name, schema in nonPrimitiveObjAttr.items() %}
-{{- typesHelper.basePropertyTypeBuilder(name, schema) }}
+{{- basePropertyTypeBuilder(name, schema) }}
 {%- endfor %}
 {%- endif %}
 

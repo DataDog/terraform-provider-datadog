@@ -205,15 +205,19 @@ def tf_sort_params_by_type(parameters):
                 else:
                     non_primitive_obj[attr] = c
         else:
-            if is_primitive(schema):
-                primitive[name] = schema
-            elif schema.get("type") == "array":
-                if is_primitive(schema.get("items")):
-                    primitive_array[name] = schema
+            for attr, s in schema["properties"].items():
+                required = attr in schema.get("required", [])
+                c = deepcopy(s)
+                c["required"] = required
+                if is_primitive(c):
+                    primitive[attr] = c
+                elif schema.get("type") == "array":
+                    if is_primitive(c.get("items")):
+                        primitive_array[attr] = c
+                    else:
+                        non_primitive_array[attr] = c
                 else:
-                    non_primitive_array[name] = schema
-            else:
-                non_primitive_obj[name] = schema
+                    non_primitive_obj[attr] = c
 
     return primitive, primitive_array, non_primitive_array, non_primitive_obj
 
