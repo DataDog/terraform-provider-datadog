@@ -43,7 +43,7 @@ resource "datadog_spans_metric" "testing_spans_metric" {
 
 - `compute` (Block, Optional) (see [below for nested schema](#nestedblock--compute))
 - `filter` (Block, Optional) (see [below for nested schema](#nestedblock--filter))
-- `group_by` (Block List) (see [below for nested schema](#nestedblock--group_by))
+- `group_by` (Block Set) (see [below for nested schema](#nestedblock--group_by))
 
 ### Read-Only
 
