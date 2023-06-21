@@ -78,7 +78,7 @@ func (r *SpansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 			"id": utils.ResourceIDAttribute(),
 		},
 		Blocks: map[string]schema.Block{
-			"group_by": schema.ListNestedBlock{
+			"group_by": schema.SetNestedBlock{
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"path": schema.StringAttribute{
