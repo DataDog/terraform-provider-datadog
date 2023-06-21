@@ -8,7 +8,7 @@ description: |-
 
 # datadog_restriction_policy (Resource)
 
-Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction_policy.
+Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction_policy. See this page for more details https://docs.datadoghq.com/api/latest/restriction-policies/#supported-relations-for-resources.
 
 ## Example Usage
 
