@@ -104,6 +104,9 @@ resource "datadog_logs_archive" "my_gcs_archive" {
 
 func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 	t.Parallel()
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	client := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
