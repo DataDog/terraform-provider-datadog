@@ -19,16 +19,16 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &IntegrationConfluentResourceResource{}
-	_ resource.ResourceWithImportState = &IntegrationConfluentResourceResource{}
+	_ resource.ResourceWithConfigure   = &integrationConfluentResourceResource{}
+	_ resource.ResourceWithImportState = &integrationConfluentResourceResource{}
 )
 
-type IntegrationConfluentResourceResource struct {
+type integrationConfluentResourceResource struct {
 	Api  *datadogV2.ConfluentCloudApi
 	Auth context.Context
 }
 
-type IntegrationConfluentResourceModel struct {
+type integrationConfluentResourceModel struct {
 	ID           types.String `tfsdk:"id"`
 	AccountId    types.String `tfsdk:"account_id"`
 	ResourceId   types.String `tfsdk:"resource_id"`
@@ -37,20 +37,20 @@ type IntegrationConfluentResourceModel struct {
 }
 
 func NewIntegrationConfluentResourceResource() resource.Resource {
-	return &IntegrationConfluentResourceResource{}
+	return &integrationConfluentResourceResource{}
 }
 
-func (r *IntegrationConfluentResourceResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *integrationConfluentResourceResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetConfluentCloudApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *IntegrationConfluentResourceResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+func (r *integrationConfluentResourceResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "integration_confluent_resource"
 }
 
-func (r *IntegrationConfluentResourceResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *integrationConfluentResourceResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog IntegrationConfluentResource resource. This can be used to create and manage Datadog integration_confluent_resource.",
 		Attributes: map[string]schema.Attribute{
@@ -80,7 +80,7 @@ func (r *IntegrationConfluentResourceResource) Schema(_ context.Context, _ resou
 	}
 }
 
-func (r *IntegrationConfluentResourceResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *integrationConfluentResourceResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	accountID, resourceID, err := utils.AccountIDAndResourceIDFromID(request.ID)
 	if err != nil {
 		response.Diagnostics.AddError(err.Error(), "")
@@ -92,8 +92,8 @@ func (r *IntegrationConfluentResourceResource) ImportState(ctx context.Context, 
 	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("id"), request.ID)...)
 }
 
-func (r *IntegrationConfluentResourceResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state IntegrationConfluentResourceModel
+func (r *integrationConfluentResourceResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state integrationConfluentResourceModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -125,8 +125,8 @@ func (r *IntegrationConfluentResourceResource) Read(ctx context.Context, request
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationConfluentResourceResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state IntegrationConfluentResourceModel
+func (r *integrationConfluentResourceResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state integrationConfluentResourceModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -155,8 +155,8 @@ func (r *IntegrationConfluentResourceResource) Create(ctx context.Context, reque
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationConfluentResourceResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state IntegrationConfluentResourceModel
+func (r *integrationConfluentResourceResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state integrationConfluentResourceModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -189,8 +189,8 @@ func (r *IntegrationConfluentResourceResource) Update(ctx context.Context, reque
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationConfluentResourceResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state IntegrationConfluentResourceModel
+func (r *integrationConfluentResourceResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state integrationConfluentResourceModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -212,7 +212,7 @@ func (r *IntegrationConfluentResourceResource) Delete(ctx context.Context, reque
 	}
 }
 
-func (r *IntegrationConfluentResourceResource) updateState(ctx context.Context, state *IntegrationConfluentResourceModel, resp *datadogV2.ConfluentResourceResponse) {
+func (r *integrationConfluentResourceResource) updateState(ctx context.Context, state *integrationConfluentResourceModel, resp *datadogV2.ConfluentResourceResponse) {
 	state.ID = types.StringValue(fmt.Sprintf("%s:%s", state.AccountId.ValueString(), resp.Data.Id))
 
 	data := resp.GetData()
@@ -227,7 +227,7 @@ func (r *IntegrationConfluentResourceResource) updateState(ctx context.Context, 
 	}
 }
 
-func (r *IntegrationConfluentResourceResource) buildIntegrationConfluentResourceRequestBody(ctx context.Context, state *IntegrationConfluentResourceModel) (*datadogV2.ConfluentResourceRequest, diag.Diagnostics) {
+func (r *integrationConfluentResourceResource) buildIntegrationConfluentResourceRequestBody(ctx context.Context, state *integrationConfluentResourceModel) (*datadogV2.ConfluentResourceRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewConfluentResourceRequestAttributesWithDefaults()
 

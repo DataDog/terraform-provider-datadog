@@ -19,11 +19,11 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &TeamMembershipResource{}
-	_ resource.ResourceWithImportState = &TeamMembershipResource{}
+	_ resource.ResourceWithConfigure   = &teamMembershipResource{}
+	_ resource.ResourceWithImportState = &teamMembershipResource{}
 )
 
-type TeamMembershipResource struct {
+type teamMembershipResource struct {
 	Api  *datadogV2.TeamsApi
 	Auth context.Context
 }
@@ -36,20 +36,20 @@ type TeamMembershipModel struct {
 }
 
 func NewTeamMembershipResource() resource.Resource {
-	return &TeamMembershipResource{}
+	return &teamMembershipResource{}
 }
 
-func (r *TeamMembershipResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *teamMembershipResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetTeamsApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *TeamMembershipResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+func (r *teamMembershipResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "team_membership"
 }
 
-func (r *TeamMembershipResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *teamMembershipResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog TeamMembership resource. This can be used to create and manage Datadog team_membership.",
 		Attributes: map[string]schema.Attribute{
@@ -81,7 +81,7 @@ func (r *TeamMembershipResource) Schema(_ context.Context, _ resource.SchemaRequ
 	}
 }
 
-func (r *TeamMembershipResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *teamMembershipResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	result := strings.SplitN(request.ID, ":", 2)
 	if len(result) != 2 {
 		response.Diagnostics.AddError("error retrieving team_id or user_id from given ID", "")
@@ -92,7 +92,7 @@ func (r *TeamMembershipResource) ImportState(ctx context.Context, request resour
 	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("user_id"), result[1])...)
 }
 
-func (r *TeamMembershipResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+func (r *teamMembershipResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	var state TeamMembershipModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
@@ -138,7 +138,7 @@ func (r *TeamMembershipResource) Read(ctx context.Context, request resource.Read
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *TeamMembershipResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+func (r *teamMembershipResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var state TeamMembershipModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
@@ -168,7 +168,7 @@ func (r *TeamMembershipResource) Create(ctx context.Context, request resource.Cr
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *TeamMembershipResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+func (r *teamMembershipResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state TeamMembershipModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
@@ -199,7 +199,7 @@ func (r *TeamMembershipResource) Update(ctx context.Context, request resource.Up
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *TeamMembershipResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+func (r *teamMembershipResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
 	var state TeamMembershipModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
@@ -219,7 +219,7 @@ func (r *TeamMembershipResource) Delete(ctx context.Context, request resource.De
 	}
 }
 
-func (r *TeamMembershipResource) updateStateFromTeamResponse(ctx context.Context, state *TeamMembershipModel, resp *datadogV2.UserTeam) {
+func (r *teamMembershipResource) updateStateFromTeamResponse(ctx context.Context, state *TeamMembershipModel, resp *datadogV2.UserTeam) {
 	state.ID = types.StringValue(resp.GetId())
 
 	if role, ok := resp.Attributes.GetRoleOk(); ok {
@@ -231,7 +231,7 @@ func (r *TeamMembershipResource) updateStateFromTeamResponse(ctx context.Context
 	}
 }
 
-func (r *TeamMembershipResource) buildTeamMembershipRequestBody(ctx context.Context, state *TeamMembershipModel) (*datadogV2.UserTeamRequest, diag.Diagnostics) {
+func (r *teamMembershipResource) buildTeamMembershipRequestBody(ctx context.Context, state *TeamMembershipModel) (*datadogV2.UserTeamRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewUserTeamAttributesWithDefaults()
 
@@ -254,7 +254,7 @@ func (r *TeamMembershipResource) buildTeamMembershipRequestBody(ctx context.Cont
 	return req, diags
 }
 
-func (r *TeamMembershipResource) buildTeamMembershipUpdateRequestBody(ctx context.Context, state *TeamMembershipModel) (*datadogV2.UserTeamUpdateRequest, diag.Diagnostics) {
+func (r *teamMembershipResource) buildTeamMembershipUpdateRequestBody(ctx context.Context, state *TeamMembershipModel) (*datadogV2.UserTeamUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewUserTeamAttributesWithDefaults()
 

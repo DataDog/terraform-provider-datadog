@@ -17,16 +17,16 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &ServiceAccountApplicationKeyResource{}
-	_ resource.ResourceWithImportState = &ServiceAccountApplicationKeyResource{}
+	_ resource.ResourceWithConfigure   = &serviceAccountApplicationKeyResource{}
+	_ resource.ResourceWithImportState = &serviceAccountApplicationKeyResource{}
 )
 
-type ServiceAccountApplicationKeyResource struct {
+type serviceAccountApplicationKeyResource struct {
 	Api  *datadogV2.ServiceAccountsApi
 	Auth context.Context
 }
 
-type ServiceAccountApplicationKeyModel struct {
+type serviceAccountApplicationKeyModel struct {
 	ID               types.String `tfsdk:"id"`
 	ServiceAccountId types.String `tfsdk:"service_account_id"`
 	Name             types.String `tfsdk:"name"`
@@ -36,20 +36,20 @@ type ServiceAccountApplicationKeyModel struct {
 }
 
 func NewServiceAccountApplicationKeyResource() resource.Resource {
-	return &ServiceAccountApplicationKeyResource{}
+	return &serviceAccountApplicationKeyResource{}
 }
 
-func (r *ServiceAccountApplicationKeyResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *serviceAccountApplicationKeyResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetServiceAccountsApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *ServiceAccountApplicationKeyResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+func (r *serviceAccountApplicationKeyResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "service_account_application_key"
 }
 
-func (r *ServiceAccountApplicationKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *serviceAccountApplicationKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog `service_account_application_key` resource. This can be used to create and manage Datadog service account application keys.",
 		Attributes: map[string]schema.Attribute{
@@ -85,7 +85,7 @@ func (r *ServiceAccountApplicationKeyResource) Schema(_ context.Context, _ resou
 	}
 }
 
-func (r *ServiceAccountApplicationKeyResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *serviceAccountApplicationKeyResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	result := strings.SplitN(request.ID, ":", 2)
 	if len(result) != 2 {
 		response.Diagnostics.AddError("error retrieving service_account_id or application_key_id from given ID", "")
@@ -99,8 +99,8 @@ func (r *ServiceAccountApplicationKeyResource) ImportState(ctx context.Context, 
 
 }
 
-func (r *ServiceAccountApplicationKeyResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state ServiceAccountApplicationKeyModel
+func (r *serviceAccountApplicationKeyResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state serviceAccountApplicationKeyModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -128,8 +128,8 @@ func (r *ServiceAccountApplicationKeyResource) Read(ctx context.Context, request
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *ServiceAccountApplicationKeyResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state ServiceAccountApplicationKeyModel
+func (r *serviceAccountApplicationKeyResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state serviceAccountApplicationKeyModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -158,8 +158,8 @@ func (r *ServiceAccountApplicationKeyResource) Create(ctx context.Context, reque
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *ServiceAccountApplicationKeyResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state ServiceAccountApplicationKeyModel
+func (r *serviceAccountApplicationKeyResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state serviceAccountApplicationKeyModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -190,8 +190,8 @@ func (r *ServiceAccountApplicationKeyResource) Update(ctx context.Context, reque
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *ServiceAccountApplicationKeyResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state ServiceAccountApplicationKeyModel
+func (r *serviceAccountApplicationKeyResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state serviceAccountApplicationKeyModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -210,7 +210,7 @@ func (r *ServiceAccountApplicationKeyResource) Delete(ctx context.Context, reque
 	}
 }
 
-func (r *ServiceAccountApplicationKeyResource) updateStatePartialKey(ctx context.Context, state *ServiceAccountApplicationKeyModel, resp *datadogV2.PartialApplicationKeyResponse) {
+func (r *serviceAccountApplicationKeyResource) updateStatePartialKey(ctx context.Context, state *serviceAccountApplicationKeyModel, resp *datadogV2.PartialApplicationKeyResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 
 	data := resp.GetData()
@@ -229,7 +229,7 @@ func (r *ServiceAccountApplicationKeyResource) updateStatePartialKey(ctx context
 	}
 }
 
-func (r *ServiceAccountApplicationKeyResource) updateStateFullKey(ctx context.Context, state *ServiceAccountApplicationKeyModel, resp *datadogV2.ApplicationKeyResponse) {
+func (r *serviceAccountApplicationKeyResource) updateStateFullKey(ctx context.Context, state *serviceAccountApplicationKeyModel, resp *datadogV2.ApplicationKeyResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 
 	data := resp.GetData()
@@ -252,7 +252,7 @@ func (r *ServiceAccountApplicationKeyResource) updateStateFullKey(ctx context.Co
 	}
 }
 
-func (r *ServiceAccountApplicationKeyResource) buildServiceAccountApplicationKeyRequestBody(ctx context.Context, state *ServiceAccountApplicationKeyModel) (*datadogV2.ApplicationKeyCreateRequest, diag.Diagnostics) {
+func (r *serviceAccountApplicationKeyResource) buildServiceAccountApplicationKeyRequestBody(ctx context.Context, state *serviceAccountApplicationKeyModel) (*datadogV2.ApplicationKeyCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewApplicationKeyCreateAttributesWithDefaults()
 
@@ -265,7 +265,7 @@ func (r *ServiceAccountApplicationKeyResource) buildServiceAccountApplicationKey
 	return req, diags
 }
 
-func (r *ServiceAccountApplicationKeyResource) buildServiceAccountApplicationKeyUpdateRequestBody(ctx context.Context, state *ServiceAccountApplicationKeyModel) (*datadogV2.ApplicationKeyUpdateRequest, diag.Diagnostics) {
+func (r *serviceAccountApplicationKeyResource) buildServiceAccountApplicationKeyUpdateRequestBody(ctx context.Context, state *serviceAccountApplicationKeyModel) (*datadogV2.ApplicationKeyUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewApplicationKeyUpdateAttributesWithDefaults()
 

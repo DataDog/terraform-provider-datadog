@@ -14,16 +14,16 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &TeamResource{}
-	_ resource.ResourceWithImportState = &TeamResource{}
+	_ resource.ResourceWithConfigure   = &teamResource{}
+	_ resource.ResourceWithImportState = &teamResource{}
 )
 
-type TeamResource struct {
+type teamResource struct {
 	Api  *datadogV2.TeamsApi
 	Auth context.Context
 }
 
-type TeamModel struct {
+type teamModel struct {
 	ID          types.String `tfsdk:"id"`
 	Description types.String `tfsdk:"description"`
 	Handle      types.String `tfsdk:"handle"`
@@ -34,20 +34,20 @@ type TeamModel struct {
 }
 
 func NewTeamResource() resource.Resource {
-	return &TeamResource{}
+	return &teamResource{}
 }
 
-func (r *TeamResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *teamResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetTeamsApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *TeamResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+func (r *teamResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "team"
 }
 
-func (r *TeamResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog Team resource. This can be used to create and manage Datadog team.",
 		Attributes: map[string]schema.Attribute{
@@ -80,12 +80,12 @@ func (r *TeamResource) Schema(_ context.Context, _ resource.SchemaRequest, respo
 	}
 }
 
-func (r *TeamResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *teamResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *TeamResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state TeamModel
+func (r *teamResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state teamModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -112,8 +112,8 @@ func (r *TeamResource) Read(ctx context.Context, request resource.ReadRequest, r
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *TeamResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state TeamModel
+func (r *teamResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state teamModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -140,8 +140,8 @@ func (r *TeamResource) Create(ctx context.Context, request resource.CreateReques
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *TeamResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state TeamModel
+func (r *teamResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state teamModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -170,8 +170,8 @@ func (r *TeamResource) Update(ctx context.Context, request resource.UpdateReques
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *TeamResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state TeamModel
+func (r *teamResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state teamModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -189,7 +189,7 @@ func (r *TeamResource) Delete(ctx context.Context, request resource.DeleteReques
 	}
 }
 
-func (r *TeamResource) updateState(ctx context.Context, state *TeamModel, resp *datadogV2.TeamResponse) {
+func (r *teamResource) updateState(ctx context.Context, state *teamModel, resp *datadogV2.TeamResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 
 	data := resp.GetData()
@@ -222,7 +222,7 @@ func (r *TeamResource) updateState(ctx context.Context, state *TeamModel, resp *
 	}
 }
 
-func (r *TeamResource) buildTeamRequestBody(ctx context.Context, state *TeamModel) (*datadogV2.TeamCreateRequest, diag.Diagnostics) {
+func (r *teamResource) buildTeamRequestBody(ctx context.Context, state *teamModel) (*datadogV2.TeamCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewTeamCreateAttributesWithDefaults()
 
@@ -240,7 +240,7 @@ func (r *TeamResource) buildTeamRequestBody(ctx context.Context, state *TeamMode
 	return req, diags
 }
 
-func (r *TeamResource) buildTeamUpdateRequestBody(ctx context.Context, state *TeamModel) (*datadogV2.TeamUpdateRequest, diag.Diagnostics) {
+func (r *teamResource) buildTeamUpdateRequestBody(ctx context.Context, state *teamModel) (*datadogV2.TeamUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewTeamUpdateAttributesWithDefaults()
 
