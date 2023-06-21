@@ -120,7 +120,7 @@ func resourceDatadogDashboard() *schema.Resource {
 			"dashboard_lists": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "A list of dashboard lists this dashboard belongs to.",
+				Description: "A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
 			"dashboard_lists_removed": {
