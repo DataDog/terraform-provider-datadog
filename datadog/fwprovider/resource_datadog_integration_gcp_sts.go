@@ -16,16 +16,16 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &IntegrationGcpStsResource{}
-	_ resource.ResourceWithImportState = &IntegrationGcpStsResource{}
+	_ resource.ResourceWithConfigure   = &integrationGcpStsResource{}
+	_ resource.ResourceWithImportState = &integrationGcpStsResource{}
 )
 
-type IntegrationGcpStsResource struct {
+type integrationGcpStsResource struct {
 	Api  *datadogV2.GCPIntegrationApi
 	Auth context.Context
 }
 
-type IntegrationGcpStsModel struct {
+type integrationGcpStsModel struct {
 	ID                   types.String `tfsdk:"id"`
 	Automute             types.Bool   `tfsdk:"automute"`
 	ClientEmail          types.String `tfsdk:"client_email"`
@@ -35,20 +35,20 @@ type IntegrationGcpStsModel struct {
 }
 
 func NewIntegrationGcpStsResource() resource.Resource {
-	return &IntegrationGcpStsResource{}
+	return &integrationGcpStsResource{}
 }
 
-func (r *IntegrationGcpStsResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *integrationGcpStsResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetGCPIntegrationApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *IntegrationGcpStsResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+func (r *integrationGcpStsResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "integration_gcp_sts"
 }
 
-func (r *IntegrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog Integration GCP Sts resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
 		Attributes: map[string]schema.Attribute{
@@ -86,12 +86,12 @@ func (r *IntegrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 	}
 }
 
-func (r *IntegrationGcpStsResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *integrationGcpStsResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *IntegrationGcpStsResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state IntegrationGcpStsModel
+func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state integrationGcpStsModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -128,8 +128,8 @@ func (r *IntegrationGcpStsResource) Read(ctx context.Context, request resource.R
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationGcpStsResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state IntegrationGcpStsModel
+func (r *integrationGcpStsResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state integrationGcpStsModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -169,8 +169,8 @@ func (r *IntegrationGcpStsResource) Create(ctx context.Context, request resource
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationGcpStsResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state IntegrationGcpStsModel
+func (r *integrationGcpStsResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state integrationGcpStsModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -199,8 +199,8 @@ func (r *IntegrationGcpStsResource) Update(ctx context.Context, request resource
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationGcpStsResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state IntegrationGcpStsModel
+func (r *integrationGcpStsResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state integrationGcpStsModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -218,7 +218,7 @@ func (r *IntegrationGcpStsResource) Delete(ctx context.Context, request resource
 	}
 }
 
-func (r *IntegrationGcpStsResource) updateState(ctx context.Context, state *IntegrationGcpStsModel, resp *datadogV2.GCPSTSServiceAccount) {
+func (r *integrationGcpStsResource) updateState(ctx context.Context, state *integrationGcpStsModel, resp *datadogV2.GCPSTSServiceAccount) {
 	state.ID = types.StringValue(resp.GetId())
 
 	attributes := resp.GetAttributes()
@@ -236,7 +236,7 @@ func (r *IntegrationGcpStsResource) updateState(ctx context.Context, state *Inte
 	}
 }
 
-func (r *IntegrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx context.Context, state *IntegrationGcpStsModel) (*datadogV2.GCPSTSServiceAccountCreateRequest, diag.Diagnostics) {
+func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx context.Context, state *integrationGcpStsModel) (*datadogV2.GCPSTSServiceAccountCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewGCPSTSServiceAccountAttributesWithDefaults()
 
@@ -263,7 +263,7 @@ func (r *IntegrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	return req, diags
 }
 
-func (r *IntegrationGcpStsResource) buildIntegrationGcpStsUpdateRequestBody(ctx context.Context, state *IntegrationGcpStsModel) (*datadogV2.GCPSTSServiceAccountUpdateRequest, diag.Diagnostics) {
+func (r *integrationGcpStsResource) buildIntegrationGcpStsUpdateRequestBody(ctx context.Context, state *integrationGcpStsModel) (*datadogV2.GCPSTSServiceAccountUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewGCPSTSServiceAccountAttributesWithDefaults()
 

@@ -12,14 +12,14 @@ import (
 )
 
 var (
-	_ datasource.DataSource = &DatadogTeamDataSource{}
+	_ datasource.DataSource = &datadogTeamDataSource{}
 )
 
 func NewDatadogTeamDataSource() datasource.DataSource {
-	return &DatadogTeamDataSource{}
+	return &datadogTeamDataSource{}
 }
 
-type DatadogTeamDataSourceModel struct {
+type datadogTeamDataSourceModel struct {
 	// Query Parameters
 	TeamID        types.String `tfsdk:"team_id"`
 	FilterKeyword types.String `tfsdk:"filter_keyword"`
@@ -33,22 +33,22 @@ type DatadogTeamDataSourceModel struct {
 	Name        types.String `tfsdk:"name"`
 }
 
-type DatadogTeamDataSource struct {
+type datadogTeamDataSource struct {
 	Api  *datadogV2.TeamsApi
 	Auth context.Context
 }
 
-func (r *DatadogTeamDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (r *datadogTeamDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetTeamsApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (d *DatadogTeamDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (d *datadogTeamDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = "team"
 }
 
-func (d *DatadogTeamDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *datadogTeamDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about an existing Datadog team.",
 		Attributes: map[string]schema.Attribute{
@@ -94,8 +94,8 @@ func (d *DatadogTeamDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 
 }
 
-func (d *DatadogTeamDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state DatadogTeamDataSourceModel
+func (d *datadogTeamDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var state datadogTeamDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -137,7 +137,7 @@ func (d *DatadogTeamDataSource) Read(ctx context.Context, req datasource.ReadReq
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *DatadogTeamDataSource) updateState(state *DatadogTeamDataSourceModel, teamData *datadogV2.TeamData) {
+func (r *datadogTeamDataSource) updateState(state *datadogTeamDataSourceModel, teamData *datadogV2.TeamData) {
 	state.ID = types.StringValue(teamData.GetId())
 	attributes := teamData.GetAttributes()
 
@@ -149,7 +149,7 @@ func (r *DatadogTeamDataSource) updateState(state *DatadogTeamDataSourceModel, t
 	state.Summary = types.StringValue(attributes.GetSummary())
 }
 
-func (r *DatadogTeamDataSource) updateStateFromListResponse(state *DatadogTeamDataSourceModel, teamData *datadogV2.Team) {
+func (r *datadogTeamDataSource) updateStateFromListResponse(state *datadogTeamDataSourceModel, teamData *datadogV2.Team) {
 	state.ID = types.StringValue(teamData.GetId())
 	state.TeamID = types.StringValue(teamData.GetId())
 

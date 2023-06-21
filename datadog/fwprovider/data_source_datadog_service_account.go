@@ -12,14 +12,14 @@ import (
 )
 
 var (
-	_ datasource.DataSource = &DatadogServiceAccountDatasource{}
+	_ datasource.DataSource = &datadogServiceAccountDatasource{}
 )
 
 func NewDatadogServiceAccountDatasource() datasource.DataSource {
-	return &DatadogServiceAccountDatasource{}
+	return &datadogServiceAccountDatasource{}
 }
 
-type DatadogServiceAccountDatasourceModel struct {
+type datadogServiceAccountDatasourceModel struct {
 	// Query Parameters
 	ID           types.String `tfsdk:"id"`
 	Filter       types.String `tfsdk:"filter"`
@@ -36,22 +36,22 @@ type DatadogServiceAccountDatasourceModel struct {
 	Roles    types.List   `tfsdk:"roles"`
 }
 
-type DatadogServiceAccountDatasource struct {
+type datadogServiceAccountDatasource struct {
 	Api  *datadogV2.UsersApi
 	Auth context.Context
 }
 
-func (r *DatadogServiceAccountDatasource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (r *datadogServiceAccountDatasource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetUsersApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (d *DatadogServiceAccountDatasource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (d *datadogServiceAccountDatasource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = "service_account"
 }
 
-func (d *DatadogServiceAccountDatasource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *datadogServiceAccountDatasource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about an existing Datadog service account.",
 		Attributes: map[string]schema.Attribute{
@@ -111,8 +111,8 @@ func (d *DatadogServiceAccountDatasource) Schema(_ context.Context, _ datasource
 	}
 }
 
-func (d *DatadogServiceAccountDatasource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state DatadogServiceAccountDatasourceModel
+func (d *datadogServiceAccountDatasource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var state datadogServiceAccountDatasourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -165,7 +165,7 @@ func (d *DatadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *DatadogServiceAccountDatasource) updateState(ctx context.Context, state *DatadogServiceAccountDatasourceModel, userData *datadogV2.User) {
+func (r *datadogServiceAccountDatasource) updateState(ctx context.Context, state *datadogServiceAccountDatasourceModel, userData *datadogV2.User) {
 	state.ID = types.StringValue(userData.GetId())
 	attributes := userData.GetAttributes()
 	if v, ok := attributes.GetDisabledOk(); ok && v != nil {

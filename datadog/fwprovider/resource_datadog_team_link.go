@@ -17,16 +17,16 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &TeamLinkResource{}
-	_ resource.ResourceWithImportState = &TeamLinkResource{}
+	_ resource.ResourceWithConfigure   = &teamLinkResource{}
+	_ resource.ResourceWithImportState = &teamLinkResource{}
 )
 
-type TeamLinkResource struct {
+type teamLinkResource struct {
 	Api  *datadogV2.TeamsApi
 	Auth context.Context
 }
 
-type TeamLinkModel struct {
+type teamLinkModel struct {
 	ID       types.String `tfsdk:"id"`
 	TeamId   types.String `tfsdk:"team_id"`
 	Label    types.String `tfsdk:"label"`
@@ -35,20 +35,20 @@ type TeamLinkModel struct {
 }
 
 func NewTeamLinkResource() resource.Resource {
-	return &TeamLinkResource{}
+	return &teamLinkResource{}
 }
 
-func (r *TeamLinkResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *teamLinkResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetTeamsApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *TeamLinkResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+func (r *teamLinkResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "team_link"
 }
 
-func (r *TeamLinkResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *teamLinkResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog TeamLink resource. This can be used to create and manage Datadog team_link.",
 		Attributes: map[string]schema.Attribute{
@@ -77,7 +77,7 @@ func (r *TeamLinkResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 	}
 }
 
-func (r *TeamLinkResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *teamLinkResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	result := strings.SplitN(request.ID, ":", 2)
 	if len(result) != 2 {
 		response.Diagnostics.AddError("error retrieving team_id or resource id from given ID", "")
@@ -88,8 +88,8 @@ func (r *TeamLinkResource) ImportState(ctx context.Context, request resource.Imp
 	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("id"), result[1])...)
 }
 
-func (r *TeamLinkResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state TeamLinkModel
+func (r *teamLinkResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state teamLinkModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -117,8 +117,8 @@ func (r *TeamLinkResource) Read(ctx context.Context, request resource.ReadReques
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *TeamLinkResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state TeamLinkModel
+func (r *teamLinkResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state teamLinkModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -147,8 +147,8 @@ func (r *TeamLinkResource) Create(ctx context.Context, request resource.CreateRe
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *TeamLinkResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state TeamLinkModel
+func (r *teamLinkResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state teamLinkModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -179,8 +179,8 @@ func (r *TeamLinkResource) Update(ctx context.Context, request resource.UpdateRe
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *TeamLinkResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state TeamLinkModel
+func (r *teamLinkResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state teamLinkModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -199,7 +199,7 @@ func (r *TeamLinkResource) Delete(ctx context.Context, request resource.DeleteRe
 	}
 }
 
-func (r *TeamLinkResource) updateState(ctx context.Context, state *TeamLinkModel, resp *datadogV2.TeamLinkResponse) {
+func (r *teamLinkResource) updateState(ctx context.Context, state *teamLinkModel, resp *datadogV2.TeamLinkResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 
 	data := resp.GetData()
@@ -222,7 +222,7 @@ func (r *TeamLinkResource) updateState(ctx context.Context, state *TeamLinkModel
 	}
 }
 
-func (r *TeamLinkResource) buildTeamLinkRequestBody(ctx context.Context, state *TeamLinkModel) (*datadogV2.TeamLinkCreateRequest, diag.Diagnostics) {
+func (r *teamLinkResource) buildTeamLinkRequestBody(ctx context.Context, state *teamLinkModel) (*datadogV2.TeamLinkCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewTeamLinkAttributesWithDefaults()
 
