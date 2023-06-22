@@ -17,9 +17,14 @@ Provides a Datadog RestrictionPolicy resource. This can be used to create and ma
 
 
 resource "datadog_restriction_policy" "foo" {
+  resource_id = "dashboard:111-222-333"
   bindings {
     principals = ["role:00000000-0000-1111-0000-000000000000"]
     relation   = "editor"
+  }
+  bindings {
+    principals = ["org:00000000-0000-1111-0000-000000000000"]
+    relation   = "viewer"
   }
 }
 ```
@@ -29,7 +34,7 @@ resource "datadog_restriction_policy" "foo" {
 
 ### Required
 
-- `resource_id` (String) Identifier for the resource, formatted as type:id.
+- `resource_id` (String) Identifier for the resource, formatted as resource_type:resource_id.
 
 ### Optional
 
