@@ -1759,6 +1759,8 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 						}
 						if v, ok := targetMap["targetvalue"]; ok {
 							switch datadogV1.SyntheticsAssertionOperator(operator.(string)) {
+							case datadogV1.SYNTHETICSASSERTIONOPERATOR_IS_UNDEFINED:
+								// no target value must be set for isUndefined operator
 							case
 								datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
 								datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
