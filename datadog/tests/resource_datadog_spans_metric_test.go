@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -221,12 +221,12 @@ func testAccCheckDatadogSpansMetricTestingCountGroupBys(uniq string) string {
 				query = "@http.status_code:200 service:my-service"
 			}
 			group_by {
-				path     = "resource_name1"
-				tag_name = "my_resource1"
-			}
-			group_by {
 				path     = "resource_name2"
 				tag_name = "my_resource2"
+			}
+			group_by {
+				path     = "resource_name1"
+				tag_name = "my_resource1"
 			}
 		}
 	`, uniq)

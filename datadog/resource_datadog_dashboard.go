@@ -13,7 +13,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -120,7 +120,7 @@ func resourceDatadogDashboard() *schema.Resource {
 			"dashboard_lists": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "A list of dashboard lists this dashboard belongs to.",
+				Description: "A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
 			"dashboard_lists_removed": {
@@ -167,17 +167,17 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 
 	var getDashboard datadogV1.Dashboard
 	var httpResponse *http.Response
-	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+	err = retry.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *retry.RetryError {
 		getDashboard, httpResponse, err = apiInstances.GetDashboardsApiV1().GetDashboard(auth, *dashboard.Id)
 		if err != nil {
 			if httpResponse != nil && httpResponse.StatusCode == 404 {
-				return resource.RetryableError(fmt.Errorf("dashboard not created yet"))
+				return retry.RetryableError(fmt.Errorf("dashboard not created yet"))
 			}
 
-			return resource.NonRetryableError(err)
+			return retry.NonRetryableError(err)
 		}
 		if err := utils.CheckForUnparsed(getDashboard); err != nil {
-			return resource.NonRetryableError(err)
+			return retry.NonRetryableError(err)
 		}
 
 		// We only log the error, as failing to update the list shouldn't fail dashboard creation
@@ -297,7 +297,7 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 	}
 
 	// Set notify list
-	notifyList := buildTerraformNotifyList(&dashboard.NotifyList)
+	notifyList := buildTerraformNotifyList(dashboard.NotifyList.Get())
 	if err := d.Set("notify_list", notifyList); err != nil {
 		return diag.FromErr(err)
 	}
@@ -377,11 +377,11 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 
 	// Build NotifyList
 	notifyList := d.Get("notify_list").(*schema.Set)
-	dashboard.NotifyList = *buildDatadogNotifyList(notifyList)
+	dashboard.SetNotifyList(*buildDatadogNotifyList(notifyList))
 
 	// Build Tags
 	tags := utils.GetStringSlice(d, "tags")
-	dashboard.Tags = tags
+	dashboard.SetTags(tags)
 
 	// Build TemplateVariables
 	templateVariables := d.Get("template_variable").([]interface{})
@@ -1160,7 +1160,7 @@ func buildTerraformWidgets(datadogWidgets *[]datadogV1.Widget, d *schema.Resourc
 
 	terraformWidgets := make([]map[string]interface{}, len(*datadogWidgets))
 	for i, datadogWidget := range *datadogWidgets {
-		terraformWidget, err := buildTerraformWidget(&datadogWidget, utils.NewResourceDataKey(d, fmt.Sprintf("widget.%d", i)))
+		terraformWidget, err := buildTerraformWidget(&datadogWidget)
 		if err != nil {
 			return nil, err
 		}
@@ -1170,7 +1170,7 @@ func buildTerraformWidgets(datadogWidgets *[]datadogV1.Widget, d *schema.Resourc
 }
 
 // Helper to build a Terraform widget from a Datadog widget
-func buildTerraformWidget(datadogWidget *datadogV1.Widget, k *utils.ResourceDataKey) (map[string]interface{}, error) {
+func buildTerraformWidget(datadogWidget *datadogV1.Widget) (map[string]interface{}, error) {
 	terraformWidget := map[string]interface{}{}
 
 	// Build layout
@@ -1193,46 +1193,37 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget, k *utils.ResourceData
 	// Build definition
 	widgetDefinition := datadogWidget.GetDefinition()
 	if widgetDefinition.GroupWidgetDefinition != nil {
-		terraformDefinition := buildTerraformGroupDefinition(widgetDefinition.GroupWidgetDefinition, k.Add("group_definition.0"))
-		k.Remove("group_definition.0")
+		terraformDefinition := buildTerraformGroupDefinition(widgetDefinition.GroupWidgetDefinition)
 		terraformWidget["group_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.AlertGraphWidgetDefinition != nil {
-		terraformDefinition := buildTerraformAlertGraphDefinition(widgetDefinition.AlertGraphWidgetDefinition, k.Add("alert_graph_definition.0"))
-		k.Remove("alert_graph_definition.0")
+		terraformDefinition := buildTerraformAlertGraphDefinition(widgetDefinition.AlertGraphWidgetDefinition)
 		terraformWidget["alert_graph_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.AlertValueWidgetDefinition != nil {
 		terraformDefinition := buildTerraformAlertValueDefinition(widgetDefinition.AlertValueWidgetDefinition)
 		terraformWidget["alert_value_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.ChangeWidgetDefinition != nil {
-		terraformDefinition := buildTerraformChangeDefinition(widgetDefinition.ChangeWidgetDefinition, k.Add("change_definition.0"))
-		k.Remove("change_definition.0")
+		terraformDefinition := buildTerraformChangeDefinition(widgetDefinition.ChangeWidgetDefinition)
 		terraformWidget["change_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.CheckStatusWidgetDefinition != nil {
-		terraformDefinition := buildTerraformCheckStatusDefinition(widgetDefinition.CheckStatusWidgetDefinition, k.Add("check_status_definition.0"))
-		k.Remove("check_status_definition.0")
+		terraformDefinition := buildTerraformCheckStatusDefinition(widgetDefinition.CheckStatusWidgetDefinition)
 		terraformWidget["check_status_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.DistributionWidgetDefinition != nil {
-		terraformDefinition := buildTerraformDistributionDefinition(widgetDefinition.DistributionWidgetDefinition, k.Add("distribution_definition.0"))
-		k.Remove("distribution_definition.0")
+		terraformDefinition := buildTerraformDistributionDefinition(widgetDefinition.DistributionWidgetDefinition)
 		terraformWidget["distribution_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.EventStreamWidgetDefinition != nil {
-		terraformDefinition := buildTerraformEventStreamDefinition(widgetDefinition.EventStreamWidgetDefinition, k.Add("event_stream_definition.0"))
-		k.Remove("event_stream_definition.0")
+		terraformDefinition := buildTerraformEventStreamDefinition(widgetDefinition.EventStreamWidgetDefinition)
 		terraformWidget["event_stream_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.EventTimelineWidgetDefinition != nil {
-		terraformDefinition := buildTerraformEventTimelineDefinition(widgetDefinition.EventTimelineWidgetDefinition, k.Add("event_timeline_definition.0"))
-		k.Remove("event_timeline_definition.0")
+		terraformDefinition := buildTerraformEventTimelineDefinition(widgetDefinition.EventTimelineWidgetDefinition)
 		terraformWidget["event_timeline_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.FreeTextWidgetDefinition != nil {
 		terraformDefinition := buildTerraformFreeTextDefinition(widgetDefinition.FreeTextWidgetDefinition)
 		terraformWidget["free_text_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.HeatMapWidgetDefinition != nil {
-		terraformDefinition := buildTerraformHeatmapDefinition(widgetDefinition.HeatMapWidgetDefinition, k.Add("heatmap_definition.0"))
-		k.Remove("heatmap_definition.0")
+		terraformDefinition := buildTerraformHeatmapDefinition(widgetDefinition.HeatMapWidgetDefinition)
 		terraformWidget["heatmap_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.HostMapWidgetDefinition != nil {
-		terraformDefinition := buildTerraformHostmapDefinition(widgetDefinition.HostMapWidgetDefinition, k.Add("hostmap_definition.0"))
-		k.Remove("hostmap_definition.0")
+		terraformDefinition := buildTerraformHostmapDefinition(widgetDefinition.HostMapWidgetDefinition)
 		terraformWidget["hostmap_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.IFrameWidgetDefinition != nil {
 		terraformDefinition := buildTerraformIframeDefinition(widgetDefinition.IFrameWidgetDefinition)
@@ -1241,12 +1232,10 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget, k *utils.ResourceData
 		terraformDefinition := buildTerraformImageDefinition(widgetDefinition.ImageWidgetDefinition)
 		terraformWidget["image_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.LogStreamWidgetDefinition != nil {
-		terraformDefinition := buildTerraformLogStreamDefinition(widgetDefinition.LogStreamWidgetDefinition, k.Add("log_stream_definition.0"))
-		k.Remove("log_stream_definition.0")
+		terraformDefinition := buildTerraformLogStreamDefinition(widgetDefinition.LogStreamWidgetDefinition)
 		terraformWidget["log_stream_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.ListStreamWidgetDefinition != nil {
-		terraformDefinition := buildTerraformListStreamDefinition(widgetDefinition.ListStreamWidgetDefinition, k.Add("list_stream_definition.0"))
-		k.Remove("list_stream_definition.0")
+		terraformDefinition := buildTerraformListStreamDefinition(widgetDefinition.ListStreamWidgetDefinition)
 		terraformWidget["list_stream_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.MonitorSummaryWidgetDefinition != nil {
 		terraformDefinition := buildTerraformManageStatusDefinition(widgetDefinition.MonitorSummaryWidgetDefinition)
@@ -1255,16 +1244,13 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget, k *utils.ResourceData
 		terraformDefinition := buildTerraformNoteDefinition(widgetDefinition.NoteWidgetDefinition)
 		terraformWidget["note_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.QueryValueWidgetDefinition != nil {
-		terraformDefinition := buildTerraformQueryValueDefinition(widgetDefinition.QueryValueWidgetDefinition, k.Add("query_value_definition.0"))
-		k.Remove("query_value_definition.0")
+		terraformDefinition := buildTerraformQueryValueDefinition(widgetDefinition.QueryValueWidgetDefinition)
 		terraformWidget["query_value_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.TableWidgetDefinition != nil {
-		terraformDefinition := buildTerraformQueryTableDefinition(widgetDefinition.TableWidgetDefinition, k.Add("query_table_definition.0"))
-		k.Remove("query_table_definition.0")
+		terraformDefinition := buildTerraformQueryTableDefinition(widgetDefinition.TableWidgetDefinition)
 		terraformWidget["query_table_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.ScatterPlotWidgetDefinition != nil {
-		terraformDefinition := buildTerraformScatterplotDefinition(widgetDefinition.ScatterPlotWidgetDefinition, k.Add("scatterplot_definition.0"))
-		k.Remove("scatterplot_definition.0")
+		terraformDefinition := buildTerraformScatterplotDefinition(widgetDefinition.ScatterPlotWidgetDefinition)
 		terraformWidget["scatterplot_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.ServiceMapWidgetDefinition != nil {
 		terraformDefinition := buildTerraformServiceMapDefinition(widgetDefinition.ServiceMapWidgetDefinition)
@@ -1273,36 +1259,28 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget, k *utils.ResourceData
 		terraformDefinition := buildTerraformServiceLevelObjectiveDefinition(widgetDefinition.SLOWidgetDefinition)
 		terraformWidget["service_level_objective_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.SLOListWidgetDefinition != nil {
-		terraformDefinition := buildTerraformSloListDefinition(widgetDefinition.SLOListWidgetDefinition, k.Add("slo_list_definition.0"))
-		k.Remove("slo_list_definition.0")
+		terraformDefinition := buildTerraformSloListDefinition(widgetDefinition.SLOListWidgetDefinition)
 		terraformWidget["slo_list_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.SunburstWidgetDefinition != nil {
-		terraformDefinition := buildTerraformSunburstDefinition(widgetDefinition.SunburstWidgetDefinition, k.Add("sunburst_definition.0"))
-		k.Remove("sunburst_definition.0")
+		terraformDefinition := buildTerraformSunburstDefinition(widgetDefinition.SunburstWidgetDefinition)
 		terraformWidget["sunburst_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.TimeseriesWidgetDefinition != nil {
-		terraformDefinition := buildTerraformTimeseriesDefinition(widgetDefinition.TimeseriesWidgetDefinition, k.Add("timeseries_definition.0"))
-		k.Remove("timeseries_definition.0")
+		terraformDefinition := buildTerraformTimeseriesDefinition(widgetDefinition.TimeseriesWidgetDefinition)
 		terraformWidget["timeseries_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.ToplistWidgetDefinition != nil {
-		terraformDefinition := buildTerraformToplistDefinition(widgetDefinition.ToplistWidgetDefinition, k.Add("toplist_definition.0"))
-		k.Remove("toplist_definition.0")
+		terraformDefinition := buildTerraformToplistDefinition(widgetDefinition.ToplistWidgetDefinition)
 		terraformWidget["toplist_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.TopologyMapWidgetDefinition != nil {
-		terraformDefinition := buildTerraformTopologyMapDefinition(widgetDefinition.TopologyMapWidgetDefinition, k.Add("topology_map_definition.0"))
-		k.Remove("topology_map_definition.0")
+		terraformDefinition := buildTerraformTopologyMapDefinition(widgetDefinition.TopologyMapWidgetDefinition)
 		terraformWidget["topology_map_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.ServiceSummaryWidgetDefinition != nil {
-		terraformDefinition := buildTerraformTraceServiceDefinition(widgetDefinition.ServiceSummaryWidgetDefinition, k.Add("trace_service_definition.0"))
-		k.Remove("trace_service_definition.0")
+		terraformDefinition := buildTerraformTraceServiceDefinition(widgetDefinition.ServiceSummaryWidgetDefinition)
 		terraformWidget["trace_service_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.TreeMapWidgetDefinition != nil {
-		terraformDefinition := buildTerraformTreemapDefinition(widgetDefinition.TreeMapWidgetDefinition, k.Add("treemap_definition.0"))
-		k.Remove("treemap_definition.0")
+		terraformDefinition := buildTerraformTreemapDefinition(widgetDefinition.TreeMapWidgetDefinition)
 		terraformWidget["treemap_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.GeomapWidgetDefinition != nil {
-		terraformDefinition := buildTerraformGeomapDefinition(widgetDefinition.GeomapWidgetDefinition, k.Add("geomap_definition.0"))
-		k.Remove("geomap_definition.0")
+		terraformDefinition := buildTerraformGeomapDefinition(widgetDefinition.GeomapWidgetDefinition)
 		terraformWidget["geomap_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.RunWorkflowWidgetDefinition != nil {
 		terraformDefinition := buildTerraformRunWorkflowDefinition(widgetDefinition.RunWorkflowWidgetDefinition)
@@ -1434,13 +1412,13 @@ func buildDatadogGroupDefinition(terraformGroupDefinition map[string]interface{}
 	return datadogGroupDefinition, nil
 }
 
-func buildTerraformGroupDefinition(datadogGroupDefinition *datadogV1.GroupWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformGroupDefinition(datadogGroupDefinition *datadogV1.GroupWidgetDefinition) map[string]interface{} {
 	terraformGroupDefinition := map[string]interface{}{}
 
 	var groupWidgets []map[string]interface{}
-	for i, datadogGroupWidgets := range datadogGroupDefinition.Widgets {
-		newGroupWidget, _ := buildTerraformWidget(&datadogGroupWidgets, k.Add(fmt.Sprintf("widget.%d", i)))
-		k.Remove(fmt.Sprintf("widget.%d", i))
+	for _, datadogGroupWidgets := range datadogGroupDefinition.Widgets {
+		newGroupWidget, _ := buildTerraformWidget(&datadogGroupWidgets)
+
 		groupWidgets = append(groupWidgets, newGroupWidget)
 	}
 	terraformGroupDefinition["widget"] = groupWidgets
@@ -1524,7 +1502,7 @@ func buildDatadogAlertGraphDefinition(terraformDefinition map[string]interface{}
 	return datadogDefinition
 }
 
-func buildTerraformAlertGraphDefinition(datadogDefinition *datadogV1.AlertGraphWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformAlertGraphDefinition(datadogDefinition *datadogV1.AlertGraphWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["alert_id"] = datadogDefinition.AlertId
@@ -1709,11 +1687,11 @@ func buildDatadogChangeDefinition(terraformDefinition map[string]interface{}) *d
 	}
 	return datadogDefinition
 }
-func buildTerraformChangeDefinition(datadogDefinition *datadogV1.ChangeWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformChangeDefinition(datadogDefinition *datadogV1.ChangeWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["request"] = buildTerraformChangeRequests(&datadogDefinition.Requests, k.Add("request"))
-	k.Remove("request")
+	terraformDefinition["request"] = buildTerraformChangeRequests(&datadogDefinition.Requests)
+
 	// Optional params
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v
@@ -1861,30 +1839,26 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 	}
 	return &datadogRequests
 }
-func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogChangeRequests))
 	for i, datadogRequest := range *datadogChangeRequests {
 		terraformRequest := map[string]interface{}{}
 		if v, ok := datadogRequest.GetQOk(); ok {
 			terraformRequest["q"] = v
 		} else if v, ok := datadogRequest.GetApmQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.apm_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.apm_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["apm_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetLogQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.log_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.log_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["log_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.rum_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.rum_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.security_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(v)
@@ -1989,11 +1963,11 @@ func buildDatadogDistributionDefinition(terraformDefinition map[string]interface
 	}
 	return datadogDefinition
 }
-func buildTerraformDistributionDefinition(datadogDefinition *datadogV1.DistributionWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformDistributionDefinition(datadogDefinition *datadogV1.DistributionWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["request"] = buildTerraformDistributionRequests(&datadogDefinition.Requests, k.Add("request"))
-	k.Remove("request")
+	terraformDefinition["request"] = buildTerraformDistributionRequests(&datadogDefinition.Requests)
+
 	// Optional params
 	if v, ok := datadogDefinition.GetShowLegendOk(); ok {
 		terraformDefinition["show_legend"] = *v
@@ -2079,30 +2053,26 @@ func buildDatadogDistributionRequests(terraformRequests *[]interface{}) *[]datad
 	}
 	return &datadogRequests
 }
-func buildTerraformDistributionRequests(datadogDistributionRequests *[]datadogV1.DistributionWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformDistributionRequests(datadogDistributionRequests *[]datadogV1.DistributionWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogDistributionRequests))
 	for i, datadogRequest := range *datadogDistributionRequests {
 		terraformRequest := map[string]interface{}{}
 		if v, ok := datadogRequest.GetQOk(); ok {
 			terraformRequest["q"] = v
 		} else if v, ok := datadogRequest.GetApmQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.apm_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.apm_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["apm_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetLogQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.log_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.log_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["log_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.rum_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.rum_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.security_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetApmStatsQueryOk(); ok {
 			terraformQuery := buildTerraformApmStatsQuery(*v)
@@ -2187,7 +2157,7 @@ func buildDatadogEventStreamDefinition(terraformDefinition map[string]interface{
 	return datadogDefinition
 }
 
-func buildTerraformEventStreamDefinition(datadogDefinition *datadogV1.EventStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformEventStreamDefinition(datadogDefinition *datadogV1.EventStreamWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["query"] = datadogDefinition.Query
@@ -2274,7 +2244,7 @@ func buildDatadogEventTimelineDefinition(terraformDefinition map[string]interfac
 	return datadogDefinition
 }
 
-func buildTerraformEventTimelineDefinition(datadogDefinition *datadogV1.EventTimelineWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformEventTimelineDefinition(datadogDefinition *datadogV1.EventTimelineWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["query"] = datadogDefinition.GetQuery()
@@ -2392,7 +2362,7 @@ func buildDatadogCheckStatusDefinition(terraformDefinition map[string]interface{
 	return datadogDefinition
 }
 
-func buildTerraformCheckStatusDefinition(datadogDefinition *datadogV1.CheckStatusWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformCheckStatusDefinition(datadogDefinition *datadogV1.CheckStatusWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["check"] = datadogDefinition.GetCheck()
@@ -2602,11 +2572,10 @@ func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *
 	}
 	return datadogDefinition
 }
-func buildTerraformHeatmapDefinition(datadogDefinition *datadogV1.HeatMapWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformHeatmapDefinition(datadogDefinition *datadogV1.HeatMapWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["request"] = buildTerraformHeatmapRequests(&datadogDefinition.Requests, k.Add("request"))
-	k.Remove("request")
+	terraformDefinition["request"] = buildTerraformHeatmapRequests(&datadogDefinition.Requests)
 	// Optional params
 	if v, ok := datadogDefinition.GetYaxisOk(); ok {
 		axis := buildTerraformWidgetAxis(*v)
@@ -2697,30 +2666,26 @@ func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 	}
 	return &datadogRequests
 }
-func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogHeatmapRequests))
 	for i, datadogRequest := range *datadogHeatmapRequests {
 		terraformRequest := map[string]interface{}{}
 		if v, ok := datadogRequest.GetQOk(); ok {
 			terraformRequest["q"] = v
 		} else if v, ok := datadogRequest.GetApmQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.apm_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.apm_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["apm_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetLogQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.log_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.log_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["log_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.rum_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.rum_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.security_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
@@ -2910,18 +2875,18 @@ func buildDatadogHostmapDefinition(terraformDefinition map[string]interface{}) *
 	}
 	return datadogDefinition
 }
-func buildTerraformHostmapDefinition(datadogDefinition *datadogV1.HostMapWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformHostmapDefinition(datadogDefinition *datadogV1.HostMapWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformRequests := map[string]interface{}{}
 	if v, ok := datadogDefinition.Requests.GetSizeOk(); ok {
-		terraformSize := buildTerraformHostmapRequest(v, k.Add("size.0"))
-		k.Remove("size.0")
+		terraformSize := buildTerraformHostmapRequest(v)
+
 		terraformRequests["size"] = []map[string]interface{}{*terraformSize}
 	}
 	if v, ok := datadogDefinition.Requests.GetFillOk(); ok {
-		terraformFill := buildTerraformHostmapRequest(v, k.Add("fill.0"))
-		k.Remove("fill.0")
+		terraformFill := buildTerraformHostmapRequest(v)
+
 		terraformRequests["fill"] = []map[string]interface{}{*terraformFill}
 	}
 	terraformDefinition["request"] = []map[string]interface{}{terraformRequests}
@@ -3003,28 +2968,24 @@ func buildDatadogHostmapRequest(terraformRequest map[string]interface{}) *datado
 
 	return datadogHostmapRequest
 }
-func buildTerraformHostmapRequest(datadogHostmapRequest *datadogV1.HostMapRequest, k *utils.ResourceDataKey) *map[string]interface{} {
+func buildTerraformHostmapRequest(datadogHostmapRequest *datadogV1.HostMapRequest) *map[string]interface{} {
 	terraformRequest := map[string]interface{}{}
 	if v, ok := datadogHostmapRequest.GetQOk(); ok {
 		terraformRequest["q"] = v
 	} else if v, ok := datadogHostmapRequest.GetApmQueryOk(); ok {
-		terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add("apm_query.0"))
-		k.Remove("apm_query.0")
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
 		terraformRequest["apm_query"] = []map[string]interface{}{terraformQuery}
 	} else if v, ok := datadogHostmapRequest.GetLogQueryOk(); ok {
-		terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add("log_query.0"))
-		k.Remove("log_query.0")
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
 		terraformRequest["log_query"] = []map[string]interface{}{terraformQuery}
 	} else if v, ok := datadogHostmapRequest.GetProcessQueryOk(); ok {
 		terraformQuery := buildTerraformProcessQuery(*v)
 		terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
 	} else if v, ok := datadogHostmapRequest.GetRumQueryOk(); ok {
-		terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add("rum_query.0"))
-		k.Remove("rum_query.0")
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
 		terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
 	} else if v, ok := datadogHostmapRequest.GetSecurityQueryOk(); ok {
-		terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add("security_query.0"))
-		k.Remove("security_query.0")
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
 		terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 	}
 	return &terraformRequest
@@ -3316,7 +3277,7 @@ func buildDatadogWidgetFieldSort(terraformWidgetFieldSort map[string]interface{}
 	return datadogWidgetFieldSort
 }
 
-func buildTerraformLogStreamDefinition(datadogDefinition *datadogV1.LogStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformLogStreamDefinition(datadogDefinition *datadogV1.LogStreamWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Optional params
 
@@ -3770,11 +3731,11 @@ func buildTerraformTimeseriesBackground(datadogTimeseriesBackground *datadogV1.T
 
 }
 
-func buildTerraformQueryValueDefinition(datadogDefinition *datadogV1.QueryValueWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformQueryValueDefinition(datadogDefinition *datadogV1.QueryValueWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["request"] = buildTerraformQueryValueRequests(&datadogDefinition.Requests, k.Add("request"))
-	k.Remove("request")
+	terraformDefinition["request"] = buildTerraformQueryValueRequests(&datadogDefinition.Requests)
+
 	// Optional params
 	if v, ok := datadogDefinition.GetAutoscaleOk(); ok {
 		terraformDefinition["autoscale"] = *v
@@ -3928,34 +3889,29 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 	}
 	return &datadogRequests
 }
-func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.QueryValueWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.QueryValueWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogQueryValueRequests))
 	for i, datadogRequest := range *datadogQueryValueRequests {
 		terraformRequest := map[string]interface{}{}
 		if v, ok := datadogRequest.GetQOk(); ok {
 			terraformRequest["q"] = *v
 		} else if v, ok := datadogRequest.GetApmQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.apm_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.apm_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["apm_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetLogQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.log_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.log_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["log_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.rum_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.rum_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.security_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetAuditQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.audit_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.audit_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["audit_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(v)
@@ -4050,11 +4006,11 @@ func buildDatadogQueryTableDefinition(terraformDefinition map[string]interface{}
 	}
 	return datadogDefinition
 }
-func buildTerraformQueryTableDefinition(datadogDefinition *datadogV1.TableWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformQueryTableDefinition(datadogDefinition *datadogV1.TableWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["request"] = buildTerraformQueryTableRequests(&datadogDefinition.Requests, k.Add("request"))
-	k.Remove("request")
+	terraformDefinition["request"] = buildTerraformQueryTableRequests(&datadogDefinition.Requests)
+
 	// Optional params
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v
@@ -4222,30 +4178,26 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 	}
 	return &datadogRequests
 }
-func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.TableWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.TableWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogQueryTableRequests))
 	for i, datadogRequest := range *datadogQueryTableRequests {
 		terraformRequest := map[string]interface{}{}
 		if v, ok := datadogRequest.GetQOk(); ok {
 			terraformRequest["q"] = v
 		} else if v, ok := datadogRequest.GetApmQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.apm_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.apm_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["apm_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetLogQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.log_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.log_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["log_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.rum_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.rum_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.security_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetApmStatsQueryOk(); ok {
 			terraformQuery := buildTerraformApmStatsQuery(*v)
@@ -4439,18 +4391,18 @@ func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{
 	}
 	return datadogDefinition
 }
-func buildTerraformScatterplotDefinition(datadogDefinition *datadogV1.ScatterPlotWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformScatterplotDefinition(datadogDefinition *datadogV1.ScatterPlotWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformRequests := map[string]interface{}{}
 	if v, ok := datadogDefinition.Requests.GetXOk(); ok {
-		terraformX := buildTerraformScatterplotRequest(v, k.Add("x.0"))
-		k.Remove("x.0")
+		terraformX := buildTerraformScatterplotRequest(v)
+
 		terraformRequests["x"] = []map[string]interface{}{*terraformX}
 	}
 	if v, ok := datadogDefinition.Requests.GetYOk(); ok {
-		terraformY := buildTerraformScatterplotRequest(v, k.Add("y.0"))
-		k.Remove("y.0")
+		terraformY := buildTerraformScatterplotRequest(v)
+
 		terraformRequests["y"] = []map[string]interface{}{*terraformY}
 	}
 	if v, ok := datadogDefinition.Requests.GetTableOk(); ok {
@@ -4595,28 +4547,24 @@ func buildTerraformScatterplotTableRequest(datadogScatterplotTableRequest *datad
 	return &terraformRequest
 }
 
-func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadogV1.ScatterPlotRequest, k *utils.ResourceDataKey) *map[string]interface{} {
+func buildTerraformScatterplotRequest(datadogScatterplotRequest *datadogV1.ScatterPlotRequest) *map[string]interface{} {
 	terraformRequest := map[string]interface{}{}
 	if v, ok := datadogScatterplotRequest.GetQOk(); ok {
 		terraformRequest["q"] = *v
 	} else if v, ok := datadogScatterplotRequest.GetApmQueryOk(); ok {
-		terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add("apm_query.0"))
-		k.Remove("apm_query.0")
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
 		terraformRequest["apm_query"] = []map[string]interface{}{terraformQuery}
 	} else if v, ok := datadogScatterplotRequest.GetLogQueryOk(); ok {
-		terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add("log_query.0"))
-		k.Remove("log_query.0")
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
 		terraformRequest["log_query"] = []map[string]interface{}{terraformQuery}
 	} else if v, ok := datadogScatterplotRequest.GetProcessQueryOk(); ok {
 		terraformQuery := buildTerraformProcessQuery(*v)
 		terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
 	} else if v, ok := datadogScatterplotRequest.GetRumQueryOk(); ok {
-		terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add("rum_query.0"))
-		k.Remove("rum_query.0")
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
 		terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
 	} else if v, ok := datadogScatterplotRequest.GetSecurityQueryOk(); ok {
-		terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add("security_query.0"))
-		k.Remove("security_query.0")
+		terraformQuery := buildTerraformApmOrLogQuery(*v)
 		terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 	}
 
@@ -4858,12 +4806,12 @@ func buildDatadogTopologyQuery(terraformQuery map[string]interface{}) *datadogV1
 	return datadogQuery
 }
 
-func buildTerraformTopologyMapDefinition(datadogDefinition *datadogV1.TopologyMapWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformTopologyMapDefinition(datadogDefinition *datadogV1.TopologyMapWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 
 	// Required params
-	terraformDefinition["request"] = buildTerraformTopologyRequests(&datadogDefinition.Requests, k.Add("request"))
-	k.Remove("request")
+	terraformDefinition["request"] = buildTerraformTopologyRequests(&datadogDefinition.Requests)
+
 	// Optional params
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v
@@ -4879,7 +4827,7 @@ func buildTerraformTopologyMapDefinition(datadogDefinition *datadogV1.TopologyMa
 	}
 	return terraformDefinition
 }
-func buildTerraformTopologyRequests(datadogTopologyRequests *[]datadogV1.TopologyRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformTopologyRequests(datadogTopologyRequests *[]datadogV1.TopologyRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogTopologyRequests))
 	for i, datadogRequest := range *datadogTopologyRequests {
 		terraformRequest := map[string]interface{}{}
@@ -5195,7 +5143,7 @@ func buildDatadogSloListSort(terraformSorts *[]interface{}) *[]datadogV1.WidgetF
 	return &datadogSorts
 }
 
-func buildTerraformSloListDefinition(datadogDefinition *datadogV1.SLOListWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformSloListDefinition(datadogDefinition *datadogV1.SLOListWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["request"] = buildTerraformSloListRequests(&datadogDefinition.Requests)
@@ -5630,19 +5578,17 @@ func buildDatadogGeomapRequests(terraformRequests *[]interface{}) *[]datadogV1.G
 	return &datadogRequests
 }
 
-func buildTerraformGeomapRequests(datadogGeomapRequests *[]datadogV1.GeomapWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformGeomapRequests(datadogGeomapRequests *[]datadogV1.GeomapWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogGeomapRequests))
 	for i, datadogRequest := range *datadogGeomapRequests {
 		terraformRequest := map[string]interface{}{}
 		if v, ok := datadogRequest.GetQOk(); ok {
 			terraformRequest["q"] = v
 		} else if v, ok := datadogRequest.GetLogQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.log_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.log_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["log_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.rum_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.rum_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(v)
@@ -5817,11 +5763,11 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	return datadogDefinition
 }
 
-func buildTerraformTimeseriesDefinition(datadogDefinition *datadogV1.TimeseriesWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformTimeseriesDefinition(datadogDefinition *datadogV1.TimeseriesWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["request"] = buildTerraformTimeseriesRequests(&datadogDefinition.Requests, k.Add("request"))
-	k.Remove("request")
+	terraformDefinition["request"] = buildTerraformTimeseriesRequests(&datadogDefinition.Requests)
+
 	// Optional params
 	if v, ok := datadogDefinition.GetMarkersOk(); ok {
 		terraformDefinition["marker"] = buildTerraformWidgetMarkers(v)
@@ -6123,38 +6069,32 @@ func buildDatadogSunburstRequests(terraformRequests *[]interface{}) *[]datadogV1
 	return &datadogRequests
 }
 
-func buildTerraformSunburstRequests(datadogSunburstRequests *[]datadogV1.SunburstWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformSunburstRequests(datadogSunburstRequests *[]datadogV1.SunburstWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogSunburstRequests))
 	for i, datadogRequest := range *datadogSunburstRequests {
 		terraformRequest := map[string]interface{}{}
 		if v, ok := datadogRequest.GetQOk(); ok {
 			terraformRequest["q"] = v
 		} else if v, ok := datadogRequest.GetApmQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.apm_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.apm_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["apm_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetLogQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.log_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.log_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["log_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetNetworkQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.network_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.network_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["network_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.rum_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.rum_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.security_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetAuditQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.audit_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.audit_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["audit_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(v)
@@ -6202,11 +6142,10 @@ func buildTerraformSunburstLegendTable(datadogSunburstLegend *datadogV1.Sunburst
 	return terraformSunburstLegendArray
 }
 
-func buildTerraformSunburstDefinition(datadogDefinition *datadogV1.SunburstWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformSunburstDefinition(datadogDefinition *datadogV1.SunburstWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["request"] = buildTerraformSunburstRequests(&datadogDefinition.Requests, k.Add("request"))
-	k.Remove("request")
+	terraformDefinition["request"] = buildTerraformSunburstRequests(&datadogDefinition.Requests)
 
 	if v, ok := datadogDefinition.GetLegendOk(); ok {
 		// Use `hide_value` as a discriminant to determine which type of legend we are serializing
@@ -7170,38 +7109,32 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 	}
 	return &datadogRequests
 }
-func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.TimeseriesWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.TimeseriesWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogTimeseriesRequests))
 	for i, datadogRequest := range *datadogTimeseriesRequests {
 		terraformRequest := map[string]interface{}{}
 		if v, ok := datadogRequest.GetQOk(); ok {
 			terraformRequest["q"] = v
 		} else if v, ok := datadogRequest.GetApmQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.apm_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.apm_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["apm_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetLogQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.log_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.log_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["log_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetNetworkQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.network_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.network_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["network_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.rum_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.rum_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.security_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetAuditQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.audit_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.audit_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["audit_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(v)
@@ -7309,11 +7242,11 @@ func buildDatadogToplistDefinition(terraformDefinition map[string]interface{}) *
 	}
 	return datadogDefinition
 }
-func buildTerraformToplistDefinition(datadogDefinition *datadogV1.ToplistWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformToplistDefinition(datadogDefinition *datadogV1.ToplistWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["request"] = buildTerraformToplistRequests(&datadogDefinition.Requests, k.Add("request"))
-	k.Remove("request")
+	terraformDefinition["request"] = buildTerraformToplistRequests(&datadogDefinition.Requests)
+
 	// Optional params
 	if datadogDefinition.Title != nil {
 		terraformDefinition["title"] = *datadogDefinition.Title
@@ -7436,34 +7369,29 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 	}
 	return &datadogRequests
 }
-func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogToplistRequests))
 	for i, datadogRequest := range *datadogToplistRequests {
 		terraformRequest := map[string]interface{}{}
 		if v, ok := datadogRequest.GetQOk(); ok {
 			terraformRequest["q"] = v
 		} else if v, ok := datadogRequest.GetApmQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.apm_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.apm_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["apm_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetLogQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.log_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.log_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["log_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetProcessQueryOk(); ok {
 			terraformQuery := buildTerraformProcessQuery(*v)
 			terraformRequest["process_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetRumQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.rum_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.rum_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["rum_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.security_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.security_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetAuditQueryOk(); ok {
-			terraformQuery := buildTerraformApmOrLogQuery(*v, k.Add(fmt.Sprintf("%d.audit_query.0", i)))
-			k.Remove(fmt.Sprintf("%d.audit_query.0", i))
+			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["audit_query"] = []map[string]interface{}{terraformQuery}
 		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
 			terraformRequest["query"] = buildTerraformQuery(v)
@@ -7838,7 +7766,7 @@ func buildDatadogTreemapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 	return &datadogRequests
 }
 
-func buildTerraformTreemapRequests(datadogTreemapRequests *[]datadogV1.TreeMapWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformTreemapRequests(datadogTreemapRequests *[]datadogV1.TreeMapWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogTreemapRequests))
 	for i, datadogRequest := range *datadogTreemapRequests {
 		terraformRequest := map[string]interface{}{}
@@ -7854,11 +7782,10 @@ func buildTerraformTreemapRequests(datadogTreemapRequests *[]datadogV1.TreeMapWi
 	return &terraformRequests
 }
 
-func buildTerraformTreemapDefinition(datadogDefinition *datadogV1.TreeMapWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformTreemapDefinition(datadogDefinition *datadogV1.TreeMapWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["request"] = buildTerraformTreemapRequests(&datadogDefinition.Requests, k.Add("request"))
-	k.Remove("request")
+	terraformDefinition["request"] = buildTerraformTreemapRequests(&datadogDefinition.Requests)
 
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v
@@ -7867,11 +7794,10 @@ func buildTerraformTreemapDefinition(datadogDefinition *datadogV1.TreeMapWidgetD
 	return terraformDefinition
 }
 
-func buildTerraformGeomapDefinition(datadogDefinition *datadogV1.GeomapWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformGeomapDefinition(datadogDefinition *datadogV1.GeomapWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["request"] = buildTerraformGeomapRequests(&datadogDefinition.Requests, k.Add("request"))
-	k.Remove("request")
+	terraformDefinition["request"] = buildTerraformGeomapRequests(&datadogDefinition.Requests)
 
 	if v, ok := datadogDefinition.GetStyleOk(); ok {
 		style := buildTerraformGeomapRequestStyle(*v)
@@ -7906,10 +7832,10 @@ func buildTerraformGeomapDefinition(datadogDefinition *datadogV1.GeomapWidgetDef
 	return terraformDefinition
 }
 
-func buildTerraformListStreamDefinition(datadogDefinition *datadogV1.ListStreamWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformListStreamDefinition(datadogDefinition *datadogV1.ListStreamWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["request"] = buildTerraformListStreamWidgetRequests(&datadogDefinition.Requests, k)
+	terraformDefinition["request"] = buildTerraformListStreamWidgetRequests(&datadogDefinition.Requests)
 	// Optional params
 	if datadogDefinition.Title != nil {
 		terraformDefinition["title"] = *datadogDefinition.Title
@@ -7923,7 +7849,7 @@ func buildTerraformListStreamDefinition(datadogDefinition *datadogV1.ListStreamW
 	return terraformDefinition
 }
 
-func buildTerraformListStreamWidgetRequests(datadogListStreamRequests *[]datadogV1.ListStreamWidgetRequest, k *utils.ResourceDataKey) *[]map[string]interface{} {
+func buildTerraformListStreamWidgetRequests(datadogListStreamRequests *[]datadogV1.ListStreamWidgetRequest) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogListStreamRequests))
 	for i, d := range *datadogListStreamRequests {
 		terraformRequest := map[string]interface{}{}
@@ -7972,7 +7898,7 @@ func buildTerraformListStreamWidgetRequests(datadogListStreamRequests *[]datadog
 	return &terraformRequests
 }
 
-func buildTerraformTraceServiceDefinition(datadogDefinition *datadogV1.ServiceSummaryWidgetDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformTraceServiceDefinition(datadogDefinition *datadogV1.ServiceSummaryWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	terraformDefinition["env"] = datadogDefinition.GetEnv()
@@ -8840,7 +8766,7 @@ func buildTerraformApmOrLogQueryCompute(compute *datadogV1.LogsQueryCompute) map
 	return terraformCompute
 }
 
-func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition, k *utils.ResourceDataKey) map[string]interface{} {
+func buildTerraformApmOrLogQuery(datadogQuery datadogV1.LogQueryDefinition) map[string]interface{} {
 	terraformQuery := map[string]interface{}{}
 	// Index
 	terraformQuery["index"] = datadogQuery.GetIndex()

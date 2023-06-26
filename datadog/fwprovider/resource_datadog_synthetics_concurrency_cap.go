@@ -17,12 +17,12 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &SyntheticsConcurrencyCap{}
-	_ resource.ResourceWithImportState = &SyntheticsConcurrencyCap{}
+	_ resource.ResourceWithConfigure   = &syntheticsConcurrencyCap{}
+	_ resource.ResourceWithImportState = &syntheticsConcurrencyCap{}
 )
 
 func NewSyntheticsConcurrencyCapResource() resource.Resource {
-	return &SyntheticsConcurrencyCap{}
+	return &syntheticsConcurrencyCap{}
 }
 
 type SyntheticsConcurrencyCapModel struct {
@@ -30,22 +30,22 @@ type SyntheticsConcurrencyCapModel struct {
 	OnDemandConcurrencyCap types.Int64  `tfsdk:"on_demand_concurrency_cap"`
 }
 
-type SyntheticsConcurrencyCap struct {
+type syntheticsConcurrencyCap struct {
 	Api  *datadogV2.SyntheticsApi
 	Auth context.Context
 }
 
-func (r *SyntheticsConcurrencyCap) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *syntheticsConcurrencyCap) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetSyntheticsApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *SyntheticsConcurrencyCap) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+func (r *syntheticsConcurrencyCap) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "synthetics_concurrency_cap"
 }
 
-func (r *SyntheticsConcurrencyCap) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *syntheticsConcurrencyCap) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog Synthetics On Demand Concurrency Cap API resource. This can be used to manage the Concurrency Cap for Synthetic tests.",
 		Attributes: map[string]schema.Attribute{
@@ -62,7 +62,7 @@ func (r *SyntheticsConcurrencyCap) Schema(_ context.Context, _ resource.SchemaRe
 	}
 }
 
-func (r *SyntheticsConcurrencyCap) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+func (r *syntheticsConcurrencyCap) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var state SyntheticsConcurrencyCapModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
@@ -75,7 +75,7 @@ func (r *SyntheticsConcurrencyCap) Create(ctx context.Context, request resource.
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *SyntheticsConcurrencyCap) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+func (r *syntheticsConcurrencyCap) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	var state SyntheticsConcurrencyCapModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
@@ -100,7 +100,7 @@ func (r *SyntheticsConcurrencyCap) Read(ctx context.Context, request resource.Re
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *SyntheticsConcurrencyCap) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+func (r *syntheticsConcurrencyCap) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state SyntheticsConcurrencyCapModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
@@ -113,14 +113,14 @@ func (r *SyntheticsConcurrencyCap) Update(ctx context.Context, request resource.
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *SyntheticsConcurrencyCap) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+func (r *syntheticsConcurrencyCap) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
 }
 
-func (r *SyntheticsConcurrencyCap) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *syntheticsConcurrencyCap) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *SyntheticsConcurrencyCap) updateCap(state *SyntheticsConcurrencyCapModel, diag *diag.Diagnostics) {
+func (r *syntheticsConcurrencyCap) updateCap(state *SyntheticsConcurrencyCapModel, diag *diag.Diagnostics) {
 	ddConcurrencyCap := datadogV2.NewOnDemandConcurrencyCapAttributesWithDefaults()
 	ddConcurrencyCap.SetOnDemandConcurrencyCap(float64(state.OnDemandConcurrencyCap.ValueInt64()))
 

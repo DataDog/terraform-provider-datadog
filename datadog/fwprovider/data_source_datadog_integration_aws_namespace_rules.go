@@ -12,44 +12,33 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-var _ datasource.DataSourceWithConfigure = &DatadogIntegrationAWSNamespaceRulesDatasource{}
+var _ datasource.DataSourceWithConfigure = &datadogIntegrationAWSNamespaceRulesDatasource{}
 
 func NewDatadogIntegrationAWSNamespaceRulesDatasource() datasource.DataSource {
-	return &DatadogIntegrationAWSNamespaceRulesDatasource{}
+	return &datadogIntegrationAWSNamespaceRulesDatasource{}
 }
 
-type DatadogIntegrationAWSNamespaceRulesDatasourceModel struct {
+type datadogIntegrationAWSNamespaceRulesDatasourceModel struct {
 	ID             types.String `tfsdk:"id"`
 	NamespaceRules types.List   `tfsdk:"namespace_rules"`
 }
 
-type DatadogIntegrationAWSNamespaceRulesDatasource struct {
+type datadogIntegrationAWSNamespaceRulesDatasource struct {
 	Api  *datadogV1.AWSIntegrationApi
 	Auth context.Context
 }
 
-func (d *DatadogIntegrationAWSNamespaceRulesDatasource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError(
-			"Unexpected Data Source Configure Type",
-			"")
-		return
-	}
-
+func (d *datadogIntegrationAWSNamespaceRulesDatasource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetAWSIntegrationApiV1()
 	d.Auth = providerData.Auth
 }
 
-func (d *DatadogIntegrationAWSNamespaceRulesDatasource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "integration_aws_namespace_rules"
+func (d *datadogIntegrationAWSNamespaceRulesDatasource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+	response.TypeName = "integration_aws_namespace_rules"
 }
 
-func (d *DatadogIntegrationAWSNamespaceRulesDatasource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *datadogIntegrationAWSNamespaceRulesDatasource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog AWS Integration Namespace Rules data source. This can be used to retrieve all available namespace rules for a Datadog-AWS integration.",
 		Attributes: map[string]schema.Attribute{
@@ -64,8 +53,8 @@ func (d *DatadogIntegrationAWSNamespaceRulesDatasource) Schema(_ context.Context
 	}
 }
 
-func (d *DatadogIntegrationAWSNamespaceRulesDatasource) Read(ctx context.Context, _ datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state DatadogIntegrationAWSNamespaceRulesDatasourceModel
+func (d *datadogIntegrationAWSNamespaceRulesDatasource) Read(ctx context.Context, _ datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state datadogIntegrationAWSNamespaceRulesDatasourceModel
 	if response.Diagnostics.HasError() {
 		return
 	}

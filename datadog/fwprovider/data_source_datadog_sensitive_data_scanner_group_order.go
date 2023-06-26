@@ -12,44 +12,33 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-var _ datasource.DataSourceWithConfigure = &SensitiveDataScannerGroupOrderDatasource{}
+var _ datasource.DataSourceWithConfigure = &sensitiveDataScannerGroupOrderDatasource{}
 
 func NewSensitiveDataScannerGroupOrderDatasource() datasource.DataSource {
-	return &SensitiveDataScannerGroupOrderDatasource{}
+	return &sensitiveDataScannerGroupOrderDatasource{}
 }
 
-type SensitiveDataScannerGroupOrderDatasourceModel struct {
+type sensitiveDataScannerGroupOrderDatasourceModel struct {
 	ID       types.String `tfsdk:"id"`
 	GroupIDs types.List   `tfsdk:"group_ids"`
 }
 
-type SensitiveDataScannerGroupOrderDatasource struct {
+type sensitiveDataScannerGroupOrderDatasource struct {
 	Api  *datadogV2.SensitiveDataScannerApi
 	Auth context.Context
 }
 
-func (d *SensitiveDataScannerGroupOrderDatasource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError(
-			"Unexpected Data Source Configure Type",
-			"")
-		return
-	}
-
+func (d *sensitiveDataScannerGroupOrderDatasource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetSensitiveDataScannerApiV2()
 	d.Auth = providerData.Auth
 }
 
-func (d *SensitiveDataScannerGroupOrderDatasource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "sensitive_data_scanner_group_order"
+func (d *sensitiveDataScannerGroupOrderDatasource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+	response.TypeName = "sensitive_data_scanner_group_order"
 }
 
-func (d *SensitiveDataScannerGroupOrderDatasource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *sensitiveDataScannerGroupOrderDatasource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog Sensitive Data Scanner Group Order API data source. This can be used to retrieve the order of Datadog Sensitive Data Scanner Groups.",
 		Attributes: map[string]schema.Attribute{
@@ -64,8 +53,8 @@ func (d *SensitiveDataScannerGroupOrderDatasource) Schema(_ context.Context, _ d
 	}
 }
 
-func (d *SensitiveDataScannerGroupOrderDatasource) Read(ctx context.Context, _ datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state SensitiveDataScannerGroupOrderDatasourceModel
+func (d *sensitiveDataScannerGroupOrderDatasource) Read(ctx context.Context, _ datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state sensitiveDataScannerGroupOrderDatasourceModel
 	if response.Diagnostics.HasError() {
 		return
 	}

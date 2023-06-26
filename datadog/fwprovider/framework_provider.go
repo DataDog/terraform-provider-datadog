@@ -41,16 +41,18 @@ var Resources = []func() resource.Resource{
 	NewIntegrationGcpStsResource,
 	NewRestrictionPolicyResource,
 	NewSensitiveDataScannerGroupOrder,
+	NewServiceAccountApplicationKeyResource,
 	NewSpansMetricResource,
 	NewSyntheticsConcurrencyCapResource,
-	NewTeamResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
+	NewTeamResource,
 }
 
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
+	NewDatadogServiceAccountDatasource,
 	NewDatadogTeamDataSource,
 	NewDatadogTeamMembershipsDataSource,
 	NewHostsDataSource,
@@ -98,7 +100,13 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 }
 
 func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
-	return Datasources
+	var wrappedDatasources []func() datasource.DataSource
+	for _, f := range Datasources {
+		r := f()
+		wrappedDatasources = append(wrappedDatasources, func() datasource.DataSource { return NewFrameworkDatasourceWrapper(&r) })
+	}
+
+	return wrappedDatasources
 }
 
 func (p *FrameworkProvider) Metadata(_ context.Context, _ provider.MetadataRequest, response *provider.MetadataResponse) {
@@ -514,4 +522,63 @@ func (r *FrameworkResourceWrapper) ValidateConfig(ctx context.Context, req resou
 	if v, ok := (*r.innerResource).(resource.ResourceWithValidateConfig); ok {
 		v.ValidateConfig(ctx, req, resp)
 	}
+}
+
+var (
+	_ datasource.DataSourceWithConfigure        = &FrameworkDatasourceWrapper{}
+	_ datasource.DataSourceWithConfigValidators = &FrameworkDatasourceWrapper{}
+	_ datasource.DataSourceWithValidateConfig   = &FrameworkDatasourceWrapper{}
+	_ datasource.DataSource                     = &FrameworkDatasourceWrapper{}
+)
+
+func NewFrameworkDatasourceWrapper(i *datasource.DataSource) datasource.DataSource {
+	return &FrameworkDatasourceWrapper{
+		innerDatasource: i,
+	}
+}
+
+type FrameworkDatasourceWrapper struct {
+	innerDatasource *datasource.DataSource
+}
+
+func (r *FrameworkDatasourceWrapper) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+	rCasted, ok := (*r.innerDatasource).(datasource.DataSourceWithConfigure)
+	if ok {
+		if req.ProviderData == nil {
+			return
+		}
+		_, ok := req.ProviderData.(*FrameworkProvider)
+		if !ok {
+			resp.Diagnostics.AddError("Unexpected Data Source Configure Type", "")
+			return
+		}
+
+		rCasted.Configure(ctx, req, resp)
+	}
+}
+
+func (r *FrameworkDatasourceWrapper) ValidateConfig(ctx context.Context, req datasource.ValidateConfigRequest, resp *datasource.ValidateConfigResponse) {
+	if rCasted, ok := (*r.innerDatasource).(datasource.DataSourceWithValidateConfig); ok {
+		rCasted.ValidateConfig(ctx, req, resp)
+	}
+}
+
+func (r *FrameworkDatasourceWrapper) ConfigValidators(ctx context.Context) []datasource.ConfigValidator {
+	if rCasted, ok := (*r.innerDatasource).(datasource.DataSourceWithConfigValidators); ok {
+		return rCasted.ConfigValidators(ctx)
+	}
+	return nil
+}
+
+func (r *FrameworkDatasourceWrapper) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	(*r.innerDatasource).Metadata(ctx, req, resp)
+	resp.TypeName = req.ProviderTypeName + resp.TypeName
+}
+
+func (r *FrameworkDatasourceWrapper) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+	(*r.innerDatasource).Schema(ctx, req, resp)
+}
+
+func (r *FrameworkDatasourceWrapper) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	(*r.innerDatasource).Read(ctx, req, resp)
 }

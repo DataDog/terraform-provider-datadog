@@ -16,7 +16,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -695,18 +695,15 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	u.SetPriority(int64(d.Get("priority").(int)))
 	u.SetOptions(o)
 
-	roles := make([]string, 0)
+	var roles []string
 	if attr, ok := d.GetOk("restricted_roles"); ok {
 		for _, r := range attr.(*schema.Set).List() {
 			roles = append(roles, r.(string))
 		}
 		sort.Strings(roles)
-		m.SetRestrictedRoles(roles)
-		u.SetRestrictedRoles(roles)
-	} else {
-		m.SetRestrictedRoles(nil)
-		u.SetRestrictedRoles(nil)
 	}
+	m.SetRestrictedRoles(roles)
+	u.SetRestrictedRoles(roles)
 
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
@@ -816,7 +813,7 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	return resource.RetryContext(ctx, retryTimeout, func() *resource.RetryError {
+	return retry.RetryContext(ctx, retryTimeout, func() *retry.RetryError {
 		var httpresp *http.Response
 		if hasID {
 			_, httpresp, err = apiInstances.GetMonitorsApiV1().ValidateExistingMonitor(auth, id, *m)
@@ -825,9 +822,9 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 		}
 		if err != nil {
 			if httpresp != nil && (httpresp.StatusCode == 502 || httpresp.StatusCode == 504) {
-				return resource.RetryableError(utils.TranslateClientError(err, httpresp, "error validating monitor, retrying"))
+				return retry.RetryableError(utils.TranslateClientError(err, httpresp, "error validating monitor, retrying"))
 			}
-			return resource.NonRetryableError(utils.TranslateClientError(err, httpresp, "error validating monitor"))
+			return retry.NonRetryableError(utils.TranslateClientError(err, httpresp, "error validating monitor"))
 		}
 		return nil
 	})
@@ -974,7 +971,7 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return diag.FromErr(err)
 	}
 
-	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok && len(*restrictedRoles) > 0 {
+	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok && restrictedRoles != nil && len(*restrictedRoles) > 0 {
 		// This helper function is defined in `resource_datadog_dashboard`
 		restrictedRolesCopy := buildTerraformRestrictedRoles(restrictedRoles)
 		if err := d.Set("restricted_roles", restrictedRolesCopy); err != nil {
@@ -1119,7 +1116,7 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 		m        datadogV1.Monitor
 		httpresp *http.Response
 	)
-	if err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutRead), func() *resource.RetryError {
+	if err = retry.RetryContext(ctx, d.Timeout(schema.TimeoutRead), func() *retry.RetryError {
 		m, httpresp, err = apiInstances.GetMonitorsApiV1().GetMonitor(auth, i)
 		if err != nil {
 			if httpresp != nil {
@@ -1127,13 +1124,13 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 					d.SetId("")
 					return nil
 				} else if httpresp.StatusCode == 502 {
-					return resource.RetryableError(utils.TranslateClientError(err, httpresp, "error getting monitor, retrying"))
+					return retry.RetryableError(utils.TranslateClientError(err, httpresp, "error getting monitor, retrying"))
 				}
 			}
-			return resource.NonRetryableError(utils.TranslateClientError(err, httpresp, "error getting monitor"))
+			return retry.NonRetryableError(utils.TranslateClientError(err, httpresp, "error getting monitor"))
 		}
 		if err := utils.CheckForUnparsed(m); err != nil {
-			return resource.NonRetryableError(err)
+			return retry.NonRetryableError(err)
 		}
 		return nil
 	}); err != nil {

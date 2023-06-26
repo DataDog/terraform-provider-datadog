@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
 func TestAccDatadogUserDatasourceExactMatch(t *testing.T) {
@@ -45,17 +45,71 @@ func TestAccDatadogUserDatasourceError(t *testing.T) {
 	})
 }
 
+func TestAccDatadogUserDatasourceWithExactMatch(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceUserWithExactMatchConfig(email, "true"),
+				Check:  resource.TestCheckResourceAttr("data.datadog_user.test", "email", email),
+			},
+		},
+	})
+}
+
+func TestAccDatadogUserDatasourceWithExactMatchError(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccDatasourceUserWithExactMatchConfig(email, "false"),
+				ExpectError: regexp.MustCompile("your query returned more than one result for filter"),
+			},
+		},
+	})
+}
+
+func testAccDatasourceUserWithExactMatchConfig(uniq, exactMatch string) string {
+	return fmt.Sprintf(`
+data "datadog_user" "test" {
+	filter = "%[1]s"
+	exact_match = %[2]s
+	depends_on = [ datadog_user.foo, datadog_user.bar ]
+}
+
+resource "datadog_user" "foo" {
+	email = "%[1]s"
+}
+resource "datadog_user" "bar" {
+	email = "other%[1]s"
+}`, uniq, exactMatch)
+}
+
 func testAccDatasourceUserConfig(uniq string) string {
 	return fmt.Sprintf(`
-	data "datadog_user" "test" {
-	  filter = "%s"
-	  depends_on = [
-	    datadog_user.foo
-	  ]
-	}
-	resource "datadog_user" "foo" {
+data "datadog_user" "test" {
+	filter = "%s"
+	depends_on = [
+		datadog_user.foo
+	]
+}
+resource "datadog_user" "foo" {
     email = "%s"
-    }`, uniq, uniq)
+}`, uniq, uniq)
 }
 
 func testAccDatasourceUserError() string {

@@ -689,7 +689,7 @@ resource "datadog_dashboard" "free_dashboard" {
 
 ### Optional
 
-- `dashboard_lists` (Set of Number) A list of dashboard lists this dashboard belongs to.
+- `dashboard_lists` (Set of Number) A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.
 - `description` (String) The description of the dashboard.
 - `is_read_only` (Boolean, Deprecated) Whether this dashboard is read-only. **Deprecated.** Prefer using `restricted_roles` to define which roles are required to edit the dashboard.
 - `notify_list` (Set of String) The list of handles for the users to notify when changes are made to this dashboard.

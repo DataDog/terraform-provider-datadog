@@ -10,9 +10,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
@@ -975,7 +975,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.#", "9"),
+				"datadog_synthetics_test.bar", "assertion.#", "10"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
@@ -1056,6 +1056,16 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 				"datadog_synthetics_test.bar", "assertion.8.targetxpath.0.operator", "contains"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.8.targetxpath.0.targetvalue", "12"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.9.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.9.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.9.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.9.targetjsonpath.0.jsonpath", "$.myKey"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.9.targetjsonpath.0.operator", "isUndefined"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -1204,6 +1214,14 @@ resource "datadog_synthetics_test" "bar" {
 			targetvalue = "12"
 			xpath = "something"
         }
+    }
+    assertion {
+     	operator = "validatesJSONPath"
+		type     = "body"
+		targetjsonpath {
+			jsonpath    = "$.myKey"
+			operator    = "isUndefined"
+		}
     }
 
 	locations = [ "aws:eu-central-1" ]
@@ -4046,8 +4064,6 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.client_secret", "client-secret"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.resource", "resource"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.scope", "scope"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.token_api_authentication", "header"),
@@ -4208,7 +4224,6 @@ resource "datadog_synthetics_test" "multi" {
 		audience = "audience"
 		client_id = "client-id"
 		client_secret = "client-secret"
-		resource = "resource"
 		scope = "scope"
 		token_api_authentication = "header"
 		access_token_url = "https://token.datadoghq.com"
