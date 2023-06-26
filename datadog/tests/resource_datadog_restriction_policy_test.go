@@ -35,14 +35,40 @@ func testAccCheckDatadogRestrictionPolicy() string {
         data "datadog_role" "foo" {
           filter = "Datadog Admin Role"
         }
-        resource "datadog_dashboard" "bar" {
-          title        = "Free Layout Dashboard"
-          description  = "Created using the Datadog provider in Terraform"
-          layout_type  = "free"
-          is_read_only = "true"
+        resource "datadog_security_monitoring_rule" "bar" {
+          name = "My rule"
+
+          message = "The rule has triggered."
+          enabled = true
+
+          query {
+            name            = "errors"
+            query           = "status:error"
+            aggregation     = "count"
+            group_by_fields = ["host"]
+          }
+
+          query {
+            name            = "warnings"
+            query           = "status:warning"
+            aggregation     = "count"
+            group_by_fields = ["host"]
+          }
+
+          case {
+            status        = "high"
+            condition     = "errors > 3 && warnings > 10"
+            notifications = ["@user"]
+          }
+
+          options {
+            evaluation_window   = 300
+            keep_alive          = 600
+            max_signal_duration = 900
+          }
         }
         resource "datadog_restriction_policy" "baz" {
-            resource_id = "dashboard:${datadog_dashboard.bar.id}"
+            resource_id = "dashboard:${datadog_security_monitoring_rule.bar.id}"
             bindings {
             principals = ["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:${data.datadog_role.foo.id}"]
             relation = "editor"
