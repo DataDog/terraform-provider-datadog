@@ -52,11 +52,11 @@ func (r *RestrictionPolicyResource) Metadata(_ context.Context, request resource
 
 func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction_policy.",
+		Description: "Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction policies. See this page for more details https://docs.datadoghq.com/api/latest/restriction-policies/#supported-relations-for-resources.",
 		Attributes: map[string]schema.Attribute{
 			"resource_id": schema.StringAttribute{
 				Required:    true,
-				Description: "Identifier for the resource, formatted as type:id.",
+				Description: "Identifier for the resource, formatted as resource_type:resource_id.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -73,7 +73,7 @@ func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaR
 						},
 						"principals": schema.ListAttribute{
 							Optional:    true,
-							Description: "An array of principals. A principal is a subject or group of subjects. Each principal is formatted as `type:id`. Supported types: `role` and `org`. The org ID can be obtained through the api/v2/current_user API.",
+							Description: "An array of principals. A principal is a subject or group of subjects. Each principal is formatted as `type:id`. Supported types: `role` and `org`. The org ID can be obtained through the api/v2/users API.",
 							ElementType: types.StringType,
 						},
 					},

@@ -3,7 +3,7 @@
 page_title: "datadog_restriction_policy Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction_policy.
+  Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction policies. See this page for more details https://docs.datadoghq.com/api/latest/restriction-policies/#supported-relations-for-resources.
 ---
 
 # datadog_restriction_policy (Resource)
@@ -17,14 +17,9 @@ Provides a Datadog RestrictionPolicy resource. This can be used to create and ma
 
 
 resource "datadog_restriction_policy" "foo" {
-  resource_id = "dashboard:111-222-333"
   bindings {
     principals = ["role:00000000-0000-1111-0000-000000000000"]
     relation   = "editor"
-  }
-  bindings {
-    principals = ["org:00000000-0000-1111-0000-000000000000"]
-    relation   = "viewer"
   }
 }
 ```
@@ -49,7 +44,7 @@ resource "datadog_restriction_policy" "foo" {
 
 Optional:
 
-- `principals` (List of String) An array of principals. A principal is a subject or group of subjects. Each principal is formatted as `type:id`. Supported types: `role` and `org`. The org ID can be obtained through the api/v2/current_user API.
+- `principals` (List of String) An array of principals. A principal is a subject or group of subjects. Each principal is formatted as `type:id`. Supported types: `role` and `org`. The org ID can be obtained through the api/v2/users API.
 - `relation` (String) The role/level of access.
 
 ## Import
