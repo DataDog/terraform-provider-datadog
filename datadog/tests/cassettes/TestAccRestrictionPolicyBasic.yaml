@@ -37,7 +37,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"cases":[{"condition":"errors \u003e 3 \u0026\u0026 warnings \u003e 10","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"The rule has triggered.","name":"My rule","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"errors","query":"status:error"},{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"warnings","query":"status:warning"}],"type":"log_detection"}
+      {"cases":[{"condition":"errors \u003e 3 \u0026\u0026 warnings \u003e 10","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"The rule has triggered.","name":"tf-TestAccRestrictionPolicyBasic-local-1687897788","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"errors","query":"status:error"},{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"warnings","query":"status:warning"}],"type":"log_detection"}
     form: {}
     headers:
       Accept:
@@ -48,7 +48,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"id":"fo9-jkd-8js","version":1,"name":"My rule","createdAt":1687893845090,"creationAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"status:error","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"errors"},{"query":"status:warning","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"warnings"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"errors > 3 && warnings > 10","name":"","status":"high","notifications":["@user"]}],"message":"The rule has triggered.","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
+      {"id":"hos-wcj-tum","version":1,"name":"tf-TestAccRestrictionPolicyBasic-local-1687897788","createdAt":1687897790257,"creationAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"status:error","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"errors"},{"query":"status:warning","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"warnings"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"errors > 3 && warnings > 10","name":"","status":"high","notifications":["@user"]}],"message":"The rule has triggered.","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
     headers:
       Content-Type:
       - application/json
@@ -57,18 +57,18 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"bindings":[{"principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:94172442-be03-11e9-a77a-3b7612558ac1"],"relation":"editor"}]},"id":"security-rule:fo9-jkd-8js","type":"restriction_policy"}}
+      {"data":{"attributes":{"bindings":[{"principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:94172442-be03-11e9-a77a-3b7612558ac1"],"relation":"editor"}]},"id":"security-rule:hos-wcj-tum","type":"restriction_policy"}}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/restriction_policy/security-rule:fo9-jkd-8js
+    url: https://api.datadoghq.com/api/v2/restriction_policy/security-rule:hos-wcj-tum
     method: POST
   response:
     body: |
-      {"data":{"type":"restriction_policy","id":"security-rule:fo9-jkd-8js","attributes":{"bindings":[{"relation":"editor","principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:94172442-be03-11e9-a77a-3b7612558ac1"]}]}}}
+      {"data":{"type":"restriction_policy","id":"security-rule:hos-wcj-tum","attributes":{"bindings":[{"relation":"editor","principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:94172442-be03-11e9-a77a-3b7612558ac1"]}]}}}
     headers:
       Content-Type:
       - application/json
@@ -98,6 +98,23 @@ interactions:
     headers:
       Accept:
       - application/json
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hos-wcj-tum
+    method: GET
+  response:
+    body: |
+      {"id":"hos-wcj-tum","version":1,"name":"tf-TestAccRestrictionPolicyBasic-local-1687897788","createdAt":1687897790257,"creationAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"status:error","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"errors"},{"query":"status:warning","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"warnings"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"errors > 3 && warnings > 10","name":"","status":"high","notifications":["@user"]}],"message":"The rule has triggered.","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
     url: https://api.datadoghq.com/api/v2/roles?filter=Datadog+Admin+Role
     method: GET
   response:
@@ -115,28 +132,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fo9-jkd-8js
+    url: https://api.datadoghq.com/api/v2/restriction_policy/security-rule:hos-wcj-tum
     method: GET
   response:
     body: |
-      {"id":"fo9-jkd-8js","version":1,"name":"My rule","createdAt":1687893845090,"creationAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"status:error","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"errors"},{"query":"status:warning","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"warnings"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"errors > 3 && warnings > 10","name":"","status":"high","notifications":["@user"]}],"message":"The rule has triggered.","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/restriction_policy/security-rule:fo9-jkd-8js
-    method: GET
-  response:
-    body: |
-      {"data":{"type":"restriction_policy","id":"security-rule:fo9-jkd-8js","attributes":{"bindings":[{"relation":"editor","principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:94172442-be03-11e9-a77a-3b7612558ac1"]}]}}}
+      {"data":{"type":"restriction_policy","id":"security-rule:hos-wcj-tum","attributes":{"bindings":[{"relation":"editor","principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:94172442-be03-11e9-a77a-3b7612558ac1"]}]}}}
     headers:
       Content-Type:
       - application/json
@@ -166,7 +166,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/restriction_policy/security-rule:fo9-jkd-8js
+    url: https://api.datadoghq.com/api/v2/restriction_policy/security-rule:hos-wcj-tum
     method: DELETE
   response:
     body: ""
@@ -182,7 +182,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fo9-jkd-8js
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hos-wcj-tum
     method: DELETE
   response:
     body: ""
