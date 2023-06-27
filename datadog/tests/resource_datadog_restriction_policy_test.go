@@ -14,14 +14,15 @@ import (
 
 func TestAccRestrictionPolicyBasic(t *testing.T) {
 	t.Parallel()
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRestrictionPolicyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogRestrictionPolicy(),
+				Config: testAccCheckDatadogRestrictionPolicy(ruleName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRestrictionPolicyExists(providers.frameworkProvider),
 				),
@@ -30,13 +31,40 @@ func TestAccRestrictionPolicyBasic(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogRestrictionPolicy() string {
-	return `
+func TestAccRestrictionPolicyUpdate(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogRestrictionPolicyDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogRestrictionPolicy(ruleName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRestrictionPolicyExists(providers.frameworkProvider),
+				),
+			},
+			{
+				Config: testAccCheckDatadogRestrictionPolicyUpdate(ruleName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRestrictionPolicyExists(providers.frameworkProvider),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_restriction_policy.baz", "bindings.0.principals.*", "org:4dee724d-00cc-11ea-a77b-570c9d03c6c5"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogRestrictionPolicy(ruleName string) string {
+	return fmt.Sprintf(`
         data "datadog_role" "foo" {
           filter = "Datadog Admin Role"
         }
         resource "datadog_security_monitoring_rule" "bar" {
-          name = "My rule"
+          name = "%s"
 
           message = "The rule has triggered."
           enabled = true
@@ -70,10 +98,54 @@ func testAccCheckDatadogRestrictionPolicy() string {
         resource "datadog_restriction_policy" "baz" {
             resource_id = "security-rule:${datadog_security_monitoring_rule.bar.id}"
             bindings {
-            principals = ["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:${data.datadog_role.foo.id}"]
-            relation = "editor"
+              principals = ["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:${data.datadog_role.foo.id}"]
+              relation = "editor"
             }
-        }`
+        }`, ruleName)
+}
+
+func testAccCheckDatadogRestrictionPolicyUpdate(ruleName string) string {
+	return fmt.Sprintf(`
+        resource "datadog_security_monitoring_rule" "bar" {
+          name = "%s"
+
+          message = "The rule has triggered. (updated)"
+          enabled = true
+
+          query {
+            name            = "errors"
+            query           = "status:error"
+            aggregation     = "count"
+            group_by_fields = ["host"]
+          }
+
+          query {
+            name            = "warnings"
+            query           = "status:warning"
+            aggregation     = "count"
+            group_by_fields = ["host"]
+          }
+
+          case {
+            status        = "high"
+            condition     = "errors > 3 && warnings > 10"
+            notifications = ["@user"]
+          }
+
+          options {
+            evaluation_window   = 300
+            keep_alive          = 600
+            max_signal_duration = 900
+          }
+        }
+        resource "datadog_restriction_policy" "baz" {
+            resource_id = "security-rule:${datadog_security_monitoring_rule.bar.id}"
+            bindings {
+              principals = ["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5"]
+              relation = "editor"
+            }
+        }
+        `, ruleName)
 }
 
 func testAccCheckDatadogRestrictionPolicyDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
