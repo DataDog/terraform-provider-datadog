@@ -68,7 +68,7 @@ func testAccCheckDatadogRestrictionPolicy() string {
           }
         }
         resource "datadog_restriction_policy" "baz" {
-            resource_id = "dashboard:${datadog_security_monitoring_rule.bar.id}"
+            resource_id = "security_rule:${datadog_security_monitoring_rule.bar.id}"
             bindings {
             principals = ["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5","role:${data.datadog_role.foo.id}"]
             relation = "editor"
