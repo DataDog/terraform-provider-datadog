@@ -11,7 +11,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -21,7 +20,7 @@ var (
 )
 
 type RestrictionPolicyResource struct {
-	Api  *datadogV2.RestrictionPoliciesApi
+	API  *datadogV2.RestrictionPoliciesApi
 	Auth context.Context
 }
 
@@ -41,8 +40,8 @@ func NewRestrictionPolicyResource() resource.Resource {
 }
 
 func (r *RestrictionPolicyResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	providerData, _ := request.ProviderData.(*FrameworkProvider)
-	r.Api = providerData.DatadogApiInstances.GetRestrictionPoliciesApiV2()
+	providerData := request.ProviderData.(*FrameworkProvider)
+	r.API = providerData.DatadogApiInstances.GetRestrictionPoliciesApiV2()
 	r.Auth = providerData.Auth
 }
 
@@ -83,6 +82,10 @@ func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaR
 	}
 }
 
+func diffSuppress(k, old, new string, d *schema.ResourceData) bool {
+
+}
+
 func (r *RestrictionPolicyResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
@@ -95,7 +98,7 @@ func (r *RestrictionPolicyResource) Read(ctx context.Context, request resource.R
 	}
 
 	id := state.ID.ValueString()
-	resp, httpResp, err := r.Api.GetRestrictionPolicy(r.Auth, id)
+	resp, httpResp, err := r.API.GetRestrictionPolicy(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -129,7 +132,7 @@ func (r *RestrictionPolicyResource) Create(ctx context.Context, request resource
 		return
 	}
 
-	resp, _, err := r.Api.UpdateRestrictionPolicy(r.Auth, resourceId, *body)
+	resp, _, err := r.API.UpdateRestrictionPolicy(r.Auth, resourceId, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RestrictionPolicy"))
 		return
@@ -158,7 +161,7 @@ func (r *RestrictionPolicyResource) Update(ctx context.Context, request resource
 		return
 	}
 
-	resp, _, err := r.Api.UpdateRestrictionPolicy(r.Auth, resourceId, *body)
+	resp, _, err := r.API.UpdateRestrictionPolicy(r.Auth, resourceId, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RestrictionPolicy"))
 		return
@@ -181,7 +184,7 @@ func (r *RestrictionPolicyResource) Delete(ctx context.Context, request resource
 	}
 
 	id := state.ID.ValueString()
-	httpResp, err := r.Api.DeleteRestrictionPolicy(r.Auth, id)
+	httpResp, err := r.API.DeleteRestrictionPolicy(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
