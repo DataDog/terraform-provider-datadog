@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -32,7 +33,7 @@ type RestrictionPolicyModel struct {
 
 type BindingsModel struct {
 	Relation   types.String `tfsdk:"relation"`
-	Principals types.List   `tfsdk:"principals"`
+	Principals types.Set    `tfsdk:"principals"`
 }
 
 func NewRestrictionPolicyResource() resource.Resource {
@@ -63,14 +64,14 @@ func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaR
 			"id": utils.ResourceIDAttribute(),
 		},
 		Blocks: map[string]schema.Block{
-			"bindings": schema.ListNestedBlock{
+			"bindings": schema.SetNestedBlock{
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"relation": schema.StringAttribute{
 							Optional:    true,
 							Description: "The role/level of access.",
 						},
-						"principals": schema.ListAttribute{
+						"principals": schema.SetAttribute{
 							Optional:    true,
 							Description: "An array of principals. A principal is a subject or group of subjects. Each principal is formatted as `type:id`. Supported types: `role` and `org`. The org ID can be obtained through the api/v2/users API.",
 							ElementType: types.StringType,
@@ -80,10 +81,6 @@ func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaR
 			},
 		},
 	}
-}
-
-func diffSuppress(k, old, new string, d *schema.ResourceData) bool {
-
 }
 
 func (r *RestrictionPolicyResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
@@ -205,7 +202,7 @@ func (r *RestrictionPolicyResource) updateState(ctx context.Context, state *Rest
 		for _, bindingsDd := range *bindings {
 			bindingsTfItem := BindingsModel{}
 			if principals, ok := bindingsDd.GetPrincipalsOk(); ok && len(*principals) > 0 {
-				bindingsTfItem.Principals, _ = types.ListValueFrom(ctx, types.StringType, *principals)
+				bindingsTfItem.Principals, _ = types.SetValueFrom(ctx, types.StringType, *principals)
 			}
 			if relation, ok := bindingsDd.GetRelationOk(); ok {
 				bindingsTfItem.Relation = types.StringValue(*relation)
