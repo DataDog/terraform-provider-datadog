@@ -235,7 +235,7 @@ func testAccCheckDatadogRestrictionPolicyDestroy(accProvider *fwprovider.Framewo
 func RestrictionPolicyDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "resource_datadog_restriction_policy" && r.Type != "datadog_security_monitoring_rule" {
+			if r.Type != "resource_datadog_restriction_policy" {
 				continue
 			}
 			id := r.Primary.ID
