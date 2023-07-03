@@ -11,7 +11,8 @@
 * [datadog_user] Add support for `exact_match` in data source by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1968
 * [datadog_dashboard] Add note about tf managed dashboard lists when using `dashboard_lists` resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1975
 ### FEATURES
-* [datadog_service_account_application_key] Add service_account_application_key resource and service_account data source by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1955
+* [datadog_service_account_application_key] Add service_account_application_key resource by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1955
+* [datadog_service_account] Add service_account data source by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1955
 * [restriction_policy] Add restriction policy resource by @agnesjang98 in https://github.com/DataDog/terraform-provider-datadog/pull/1957
 ### NOTES
 * [datadog_integration_gcp] Mark resource as deprecated by @joshhuie in https://github.com/DataDog/terraform-provider-datadog/pull/1965
