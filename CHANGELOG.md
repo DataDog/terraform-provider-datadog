@@ -1,3 +1,32 @@
+## 3.27.0 (July 3, 2023)
+
+### BUGFIXES
+* [datadog_synthetics_test] Fix for optional fields in synthetics oauth by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1956
+* [datadog_synthetics_test] Handle both example and secure missing from variables by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/1959
+* [datadog_monitor] Fix unsetting of `restricted_roles` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1970
+* [datadog_spans_metric] Convert `group_by` to set by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/1972
+* [datadog_synthetics_test] Fix targetvalue for isUndefined json path assertions by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1966
+* [datadog_synthetics_test] Allow synthetics web basicauth without password set by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1989
+### IMPROVEMENTS
+* [datadog_user] Add support for `exact_match` in data source by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1968
+* [datadog_dashboard] Add note about tf managed dashboard lists when using `dashboard_lists` resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1975
+### FEATURES
+* [datadog_service_account_application_key] Add service_account_application_key resource by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1955
+* [datadog_service_account] Add service_account data source by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1955
+* [restriction_policy] Add restriction policy resource by @agnesjang98 in https://github.com/DataDog/terraform-provider-datadog/pull/1957
+### NOTES
+* [datadog_integration_gcp] Mark resource as deprecated by @joshhuie in https://github.com/DataDog/terraform-provider-datadog/pull/1965
+* [provider] Add datasource wrapper by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1962
+* [provider] Remove `ResourceDataKey` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1961
+* Upgrade testing framework to `terraform-plugin-testing` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1967
+* [provider] bump datadog-api-client Go SDK to v2.14.0 by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1988
+
+## New Contributors
+* @joshhuie made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1965
+* @agnesjang98 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1957
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.26.0...v3.27.0
+
 ## 3.26.0 (June 5, 2023)
 
 ### BUGFIXES
