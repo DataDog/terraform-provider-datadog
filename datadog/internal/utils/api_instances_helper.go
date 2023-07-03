@@ -66,6 +66,7 @@ type ApiInstances struct {
 	opsgenieIntegrationApiV2   *datadogV2.OpsgenieIntegrationApi
 	organizationsApiV2         *datadogV2.OrganizationsApi
 	processesApiV2             *datadogV2.ProcessesApi
+	restrictionPolicyApiV2     *datadogV2.RestrictionPoliciesApi
 	rolesApiV2                 *datadogV2.RolesApi
 	rumApiV2                   *datadogV2.RUMApi
 	securityMonitoringApiV2    *datadogV2.SecurityMonitoringApi
@@ -556,6 +557,14 @@ func (i *ApiInstances) GetFastlyIntegrationApiV2() *datadogV2.FastlyIntegrationA
 		i.fastlyIntegrationApiV2 = datadogV2.NewFastlyIntegrationApi(i.HttpClient)
 	}
 	return i.fastlyIntegrationApiV2
+}
+
+// GetRestrictionPoliciesApiV2 get instance of RestrictionPoliciesApi
+func (i *ApiInstances) GetRestrictionPoliciesApiV2() *datadogV2.RestrictionPoliciesApi {
+	if i.restrictionPolicyApiV2 == nil {
+		i.restrictionPolicyApiV2 = datadogV2.NewRestrictionPoliciesApi(i.HttpClient)
+	}
+	return i.restrictionPolicyApiV2
 }
 
 // GetTeamsApiV2 get instance of TeamsApi
