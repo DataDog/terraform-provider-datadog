@@ -17,7 +17,7 @@ Use this data source to retrieve a Datadog Synthetic Test.
 
 ### Required
 
-- `test_id` (String) The synthetic test id to search for
+- `test_id` (String) The synthetic test id or URL to search for
 
 ### Read-Only
 
@@ -25,5 +25,3 @@ Use this data source to retrieve a Datadog Synthetic Test.
 - `name` (String) The name of the synthetic test.
 - `tags` (List of String) A list of tags assigned to the synthetic test.
 - `url` (String) The start URL of the synthetic test.
-
-
