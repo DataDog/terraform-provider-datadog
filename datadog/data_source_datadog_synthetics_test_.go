@@ -54,7 +54,7 @@ func dataSourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.Resource
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetic tests")
 	}
 
-	urlRegex := regexp.MustCompile(`https:\/\/(.*)\.datadoghq\.com\/synthetics\/details\/`)
+	urlRegex := regexp.MustCompile(`https:\/\/(.*)\.(datadoghq|ddog-gov)\.(com|eu)\/synthetics\/details\/`)
 	searchedId := urlRegex.ReplaceAllString(d.Get("test_id").(string), "")
 
 	for _, test := range tests.Tests {
