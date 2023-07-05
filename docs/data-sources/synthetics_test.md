@@ -25,3 +25,5 @@ Use this data source to retrieve a Datadog Synthetic Test.
 - `name` (String) The name of the synthetic test.
 - `tags` (List of String) A list of tags assigned to the synthetic test.
 - `url` (String) The start URL of the synthetic test.
+
+
