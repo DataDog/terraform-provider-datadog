@@ -29,6 +29,25 @@ func TestAccDatatogSyntheticsTest(t *testing.T) {
 	})
 }
 
+func TestAccDatatogSyntheticsTestWithUrl(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := strings.ToUpper(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsResourceIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAcccheckDatatogSyntheticsTestConfigWithUrl(uniq),
+				Check:  checkDatatogSyntheticsTest(accProvider, uniq),
+			},
+		},
+	})
+}
+
 func checkDatatogSyntheticsTest(accProvider func() (*schema.Provider, error), uniq string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		resource.TestCheckResourceAttr(
@@ -75,5 +94,16 @@ data "datadog_synthetics_test" "data_source_test" {
     datadog_synthetics_test.resource_test,
   ]
   test_id = datadog_synthetics_test.resource_test.id
+}`, testAccDatatogSyntheticsTestConfig(uniq))
+}
+
+func testAcccheckDatatogSyntheticsTestConfigWithUrl(uniq string) string {
+	return fmt.Sprintf(`
+%s
+data "datadog_synthetics_test" "data_source_test" {
+  depends_on = [
+    datadog_synthetics_test.resource_test,
+  ]
+  test_id = "https://app.datadoghq.com/synthetics/details/${datadog_synthetics_test.resource_test.id}"
 }`, testAccDatatogSyntheticsTestConfig(uniq))
 }

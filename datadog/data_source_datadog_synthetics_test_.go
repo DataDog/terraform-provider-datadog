@@ -7,6 +7,8 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
+	"regexp"
 )
 
 func dataSourceDatadogSyntheticsTest() *schema.Resource {
@@ -16,7 +18,7 @@ func dataSourceDatadogSyntheticsTest() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"test_id": {
-				Description: "The synthetic test id to search for",
+				Description: "The synthetic test id or URL to search for",
 				Type:        schema.TypeString,
 				Required:    true,
 			},
@@ -52,7 +54,8 @@ func dataSourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.Resource
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetic tests")
 	}
 
-	searchedId := d.Get("test_id").(string)
+	urlRegex := regexp.MustCompile(`https:\/\/(.*)\.(datadoghq|ddog-gov)\.(com|eu)\/synthetics\/details\/`)
+	searchedId := urlRegex.ReplaceAllString(d.Get("test_id").(string), "")
 
 	for _, test := range tests.Tests {
 		if test.GetPublicId() == searchedId {

@@ -17,7 +17,7 @@ Use this data source to retrieve a Datadog Synthetic Test.
 
 ### Required
 
-- `test_id` (String) The synthetic test id to search for
+- `test_id` (String) The synthetic test id or URL to search for
 
 ### Read-Only
 
