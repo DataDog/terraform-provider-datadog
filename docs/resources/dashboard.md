@@ -1213,6 +1213,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -2077,6 +2078,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -2645,6 +2647,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -3509,6 +3512,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -5150,6 +5154,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -5769,6 +5774,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -6182,6 +6188,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -7421,6 +7428,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -8128,6 +8136,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -8776,6 +8785,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -9216,6 +9226,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -10801,6 +10812,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -11420,6 +11432,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -11833,6 +11846,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -13072,6 +13086,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -13779,6 +13794,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -14427,6 +14443,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
@@ -14867,6 +14884,7 @@ Required:
 
 Optional:
 
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
