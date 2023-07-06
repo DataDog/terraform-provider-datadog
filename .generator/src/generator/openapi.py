@@ -193,31 +193,29 @@ def tf_sort_params_by_type(parameters):
             json_attr_schema = json_api_attributes_schema(schema)
             for attr, s in json_attr_schema["properties"].items():
                 required = attr in json_attr_schema.get("required", [])
-                c = deepcopy(s)
-                c["required"] = required
-                if is_primitive(c):
-                    primitive[attr] = c
-                elif c.get("type") == "array":
-                    if is_primitive(c.get("items")):
-                        primitive_array[attr] = c
+                s["_tf_required"] = required
+                if is_primitive(s):
+                    primitive[attr] = s
+                elif s.get("type") == "array":
+                    if is_primitive(s.get("items")):
+                        primitive_array[attr] = s
                     else:
-                        non_primitive_array[attr] = c
+                        non_primitive_array[attr] = s
                 else:
-                    non_primitive_obj[attr] = c
+                    non_primitive_obj[attr] = s
         else:
             for attr, s in schema["properties"].items():
                 required = attr in schema.get("required", [])
-                c = deepcopy(s)
-                c["required"] = required
-                if is_primitive(c):
-                    primitive[attr] = c
+                s["_tf_required"] = required
+                if is_primitive(s):
+                    primitive[attr] = s
                 elif schema.get("type") == "array":
-                    if is_primitive(c.get("items")):
-                        primitive_array[attr] = c
+                    if is_primitive(s.get("items")):
+                        primitive_array[attr] = s
                     else:
-                        non_primitive_array[attr] = c
+                        non_primitive_array[attr] = s
                 else:
-                    non_primitive_obj[attr] = c
+                    non_primitive_obj[attr] = s
 
     return primitive, primitive_array, non_primitive_array, non_primitive_obj
 
@@ -237,17 +235,16 @@ def tf_sort_properties_by_type(schema):
             json_attr_schema = json_api_attributes_schema(cSchema)
             for attr, s in json_attr_schema["properties"].items():
                 required = attr in json_attr_schema.get("required", [])
-                c = deepcopy(s)
-                c["required"] = required
-                if is_primitive(c):
-                    primitive[attr] = c
+                s["_tf_required"] = required
+                if is_primitive(s):
+                    primitive[attr] = s
                 elif c.get("type") == "array":
-                    if is_primitive(c.get("items")):
-                        primitive_array[attr] = c
+                    if is_primitive(s.get("items")):
+                        primitive_array[attr] = s
                     else:
-                        non_primitive_array[attr] = c
+                        non_primitive_array[attr] = s
                 else:
-                    non_primitive_obj[attr] = c
+                    non_primitive_obj[attr] = s
         else:
             if is_primitive(cSchema):
                 primitive[name] = cSchema
@@ -258,6 +255,11 @@ def tf_sort_properties_by_type(schema):
                     non_primitive_array[name] = cSchema
             else:
                 non_primitive_obj[name] = cSchema
+
+    if "oneOf" in schema:
+        for oneOf in schema.get("oneOf"):
+            schemaName = formatter.snake_case(get_name(oneOf))
+            non_primitive_obj[schemaName] = oneOf
 
     return primitive, primitive_array, non_primitive_array, non_primitive_obj
 
