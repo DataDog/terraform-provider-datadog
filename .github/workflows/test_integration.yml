@@ -46,7 +46,6 @@ jobs:
             wget https://releases.hashicorp.com/terraform/1.5.2/terraform_1.5.2_linux_amd64.zip -O ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
           fi
           unzip -o -d ~/.cache/terraform ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
-      - 
       - name: Run integration tests
         run: make testacc
         env:
