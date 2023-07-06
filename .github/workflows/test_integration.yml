@@ -13,7 +13,7 @@ on: # yamllint disable-line rule:truthy
     - cron: "0 */12 * * *"
 
 concurrency:
-  group: ${{ github.head_ref || github.run_id }}
+  group: ${{ github.head_ref || github.run_id }}-test-integration
   cancel-in-progress: true
 
 env:
