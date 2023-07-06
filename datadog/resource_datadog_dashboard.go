@@ -6672,6 +6672,11 @@ func getFormulaQuerySchema() *schema.Schema {
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionSLOQueryTypeFromValue),
 								Description:      "type of the SLO to query.",
 							},
+							"additional_query_filters": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Additional filters applied to the SLO query.",
+							},
 						},
 					},
 				},
@@ -7011,6 +7016,9 @@ func buildDatadogFormulaAndFunctionSLOQuery(data map[string]interface{}) *datado
 	}
 	if v, ok := data["name"].(string); ok && len(v) != 0 {
 		SloQuery.SetName(v)
+	}
+	if v, ok := data["additional_query_filters"].(string); ok && len(v) != 0 {
+		SloQuery.SetAdditionalQueryFilters(v)
 	}
 
 	definition := datadogV1.FormulaAndFunctionSLOQueryDefinitionAsFormulaAndFunctionQueryDefinition(SloQuery)
@@ -8688,6 +8696,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			}
 			if name, ok := terraformSLOQueryDefinition.GetNameOk(); ok {
 				terraformQuery["name"] = name
+			}
+			if additionalQueryFilters, ok := terraformSLOQueryDefinition.GetAdditionalQueryFiltersOk(); ok {
+				terraformQuery["additional_query_filters"] = additionalQueryFilters
 			}
 			terraformQueries := []map[string]interface{}{terraformQuery}
 			terraformSLOQuery := map[string]interface{}{}
