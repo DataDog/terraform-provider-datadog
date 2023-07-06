@@ -52,7 +52,7 @@
 
     {{ requestBuilder(schema, name|variable_name, baseAccessor~"."~name|camel_case) }}
 
-    {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }})
+    {{ baseSetter }}.{{ name|camel_case }} = {%- if not required %}&{% endif %}{{ name|variable_name }}
     {%- if not required %}
     }
     {%- endif %}
@@ -63,7 +63,7 @@
     {%- if not required %}
     if {% if itemSchema|is_primitive %}!{{ baseAccessor }}.{{ name|camel_case }}.IsNull(){% else %}{{ baseAccessor }}.{{ name|camel_case }} != nil {% endif %} {
     {%- endif %}
-        var {{ name|variable_name }} []{%- if not itemSchema|is_primitive %}datadog{{ version }}.{% endif -%}{{ get_type(itemSchema) }}
+        var {{ name|variable_name }} []{%- if not itemSchema|is_primitive or "enum" in itemSchema %}datadog{{ version }}.{% endif -%}{{ get_type(itemSchema) }}
     {%- if itemSchema|is_primitive %}
     	diags.Append({{ baseAccessor }}.{{ name|camel_case }}.ElementsAs(ctx, &{{ name|variable_name }}, false)...)
     {%- else %}

@@ -46,13 +46,20 @@
     {%- if not required %}
     if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok {
     {%- endif %}
+
     {{ name|variable_name }}Tf := {{ name|camel_case }}Model{}
 
     {%- if "oneOf" in schema %}
     {%- for oneOf in schema.get("oneOf") %}
         {%- set oneOfName = get_name(oneOf) %}
-        if {{ baseAccessor }}.{{ oneOfName }} != nil {
+        {%- set oneOfAccessor = baseAccessor~"."~name|camel_case if required else name|variable_name %}
+        if {{ oneOfAccessor }}.{{ oneOfName }} != nil {
+        {{ oneOfName|variable_name }}Tf := {{ oneOfName|camel_case }}Model{}
+        {%- for oneOfAttr, oneOfAttrSchema in oneOf.properties.items() %}
+            {{- baseStateSetter(oneOfAttr, oneOfAttrSchema, oneOfName|variable_name~"Tf", oneOfAccessor~"."~oneOfName) }}
+        {%- endfor %}
 
+        {{ name|variable_name }}Tf.{{ oneOfName }} = &{{ oneOfName|variable_name }}Tf
         }
     {%- endfor %}
 
