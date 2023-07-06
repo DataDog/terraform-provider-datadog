@@ -50,6 +50,7 @@ type ApiInstances struct {
 	cloudWorkloadSecurityApiV2 *datadogV2.CloudWorkloadSecurityApi
 	confluentCloudApiV2        *datadogV2.ConfluentCloudApi
 	dashboardListsApiV2        *datadogV2.DashboardListsApi
+	downtimesApiV2             *datadogV2.DowntimesApi
 	eventsApiV2                *datadogV2.EventsApi
 	fastlyIntegrationApiV2     *datadogV2.FastlyIntegrationApi
 	gcpStsIntegrationApiV2     *datadogV2.GCPIntegrationApi
@@ -349,6 +350,14 @@ func (i *ApiInstances) GetCloudWorkloadSecurityApiV2() *datadogV2.CloudWorkloadS
 		i.cloudWorkloadSecurityApiV2 = datadogV2.NewCloudWorkloadSecurityApi(i.HttpClient)
 	}
 	return i.cloudWorkloadSecurityApiV2
+}
+
+// GetDowntimesApiV2 get instance of DowntimesApi
+func (i *ApiInstances) GetDowntimesApiV2() *datadogV2.DowntimesApi {
+	if i.downtimesApiV2 == nil {
+		i.downtimesApiV2 = datadogV2.NewDowntimesApi(i.HttpClient)
+	}
+	return i.downtimesApiV2
 }
 
 // GetDashboardListsApiV2 get instance of DashboardListsApi
