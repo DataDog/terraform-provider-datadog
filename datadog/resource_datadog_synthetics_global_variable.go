@@ -11,7 +11,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -166,17 +166,17 @@ func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schem
 
 	var getSyntheticsGlobalVariableResponse datadogV1.SyntheticsGlobalVariable
 	var httpResponseGet *http.Response
-	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+	err = retry.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *retry.RetryError {
 		getSyntheticsGlobalVariableResponse, httpResponseGet, err = apiInstances.GetSyntheticsApiV1().GetGlobalVariable(auth, createdSyntheticsGlobalVariable.GetId())
 		if err != nil {
 			if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
-				return resource.RetryableError(fmt.Errorf("synthetics global variable not created yet"))
+				return retry.RetryableError(fmt.Errorf("synthetics global variable not created yet"))
 			}
 
-			return resource.NonRetryableError(err)
+			return retry.NonRetryableError(err)
 		}
 		if err := utils.CheckForUnparsed(getSyntheticsGlobalVariableResponse); err != nil {
-			return resource.NonRetryableError(err)
+			return retry.NonRetryableError(err)
 		}
 
 		return nil

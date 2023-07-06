@@ -8,9 +8,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 // Test
@@ -104,6 +104,9 @@ resource "datadog_logs_archive" "my_gcs_archive" {
 
 func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 	t.Parallel()
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	client := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)

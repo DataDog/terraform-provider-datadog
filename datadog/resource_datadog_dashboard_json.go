@@ -8,7 +8,7 @@ import (
 	"sort"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/structure"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -68,7 +68,7 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 			"dashboard_lists": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "The list of dashboard lists this dashboard belongs to.",
+				Description: "A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
 			"dashboard_lists_removed": {
@@ -145,14 +145,14 @@ func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceD
 	}
 
 	var httpResponse *http.Response
-	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+	err = retry.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *retry.RetryError {
 		_, httpResponse, err = utils.SendRequest(auth, apiInstances.HttpClient, "GET", path+"/"+id.(string), nil)
 		if err != nil {
 			if httpResponse != nil && httpResponse.StatusCode == 404 {
-				return resource.RetryableError(fmt.Errorf("dashboard not created yet"))
+				return retry.RetryableError(fmt.Errorf("dashboard not created yet"))
 			}
 
-			return resource.NonRetryableError(err)
+			return retry.NonRetryableError(err)
 		}
 
 		// We only log the error, as failing to update the list shouldn't fail dashboard creation

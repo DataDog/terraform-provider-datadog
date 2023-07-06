@@ -514,7 +514,7 @@ EOF
 
 ### Optional
 
-- `dashboard_lists` (Set of Number) The list of dashboard lists this dashboard belongs to.
+- `dashboard_lists` (Set of Number) A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.
 - `url` (String) The URL of the dashboard.
 
 ### Read-Only

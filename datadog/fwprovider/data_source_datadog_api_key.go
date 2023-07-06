@@ -12,44 +12,35 @@ import (
 )
 
 var (
-	_ datasource.DataSource = &APIKeyDataSource{}
+	_ datasource.DataSource = &apiKeyDataSource{}
 )
 
 func NewAPIKeyDataSource() datasource.DataSource {
-	return &APIKeyDataSource{}
+	return &apiKeyDataSource{}
 }
 
-type APIKeyDataSourceModel struct {
+type apiKeyDataSourceModel struct {
 	ID   types.String `tfsdk:"id"`
 	Name types.String `tfsdk:"name"`
 	Key  types.String `tfsdk:"key"`
 }
 
-type APIKeyDataSource struct {
+type apiKeyDataSource struct {
 	Api  *datadogV2.KeyManagementApi
 	Auth context.Context
 }
 
-func (r *APIKeyDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
-		return
-	}
-
+func (r *apiKeyDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetKeyManagementApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (d *APIKeyDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "api_key"
+func (d *apiKeyDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = "api_key"
 }
 
-func (d *APIKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about an existing api key.",
 		Attributes: map[string]schema.Attribute{
@@ -71,8 +62,8 @@ func (d *APIKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 
 }
 
-func (d *APIKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state APIKeyDataSourceModel
+func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var state apiKeyDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -125,7 +116,7 @@ func (d *APIKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *APIKeyDataSource) updateState(state *APIKeyDataSourceModel, apiKeyData *datadogV2.FullAPIKey) {
+func (r *apiKeyDataSource) updateState(state *apiKeyDataSourceModel, apiKeyData *datadogV2.FullAPIKey) {
 	apiKeyAttributes := apiKeyData.GetAttributes()
 
 	state.ID = types.StringValue(apiKeyData.GetId())

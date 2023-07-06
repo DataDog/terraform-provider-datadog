@@ -12,13 +12,13 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-var _ datasource.DataSourceWithConfigure = &IPRangesDataSource{}
+var _ datasource.DataSourceWithConfigure = &ipRangesDataSource{}
 
 func NewIPRangesDataSource() datasource.DataSource {
-	return &IPRangesDataSource{}
+	return &ipRangesDataSource{}
 }
 
-type iPRangesDataSourceZoneModel struct {
+type ipRangesDataSourceZoneModel struct {
 	ID types.String `tfsdk:"id"`
 	// v4
 	AgentsIpv4               types.List `tfsdk:"agents_ipv4"`
@@ -42,33 +42,22 @@ type iPRangesDataSourceZoneModel struct {
 	WebhooksIpv6             types.List `tfsdk:"webhooks_ipv6"`
 }
 
-type IPRangesDataSource struct {
+type ipRangesDataSource struct {
 	Api  *datadogV1.IPRangesApi
 	Auth context.Context
 }
 
-func (d *IPRangesDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError(
-			"Unexpected Data Source Configure Type",
-			"")
-		return
-	}
-
+func (d *ipRangesDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetIPRangesApiV1()
 	d.Auth = providerData.Auth
 }
 
-func (d *IPRangesDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "ip_ranges"
+func (d *ipRangesDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+	response.TypeName = "ip_ranges"
 }
 
-func (d *IPRangesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *ipRangesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about Datadog's IP addresses.",
 		Attributes: map[string]schema.Attribute{
@@ -170,8 +159,8 @@ func (d *IPRangesDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 	}
 }
 
-func (d *IPRangesDataSource) Read(ctx context.Context, _ datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state iPRangesDataSourceZoneModel
+func (d *ipRangesDataSource) Read(ctx context.Context, _ datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state ipRangesDataSourceZoneModel
 
 	ipAddresses, _, err := d.Api.GetIPRanges(d.Auth)
 	if err != nil {

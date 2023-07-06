@@ -16,16 +16,16 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &IntegrationConfluentAccountResource{}
-	_ resource.ResourceWithImportState = &IntegrationConfluentAccountResource{}
+	_ resource.ResourceWithConfigure   = &integrationConfluentAccountResource{}
+	_ resource.ResourceWithImportState = &integrationConfluentAccountResource{}
 )
 
-type IntegrationConfluentAccountResource struct {
+type integrationConfluentAccountResource struct {
 	Api  *datadogV2.ConfluentCloudApi
 	Auth context.Context
 }
 
-type IntegrationConfluentAccountModel struct {
+type integrationConfluentAccountModel struct {
 	ID        types.String `tfsdk:"id"`
 	ApiKey    types.String `tfsdk:"api_key"`
 	ApiSecret types.String `tfsdk:"api_secret"`
@@ -33,29 +33,20 @@ type IntegrationConfluentAccountModel struct {
 }
 
 func NewIntegrationConfluentAccountResource() resource.Resource {
-	return &IntegrationConfluentAccountResource{}
+	return &integrationConfluentAccountResource{}
 }
 
-func (r *IntegrationConfluentAccountResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
-		return
-	}
-
+func (r *integrationConfluentAccountResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetConfluentCloudApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *IntegrationConfluentAccountResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "integration_confluent_account"
+func (r *integrationConfluentAccountResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "integration_confluent_account"
 }
 
-func (r *IntegrationConfluentAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *integrationConfluentAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog IntegrationConfluentAccount resource. This can be used to create and manage Datadog integration_confluent_account.",
 		Attributes: map[string]schema.Attribute{
@@ -79,12 +70,12 @@ func (r *IntegrationConfluentAccountResource) Schema(_ context.Context, _ resour
 	}
 }
 
-func (r *IntegrationConfluentAccountResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *integrationConfluentAccountResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *IntegrationConfluentAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state IntegrationConfluentAccountModel
+func (r *integrationConfluentAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state integrationConfluentAccountModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -111,8 +102,8 @@ func (r *IntegrationConfluentAccountResource) Read(ctx context.Context, request 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationConfluentAccountResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state IntegrationConfluentAccountModel
+func (r *integrationConfluentAccountResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state integrationConfluentAccountModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -139,8 +130,8 @@ func (r *IntegrationConfluentAccountResource) Create(ctx context.Context, reques
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationConfluentAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state IntegrationConfluentAccountModel
+func (r *integrationConfluentAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state integrationConfluentAccountModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -169,8 +160,8 @@ func (r *IntegrationConfluentAccountResource) Update(ctx context.Context, reques
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationConfluentAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state IntegrationConfluentAccountModel
+func (r *integrationConfluentAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state integrationConfluentAccountModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -188,7 +179,7 @@ func (r *IntegrationConfluentAccountResource) Delete(ctx context.Context, reques
 	}
 }
 
-func (r *IntegrationConfluentAccountResource) updateState(ctx context.Context, state *IntegrationConfluentAccountModel, resp *datadogV2.ConfluentAccountResponse) {
+func (r *integrationConfluentAccountResource) updateState(ctx context.Context, state *integrationConfluentAccountModel, resp *datadogV2.ConfluentAccountResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 
 	data := resp.GetData()
@@ -203,7 +194,7 @@ func (r *IntegrationConfluentAccountResource) updateState(ctx context.Context, s
 	}
 }
 
-func (r *IntegrationConfluentAccountResource) buildIntegrationConfluentAccountRequestBody(ctx context.Context, state *IntegrationConfluentAccountModel) (*datadogV2.ConfluentAccountCreateRequest, diag.Diagnostics) {
+func (r *integrationConfluentAccountResource) buildIntegrationConfluentAccountRequestBody(ctx context.Context, state *integrationConfluentAccountModel) (*datadogV2.ConfluentAccountCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewConfluentAccountCreateRequestAttributesWithDefaults()
 
@@ -223,7 +214,7 @@ func (r *IntegrationConfluentAccountResource) buildIntegrationConfluentAccountRe
 	return req, diags
 }
 
-func (r *IntegrationConfluentAccountResource) buildIntegrationConfluentAccountUpdateRequestBody(ctx context.Context, state *IntegrationConfluentAccountModel) (*datadogV2.ConfluentAccountUpdateRequest, diag.Diagnostics) {
+func (r *integrationConfluentAccountResource) buildIntegrationConfluentAccountUpdateRequestBody(ctx context.Context, state *integrationConfluentAccountModel) (*datadogV2.ConfluentAccountUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewConfluentAccountUpdateRequestAttributesWithDefaults()
 

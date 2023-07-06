@@ -204,7 +204,7 @@ func resourceDatadogLogsArchiveDelete(ctx context.Context, d *schema.ResourceDat
 // Model to map
 func buildDestination(archiveDestination datadogV2.NullableLogsArchiveDestination) (string, map[string]interface{}, error) {
 	emptyDestination := map[string]interface{}{}
-	if archiveDestination.IsSet() {
+	if archiveDestination.IsSet() && archiveDestination.Get() != nil {
 		destination := archiveDestination.Get().GetActualInstance()
 		switch d := destination.(type) {
 		case *datadogV2.LogsArchiveDestinationAzure:

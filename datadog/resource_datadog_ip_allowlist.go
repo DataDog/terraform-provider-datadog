@@ -120,14 +120,15 @@ func updateIPAllowlistState(ctx context.Context, d *schema.ResourceData, ipAllow
 		if err := d.Set("enabled", ipAllowlistAttrs.GetEnabled()); err != nil {
 			return diag.FromErr(err)
 		}
-		return updateIPAllowlistEntriesState(ctx, d, ipAllowlistAttrs.GetEntries(), apiInstances)
+		entries, _ := ipAllowlistAttrs.GetEntriesOk()
+		return updateIPAllowlistEntriesState(ctx, d, entries, apiInstances)
 	}
 	return nil
 }
 
-func updateIPAllowlistEntriesState(ctx context.Context, d *schema.ResourceData, ipAllowlistEntries []datadogV2.IPAllowlistEntry, apiInstances *utils.ApiInstances) diag.Diagnostics {
+func updateIPAllowlistEntriesState(ctx context.Context, d *schema.ResourceData, ipAllowlistEntries *[]datadogV2.IPAllowlistEntry, apiInstances *utils.ApiInstances) diag.Diagnostics {
 	var entries []map[string]string
-	for _, ipAllowlistEntry := range ipAllowlistEntries {
+	for _, ipAllowlistEntry := range *ipAllowlistEntries {
 		ipAllowlistEntryData := ipAllowlistEntry.GetData()
 		ipAllowlistEntryAttributes := ipAllowlistEntryData.GetAttributes()
 		cidrBlock, okCidr := ipAllowlistEntryAttributes.GetCidrBlockOk()
@@ -169,7 +170,7 @@ func resourceDatadogIPAllowlistCreate(ctx context.Context, d *schema.ResourceDat
 	auth := meta.(*ProviderConfiguration).Auth
 
 	ipAllowlistReq, _ := buildIPAllowlistUpdateRequest(d)
-	resp, httpResp, err := apiInstances.GetIPAllowlistApiV2().UpdateIPAllowlist(auth, ipAllowlistReq)
+	resp, httpResp, err := apiInstances.GetIPAllowlistApiV2().UpdateIPAllowlist(auth, *ipAllowlistReq)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResp, "error updating IP allowlist")
 	}
@@ -215,7 +216,7 @@ func resourceDatadogIPAllowlistUpdate(ctx context.Context, d *schema.ResourceDat
 		if err != nil {
 			return diag.FromErr(err)
 		}
-		resp, httpResp, err := apiInstances.GetIPAllowlistApiV2().UpdateIPAllowlist(auth, ipAllowlistReq)
+		resp, httpResp, err := apiInstances.GetIPAllowlistApiV2().UpdateIPAllowlist(auth, *ipAllowlistReq)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResp, "error updating IP allowlist")
 		}
@@ -231,7 +232,7 @@ func resourceDatadogIPAllowlistUpdate(ctx context.Context, d *schema.ResourceDat
 	return nil
 }
 
-func buildIPAllowlistUpdateRequest(d *schema.ResourceData) (datadogV2.IPAllowlistUpdateRequest, error) {
+func buildIPAllowlistUpdateRequest(d *schema.ResourceData) (*datadogV2.IPAllowlistUpdateRequest, error) {
 	ipAllowlistUpdateRequest := datadogV2.NewIPAllowlistUpdateRequestWithDefaults()
 	ipAllowlistData := datadogV2.NewIPAllowlistDataWithDefaults()
 	ipAllowlistAttributes := datadogV2.NewIPAllowlistAttributesWithDefaults()
@@ -260,5 +261,5 @@ func buildIPAllowlistUpdateRequest(d *schema.ResourceData) (datadogV2.IPAllowlis
 
 	ipAllowlistData.SetAttributes(*ipAllowlistAttributes)
 	ipAllowlistUpdateRequest.SetData(*ipAllowlistData)
-	return *ipAllowlistUpdateRequest, nil
+	return ipAllowlistUpdateRequest, nil
 }

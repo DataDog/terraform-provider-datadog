@@ -16,45 +16,36 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &IntegrationFastlyAccountResource{}
-	_ resource.ResourceWithImportState = &IntegrationFastlyAccountResource{}
+	_ resource.ResourceWithConfigure   = &integrationFastlyAccountResource{}
+	_ resource.ResourceWithImportState = &integrationFastlyAccountResource{}
 )
 
-type IntegrationFastlyAccountResource struct {
+type integrationFastlyAccountResource struct {
 	Api  *datadogV2.FastlyIntegrationApi
 	Auth context.Context
 }
 
-type IntegrationFastlyAccountModel struct {
+type integrationFastlyAccountModel struct {
 	ID     types.String `tfsdk:"id"`
 	ApiKey types.String `tfsdk:"api_key"`
 	Name   types.String `tfsdk:"name"`
 }
 
 func NewIntegrationFastlyAccountResource() resource.Resource {
-	return &IntegrationFastlyAccountResource{}
+	return &integrationFastlyAccountResource{}
 }
 
-func (r *IntegrationFastlyAccountResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
-		return
-	}
-
+func (r *integrationFastlyAccountResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetFastlyIntegrationApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *IntegrationFastlyAccountResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "integration_fastly_account"
+func (r *integrationFastlyAccountResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "integration_fastly_account"
 }
 
-func (r *IntegrationFastlyAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *integrationFastlyAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog IntegrationFastlyAccount resource. This can be used to create and manage Datadog integration_fastly_account.",
 		Attributes: map[string]schema.Attribute{
@@ -74,12 +65,12 @@ func (r *IntegrationFastlyAccountResource) Schema(_ context.Context, _ resource.
 	}
 }
 
-func (r *IntegrationFastlyAccountResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *integrationFastlyAccountResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *IntegrationFastlyAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state IntegrationFastlyAccountModel
+func (r *integrationFastlyAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state integrationFastlyAccountModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -106,8 +97,8 @@ func (r *IntegrationFastlyAccountResource) Read(ctx context.Context, request res
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationFastlyAccountResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state IntegrationFastlyAccountModel
+func (r *integrationFastlyAccountResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state integrationFastlyAccountModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -134,8 +125,8 @@ func (r *IntegrationFastlyAccountResource) Create(ctx context.Context, request r
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationFastlyAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state IntegrationFastlyAccountModel
+func (r *integrationFastlyAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state integrationFastlyAccountModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -164,8 +155,8 @@ func (r *IntegrationFastlyAccountResource) Update(ctx context.Context, request r
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationFastlyAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state IntegrationFastlyAccountModel
+func (r *integrationFastlyAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state integrationFastlyAccountModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -183,7 +174,7 @@ func (r *IntegrationFastlyAccountResource) Delete(ctx context.Context, request r
 	}
 }
 
-func (r *IntegrationFastlyAccountResource) updateState(ctx context.Context, state *IntegrationFastlyAccountModel, resp *datadogV2.FastlyAccountResponse) {
+func (r *integrationFastlyAccountResource) updateState(ctx context.Context, state *integrationFastlyAccountModel, resp *datadogV2.FastlyAccountResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 
 	data := resp.GetData()
@@ -194,7 +185,7 @@ func (r *IntegrationFastlyAccountResource) updateState(ctx context.Context, stat
 	}
 }
 
-func (r *IntegrationFastlyAccountResource) buildIntegrationFastlyAccountRequestBody(ctx context.Context, state *IntegrationFastlyAccountModel) (*datadogV2.FastlyAccountCreateRequest, diag.Diagnostics) {
+func (r *integrationFastlyAccountResource) buildIntegrationFastlyAccountRequestBody(ctx context.Context, state *integrationFastlyAccountModel) (*datadogV2.FastlyAccountCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewFastlyAccountCreateRequestAttributesWithDefaults()
 
@@ -210,7 +201,7 @@ func (r *IntegrationFastlyAccountResource) buildIntegrationFastlyAccountRequestB
 	return req, diags
 }
 
-func (r *IntegrationFastlyAccountResource) buildIntegrationFastlyAccountUpdateRequestBody(ctx context.Context, state *IntegrationFastlyAccountModel) (*datadogV2.FastlyAccountUpdateRequest, diag.Diagnostics) {
+func (r *integrationFastlyAccountResource) buildIntegrationFastlyAccountUpdateRequestBody(ctx context.Context, state *integrationFastlyAccountModel) (*datadogV2.FastlyAccountUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewFastlyAccountUpdateRequestAttributesWithDefaults()
 

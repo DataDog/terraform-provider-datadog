@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -41,7 +41,6 @@ func TestAccIntegrationCloudflareAccountBasic(t *testing.T) {
 }
 
 func testAccCheckDatadogIntegrationCloudflareAccount(uniq string) string {
-	// Update me to make use of the unique value
 	return fmt.Sprintf(`
 resource "datadog_integration_cloudflare_account" "foo" {
     api_key = "1234567891012331asdd"

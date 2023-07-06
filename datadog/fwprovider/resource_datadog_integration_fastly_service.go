@@ -19,16 +19,16 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &IntegrationFastlyServiceResource{}
-	_ resource.ResourceWithImportState = &IntegrationFastlyServiceResource{}
+	_ resource.ResourceWithConfigure   = &integrationFastlyServiceResource{}
+	_ resource.ResourceWithImportState = &integrationFastlyServiceResource{}
 )
 
-type IntegrationFastlyServiceResource struct {
+type integrationFastlyServiceResource struct {
 	Api  *datadogV2.FastlyIntegrationApi
 	Auth context.Context
 }
 
-type IntegrationFastlyServiceModel struct {
+type integrationFastlyServiceModel struct {
 	ID        types.String `tfsdk:"id"`
 	AccountId types.String `tfsdk:"account_id"`
 	ServiceId types.String `tfsdk:"service_id"`
@@ -36,29 +36,20 @@ type IntegrationFastlyServiceModel struct {
 }
 
 func NewIntegrationFastlyServiceResource() resource.Resource {
-	return &IntegrationFastlyServiceResource{}
+	return &integrationFastlyServiceResource{}
 }
 
-func (r *IntegrationFastlyServiceResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
-		return
-	}
-
+func (r *integrationFastlyServiceResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetFastlyIntegrationApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *IntegrationFastlyServiceResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "integration_fastly_service"
+func (r *integrationFastlyServiceResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "integration_fastly_service"
 }
 
-func (r *IntegrationFastlyServiceResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *integrationFastlyServiceResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog IntegrationFastlyService resource. This can be used to create and manage Datadog integration_fastly_service.",
 		Attributes: map[string]schema.Attribute{
@@ -87,7 +78,7 @@ func (r *IntegrationFastlyServiceResource) Schema(_ context.Context, _ resource.
 	}
 }
 
-func (r *IntegrationFastlyServiceResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *integrationFastlyServiceResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	accountID, serviceID, err := utils.AccountIDAndServiceIDFromID(request.ID)
 	if err != nil {
 		response.Diagnostics.AddError(err.Error(), "")
@@ -99,8 +90,8 @@ func (r *IntegrationFastlyServiceResource) ImportState(ctx context.Context, requ
 	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("id"), request.ID)...)
 }
 
-func (r *IntegrationFastlyServiceResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state IntegrationFastlyServiceModel
+func (r *integrationFastlyServiceResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state integrationFastlyServiceModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -132,8 +123,8 @@ func (r *IntegrationFastlyServiceResource) Read(ctx context.Context, request res
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationFastlyServiceResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state IntegrationFastlyServiceModel
+func (r *integrationFastlyServiceResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state integrationFastlyServiceModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -162,8 +153,8 @@ func (r *IntegrationFastlyServiceResource) Create(ctx context.Context, request r
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationFastlyServiceResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state IntegrationFastlyServiceModel
+func (r *integrationFastlyServiceResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state integrationFastlyServiceModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -196,8 +187,8 @@ func (r *IntegrationFastlyServiceResource) Update(ctx context.Context, request r
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationFastlyServiceResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state IntegrationFastlyServiceModel
+func (r *integrationFastlyServiceResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state integrationFastlyServiceModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -219,7 +210,7 @@ func (r *IntegrationFastlyServiceResource) Delete(ctx context.Context, request r
 	}
 }
 
-func (r *IntegrationFastlyServiceResource) updateState(ctx context.Context, state *IntegrationFastlyServiceModel, resp *datadogV2.FastlyServiceResponse) {
+func (r *integrationFastlyServiceResource) updateState(ctx context.Context, state *integrationFastlyServiceModel, resp *datadogV2.FastlyServiceResponse) {
 	state.ID = types.StringValue(fmt.Sprintf("%s:%s", state.AccountId.ValueString(), resp.Data.Id))
 
 	data := resp.GetData()
@@ -230,7 +221,7 @@ func (r *IntegrationFastlyServiceResource) updateState(ctx context.Context, stat
 	}
 }
 
-func (r *IntegrationFastlyServiceResource) buildIntegrationFastlyServiceRequestBody(ctx context.Context, state *IntegrationFastlyServiceModel) (*datadogV2.FastlyServiceRequest, diag.Diagnostics) {
+func (r *integrationFastlyServiceResource) buildIntegrationFastlyServiceRequestBody(ctx context.Context, state *integrationFastlyServiceModel) (*datadogV2.FastlyServiceRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewFastlyServiceAttributesWithDefaults()
 

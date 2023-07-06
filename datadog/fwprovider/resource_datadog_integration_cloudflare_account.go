@@ -16,16 +16,16 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &IntegrationCloudflareAccountResource{}
-	_ resource.ResourceWithImportState = &IntegrationCloudflareAccountResource{}
+	_ resource.ResourceWithConfigure   = &integrationCloudflareAccountResource{}
+	_ resource.ResourceWithImportState = &integrationCloudflareAccountResource{}
 )
 
-type IntegrationCloudflareAccountResource struct {
+type integrationCloudflareAccountResource struct {
 	Api  *datadogV2.CloudflareIntegrationApi
 	Auth context.Context
 }
 
-type IntegrationCloudflareAccountModel struct {
+type integrationCloudflareAccountModel struct {
 	ID     types.String `tfsdk:"id"`
 	ApiKey types.String `tfsdk:"api_key"`
 	Email  types.String `tfsdk:"email"`
@@ -33,29 +33,20 @@ type IntegrationCloudflareAccountModel struct {
 }
 
 func NewIntegrationCloudflareAccountResource() resource.Resource {
-	return &IntegrationCloudflareAccountResource{}
+	return &integrationCloudflareAccountResource{}
 }
 
-func (r *IntegrationCloudflareAccountResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
-		return
-	}
-
+func (r *integrationCloudflareAccountResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetCloudflareIntegrationApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *IntegrationCloudflareAccountResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "integration_cloudflare_account"
+func (r *integrationCloudflareAccountResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "integration_cloudflare_account"
 }
 
-func (r *IntegrationCloudflareAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *integrationCloudflareAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog IntegrationCloudflareAccount resource. This can be used to create and manage Datadog integration_cloudflare_account.",
 		Attributes: map[string]schema.Attribute{
@@ -80,12 +71,12 @@ func (r *IntegrationCloudflareAccountResource) Schema(_ context.Context, _ resou
 	}
 }
 
-func (r *IntegrationCloudflareAccountResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *integrationCloudflareAccountResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *IntegrationCloudflareAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state IntegrationCloudflareAccountModel
+func (r *integrationCloudflareAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state integrationCloudflareAccountModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -112,8 +103,8 @@ func (r *IntegrationCloudflareAccountResource) Read(ctx context.Context, request
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationCloudflareAccountResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state IntegrationCloudflareAccountModel
+func (r *integrationCloudflareAccountResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state integrationCloudflareAccountModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -140,8 +131,8 @@ func (r *IntegrationCloudflareAccountResource) Create(ctx context.Context, reque
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationCloudflareAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state IntegrationCloudflareAccountModel
+func (r *integrationCloudflareAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state integrationCloudflareAccountModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -170,8 +161,8 @@ func (r *IntegrationCloudflareAccountResource) Update(ctx context.Context, reque
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *IntegrationCloudflareAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state IntegrationCloudflareAccountModel
+func (r *integrationCloudflareAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state integrationCloudflareAccountModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -189,7 +180,7 @@ func (r *IntegrationCloudflareAccountResource) Delete(ctx context.Context, reque
 	}
 }
 
-func (r *IntegrationCloudflareAccountResource) updateState(ctx context.Context, state *IntegrationCloudflareAccountModel, resp *datadogV2.CloudflareAccountResponse) {
+func (r *integrationCloudflareAccountResource) updateState(ctx context.Context, state *integrationCloudflareAccountModel, resp *datadogV2.CloudflareAccountResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 
 	data := resp.GetData()
@@ -204,7 +195,7 @@ func (r *IntegrationCloudflareAccountResource) updateState(ctx context.Context, 
 	}
 }
 
-func (r *IntegrationCloudflareAccountResource) buildIntegrationCloudflareAccountRequestBody(ctx context.Context, state *IntegrationCloudflareAccountModel) (*datadogV2.CloudflareAccountCreateRequest, diag.Diagnostics) {
+func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccountRequestBody(ctx context.Context, state *integrationCloudflareAccountModel) (*datadogV2.CloudflareAccountCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewCloudflareAccountCreateRequestAttributesWithDefaults()
 
@@ -221,7 +212,7 @@ func (r *IntegrationCloudflareAccountResource) buildIntegrationCloudflareAccount
 	return req, diags
 }
 
-func (r *IntegrationCloudflareAccountResource) buildIntegrationCloudflareAccountUpdateRequestBody(ctx context.Context, state *IntegrationCloudflareAccountModel) (*datadogV2.CloudflareAccountUpdateRequest, diag.Diagnostics) {
+func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccountUpdateRequestBody(ctx context.Context, state *integrationCloudflareAccountModel) (*datadogV2.CloudflareAccountUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewCloudflareAccountUpdateRequestAttributesWithDefaults()
 

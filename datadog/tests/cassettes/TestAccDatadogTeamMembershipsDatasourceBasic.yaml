@@ -1,0 +1,261 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"description":"TeamMemberships description","handle":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080","name":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080"},"type":"team"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"team","id":"5adbd29e-00b3-11ee-8fdc-da7ad0900002","attributes":{"name":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080","handle":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080","summary":"TeamMemberships description","description":"TeamMemberships description","created_at":"2023-06-01T19:34:41.855326+00:00","modified_at":"2023-06-01T19:34:41.855331+00:00","user_count":0,"link_count":0},"relationships":{"team_links":{"links":{"related":"/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/permission-settings"}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"email":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com"},"relationships":{"roles":{"data":[]}},"type":"users"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/users
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc","attributes":{"name":null,"handle":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","created_at":"2023-06-01T19:34:42.171363+00:00","modified_at":"2023-06-01T19:34:42.176813+00:00","email":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","icon":"https://secure.gravatar.com/avatar/85a2e2098a9791b574edecaef3fb19a2?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: |
+      {"data":[{"relationships":{"user":{"data":{"id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc","type":"users"}}},"type":"user_invitations"}]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/user_invitations
+    method: POST
+  response:
+    body: |
+      {"data":[{"type":"user_invitations","id":"5ba2d736-00b3-11ee-ba40-da7ad0900002","attributes":{"uuid":"5ba2d736-00b3-11ee-ba40-da7ad0900002","login_method":null,"invite_type":"basic_invite","created_at":"2023-06-01T19:34:43.160530+00:00","expires_at":"2023-06-03T19:34:43.037634+00:00"},"relationships":{"user":{"data":{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc"}}}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"role":"admin"},"relationships":{"user":{"data":{"id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc","type":"users"}}},"type":"team_memberships"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"team_memberships","id":"TeamMembership-5adbd29e-00b3-11ee-8fdc-da7ad0900002-5545935","attributes":{"role":"admin"},"relationships":{"user":{"data":{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc"}}}},"included":[{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc","attributes":{"name":null,"handle":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","email":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","icon":"https://secure.gravatar.com/avatar/85a2e2098a9791b574edecaef3fb19a2?s=48&d=retro","disabled":false,"service_account":false}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page%5Bnumber%5D=0&page%5Bsize%5D=100
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"team_memberships","id":"TeamMembership-5adbd29e-00b3-11ee-8fdc-da7ad0900002-5545935","attributes":{"role":"admin"},"relationships":{"user":{"data":{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc"}}}}],"included":[{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc","attributes":{"name":null,"handle":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","email":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","icon":"https://secure.gravatar.com/avatar/85a2e2098a9791b574edecaef3fb19a2?s=48&d=retro","disabled":false,"service_account":false}}],"meta":{"pagination":{"number":0,"first_number":0,"prev_number":0,"next_number":1,"last_number":0,"size":100,"type":"number_size","total":1}},"links":{"self":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page%5Bnumber%5D=0&page%5Bsize%5D=100","last":null,"next":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page[number]=1&page[size]=100","prev":null,"first":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page[number]=0&page[size]=100"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page%5Bnumber%5D=0&page%5Bsize%5D=100
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"team_memberships","id":"TeamMembership-5adbd29e-00b3-11ee-8fdc-da7ad0900002-5545935","attributes":{"role":"admin"},"relationships":{"user":{"data":{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc"}}}}],"included":[{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc","attributes":{"name":null,"handle":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","email":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","icon":"https://secure.gravatar.com/avatar/85a2e2098a9791b574edecaef3fb19a2?s=48&d=retro","disabled":false,"service_account":false}}],"meta":{"pagination":{"number":0,"first_number":0,"prev_number":0,"next_number":1,"last_number":0,"size":100,"type":"number_size","total":1}},"links":{"self":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page%5Bnumber%5D=0&page%5Bsize%5D=100","last":null,"next":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page[number]=1&page[size]=100","prev":null,"first":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page[number]=0&page[size]=100"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/users/5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc","attributes":{"name":null,"handle":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","created_at":"2023-06-01T19:34:42.171363+00:00","modified_at":"2023-06-01T19:34:42.176813+00:00","email":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","icon":"https://secure.gravatar.com/avatar/85a2e2098a9791b574edecaef3fb19a2?s=48&d=retro","title":null,"verified":false,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Pending"},"relationships":{"roles":{"data":[]},"org":{"data":{"type":"orgs","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5"}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"team","id":"5adbd29e-00b3-11ee-8fdc-da7ad0900002","attributes":{"name":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080","handle":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080","summary":"TeamMemberships description","description":"TeamMemberships description","created_at":"2023-06-01T19:34:41.855326+00:00","modified_at":"2023-06-01T19:34:41.855331+00:00","user_count":1,"link_count":0},"relationships":{"team_links":{"links":{"related":"/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/permission-settings"}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page%5Bnumber%5D=0&page%5Bsize%5D=100
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"team_memberships","id":"TeamMembership-5adbd29e-00b3-11ee-8fdc-da7ad0900002-5545935","attributes":{"role":"admin"},"relationships":{"user":{"data":{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc"}}}}],"included":[{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc","attributes":{"name":null,"handle":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","email":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","icon":"https://secure.gravatar.com/avatar/85a2e2098a9791b574edecaef3fb19a2?s=48&d=retro","disabled":false,"service_account":false}}],"meta":{"pagination":{"number":0,"first_number":0,"prev_number":0,"next_number":1,"last_number":0,"size":100,"type":"number_size","total":1}},"links":{"self":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page%5Bnumber%5D=0&page%5Bsize%5D=100","last":null,"next":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page[number]=1&page[size]=100","prev":null,"first":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page[number]=0&page[size]=100"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page%5Bnumber%5D=1&page%5Bsize%5D=100
+    method: GET
+  response:
+    body: |
+      {"data":[],"meta":{"pagination":{"number":1,"first_number":0,"prev_number":0,"next_number":2,"last_number":0,"size":100,"type":"number_size","total":1}},"links":{"self":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page%5Bnumber%5D=1&page%5Bsize%5D=100","last":null,"next":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page[number]=2&page[size]=100","prev":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page[number]=0&page[size]=100","first":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page[number]=0&page[size]=100"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page%5Bnumber%5D=0&page%5Bsize%5D=100
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"team_memberships","id":"TeamMembership-5adbd29e-00b3-11ee-8fdc-da7ad0900002-5545935","attributes":{"role":"admin"},"relationships":{"user":{"data":{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc"}}}}],"included":[{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc","attributes":{"name":null,"handle":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","email":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","icon":"https://secure.gravatar.com/avatar/85a2e2098a9791b574edecaef3fb19a2?s=48&d=retro","disabled":false,"service_account":false}}],"meta":{"pagination":{"number":0,"first_number":0,"prev_number":0,"next_number":1,"last_number":0,"size":100,"type":"number_size","total":1}},"links":{"self":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page%5Bnumber%5D=0&page%5Bsize%5D=100","last":null,"next":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page[number]=1&page[size]=100","prev":null,"first":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page[number]=0&page[size]=100"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page%5Bnumber%5D=0&page%5Bsize%5D=100
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"team_memberships","id":"TeamMembership-5adbd29e-00b3-11ee-8fdc-da7ad0900002-5545935","attributes":{"role":"admin"},"relationships":{"user":{"data":{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc"}}}}],"included":[{"type":"users","id":"5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc","attributes":{"name":null,"handle":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","email":"tf-testaccdatadogteammembershipsdatasourcebasic-local-1685648080@example.com","icon":"https://secure.gravatar.com/avatar/85a2e2098a9791b574edecaef3fb19a2?s=48&d=retro","disabled":false,"service_account":false}}],"meta":{"pagination":{"number":0,"first_number":0,"prev_number":0,"next_number":1,"last_number":0,"size":100,"type":"number_size","total":1}},"links":{"self":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page%5Bnumber%5D=0&page%5Bsize%5D=100","last":null,"next":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page[number]=1&page[size]=100","prev":null,"first":"https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships?page[number]=0&page[size]=100"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002/memberships/5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/team/5adbd29e-00b3-11ee-8fdc-da7ad0900002
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/users/5b0b94a6-00b3-11ee-b6bc-4e34b8fb63bc
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""

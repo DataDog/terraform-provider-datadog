@@ -23,7 +23,7 @@ func NewHostsDataSource() datasource.DataSource {
 	return &hostsDataSource{}
 }
 
-type HostListMetadataModel struct {
+type hostListMetadataModel struct {
 	AgentVersion   types.String `tfsdk:"agent_version"`
 	CPUCores       types.Int64  `tfsdk:"cpu_cores"`
 	Gohai          types.String `tfsdk:"gohai"`
@@ -35,13 +35,13 @@ type HostListMetadataModel struct {
 	SocketHostname types.String `tfsdk:"socket_hostname"`
 }
 
-type HostListMetricsModel struct {
+type hostListMetricsModel struct {
 	CPU    types.Float64 `tfsdk:"cpu"`
 	IOWait types.Float64 `tfsdk:"iowait"`
 	Load   types.Float64 `tfsdk:"load"`
 }
 
-type HostListModel struct {
+type hostListModel struct {
 	Aliases          types.List   `tfsdk:"aliases"`
 	Apps             types.List   `tfsdk:"apps"`
 	AWSName          types.String `tfsdk:"aws_name"`
@@ -57,7 +57,7 @@ type HostListModel struct {
 	Up               types.Bool   `tfsdk:"up"`
 }
 
-type HostsDataSourceModel struct {
+type hostsDataSourceModel struct {
 	ID types.String `tfsdk:"id"`
 	// Query Parameters
 	Filter                types.String `tfsdk:"filter"`
@@ -66,7 +66,7 @@ type HostsDataSourceModel struct {
 	From                  types.Int64  `tfsdk:"from"`
 	IncludeMutedHostsData types.Bool   `tfsdk:"include_muted_hosts_data"`
 	// Results
-	HostList      []HostListModel `tfsdk:"host_list"`
+	HostList      []hostListModel `tfsdk:"host_list"`
 	TotalMatching types.Int64     `tfsdk:"total_matching"`
 	TotalReturned types.Int64     `tfsdk:"total_returned"`
 }
@@ -77,22 +77,13 @@ type hostsDataSource struct {
 }
 
 func (d *hostsDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Data Source Configure Type", "")
-		return
-	}
-
+	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetHostsApiV1()
 	d.Auth = providerData.Auth
 }
 
 func (d *hostsDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "hosts"
+	response.TypeName = "hosts"
 }
 
 func (d *hostsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
@@ -178,7 +169,7 @@ func (d *hostsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 }
 
 func (d *hostsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state HostsDataSourceModel
+	var state hostsDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -211,9 +202,9 @@ func (d *hostsDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	state.TotalMatching = basetypes.NewInt64Value(ddHostListResponse.GetTotalMatching())
 	state.TotalReturned = basetypes.NewInt64Value(ddHostListResponse.GetTotalReturned())
 
-	var hostList []HostListModel
+	var hostList []hostListModel
 	for _, val := range ddHostListResponse.HostList {
-		var hostListEntry HostListModel
+		var hostListEntry hostListModel
 		hostListEntry.Aliases, _ = types.ListValueFrom(ctx, types.StringType, val.GetAliases())
 		hostListEntry.Apps, _ = types.ListValueFrom(ctx, types.StringType, val.GetApps())
 		hostListEntry.AWSName = basetypes.NewStringValue(val.GetAwsName())
@@ -230,7 +221,7 @@ func (d *hostsDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				"cpu":    types.Float64Type,
 				"iowait": types.Float64Type,
 				"load":   types.Float64Type,
-			}, HostListMetricsModel{
+			}, hostListMetricsModel{
 				CPU:    basetypes.NewFloat64Value(metrics.GetCpu()),
 				IOWait: basetypes.NewFloat64Value(metrics.GetIowait()),
 				Load:   basetypes.NewFloat64Value(metrics.GetLoad()),
@@ -247,7 +238,7 @@ func (d *hostsDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				"python_version":  types.StringType,
 				"socket_fqdn":     types.StringType,
 				"socket_hostname": types.StringType,
-			}, HostListMetadataModel{
+			}, hostListMetadataModel{
 				AgentVersion:   basetypes.NewStringValue(meta.GetAgentVersion()),
 				CPUCores:       basetypes.NewInt64Value(meta.GetCpuCores()),
 				Gohai:          basetypes.NewStringValue(meta.GetGohai()),

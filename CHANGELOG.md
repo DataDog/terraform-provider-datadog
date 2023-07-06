@@ -1,3 +1,81 @@
+## 3.27.0 (July 3, 2023)
+
+### BUGFIXES
+* [datadog_synthetics_test] Fix for optional fields in synthetics oauth by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1956
+* [datadog_synthetics_test] Handle both example and secure missing from variables by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/1959
+* [datadog_monitor] Fix unsetting of `restricted_roles` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1970
+* [datadog_spans_metric] Convert `group_by` to set by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/1972
+* [datadog_synthetics_test] Fix targetvalue for isUndefined json path assertions by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1966
+* [datadog_synthetics_test] Allow synthetics web basicauth without password set by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1989
+### IMPROVEMENTS
+* [datadog_user] Add support for `exact_match` in data source by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1968
+* [datadog_dashboard] Add note about tf managed dashboard lists when using `dashboard_lists` resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1975
+### FEATURES
+* [datadog_service_account_application_key] Add service_account_application_key resource by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1955
+* [datadog_service_account] Add service_account data source by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1955
+* [restriction_policy] Add restriction policy resource by @agnesjang98 in https://github.com/DataDog/terraform-provider-datadog/pull/1957
+### NOTES
+* [datadog_integration_gcp] Mark resource as deprecated by @joshhuie in https://github.com/DataDog/terraform-provider-datadog/pull/1965
+* [provider] Add datasource wrapper by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1962
+* [provider] Remove `ResourceDataKey` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1961
+* Upgrade testing framework to `terraform-plugin-testing` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1967
+* [provider] bump datadog-api-client Go SDK to v2.14.0 by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1988
+
+## New Contributors
+* @joshhuie made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1965
+* @agnesjang98 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1957
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.26.0...v3.27.0
+
+## 3.26.0 (June 5, 2023)
+
+### BUGFIXES
+* [provider] Check for empty api_url string by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1907
+* [datadog_logs_custom_pipelines] Add empty string validation to grok parser samples list by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1917
+* [datadog_logs_archive] Don't crash on empty logs archives destination by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/1915
+* [provider] Fix segfault on invalid API URL by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1921
+* [datadog_synthetics_test] Fix segfault on uninitialized basic auth fields by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1948
+### IMPROVEMENTS
+* [datadog_dashboard] Add slo datasource to dash widget formulas and functions query by @zhengshizhao in https://github.com/DataDog/terraform-provider-datadog/pull/1924
+* [datadog_synthetics_test] Add secure field to browser variables and update docs by @alai97 in https://github.com/DataDog/terraform-provider-datadog/pull/1918
+* [multiple_resources] Cleanup refs in resources by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1925
+* [datadog_provider] Add resource wrapper and support adding enum values to docs by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1922
+* [datadog_synthetics_test] Add secure options to extracted values in synthetics multistep tests by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1938
+* [datadog_dashboard] Add sort block to Dashboard list_stream query block by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1941
+### FEATURES
+* [datadog_integration_aws_namespace_rules] Add data source for available aws namespace rules by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1905
+* [datadog_spans_metric] Add spans metric support by @vitormaco in https://github.com/DataDog/terraform-provider-datadog/pull/1858
+* [datadog_synthetics_concurrency_cap] Add concurrency cap resource for synthetics tests by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1913
+* [datadog_integration_gcp_sts] generate GCP STS account resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1936
+* [datadog_team] Add support for datadog team resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1908
+* [datadog_team_link] Add support for datadog team link resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1908
+* [datadog_team_membership] Add support for datadog team membership resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1908
+* [datadog_team] Add datadog team data source by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1946
+* [datadog_team_memberships] Add datadog team memberships data source by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1946
+### NOTES
+* [provider] Bump `datadog-api-client` version to `v2.13.0` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/1940
+
+## New Contributors
+* @vitormaco made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1858
+* @alai97 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1918
+* @boraborah made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1923
+* @IanMoroney made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1928
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.25.0...v3.26.0
+
+## 3.25.0 (May 5, 2023)
+
+### BUGFIXES
+* [provider] Update API key validation call to use official SDK by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1902
+### IMPROVEMENTS
+* [datadog_synthetics_test] Add support for new assertions by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/1901
+* [datadog_dashboard] Add additional_query_filters to SLO widget by @zhengshizhao in https://github.com/DataDog/terraform-provider-datadog/pull/1899
+### FEATURES
+* [datadog_sensitive_data_scanner_group_order] Add resource and datasource for SDS group order by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1820
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.24.1...v3.25.0
+
 ## 3.24.1 (May 3, 2023)
 
 ### BUGFIXES

@@ -15,44 +15,35 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &SensitiveDataScannerGroupOrder{}
-	_ resource.ResourceWithImportState = &SensitiveDataScannerGroupOrder{}
+	_ resource.ResourceWithConfigure   = &sensitiveDataScannerGroupOrder{}
+	_ resource.ResourceWithImportState = &sensitiveDataScannerGroupOrder{}
 )
 
 func NewSensitiveDataScannerGroupOrder() resource.Resource {
-	return &SensitiveDataScannerGroupOrder{}
+	return &sensitiveDataScannerGroupOrder{}
 }
 
-type SensitiveDataScannerGroupOrderModel struct {
+type sensitiveDataScannerGroupOrderModel struct {
 	ID       types.String `tfsdk:"id"`
 	GroupIDs types.List   `tfsdk:"group_ids"`
 }
 
-type SensitiveDataScannerGroupOrder struct {
+type sensitiveDataScannerGroupOrder struct {
 	Api  *datadogV2.SensitiveDataScannerApi
 	Auth context.Context
 }
 
-func (r *SensitiveDataScannerGroupOrder) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
-	if request.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := request.ProviderData.(*FrameworkProvider)
-	if !ok {
-		response.Diagnostics.AddError("Unexpected Resource Configure Type", "")
-		return
-	}
-
+func (r *sensitiveDataScannerGroupOrder) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetSensitiveDataScannerApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *SensitiveDataScannerGroupOrder) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = request.ProviderTypeName + "sensitive_data_scanner_group_order"
+func (r *sensitiveDataScannerGroupOrder) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "sensitive_data_scanner_group_order"
 }
 
-func (r *SensitiveDataScannerGroupOrder) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *sensitiveDataScannerGroupOrder) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog Sensitive Data Scanner Group Order API resource. This can be used to manage the order of Datadog Sensitive Data Scanner Groups.",
 		Attributes: map[string]schema.Attribute{
@@ -67,8 +58,8 @@ func (r *SensitiveDataScannerGroupOrder) Schema(_ context.Context, _ resource.Sc
 	}
 }
 
-func (r *SensitiveDataScannerGroupOrder) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state SensitiveDataScannerGroupOrderModel
+func (r *sensitiveDataScannerGroupOrder) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state sensitiveDataScannerGroupOrderModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -80,8 +71,8 @@ func (r *SensitiveDataScannerGroupOrder) Create(ctx context.Context, request res
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *SensitiveDataScannerGroupOrder) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state SensitiveDataScannerGroupOrderModel
+func (r *sensitiveDataScannerGroupOrder) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state sensitiveDataScannerGroupOrderModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -113,8 +104,8 @@ func (r *SensitiveDataScannerGroupOrder) Read(ctx context.Context, request resou
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *SensitiveDataScannerGroupOrder) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state SensitiveDataScannerGroupOrderModel
+func (r *sensitiveDataScannerGroupOrder) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state sensitiveDataScannerGroupOrderModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -126,14 +117,14 @@ func (r *SensitiveDataScannerGroupOrder) Update(ctx context.Context, request res
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *SensitiveDataScannerGroupOrder) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+func (r *sensitiveDataScannerGroupOrder) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
 }
 
-func (r *SensitiveDataScannerGroupOrder) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *sensitiveDataScannerGroupOrder) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *SensitiveDataScannerGroupOrder) updateOrder(state *SensitiveDataScannerGroupOrderModel, diag *diag.Diagnostics) {
+func (r *sensitiveDataScannerGroupOrder) updateOrder(state *sensitiveDataScannerGroupOrderModel, diag *diag.Diagnostics) {
 	ddList := make([]datadogV2.SensitiveDataScannerGroupItem, len(state.GroupIDs.Elements()))
 	for i, tfName := range state.GroupIDs.Elements() {
 		ddList[i] = *datadogV2.NewSensitiveDataScannerGroupItemWithDefaults()

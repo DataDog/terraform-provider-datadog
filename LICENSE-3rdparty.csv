@@ -227,3 +227,10 @@ go.sum,github.com/frankban/quicktest,MIT,Copyright (c) 017 Canonical Ltd.
 go.sum,github.com/hashicorp/terraform-plugin-framework,MPL-2.0,2021 HashiCorp, Inc.
 go.sum,github.com/hashicorp/terraform-plugin-mux,MPL-2.0,2020 HashiCorp, Inc.
 go.sum,github.com/hashicorp/terraform-plugin-framework-validators,MPL-2.0,2020 HashiCorp, Inc.
+go.sum,github.com/bwesterb/go-ristretto,MIT,Copyright (c) 2021 Bas Westerbaan
+go.sum,github.com/cloudflare/circl,,Copyright (c) 2019 Cloudflare
+go.sum,github.com/hashicorp/terraform-plugin-testing,MPL-2.0,Copyright (c) 2014 HashiCorp, Inc.
+go.sum,github.com/pjbgf/sha1cd,Apache-2.0,
+go.sum,github.com/skeema/knownhosts,Apache-2.0,
+go.sum,github.com/vmihailenco/msgpack/v5,BSD 2-Clause,Copyright (c) 2013 The github.com/vmihailenco/msgpack Authors
+go.sum,github.com/vmihailenco/tagparser/v2,BSD 2-Clause,Copyright (c) 2019 The github.com/vmihailenco/tagparser Authors
