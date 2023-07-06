@@ -60,5 +60,5 @@ jobs:
           DD_SERVICE: terraform-provider-datadog
           DD_VERSION: ${{ github.run_id }}
           DD_TAGS: "team:integrations-tools-and-libraries"
-          TF_ACC_TERRAFORM_PATH: "~/.cache/terraform/terraform"
+          TF_ACC_TERRAFORM_PATH: "${{ env.HOME }}/.cache/terraform/terraform"
           TF_ACC_TEMP_DIR: "/tmp"
