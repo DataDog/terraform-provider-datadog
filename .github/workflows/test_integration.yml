@@ -38,14 +38,14 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: ~/.cache/terraform
-          key: terraform-${{ env-TERRAFORM_VERSION }}
+          key: terraform-${{ env.TERRAFORM_VERSION }}
       - name: Install terraform
         run: |
           mkdir -p ~/.cache/terraform
-          if [ ! -f ~/.cache/terraform/terraform-${{ env-TERRAFORM_VERSION }} ]; then
+          if [ ! -f ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }} ]; then
             wget https://releases.hashicorp.com/terraform/1.5.2/terraform_1.5.2_linux_amd64.zip -O ~/.cache/terraform/terraform-${{ env-TERRAFORM_VERSION }}
           fi
-          unzip -o -d ~/.cache/terraform ~/.cache/terraform/terraform-${{ env-TERRAFORM_VERSION }}
+          unzip -o -d ~/.cache/terraform ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
       - 
       - name: Run integration tests
         run: make testacc
