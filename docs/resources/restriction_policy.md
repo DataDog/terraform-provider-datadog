@@ -3,12 +3,12 @@
 page_title: "datadog_restriction_policy Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction policies. See this page for more details https://docs.datadoghq.com/api/latest/restriction-policies/#supported-relations-for-resources.
+  Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction policies.
 ---
 
 # datadog_restriction_policy (Resource)
 
-Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction policies. See this page for more details https://docs.datadoghq.com/api/latest/restriction-policies/#supported-relations-for-resources.
+Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction policies.
 
 ## Example Usage
 
@@ -36,6 +36,8 @@ resource "datadog_restriction_policy" "foo" {
 
 - `resource_id` (String) Identifier for the resource, formatted as resource_type:resource_id.
 
+Note: dashboard resource is currently not supported
+
 ### Optional
 
 - `bindings` (Block Set) (see [below for nested schema](#nestedblock--bindings))
@@ -47,10 +49,10 @@ resource "datadog_restriction_policy" "foo" {
 <a id="nestedblock--bindings"></a>
 ### Nested Schema for `bindings`
 
-Optional:
+Required:
 
 - `principals` (Set of String) An array of principals. A principal is a subject or group of subjects. Each principal is formatted as `type:id`. Supported types: `role` and `org`. The org ID can be obtained through the api/v2/users API.
-- `relation` (String) The role/level of access.
+- `relation` (String) The role/level of access. See this page for more details https://docs.datadoghq.com/api/latest/restriction-policies/#supported-relations-for-resources
 
 ## Import
 
