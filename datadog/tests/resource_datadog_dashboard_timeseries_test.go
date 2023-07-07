@@ -525,6 +525,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 						group_mode = "overall"
 						measure = "slo_status"
 						slo_query_type = "metric"
+						additional_query_filters = "*"
 					}
 				}
 			}
@@ -748,6 +749,7 @@ var datadogDashboardFormulaAsserts = []string{
 	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.group_mode = overall",
 	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.measure = slo_status",
 	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.slo_query_type = metric",
+	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.additional_query_filters = *",
 }
 
 func TestAccDatadogDashboardTimeseries(t *testing.T) {

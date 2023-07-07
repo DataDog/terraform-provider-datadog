@@ -234,3 +234,4 @@ go.sum,github.com/pjbgf/sha1cd,Apache-2.0,
 go.sum,github.com/skeema/knownhosts,Apache-2.0,
 go.sum,github.com/vmihailenco/msgpack/v5,BSD 2-Clause,Copyright (c) 2013 The github.com/vmihailenco/msgpack Authors
 go.sum,github.com/vmihailenco/tagparser/v2,BSD 2-Clause,Copyright (c) 2019 The github.com/vmihailenco/tagparser Authors
+go.sum,github.com/goccy/go-json,MIT,2020 Masaaki Goshima
