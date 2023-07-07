@@ -43,7 +43,7 @@ jobs:
         run: |
           mkdir -p ~/.cache/terraform
           if [ ! -f ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }} ]; then
-            wget https://releases.hashicorp.com/terraform/{{ env.TERRAFORM_VERSION }}/terraform_{{ env.TERRAFORM_VERSION }}_linux_amd64.zip -O ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
+            wget https://releases.hashicorp.com/terraform/${{ env.TERRAFORM_VERSION }}/terraform_${{ env.TERRAFORM_VERSION }}_linux_amd64.zip -O ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
           fi
           unzip -o -d ~/.cache/terraform ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
       - name: Run integration tests
