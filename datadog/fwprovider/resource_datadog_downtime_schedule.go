@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -47,10 +48,10 @@ type DowntimeMonitorIdentifierTagsModel struct {
 }
 
 type ScheduleModel struct {
-	DowntimeScheduleRecurrencesCreateRequest   *DowntimeScheduleRecurrencesCreateRequestModel   `tfsdk:"downtime_schedule_recurrences_create_request"`
-	DowntimeScheduleOneTimeCreateUpdateRequest *DowntimeScheduleOneTimeCreateUpdateRequestModel `tfsdk:"downtime_schedule_one_time_create_update_request"`
+	DowntimeScheduleRecurrenceSchedule *DowntimeScheduleRecurrenceSchedule `tfsdk:"downtime_schedule_recurrences_create_request"`
+	DowntimeScheduleOneTimeSchedule    *DowntimeScheduleOneTimeSchedule    `tfsdk:"downtime_schedule_one_time_create_update_request"`
 }
-type DowntimeScheduleRecurrencesCreateRequestModel struct {
+type DowntimeScheduleRecurrenceSchedule struct {
 	Timezone    types.String        `tfsdk:"timezone"`
 	Recurrences []*RecurrencesModel `tfsdk:"recurrences"`
 }
@@ -60,7 +61,7 @@ type RecurrencesModel struct {
 	Start    types.String `tfsdk:"start"`
 }
 
-type DowntimeScheduleOneTimeCreateUpdateRequestModel struct {
+type DowntimeScheduleOneTimeSchedule struct {
 	End   types.String `tfsdk:"end"`
 	Start types.String `tfsdk:"start"`
 }
@@ -195,8 +196,7 @@ func (r *DowntimeScheduleResource) Read(ctx context.Context, request resource.Re
 	}
 
 	id := state.ID.ValueString()
-	include := state.Include.ValueString()
-	resp, httpResp, err := r.Api.GetDowntime(r.Auth, id, include)
+	resp, httpResp, err := r.Api.GetDowntime(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -299,10 +299,6 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
-	if createdAt, ok := attributes.GetCreatedAtOk(); ok {
-		state.CreatedAt = types.StringValue(*createdAt)
-	}
-
 	if displayTimezone, ok := attributes.GetDisplayTimezoneOk(); ok {
 		state.DisplayTimezone = types.StringValue(*displayTimezone)
 	}
@@ -311,19 +307,11 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 		state.Message = types.StringValue(*message)
 	}
 
-	if modifiedAt, ok := attributes.GetModifiedAtOk(); ok {
-		state.ModifiedAt = types.StringValue(*modifiedAt)
-	}
-
 	if muteFirstRecoveryNotification, ok := attributes.GetMuteFirstRecoveryNotificationOk(); ok {
 		state.MuteFirstRecoveryNotification = types.BoolValue(*muteFirstRecoveryNotification)
 	}
 
 	state.Scope = types.StringValue(attributes.GetScope())
-
-	if status, ok := attributes.GetStatusOk(); ok {
-		state.Status = types.StringValue(*status)
-	}
 
 	if notifyEndStates, ok := attributes.GetNotifyEndStatesOk(); ok && len(*notifyEndStates) > 0 {
 		state.NotifyEndStates, _ = types.ListValueFrom(ctx, types.StringType, *notifyEndStates)
@@ -355,19 +343,7 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 
 		scheduleTf := ScheduleModel{}
 		if schedule.DowntimeScheduleRecurrencesResponse != nil {
-			downtimeScheduleRecurrencesResponseTf := DowntimeScheduleRecurrencesResponseModel{}
-			if currentDowntime, ok := schedule.DowntimeScheduleRecurrencesResponse.GetCurrentDowntimeOk(); ok {
-
-				currentDowntimeTf := CurrentDowntimeModel{}
-				if end, ok := currentDowntime.GetEndOk(); ok {
-					currentDowntimeTf.End = types.StringValue(*end)
-				}
-				if start, ok := currentDowntime.GetStartOk(); ok {
-					currentDowntimeTf.Start = types.StringValue(*start)
-				}
-
-				downtimeScheduleRecurrencesResponseTf.CurrentDowntime = &currentDowntimeTf
-			}
+			downtimeScheduleRecurrencesResponseTf := DowntimeScheduleRecurrenceSchedule{}
 			if recurrences, ok := schedule.DowntimeScheduleRecurrencesResponse.GetRecurrencesOk(); ok && len(*recurrences) > 0 {
 				downtimeScheduleRecurrencesResponseTf.Recurrences = []*RecurrencesModel{}
 				for _, recurrencesDd := range *recurrences {
@@ -389,18 +365,18 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 				downtimeScheduleRecurrencesResponseTf.Timezone = types.StringValue(*timezone)
 			}
 
-			scheduleTf.DowntimeScheduleRecurrencesResponse = &downtimeScheduleRecurrencesResponseTf
+			scheduleTf.DowntimeScheduleRecurrenceSchedule = &downtimeScheduleRecurrencesResponseTf
 		}
 		if schedule.DowntimeScheduleOneTimeResponse != nil {
-			downtimeScheduleOneTimeResponseTf := DowntimeScheduleOneTimeResponseModel{}
+			downtimeScheduleOneTimeResponseTf := DowntimeScheduleOneTimeSchedule{}
 			if end, ok := schedule.DowntimeScheduleOneTimeResponse.GetEndOk(); ok {
-				downtimeScheduleOneTimeResponseTf.End = types.StringValue(*end)
+				downtimeScheduleOneTimeResponseTf.End = types.StringValue((*end).Format("2006-01-02T15:04:05Z07:00"))
 			}
 			if start, ok := schedule.DowntimeScheduleOneTimeResponse.GetStartOk(); ok {
-				downtimeScheduleOneTimeResponseTf.Start = types.StringValue(*start)
+				downtimeScheduleOneTimeResponseTf.End = types.StringValue((*start).Format("2006-01-02T15:04:05Z07:00"))
 			}
 
-			scheduleTf.DowntimeScheduleOneTimeResponse = &downtimeScheduleOneTimeResponseTf
+			scheduleTf.DowntimeScheduleOneTimeSchedule = &downtimeScheduleOneTimeResponseTf
 		}
 	}
 }
@@ -457,17 +433,17 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleRequestBody(ctx context.
 	if state.Schedule != nil {
 		var schedule datadogV2.DowntimeScheduleCreateRequest
 
-		if state.Schedule.DowntimeScheduleRecurrencesCreateRequest != nil {
-			var downtimeScheduleRecurrencesCreateRequest datadogV2.DowntimeScheduleRecurrencesCreateRequest
+		if state.Schedule.DowntimeScheduleRecurrenceSchedule != nil {
+			var DowntimeScheduleRecurrenceSchedule datadogV2.DowntimeScheduleRecurrencesCreateRequest
 
-			if !state.Schedule.DowntimeScheduleRecurrencesCreateRequest.Timezone.IsNull() {
-				downtimeScheduleRecurrencesCreateRequest.SetTimezone(state.Schedule.DowntimeScheduleRecurrencesCreateRequest.Timezone.ValueString())
+			if !state.Schedule.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
+				DowntimeScheduleRecurrenceSchedule.SetTimezone(state.Schedule.DowntimeScheduleRecurrenceSchedule.Timezone.ValueString())
 			}
 
-			if state.Schedule.DowntimeScheduleRecurrencesCreateRequest.Recurrences != nil {
+			if state.Schedule.DowntimeScheduleRecurrenceSchedule.Recurrences != nil {
 				var recurrences []datadogV2.DowntimeScheduleRecurrenceCreateUpdateRequest
-				for _, recurrencesTFItem := range state.Schedule.DowntimeScheduleRecurrencesCreateRequest.Recurrences {
-					recurrencesDDItem := datadogV2.NewDowntimeScheduleRecurrenceCreateUpdateRequest()
+				for _, recurrencesTFItem := range state.Schedule.DowntimeScheduleRecurrenceSchedule.Recurrences {
+					recurrencesDDItem := datadogV2.NewDowntimeScheduleRecurrenceCreateUpdateRequest(recurrencesTFItem.Start.ValueString(), recurrencesTFItem.Rrule.ValueString())
 
 					recurrencesDDItem.SetDuration(recurrencesTFItem.Duration.ValueString())
 					recurrencesDDItem.SetRrule(recurrencesTFItem.Rrule.ValueString())
@@ -475,23 +451,25 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleRequestBody(ctx context.
 						recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
 					}
 				}
-				downtimeScheduleRecurrencesCreateRequest.SetRecurrences(recurrences)
+				DowntimeScheduleRecurrenceSchedule.SetRecurrences(recurrences)
 			}
 
-			schedule.DowntimeScheduleRecurrencesCreateRequest = &downtimeScheduleRecurrencesCreateRequest
+			schedule.DowntimeScheduleRecurrencesCreateRequest = &DowntimeScheduleRecurrenceSchedule
 		}
 
-		if state.Schedule.DowntimeScheduleOneTimeCreateUpdateRequest != nil {
-			var downtimeScheduleOneTimeCreateUpdateRequest datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
+		if state.Schedule.DowntimeScheduleOneTimeSchedule != nil {
+			var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
 
-			if !state.Schedule.DowntimeScheduleOneTimeCreateUpdateRequest.End.IsNull() {
-				downtimeScheduleOneTimeCreateUpdateRequest.SetEnd(state.Schedule.DowntimeScheduleOneTimeCreateUpdateRequest.End.ValueString())
+			if !state.Schedule.DowntimeScheduleOneTimeSchedule.End.IsNull() {
+				endStr, _ := time.Parse(time.RFC3339, state.Schedule.DowntimeScheduleOneTimeSchedule.End.ValueString())
+				DowntimeScheduleOneTimeSchedule.SetEnd(endStr)
 			}
-			if !state.Schedule.DowntimeScheduleOneTimeCreateUpdateRequest.Start.IsNull() {
-				downtimeScheduleOneTimeCreateUpdateRequest.SetStart(state.Schedule.DowntimeScheduleOneTimeCreateUpdateRequest.Start.ValueString())
+			if !state.Schedule.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
+				startStr, _ := time.Parse(time.RFC3339, state.Schedule.DowntimeScheduleOneTimeSchedule.Start.ValueString())
+				DowntimeScheduleOneTimeSchedule.SetStart(startStr)
 			}
 
-			schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &downtimeScheduleOneTimeCreateUpdateRequest
+			schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &DowntimeScheduleOneTimeSchedule
 		}
 
 		attributes.Schedule = &schedule
@@ -560,20 +538,17 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 	if state.Schedule != nil {
 		var schedule datadogV2.DowntimeScheduleUpdateRequest
 
-		if state.Schedule.DowntimeScheduleRecurrencesUpdateRequest != nil {
+		if state.Schedule.DowntimeScheduleRecurrenceSchedule != nil {
 			var downtimeScheduleRecurrencesUpdateRequest datadogV2.DowntimeScheduleRecurrencesUpdateRequest
 
-			if !state.Schedule.DowntimeScheduleRecurrencesUpdateRequest.Timezone.IsNull() {
-				downtimeScheduleRecurrencesUpdateRequest.SetTimezone(state.Schedule.DowntimeScheduleRecurrencesUpdateRequest.Timezone.ValueString())
+			if !state.Schedule.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
+				downtimeScheduleRecurrencesUpdateRequest.SetTimezone(state.Schedule.DowntimeScheduleRecurrenceSchedule.Timezone.ValueString())
 			}
 
-			if state.Schedule.DowntimeScheduleRecurrencesUpdateRequest.Recurrences != nil {
+			if state.Schedule.DowntimeScheduleRecurrenceSchedule.Recurrences != nil {
 				var recurrences []datadogV2.DowntimeScheduleRecurrenceCreateUpdateRequest
-				for _, recurrencesTFItem := range state.Schedule.DowntimeScheduleRecurrencesUpdateRequest.Recurrences {
-					recurrencesDDItem := datadogV2.NewDowntimeScheduleRecurrenceCreateUpdateRequest()
-
-					recurrencesDDItem.SetDuration(recurrencesTFItem.Duration.ValueString())
-					recurrencesDDItem.SetRrule(recurrencesTFItem.Rrule.ValueString())
+				for _, recurrencesTFItem := range state.Schedule.DowntimeScheduleRecurrenceSchedule.Recurrences {
+					recurrencesDDItem := datadogV2.NewDowntimeScheduleRecurrenceCreateUpdateRequest(recurrencesTFItem.Duration.ValueString(), recurrencesTFItem.Rrule.ValueString())
 					if !recurrencesTFItem.Start.IsNull() {
 						recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
 					}
@@ -584,17 +559,19 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 			schedule.DowntimeScheduleRecurrencesUpdateRequest = &downtimeScheduleRecurrencesUpdateRequest
 		}
 
-		if state.Schedule.DowntimeScheduleOneTimeCreateUpdateRequest != nil {
-			var downtimeScheduleOneTimeCreateUpdateRequest datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
+		if state.Schedule.DowntimeScheduleOneTimeSchedule != nil {
+			var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
 
-			if !state.Schedule.DowntimeScheduleOneTimeCreateUpdateRequest.End.IsNull() {
-				downtimeScheduleOneTimeCreateUpdateRequest.SetEnd(state.Schedule.DowntimeScheduleOneTimeCreateUpdateRequest.End.ValueString())
+			if !state.Schedule.DowntimeScheduleOneTimeSchedule.End.IsNull() {
+				endStr, _ := time.Parse(time.RFC3339, state.Schedule.DowntimeScheduleOneTimeSchedule.End.ValueString())
+				DowntimeScheduleOneTimeSchedule.SetEnd(endStr)
 			}
-			if !state.Schedule.DowntimeScheduleOneTimeCreateUpdateRequest.Start.IsNull() {
-				downtimeScheduleOneTimeCreateUpdateRequest.SetStart(state.Schedule.DowntimeScheduleOneTimeCreateUpdateRequest.Start.ValueString())
+			if !state.Schedule.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
+				startStr, _ := time.Parse(time.RFC3339, state.Schedule.DowntimeScheduleOneTimeSchedule.Start.ValueString())
+				DowntimeScheduleOneTimeSchedule.SetStart(startStr)
 			}
 
-			schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &downtimeScheduleOneTimeCreateUpdateRequest
+			schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &DowntimeScheduleOneTimeSchedule
 		}
 
 		attributes.Schedule = &schedule
