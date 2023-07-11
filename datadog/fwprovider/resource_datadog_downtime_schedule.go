@@ -2,6 +2,8 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
+	"log"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -221,6 +223,8 @@ func (r *DowntimeScheduleResource) Create(ctx context.Context, request resource.
 	}
 
 	body, diags := r.buildDowntimeScheduleCreateRequestBody(ctx, &state)
+	fmt.Errorf("WHY", body)
+	log.Printf("[DEBUG] WHYWHY: %v", 123)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -420,6 +424,7 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 		var schedule datadogV2.DowntimeScheduleCreateRequest
 
 		if state.DowntimeScheduleRecurrenceSchedule != nil {
+			log.Printf("WHYzzz %v", fmt.Sprintf("%+v", state.DowntimeScheduleRecurrenceSchedule.Recurrences[0]))
 			var DowntimeScheduleRecurrenceSchedule datadogV2.DowntimeScheduleRecurrencesCreateRequest
 
 			if !state.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
@@ -436,7 +441,9 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 					if !recurrencesTFItem.Start.IsNull() {
 						recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
 					}
+					recurrences = append(recurrences, *recurrencesDDItem)
 				}
+				log.Printf("WHYzzz %v", fmt.Sprintf("%+v", recurrences))
 				DowntimeScheduleRecurrenceSchedule.SetRecurrences(recurrences)
 			}
 
