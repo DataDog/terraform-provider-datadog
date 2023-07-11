@@ -25,35 +25,33 @@ type DowntimeScheduleResource struct {
 }
 
 type DowntimeScheduleModel struct {
-	ID                            types.String            `tfsdk:"id"`
-	DisplayTimezone               types.String            `tfsdk:"display_timezone"`
-	Message                       types.String            `tfsdk:"message"`
-	MuteFirstRecoveryNotification types.Bool              `tfsdk:"mute_first_recovery_notification"`
-	Scope                         types.String            `tfsdk:"scope"`
-	NotifyEndStates               types.List              `tfsdk:"notify_end_states"`
-	NotifyEndTypes                types.List              `tfsdk:"notify_end_types"`
-	MonitorIdentifier             *MonitorIdentifierModel `tfsdk:"monitor_identifier"`
-	Schedule                      *ScheduleModel          `tfsdk:"schedule"`
+	ID                                 types.String                        `tfsdk:"id"`
+	DisplayTimezone                    types.String                        `tfsdk:"display_timezone"`
+	Message                            types.String                        `tfsdk:"message"`
+	MuteFirstRecoveryNotification      types.Bool                          `tfsdk:"mute_first_recovery_notification"`
+	Scope                              types.String                        `tfsdk:"scope"`
+	NotifyEndStates                    types.List                          `tfsdk:"notify_end_states"`
+	NotifyEndTypes                     types.List                          `tfsdk:"notify_end_types"`
+	MonitorIdentifier                  *MonitorIdentifierModel             `tfsdk:"monitor_identifier"`
+	DowntimeScheduleRecurrenceSchedule *DowntimeScheduleRecurrenceSchedule `tfsdk:"recurring_schedule"`
+	DowntimeScheduleOneTimeSchedule    *DowntimeScheduleOneTimeSchedule    `tfsdk:"one_time_schedule"`
 }
 
 type MonitorIdentifierModel struct {
-	DowntimeMonitorIdentifierId   *DowntimeMonitorIdentifierIdModel   `tfsdk:"downtime_monitor_identifier_id"`
-	DowntimeMonitorIdentifierTags *DowntimeMonitorIdentifierTagsModel `tfsdk:"downtime_monitor_identifier_tags"`
-}
-type DowntimeMonitorIdentifierIdModel struct {
-	MonitorId types.Int64 `tfsdk:"monitor_id"`
-}
-type DowntimeMonitorIdentifierTagsModel struct {
-	MonitorTags types.List `tfsdk:"monitor_tags"`
+	DowntimeMonitorIdentifierId   types.Int64 `tfsdk:"monitor_id"`
+	DowntimeMonitorIdentifierTags types.List  `tfsdk:"monitor_tags"`
 }
 
-type ScheduleModel struct {
-	DowntimeScheduleRecurrenceSchedule *DowntimeScheduleRecurrenceSchedule `tfsdk:"downtime_schedule_recurrences_create_request"`
-	DowntimeScheduleOneTimeSchedule    *DowntimeScheduleOneTimeSchedule    `tfsdk:"downtime_schedule_one_time_create_update_request"`
-}
+//type DowntimeMonitorIdentifierIdModel struct {
+//	MonitorId types.Int64 `tfsdk:"monitor_id"`
+//}
+//type DowntimeMonitorIdentifierTagsModel struct {
+//	MonitorTags types.List `tfsdk:"monitor_tags"`
+//}
+
 type DowntimeScheduleRecurrenceSchedule struct {
 	Timezone    types.String        `tfsdk:"timezone"`
-	Recurrences []*RecurrencesModel `tfsdk:"recurrences"`
+	Recurrences []*RecurrencesModel `tfsdk:"recurrence"`
 }
 type RecurrencesModel struct {
 	Duration types.String `tfsdk:"duration"`
@@ -113,68 +111,67 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 			"id": utils.ResourceIDAttribute(),
 		},
 		Blocks: map[string]schema.Block{
+			//"monitor_identifier": schema.SingleNestedBlock{
+			//	Attributes: map[string]schema.Attribute{
+			//		"monitor_id": schema.Int64Attribute{
+			//			Optional:    true,
+			//			Description: "ID of the monitor to prevent notifications.",
+			//		},
+			//		"monitor_tags": schema.ListAttribute{
+			//			Optional:    true,
+			//			Description: "A list of monitor tags. For example, tags that are applied directly to monitors, not tags that are used in monitor queries (which are filtered by the scope parameter), to which the downtime applies. The resulting downtime applies to monitors that match **all** provided monitor tags. Setting `monitor_tags` to `[*]` configures the downtime to mute all monitors for the given scope.",
+			//			ElementType: types.StringType,
+			//		},
+			//	},
+			//},
 			"monitor_identifier": schema.SingleNestedBlock{
-				Attributes: map[string]schema.Attribute{},
-				Blocks: map[string]schema.Block{
-					"downtime_monitor_identifier_id": schema.SingleNestedBlock{
-						Attributes: map[string]schema.Attribute{
-							"monitor_id": schema.Int64Attribute{
-								Optional:    true,
-								Description: "ID of the monitor to prevent notifications.",
-							},
-						},
+				Attributes: map[string]schema.Attribute{
+					"monitor_id": schema.Int64Attribute{
+						Optional:    true,
+						Description: "ID of the monitor to prevent notifications.",
 					},
-					"downtime_monitor_identifier_tags": schema.SingleNestedBlock{
-						Attributes: map[string]schema.Attribute{
-							"monitor_tags": schema.ListAttribute{
-								Optional:    true,
-								Description: "A list of monitor tags. For example, tags that are applied directly to monitors, not tags that are used in monitor queries (which are filtered by the scope parameter), to which the downtime applies. The resulting downtime applies to monitors that match **all** provided monitor tags. Setting `monitor_tags` to `[*]` configures the downtime to mute all monitors for the given scope.",
-								ElementType: types.StringType,
-							},
-						},
+					"monitor_tags": schema.ListAttribute{
+						Optional:    true,
+						Description: "A list of monitor tags. For example, tags that are applied directly to monitors, not tags that are used in monitor queries (which are filtered by the scope parameter), to which the downtime applies. The resulting downtime applies to monitors that match **all** provided monitor tags. Setting `monitor_tags` to `[*]` configures the downtime to mute all monitors for the given scope.",
+						ElementType: types.StringType,
 					},
 				},
 			},
-			"schedule": schema.SingleNestedBlock{
-				Attributes: map[string]schema.Attribute{},
-				Blocks: map[string]schema.Block{
-					"downtime_schedule_recurrences_create_request": schema.SingleNestedBlock{
-						Attributes: map[string]schema.Attribute{
-							"timezone": schema.StringAttribute{
-								Optional:    true,
-								Description: "The timezone in which to schedule the downtime.",
-							},
-						},
-						Blocks: map[string]schema.Block{
-							"recurrences": schema.ListNestedBlock{
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"duration": schema.StringAttribute{
-											Optional:    true,
-											Description: "The length of the downtime. Must begin with an integer and end with one of 'm', 'h', d', or 'w'.",
-										},
-										"rrule": schema.StringAttribute{
-											Optional:    true,
-											Description: "The `RRULE` standard for defining recurring events. For example, to have a recurring event on the first day of each month, set the type to `rrule` and set the `FREQ` to `MONTHLY` and `BYMONTHDAY` to `1`. Most common `rrule` options from the [iCalendar Spec](https://tools.ietf.org/html/rfc5545) are supported.  **Note**: Attributes specifying the duration in `RRULE` are not supported (for example, `DTSTART`, `DTEND`, `DURATION`). More examples available in this [downtime guide](https://docs.datadoghq.com/monitors/guide/suppress-alert-with-downtimes/?tab=api).",
-										},
-										"start": schema.StringAttribute{
-											Optional:    true,
-											Description: "ISO-8601 Datetime to start the downtime. Must not include a UTC offset. If not provided, the downtime starts the moment it is created.",
-										},
-									},
-								},
-							},
-						},
+			"one_time_schedule": schema.SingleNestedBlock{
+				Attributes: map[string]schema.Attribute{
+					"end": schema.StringAttribute{
+						Optional:    true,
+						Description: "ISO-8601 Datetime to end the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
 					},
-					"downtime_schedule_one_time_create_update_request": schema.SingleNestedBlock{
-						Attributes: map[string]schema.Attribute{
-							"end": schema.StringAttribute{
-								Optional:    true,
-								Description: "ISO-8601 Datetime to end the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
-							},
-							"start": schema.StringAttribute{
-								Optional:    true,
-								Description: "ISO-8601 Datetime to start the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
+					"start": schema.StringAttribute{
+						Optional:    true,
+						Description: "ISO-8601 Datetime to start the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
+					},
+				},
+			},
+			"recurring_schedule": schema.SingleNestedBlock{
+				Attributes: map[string]schema.Attribute{
+					"timezone": schema.StringAttribute{
+						Optional:    true,
+						Description: "The timezone in which to schedule the downtime.",
+					},
+				},
+				Blocks: map[string]schema.Block{
+					"recurrence": schema.ListNestedBlock{
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"duration": schema.StringAttribute{
+									Optional:    true,
+									Description: "The length of the downtime. Must begin with an integer and end with one of 'm', 'h', d', or 'w'.",
+								},
+								"rrule": schema.StringAttribute{
+									Optional:    true,
+									Description: "The `RRULE` standard for defining recurring events. For example, to have a recurring event on the first day of each month, set the type to `rrule` and set the `FREQ` to `MONTHLY` and `BYMONTHDAY` to `1`. Most common `rrule` options from the [iCalendar Spec](https://tools.ietf.org/html/rfc5545) are supported.  **Note**: Attributes specifying the duration in `RRULE` are not supported (for example, `DTSTART`, `DTEND`, `DURATION`). More examples available in this [downtime guide](https://docs.datadoghq.com/monitors/guide/suppress-alert-with-downtimes/?tab=api).",
+								},
+								"start": schema.StringAttribute{
+									Optional:    true,
+									Description: "ISO-8601 Datetime to start the downtime. Must not include a UTC offset. If not provided, the downtime starts the moment it is created.",
+								},
 							},
 						},
 					},
@@ -223,7 +220,7 @@ func (r *DowntimeScheduleResource) Create(ctx context.Context, request resource.
 		return
 	}
 
-	body, diags := r.buildDowntimeScheduleRequestBody(ctx, &state)
+	body, diags := r.buildDowntimeScheduleCreateRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -321,27 +318,16 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 		state.NotifyEndTypes, _ = types.ListValueFrom(ctx, types.StringType, *notifyEndTypes)
 	}
 
-	monitorIdentifierTf := MonitorIdentifierModel{}
 	if attributes.MonitorIdentifier.DowntimeMonitorIdentifierId != nil {
-		downtimeMonitorIdentifierIdTf := DowntimeMonitorIdentifierIdModel{}
-		if monitorId, ok := attributes.MonitorIdentifier.DowntimeMonitorIdentifierId.GetMonitorIdOk(); ok {
-			downtimeMonitorIdentifierIdTf.MonitorId = types.Int64Value(*monitorId)
-		}
-
-		monitorIdentifierTf.DowntimeMonitorIdentifierId = &downtimeMonitorIdentifierIdTf
+		state.MonitorIdentifier.DowntimeMonitorIdentifierId = types.Int64Value(attributes.MonitorIdentifier.DowntimeMonitorIdentifierId.MonitorId)
 	}
 	if attributes.MonitorIdentifier.DowntimeMonitorIdentifierTags != nil {
-		downtimeMonitorIdentifierTagsTf := DowntimeMonitorIdentifierTagsModel{}
-		if monitorTags, ok := attributes.MonitorIdentifier.DowntimeMonitorIdentifierTags.GetMonitorTagsOk(); ok && len(*monitorTags) > 0 {
-			downtimeMonitorIdentifierTagsTf.MonitorTags, _ = types.ListValueFrom(ctx, types.StringType, *monitorTags)
-		}
-
-		monitorIdentifierTf.DowntimeMonitorIdentifierTags = &downtimeMonitorIdentifierTagsTf
+		monitorTags := attributes.MonitorIdentifier.DowntimeMonitorIdentifierTags.MonitorTags
+		state.MonitorIdentifier.DowntimeMonitorIdentifierTags, _ = types.ListValueFrom(ctx, types.StringType, monitorTags)
 	}
 
 	if schedule, ok := attributes.GetScheduleOk(); ok {
 
-		scheduleTf := ScheduleModel{}
 		if schedule.DowntimeScheduleRecurrencesResponse != nil {
 			downtimeScheduleRecurrencesResponseTf := DowntimeScheduleRecurrenceSchedule{}
 			if recurrences, ok := schedule.DowntimeScheduleRecurrencesResponse.GetRecurrencesOk(); ok && len(*recurrences) > 0 {
@@ -365,7 +351,7 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 				downtimeScheduleRecurrencesResponseTf.Timezone = types.StringValue(*timezone)
 			}
 
-			scheduleTf.DowntimeScheduleRecurrenceSchedule = &downtimeScheduleRecurrencesResponseTf
+			state.DowntimeScheduleRecurrenceSchedule = &downtimeScheduleRecurrencesResponseTf
 		}
 		if schedule.DowntimeScheduleOneTimeResponse != nil {
 			downtimeScheduleOneTimeResponseTf := DowntimeScheduleOneTimeSchedule{}
@@ -376,12 +362,12 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 				downtimeScheduleOneTimeResponseTf.End = types.StringValue((*start).Format("2006-01-02T15:04:05Z07:00"))
 			}
 
-			scheduleTf.DowntimeScheduleOneTimeSchedule = &downtimeScheduleOneTimeResponseTf
+			state.DowntimeScheduleOneTimeSchedule = &downtimeScheduleOneTimeResponseTf
 		}
 	}
 }
 
-func (r *DowntimeScheduleResource) buildDowntimeScheduleRequestBody(ctx context.Context, state *DowntimeScheduleModel) (*datadogV2.DowntimeCreateRequest, diag.Diagnostics) {
+func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx context.Context, state *DowntimeScheduleModel) (*datadogV2.DowntimeCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewDowntimeCreateRequestAttributesWithDefaults()
 
@@ -410,19 +396,19 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleRequestBody(ctx context.
 
 	var monitorIdentifier datadogV2.DowntimeMonitorIdentifier
 
-	if state.MonitorIdentifier.DowntimeMonitorIdentifierId != nil {
+	if !state.MonitorIdentifier.DowntimeMonitorIdentifierId.IsNull() {
 		var downtimeMonitorIdentifierId datadogV2.DowntimeMonitorIdentifierId
 
-		downtimeMonitorIdentifierId.SetMonitorId(state.MonitorIdentifier.DowntimeMonitorIdentifierId.MonitorId.ValueInt64())
+		downtimeMonitorIdentifierId.SetMonitorId(state.MonitorIdentifier.DowntimeMonitorIdentifierId.ValueInt64())
 
 		monitorIdentifier.DowntimeMonitorIdentifierId = &downtimeMonitorIdentifierId
 	}
 
-	if state.MonitorIdentifier.DowntimeMonitorIdentifierTags != nil {
+	if state.MonitorIdentifier.DowntimeMonitorIdentifierTags.Elements() != nil {
 		var downtimeMonitorIdentifierTags datadogV2.DowntimeMonitorIdentifierTags
 
 		var monitorTags []string
-		diags.Append(state.MonitorIdentifier.DowntimeMonitorIdentifierTags.MonitorTags.ElementsAs(ctx, &monitorTags, false)...)
+		diags.Append(state.MonitorIdentifier.DowntimeMonitorIdentifierTags.ElementsAs(ctx, &monitorTags, false)...)
 		downtimeMonitorIdentifierTags.SetMonitorTags(monitorTags)
 
 		monitorIdentifier.DowntimeMonitorIdentifierTags = &downtimeMonitorIdentifierTags
@@ -430,19 +416,19 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleRequestBody(ctx context.
 
 	attributes.MonitorIdentifier = monitorIdentifier
 
-	if state.Schedule != nil {
+	if state.DowntimeScheduleRecurrenceSchedule != nil || state.DowntimeScheduleOneTimeSchedule != nil {
 		var schedule datadogV2.DowntimeScheduleCreateRequest
 
-		if state.Schedule.DowntimeScheduleRecurrenceSchedule != nil {
+		if state.DowntimeScheduleRecurrenceSchedule != nil {
 			var DowntimeScheduleRecurrenceSchedule datadogV2.DowntimeScheduleRecurrencesCreateRequest
 
-			if !state.Schedule.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
-				DowntimeScheduleRecurrenceSchedule.SetTimezone(state.Schedule.DowntimeScheduleRecurrenceSchedule.Timezone.ValueString())
+			if !state.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
+				DowntimeScheduleRecurrenceSchedule.SetTimezone(state.DowntimeScheduleRecurrenceSchedule.Timezone.ValueString())
 			}
 
-			if state.Schedule.DowntimeScheduleRecurrenceSchedule.Recurrences != nil {
+			if state.DowntimeScheduleRecurrenceSchedule.Recurrences != nil {
 				var recurrences []datadogV2.DowntimeScheduleRecurrenceCreateUpdateRequest
-				for _, recurrencesTFItem := range state.Schedule.DowntimeScheduleRecurrenceSchedule.Recurrences {
+				for _, recurrencesTFItem := range state.DowntimeScheduleRecurrenceSchedule.Recurrences {
 					recurrencesDDItem := datadogV2.NewDowntimeScheduleRecurrenceCreateUpdateRequest(recurrencesTFItem.Start.ValueString(), recurrencesTFItem.Rrule.ValueString())
 
 					recurrencesDDItem.SetDuration(recurrencesTFItem.Duration.ValueString())
@@ -457,15 +443,15 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleRequestBody(ctx context.
 			schedule.DowntimeScheduleRecurrencesCreateRequest = &DowntimeScheduleRecurrenceSchedule
 		}
 
-		if state.Schedule.DowntimeScheduleOneTimeSchedule != nil {
+		if state.DowntimeScheduleOneTimeSchedule != nil {
 			var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
 
-			if !state.Schedule.DowntimeScheduleOneTimeSchedule.End.IsNull() {
-				endStr, _ := time.Parse(time.RFC3339, state.Schedule.DowntimeScheduleOneTimeSchedule.End.ValueString())
+			if !state.DowntimeScheduleOneTimeSchedule.End.IsNull() {
+				endStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
 				DowntimeScheduleOneTimeSchedule.SetEnd(endStr)
 			}
-			if !state.Schedule.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
-				startStr, _ := time.Parse(time.RFC3339, state.Schedule.DowntimeScheduleOneTimeSchedule.Start.ValueString())
+			if !state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
+				startStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
 				DowntimeScheduleOneTimeSchedule.SetStart(startStr)
 			}
 
@@ -514,19 +500,19 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 	if state.MonitorIdentifier != nil {
 		var monitorIdentifier datadogV2.DowntimeMonitorIdentifier
 
-		if state.MonitorIdentifier.DowntimeMonitorIdentifierId != nil {
+		if !state.MonitorIdentifier.DowntimeMonitorIdentifierId.IsNull() {
 			var downtimeMonitorIdentifierId datadogV2.DowntimeMonitorIdentifierId
 
-			downtimeMonitorIdentifierId.SetMonitorId(state.MonitorIdentifier.DowntimeMonitorIdentifierId.MonitorId.ValueInt64())
+			downtimeMonitorIdentifierId.SetMonitorId(state.MonitorIdentifier.DowntimeMonitorIdentifierId.ValueInt64())
 
 			monitorIdentifier.DowntimeMonitorIdentifierId = &downtimeMonitorIdentifierId
 		}
 
-		if state.MonitorIdentifier.DowntimeMonitorIdentifierTags != nil {
+		if !state.MonitorIdentifier.DowntimeMonitorIdentifierTags.IsNull() {
 			var downtimeMonitorIdentifierTags datadogV2.DowntimeMonitorIdentifierTags
 
 			var monitorTags []string
-			diags.Append(state.MonitorIdentifier.DowntimeMonitorIdentifierTags.MonitorTags.ElementsAs(ctx, &monitorTags, false)...)
+			diags.Append(state.MonitorIdentifier.DowntimeMonitorIdentifierTags.ElementsAs(ctx, &monitorTags, false)...)
 			downtimeMonitorIdentifierTags.SetMonitorTags(monitorTags)
 
 			monitorIdentifier.DowntimeMonitorIdentifierTags = &downtimeMonitorIdentifierTags
@@ -535,19 +521,19 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 		attributes.MonitorIdentifier = &monitorIdentifier
 	}
 
-	if state.Schedule != nil {
+	if state.DowntimeScheduleRecurrenceSchedule != nil || state.DowntimeScheduleOneTimeSchedule != nil {
 		var schedule datadogV2.DowntimeScheduleUpdateRequest
 
-		if state.Schedule.DowntimeScheduleRecurrenceSchedule != nil {
+		if state.DowntimeScheduleRecurrenceSchedule != nil {
 			var downtimeScheduleRecurrencesUpdateRequest datadogV2.DowntimeScheduleRecurrencesUpdateRequest
 
-			if !state.Schedule.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
-				downtimeScheduleRecurrencesUpdateRequest.SetTimezone(state.Schedule.DowntimeScheduleRecurrenceSchedule.Timezone.ValueString())
+			if !state.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
+				downtimeScheduleRecurrencesUpdateRequest.SetTimezone(state.DowntimeScheduleRecurrenceSchedule.Timezone.ValueString())
 			}
 
-			if state.Schedule.DowntimeScheduleRecurrenceSchedule.Recurrences != nil {
+			if state.DowntimeScheduleRecurrenceSchedule.Recurrences != nil {
 				var recurrences []datadogV2.DowntimeScheduleRecurrenceCreateUpdateRequest
-				for _, recurrencesTFItem := range state.Schedule.DowntimeScheduleRecurrenceSchedule.Recurrences {
+				for _, recurrencesTFItem := range state.DowntimeScheduleRecurrenceSchedule.Recurrences {
 					recurrencesDDItem := datadogV2.NewDowntimeScheduleRecurrenceCreateUpdateRequest(recurrencesTFItem.Duration.ValueString(), recurrencesTFItem.Rrule.ValueString())
 					if !recurrencesTFItem.Start.IsNull() {
 						recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
@@ -559,15 +545,15 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 			schedule.DowntimeScheduleRecurrencesUpdateRequest = &downtimeScheduleRecurrencesUpdateRequest
 		}
 
-		if state.Schedule.DowntimeScheduleOneTimeSchedule != nil {
+		if state.DowntimeScheduleOneTimeSchedule != nil {
 			var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
 
-			if !state.Schedule.DowntimeScheduleOneTimeSchedule.End.IsNull() {
-				endStr, _ := time.Parse(time.RFC3339, state.Schedule.DowntimeScheduleOneTimeSchedule.End.ValueString())
+			if !state.DowntimeScheduleOneTimeSchedule.End.IsNull() {
+				endStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
 				DowntimeScheduleOneTimeSchedule.SetEnd(endStr)
 			}
-			if !state.Schedule.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
-				startStr, _ := time.Parse(time.RFC3339, state.Schedule.DowntimeScheduleOneTimeSchedule.Start.ValueString())
+			if !state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
+				startStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
 				DowntimeScheduleOneTimeSchedule.SetStart(startStr)
 			}
 
