@@ -202,7 +202,7 @@ func (r *DowntimeScheduleResource) Create(ctx context.Context, request resource.
 	}
 
 	body, diags := r.buildDowntimeScheduleCreateRequestBody(ctx, &state)
-	fmt.Errorf("WHY", body)
+	fmt.Errorf("WHY %v", body)
 	log.Printf("[DEBUG] WHYWHY: %v", 123)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {

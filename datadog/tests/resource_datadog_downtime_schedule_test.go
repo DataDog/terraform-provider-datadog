@@ -6,10 +6,8 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -32,9 +30,9 @@ func TestAccDowntimeScheduleBasic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_downtime_schedule.foo", "message", "Message about the downtime"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime_schedule.foo", "mute_first_recovery_notification", "UPDATE ME"),
+						"datadog_downtime_schedule.foo", "mute_first_recovery_notification", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_downtime_schedule.foo", "scope", "env:(staging OR prod) AND datacenter:us-east-1"),
+						"datadog_downtime_schedule.foo", "scope", "env:(staging OR prod)"),
 				),
 			},
 		},
@@ -42,19 +40,30 @@ func TestAccDowntimeScheduleBasic(t *testing.T) {
 }
 
 func testAccCheckDatadogDowntimeSchedule(uniq string) string {
-	// Update me to make use of the unique value
 	return fmt.Sprintf(`
-resource "datadog_downtime_schedule" "foo" {
+resource "datadog_downtime_schedule" "test" {
     display_timezone = "America/New_York"
     message = "Message about the downtime"
     monitor_identifier {
+      monitor_tags: ["cat:hat", "mat:sat"]
     }
-    mute_first_recovery_notification = "UPDATE ME"
-    notify_end_states = ["alert", "warn"]
+    mute_first_recovery_notification = true
+    notify_end_states = ["warn"]
     notify_end_types = ["canceled", "expired"]
-    schedule {
-    }
-    scope = "env:(staging OR prod) AND datacenter:us-east-1"
+    recurring_schedule {
+		recurrence {
+		  start = "2022-07-13T01:02:03"
+		  duration = "1d"
+		  rrule    = "FREQ=DAILY;INTERVAL=123"
+		}
+		recurrence {
+		  start = "2022-07-15T01:02:03"
+		  duration = "1w"
+		  rrule    = "FREQ=DAILY;INTERVAL=12"
+		}
+    	timezone = "America/New_York"
+  }
+    scope = "env:(staging OR %v)"
 }`, uniq)
 }
 
@@ -77,9 +86,7 @@ func DowntimeScheduleDestroyHelper(auth context.Context, s *terraform.State, api
 				continue
 			}
 			id := r.Primary.ID
-			include := r.Primary.Attributes["include"]
-
-			_, httpResp, err := apiInstances.GetDowntimesApiV2().GetDowntime(auth, id, include)
+			_, httpResp, err := apiInstances.GetDowntimesApiV2().GetDowntime(auth, id)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
@@ -111,9 +118,7 @@ func downtimeScheduleExistsHelper(auth context.Context, s *terraform.State, apiI
 			continue
 		}
 		id := r.Primary.ID
-		include := r.Primary.Attributes["include"]
-
-		_, httpResp, err := apiInstances.GetDowntimesApiV2().GetDowntime(auth, id, include)
+		_, httpResp, err := apiInstances.GetDowntimesApiV2().GetDowntime(auth, id)
 		if err != nil {
 			return utils.TranslateClientError(err, httpResp, "error retrieving DowntimeSchedule")
 		}
