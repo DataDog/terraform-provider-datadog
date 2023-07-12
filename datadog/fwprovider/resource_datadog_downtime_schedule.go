@@ -32,8 +32,8 @@ type DowntimeScheduleModel struct {
 	Message                            types.String                        `tfsdk:"message"`
 	MuteFirstRecoveryNotification      types.Bool                          `tfsdk:"mute_first_recovery_notification"`
 	Scope                              types.String                        `tfsdk:"scope"`
-	NotifyEndStates                    types.List                          `tfsdk:"notify_end_states"`
-	NotifyEndTypes                     types.List                          `tfsdk:"notify_end_types"`
+	NotifyEndStates                    types.Set                           `tfsdk:"notify_end_states"`
+	NotifyEndTypes                     types.Set                           `tfsdk:"notify_end_types"`
 	MonitorIdentifier                  *MonitorIdentifierModel             `tfsdk:"monitor_identifier"`
 	DowntimeScheduleRecurrenceSchedule *DowntimeScheduleRecurrenceSchedule `tfsdk:"recurring_schedule"`
 	DowntimeScheduleOneTimeSchedule    *DowntimeScheduleOneTimeSchedule    `tfsdk:"one_time_schedule"`
@@ -41,15 +41,8 @@ type DowntimeScheduleModel struct {
 
 type MonitorIdentifierModel struct {
 	DowntimeMonitorIdentifierId   types.Int64 `tfsdk:"monitor_id"`
-	DowntimeMonitorIdentifierTags types.List  `tfsdk:"monitor_tags"`
+	DowntimeMonitorIdentifierTags types.Set   `tfsdk:"monitor_tags"`
 }
-
-//type DowntimeMonitorIdentifierIdModel struct {
-//	MonitorId types.Int64 `tfsdk:"monitor_id"`
-//}
-//type DowntimeMonitorIdentifierTagsModel struct {
-//	MonitorTags types.List `tfsdk:"monitor_tags"`
-//}
 
 type DowntimeScheduleRecurrenceSchedule struct {
 	Timezone    types.String        `tfsdk:"timezone"`
@@ -94,45 +87,35 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 			},
 			"mute_first_recovery_notification": schema.BoolAttribute{
 				Optional:    true,
+				Computed:    true,
 				Description: "If the first recovery notification during a downtime should be muted.",
 			},
 			"scope": schema.StringAttribute{
 				Optional:    true,
 				Description: "The scope to which the downtime applies. Must follow the [common search syntax](https://docs.datadoghq.com/logs/explorer/search_syntax/).",
 			},
-			"notify_end_states": schema.ListAttribute{
+			"notify_end_states": schema.SetAttribute{
 				Optional:    true,
+				Computed:    true,
 				Description: "States that will trigger a monitor notification when the `notify_end_types` action occurs.",
 				ElementType: types.StringType,
 			},
-			"notify_end_types": schema.ListAttribute{
+			"notify_end_types": schema.SetAttribute{
 				Optional:    true,
+				Computed:    true,
 				Description: "Actions that will trigger a monitor notification if the downtime is in the `notify_end_types` state.",
 				ElementType: types.StringType,
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
 		Blocks: map[string]schema.Block{
-			//"monitor_identifier": schema.SingleNestedBlock{
-			//	Attributes: map[string]schema.Attribute{
-			//		"monitor_id": schema.Int64Attribute{
-			//			Optional:    true,
-			//			Description: "ID of the monitor to prevent notifications.",
-			//		},
-			//		"monitor_tags": schema.ListAttribute{
-			//			Optional:    true,
-			//			Description: "A list of monitor tags. For example, tags that are applied directly to monitors, not tags that are used in monitor queries (which are filtered by the scope parameter), to which the downtime applies. The resulting downtime applies to monitors that match **all** provided monitor tags. Setting `monitor_tags` to `[*]` configures the downtime to mute all monitors for the given scope.",
-			//			ElementType: types.StringType,
-			//		},
-			//	},
-			//},
 			"monitor_identifier": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"monitor_id": schema.Int64Attribute{
 						Optional:    true,
 						Description: "ID of the monitor to prevent notifications.",
 					},
-					"monitor_tags": schema.ListAttribute{
+					"monitor_tags": schema.SetAttribute{
 						Optional:    true,
 						Description: "A list of monitor tags. For example, tags that are applied directly to monitors, not tags that are used in monitor queries (which are filtered by the scope parameter), to which the downtime applies. The resulting downtime applies to monitors that match **all** provided monitor tags. Setting `monitor_tags` to `[*]` configures the downtime to mute all monitors for the given scope.",
 						ElementType: types.StringType,
@@ -204,10 +187,6 @@ func (r *DowntimeScheduleResource) Read(ctx context.Context, request resource.Re
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DowntimeSchedule"))
 		return
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-		return
-	}
 
 	r.updateState(ctx, &state, &resp)
 
@@ -235,10 +214,6 @@ func (r *DowntimeScheduleResource) Create(ctx context.Context, request resource.
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DowntimeSchedule"))
 		return
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-		return
-	}
 	r.updateState(ctx, &state, &resp)
 
 	// Save data into Terraform state
@@ -263,10 +238,6 @@ func (r *DowntimeScheduleResource) Update(ctx context.Context, request resource.
 	resp, _, err := r.Api.UpdateDowntime(r.Auth, id, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DowntimeSchedule"))
-		return
-	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
 	r.updateState(ctx, &state, &resp)
@@ -315,11 +286,11 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 	state.Scope = types.StringValue(attributes.GetScope())
 
 	if notifyEndStates, ok := attributes.GetNotifyEndStatesOk(); ok && len(*notifyEndStates) > 0 {
-		state.NotifyEndStates, _ = types.ListValueFrom(ctx, types.StringType, *notifyEndStates)
+		state.NotifyEndStates, _ = types.SetValueFrom(ctx, types.StringType, *notifyEndStates)
 	}
 
 	if notifyEndTypes, ok := attributes.GetNotifyEndTypesOk(); ok && len(*notifyEndTypes) > 0 {
-		state.NotifyEndTypes, _ = types.ListValueFrom(ctx, types.StringType, *notifyEndTypes)
+		state.NotifyEndTypes, _ = types.SetValueFrom(ctx, types.StringType, *notifyEndTypes)
 	}
 
 	if attributes.MonitorIdentifier.DowntimeMonitorIdentifierId != nil {
@@ -327,7 +298,7 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 	}
 	if attributes.MonitorIdentifier.DowntimeMonitorIdentifierTags != nil {
 		monitorTags := attributes.MonitorIdentifier.DowntimeMonitorIdentifierTags.MonitorTags
-		state.MonitorIdentifier.DowntimeMonitorIdentifierTags, _ = types.ListValueFrom(ctx, types.StringType, monitorTags)
+		state.MonitorIdentifier.DowntimeMonitorIdentifierTags, _ = types.SetValueFrom(ctx, types.StringType, monitorTags)
 	}
 
 	if schedule, ok := attributes.GetScheduleOk(); ok {
@@ -420,53 +391,51 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 
 	attributes.MonitorIdentifier = monitorIdentifier
 
-	if state.DowntimeScheduleRecurrenceSchedule != nil || state.DowntimeScheduleOneTimeSchedule != nil {
-		var schedule datadogV2.DowntimeScheduleCreateRequest
+	var schedule datadogV2.DowntimeScheduleCreateRequest
 
-		if state.DowntimeScheduleRecurrenceSchedule != nil {
-			log.Printf("WHYzzz %v", fmt.Sprintf("%+v", state.DowntimeScheduleRecurrenceSchedule.Recurrences[0]))
-			var DowntimeScheduleRecurrenceSchedule datadogV2.DowntimeScheduleRecurrencesCreateRequest
+	if state.DowntimeScheduleRecurrenceSchedule != nil {
+		log.Printf("WHYzzz %v", fmt.Sprintf("%+v", state.DowntimeScheduleRecurrenceSchedule.Recurrences[0]))
+		var DowntimeScheduleRecurrenceSchedule datadogV2.DowntimeScheduleRecurrencesCreateRequest
 
-			if !state.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
-				DowntimeScheduleRecurrenceSchedule.SetTimezone(state.DowntimeScheduleRecurrenceSchedule.Timezone.ValueString())
-			}
+		if !state.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
+			DowntimeScheduleRecurrenceSchedule.SetTimezone(state.DowntimeScheduleRecurrenceSchedule.Timezone.ValueString())
+		}
 
-			if state.DowntimeScheduleRecurrenceSchedule.Recurrences != nil {
-				var recurrences []datadogV2.DowntimeScheduleRecurrenceCreateUpdateRequest
-				for _, recurrencesTFItem := range state.DowntimeScheduleRecurrenceSchedule.Recurrences {
-					recurrencesDDItem := datadogV2.NewDowntimeScheduleRecurrenceCreateUpdateRequest(recurrencesTFItem.Start.ValueString(), recurrencesTFItem.Rrule.ValueString())
+		if state.DowntimeScheduleRecurrenceSchedule.Recurrences != nil {
+			var recurrences []datadogV2.DowntimeScheduleRecurrenceCreateUpdateRequest
+			for _, recurrencesTFItem := range state.DowntimeScheduleRecurrenceSchedule.Recurrences {
+				recurrencesDDItem := datadogV2.NewDowntimeScheduleRecurrenceCreateUpdateRequest(recurrencesTFItem.Start.ValueString(), recurrencesTFItem.Rrule.ValueString())
 
-					recurrencesDDItem.SetDuration(recurrencesTFItem.Duration.ValueString())
-					recurrencesDDItem.SetRrule(recurrencesTFItem.Rrule.ValueString())
-					if !recurrencesTFItem.Start.IsNull() {
-						recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
-					}
-					recurrences = append(recurrences, *recurrencesDDItem)
+				recurrencesDDItem.SetDuration(recurrencesTFItem.Duration.ValueString())
+				recurrencesDDItem.SetRrule(recurrencesTFItem.Rrule.ValueString())
+				if !recurrencesTFItem.Start.IsNull() {
+					recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
 				}
-				log.Printf("WHYzzz %v", fmt.Sprintf("%+v", recurrences))
-				DowntimeScheduleRecurrenceSchedule.SetRecurrences(recurrences)
+				recurrences = append(recurrences, *recurrencesDDItem)
 			}
-
-			schedule.DowntimeScheduleRecurrencesCreateRequest = &DowntimeScheduleRecurrenceSchedule
+			log.Printf("WHYzzz %v", fmt.Sprintf("%+v", recurrences))
+			DowntimeScheduleRecurrenceSchedule.SetRecurrences(recurrences)
 		}
 
-		if state.DowntimeScheduleOneTimeSchedule != nil {
-			var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
-
-			if !state.DowntimeScheduleOneTimeSchedule.End.IsNull() {
-				endStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
-				DowntimeScheduleOneTimeSchedule.SetEnd(endStr)
-			}
-			if !state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
-				startStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
-				DowntimeScheduleOneTimeSchedule.SetStart(startStr)
-			}
-
-			schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &DowntimeScheduleOneTimeSchedule
-		}
-
-		attributes.Schedule = &schedule
+		schedule.DowntimeScheduleRecurrencesCreateRequest = &DowntimeScheduleRecurrenceSchedule
 	}
+
+	if state.DowntimeScheduleOneTimeSchedule != nil {
+		var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
+
+		if !state.DowntimeScheduleOneTimeSchedule.End.IsNull() {
+			endStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
+			DowntimeScheduleOneTimeSchedule.SetEnd(endStr)
+		}
+		if !state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
+			startStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
+			DowntimeScheduleOneTimeSchedule.SetStart(startStr)
+		}
+
+		schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &DowntimeScheduleOneTimeSchedule
+	}
+
+	attributes.Schedule = &schedule
 
 	req := datadogV2.NewDowntimeCreateRequestWithDefaults()
 	req.Data = *datadogV2.NewDowntimeCreateRequestDataWithDefaults()
@@ -528,47 +497,50 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 		attributes.MonitorIdentifier = &monitorIdentifier
 	}
 
-	if state.DowntimeScheduleRecurrenceSchedule != nil || state.DowntimeScheduleOneTimeSchedule != nil {
-		var schedule datadogV2.DowntimeScheduleUpdateRequest
+	var schedule datadogV2.DowntimeScheduleUpdateRequest
+	if state.DowntimeScheduleRecurrenceSchedule != nil {
+		log.Printf("WHYzzz %v", fmt.Sprintf("%+v", state.DowntimeScheduleRecurrenceSchedule.Recurrences[0]))
+		var DowntimeScheduleRecurrenceSchedule datadogV2.DowntimeScheduleRecurrencesUpdateRequest
 
-		if state.DowntimeScheduleRecurrenceSchedule != nil {
-			var downtimeScheduleRecurrencesUpdateRequest datadogV2.DowntimeScheduleRecurrencesUpdateRequest
+		if !state.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
+			DowntimeScheduleRecurrenceSchedule.SetTimezone(state.DowntimeScheduleRecurrenceSchedule.Timezone.ValueString())
+		}
 
-			if !state.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
-				downtimeScheduleRecurrencesUpdateRequest.SetTimezone(state.DowntimeScheduleRecurrenceSchedule.Timezone.ValueString())
-			}
+		if state.DowntimeScheduleRecurrenceSchedule.Recurrences != nil {
+			var recurrences []datadogV2.DowntimeScheduleRecurrenceCreateUpdateRequest
+			for _, recurrencesTFItem := range state.DowntimeScheduleRecurrenceSchedule.Recurrences {
+				recurrencesDDItem := datadogV2.NewDowntimeScheduleRecurrenceCreateUpdateRequest(recurrencesTFItem.Start.ValueString(), recurrencesTFItem.Rrule.ValueString())
 
-			if state.DowntimeScheduleRecurrenceSchedule.Recurrences != nil {
-				var recurrences []datadogV2.DowntimeScheduleRecurrenceCreateUpdateRequest
-				for _, recurrencesTFItem := range state.DowntimeScheduleRecurrenceSchedule.Recurrences {
-					recurrencesDDItem := datadogV2.NewDowntimeScheduleRecurrenceCreateUpdateRequest(recurrencesTFItem.Duration.ValueString(), recurrencesTFItem.Rrule.ValueString())
-					if !recurrencesTFItem.Start.IsNull() {
-						recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
-					}
+				recurrencesDDItem.SetDuration(recurrencesTFItem.Duration.ValueString())
+				recurrencesDDItem.SetRrule(recurrencesTFItem.Rrule.ValueString())
+				if !recurrencesTFItem.Start.IsNull() {
+					recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
 				}
-				downtimeScheduleRecurrencesUpdateRequest.SetRecurrences(recurrences)
+				recurrences = append(recurrences, *recurrencesDDItem)
 			}
-
-			schedule.DowntimeScheduleRecurrencesUpdateRequest = &downtimeScheduleRecurrencesUpdateRequest
+			log.Printf("WHYzzz %v", fmt.Sprintf("%+v", recurrences))
+			DowntimeScheduleRecurrenceSchedule.SetRecurrences(recurrences)
 		}
 
-		if state.DowntimeScheduleOneTimeSchedule != nil {
-			var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
-
-			if !state.DowntimeScheduleOneTimeSchedule.End.IsNull() {
-				endStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
-				DowntimeScheduleOneTimeSchedule.SetEnd(endStr)
-			}
-			if !state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
-				startStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
-				DowntimeScheduleOneTimeSchedule.SetStart(startStr)
-			}
-
-			schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &DowntimeScheduleOneTimeSchedule
-		}
-
-		attributes.Schedule = &schedule
+		schedule.DowntimeScheduleRecurrencesUpdateRequest = &DowntimeScheduleRecurrenceSchedule
 	}
+
+	if state.DowntimeScheduleOneTimeSchedule != nil {
+		var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
+
+		if !state.DowntimeScheduleOneTimeSchedule.End.IsNull() {
+			endStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
+			DowntimeScheduleOneTimeSchedule.SetEnd(endStr)
+		}
+		if !state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
+			startStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
+			DowntimeScheduleOneTimeSchedule.SetStart(startStr)
+		}
+
+		schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &DowntimeScheduleOneTimeSchedule
+	}
+
+	attributes.Schedule = &schedule
 
 	req := datadogV2.NewDowntimeUpdateRequestWithDefaults()
 	req.Data = *datadogV2.NewDowntimeUpdateRequestDataWithDefaults()
