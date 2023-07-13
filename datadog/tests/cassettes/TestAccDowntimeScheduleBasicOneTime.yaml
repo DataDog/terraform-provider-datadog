@@ -1,0 +1,56 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"display_timezone":"UTC","monitor_identifier":{"monitor_id":125227421},"mute_first_recovery_notification":false,"schedule":{"start":"2050-01-02T03:04:05Z"},"scope":"env:(staging OR tf-TestAccDowntimeScheduleBasicOneTime-local-1689284692)"},"type":"downtime"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/downtime
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"downtime","attributes":{"status":"scheduled","notify_end_types":["expired"],"message":null,"notify_end_states":["warn","no data","alert"],"schedule":{"start":"2050-01-02T03:04:05+00:00","end":null},"mute_first_recovery_notification":false,"created":"2023-07-13T21:44:55.755085+00:00","display_timezone":"UTC","modified":"2023-07-13T21:44:55.755085+00:00","monitor_identifier":{"monitor_id":125227421},"scope":"env:(staging OR tf-TestAccDowntimeScheduleBasicOneTime-local-1689284692)","canceled":null},"relationships":{"created_by":{"data":{"type":"users","id":"0e08ee7b-eba0-11e9-a77a-5b128f8b6c92"}},"monitor":{"data":{"type":"monitor","id":"125227421"}}},"id":"81a7be2c-21c6-11ee-ab1e-da7ad0900002"},"included":[{"type":"users","id":"0e08ee7b-eba0-11e9-a77a-5b128f8b6c92","attributes":{"name":"Carl Martensen","handle":"carl.martensen@datadoghq.com","created_at":"2019-01-15T14:36:15.423919+00:00","modified_at":"2019-01-15T14:36:15.457748+00:00","email":"carl.martensen@datadoghq.com","icon":"https://secure.gravatar.com/avatar/ed460c2fc567a43e34c2bd7cda76bdd1?s=48&d=retro","title":null,"verified":true,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Active"}},{"type":"monitor","id":125227421,"attributes":{"name":"Int test monitor"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/downtime/81a7be2c-21c6-11ee-ab1e-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"downtime","attributes":{"created":"2023-07-13T21:44:55.755085+00:00","status":"scheduled","message":null,"canceled":null,"notify_end_types":["expired"],"monitor_identifier":{"monitor_id":125227421},"mute_first_recovery_notification":false,"notify_end_states":["warn","no data","alert"],"scope":"env:(staging OR tf-TestAccDowntimeScheduleBasicOneTime-local-1689284692)","display_timezone":"UTC","modified":"2023-07-13T21:44:55.755085+00:00","schedule":{"end":null,"start":"2050-01-02T03:04:05+00:00"}},"id":"81a7be2c-21c6-11ee-ab1e-da7ad0900002"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/downtime/81a7be2c-21c6-11ee-ab1e-da7ad0900002
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""

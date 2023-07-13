@@ -2,8 +2,6 @@ package fwprovider
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -79,6 +77,7 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 		Attributes: map[string]schema.Attribute{
 			"display_timezone": schema.StringAttribute{
 				Optional:    true,
+				Computed:    true,
 				Description: "The timezone in which to display the downtime's start and end times in Datadog applications. This is not used as an offset for scheduling.",
 			},
 			"message": schema.StringAttribute{
@@ -130,6 +129,7 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 					},
 					"start": schema.StringAttribute{
 						Optional:    true,
+						Computed:    true,
 						Description: "ISO-8601 Datetime to start the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
 					},
 				},
@@ -202,8 +202,6 @@ func (r *DowntimeScheduleResource) Create(ctx context.Context, request resource.
 	}
 
 	body, diags := r.buildDowntimeScheduleCreateRequestBody(ctx, &state)
-	fmt.Errorf("WHY %v", body)
-	log.Printf("[DEBUG] WHYWHY: %v", 123)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -271,11 +269,11 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
-	if displayTimezone, ok := attributes.GetDisplayTimezoneOk(); ok {
+	if displayTimezone, ok := attributes.GetDisplayTimezoneOk(); ok && displayTimezone != nil {
 		state.DisplayTimezone = types.StringValue(*displayTimezone)
 	}
 
-	if message, ok := attributes.GetMessageOk(); ok {
+	if message, ok := attributes.GetMessageOk(); ok && message != nil {
 		state.Message = types.StringValue(*message)
 	}
 
@@ -288,10 +286,16 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 	if notifyEndStates, ok := attributes.GetNotifyEndStatesOk(); ok && len(*notifyEndStates) > 0 {
 		state.NotifyEndStates, _ = types.SetValueFrom(ctx, types.StringType, *notifyEndStates)
 	}
+	//} else {
+	//	state.NotifyEndStates = types.SetNull(types.StringType)
+	//}
 
 	if notifyEndTypes, ok := attributes.GetNotifyEndTypesOk(); ok && len(*notifyEndTypes) > 0 {
 		state.NotifyEndTypes, _ = types.SetValueFrom(ctx, types.StringType, *notifyEndTypes)
 	}
+	//} else {
+	//	state.NotifyEndTypes = types.SetNull(types.StringType)
+	//}
 
 	if attributes.MonitorIdentifier.DowntimeMonitorIdentifierId != nil {
 		state.MonitorIdentifier.DowntimeMonitorIdentifierId = types.Int64Value(attributes.MonitorIdentifier.DowntimeMonitorIdentifierId.MonitorId)
@@ -330,11 +334,11 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 		}
 		if schedule.DowntimeScheduleOneTimeResponse != nil {
 			downtimeScheduleOneTimeResponseTf := DowntimeScheduleOneTimeSchedule{}
-			if end, ok := schedule.DowntimeScheduleOneTimeResponse.GetEndOk(); ok {
+			if end, ok := schedule.DowntimeScheduleOneTimeResponse.GetEndOk(); ok && end != nil {
 				downtimeScheduleOneTimeResponseTf.End = types.StringValue((*end).Format("2006-01-02T15:04:05Z07:00"))
 			}
 			if start, ok := schedule.DowntimeScheduleOneTimeResponse.GetStartOk(); ok {
-				downtimeScheduleOneTimeResponseTf.End = types.StringValue((*start).Format("2006-01-02T15:04:05Z07:00"))
+				downtimeScheduleOneTimeResponseTf.Start = types.StringValue((*start).Format("2006-01-02T15:04:05Z07:00"))
 			}
 
 			state.DowntimeScheduleOneTimeSchedule = &downtimeScheduleOneTimeResponseTf
@@ -346,10 +350,10 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewDowntimeCreateRequestAttributesWithDefaults()
 
-	if !state.DisplayTimezone.IsNull() {
+	if !state.DisplayTimezone.IsNull() && !state.DisplayTimezone.IsUnknown() {
 		attributes.SetDisplayTimezone(state.DisplayTimezone.ValueString())
 	}
-	if !state.Message.IsNull() {
+	if !state.Message.IsNull() && !state.Message.IsUnknown() {
 		attributes.SetMessage(state.Message.ValueString())
 	}
 	if !state.MuteFirstRecoveryNotification.IsNull() {
@@ -357,13 +361,13 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 	}
 	attributes.SetScope(state.Scope.ValueString())
 
-	if !state.NotifyEndStates.IsNull() {
+	if !state.NotifyEndStates.IsUnknown() {
 		var notifyEndStates []datadogV2.DowntimeNotifyEndStateTypes
 		diags.Append(state.NotifyEndStates.ElementsAs(ctx, &notifyEndStates, false)...)
 		attributes.SetNotifyEndStates(notifyEndStates)
 	}
 
-	if !state.NotifyEndTypes.IsNull() {
+	if !state.NotifyEndTypes.IsUnknown() {
 		var notifyEndTypes []datadogV2.DowntimeNotifyEndStateActions
 		diags.Append(state.NotifyEndTypes.ElementsAs(ctx, &notifyEndTypes, false)...)
 		attributes.SetNotifyEndTypes(notifyEndTypes)
@@ -379,7 +383,7 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 		monitorIdentifier.DowntimeMonitorIdentifierId = &downtimeMonitorIdentifierId
 	}
 
-	if state.MonitorIdentifier.DowntimeMonitorIdentifierTags.Elements() != nil {
+	if !state.MonitorIdentifier.DowntimeMonitorIdentifierTags.IsNull() {
 		var downtimeMonitorIdentifierTags datadogV2.DowntimeMonitorIdentifierTags
 
 		var monitorTags []string
@@ -394,7 +398,6 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 	var schedule datadogV2.DowntimeScheduleCreateRequest
 
 	if state.DowntimeScheduleRecurrenceSchedule != nil {
-		log.Printf("WHYzzz %v", fmt.Sprintf("%+v", state.DowntimeScheduleRecurrenceSchedule.Recurrences[0]))
 		var DowntimeScheduleRecurrenceSchedule datadogV2.DowntimeScheduleRecurrencesCreateRequest
 
 		if !state.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
@@ -413,7 +416,6 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 				}
 				recurrences = append(recurrences, *recurrencesDDItem)
 			}
-			log.Printf("WHYzzz %v", fmt.Sprintf("%+v", recurrences))
 			DowntimeScheduleRecurrenceSchedule.SetRecurrences(recurrences)
 		}
 
@@ -499,7 +501,6 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 
 	var schedule datadogV2.DowntimeScheduleUpdateRequest
 	if state.DowntimeScheduleRecurrenceSchedule != nil {
-		log.Printf("WHYzzz %v", fmt.Sprintf("%+v", state.DowntimeScheduleRecurrenceSchedule.Recurrences[0]))
 		var DowntimeScheduleRecurrenceSchedule datadogV2.DowntimeScheduleRecurrencesUpdateRequest
 
 		if !state.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
@@ -518,7 +519,6 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 				}
 				recurrences = append(recurrences, *recurrencesDDItem)
 			}
-			log.Printf("WHYzzz %v", fmt.Sprintf("%+v", recurrences))
 			DowntimeScheduleRecurrenceSchedule.SetRecurrences(recurrences)
 		}
 
@@ -532,7 +532,7 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 			endStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
 			DowntimeScheduleOneTimeSchedule.SetEnd(endStr)
 		}
-		if !state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
+		if !state.DowntimeScheduleOneTimeSchedule.Start.IsNull() && !state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
 			startStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
 			DowntimeScheduleOneTimeSchedule.SetStart(startStr)
 		}
