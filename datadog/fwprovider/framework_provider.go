@@ -349,7 +349,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CancelDowntime", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDowntime", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetDowntime", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.ListDowntime", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListDowntimes", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDowntime", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {

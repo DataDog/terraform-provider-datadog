@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"data":{"type":"monitor-config-policy","id":"7a176ba6-a270-11ed-875a-da7ad0900002","attributes":{"policy":{"tag_key":"tagKey","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"}}}
+      {"data":{"type":"monitor-config-policy","attributes":{"policy":{"valid_tag_values":["value"],"tag_key_required":false,"tag_key":"tagKey"},"policy_type":"tag"},"id":"9958174a-219b-11ee-a436-da7ad0900002"}}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/monitor/policy/7a176ba6-a270-11ed-875a-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/monitor/policy/9958174a-219b-11ee-a436-da7ad0900002
     method: GET
   response:
     body: |
-      {"data":{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"tag_key_required":false,"tag_key":"tagKey","valid_tag_values":["value"]}},"id":"7a176ba6-a270-11ed-875a-da7ad0900002"}}
+      {"data":{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"tag_key":"tagKey","valid_tag_values":["value"],"tag_key_required":false}},"id":"9958174a-219b-11ee-a436-da7ad0900002"}}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/monitor/policy/7a176ba6-a270-11ed-875a-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/monitor/policy/9958174a-219b-11ee-a436-da7ad0900002
     method: GET
   response:
     body: |
-      {"data":{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"tag_key_required":false,"tag_key":"tagKey","valid_tag_values":["value"]}},"id":"7a176ba6-a270-11ed-875a-da7ad0900002"}}
+      {"data":{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"valid_tag_values":["value"],"tag_key":"tagKey","tag_key_required":false}},"id":"9958174a-219b-11ee-a436-da7ad0900002"}}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/monitor/policy/7a176ba6-a270-11ed-875a-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/monitor/policy/9958174a-219b-11ee-a436-da7ad0900002
     method: GET
   response:
     body: |
-      {"data":{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"tag_key":"tagKey","tag_key_required":false,"valid_tag_values":["value"]}},"id":"7a176ba6-a270-11ed-875a-da7ad0900002"}}
+      {"data":{"type":"monitor-config-policy","attributes":{"policy":{"tag_key":"tagKey","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"id":"9958174a-219b-11ee-a436-da7ad0900002"}}
     headers:
       Content-Type:
       - application/json
@@ -74,18 +74,18 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"policy":{"tag_key":"tagKeyUpdated","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"id":"7a176ba6-a270-11ed-875a-da7ad0900002","type":"monitor-config-policy"}}
+      {"data":{"attributes":{"policy":{"tag_key":"tagKeyUpdated","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"id":"9958174a-219b-11ee-a436-da7ad0900002","type":"monitor-config-policy"}}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/monitor/policy/7a176ba6-a270-11ed-875a-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/monitor/policy/9958174a-219b-11ee-a436-da7ad0900002
     method: PATCH
   response:
     body: |
-      {"data":{"type":"monitor-config-policy","attributes":{"policy":{"tag_key":"tagKeyUpdated","tag_key_required":false,"valid_tag_values":["value"]},"policy_type":"tag"},"id":"7a176ba6-a270-11ed-875a-da7ad0900002"}}
+      {"data":{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"valid_tag_values":["value"],"tag_key":"tagKeyUpdated","tag_key_required":false}},"id":"9958174a-219b-11ee-a436-da7ad0900002"}}
     headers:
       Content-Type:
       - application/json
@@ -98,11 +98,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/monitor/policy/7a176ba6-a270-11ed-875a-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/monitor/policy/9958174a-219b-11ee-a436-da7ad0900002
     method: GET
   response:
     body: |
-      {"data":{"type":"monitor-config-policy","id":"7a176ba6-a270-11ed-875a-da7ad0900002","attributes":{"policy_type":"tag","policy":{"valid_tag_values":["value"],"tag_key":"tagKeyUpdated","tag_key_required":false}}}}
+      {"data":{"type":"monitor-config-policy","attributes":{"policy_type":"tag","policy":{"tag_key":"tagKeyUpdated","valid_tag_values":["value"],"tag_key_required":false}},"id":"9958174a-219b-11ee-a436-da7ad0900002"}}
     headers:
       Content-Type:
       - application/json
@@ -115,11 +115,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/monitor/policy/7a176ba6-a270-11ed-875a-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/monitor/policy/9958174a-219b-11ee-a436-da7ad0900002
     method: GET
   response:
     body: |
-      {"data":{"type":"monitor-config-policy","attributes":{"policy":{"valid_tag_values":["value"],"tag_key":"tagKeyUpdated","tag_key_required":false},"policy_type":"tag"},"id":"7a176ba6-a270-11ed-875a-da7ad0900002"}}
+      {"data":{"type":"monitor-config-policy","attributes":{"policy":{"tag_key_required":false,"valid_tag_values":["value"],"tag_key":"tagKeyUpdated"},"policy_type":"tag"},"id":"9958174a-219b-11ee-a436-da7ad0900002"}}
     headers:
       Content-Type:
       - application/json
@@ -132,7 +132,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/monitor/policy/7a176ba6-a270-11ed-875a-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/monitor/policy/9958174a-219b-11ee-a436-da7ad0900002
     method: DELETE
   response:
     body: ""
@@ -152,7 +152,7 @@ interactions:
     method: GET
   response:
     body: |
-      {"data":[{"type":"monitor-config-policy","id":"fa80d590-a269-11ed-80a0-da7ad0900002","attributes":{"policy_type":"tag","policy":{"tag_key_required":true,"valid_tag_values":["new"],"tag_key":"hatsz"}}},{"type":"monitor-config-policy","id":"30baadae-a26d-11ed-a54b-da7ad0900002","attributes":{"policy_type":"tag","policy":{"tag_key_required":false,"valid_tag_values":["staging","prod"],"tag_key":"env tf-TestAccDatadogMonitorConfigPolicy_Basic-local-1675282524"}}}]}
+      {"data":[]}
     headers:
       Content-Type:
       - application/json
