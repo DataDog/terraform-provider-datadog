@@ -96,8 +96,8 @@ resource "datadog_downtime_schedule" "t" {
     display_timezone = "America/New_York"
     message = "Message about the downtime"
     mute_first_recovery_notification = true
-    notify_end_states = ["warn"]
-    notify_end_types = ["canceled"]
+    notify_end_states = []
+    notify_end_types = []
 }`, uniq)
 }
 
