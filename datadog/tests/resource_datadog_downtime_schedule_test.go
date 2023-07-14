@@ -103,6 +103,7 @@ resource "datadog_downtime_schedule" "t" {
 		}
     	timezone = "America/New_York"
     }
+
     display_timezone = "America/New_York"
     message = "Message about the downtime"
     mute_first_recovery_notification = true
@@ -117,9 +118,6 @@ resource "datadog_downtime_schedule" "t1" {
     scope = "env:(staging OR %v)"
     monitor_identifier {
       monitor_tags = ["cat:hat", "mat:sat"]
-    }
-    one_time_schedule {
-    	start = "2050-01-02T03:04:05Z"
     }
     notify_end_types = []
 }`, uniq)

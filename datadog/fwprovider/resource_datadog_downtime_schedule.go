@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -125,8 +126,7 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 						Optional:    true,
 						Description: "A list of monitor tags. For example, tags that are applied directly to monitors, not tags that are used in monitor queries (which are filtered by the scope parameter), to which the downtime applies. The resulting downtime applies to monitors that match **all** provided monitor tags. Setting `monitor_tags` to `[*]` configures the downtime to mute all monitors for the given scope.",
 						ElementType: types.StringType,
-						Validators: []validator.Set{
-							setvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("monitor_id"))},
+						Validators:  []validator.Set{setvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("monitor_id"))},
 					},
 				},
 			},
@@ -144,6 +144,7 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat(time.RFC3339)},
 					},
 				},
+				Validators: []validator.Object{objectvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("recurring_schedule"))},
 			},
 			"recurring_schedule": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
@@ -173,6 +174,7 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 						},
 					},
 				},
+				Validators: []validator.Object{objectvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("one_time_schedule"))},
 			},
 		},
 	}
@@ -387,9 +389,7 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 		downtimeMonitorIdentifierId.SetMonitorId(state.MonitorIdentifier.DowntimeMonitorIdentifierId.ValueInt64())
 
 		monitorIdentifier.DowntimeMonitorIdentifierId = &downtimeMonitorIdentifierId
-	}
-
-	if !state.MonitorIdentifier.DowntimeMonitorIdentifierTags.IsNull() {
+	} else if !state.MonitorIdentifier.DowntimeMonitorIdentifierTags.IsNull() {
 		var downtimeMonitorIdentifierTags datadogV2.DowntimeMonitorIdentifierTags
 
 		var monitorTags []string
@@ -397,6 +397,8 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 		downtimeMonitorIdentifierTags.SetMonitorTags(monitorTags)
 
 		monitorIdentifier.DowntimeMonitorIdentifierTags = &downtimeMonitorIdentifierTags
+	} else {
+		diags.AddError("monitor_identifier.monitor_id or monitor_identifier.monitor_tags must be set", "")
 	}
 
 	attributes.MonitorIdentifier = monitorIdentifier
@@ -426,9 +428,7 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 		}
 
 		schedule.DowntimeScheduleRecurrencesCreateRequest = &DowntimeScheduleRecurrenceSchedule
-	}
-
-	if state.DowntimeScheduleOneTimeSchedule != nil {
+	} else if state.DowntimeScheduleOneTimeSchedule != nil {
 		var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
 
 		if !state.DowntimeScheduleOneTimeSchedule.End.IsNull() {
@@ -441,6 +441,8 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 		}
 
 		schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &DowntimeScheduleOneTimeSchedule
+	} else {
+		diags.AddError("one_time_schedule or recurring_schedule must be set", "")
 	}
 
 	attributes.Schedule = &schedule
