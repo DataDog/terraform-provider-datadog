@@ -226,7 +226,7 @@ func isValidServiceDefinition(i interface{}, k string) (warnings []string, error
 	return warnings, errors
 }
 
-func isValidDatadogServiceDefinition(attrMap map[string]any, k string) (warnings []string, errors []error) {
+func isValidDatadogServiceDefinition(attrMap map[string]interface{}, k string) (warnings []string, errors []error) {
 	if schemaVersion, ok := attrMap["schema-version"].(string); ok {
 		if schemaVersion != "v2" && schemaVersion != "v2.1" {
 			errors = append(errors, fmt.Errorf("schema-version must be >= v2, but %s is used", schemaVersion))
@@ -242,7 +242,7 @@ func isValidDatadogServiceDefinition(attrMap map[string]any, k string) (warnings
 	return warnings, errors
 }
 
-func isValidBackstageServiceDefinition(attrMap map[string]any, k string) (warnings []string, errors []error) {
+func isValidBackstageServiceDefinition(attrMap map[string]interface{}, k string) (warnings []string, errors []error) {
 	if apiVersion, ok := attrMap["apiVersion"].(string); ok {
 		if apiVersion != "backstage.io/v1alpha1" {
 			errors = append(errors, fmt.Errorf("apiVersion must be backstage.io/v1alpha1, but %s is used", apiVersion))
@@ -252,14 +252,14 @@ func isValidBackstageServiceDefinition(attrMap map[string]any, k string) (warnin
 	}
 
 	if kind, ok := attrMap["kind"].(string); ok {
-		if kind != "component" {
-			errors = append(errors, fmt.Errorf("kind must be component, but %s is used", kind))
+		if kind != "Component" {
+			errors = append(errors, fmt.Errorf("kind must be Component, but %s is used", kind))
 		}
 	} else {
 		errors = append(errors, fmt.Errorf("kind is missing: %q", k))
 	}
 
-	if spec, ok := attrMap["spec"].(map[string]any); ok {
+	if spec, ok := attrMap["spec"].(map[string]interface{}); ok {
 		if t, okay := spec["type"].(string); okay {
 			if t != "service" {
 				errors = append(errors, fmt.Errorf("spec.type must be service, but %s is used", t))
@@ -271,7 +271,7 @@ func isValidBackstageServiceDefinition(attrMap map[string]any, k string) (warnin
 		errors = append(errors, fmt.Errorf("spec is missing: %q", k))
 	}
 
-	if metadata, ok := attrMap["metadata"].(map[string]any); ok {
+	if metadata, ok := attrMap["metadata"].(map[string]interface{}); ok {
 		if _, okay := metadata["name"].(string); !okay {
 			errors = append(errors, fmt.Errorf("metadata.name is missing: %q", k))
 		}
@@ -408,12 +408,8 @@ func isDatadogServiceSchema(attrMap map[string]interface{}) bool {
 }
 
 func isBackstageSchema(attrMap map[string]interface{}) bool {
-	if apiVersion, ok := attrMap["apiVersion"]; !ok {
-		version, k := apiVersion.(string)
-		if !k {
-			return false
-		}
-		return strings.Contains(version, "backstage")
+	if apiVersion, ok := attrMap["apiVersion"].(string); ok {
+		return strings.HasPrefix(apiVersion, "backstage.io")
 	}
 	return false
 }
