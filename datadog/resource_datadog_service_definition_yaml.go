@@ -217,16 +217,16 @@ func isValidServiceDefinition(i interface{}, k string) (warnings []string, error
 	}
 
 	if isDatadogServiceSchema(attrMap) {
-		return isValidDatadogServiceDefinition(attrMap)
+		return isValidDatadogServiceDefinition(attrMap, k)
 	} else if isBackstageSchema(attrMap) {
-		return isValidBackstageServiceDefinition(attrMap)
+		return isValidBackstageServiceDefinition(attrMap, k)
 	} else {
 		errors = append(errors, fmt.Errorf("Must be a supported service schema: %s", k))
 	}
 	return warnings, errors
 }
 
-func isValidDatadogServiceDefinition(attrMap map[string]any) (warnings []string, errors []error) {
+func isValidDatadogServiceDefinition(attrMap map[string]any, k string) (warnings []string, errors []error) {
 	if schemaVersion, ok := attrMap["schema-version"].(string); ok {
 		if schemaVersion != "v2" && schemaVersion != "v2.1" {
 			errors = append(errors, fmt.Errorf("schema-version must be >= v2, but %s is used", schemaVersion))
@@ -242,7 +242,7 @@ func isValidDatadogServiceDefinition(attrMap map[string]any) (warnings []string,
 	return warnings, errors
 }
 
-func isValidBackstageServiceDefinition(attrMap map[string]any) (warnings []string, errors []error) {
+func isValidBackstageServiceDefinition(attrMap map[string]any, k string) (warnings []string, errors []error) {
 	if apiVersion, ok := attrMap["apiVersion"].(string); ok {
 		if apiVersion != "backstage.io/v1alpha1" {
 			errors = append(errors, fmt.Errorf("apiVersion must be backstage.io/v1alpha1, but %s is used", apiVersion))
