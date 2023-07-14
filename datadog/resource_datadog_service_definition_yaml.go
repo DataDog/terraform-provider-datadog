@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -46,12 +47,12 @@ func resourceDatadogServiceDefinitionYAML() *schema.Resource {
 			oldAttrMap, _ := expandYAMLFromString(old.(string))
 			newAttrMap, _ := expandYAMLFromString(new.(string))
 
-			oldName, ok := oldAttrMap["dd-service"].(string)
+			oldName, ok := getServiceName(oldAttrMap)
 			if !ok {
 				return true
 			}
 
-			newName, ok := newAttrMap["dd-service"].(string)
+			newName, ok := getServiceName(newAttrMap)
 			if !ok {
 				return true
 			}
@@ -99,6 +100,11 @@ func flattenYAMLToString(input map[string]interface{}) (string, error) {
 }
 
 func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]interface{} {
+	if isBackstageSchema(attrMap) {
+		// this should never be called.
+		return attrMap
+	}
+
 	// this assumes we only support >= v2
 	delete(attrMap, "dd-team") //dd-team is a computed field
 
@@ -106,7 +112,7 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 		normalizeArrayField(attrMap, field)
 	}
 
-	if service, ok := attrMap["dd-service"].(string); ok {
+	if service, ok := getServiceName(attrMap); ok {
 		attrMap["dd-service"] = utils.NormalizeTag(service)
 	}
 
@@ -210,6 +216,17 @@ func isValidServiceDefinition(i interface{}, k string) (warnings []string, error
 		return warnings, errors
 	}
 
+	if isDatadogServiceSchema(attrMap) {
+		return isValidDatadogServiceDefinition(attrMap)
+	} else if isBackstageSchema(attrMap) {
+		return isValidBackstageServiceDefinition(attrMap)
+	} else {
+		errors = append(errors, fmt.Errorf("Must be a supported service schema: %s", k))
+	}
+	return warnings, errors
+}
+
+func isValidDatadogServiceDefinition(attrMap map[string]any) (warnings []string, errors []error) {
 	if schemaVersion, ok := attrMap["schema-version"].(string); ok {
 		if schemaVersion != "v2" && schemaVersion != "v2.1" {
 			errors = append(errors, fmt.Errorf("schema-version must be >= v2, but %s is used", schemaVersion))
@@ -220,6 +237,46 @@ func isValidServiceDefinition(i interface{}, k string) (warnings []string, error
 
 	if schemaVersion, ok := attrMap["dd-service"].(string); !ok || schemaVersion == "" {
 		errors = append(errors, fmt.Errorf("dd-service is missing: %q", k))
+	}
+
+	return warnings, errors
+}
+
+func isValidBackstageServiceDefinition(attrMap map[string]any) (warnings []string, errors []error) {
+	if apiVersion, ok := attrMap["apiVersion"].(string); ok {
+		if apiVersion != "backstage.io/v1alpha1" {
+			errors = append(errors, fmt.Errorf("apiVersion must be backstage.io/v1alpha1, but %s is used", apiVersion))
+		}
+	} else {
+		errors = append(errors, fmt.Errorf("apiVersion is missing: %q", k))
+	}
+
+	if kind, ok := attrMap["kind"].(string); ok {
+		if kind != "component" {
+			errors = append(errors, fmt.Errorf("kind must be component, but %s is used", kind))
+		}
+	} else {
+		errors = append(errors, fmt.Errorf("kind is missing: %q", k))
+	}
+
+	if spec, ok := attrMap["spec"].(map[string]any); ok {
+		if t, okay := spec["type"].(string); okay {
+			if t != "service" {
+				errors = append(errors, fmt.Errorf("spec.type must be service, but %s is used", t))
+			}
+		} else {
+			errors = append(errors, fmt.Errorf("spec.type is missing: %q", k))
+		}
+	} else {
+		errors = append(errors, fmt.Errorf("spec is missing: %q", k))
+	}
+
+	if metadata, ok := attrMap["metadata"].(map[string]any); ok {
+		if _, okay := metadata["name"].(string); !okay {
+			errors = append(errors, fmt.Errorf("metadata.name is missing: %q", k))
+		}
+	} else {
+		errors = append(errors, fmt.Errorf("metadata is missing: %q", k))
 	}
 
 	return warnings, errors
@@ -326,4 +383,37 @@ func updateServiceDefinitionState(d *schema.ResourceData, response sdData) diag.
 		return diag.FromErr(err)
 	}
 	return nil
+}
+
+func getServiceName(attrMap map[string]interface{}) (string, bool) {
+	if isDatadogServiceSchema(attrMap) {
+		service, ok := attrMap["dd-service"].(string)
+		return service, ok
+	} else if isBackstageSchema(attrMap) {
+		if spec, ok := attrMap["spec"]; ok {
+			if specMap, ok := spec.(map[string]interface{}); ok {
+				service, k := specMap["name"].(string)
+				return service, k
+			}
+		}
+	}
+	return "", false
+}
+
+func isDatadogServiceSchema(attrMap map[string]interface{}) bool {
+	if _, ok := attrMap["schema-version"]; ok {
+		return true
+	}
+	return false
+}
+
+func isBackstageSchema(attrMap map[string]interface{}) bool {
+	if apiVersion, ok := attrMap["apiVersion"]; !ok {
+		version, k := apiVersion.(string)
+		if !k {
+			return false
+		}
+		return strings.Contains(version, "backstage")
+	}
+	return false
 }
