@@ -2,14 +2,18 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
+	"log"
+	"time"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"
-	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -97,7 +101,7 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 				Description: "If the first recovery notification during a downtime should be muted.",
 			},
 			"scope": schema.StringAttribute{
-				Optional:    true,
+				Required:    true,
 				Description: "The scope to which the downtime applies. Must follow the [common search syntax](https://docs.datadoghq.com/logs/explorer/search_syntax/).",
 			},
 			"notify_end_states": schema.SetAttribute{
@@ -135,13 +139,13 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 					"end": schema.StringAttribute{
 						Optional:      true,
 						Description:   "ISO-8601 Datetime to end the downtime. Must include a UTC offset of zero. If not provided, the downtime never ends.",
-						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat(time.RFC3339)},
+						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat("2006-01-02T15:04:05Z")},
 					},
 					"start": schema.StringAttribute{
 						Optional:      true,
 						Computed:      true,
 						Description:   "ISO-8601 Datetime to start the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
-						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat(time.RFC3339)},
+						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat("2006-01-02T15:04:05Z")},
 					},
 				},
 				Validators: []validator.Object{objectvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("recurring_schedule"))},
@@ -158,11 +162,11 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
 								"duration": schema.StringAttribute{
-									Optional:    true,
+									Required:    true,
 									Description: "The length of the downtime. Must begin with an integer and end with one of 'm', 'h', d', or 'w'.",
 								},
 								"rrule": schema.StringAttribute{
-									Optional:    true,
+									Required:    true,
 									Description: "The `RRULE` standard for defining recurring events. For example, to have a recurring event on the first day of each month, set the type to `rrule` and set the `FREQ` to `MONTHLY` and `BYMONTHDAY` to `1`. Most common `rrule` options from the [iCalendar Spec](https://tools.ietf.org/html/rfc5545) are supported.  **Note**: Attributes specifying the duration in `RRULE` are not supported (for example, `DTSTART`, `DTEND`, `DURATION`). More examples available in this [downtime guide](https://docs.datadoghq.com/monitors/guide/suppress-alert-with-downtimes/?tab=api).",
 								},
 								"start": schema.StringAttribute{
@@ -419,7 +423,7 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 
 				recurrencesDDItem.SetDuration(recurrencesTFItem.Duration.ValueString())
 				recurrencesDDItem.SetRrule(recurrencesTFItem.Rrule.ValueString())
-				if !recurrencesTFItem.Start.IsNull() {
+				if !recurrencesTFItem.Start.IsUnknown() {
 					recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
 				}
 				recurrences = append(recurrences, *recurrencesDDItem)
@@ -431,13 +435,21 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 	} else if state.DowntimeScheduleOneTimeSchedule != nil {
 		var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
 
-		if !state.DowntimeScheduleOneTimeSchedule.End.IsNull() {
-			endStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
-			DowntimeScheduleOneTimeSchedule.SetEnd(endStr)
+		if !state.DowntimeScheduleOneTimeSchedule.End.IsUnknown() {
+			if DowntimeScheduleOneTimeSchedule.End.IsSet() {
+				end, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
+				DowntimeScheduleOneTimeSchedule.SetEnd(end)
+			} else {
+				DowntimeScheduleOneTimeSchedule.SetEndNil()
+			}
 		}
-		if !state.DowntimeScheduleOneTimeSchedule.Start.IsNull() && !state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
-			startStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
-			DowntimeScheduleOneTimeSchedule.SetStart(startStr)
+		if !state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
+			if state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
+				DowntimeScheduleOneTimeSchedule.SetStartNil()
+			} else {
+				start, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
+				DowntimeScheduleOneTimeSchedule.SetStart(start)
+			}
 		}
 
 		schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &DowntimeScheduleOneTimeSchedule
@@ -471,13 +483,13 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 		attributes.SetScope(state.Scope.ValueString())
 	}
 
-	if !state.NotifyEndStates.IsNull() {
+	if !state.NotifyEndStates.IsUnknown() {
 		var notifyEndStates []datadogV2.DowntimeNotifyEndStateTypes
 		diags.Append(state.NotifyEndStates.ElementsAs(ctx, &notifyEndStates, false)...)
 		attributes.SetNotifyEndStates(notifyEndStates)
 	}
 
-	if !state.NotifyEndTypes.IsNull() {
+	if !state.NotifyEndTypes.IsUnknown() {
 		var notifyEndTypes []datadogV2.DowntimeNotifyEndStateActions
 		diags.Append(state.NotifyEndTypes.ElementsAs(ctx, &notifyEndTypes, false)...)
 		attributes.SetNotifyEndTypes(notifyEndTypes)
@@ -522,7 +534,7 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 
 				recurrencesDDItem.SetDuration(recurrencesTFItem.Duration.ValueString())
 				recurrencesDDItem.SetRrule(recurrencesTFItem.Rrule.ValueString())
-				if !recurrencesTFItem.Start.IsNull() {
+				if !recurrencesTFItem.Start.IsUnknown() {
 					recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
 				}
 				recurrences = append(recurrences, *recurrencesDDItem)
@@ -536,13 +548,22 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 	if state.DowntimeScheduleOneTimeSchedule != nil {
 		var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
 
-		if !state.DowntimeScheduleOneTimeSchedule.End.IsNull() {
-			endStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
-			DowntimeScheduleOneTimeSchedule.SetEnd(endStr)
+		if !state.DowntimeScheduleOneTimeSchedule.End.IsUnknown() {
+			if state.DowntimeScheduleOneTimeSchedule.End.IsNull() {
+				DowntimeScheduleOneTimeSchedule.SetEndNil()
+			} else {
+				end, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
+				DowntimeScheduleOneTimeSchedule.SetEnd(end)
+			}
 		}
-		if !state.DowntimeScheduleOneTimeSchedule.Start.IsNull() && !state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
-			startStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
-			DowntimeScheduleOneTimeSchedule.SetStart(startStr)
+		log.Printf("WHYzzz %v", fmt.Sprintf("%+v", state.DowntimeScheduleOneTimeSchedule.Start), state.DowntimeScheduleOneTimeSchedule.Start.IsNull(), state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown())
+		if !state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
+			if state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
+				DowntimeScheduleOneTimeSchedule.SetStartNil()
+			} else {
+				start, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
+				DowntimeScheduleOneTimeSchedule.SetStart(start)
+			}
 		}
 
 		schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &DowntimeScheduleOneTimeSchedule
