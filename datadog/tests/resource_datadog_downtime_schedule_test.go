@@ -30,13 +30,15 @@ func TestAccDowntimeScheduleBasicRecurring(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.0", "cat:hat"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.1", "mat:sat"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.timezone", "America/New_York"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.#", "2"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.#", "3"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.start", "2022-07-13T01:02:03"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.duration", "1d"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.rrule", "FREQ=DAILY;INTERVAL=1"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.start", "2022-07-15T01:02:03"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.start", "2022-07-15T01:02"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.duration", "1w"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.rrule", "FREQ=DAILY;INTERVAL=12"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.2.duration", "1m"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.2.rrule", "FREQ=DAILY;INTERVAL=123"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "display_timezone", "America/New_York"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "message", "Message about the downtime"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "mute_first_recovery_notification", "true"),
@@ -65,7 +67,6 @@ func TestAccDowntimeScheduleBasicOneTime(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "scope", fmt.Sprintf("env:(staging OR %v)", uniq)),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_id", "125227421"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "one_time_schedule.start", "2050-01-02T03:04:05Z"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_states.#", "3"),
 					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "alert"),
@@ -83,7 +84,7 @@ func testAccCheckDatadogDowntimeScheduleRecurring(uniq string) string {
 resource "datadog_downtime_schedule" "t" {
     scope = "env:(staging OR %v)"
     monitor_identifier {
-      monitor_tags = ["cat:hat", "mat:sat"]
+      monitor_tags = ["cat:hat"]
     }
     recurring_schedule {
 		recurrence {
@@ -92,9 +93,13 @@ resource "datadog_downtime_schedule" "t" {
 		  rrule    = "FREQ=DAILY;INTERVAL=1"
 		}
 		recurrence {
-		  start = "2022-07-15T01:02:03"
+		  start = "2022-07-15T01:02"
 		  duration = "1w"
 		  rrule    = "FREQ=DAILY;INTERVAL=12"
+		}
+		recurrence {
+		  duration = "1m"
+		  rrule    = "FREQ=DAILY;INTERVAL=123"
 		}
     	timezone = "America/New_York"
     }
@@ -111,7 +116,7 @@ func testAccCheckDatadogDowntimeScheduleOneTime(uniq string) string {
 resource "datadog_downtime_schedule" "t1" {
     scope = "env:(staging OR %v)"
     monitor_identifier {
-      monitor_id = 125227421
+      monitor_tags = ["cat:hat", "mat:sat"]
     }
     one_time_schedule {
     	start = "2050-01-02T03:04:05Z"

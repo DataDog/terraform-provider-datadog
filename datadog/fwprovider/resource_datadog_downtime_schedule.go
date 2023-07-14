@@ -2,6 +2,12 @@ package fwprovider
 
 import (
 	"context"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -113,24 +119,29 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 					"monitor_id": schema.Int64Attribute{
 						Optional:    true,
 						Description: "ID of the monitor to prevent notifications.",
+						Validators:  []validator.Int64{int64validator.ConflictsWith(path.MatchRelative().AtParent().AtName("monitor_tags"))},
 					},
 					"monitor_tags": schema.SetAttribute{
 						Optional:    true,
 						Description: "A list of monitor tags. For example, tags that are applied directly to monitors, not tags that are used in monitor queries (which are filtered by the scope parameter), to which the downtime applies. The resulting downtime applies to monitors that match **all** provided monitor tags. Setting `monitor_tags` to `[*]` configures the downtime to mute all monitors for the given scope.",
 						ElementType: types.StringType,
+						Validators: []validator.Set{
+							setvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("monitor_id"))},
 					},
 				},
 			},
 			"one_time_schedule": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"end": schema.StringAttribute{
-						Optional:    true,
-						Description: "ISO-8601 Datetime to end the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
+						Optional:      true,
+						Description:   "ISO-8601 Datetime to end the downtime. Must include a UTC offset of zero. If not provided, the downtime never ends.",
+						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat(time.RFC3339)},
 					},
 					"start": schema.StringAttribute{
-						Optional:    true,
-						Computed:    true,
-						Description: "ISO-8601 Datetime to start the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
+						Optional:      true,
+						Computed:      true,
+						Description:   "ISO-8601 Datetime to start the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
+						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat(time.RFC3339)},
 					},
 				},
 			},
@@ -155,6 +166,7 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 								},
 								"start": schema.StringAttribute{
 									Optional:    true,
+									Computed:    true,
 									Description: "ISO-8601 Datetime to start the downtime. Must not include a UTC offset. If not provided, the downtime starts the moment it is created.",
 								},
 							},
@@ -286,16 +298,10 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 	if notifyEndStates, ok := attributes.GetNotifyEndStatesOk(); ok && len(*notifyEndStates) > 0 {
 		state.NotifyEndStates, _ = types.SetValueFrom(ctx, types.StringType, *notifyEndStates)
 	}
-	//} else {
-	//	state.NotifyEndStates = types.SetNull(types.StringType)
-	//}
 
 	if notifyEndTypes, ok := attributes.GetNotifyEndTypesOk(); ok && len(*notifyEndTypes) > 0 {
 		state.NotifyEndTypes, _ = types.SetValueFrom(ctx, types.StringType, *notifyEndTypes)
 	}
-	//} else {
-	//	state.NotifyEndTypes = types.SetNull(types.StringType)
-	//}
 
 	if attributes.MonitorIdentifier.DowntimeMonitorIdentifierId != nil {
 		state.MonitorIdentifier.DowntimeMonitorIdentifierId = types.Int64Value(attributes.MonitorIdentifier.DowntimeMonitorIdentifierId.MonitorId)
@@ -335,10 +341,10 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 		if schedule.DowntimeScheduleOneTimeResponse != nil {
 			downtimeScheduleOneTimeResponseTf := DowntimeScheduleOneTimeSchedule{}
 			if end, ok := schedule.DowntimeScheduleOneTimeResponse.GetEndOk(); ok && end != nil {
-				downtimeScheduleOneTimeResponseTf.End = types.StringValue((*end).Format("2006-01-02T15:04:05Z07:00"))
+				downtimeScheduleOneTimeResponseTf.End = types.StringValue((*end).Format("2006-01-02T15:04:05Z"))
 			}
 			if start, ok := schedule.DowntimeScheduleOneTimeResponse.GetStartOk(); ok {
-				downtimeScheduleOneTimeResponseTf.Start = types.StringValue((*start).Format("2006-01-02T15:04:05Z07:00"))
+				downtimeScheduleOneTimeResponseTf.Start = types.StringValue((*start).Format("2006-01-02T15:04:05Z"))
 			}
 
 			state.DowntimeScheduleOneTimeSchedule = &downtimeScheduleOneTimeResponseTf
@@ -429,7 +435,7 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 			endStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
 			DowntimeScheduleOneTimeSchedule.SetEnd(endStr)
 		}
-		if !state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
+		if !state.DowntimeScheduleOneTimeSchedule.Start.IsNull() && !state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
 			startStr, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
 			DowntimeScheduleOneTimeSchedule.SetStart(startStr)
 		}
