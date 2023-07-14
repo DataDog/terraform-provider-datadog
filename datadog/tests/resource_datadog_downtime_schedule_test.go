@@ -77,6 +77,13 @@ func TestAccDowntimeScheduleBasicOneTime(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.#", "0"),
 				),
 			},
+			{
+				Config: testAccCheckDatadogDowntimeScheduleOneTimeUpdate(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttrSet("datadog_downtime_schedule.t1", "one_time_schedule.start"), // Is there a way to check a subset of the string is now?
+				),
+			},
 		},
 	})
 }
@@ -126,6 +133,23 @@ resource "datadog_downtime_schedule" "t1" {
     	start = "2050-01-02T03:04:05Z"
     }
     notify_end_types = []
+}`, uniq)
+}
+
+func testAccCheckDatadogDowntimeScheduleOneTimeUpdate(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_downtime_schedule" "t1" {
+    scope = "env:(changed OR %v)"
+    monitor_identifier {
+      monitor_tags = ["vat:mat"]
+    }
+    one_time_schedule {
+    	start = null
+		end = "2060-01-02T03:04:05Z"
+    }
+    message = "updated"
+	notify_end_states = ["alert"]
+    notify_end_types = ["canceled"]
 }`, uniq)
 }
 

@@ -2,8 +2,6 @@ package fwprovider
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
@@ -555,8 +553,10 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 				end, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
 				DowntimeScheduleOneTimeSchedule.SetEnd(end)
 			}
+		} else {
+			DowntimeScheduleOneTimeSchedule.SetEndNil()
 		}
-		log.Printf("WHYzzz %v", fmt.Sprintf("%+v", state.DowntimeScheduleOneTimeSchedule.Start), state.DowntimeScheduleOneTimeSchedule.Start.IsNull(), state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown())
+
 		if !state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
 			if state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
 				DowntimeScheduleOneTimeSchedule.SetStartNil()
@@ -564,6 +564,8 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 				start, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
 				DowntimeScheduleOneTimeSchedule.SetStart(start)
 			}
+		} else {
+			DowntimeScheduleOneTimeSchedule.SetStartNil()
 		}
 
 		schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &DowntimeScheduleOneTimeSchedule
