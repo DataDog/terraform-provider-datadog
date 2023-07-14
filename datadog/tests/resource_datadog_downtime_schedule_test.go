@@ -75,13 +75,24 @@ func TestAccDowntimeScheduleBasicOneTime(t *testing.T) {
 					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "no data"),
 					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "warn"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.#", "0"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "mute_first_recovery_notification", "false"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "display_timezone", "UTC"),
 				),
 			},
 			{
 				Config: testAccCheckDatadogDowntimeScheduleOneTimeUpdate(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "scope", fmt.Sprintf("env:(changed OR %v)", uniq)),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.#", "1"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.0", "vat:mat"),
 					resource.TestCheckResourceAttrSet("datadog_downtime_schedule.t1", "one_time_schedule.start"), // Is there a way to check a subset of the string is now?
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "mute_first_recovery_notification", "true"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_states.#", "1"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "alert"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.#", "1"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.0", "canceled"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "display_timezone", "UTC"),
 				),
 			},
 		},
@@ -150,6 +161,7 @@ resource "datadog_downtime_schedule" "t1" {
     message = "updated"
 	notify_end_states = ["alert"]
     notify_end_types = ["canceled"]
+	mute_first_recovery_notification = true
 }`, uniq)
 }
 
