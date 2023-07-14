@@ -5627,6 +5627,7 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 		},
 		"event": {
 			Description: "The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below.",
+			Deprecated:  "This functionality has been superseded by `request` query blocks with `display_type = overlay`.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -6747,7 +6748,7 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"display_type": {
-			Description:      "How to display the marker lines.",
+			Description:      "How to display the marker lines. The `overlay` option is only supported with Timeseries widgets.",
 			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetDisplayTypeFromValue),
 			Optional:         true,

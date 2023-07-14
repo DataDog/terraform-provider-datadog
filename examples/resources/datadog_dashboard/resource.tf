@@ -605,6 +605,16 @@ resource "datadog_dashboard" "free_dashboard" {
           }
         }
       }
+      request {
+        display_type = "overlay"
+        query {
+          metric_query {
+            name        = "MyOverlay"
+            data_source = "metrics"
+            query       = "avg:system.cpu.user{host:COMP-QJWVM2FYT4}"
+          }
+        }
+      }
     }
     widget_layout {
       height = 16
