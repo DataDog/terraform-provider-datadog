@@ -2,6 +2,8 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
+	"log"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
@@ -168,8 +170,8 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 									Description: "The `RRULE` standard for defining recurring events. For example, to have a recurring event on the first day of each month, set the type to `rrule` and set the `FREQ` to `MONTHLY` and `BYMONTHDAY` to `1`. Most common `rrule` options from the [iCalendar Spec](https://tools.ietf.org/html/rfc5545) are supported.  **Note**: Attributes specifying the duration in `RRULE` are not supported (for example, `DTSTART`, `DTEND`, `DURATION`). More examples available in this [downtime guide](https://docs.datadoghq.com/monitors/guide/suppress-alert-with-downtimes/?tab=api).",
 								},
 								"start": schema.StringAttribute{
-									Optional:    true,
-									Computed:    true,
+									Optional: true,
+									// Computed:    true,
 									Description: "ISO-8601 Datetime to start the downtime. Must not include a UTC offset. If not provided, the downtime starts the moment it is created.",
 								},
 							},
@@ -188,6 +190,7 @@ func (r *DowntimeScheduleResource) ImportState(ctx context.Context, request reso
 
 func (r *DowntimeScheduleResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	var state DowntimeScheduleModel
+	log.Printf("READREAD")
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -237,6 +240,7 @@ func (r *DowntimeScheduleResource) Create(ctx context.Context, request resource.
 func (r *DowntimeScheduleResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state DowntimeScheduleModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	log.Printf("WHATWHAT")
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -465,6 +469,7 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 }
 
 func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx context.Context, state *DowntimeScheduleModel) (*datadogV2.DowntimeUpdateRequest, diag.Diagnostics) {
+	log.Printf("HELPEHLP")
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewDowntimeUpdateRequestAttributesWithDefaults()
 
@@ -543,31 +548,24 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 		schedule.DowntimeScheduleRecurrencesUpdateRequest = &DowntimeScheduleRecurrenceSchedule
 	}
 
+	log.Printf("WHYzzz no %v", fmt.Sprintf("%+v", state.DowntimeScheduleOneTimeSchedule.Start), state.DowntimeScheduleOneTimeSchedule.Start.IsNull(), state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown())
 	if state.DowntimeScheduleOneTimeSchedule != nil {
 		var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
 
-		if !state.DowntimeScheduleOneTimeSchedule.End.IsUnknown() {
-			if state.DowntimeScheduleOneTimeSchedule.End.IsNull() {
-				DowntimeScheduleOneTimeSchedule.SetEndNil()
-			} else {
-				end, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
-				DowntimeScheduleOneTimeSchedule.SetEnd(end)
-			}
-		} else {
+		if state.DowntimeScheduleOneTimeSchedule.End.IsUnknown() || state.DowntimeScheduleOneTimeSchedule.End.IsNull() {
 			DowntimeScheduleOneTimeSchedule.SetEndNil()
-		}
-
-		if !state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
-			if state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
-				DowntimeScheduleOneTimeSchedule.SetStartNil()
-			} else {
-				start, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
-				DowntimeScheduleOneTimeSchedule.SetStart(start)
-			}
 		} else {
-			DowntimeScheduleOneTimeSchedule.SetStartNil()
+			end, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.End.ValueString())
+			DowntimeScheduleOneTimeSchedule.SetEnd(end)
 		}
 
+		if state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() || state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
+			DowntimeScheduleOneTimeSchedule.SetStartNil()
+		} else {
+			start, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
+			DowntimeScheduleOneTimeSchedule.SetStart(start)
+		}
+		log.Printf("WHYzzz %v", fmt.Sprintf("%+v", state.DowntimeScheduleOneTimeSchedule.Start), state.DowntimeScheduleOneTimeSchedule.Start.IsNull(), state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown())
 		schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &DowntimeScheduleOneTimeSchedule
 	}
 
