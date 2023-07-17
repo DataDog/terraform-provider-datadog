@@ -390,11 +390,9 @@ func getServiceName(attrMap map[string]interface{}) (string, bool) {
 		service, ok := attrMap["dd-service"].(string)
 		return service, ok
 	} else if isBackstageSchema(attrMap) {
-		if spec, ok := attrMap["spec"]; ok {
-			if specMap, ok := spec.(map[string]interface{}); ok {
-				service, k := specMap["name"].(string)
-				return service, k
-			}
+		if metadata, ok := attrMap["metadata"].(map[string]interface{}); ok {
+			service, okay := metadata["name"].(string)
+			return service, okay
 		}
 	}
 	return "", false
