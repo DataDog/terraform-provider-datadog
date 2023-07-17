@@ -87,10 +87,6 @@ func resourceDatadogServiceDefinitionYAML() *schema.Resource {
 				ValidateFunc: isValidServiceDefinition,
 				StateFunc: func(v interface{}) string {
 					attrMap, _ := expandYAMLFromString(v.(string))
-					//if isBackstageSchema(attrMap) {
-					//	// let's convert it to datadog format
-					//	attrMap = convertToDatadogFormat(attrMap)
-					//}
 					res, _ := flattenYAMLToString(attrMap)
 					return res
 				},
@@ -200,89 +196,6 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 		}
 	}
 	return attrMap
-}
-
-func convertToDatadogFormat(attrMap map[string]interface{}) map[string]interface{} {
-	serviceDefinition := make(map[string]interface{})
-	if _, ok := attrMap["apiVersion"]; ok {
-		serviceDefinition["schema-version"] = "v2.1"
-	}
-
-	if metadata, ok := attrMap["metadata"].(map[string]interface{}); ok {
-		if service, okay := metadata["name"].(string); okay {
-			serviceDefinition["dd-service"] = service
-		}
-
-		if description, okay := metadata["description"].(string); okay {
-			serviceDefinition["description"] = description
-		}
-
-		var tagsField []string
-		if namespace, okay := metadata["namespace"].(string); okay {
-			tagsField = append(tagsField, fmt.Sprintf("%s:%s", "namespace", namespace))
-		}
-
-		if tags, okay := metadata["tags"].([]interface{}); okay {
-			for _, tag := range tags {
-				tagsField = append(tagsField, tag.(string))
-			}
-		}
-
-		var annotationTags []string
-		if annotations, okay := metadata["annotations"].(map[string]interface{}); okay {
-			for key, value := range annotations {
-				annotationTags = append(annotationTags, fmt.Sprintf("%s:%s", key, value))
-			}
-		}
-		sort.Strings(annotationTags)
-		tagsField = append(tagsField, annotationTags...)
-
-		if len(tagsField) > 0 {
-			serviceDefinition["tags"] = tagsField
-		}
-
-		var linksField []map[string]string
-		if links, okay := metadata["links"].([]interface{}); okay {
-			for _, link := range links {
-				if aLink, k := link.(map[string]interface{}); k {
-					linkMap := make(map[string]string)
-					if name, o := aLink["title"].(string); o {
-						linkMap["name"] = name
-					}
-					if url, o := aLink["url"].(string); o {
-						linkMap["url"] = url
-					}
-					linkMap["type"] = "other"
-					linksField = append(linksField, linkMap)
-				}
-			}
-		}
-		if len(linksField) > 0 {
-			serviceDefinition["links"] = linksField
-		}
-	}
-
-	if spec, ok := attrMap["spec"].(map[string]interface{}); ok {
-		if team, okay := spec["owner"].(string); okay {
-			serviceDefinition["team"] = team
-		}
-
-		if lifecycle, okay := spec["lifecycle"].(string); okay {
-			serviceDefinition["lifecycle"] = lifecycle
-		}
-
-		if system, okay := spec["system"].(string); okay {
-			if tags, exists := serviceDefinition["tags"].([]string); exists {
-				tags = append(tags, fmt.Sprintf("system:%s", system))
-				serviceDefinition["tags"] = tags
-			} else {
-				tags := []string{fmt.Sprintf("system:%s", system)}
-				serviceDefinition["tags"] = tags
-			}
-		}
-	}
-
-	return serviceDefinition
 }
 
 func normalizeArrayField(attrMap map[string]interface{}, key string) {
