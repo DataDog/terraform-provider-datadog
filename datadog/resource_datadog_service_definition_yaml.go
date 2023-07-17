@@ -87,6 +87,7 @@ func resourceDatadogServiceDefinitionYAML() *schema.Resource {
 				ValidateFunc: isValidServiceDefinition,
 				StateFunc: func(v interface{}) string {
 					attrMap, _ := expandYAMLFromString(v.(string))
+					prepServiceDefinitionResource(attrMap)
 					res, _ := flattenYAMLToString(attrMap)
 					return res
 				},
@@ -119,7 +120,7 @@ func flattenYAMLToString(input map[string]interface{}) (string, error) {
 
 func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]interface{} {
 	if isBackstageSchema(attrMap) {
-		// this should never be called.
+		// Don't prepare 3rd party schemas
 		return attrMap
 	}
 
@@ -353,10 +354,6 @@ func resourceDatadogServiceDefinitionRead(_ context.Context, d *schema.ResourceD
 	}
 
 	return updateServiceDefinitionState(d, schema)
-}
-
-func ingestedBackstage(meta sdMeta) bool {
-	return strings.HasPrefix(meta.IngestedSchemaVersion, "backstage.io")
 }
 
 func resourceDatadogServiceDefinitionCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
