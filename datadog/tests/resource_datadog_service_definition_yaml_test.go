@@ -58,6 +58,25 @@ func TestAccDatadogServiceDefinition_BasicV2_1(t *testing.T) {
 	})
 }
 
+func TestAccDatadogServiceDefinition_BasicBackstage(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceDefinitionDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogServiceDefinitionBackstage(uniq),
+				Check:  checkServiceDefinitionExists(accProvider),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogServiceDefinition(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_service_definition_yaml" "service_definition" {
@@ -133,6 +152,37 @@ tags:
   - my:tag
   - service:tag
 team: my-team  
+EOF
+}`, uniq)
+}
+
+func testAccCheckDatadogServiceDefinitionBackstage(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_definition_yaml" "service_definition_backstage" {
+  service_definition = <<EOF
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  annotations:
+    backstage.io/techdocs-ref: http://a/b/c
+    some.annotation: value
+  namespace: default
+  name: %s
+  title: Shopping Cart
+  description: A shopping cart service
+  tags: ["taga:valuea", "tagb:valueb"]
+  links:
+    - title: Wiki
+      url: https://wiki/shopping-cart
+      icon: help
+  ignore-attribute: 
+    id: 1
+    value: "value"
+spec:
+  type: service
+  lifecycle: production
+  owner: e-commerce
+  system: retail
 EOF
 }`, uniq)
 }
