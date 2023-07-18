@@ -1,0 +1,138 @@
+---
+version: 1
+interactions:
+- request:
+    body: "apiVersion: backstage.io/v1alpha1\nkind: Component\nmetadata:\n  annotations:\n    backstage.io/techdocs-ref: http://a/b/c\n    some.annotation: value\n  namespace: default\n  name: tf-testaccdatadogservicedefinition_basicbackstage-local-1689625948\n  title: Shopping Cart\n  description: A shopping cart service\n  tags: [\"taga:valuea\", \"tagb:valueb\"]\n  links:\n    - title: Wiki\n      url: https://wiki/shopping-cart\n      icon: help\n  ignore-attribute: \n    id: 1\n    value: \"value\"\nspec:\n  type: service\n  lifecycle: production\n  owner: e-commerce\n  system: retail\n"
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/services/definitions
+    method: POST
+  response:
+    body: |
+      {"data":[{"type":"service-definition","attributes":{"meta":{"last-modified-time":"2023-07-17T20:32:29.816614016Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"backstage.io/v1alpha1"},"schema":{"schema-version":"v2.1","dd-service":"tf-testaccdatadogservicedefinition_basicbackstage-local-1689625948","team":"e-commerce","description":"A shopping cart service","lifecycle":"production","links":[{"name":"Wiki","type":"other","url":"https://wiki/shopping-cart"}],"tags":["backstage.io/techdocs-ref:http://a/b/c","namespace:default","some.annotation:value","system:retail","taga:valuea","tagb:valueb"],"integrations":{}}}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicbackstage-local-1689625948
+    method: GET
+  response:
+    body: |
+      {"errors":["Not Found"],"error_details":[{}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicbackstage-local-1689625948
+    method: GET
+  response:
+    body: |
+      {"errors":["Not Found"],"error_details":[{}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicbackstage-local-1689625948
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"service-definition","id":"97900aee3390e6b342a756a94cb640e4","attributes":{"meta":{"last-modified-time":"2023-07-17T20:32:29Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"backstage.io/v1alpha1"},"schema":{"schema-version":"v2.1","dd-service":"tf-testaccdatadogservicedefinition_basicbackstage-local-1689625948","team":"e-commerce","description":"A shopping cart service","lifecycle":"production","links":[{"name":"Wiki","type":"other","url":"https://wiki/shopping-cart"}],"tags":["backstage.io/techdocs-ref:http://a/b/c","taga:valuea","tagb:valueb","system:retail","namespace:default","some.annotation:value"],"integrations":{}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicbackstage-local-1689625948
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"service-definition","id":"97900aee3390e6b342a756a94cb640e4","attributes":{"meta":{"last-modified-time":"2023-07-17T20:32:29Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"backstage.io/v1alpha1"},"schema":{"schema-version":"v2.1","dd-service":"tf-testaccdatadogservicedefinition_basicbackstage-local-1689625948","team":"e-commerce","description":"A shopping cart service","lifecycle":"production","links":[{"name":"Wiki","type":"other","url":"https://wiki/shopping-cart"}],"tags":["backstage.io/techdocs-ref:http://a/b/c","taga:valuea","tagb:valueb","system:retail","namespace:default","some.annotation:value"],"integrations":{}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/services/raw_definitions/tf-testaccdatadogservicedefinition_basicbackstage-local-1689625948
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"raw-service-definition","attributes":{"raw-content":"LS0tCmFwaVZlcnNpb246IGJhY2tzdGFnZS5pby92MWFscGhhMQpraW5kOiBDb21wb25lbnQKbWV0YWRhdGE6CiAgYW5ub3RhdGlvbnM6CiAgICBiYWNrc3RhZ2UuaW8vdGVjaGRvY3MtcmVmOiBodHRwOi8vYS9iL2MKICAgIHNvbWUuYW5ub3RhdGlvbjogdmFsdWUKICBuYW1lc3BhY2U6IGRlZmF1bHQKICBuYW1lOiB0Zi10ZXN0YWNjZGF0YWRvZ3NlcnZpY2VkZWZpbml0aW9uX2Jhc2ljYmFja3N0YWdlLWxvY2FsLTE2ODk2MjU5NDgKICB0aXRsZTogU2hvcHBpbmcgQ2FydAogIGRlc2NyaXB0aW9uOiBBIHNob3BwaW5nIGNhcnQgc2VydmljZQogIHRhZ3M6IFsidGFnYTp2YWx1ZWEiLCAidGFnYjp2YWx1ZWIiXQogIGxpbmtzOgogICAgLSB0aXRsZTogV2lraQogICAgICB1cmw6IGh0dHBzOi8vd2lraS9zaG9wcGluZy1jYXJ0CiAgICAgIGljb246IGhlbHAKICBpZ25vcmUtYXR0cmlidXRlOgogICAgaWQ6IDEKICAgIHZhbHVlOiAidmFsdWUiCnNwZWM6CiAgdHlwZTogc2VydmljZQogIGxpZmVjeWNsZTogcHJvZHVjdGlvbgogIG93bmVyOiBlLWNvbW1lcmNlCiAgc3lzdGVtOiByZXRhaWwK"}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicbackstage-local-1689625948
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/services/definitions/tf-testaccdatadogservicedefinition_basicbackstage-local-1689625948
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"service-definition","id":"97900aee3390e6b342a756a94cb640e4","attributes":{"meta":{"last-modified-time":"2023-07-17T20:32:29Z","github-html-url":"","ingestion-source":"api","origin":"dd_terraform","origin-detail":"","warnings":[],"ingested-schema-version":"backstage.io/v1alpha1"},"schema":{"schema-version":"v2.1","dd-service":"tf-testaccdatadogservicedefinition_basicbackstage-local-1689625948","team":"e-commerce","description":"A shopping cart service","lifecycle":"production","links":[{"name":"Wiki","type":"other","url":"https://wiki/shopping-cart"}],"tags":["system:retail","namespace:default","some.annotation:value","backstage.io/techdocs-ref:http://a/b/c","taga:valuea","tagb:valueb"],"integrations":{}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
