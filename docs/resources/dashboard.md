@@ -7581,7 +7581,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--custom_link))
-- `event` (Block List, Deprecated) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. **Deprecated.** This functionality has been superseded by `request` query blocks with `display_type = overlay`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--event))
+- `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--event))
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget.
@@ -7638,7 +7638,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query))
-- `display_type` (String) How to display the marker lines. The `overlay` option is only supported with Timeseries widgets. Valid values are `area`, `bars`, `line`, `overlay`.
+- `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
 - `formula` (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula))
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--metadata))
@@ -13239,7 +13239,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--custom_link))
-- `event` (Block List, Deprecated) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. **Deprecated.** This functionality has been superseded by `request` query blocks with `display_type = overlay`. (see [below for nested schema](#nestedblock--widget--timeseries_definition--event))
+- `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--event))
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget.
@@ -13296,7 +13296,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query))
-- `display_type` (String) How to display the marker lines. The `overlay` option is only supported with Timeseries widgets. Valid values are `area`, `bars`, `line`, `overlay`.
+- `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
 - `formula` (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula))
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--metadata))
