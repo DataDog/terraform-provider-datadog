@@ -141,7 +141,8 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat("2006-01-02T15:04:05Z")},
 					},
 					"start": schema.StringAttribute{
-						Required:      true,
+						Optional:      true,
+						Computed:      true,
 						Description:   "ISO-8601 Datetime to start the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
 						PlanModifiers: []planmodifier.String{NullToNowDateModifier{}, planmodifiers.TimeFormat("2006-01-02T15:04:05Z")},
 					},
