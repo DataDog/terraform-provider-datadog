@@ -279,7 +279,7 @@ func isValidBackstageServiceDefinition(attrMap map[string]interface{}, k string)
 	}
 
 	if spec, ok := attrMap["spec"].(map[string]interface{}); ok {
-		if t, okay := spec["type"].(string); !okay {
+		if _, okay := spec["type"].(string); !okay {
 			errors = append(errors, fmt.Errorf("spec.type is missing: %q", k))
 		}
 	} else {
