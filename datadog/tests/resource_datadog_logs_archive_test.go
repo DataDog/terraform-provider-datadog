@@ -16,10 +16,9 @@ import (
 // Test
 // create: OK azure
 func archiveAzureConfigForCreation(uniq string) string {
-	return fmt.Sprintf(`
-resource "datadog_integration_azure" "an_azure_integration" {
-  tenant_name   = "%s"
-  client_id     = "testc7f6-1234-5678-9101-3fcbf464test"
+	return `resource "datadog_integration_azure" "an_azure_integration" {
+  tenant_name   = "a1d1707f-b137-483f-bed5-0752aa0a813c"
+  client_id     = "a75fbdd2-ade6-43d0-a810-4d886c53871e"
   client_secret = "testingx./Sw*g/Y33t..R1cH+hScMDt"
 }
 
@@ -29,13 +28,12 @@ resource "datadog_logs_archive" "my_azure_archive" {
   query = "service:toto"
   azure_archive {
     container 		= "my-container"
-    tenant_id 		= "%s"
-    client_id       = "testc7f6-1234-5678-9101-3fcbf464test"
+    tenant_id 		= "a1d1707f-b137-483f-bed5-0752aa0a813c"
+    client_id       = "a75fbdd2-ade6-43d0-a810-4d886c53871e"
     storage_account = "storageaccount"
     path            = "/path/blou"
   }
-}
-`, uniq, uniq)
+}`
 }
 
 func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
@@ -60,9 +58,9 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "azure_archive.0.container", "my-container"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_archive.my_azure_archive", "azure_archive.0.client_id", "testc7f6-1234-5678-9101-3fcbf464test"),
+						"datadog_logs_archive.my_azure_archive", "azure_archive.0.client_id", "a75fbdd2-ade6-43d0-a810-4d886c53871e"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_archive.my_azure_archive", "azure_archive.0.tenant_id", tenantName),
+						"datadog_logs_archive.my_azure_archive", "azure_archive.0.tenant_id", "a1d1707f-b137-483f-bed5-0752aa0a813c"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "azure_archive.0.storage_account", "storageaccount"),
 					resource.TestCheckResourceAttr(
