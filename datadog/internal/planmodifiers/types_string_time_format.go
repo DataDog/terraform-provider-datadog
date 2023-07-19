@@ -23,12 +23,12 @@ func (m TimeFormatModifier) MarkdownDescription(ctx context.Context) string {
 
 func (m TimeFormatModifier) PlanModifyString(ctx context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
 	// Validates string datetime format and converts it to a standardized output format
-	if resp.PlanValue.IsNull() || resp.PlanValue.IsUnknown() {
+	if req.PlanValue.IsNull() || req.PlanValue.IsUnknown() {
 		return
 	}
-	planTime, err := time.Parse(m.format, resp.PlanValue.ValueString())
+	planTime, err := time.Parse(m.format, req.PlanValue.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError(fmt.Sprintf("property \"%s\" must be of the format %v", req.Path.String(), m.format), fmt.Sprintf("was %v", resp.PlanValue.ValueString()))
+		resp.Diagnostics.AddError(fmt.Sprintf("property \"%s\" must be of the format %v", req.Path.String(), m.format), fmt.Sprintf("was %v", req.PlanValue.ValueString()))
 		return
 	}
 	resp.PlanValue = types.StringValue(planTime.Format(m.format))

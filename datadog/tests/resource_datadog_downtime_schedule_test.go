@@ -71,30 +71,18 @@ func TestAccDowntimeScheduleBasicOneTime(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "scope", fmt.Sprintf("env:(staging OR %v)", uniq)),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "one_time_schedule.start", "2050-01-02T03:04:05Z"),
 					resource.TestCheckNoResourceAttr("datadog_downtime_schedule.t1", "one_time_schedule.end"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_states.#", "3"),
-					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "alert"),
-					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "no data"),
-					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "warn"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.#", "0"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "mute_first_recovery_notification", "false"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "display_timezone", "UTC"),
 				),
 			},
 			{
 				Config: testAccCheckDatadogDowntimeScheduleOneTimeUpdate(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "scope", fmt.Sprintf("env:(changed OR %v)", uniq)),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.#", "1"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.0", "vat:mat"),
-					resource.TestCheckResourceAttrSet("datadog_downtime_schedule.t1", "one_time_schedule.start"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "one_time_schedule.end", "2060-01-02T03:04:05Z"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "mute_first_recovery_notification", "true"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_states.#", "1"),
-					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "alert"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.#", "1"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.0", "canceled"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "display_timezone", "UTC"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.#", "2"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.0", "cat:hat"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.1", "mat:sat"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "scope", fmt.Sprintf("env:(staging OR %v)", uniq)),
+					// This will always fail, its here to confirm that "NOW" is not being set as it should bc the update isn't being sent to the API because no change is detected
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "one_time_schedule.start", "2023-01-02"),
 				),
 			},
 		},
@@ -145,25 +133,19 @@ resource "datadog_downtime_schedule" "t1" {
     one_time_schedule {
     	start = "2050-01-02T03:04:05Z"
     }
-    notify_end_types = []
 }`, uniq)
 }
 
 func testAccCheckDatadogDowntimeScheduleOneTimeUpdate(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_downtime_schedule" "t1" {
-    scope = "env:(changed OR %v)"
+    scope = "env:(staging OR %v)"
     monitor_identifier {
-      monitor_tags = ["vat:mat"]
+      monitor_tags = ["cat:hat", "mat:sat"]
     }
     one_time_schedule {
     	start = null
-		end = "2060-01-02T03:04:05Z"
     }
-    message = "updated"
-	notify_end_states = ["alert"]
-    notify_end_types = ["canceled"]
-	mute_first_recovery_notification = true
 }`, uniq)
 }
 

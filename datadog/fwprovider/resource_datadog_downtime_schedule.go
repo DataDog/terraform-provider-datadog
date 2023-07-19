@@ -3,7 +3,6 @@ package fwprovider
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
@@ -142,10 +141,9 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat("2006-01-02T15:04:05Z")},
 					},
 					"start": schema.StringAttribute{
-						Optional:      true,
-						Computed:      true,
+						Required:      true,
 						Description:   "ISO-8601 Datetime to start the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
-						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat("2006-01-02T15:04:05Z")},
+						PlanModifiers: []planmodifier.String{NullToNowDateModifier{}, planmodifiers.TimeFormat("2006-01-02T15:04:05Z")},
 					},
 				},
 				Validators: []validator.Object{objectvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("recurring_schedule"))},
@@ -190,7 +188,6 @@ func (r *DowntimeScheduleResource) ImportState(ctx context.Context, request reso
 
 func (r *DowntimeScheduleResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	var state DowntimeScheduleModel
-	log.Printf("READREAD")
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -240,7 +237,6 @@ func (r *DowntimeScheduleResource) Create(ctx context.Context, request resource.
 func (r *DowntimeScheduleResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state DowntimeScheduleModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	log.Printf("WHATWHAT")
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -469,7 +465,6 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 }
 
 func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx context.Context, state *DowntimeScheduleModel) (*datadogV2.DowntimeUpdateRequest, diag.Diagnostics) {
-	log.Printf("HELPEHLP")
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewDowntimeUpdateRequestAttributesWithDefaults()
 
@@ -548,7 +543,6 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 		schedule.DowntimeScheduleRecurrencesUpdateRequest = &DowntimeScheduleRecurrenceSchedule
 	}
 
-	log.Printf("WHYzzz no %v", fmt.Sprintf("%+v", state.DowntimeScheduleOneTimeSchedule.Start), state.DowntimeScheduleOneTimeSchedule.Start.IsNull(), state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown())
 	if state.DowntimeScheduleOneTimeSchedule != nil {
 		var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
 
@@ -565,7 +559,6 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 			start, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
 			DowntimeScheduleOneTimeSchedule.SetStart(start)
 		}
-		log.Printf("WHYzzz %v", fmt.Sprintf("%+v", state.DowntimeScheduleOneTimeSchedule.Start), state.DowntimeScheduleOneTimeSchedule.Start.IsNull(), state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown())
 		schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &DowntimeScheduleOneTimeSchedule
 	}
 
@@ -576,4 +569,24 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+type NullToNowDateModifier struct {
+}
+
+func (m NullToNowDateModifier) Description(context.Context) string {
+	return fmt.Sprintf("field is set to now date if not present")
+}
+
+func (m NullToNowDateModifier) MarkdownDescription(ctx context.Context) string {
+	return m.Description(ctx)
+}
+
+func (m NullToNowDateModifier) PlanModifyString(ctx context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
+	// The FWProvider doesn't recognize set->field removed as a change for optional, computed fields
+	// This will set dates to now if the value is null to work around that.
+	if req.PlanValue.IsNull() || req.PlanValue.IsUnknown() {
+		resp.PlanValue = types.StringValue(time.Now().UTC().Format("2006-01-02T15:04:05Z"))
+	}
+	// resp.PlanValue = types.StringValue(time.Now().UTC().Format("2006-01-02T15:04:05Z"))
 }
