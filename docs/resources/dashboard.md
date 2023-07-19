@@ -620,6 +620,16 @@ resource "datadog_dashboard" "free_dashboard" {
           }
         }
       }
+      request {
+        display_type = "overlay"
+        query {
+          metric_query {
+            name        = "MyOverlay"
+            data_source = "metrics"
+            query       = "avg:system.cpu.user{host:COMP-QJWVM2FYT4}"
+          }
+        }
+      }
     }
     widget_layout {
       height = 16
@@ -7628,7 +7638,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query))
-- `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`.
+- `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
 - `formula` (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula))
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--metadata))
@@ -13286,7 +13296,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query))
-- `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`.
+- `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
 - `formula` (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula))
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--metadata))
