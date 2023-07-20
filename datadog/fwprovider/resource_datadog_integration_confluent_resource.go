@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -29,11 +30,12 @@ type integrationConfluentResourceResource struct {
 }
 
 type integrationConfluentResourceModel struct {
-	ID           types.String `tfsdk:"id"`
-	AccountId    types.String `tfsdk:"account_id"`
-	ResourceId   types.String `tfsdk:"resource_id"`
-	ResourceType types.String `tfsdk:"resource_type"`
-	Tags         types.Set    `tfsdk:"tags"`
+	ID                  types.String `tfsdk:"id"`
+	AccountId           types.String `tfsdk:"account_id"`
+	ResourceId          types.String `tfsdk:"resource_id"`
+	ResourceType        types.String `tfsdk:"resource_type"`
+	Tags                types.Set    `tfsdk:"tags"`
+	EnableCustomMetrics types.Bool   `tfsdk:"enable_custom_metrics"`
 }
 
 func NewIntegrationConfluentResourceResource() resource.Resource {
@@ -74,6 +76,11 @@ func (r *integrationConfluentResourceResource) Schema(_ context.Context, _ resou
 				Description: "A list of strings representing tags. Can be a single key, or key-value pairs separated by a colon.",
 				ElementType: types.StringType,
 				Validators:  []validator.Set{validators.TagsSetIsNormalized()},
+			},
+			"enable_custom_metrics": schema.BoolAttribute{
+				Optional:    true,
+				Description: "Enable the `custom.consumer_lag_offset` metric, which contains extra metric tags.",
+				Default:     booldefault.StaticBool(false),
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -225,6 +232,8 @@ func (r *integrationConfluentResourceResource) updateState(ctx context.Context, 
 	if tags, ok := attributes.GetTagsOk(); ok && len(*tags) > 0 {
 		state.Tags, _ = types.SetValueFrom(ctx, types.StringType, *tags)
 	}
+
+	state.EnableCustomMetrics = types.BoolValue(attributes.GetEnableCustomMetrics())
 }
 
 func (r *integrationConfluentResourceResource) buildIntegrationConfluentResourceRequestBody(ctx context.Context, state *integrationConfluentResourceModel) (*datadogV2.ConfluentResourceRequest, diag.Diagnostics) {
@@ -240,6 +249,8 @@ func (r *integrationConfluentResourceResource) buildIntegrationConfluentResource
 		diags.Append(state.Tags.ElementsAs(ctx, &tags, false)...)
 		attributes.SetTags(tags)
 	}
+
+	attributes.SetEnableCustomMetrics(state.EnableCustomMetrics.ValueBool())
 
 	req := datadogV2.NewConfluentResourceRequestWithDefaults()
 	req.Data = *datadogV2.NewConfluentResourceRequestDataWithDefaults()
