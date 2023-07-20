@@ -86,7 +86,9 @@ func deleteWidgetID(widgets []interface{}) {
 		if widget, ok := w.(map[string]interface{}); ok {
 			if def, ok := widget["definition"].(map[string]interface{}); ok {
 				if def["type"] == "group" {
-					deleteWidgetID(def["widgets"].([]interface{}))
+					if group, ok := def["widgets"].([]interface{}); ok {
+						deleteWidgetID(group)
+					}
 				}
 				delete(widget, "id")
 			}
