@@ -1,3 +1,23 @@
+## 3.28.0 (July 20, 2023)
+
+### BUGFIXES
+* [datadog_dashboard_json] Check if widgets are valid while casting by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2012
+### IMPROVEMENTS
+* [data_source_datadog_synthetics_test] Allow datasource to take a test URL as well as id by @Cgg in https://github.com/DataDog/terraform-provider-datadog/pull/1993
+* [datadog_dashboard] Add a new field additional_query_filters to Formula and Function SLO query by @zhengshizhao in https://github.com/DataDog/terraform-provider-datadog/pull/1997
+* [restriction_policy] Update restriction_policy resource documentation by @sanjaythakkar-dd in https://github.com/DataDog/terraform-provider-datadog/pull/1995
+* [datadog_dashboard] Support overlay display type in dashboard widget definition requests by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2006
+* [datadog_integration_confluent_resource] Add support for `enable_custom_metrics` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2011
+### FEATURES
+* [datadog_service_definition] support backstage schema validation by @hyperloglogy in https://github.com/DataDog/terraform-provider-datadog/pull/2004
+* [datadog_service_definition] support backstage schema validation v2 by @hyperloglogy in https://github.com/DataDog/terraform-provider-datadog/pull/2008
+
+## New Contributors
+* @Cgg made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1993
+* @sanjaythakkar-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1995
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.27.0...v3.28.0
+
 ## 3.27.0 (July 3, 2023)
 
 ### BUGFIXES
