@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"data":{"attributes":{"display_timezone":"America/New_York","message":"Message about the downtime","monitor_identifier":{"monitor_tags":["cat:hat"]},"mute_first_recovery_notification":true,"notify_end_states":["alert","warn"],"notify_end_types":["expired"],"schedule":{"recurrences":[{"duration":"1d","rrule":"FREQ=DAILY;INTERVAL=1","start":"2022-07-13T01:02:03"},{"duration":"1w","rrule":"FREQ=DAILY;INTERVAL=12","start":"2022-07-15T01:02:03"},{"duration":"1m","rrule":"FREQ=DAILY;INTERVAL=123","start":"2022-07-15T01:02:03"}],"timezone":"America/New_York"},"scope":"env:(staging OR tf-TestAccDowntimeScheduleBasicRecurring-local-1689526829)"},"type":"downtime"}}
+      {"data":{"attributes":{"display_timezone":"America/New_York","message":"Message about the downtime","monitor_identifier":{"monitor_tags":["cat:hat"]},"mute_first_recovery_notification":true,"notify_end_states":["alert","warn"],"notify_end_types":["expired"],"schedule":{"recurrences":[{"duration":"1d","rrule":"FREQ=DAILY;INTERVAL=1","start":"2042-07-13T01:02:03"},{"duration":"1w","rrule":"FREQ=DAILY;INTERVAL=12","start":"2042-07-15T01:02:03"},{"duration":"1m","rrule":"FREQ=DAILY;INTERVAL=123","start":"2042-07-17T01:02:03"}],"timezone":"America/New_York"},"scope":"env:(staging OR tf-TestAccDowntimeScheduleBasicRecurring-local-1689875008)"},"type":"downtime"}}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"data":{"type":"downtime","attributes":{"modified":"2023-07-16T17:00:33.505005+00:00","message":"Message about the downtime","monitor_identifier":{"monitor_tags":["cat:hat"]},"created":"2023-07-16T17:00:33.505005+00:00","status":"active","scope":"env:(staging OR tf-TestAccDowntimeScheduleBasicRecurring-local-1689526829)","display_timezone":"America/New_York","notify_end_states":["alert","warn"],"canceled":null,"mute_first_recovery_notification":true,"schedule":{"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2022-07-13T01:02:03","duration":"1d"},{"rrule":"FREQ=DAILY;INTERVAL=12","start":"2022-07-15T01:02:03","duration":"1w"},{"rrule":"FREQ=DAILY;INTERVAL=123","start":"2022-07-15T01:02:03","duration":"1m"}],"timezone":"America/New_York","current_downtime":{"start":"2023-07-10T05:02:03+00:00","end":"2023-07-17T05:02:03+00:00"}},"notify_end_types":["expired"]},"relationships":{"created_by":{"data":{"type":"users","id":"0e08ee7b-eba0-11e9-a77a-5b128f8b6c92"}},"monitor":{"data":null}},"id":"47004c0e-23fa-11ee-a766-da7ad0900002"},"included":[{"type":"users","id":"0e08ee7b-eba0-11e9-a77a-5b128f8b6c92","attributes":{"name":"Carl Martensen","handle":"carl.martensen@datadoghq.com","created_at":"2019-01-15T14:36:15.423919+00:00","modified_at":"2019-01-15T14:36:15.457748+00:00","email":"carl.martensen@datadoghq.com","icon":"https://secure.gravatar.com/avatar/ed460c2fc567a43e34c2bd7cda76bdd1?s=48&d=retro","title":null,"verified":true,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Active"}}]}
+      {"data":{"type":"downtime","id":"f0d5849c-2724-11ee-b762-da7ad0900002","attributes":{"created":"2023-07-20T17:43:30.789233+00:00","schedule":{"current_downtime":{"end":"2042-07-14T06:02:03+00:00","start":"2042-07-13T06:02:03+00:00"},"timezone":"America/New_York","recurrences":[{"duration":"1d","rrule":"FREQ=DAILY;INTERVAL=1","start":"2042-07-13T01:02:03"},{"duration":"1w","rrule":"FREQ=DAILY;INTERVAL=12","start":"2042-07-15T01:02:03"},{"duration":"1m","rrule":"FREQ=DAILY;INTERVAL=123","start":"2042-07-17T01:02:03"}]},"notify_end_states":["alert","warn"],"modified":"2023-07-20T17:43:30.789233+00:00","display_timezone":"America/New_York","notify_end_types":["expired"],"canceled":null,"message":"Message about the downtime","mute_first_recovery_notification":true,"scope":"env:(staging OR tf-TestAccDowntimeScheduleBasicRecurring-local-1689875008)","status":"scheduled","monitor_identifier":{"monitor_tags":["cat:hat"]}},"relationships":{"created_by":{"data":{"type":"users","id":"0e08ee7b-eba0-11e9-a77a-5b128f8b6c92"}},"monitor":{"data":null}}},"included":[{"type":"users","id":"0e08ee7b-eba0-11e9-a77a-5b128f8b6c92","attributes":{"name":"Carl Martensen","handle":"carl.martensen@datadoghq.com","created_at":"2019-01-15T14:36:15.423919+00:00","modified_at":"2019-01-15T14:36:15.457748+00:00","email":"carl.martensen@datadoghq.com","icon":"https://secure.gravatar.com/avatar/ed460c2fc567a43e34c2bd7cda76bdd1?s=48&d=retro","title":null,"verified":true,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Active"}}]}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,65 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/downtime/47004c0e-23fa-11ee-a766-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/downtime/f0d5849c-2724-11ee-b762-da7ad0900002
     method: GET
   response:
     body: |
-      {"data":{"type":"downtime","attributes":{"canceled":null,"modified":"2023-07-16T17:00:33.505005+00:00","message":"Message about the downtime","status":"active","created":"2023-07-16T17:00:33.505005+00:00","display_timezone":"America/New_York","monitor_identifier":{"monitor_tags":["cat:hat"]},"schedule":{"recurrences":[{"duration":"1d","rrule":"FREQ=DAILY;INTERVAL=1","start":"2022-07-13T01:02:03"},{"duration":"1w","rrule":"FREQ=DAILY;INTERVAL=12","start":"2022-07-15T01:02:03"},{"duration":"1m","rrule":"FREQ=DAILY;INTERVAL=123","start":"2022-07-15T01:02:03"}],"timezone":"America/New_York","current_downtime":{"end":"2023-07-17T05:02:03+00:00","start":"2023-07-10T05:02:03+00:00"}},"notify_end_types":["expired"],"notify_end_states":["alert","warn"],"scope":"env:(staging OR tf-TestAccDowntimeScheduleBasicRecurring-local-1689526829)","mute_first_recovery_notification":true},"id":"47004c0e-23fa-11ee-a766-da7ad0900002"}}
+      {"data":{"type":"downtime","attributes":{"display_timezone":"America/New_York","scope":"env:(staging OR tf-TestAccDowntimeScheduleBasicRecurring-local-1689875008)","mute_first_recovery_notification":true,"created":"2023-07-20T17:43:30.789233+00:00","monitor_identifier":{"monitor_tags":["cat:hat"]},"modified":"2023-07-20T17:43:30.789233+00:00","status":"scheduled","notify_end_states":["alert","warn"],"schedule":{"timezone":"America/New_York","recurrences":[{"duration":"1d","start":"2042-07-13T01:02:03","rrule":"FREQ=DAILY;INTERVAL=1"},{"duration":"1w","start":"2042-07-15T01:02:03","rrule":"FREQ=DAILY;INTERVAL=12"},{"duration":"1m","start":"2042-07-17T01:02:03","rrule":"FREQ=DAILY;INTERVAL=123"}],"current_downtime":{"start":"2042-07-13T06:02:03+00:00","end":"2042-07-14T06:02:03+00:00"}},"canceled":null,"message":"Message about the downtime","notify_end_types":["expired"]},"id":"f0d5849c-2724-11ee-b762-da7ad0900002"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/downtime/f0d5849c-2724-11ee-b762-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"downtime","attributes":{"scope":"env:(staging OR tf-TestAccDowntimeScheduleBasicRecurring-local-1689875008)","canceled":null,"mute_first_recovery_notification":true,"modified":"2023-07-20T17:43:30.789233+00:00","notify_end_states":["alert","warn"],"schedule":{"timezone":"America/New_York","recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","start":"2042-07-13T01:02:03","duration":"1d"},{"rrule":"FREQ=DAILY;INTERVAL=12","start":"2042-07-15T01:02:03","duration":"1w"},{"rrule":"FREQ=DAILY;INTERVAL=123","start":"2042-07-17T01:02:03","duration":"1m"}],"current_downtime":{"end":"2042-07-14T06:02:03+00:00","start":"2042-07-13T06:02:03+00:00"}},"created":"2023-07-20T17:43:30.789233+00:00","status":"scheduled","display_timezone":"America/New_York","notify_end_types":["expired"],"message":"Message about the downtime","monitor_identifier":{"monitor_tags":["cat:hat"]}},"id":"f0d5849c-2724-11ee-b762-da7ad0900002"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"display_timezone":"UTC","message":"Updated message","monitor_identifier":{"monitor_tags":["cat:hat"]},"mute_first_recovery_notification":true,"notify_end_states":["alert","warn"],"notify_end_types":["expired"],"schedule":{"recurrences":[{"duration":"1d","rrule":"FREQ=DAILY;INTERVAL=1","start":"2042-07-13T01:02:03"},{"duration":"1m","rrule":"FREQ=WEEKLY;INTERVAL=123","start":"3022-07-15T01:02:03"}],"timezone":"UTC"},"scope":"env:(staging OR tf-TestAccDowntimeScheduleBasicRecurring-local-1689875008)"},"id":"","type":"downtime"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/downtime/f0d5849c-2724-11ee-b762-da7ad0900002
+    method: PATCH
+  response:
+    body: |
+      {"data":{"type":"downtime","attributes":{"mute_first_recovery_notification":true,"monitor_identifier":{"monitor_tags":["cat:hat"]},"scope":"env:(staging OR tf-TestAccDowntimeScheduleBasicRecurring-local-1689875008)","display_timezone":"UTC","canceled":null,"modified":"2023-07-20T17:43:32.648813+00:00","message":"Updated message","created":"2023-07-20T17:43:30.789233+00:00","notify_end_types":["expired"],"notify_end_states":["alert","warn"],"status":"scheduled","schedule":{"timezone":"UTC","recurrences":[{"duration":"1d","start":"2042-07-13T01:02:03","rrule":"FREQ=DAILY;INTERVAL=1"},{"duration":"1m","start":"3022-07-15T01:02:03","rrule":"FREQ=WEEKLY;INTERVAL=123"}],"current_downtime":{"start":"2042-07-13T01:02:03+00:00","end":"2042-07-14T01:02:03+00:00"}}},"relationships":{"created_by":{"data":{"type":"users","id":"0e08ee7b-eba0-11e9-a77a-5b128f8b6c92"}},"monitor":{"data":null}},"id":"f0d5849c-2724-11ee-b762-da7ad0900002"},"included":[{"type":"users","id":"0e08ee7b-eba0-11e9-a77a-5b128f8b6c92","attributes":{"name":"Carl Martensen","handle":"carl.martensen@datadoghq.com","created_at":"2019-01-15T14:36:15.423919+00:00","modified_at":"2019-01-15T14:36:15.457748+00:00","email":"carl.martensen@datadoghq.com","icon":"https://secure.gravatar.com/avatar/ed460c2fc567a43e34c2bd7cda76bdd1?s=48&d=retro","title":null,"verified":true,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Active"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/downtime/f0d5849c-2724-11ee-b762-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"downtime","attributes":{"modified":"2023-07-20T17:43:32.648813+00:00","status":"scheduled","created":"2023-07-20T17:43:30.789233+00:00","monitor_identifier":{"monitor_tags":["cat:hat"]},"scope":"env:(staging OR tf-TestAccDowntimeScheduleBasicRecurring-local-1689875008)","notify_end_types":["expired"],"mute_first_recovery_notification":true,"display_timezone":"UTC","schedule":{"current_downtime":{"end":"2042-07-14T01:02:03+00:00","start":"2042-07-13T01:02:03+00:00"},"recurrences":[{"rrule":"FREQ=DAILY;INTERVAL=1","duration":"1d","start":"2042-07-13T01:02:03"},{"rrule":"FREQ=WEEKLY;INTERVAL=123","duration":"1m","start":"3022-07-15T01:02:03"}],"timezone":"UTC"},"message":"Updated message","canceled":null,"notify_end_states":["alert","warn"]},"id":"f0d5849c-2724-11ee-b762-da7ad0900002"}}
     headers:
       Content-Type:
       - application/json
@@ -44,7 +98,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/downtime/47004c0e-23fa-11ee-a766-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/downtime/f0d5849c-2724-11ee-b762-da7ad0900002
     method: DELETE
   response:
     body: ""

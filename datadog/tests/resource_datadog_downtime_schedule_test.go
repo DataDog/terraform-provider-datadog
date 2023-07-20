@@ -30,16 +30,42 @@ func TestAccDowntimeScheduleBasicRecurring(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.0", "cat:hat"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.timezone", "America/New_York"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.#", "3"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.start", "2022-07-13T01:02:03"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.start", "2042-07-13T01:02:03"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.duration", "1d"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.rrule", "FREQ=DAILY;INTERVAL=1"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.start", "2022-07-15T01:02:03"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.start", "2042-07-15T01:02:03"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.duration", "1w"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.rrule", "FREQ=DAILY;INTERVAL=12"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.2.start", "2042-07-17T01:02:03"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.2.duration", "1m"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.2.rrule", "FREQ=DAILY;INTERVAL=123"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "display_timezone", "America/New_York"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "message", "Message about the downtime"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "mute_first_recovery_notification", "true"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "notify_end_states.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t", "notify_end_states.*", "alert"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t", "notify_end_states.*", "warn"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "notify_end_types.#", "1"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t", "notify_end_types.*", "expired"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogDowntimeScheduleRecurringUpdate(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "scope", fmt.Sprintf("env:(staging OR %v)", uniq)),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.#", "1"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.0", "cat:hat"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.timezone", "UTC"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.#", "2"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.start", "2042-07-13T01:02:03"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.duration", "1d"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.rrule", "FREQ=DAILY;INTERVAL=1"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.start", "3022-07-15T01:02:03"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.duration", "1m"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.rrule", "FREQ=WEEKLY;INTERVAL=123"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "display_timezone", "UTC"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "message", "Updated message"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "mute_first_recovery_notification", "true"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "notify_end_states.#", "2"),
 					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t", "notify_end_states.*", "alert"),
@@ -109,18 +135,18 @@ resource "datadog_downtime_schedule" "t" {
       monitor_tags = ["cat:hat"]
     }
     recurring_schedule {
-		recurrence {
-		  start = "2022-07-13T01:02:03"
+        recurrence {
+		  start = "2042-07-13T01:02:03"
 		  duration = "1d"
 		  rrule    = "FREQ=DAILY;INTERVAL=1"
 		}
 		recurrence {
-		  start = "2022-07-15T01:02:03"
+		  start = "2042-07-15T01:02:03"
 		  duration = "1w"
 		  rrule    = "FREQ=DAILY;INTERVAL=12"
 		}
 		recurrence {
-		  start = "2022-07-15T01:02:03"
+		  start = "2042-07-17T01:02:03"
 		  duration = "1m"
 		  rrule    = "FREQ=DAILY;INTERVAL=123"
 		}
@@ -129,6 +155,34 @@ resource "datadog_downtime_schedule" "t" {
     }
     display_timezone = "America/New_York"
     message = "Message about the downtime"
+    mute_first_recovery_notification = true
+    notify_end_states = ["warn", "alert"]
+    notify_end_types = ["expired"]
+}`, uniq)
+}
+
+func testAccCheckDatadogDowntimeScheduleRecurringUpdate(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_downtime_schedule" "t" {
+    scope = "env:(staging OR %v)"
+    monitor_identifier {
+      monitor_tags = ["cat:hat"]
+    }
+    recurring_schedule {
+        recurrence {
+		  start = "2042-07-13T01:02:03"
+		  duration = "1d"
+		  rrule    = "FREQ=DAILY;INTERVAL=1"
+		}
+        recurrence {
+		  start = "3022-07-15T01:02:03"
+		  duration = "1m"
+		  rrule    = "FREQ=WEEKLY;INTERVAL=123"
+		}
+    	timezone = "UTC"
+    }
+    display_timezone = "UTC"
+    message = "Updated message"
     mute_first_recovery_notification = true
     notify_end_states = ["warn", "alert"]
     notify_end_types = ["expired"]
