@@ -79,6 +79,7 @@ func (r *integrationConfluentResourceResource) Schema(_ context.Context, _ resou
 			},
 			"enable_custom_metrics": schema.BoolAttribute{
 				Optional:    true,
+				Computed:    true,
 				Description: "Enable the `custom.consumer_lag_offset` metric, which contains extra metric tags.",
 				Default:     booldefault.StaticBool(false),
 			},
