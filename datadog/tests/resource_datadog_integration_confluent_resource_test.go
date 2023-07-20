@@ -84,7 +84,7 @@ resource "datadog_integration_confluent_resource" "foo" {
 	resource_id   = "12345678910"
     resource_type = "connector"
     tags = ["mytag"]
-	enable_custom_metrics = true
+    enable_custom_metrics = true
 }`, uniq)
 }
 
