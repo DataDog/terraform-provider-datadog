@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -229,6 +230,9 @@ func (r *DowntimeScheduleResource) Create(ctx context.Context, request resource.
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DowntimeSchedule"))
 		return
 	}
+	if state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
+		response.Private.SetKey(ctx, "null_override", []byte(fmt.Sprintf(`{"raw_date_string": "%s"}`, resp.Data.Attributes.Schedule.DowntimeScheduleOneTimeResponse.Start.Format("2006-01-02T15:04:05Z"))))
+	}
 	r.updateState(ctx, &state, &resp)
 
 	// Save data into Terraform state
@@ -254,6 +258,12 @@ func (r *DowntimeScheduleResource) Update(ctx context.Context, request resource.
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DowntimeSchedule"))
 		return
+	}
+	if state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
+		pKey, _ := request.Private.GetKey(ctx, "null_override")
+		if pKey == nil {
+			request.Private.SetKey(ctx, "null_override", []byte(fmt.Sprintf(`{"raw_date_string": "%s"}`, resp.Data.Attributes.Schedule.DowntimeScheduleOneTimeResponse.Start.Format("2006-01-02T15:04:05Z"))))
+		}
 	}
 	r.updateState(ctx, &state, &resp)
 
@@ -584,10 +594,18 @@ func (m NullToNowDateModifier) MarkdownDescription(ctx context.Context) string {
 }
 
 func (m NullToNowDateModifier) PlanModifyString(ctx context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
-	// The FWProvider doesn't recognize set->field removed as a change for optional, computed fields
-	// This will set dates to now if the value is null to work around that.
-	if req.PlanValue.IsNull() || req.PlanValue.IsUnknown() {
-		resp.PlanValue = types.StringValue(time.Now().UTC().Format("2006-01-02T15:04:05Z"))
+	if req.ConfigValue.IsNull() {
+		pKey, _ := req.Private.GetKey(ctx, "null_override")
+		if pKey != nil {
+			pData := make(map[string]string)
+			json.Unmarshal(pKey, &pData)
+			resp.PlanValue = types.StringValue(pData["raw_date_string"])
+		} else {
+			t := time.Now().UTC().Format("2006-01-02T15:04:05Z")
+			resp.Private.SetKey(ctx, "null_override", []byte(fmt.Sprintf(`{"raw_date_string": "%s"}`, t)))
+			resp.PlanValue = types.StringUnknown()
+		}
+	} else {
+		resp.Private.SetKey(ctx, "null_override", []byte{})
 	}
-	// resp.PlanValue = types.StringValue(time.Now().UTC().Format("2006-01-02T15:04:05Z"))
 }
