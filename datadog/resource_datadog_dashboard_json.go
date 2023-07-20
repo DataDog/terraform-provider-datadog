@@ -83,12 +83,14 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 
 func deleteWidgetID(widgets []interface{}) {
 	for _, w := range widgets {
-		widget := w.(map[string]interface{})
-		def := widget["definition"].(map[string]interface{})
-		if def["type"] == "group" {
-			deleteWidgetID(def["widgets"].([]interface{}))
+		if widget, ok := w.(map[string]interface{}); ok {
+			if def, ok := widget["definition"].(map[string]interface{}); ok {
+				if def["type"] == "group" {
+					deleteWidgetID(def["widgets"].([]interface{}))
+				}
+				delete(widget, "id")
+			}
 		}
-		delete(widget, "id")
 	}
 }
 
