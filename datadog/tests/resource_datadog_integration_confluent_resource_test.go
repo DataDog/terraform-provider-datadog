@@ -33,6 +33,8 @@ func TestAccIntegrationConfluentResourceBasic(t *testing.T) {
 						"datadog_integration_confluent_resource.foo", "tags.*", "mytag"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_integration_confluent_resource.foo", "tags.*", "mytag2:myvalue"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_confluent_resource.foo", "enable_custom_metrics", "false"),
 				),
 			},
 			{
@@ -45,6 +47,8 @@ func TestAccIntegrationConfluentResourceBasic(t *testing.T) {
 						"datadog_integration_confluent_resource.foo", "resource_id", "12345678910"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_integration_confluent_resource.foo", "tags.*", "mytag"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_confluent_resource.foo", "enable_custom_metrics", "true"),
 				),
 			},
 		},
@@ -80,6 +84,7 @@ resource "datadog_integration_confluent_resource" "foo" {
 	resource_id   = "12345678910"
     resource_type = "connector"
     tags = ["mytag"]
+    enable_custom_metrics = true
 }`, uniq)
 }
 
