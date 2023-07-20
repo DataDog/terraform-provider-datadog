@@ -408,28 +408,31 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 	var schedule datadogV2.DowntimeScheduleCreateRequest
 
 	if state.DowntimeScheduleRecurrenceSchedule != nil {
-		var DowntimeScheduleRecurrenceSchedule datadogV2.DowntimeScheduleRecurrencesCreateRequest
-
-		if !state.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
-			DowntimeScheduleRecurrenceSchedule.SetTimezone(state.DowntimeScheduleRecurrenceSchedule.Timezone.ValueString())
-		}
-
-		if state.DowntimeScheduleRecurrenceSchedule.Recurrences != nil {
-			var recurrences []datadogV2.DowntimeScheduleRecurrenceCreateUpdateRequest
-			for _, recurrencesTFItem := range state.DowntimeScheduleRecurrenceSchedule.Recurrences {
-				recurrencesDDItem := datadogV2.NewDowntimeScheduleRecurrenceCreateUpdateRequest(recurrencesTFItem.Start.ValueString(), recurrencesTFItem.Rrule.ValueString())
-
-				recurrencesDDItem.SetDuration(recurrencesTFItem.Duration.ValueString())
-				recurrencesDDItem.SetRrule(recurrencesTFItem.Rrule.ValueString())
-				if !recurrencesTFItem.Start.IsUnknown() {
-					recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
-				}
-				recurrences = append(recurrences, *recurrencesDDItem)
+		if len(state.DowntimeScheduleRecurrenceSchedule.Recurrences) == 0 {
+			diags.AddError("Must provide one or more recurrence definitions", "")
+		} else {
+			var DowntimeScheduleRecurrenceSchedule datadogV2.DowntimeScheduleRecurrencesCreateRequest
+			if !state.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
+				DowntimeScheduleRecurrenceSchedule.SetTimezone(state.DowntimeScheduleRecurrenceSchedule.Timezone.ValueString())
 			}
-			DowntimeScheduleRecurrenceSchedule.SetRecurrences(recurrences)
+
+			if state.DowntimeScheduleRecurrenceSchedule.Recurrences != nil {
+				var recurrences []datadogV2.DowntimeScheduleRecurrenceCreateUpdateRequest
+				for _, recurrencesTFItem := range state.DowntimeScheduleRecurrenceSchedule.Recurrences {
+					recurrencesDDItem := datadogV2.NewDowntimeScheduleRecurrenceCreateUpdateRequest(recurrencesTFItem.Start.ValueString(), recurrencesTFItem.Rrule.ValueString())
+
+					recurrencesDDItem.SetDuration(recurrencesTFItem.Duration.ValueString())
+					recurrencesDDItem.SetRrule(recurrencesTFItem.Rrule.ValueString())
+					if !recurrencesTFItem.Start.IsUnknown() {
+						recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
+					}
+					recurrences = append(recurrences, *recurrencesDDItem)
+				}
+				DowntimeScheduleRecurrenceSchedule.SetRecurrences(recurrences)
+			}
+			schedule.DowntimeScheduleRecurrencesCreateRequest = &DowntimeScheduleRecurrenceSchedule
 		}
 
-		schedule.DowntimeScheduleRecurrencesCreateRequest = &DowntimeScheduleRecurrenceSchedule
 	} else if state.DowntimeScheduleOneTimeSchedule != nil {
 		var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
 
@@ -518,29 +521,34 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 	}
 
 	var schedule datadogV2.DowntimeScheduleUpdateRequest
+
 	if state.DowntimeScheduleRecurrenceSchedule != nil {
-		var DowntimeScheduleRecurrenceSchedule datadogV2.DowntimeScheduleRecurrencesUpdateRequest
+		if len(state.DowntimeScheduleRecurrenceSchedule.Recurrences) == 0 {
+			diags.AddError("Must provide one or more recurrence definitions", "")
+		} else {
+			var DowntimeScheduleRecurrenceSchedule datadogV2.DowntimeScheduleRecurrencesUpdateRequest
 
-		if !state.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
-			DowntimeScheduleRecurrenceSchedule.SetTimezone(state.DowntimeScheduleRecurrenceSchedule.Timezone.ValueString())
-		}
-
-		if state.DowntimeScheduleRecurrenceSchedule.Recurrences != nil {
-			var recurrences []datadogV2.DowntimeScheduleRecurrenceCreateUpdateRequest
-			for _, recurrencesTFItem := range state.DowntimeScheduleRecurrenceSchedule.Recurrences {
-				recurrencesDDItem := datadogV2.NewDowntimeScheduleRecurrenceCreateUpdateRequest(recurrencesTFItem.Start.ValueString(), recurrencesTFItem.Rrule.ValueString())
-
-				recurrencesDDItem.SetDuration(recurrencesTFItem.Duration.ValueString())
-				recurrencesDDItem.SetRrule(recurrencesTFItem.Rrule.ValueString())
-				if !recurrencesTFItem.Start.IsUnknown() {
-					recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
-				}
-				recurrences = append(recurrences, *recurrencesDDItem)
+			if !state.DowntimeScheduleRecurrenceSchedule.Timezone.IsNull() {
+				DowntimeScheduleRecurrenceSchedule.SetTimezone(state.DowntimeScheduleRecurrenceSchedule.Timezone.ValueString())
 			}
-			DowntimeScheduleRecurrenceSchedule.SetRecurrences(recurrences)
+
+			if state.DowntimeScheduleRecurrenceSchedule.Recurrences != nil {
+				var recurrences []datadogV2.DowntimeScheduleRecurrenceCreateUpdateRequest
+				for _, recurrencesTFItem := range state.DowntimeScheduleRecurrenceSchedule.Recurrences {
+					recurrencesDDItem := datadogV2.NewDowntimeScheduleRecurrenceCreateUpdateRequest(recurrencesTFItem.Start.ValueString(), recurrencesTFItem.Rrule.ValueString())
+
+					recurrencesDDItem.SetDuration(recurrencesTFItem.Duration.ValueString())
+					recurrencesDDItem.SetRrule(recurrencesTFItem.Rrule.ValueString())
+					if !recurrencesTFItem.Start.IsUnknown() {
+						recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
+					}
+					recurrences = append(recurrences, *recurrencesDDItem)
+				}
+				DowntimeScheduleRecurrenceSchedule.SetRecurrences(recurrences)
+			}
+			schedule.DowntimeScheduleRecurrencesUpdateRequest = &DowntimeScheduleRecurrenceSchedule
 		}
 
-		schedule.DowntimeScheduleRecurrencesUpdateRequest = &DowntimeScheduleRecurrenceSchedule
 	}
 
 	if state.DowntimeScheduleOneTimeSchedule != nil {
