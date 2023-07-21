@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"time"
+
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
@@ -69,7 +70,8 @@ type DowntimeScheduleOneTimeSchedule struct {
 	Start types.String `tfsdk:"start"`
 }
 
-const DATE_FORMAT = "2006-01-02T15:04:05Z"
+const OneTimeScheduleDateFormat = "2006-01-02T15:04:05Z"
+const RecurrenceDateFormat = "2006-01-02T15:04"
 
 func NewDowntimeScheduleResource() resource.Resource {
 	return &DowntimeScheduleResource{}
@@ -143,13 +145,13 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 					"end": schema.StringAttribute{
 						Optional:      true,
 						Description:   "ISO-8601 Datetime to end the downtime. Must include a UTC offset of zero. If not provided, the downtime never ends.",
-						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat(DATE_FORMAT)},
+						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat(OneTimeScheduleDateFormat)},
 					},
 					"start": schema.StringAttribute{
 						Optional:      true,
 						Computed:      true,
 						Description:   "ISO-8601 Datetime to start the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
-						PlanModifiers: []planmodifier.String{NullToNowDateModifier{}, planmodifiers.TimeFormat(DATE_FORMAT)},
+						PlanModifiers: []planmodifier.String{NullToNowDateModifier{isUTC: true, format: OneTimeScheduleDateFormat}, planmodifiers.TimeFormat(OneTimeScheduleDateFormat)},
 					},
 				},
 				Validators: []validator.Object{objectvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("recurring_schedule"))},
@@ -177,6 +179,8 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 									Optional: true,
 									// Computed:    true,
 									Description: "ISO-8601 Datetime to start the downtime. Must not include a UTC offset. If not provided, the downtime starts the moment it is created.",
+									// This is complicated as each recurrence needs its own private key
+									// PlanModifiers: []planmodifier.String{NullToNowDateModifier{isUTC: false, format: RecurrenceDateFormat}},
 								},
 							},
 						},
@@ -235,7 +239,7 @@ func (r *DowntimeScheduleResource) Create(ctx context.Context, request resource.
 		return
 	}
 	if state.DowntimeScheduleOneTimeSchedule != nil && state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
-		startStr := resp.Data.Attributes.Schedule.DowntimeScheduleOneTimeResponse.Start.Format(DATE_FORMAT)
+		startStr := resp.Data.Attributes.Schedule.DowntimeScheduleOneTimeResponse.Start.Format(OneTimeScheduleDateFormat)
 		response.Private.SetKey(ctx, "start_null_override", privateStringToByteArr(startStr))
 	}
 	r.updateState(ctx, &state, &resp)
@@ -270,7 +274,7 @@ func (r *DowntimeScheduleResource) Update(ctx context.Context, request resource.
 	//if state.DowntimeScheduleOneTimeSchedule != nil && state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
 	//	pKey, _ := request.Private.GetKey(ctx, "start_null_override")
 	//	if pKey == nil {
-	//		startStr := resp.Data.Attributes.Schedule.DowntimeScheduleOneTimeResponse.Start.Format(DATE_FORMAT)
+	//		startStr := resp.Data.Attributes.Schedule.DowntimeScheduleOneTimeResponse.Start.Format(UTC_DATE_FORMAT)
 	//		request.Private.SetKey(ctx, "start_null_override", privateStringToByteArr(startStr))
 	//	}
 	//}
@@ -365,10 +369,10 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 		if schedule.DowntimeScheduleOneTimeResponse != nil {
 			downtimeScheduleOneTimeResponseTf := DowntimeScheduleOneTimeSchedule{}
 			if end, ok := schedule.DowntimeScheduleOneTimeResponse.GetEndOk(); ok && end != nil {
-				downtimeScheduleOneTimeResponseTf.End = types.StringValue((*end).Format(DATE_FORMAT))
+				downtimeScheduleOneTimeResponseTf.End = types.StringValue((*end).Format(OneTimeScheduleDateFormat))
 			}
 			if start, ok := schedule.DowntimeScheduleOneTimeResponse.GetStartOk(); ok {
-				downtimeScheduleOneTimeResponseTf.Start = types.StringValue((*start).Format(DATE_FORMAT))
+				downtimeScheduleOneTimeResponseTf.Start = types.StringValue((*start).Format(OneTimeScheduleDateFormat))
 			}
 
 			state.DowntimeScheduleOneTimeSchedule = &downtimeScheduleOneTimeResponseTf
@@ -606,6 +610,8 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 }
 
 type NullToNowDateModifier struct {
+	isUTC  bool
+	format string
 }
 
 func (m NullToNowDateModifier) Description(context.Context) string {
@@ -626,7 +632,13 @@ func (m NullToNowDateModifier) PlanModifyString(ctx context.Context, req planmod
 	if byteArr != nil {
 		resp.PlanValue = types.StringValue(privateByteArrToString(byteArr))
 	} else {
-		nowDateStr := time.Now().UTC().Format(DATE_FORMAT)
+		var nowDateStr string
+		if m.isUTC {
+			nowDateStr = time.Now().UTC().Format(m.format)
+		} else {
+			nowDateStr = time.Now().Format(m.format)
+		}
+
 		resp.Private.SetKey(ctx, "start_null_override", privateStringToByteArr(nowDateStr))
 		// This flags the optional/computed null field value as being changed so an apply will execute
 		resp.PlanValue = types.StringUnknown()
