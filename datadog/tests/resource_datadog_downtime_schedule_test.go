@@ -3,7 +3,9 @@ package test
 import (
 	"context"
 	"fmt"
+	"math"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -113,7 +115,6 @@ func TestAccDowntimeScheduleBasicOneTime(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "scope", fmt.Sprintf("env:(changed OR %v)", uniq)),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.#", "1"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.0", "vat:mat"),
-					resource.TestCheckResourceAttrSet("datadog_downtime_schedule.t1", "one_time_schedule.start"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "one_time_schedule.end", "2060-01-02T03:04:05Z"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "mute_first_recovery_notification", "true"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_states.#", "1"),
@@ -121,6 +122,17 @@ func TestAccDowntimeScheduleBasicOneTime(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.#", "1"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.0", "canceled"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "display_timezone", "UTC"),
+					resource.TestCheckResourceAttrSet("datadog_downtime_schedule.t1", "one_time_schedule.start"),
+					resource.TestCheckFunc(func(s *terraform.State) error {
+						// Check that the calculated start now string is within an hour of now
+						startStr, _ := s.RootModule().Resources["datadog_downtime_schedule.t1"].Primary.Attributes["one_time_schedule.start"]
+						timestamp, _ := time.Parse(time.RFC3339, startStr)
+						timeDifference := time.Now().Sub(timestamp)
+						if math.Abs(float64(timeDifference)) > float64(time.Hour) {
+							return fmt.Errorf("Unexpected one_time_schedule.start now time")
+						}
+						return nil
+					}),
 				),
 			},
 		},

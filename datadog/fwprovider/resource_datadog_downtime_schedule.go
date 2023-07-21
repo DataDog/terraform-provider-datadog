@@ -2,6 +2,9 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
@@ -66,6 +69,8 @@ type DowntimeScheduleOneTimeSchedule struct {
 	Start types.String `tfsdk:"start"`
 }
 
+const DATE_FORMAT = "2006-01-02T15:04:05Z"
+
 func NewDowntimeScheduleResource() resource.Resource {
 	return &DowntimeScheduleResource{}
 }
@@ -87,6 +92,7 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 			"display_timezone": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
+				Default:     stringdefault.StaticString("UTC"),
 				Description: "The timezone in which to display the downtime's start and end times in Datadog applications. This is not used as an offset for scheduling.",
 			},
 			"message": schema.StringAttribute{
@@ -137,13 +143,13 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 					"end": schema.StringAttribute{
 						Optional:      true,
 						Description:   "ISO-8601 Datetime to end the downtime. Must include a UTC offset of zero. If not provided, the downtime never ends.",
-						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat("2006-01-02T15:04:05Z")},
+						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat(DATE_FORMAT)},
 					},
 					"start": schema.StringAttribute{
 						Optional:      true,
 						Computed:      true,
 						Description:   "ISO-8601 Datetime to start the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
-						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat("2006-01-02T15:04:05Z")},
+						PlanModifiers: []planmodifier.String{NullToNowDateModifier{}, planmodifiers.TimeFormat(DATE_FORMAT)},
 					},
 				},
 				Validators: []validator.Object{objectvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("recurring_schedule"))},
@@ -168,8 +174,8 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 									Description: "The `RRULE` standard for defining recurring events. For example, to have a recurring event on the first day of each month, set the type to `rrule` and set the `FREQ` to `MONTHLY` and `BYMONTHDAY` to `1`. Most common `rrule` options from the [iCalendar Spec](https://tools.ietf.org/html/rfc5545) are supported.  **Note**: Attributes specifying the duration in `RRULE` are not supported (for example, `DTSTART`, `DTEND`, `DURATION`). More examples available in this [downtime guide](https://docs.datadoghq.com/monitors/guide/suppress-alert-with-downtimes/?tab=api).",
 								},
 								"start": schema.StringAttribute{
-									Optional:    true,
-									Computed:    true,
+									Optional: true,
+									// Computed:    true,
 									Description: "ISO-8601 Datetime to start the downtime. Must not include a UTC offset. If not provided, the downtime starts the moment it is created.",
 								},
 							},
@@ -228,6 +234,10 @@ func (r *DowntimeScheduleResource) Create(ctx context.Context, request resource.
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DowntimeSchedule"))
 		return
 	}
+	if state.DowntimeScheduleOneTimeSchedule != nil && state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
+		startStr := resp.Data.Attributes.Schedule.DowntimeScheduleOneTimeResponse.Start.Format(DATE_FORMAT)
+		response.Private.SetKey(ctx, "start_null_override", privateStringToByteArr(startStr))
+	}
 	r.updateState(ctx, &state, &resp)
 
 	// Save data into Terraform state
@@ -243,7 +253,7 @@ func (r *DowntimeScheduleResource) Update(ctx context.Context, request resource.
 
 	id := state.ID.ValueString()
 
-	body, diags := r.buildDowntimeScheduleUpdateRequestBody(ctx, &state)
+	body, diags := r.buildDowntimeScheduleUpdateRequestBody(ctx, &state, response)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -254,6 +264,16 @@ func (r *DowntimeScheduleResource) Update(ctx context.Context, request resource.
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DowntimeSchedule"))
 		return
 	}
+	if resp.Data.Attributes.Schedule.DowntimeScheduleRecurrencesResponse != nil {
+		request.Private.SetKey(ctx, "start_null_override", nil)
+	}
+	//if state.DowntimeScheduleOneTimeSchedule != nil && state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
+	//	pKey, _ := request.Private.GetKey(ctx, "start_null_override")
+	//	if pKey == nil {
+	//		startStr := resp.Data.Attributes.Schedule.DowntimeScheduleOneTimeResponse.Start.Format(DATE_FORMAT)
+	//		request.Private.SetKey(ctx, "start_null_override", privateStringToByteArr(startStr))
+	//	}
+	//}
 	r.updateState(ctx, &state, &resp)
 
 	// Save data into Terraform state
@@ -345,10 +365,10 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 		if schedule.DowntimeScheduleOneTimeResponse != nil {
 			downtimeScheduleOneTimeResponseTf := DowntimeScheduleOneTimeSchedule{}
 			if end, ok := schedule.DowntimeScheduleOneTimeResponse.GetEndOk(); ok && end != nil {
-				downtimeScheduleOneTimeResponseTf.End = types.StringValue((*end).Format("2006-01-02T15:04:05Z"))
+				downtimeScheduleOneTimeResponseTf.End = types.StringValue((*end).Format(DATE_FORMAT))
 			}
 			if start, ok := schedule.DowntimeScheduleOneTimeResponse.GetStartOk(); ok {
-				downtimeScheduleOneTimeResponseTf.Start = types.StringValue((*start).Format("2006-01-02T15:04:05Z"))
+				downtimeScheduleOneTimeResponseTf.Start = types.StringValue((*start).Format(DATE_FORMAT))
 			}
 
 			state.DowntimeScheduleOneTimeSchedule = &downtimeScheduleOneTimeResponseTf
@@ -467,7 +487,7 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 	return req, diags
 }
 
-func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx context.Context, state *DowntimeScheduleModel) (*datadogV2.DowntimeUpdateRequest, diag.Diagnostics) {
+func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx context.Context, state *DowntimeScheduleModel, response *resource.UpdateResponse) (*datadogV2.DowntimeUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewDowntimeUpdateRequestAttributesWithDefaults()
 
@@ -485,10 +505,7 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 
 	if !state.MuteFirstRecoveryNotification.IsNull() {
 		attributes.SetMuteFirstRecoveryNotification(state.MuteFirstRecoveryNotification.ValueBool())
-	} else {
-		attributes.SetMuteFirstRecoveryNotification(false)
 	}
-
 	if !state.Scope.IsNull() {
 		attributes.SetScope(state.Scope.ValueString())
 	}
@@ -567,7 +584,9 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 		}
 
 		if state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() || state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
-			DowntimeScheduleOneTimeSchedule.SetStartNil()
+			byteArr, _ := response.Private.GetKey(ctx, "start_null_override")
+			start, _ := time.Parse(time.RFC3339, privateByteArrToString(byteArr))
+			DowntimeScheduleOneTimeSchedule.SetStart(start)
 		} else {
 			start, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
 			DowntimeScheduleOneTimeSchedule.SetStart(start)
@@ -584,4 +603,43 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+type NullToNowDateModifier struct {
+}
+
+func (m NullToNowDateModifier) Description(context.Context) string {
+	return fmt.Sprintf("field is set to now date if the value is null. The now date is stored so it doesn't keep changing.")
+}
+
+func (m NullToNowDateModifier) MarkdownDescription(ctx context.Context) string {
+	return m.Description(ctx)
+}
+
+func (m NullToNowDateModifier) PlanModifyString(ctx context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
+	if !req.ConfigValue.IsNull() {
+		resp.Private.SetKey(ctx, "start_null_override", nil)
+		return
+	}
+
+	byteArr, _ := req.Private.GetKey(ctx, "start_null_override")
+	if byteArr != nil {
+		resp.PlanValue = types.StringValue(privateByteArrToString(byteArr))
+	} else {
+		nowDateStr := time.Now().UTC().Format(DATE_FORMAT)
+		resp.Private.SetKey(ctx, "start_null_override", privateStringToByteArr(nowDateStr))
+		// This flags the optional/computed null field value as being changed so an apply will execute
+		resp.PlanValue = types.StringUnknown()
+	}
+}
+
+func privateStringToByteArr(s string) []byte {
+	return []byte(fmt.Sprintf(`{"key": "%s"}`, s))
+}
+
+func privateByteArrToString(b []byte) string {
+	pData := make(map[string]string)
+	json.Unmarshal(b, &pData)
+	return pData["key"]
+
 }
