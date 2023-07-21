@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"notifications":[],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":[]},"filters":[],"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689949762","options":{"complianceRuleOptions":{"complexRule":false,"regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"resourceType":"gcp_compute_instance"}},"tags":[],"type":"cloud_configuration"}
+      {"cases":[{"notifications":[],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":[]},"filters":[],"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689952966","options":{"complianceRuleOptions":{"complexRule":false,"regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"resourceType":"gcp_compute_instance"}},"tags":[],"type":"cloud_configuration"}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"id":"2cq-nvy-bie","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689949762","createdAt":1689949764917,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":[]}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
+      {"id":"wsp-wgv-s1t","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689952966","createdAt":1689952968967,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":[]}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2cq-nvy-bie
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wsp-wgv-s1t
     method: GET
   response:
     body: |
-      {"id":"2cq-nvy-bie","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689949762","createdAt":1689949764917,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":[]}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
+      {"id":"wsp-wgv-s1t","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689952966","createdAt":1689952968967,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":[]}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2cq-nvy-bie
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wsp-wgv-s1t
     method: GET
   response:
     body: |
-      {"id":"2cq-nvy-bie","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689949762","createdAt":1689949764917,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":[]}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
+      {"id":"wsp-wgv-s1t","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689952966","createdAt":1689952968967,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":[]}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
     headers:
       Content-Type:
       - application/json
@@ -61,7 +61,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2cq-nvy-bie
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wsp-wgv-s1t
     method: DELETE
   response:
     body: ""
@@ -75,11 +75,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2cq-nvy-bie
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wsp-wgv-s1t
     method: GET
   response:
     body: |
-      {"errors":["Threat detection rule not found: 2cq-nvy-bie"]}
+      {"errors":["Threat detection rule not found: wsp-wgv-s1t"]}
     headers:
       Content-Type:
       - application/json
