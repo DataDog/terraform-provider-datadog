@@ -360,10 +360,10 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleCreateRequestBody(ctx co
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewDowntimeCreateRequestAttributesWithDefaults()
 
-	if !state.DisplayTimezone.IsNull() && !state.DisplayTimezone.IsUnknown() {
+	if !state.DisplayTimezone.IsNull() {
 		attributes.SetDisplayTimezone(state.DisplayTimezone.ValueString())
 	}
-	if !state.Message.IsNull() && !state.Message.IsUnknown() {
+	if !state.Message.IsNull() {
 		attributes.SetMessage(state.Message.ValueString())
 	}
 	if !state.MuteFirstRecoveryNotification.IsNull() {
@@ -473,13 +473,22 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 
 	if !state.DisplayTimezone.IsNull() {
 		attributes.SetDisplayTimezone(state.DisplayTimezone.ValueString())
+	} else {
+		attributes.SetDisplayTimezoneNil()
 	}
+
 	if !state.Message.IsNull() {
 		attributes.SetMessage(state.Message.ValueString())
+	} else {
+		attributes.SetMessageNil()
 	}
+
 	if !state.MuteFirstRecoveryNotification.IsNull() {
 		attributes.SetMuteFirstRecoveryNotification(state.MuteFirstRecoveryNotification.ValueBool())
+	} else {
+		attributes.SetMuteFirstRecoveryNotification(false)
 	}
+
 	if !state.Scope.IsNull() {
 		attributes.SetScope(state.Scope.ValueString())
 	}
@@ -496,29 +505,27 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 		attributes.SetNotifyEndTypes(notifyEndTypes)
 	}
 
-	if state.MonitorIdentifier != nil {
-		var monitorIdentifier datadogV2.DowntimeMonitorIdentifier
+	var monitorIdentifier datadogV2.DowntimeMonitorIdentifier
 
-		if !state.MonitorIdentifier.DowntimeMonitorIdentifierId.IsNull() {
-			var downtimeMonitorIdentifierId datadogV2.DowntimeMonitorIdentifierId
+	if !state.MonitorIdentifier.DowntimeMonitorIdentifierId.IsNull() {
+		var downtimeMonitorIdentifierId datadogV2.DowntimeMonitorIdentifierId
 
-			downtimeMonitorIdentifierId.SetMonitorId(state.MonitorIdentifier.DowntimeMonitorIdentifierId.ValueInt64())
+		downtimeMonitorIdentifierId.SetMonitorId(state.MonitorIdentifier.DowntimeMonitorIdentifierId.ValueInt64())
 
-			monitorIdentifier.DowntimeMonitorIdentifierId = &downtimeMonitorIdentifierId
-		}
+		monitorIdentifier.DowntimeMonitorIdentifierId = &downtimeMonitorIdentifierId
+	} else if !state.MonitorIdentifier.DowntimeMonitorIdentifierTags.IsNull() {
+		var downtimeMonitorIdentifierTags datadogV2.DowntimeMonitorIdentifierTags
 
-		if !state.MonitorIdentifier.DowntimeMonitorIdentifierTags.IsNull() {
-			var downtimeMonitorIdentifierTags datadogV2.DowntimeMonitorIdentifierTags
+		var monitorTags []string
+		diags.Append(state.MonitorIdentifier.DowntimeMonitorIdentifierTags.ElementsAs(ctx, &monitorTags, false)...)
+		downtimeMonitorIdentifierTags.SetMonitorTags(monitorTags)
 
-			var monitorTags []string
-			diags.Append(state.MonitorIdentifier.DowntimeMonitorIdentifierTags.ElementsAs(ctx, &monitorTags, false)...)
-			downtimeMonitorIdentifierTags.SetMonitorTags(monitorTags)
-
-			monitorIdentifier.DowntimeMonitorIdentifierTags = &downtimeMonitorIdentifierTags
-		}
-
-		attributes.MonitorIdentifier = &monitorIdentifier
+		monitorIdentifier.DowntimeMonitorIdentifierTags = &downtimeMonitorIdentifierTags
+	} else {
+		diags.AddError("monitor_identifier.monitor_id or monitor_identifier.monitor_tags must be set", "")
 	}
+
+	attributes.MonitorIdentifier = &monitorIdentifier
 
 	var schedule datadogV2.DowntimeScheduleUpdateRequest
 
@@ -549,9 +556,7 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 			schedule.DowntimeScheduleRecurrencesUpdateRequest = &DowntimeScheduleRecurrenceSchedule
 		}
 
-	}
-
-	if state.DowntimeScheduleOneTimeSchedule != nil {
+	} else if state.DowntimeScheduleOneTimeSchedule != nil {
 		var DowntimeScheduleOneTimeSchedule datadogV2.DowntimeScheduleOneTimeCreateUpdateRequest
 
 		if state.DowntimeScheduleOneTimeSchedule.End.IsUnknown() || state.DowntimeScheduleOneTimeSchedule.End.IsNull() {
@@ -568,6 +573,8 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 			DowntimeScheduleOneTimeSchedule.SetStart(start)
 		}
 		schedule.DowntimeScheduleOneTimeCreateUpdateRequest = &DowntimeScheduleOneTimeSchedule
+	} else {
+		diags.AddError("one_time_schedule or recurring_schedule must be set", "")
 	}
 
 	attributes.Schedule = &schedule
