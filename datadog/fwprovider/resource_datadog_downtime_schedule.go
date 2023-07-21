@@ -546,6 +546,7 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 
 					recurrencesDDItem.SetDuration(recurrencesTFItem.Duration.ValueString())
 					recurrencesDDItem.SetRrule(recurrencesTFItem.Rrule.ValueString())
+					// Be sure not to set this to null repeatedly because it will try to keep changing the start=now time
 					if !recurrencesTFItem.Start.IsUnknown() {
 						recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
 					}
@@ -566,9 +567,8 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 			DowntimeScheduleOneTimeSchedule.SetEnd(end)
 		}
 
-		if state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() || state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
-			DowntimeScheduleOneTimeSchedule.SetStartNil()
-		} else {
+		// Be sure not to set this to null repeatedly because it will try to keep changing the start=now time
+		if !state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
 			start, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
 			DowntimeScheduleOneTimeSchedule.SetStart(start)
 		}
