@@ -12,7 +12,15 @@ body:
     id: terraform-version
     attributes:
       label: Datadog Terraform Provider Version
-      description: Run `terraform providers` to show the version of the Datadog terraform provider. If you are not running the latest version of the Datadog terraform provider, please upgrade because your issue may have already been fixed.
+      description: Run `terraform providers` to show the version of the Datadog terraform provider. If you are not running the latest version of the Datadog terraform provider, please upgrade or check the changelogs because your issue may have already been fixed.
+      placeholder: ex. v3.28.0
+    validations:
+      required: true
+  - type: input
+    id: terraform-cli
+    attributes:
+      label: Terraform Version
+      description: Run `terraform -v` to show the version of the terraform cli.
       placeholder: ex. v1.5.3
     validations:
       required: true
@@ -39,7 +47,7 @@ body:
     attributes:
       label: Relevant debug or panic output
       description: |
-        Please provide a link to a GitHub Gist containing the complete debug or panic output: https://www.terraform.io/docs/internals/debugging.html.
+        Provide a link to a GitHub Gist containing the complete debug or panic output: https://www.terraform.io/docs/internals/debugging.html.
         Please do NOT paste the output in the issue; just paste a link to the Gist.
         **NOTE:** Remember to review debug output before posting, and redact any sensitive data.
   - type: textarea
