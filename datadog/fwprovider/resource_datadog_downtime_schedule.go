@@ -152,6 +152,7 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 				Attributes: map[string]schema.Attribute{
 					"timezone": schema.StringAttribute{
 						Optional:    true,
+						Computed:    true,
 						Description: "The timezone in which to schedule the downtime.",
 					},
 				},
