@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Datadog Documentation
+    url: https://docs.datadoghq.com/
+    about: For questions about usage of Datadog products, check here.
+  - name: Datadog Support
+    url: https://help.datadoghq.com/
+    about: Submit a ticket here for issues, questions, and feature requests for the Datadog product and/or its API.
