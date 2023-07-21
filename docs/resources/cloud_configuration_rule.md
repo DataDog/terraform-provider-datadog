@@ -66,6 +66,7 @@ resource "datadog_cloud_configuration_rule" "myrule" {
 
 ### Optional
 
+- `filter` (Block List) Additional queries to filter matched events before they are processed. Defaults to empty list (see [below for nested schema](#nestedblock--filter))
 - `group_by` (List of String) Fields to group by when generating signals, e.g. @resource. Defaults to empty list.
 - `notifications` (List of String) Notification targets for signals. Defaults to empty list.
 - `related_resource_types` (List of String) Related resource types to be checked by the rule. Defaults to empty list.
@@ -74,6 +75,14 @@ resource "datadog_cloud_configuration_rule" "myrule" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--filter"></a>
+### Nested Schema for `filter`
+
+Required:
+
+- `action` (String) The type of filtering action. Valid values are `require`, `suppress`.
+- `query` (String) Query for selecting logs to apply the filtering action.
 
 ## Import
 

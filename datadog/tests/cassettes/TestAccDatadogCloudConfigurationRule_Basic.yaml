@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"notifications":["@channel"],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":["@resource"]},"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672930521","options":{"complianceRuleOptions":{"complexRule":true,"regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"resourceType":"gcp_compute_instance"}},"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration"}
+      {"cases":[{"notifications":["@channel"],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":["@resource"]},"filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}],"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1689949140","options":{"complianceRuleOptions":{"complexRule":true,"regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"resourceType":"gcp_compute_instance"}},"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration"}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true},"keepAlive":21600},"version":1,"createdAt":1672930522980,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":["@resource"]},"cases":[{"status":"low","notifications":["@channel"],"name":"","condition":"a > 0"}],"id":"awd-0zy-eek","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672930521"}
+      {"id":"mgc-gah-v5g","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1689949140","createdAt":1689949145161,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":["@resource"]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":["@channel"]}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/awd-0zy-eek
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mgc-gah-v5g
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true},"keepAlive":21600},"version":1,"createdAt":1672930522980,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":["@resource"]},"cases":[{"status":"low","notifications":["@channel"],"name":"","condition":"a > 0"}],"id":"awd-0zy-eek","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672930521"}
+      {"id":"mgc-gah-v5g","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1689949140","createdAt":1689949145161,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":["@resource"]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":["@channel"]}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/awd-0zy-eek
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mgc-gah-v5g
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true},"keepAlive":21600},"version":1,"createdAt":1672930522980,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":["@resource"]},"cases":[{"status":"low","notifications":["@channel"],"name":"","condition":"a > 0"}],"id":"awd-0zy-eek","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672930521"}
+      {"id":"mgc-gah-v5g","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1689949140","createdAt":1689949145161,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":["@resource"]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":["@channel"]}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/awd-0zy-eek
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mgc-gah-v5g
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true},"keepAlive":21600},"version":1,"createdAt":1672930522980,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":["@resource"]},"cases":[{"status":"low","notifications":["@channel"],"name":"","condition":"a > 0"}],"id":"awd-0zy-eek","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672930521"}
+      {"id":"mgc-gah-v5g","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1689949140","createdAt":1689949145161,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":["@resource"]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":["@channel"]}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
     headers:
       Content-Type:
       - application/json
@@ -74,18 +74,18 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"cases":[{"notifications":["@channel-upd"],"status":"high"}],"complianceSignalOptions":{"userActivationStatus":true,"userGroupByFields":["@resource","@resource_type"]},"isEnabled":true,"message":"Acceptance test TF rule - updated","name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672930521 - updated","options":{"complianceRuleOptions":{"complexRule":true,"regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"resourceType":"gcp_compute_disk"}},"tags":["test:acceptance-updated"]}
+      {"cases":[{"notifications":["@channel-upd"],"status":"high"}],"complianceSignalOptions":{"userActivationStatus":true,"userGroupByFields":["@resource","@resource_type"]},"filters":[{"action":"suppress","query":"resource_id:updated*"}],"isEnabled":true,"message":"Acceptance test TF rule - updated","name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1689949140 - updated","options":{"complianceRuleOptions":{"complexRule":true,"regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"resourceType":"gcp_compute_disk"}},"tags":["test:acceptance-updated"]}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/awd-0zy-eek
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mgc-gah-v5g
     method: PUT
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["test:acceptance-updated"],"type":"cloud_configuration","isEnabled":true,"hasExtendedTitle":true,"message":"Acceptance test TF rule - updated","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_disk","regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"complexRule":true},"keepAlive":21600},"version":2,"isDefault":false,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":true,"defaultGroupByFields":null,"userGroupByFields":["@resource","@resource_type"]},"cases":[{"status":"high","notifications":["@channel-upd"],"name":"","condition":"a > 0"}],"id":"awd-0zy-eek","createdAt":1672930522980,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672930521 - updated"}
+      {"id":"mgc-gah-v5g","version":2,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1689949140 - updated","createdAt":1689949145161,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_disk","regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":true,"userGroupByFields":["@resource","@resource_type"]},"cases":[{"condition":"a > 0","name":"","status":"high","notifications":["@channel-upd"]}],"message":"Acceptance test TF rule - updated","tags":["test:acceptance-updated"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:updated*"}]}
     headers:
       Content-Type:
       - application/json
@@ -98,11 +98,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/awd-0zy-eek
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mgc-gah-v5g
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["test:acceptance-updated"],"type":"cloud_configuration","isEnabled":true,"hasExtendedTitle":true,"message":"Acceptance test TF rule - updated","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_disk","regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"complexRule":true},"keepAlive":21600},"version":2,"isDefault":false,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":true,"defaultGroupByFields":null,"userGroupByFields":["@resource","@resource_type"]},"cases":[{"status":"high","notifications":["@channel-upd"],"name":"","condition":"a > 0"}],"id":"awd-0zy-eek","createdAt":1672930522980,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672930521 - updated"}
+      {"id":"mgc-gah-v5g","version":2,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1689949140 - updated","createdAt":1689949145161,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_disk","regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":true,"userGroupByFields":["@resource","@resource_type"]},"cases":[{"condition":"a > 0","name":"","status":"high","notifications":["@channel-upd"]}],"message":"Acceptance test TF rule - updated","tags":["test:acceptance-updated"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:updated*"}]}
     headers:
       Content-Type:
       - application/json
@@ -115,11 +115,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/awd-0zy-eek
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mgc-gah-v5g
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["test:acceptance-updated"],"type":"cloud_configuration","isEnabled":true,"hasExtendedTitle":true,"message":"Acceptance test TF rule - updated","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_disk","regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"complexRule":true},"keepAlive":21600},"version":2,"isDefault":false,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":true,"defaultGroupByFields":null,"userGroupByFields":["@resource","@resource_type"]},"cases":[{"status":"high","notifications":["@channel-upd"],"name":"","condition":"a > 0"}],"id":"awd-0zy-eek","createdAt":1672930522980,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672930521 - updated"}
+      {"id":"mgc-gah-v5g","version":2,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1689949140 - updated","createdAt":1689949145161,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_disk","regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":true,"userGroupByFields":["@resource","@resource_type"]},"cases":[{"condition":"a > 0","name":"","status":"high","notifications":["@channel-upd"]}],"message":"Acceptance test TF rule - updated","tags":["test:acceptance-updated"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:updated*"}]}
     headers:
       Content-Type:
       - application/json
@@ -132,11 +132,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/awd-0zy-eek
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mgc-gah-v5g
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["test:acceptance-updated"],"type":"cloud_configuration","isEnabled":true,"hasExtendedTitle":true,"message":"Acceptance test TF rule - updated","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_disk","regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"complexRule":true},"keepAlive":21600},"version":2,"isDefault":false,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":true,"defaultGroupByFields":null,"userGroupByFields":["@resource","@resource_type"]},"cases":[{"status":"high","notifications":["@channel-upd"],"name":"","condition":"a > 0"}],"id":"awd-0zy-eek","createdAt":1672930522980,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672930521 - updated"}
+      {"id":"mgc-gah-v5g","version":2,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1689949140 - updated","createdAt":1689949145161,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_disk","regoRule":{"policy":"package datadog # updated","resourceTypes":["gcp_compute_disk","gcp_compute_instance","gcp_compute_firewall"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":true,"userGroupByFields":["@resource","@resource_type"]},"cases":[{"condition":"a > 0","name":"","status":"high","notifications":["@channel-upd"]}],"message":"Acceptance test TF rule - updated","tags":["test:acceptance-updated"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:updated*"}]}
     headers:
       Content-Type:
       - application/json
@@ -145,18 +145,18 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"cases":[{"notifications":[],"status":"medium"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":[]},"isEnabled":false,"message":"Acceptance test TF rule - updated again","name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672930521 - updated again","options":{"complianceRuleOptions":{"complexRule":false,"regoRule":{"policy":"package datadog # updated again","resourceTypes":["gcp_compute_instance"]},"resourceType":"gcp_compute_instance"}},"tags":["test:acceptance-updated-again"]}
+      {"cases":[{"notifications":[],"status":"medium"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":[]},"filters":[],"isEnabled":false,"message":"Acceptance test TF rule - updated again","name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1689949140 - updated again","options":{"complianceRuleOptions":{"complexRule":false,"regoRule":{"policy":"package datadog # updated again","resourceTypes":["gcp_compute_instance"]},"resourceType":"gcp_compute_instance"}},"tags":["test:acceptance-updated-again"]}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/awd-0zy-eek
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mgc-gah-v5g
     method: PUT
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["test:acceptance-updated-again"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule - updated again","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog # updated again","resourceTypes":["gcp_compute_instance"]},"complexRule":false},"keepAlive":21600},"version":3,"isDefault":false,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":[]},"cases":[{"status":"medium","notifications":[],"name":"","condition":"a > 0"}],"id":"awd-0zy-eek","createdAt":1672930522980,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672930521 - updated again"}
+      {"id":"mgc-gah-v5g","version":3,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1689949140 - updated again","createdAt":1689949145161,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog # updated again","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"medium","notifications":[]}],"message":"Acceptance test TF rule - updated again","tags":["test:acceptance-updated-again"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
     headers:
       Content-Type:
       - application/json
@@ -169,11 +169,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/awd-0zy-eek
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mgc-gah-v5g
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["test:acceptance-updated-again"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule - updated again","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog # updated again","resourceTypes":["gcp_compute_instance"]},"complexRule":false},"keepAlive":21600},"version":3,"isDefault":false,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":[]},"cases":[{"status":"medium","notifications":[],"name":"","condition":"a > 0"}],"id":"awd-0zy-eek","createdAt":1672930522980,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672930521 - updated again"}
+      {"id":"mgc-gah-v5g","version":3,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1689949140 - updated again","createdAt":1689949145161,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog # updated again","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"medium","notifications":[]}],"message":"Acceptance test TF rule - updated again","tags":["test:acceptance-updated-again"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
     headers:
       Content-Type:
       - application/json
@@ -186,11 +186,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/awd-0zy-eek
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mgc-gah-v5g
     method: GET
   response:
     body: |
-      {"updateAuthorId":1445416,"creationAuthorId":1445416,"tags":["test:acceptance-updated-again"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule - updated again","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog # updated again","resourceTypes":["gcp_compute_instance"]},"complexRule":false},"keepAlive":21600},"version":3,"isDefault":false,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":[]},"cases":[{"status":"medium","notifications":[],"name":"","condition":"a > 0"}],"id":"awd-0zy-eek","createdAt":1672930522980,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1672930521 - updated again"}
+      {"id":"mgc-gah-v5g","version":3,"name":"tf-TestAccDatadogCloudConfigurationRule_Basic-local-1689949140 - updated again","createdAt":1689949145161,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog # updated again","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"medium","notifications":[]}],"message":"Acceptance test TF rule - updated again","tags":["test:acceptance-updated-again"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
     headers:
       Content-Type:
       - application/json
@@ -203,7 +203,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/awd-0zy-eek
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mgc-gah-v5g
     method: DELETE
   response:
     body: ""
@@ -217,11 +217,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/awd-0zy-eek
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mgc-gah-v5g
     method: GET
   response:
     body: |
-      {"errors":["Threat detection rule not found: awd-0zy-eek"]}
+      {"errors":["Threat detection rule not found: mgc-gah-v5g"]}
     headers:
       Content-Type:
       - application/json

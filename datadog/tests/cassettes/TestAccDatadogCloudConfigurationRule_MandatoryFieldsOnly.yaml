@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"notifications":[],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":[]},"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1672930521","options":{"complianceRuleOptions":{"complexRule":false,"regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"resourceType":"gcp_compute_instance"}},"tags":[],"type":"cloud_configuration"}
+      {"cases":[{"notifications":[],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":[]},"filters":[],"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689949762","options":{"complianceRuleOptions":{"complexRule":false,"regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"resourceType":"gcp_compute_instance"}},"tags":[],"type":"cloud_configuration"}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":[],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false},"keepAlive":21600},"version":1,"createdAt":1672930522965,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":[]},"cases":[{"status":"low","notifications":[],"name":"","condition":"a > 0"}],"id":"gec-ycl-2vm","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1672930521"}
+      {"id":"2cq-nvy-bie","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689949762","createdAt":1689949764917,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":[]}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gec-ycl-2vm
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2cq-nvy-bie
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":[],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false},"keepAlive":21600},"version":1,"createdAt":1672930522965,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":[]},"cases":[{"status":"low","notifications":[],"name":"","condition":"a > 0"}],"id":"gec-ycl-2vm","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1672930521"}
+      {"id":"2cq-nvy-bie","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689949762","createdAt":1689949764917,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":[]}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gec-ycl-2vm
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2cq-nvy-bie
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":[],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false},"keepAlive":21600},"version":1,"createdAt":1672930522965,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":[]},"cases":[{"status":"low","notifications":[],"name":"","condition":"a > 0"}],"id":"gec-ycl-2vm","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1672930521"}
+      {"id":"2cq-nvy-bie","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689949762","createdAt":1689949764917,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":[]}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
     headers:
       Content-Type:
       - application/json
@@ -61,7 +61,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gec-ycl-2vm
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2cq-nvy-bie
     method: DELETE
   response:
     body: ""
@@ -75,11 +75,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/gec-ycl-2vm
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2cq-nvy-bie
     method: GET
   response:
     body: |
-      {"errors":["Threat detection rule not found: gec-ycl-2vm"]}
+      {"errors":["Threat detection rule not found: 2cq-nvy-bie"]}
     headers:
       Content-Type:
       - application/json
