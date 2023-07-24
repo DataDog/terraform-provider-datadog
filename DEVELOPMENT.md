@@ -4,7 +4,7 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 
 ## Prerequisites:
 
--   [Terraform][2] 0.12.x and higher.
+-   [Terraform][2] 0.12.x and higherz.
     -   The [`tfenv`](https://github.com/tfutils/tfenv) project lets you easily install and switch between terraform versions
 -   [Go][3] 1.15 (to build the provider plugin)
 -   A clone of this repository and the [\$GOPATH environment variable][7] set
