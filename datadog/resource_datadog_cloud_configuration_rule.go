@@ -22,6 +22,9 @@ const severityField = "severity"
 const notificationsField = "notifications"
 const groupByField = "group_by"
 const tagsField = "tags"
+const filterField = "filter"
+const queryField = "query"
+const actionField = "action"
 
 func resourceDatadogCloudConfigurationRule() *schema.Resource {
 	return &schema.Resource{
@@ -97,6 +100,26 @@ func cloudConfigurationRuleSchema() map[string]*schema.Schema {
 			Description: "Tags of the rule, propagated to findings and signals. Defaults to empty list.",
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
+		filterField: {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Additional queries to filter matched events before they are processed. Defaults to empty list",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					queryField: {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "Query for selecting logs to apply the filtering action.",
+					},
+					actionField: {
+						Type:             schema.TypeString,
+						Required:         true,
+						Description:      "The type of filtering action.",
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringFilterActionFromValue),
+					},
+				},
+			},
+		},
 	}
 }
 
@@ -134,6 +157,7 @@ func buildRuleCreatePayload(d *schema.ResourceData) *datadogV2.SecurityMonitorin
 	payload.SetCases(*buildRuleCreationCases(d))
 	payload.SetTags(utils.GetStringSlice(d, tagsField))
 	payload.SetType(datadogV2.CLOUDCONFIGURATIONRULETYPE_CLOUD_CONFIGURATION)
+	payload.SetFilters(buildFiltersFromResourceData(d))
 
 	createPayload := datadogV2.CloudConfigurationRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(payload)
 	return &createPayload
@@ -193,6 +217,7 @@ func buildRuleUpdatePayload(d *schema.ResourceData) *datadogV2.SecurityMonitorin
 	payload.SetComplianceSignalOptions(*buildComplianceSignalOptions(d))
 	payload.SetCases(*buildRuleUpdateCases(d))
 	payload.SetTags(utils.GetStringSlice(d, tagsField))
+	payload.SetFilters(buildFiltersFromResourceData(d))
 	return &payload
 }
 
@@ -279,6 +304,10 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse *datado
 	d.Set(notificationsField, ruleCase.GetNotifications())
 	d.Set(groupByField, ruleResponse.ComplianceSignalOptions.GetUserGroupByFields())
 	d.Set(tagsField, ruleResponse.GetTags())
+
+	if filters, ok := ruleResponse.GetFiltersOk(); ok {
+		d.Set(filterField, extractFiltersFromRuleResponse(*filters))
+	}
 }
 
 func getRelatedResourceTypes(mainResourceType string, resourceTypes []string) []string {
@@ -289,4 +318,12 @@ func getRelatedResourceTypes(mainResourceType string, resourceTypes []string) []
 		}
 	}
 	return relatedResourceTypes
+}
+
+func buildFiltersFromResourceData(d *schema.ResourceData) []datadogV2.SecurityMonitoringFilter {
+	if filters, ok := d.GetOk(filterField); ok {
+		filterList := filters.([]interface{})
+		return buildPayloadFilters(filterList)
+	}
+	return []datadogV2.SecurityMonitoringFilter{}
 }
