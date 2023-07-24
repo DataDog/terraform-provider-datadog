@@ -5,16 +5,14 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-func TestAccDowntimeScheduleBasic(t *testing.T) {
+func TestAccDowntimeScheduleBasicRecurring(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -24,37 +22,202 @@ func TestAccDowntimeScheduleBasic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogDowntimeScheduleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogDowntimeSchedule(uniq),
+				Config: testAccCheckDatadogDowntimeScheduleRecurring(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(
-						"datadog_downtime_schedule.foo", "display_timezone", "America/New_York"),
-					resource.TestCheckResourceAttr(
-						"datadog_downtime_schedule.foo", "message", "Message about the downtime"),
-					resource.TestCheckResourceAttr(
-						"datadog_downtime_schedule.foo", "mute_first_recovery_notification", "UPDATE ME"),
-					resource.TestCheckResourceAttr(
-						"datadog_downtime_schedule.foo", "scope", "env:(staging OR prod) AND datacenter:us-east-1"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "scope", fmt.Sprintf("env:(staging OR %v)", uniq)),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.#", "1"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.0", "cat:hat"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.timezone", "America/New_York"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.#", "3"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.start", "2042-07-13T01:02:03"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.duration", "1d"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.rrule", "FREQ=DAILY;INTERVAL=1"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.start", "2042-07-15T01:02:03"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.duration", "1w"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.rrule", "FREQ=DAILY;INTERVAL=12"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.2.start", "2042-07-17T01:02:03"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.2.duration", "1m"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.2.rrule", "FREQ=DAILY;INTERVAL=123"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "display_timezone", "America/New_York"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "message", "Message about the downtime"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "mute_first_recovery_notification", "true"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "notify_end_states.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t", "notify_end_states.*", "alert"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t", "notify_end_states.*", "warn"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "notify_end_types.#", "1"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t", "notify_end_types.*", "expired"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogDowntimeScheduleRecurringUpdate(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "scope", fmt.Sprintf("env:(staging OR %v)", uniq)),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.#", "1"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.0", "cat:hat"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.timezone", "UTC"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.#", "2"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.start", "2042-07-13T01:02:03"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.duration", "1d"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.rrule", "FREQ=DAILY;INTERVAL=1"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.start", "3022-07-15T01:02:03"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.duration", "1m"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.1.rrule", "FREQ=WEEKLY;INTERVAL=123"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "display_timezone", "UTC"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "message", "Updated message"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "mute_first_recovery_notification", "true"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "notify_end_states.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t", "notify_end_states.*", "alert"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t", "notify_end_states.*", "warn"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "notify_end_types.#", "1"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t", "notify_end_types.*", "expired"),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckDatadogDowntimeSchedule(uniq string) string {
-	// Update me to make use of the unique value
+func TestAccDowntimeScheduleBasicOneTime(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogDowntimeScheduleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDowntimeScheduleOneTime(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.#", "2"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.0", "cat:hat"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.1", "mat:sat"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "scope", fmt.Sprintf("env:(staging OR %v)", uniq)),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "one_time_schedule.start", "2050-01-02T03:04:05Z"),
+					resource.TestCheckNoResourceAttr("datadog_downtime_schedule.t1", "one_time_schedule.end"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_states.#", "3"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "alert"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "no data"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "warn"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.#", "0"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "mute_first_recovery_notification", "false"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "display_timezone", "UTC"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogDowntimeScheduleOneTimeUpdate(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "scope", fmt.Sprintf("env:(changed OR %v)", uniq)),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.#", "1"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.0", "vat:mat"),
+					resource.TestCheckResourceAttrSet("datadog_downtime_schedule.t1", "one_time_schedule.start"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "one_time_schedule.end", "2060-01-02T03:04:05Z"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "mute_first_recovery_notification", "true"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_states.#", "1"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "alert"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.#", "1"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.0", "canceled"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "display_timezone", "UTC"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDowntimeScheduleRecurring(uniq string) string {
 	return fmt.Sprintf(`
-resource "datadog_downtime_schedule" "foo" {
+resource "datadog_downtime_schedule" "t" {
+    scope = "env:(staging OR %v)"
+    monitor_identifier {
+      monitor_tags = ["cat:hat"]
+    }
+    recurring_schedule {
+        recurrence {
+		  start = "2042-07-13T01:02:03"
+		  duration = "1d"
+		  rrule    = "FREQ=DAILY;INTERVAL=1"
+		}
+		recurrence {
+		  start = "2042-07-15T01:02:03"
+		  duration = "1w"
+		  rrule    = "FREQ=DAILY;INTERVAL=12"
+		}
+		recurrence {
+		  start = "2042-07-17T01:02:03"
+		  duration = "1m"
+		  rrule    = "FREQ=DAILY;INTERVAL=123"
+		}
+
+    	timezone = "America/New_York"
+    }
     display_timezone = "America/New_York"
     message = "Message about the downtime"
+    mute_first_recovery_notification = true
+    notify_end_states = ["warn", "alert"]
+    notify_end_types = ["expired"]
+}`, uniq)
+}
+
+func testAccCheckDatadogDowntimeScheduleRecurringUpdate(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_downtime_schedule" "t" {
+    scope = "env:(staging OR %v)"
     monitor_identifier {
+      monitor_tags = ["cat:hat"]
     }
-    mute_first_recovery_notification = "UPDATE ME"
-    notify_end_states = ["alert", "warn"]
-    notify_end_types = ["canceled", "expired"]
-    schedule {
+    recurring_schedule {
+        recurrence {
+		  start = "2042-07-13T01:02:03"
+		  duration = "1d"
+		  rrule    = "FREQ=DAILY;INTERVAL=1"
+		}
+        recurrence {
+		  start = "3022-07-15T01:02:03"
+		  duration = "1m"
+		  rrule    = "FREQ=WEEKLY;INTERVAL=123"
+		}
+    	timezone = "UTC"
     }
-    scope = "env:(staging OR prod) AND datacenter:us-east-1"
+    display_timezone = "UTC"
+    message = "Updated message"
+    mute_first_recovery_notification = true
+    notify_end_states = ["warn", "alert"]
+    notify_end_types = ["expired"]
+}`, uniq)
+}
+
+func testAccCheckDatadogDowntimeScheduleOneTime(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_downtime_schedule" "t1" {
+    scope = "env:(staging OR %v)"
+    monitor_identifier {
+      monitor_tags = ["cat:hat", "mat:sat"]
+    }
+    one_time_schedule {
+    	start = "2050-01-02T03:04:05Z"
+    }
+    notify_end_types = []
+}`, uniq)
+}
+
+func testAccCheckDatadogDowntimeScheduleOneTimeUpdate(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_downtime_schedule" "t1" {
+    scope = "env:(changed OR %v)"
+    monitor_identifier {
+      monitor_tags = ["vat:mat"]
+    }
+    one_time_schedule {
+    	start = null
+		end = "2060-01-02T03:04:05Z"
+    }
+    message = "updated"
+	notify_end_states = ["alert"]
+    notify_end_types = ["canceled"]
+	mute_first_recovery_notification = true
 }`, uniq)
 }
 
@@ -77,9 +240,7 @@ func DowntimeScheduleDestroyHelper(auth context.Context, s *terraform.State, api
 				continue
 			}
 			id := r.Primary.ID
-			include := r.Primary.Attributes["include"]
-
-			_, httpResp, err := apiInstances.GetDowntimesApiV2().GetDowntime(auth, id, include)
+			_, httpResp, err := apiInstances.GetDowntimesApiV2().GetDowntime(auth, id)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
@@ -111,9 +272,7 @@ func downtimeScheduleExistsHelper(auth context.Context, s *terraform.State, apiI
 			continue
 		}
 		id := r.Primary.ID
-		include := r.Primary.Attributes["include"]
-
-		_, httpResp, err := apiInstances.GetDowntimesApiV2().GetDowntime(auth, id, include)
+		_, httpResp, err := apiInstances.GetDowntimesApiV2().GetDowntime(auth, id)
 		if err != nil {
 			return utils.TranslateClientError(err, httpResp, "error retrieving DowntimeSchedule")
 		}
