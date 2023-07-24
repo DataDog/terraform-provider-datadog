@@ -719,6 +719,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 }
 
 func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	// Test - trigger test steps
 	dataSource := datadogV1.MonitorFormulaAndFunctionEventsDataSource(data["data_source"].(string))
 	computeList := data["compute"].([]interface{})
 	computeMap := computeList[0].(map[string]interface{})
