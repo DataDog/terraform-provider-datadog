@@ -4,14 +4,13 @@ import (
 	"context"
 	"time"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -135,15 +134,15 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 			"one_time_schedule": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"end": schema.StringAttribute{
-						Optional:      true,
-						Description:   "ISO-8601 Datetime to end the downtime. Must include a UTC offset of zero. If not provided, the downtime never ends.",
-						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat("2006-01-02T15:04:05Z")},
+						Optional:    true,
+						Description: "ISO-8601 Datetime to end the downtime. Must include a UTC offset of zero. If not provided, the downtime never ends.",
+						Validators:  []validator.String{validators.TimeFormatValidator("2006-01-02T15:04:05Z")},
 					},
 					"start": schema.StringAttribute{
-						Optional:      true,
-						Computed:      true,
-						Description:   "ISO-8601 Datetime to start the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
-						PlanModifiers: []planmodifier.String{planmodifiers.TimeFormat("2006-01-02T15:04:05Z")},
+						Optional:    true,
+						Computed:    true,
+						Description: "ISO-8601 Datetime to start the downtime. Must include a UTC offset of zero. If not provided, the downtime starts the moment it is created.",
+						Validators:  []validator.String{validators.TimeFormatValidator("2006-01-02T15:04:05Z")},
 					},
 				},
 				Validators: []validator.Object{objectvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("recurring_schedule"))},
@@ -547,8 +546,9 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 
 					recurrencesDDItem.SetDuration(recurrencesTFItem.Duration.ValueString())
 					recurrencesDDItem.SetRrule(recurrencesTFItem.Rrule.ValueString())
-					// Be sure not to set this to null repeatedly because it will try to keep changing the start=now time
-					if !recurrencesTFItem.Start.IsUnknown() {
+					if recurrencesTFItem.Start.IsUnknown() || recurrencesTFItem.Start.IsNull() {
+						recurrencesDDItem.SetStartNil()
+					} else {
 						recurrencesDDItem.SetStart(recurrencesTFItem.Start.ValueString())
 					}
 					recurrences = append(recurrences, *recurrencesDDItem)
