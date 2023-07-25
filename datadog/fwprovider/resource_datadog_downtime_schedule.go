@@ -568,8 +568,9 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 			DowntimeScheduleOneTimeSchedule.SetEnd(end)
 		}
 
-		// Be sure not to set this to null repeatedly because it will try to keep changing the start=now time
-		if !state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() {
+		if state.DowntimeScheduleOneTimeSchedule.Start.IsUnknown() || state.DowntimeScheduleOneTimeSchedule.Start.IsNull() {
+			DowntimeScheduleOneTimeSchedule.SetStartNil()
+		} else {
 			start, _ := time.Parse(time.RFC3339, state.DowntimeScheduleOneTimeSchedule.Start.ValueString())
 			DowntimeScheduleOneTimeSchedule.SetStart(start)
 		}
