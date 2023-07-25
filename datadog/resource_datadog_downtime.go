@@ -108,12 +108,11 @@ func (d *downtimeChild) GetMuteFirstRecoveryNotification() bool {
 
 func resourceDatadogDowntime() *schema.Resource {
 	return &schema.Resource{
-		Description:        "This resource is deprecated — use the `datadog_downtime_schedule` resource instead. Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.",
-		DeprecationMessage: "This resource is deprecated — use the `datadog_downtime_schedule` resource instead",
-		CreateContext:      resourceDatadogDowntimeCreate,
-		ReadContext:        resourceDatadogDowntimeRead,
-		UpdateContext:      resourceDatadogDowntimeUpdate,
-		DeleteContext:      resourceDatadogDowntimeDelete,
+		Description:   "Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.",
+		CreateContext: resourceDatadogDowntimeCreate,
+		ReadContext:   resourceDatadogDowntimeRead,
+		UpdateContext: resourceDatadogDowntimeUpdate,
+		DeleteContext: resourceDatadogDowntimeDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
