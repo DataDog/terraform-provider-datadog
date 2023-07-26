@@ -83,6 +83,7 @@ func TestAccDowntimeScheduleBasicRecurring(t *testing.T) {
 func TestAccDowntimeScheduleBasicOneTime(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	currentTime := clockFromContext(ctx).Now()
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
@@ -115,7 +116,7 @@ func TestAccDowntimeScheduleBasicOneTime(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "scope", fmt.Sprintf("env:(changed OR %v)", uniq)),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.#", "1"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.0", "vat:mat"),
-					getCheckNowDate("one_time_schedule.start", "2006-01-02T15:04:05Z"),
+					getCheckNowDate("one_time_schedule.start", "2006-01-02T15:04:05Z", currentTime),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "one_time_schedule.end", "2060-01-02T03:04:05Z"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "mute_first_recovery_notification", "true"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "notify_end_states.#", "1"),
@@ -132,6 +133,7 @@ func TestAccDowntimeScheduleBasicOneTime(t *testing.T) {
 func TestAccDowntimeScheduleChanged(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	currentTime := clockFromContext(ctx).Now()
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
@@ -151,7 +153,7 @@ func TestAccDowntimeScheduleChanged(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.#", "1"),
-					getCheckNowDate("recurring_schedule.recurrence.0.start", "2006-01-02T15:04:05"),
+					getCheckNowDate("recurring_schedule.recurrence.0.start", "2006-01-02T15:04:05", currentTime),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.duration", "1d"),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.rrule", "FREQ=DAILY;INTERVAL=11"),
 				),
@@ -160,7 +162,7 @@ func TestAccDowntimeScheduleChanged(t *testing.T) {
 				Config: testAccCheckDatadogDowntimeScheduleChangeUpdate2(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
-					getCheckNowDate("one_time_schedule.start", "2006-01-02T15:04:05Z"),
+					getCheckNowDate("one_time_schedule.start", "2006-01-02T15:04:05Z", currentTime),
 					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "one_time_schedule.end", "3000-01-02T03:04:05Z"),
 				),
 			},
@@ -168,14 +170,14 @@ func TestAccDowntimeScheduleChanged(t *testing.T) {
 	})
 }
 
-func getCheckNowDate(attributeName string, dateFormat string) resource.TestCheckFunc {
+func getCheckNowDate(attributeName string, dateFormat string, currentTime time.Time) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		// Check that the calculated start now string is close to now
-		startStr, _ := s.RootModule().Resources["datadog_downtime_schedule.t"].Primary.Attributes[attributeName]
+		startStr := s.RootModule().Resources["datadog_downtime_schedule.t"].Primary.Attributes[attributeName]
 		timestamp, _ := time.Parse(dateFormat, startStr)
-		timeDifference := math.Abs(float64(time.Now().UTC().Sub(timestamp)))
-		if timeDifference >= float64(time.Hour*24) {
-			return fmt.Errorf("Attribute value %v does not match a now date %v", startStr, time.Now().UTC().Format(time.RFC3339))
+		timeDifference := math.Abs(float64(currentTime.UTC().Sub(timestamp)))
+		if timeDifference >= float64(time.Minute) {
+			return fmt.Errorf("Attribute value %v does not match a now date %v", startStr, currentTime.UTC().Format(time.RFC3339))
 		}
 		return nil
 	}
