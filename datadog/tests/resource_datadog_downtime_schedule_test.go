@@ -175,7 +175,7 @@ func getCheckNowDate(attributeName string, dateFormat string) resource.TestCheck
 		timestamp, _ := time.Parse(dateFormat, startStr)
 		timeDifference := math.Abs(float64(time.Now().UTC().Sub(timestamp)))
 		if timeDifference >= float64(time.Hour) {
-			return fmt.Errorf("Attribute value does not match a now date")
+			return fmt.Errorf("Attribute value %v does not match a now date %v", startStr, time.Now().UTC().Format(time.RFC3339))
 		}
 		return nil
 	}
