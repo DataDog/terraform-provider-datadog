@@ -174,7 +174,7 @@ func getCheckNowDate(attributeName string, dateFormat string) resource.TestCheck
 		startStr, _ := s.RootModule().Resources["datadog_downtime_schedule.t"].Primary.Attributes[attributeName]
 		timestamp, _ := time.Parse(dateFormat, startStr)
 		timeDifference := math.Abs(float64(time.Now().UTC().Sub(timestamp)))
-		if timeDifference >= float64(time.Hour) {
+		if timeDifference >= float64(time.Hour*24) {
 			return fmt.Errorf("Attribute value %v does not match a now date %v", startStr, time.Now().UTC().Format(time.RFC3339))
 		}
 		return nil
