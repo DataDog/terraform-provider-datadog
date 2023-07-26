@@ -3,7 +3,9 @@ package test
 import (
 	"context"
 	"fmt"
+	"math"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -91,40 +93,92 @@ func TestAccDowntimeScheduleBasicOneTime(t *testing.T) {
 				Config: testAccCheckDatadogDowntimeScheduleOneTime(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.#", "2"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.0", "cat:hat"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.1", "mat:sat"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "scope", fmt.Sprintf("env:(staging OR %v)", uniq)),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "one_time_schedule.start", "2050-01-02T03:04:05Z"),
-					resource.TestCheckNoResourceAttr("datadog_downtime_schedule.t1", "one_time_schedule.end"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_states.#", "3"),
-					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "alert"),
-					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "no data"),
-					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "warn"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.#", "0"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "mute_first_recovery_notification", "false"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "display_timezone", "UTC"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.#", "2"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.0", "cat:hat"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.1", "mat:sat"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "scope", fmt.Sprintf("env:(staging OR %v)", uniq)),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "one_time_schedule.start", "2050-01-02T03:04:05Z"),
+					resource.TestCheckNoResourceAttr("datadog_downtime_schedule.t", "one_time_schedule.end"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "notify_end_states.#", "3"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t", "notify_end_states.*", "alert"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t", "notify_end_states.*", "no data"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t", "notify_end_states.*", "warn"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "notify_end_types.#", "0"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "mute_first_recovery_notification", "false"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "display_timezone", "UTC"),
 				),
 			},
 			{
 				Config: testAccCheckDatadogDowntimeScheduleOneTimeUpdate(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "scope", fmt.Sprintf("env:(changed OR %v)", uniq)),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.#", "1"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "monitor_identifier.monitor_tags.0", "vat:mat"),
-					resource.TestCheckResourceAttrSet("datadog_downtime_schedule.t1", "one_time_schedule.start"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "one_time_schedule.end", "2060-01-02T03:04:05Z"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "mute_first_recovery_notification", "true"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_states.#", "1"),
-					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t1", "notify_end_states.*", "alert"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.#", "1"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "notify_end_types.0", "canceled"),
-					resource.TestCheckResourceAttr("datadog_downtime_schedule.t1", "display_timezone", "UTC"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "scope", fmt.Sprintf("env:(changed OR %v)", uniq)),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.#", "1"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "monitor_identifier.monitor_tags.0", "vat:mat"),
+					getCheckNowDate("one_time_schedule.start", "2006-01-02T15:04:05Z"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "one_time_schedule.end", "2060-01-02T03:04:05Z"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "mute_first_recovery_notification", "true"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "notify_end_states.#", "1"),
+					resource.TestCheckTypeSetElemAttr("datadog_downtime_schedule.t", "notify_end_states.*", "alert"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "notify_end_types.#", "1"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "notify_end_types.0", "canceled"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "display_timezone", "UTC"),
 				),
 			},
 		},
 	})
+}
+
+func TestAccDowntimeScheduleChanged(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogDowntimeScheduleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDowntimeScheduleChangeCreate(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "one_time_schedule.start", "2050-01-02T03:04:05Z"),
+					resource.TestCheckNoResourceAttr("datadog_downtime_schedule.t", "one_time_schedule.end"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogDowntimeScheduleChangeUpdate1(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.#", "1"),
+					getCheckNowDate("recurring_schedule.recurrence.0.start", "2006-01-02T15:04:05"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.duration", "1d"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "recurring_schedule.recurrence.0.rrule", "FREQ=DAILY;INTERVAL=11"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogDowntimeScheduleChangeUpdate2(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
+					getCheckNowDate("one_time_schedule.start", "2006-01-02T15:04:05Z"),
+					resource.TestCheckResourceAttr("datadog_downtime_schedule.t", "one_time_schedule.end", "3000-01-02T03:04:05Z"),
+				),
+			},
+		},
+	})
+}
+
+func getCheckNowDate(attributeName string, dateFormat string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		// Check that the calculated start now string is close to now
+		startStr, _ := s.RootModule().Resources["datadog_downtime_schedule.t"].Primary.Attributes[attributeName]
+		timestamp, _ := time.Parse(dateFormat, startStr)
+		timeDifference := math.Abs(float64(time.Now().Sub(timestamp)))
+		if timeDifference >= float64(time.Hour) {
+			return fmt.Errorf("Attribute value does not match a now date")
+		}
+		return nil
+	}
 }
 
 func testAccCheckDatadogDowntimeScheduleRecurring(uniq string) string {
@@ -191,7 +245,7 @@ resource "datadog_downtime_schedule" "t" {
 
 func testAccCheckDatadogDowntimeScheduleOneTime(uniq string) string {
 	return fmt.Sprintf(`
-resource "datadog_downtime_schedule" "t1" {
+resource "datadog_downtime_schedule" "t" {
     scope = "env:(staging OR %v)"
     monitor_identifier {
       monitor_tags = ["cat:hat", "mat:sat"]
@@ -205,7 +259,7 @@ resource "datadog_downtime_schedule" "t1" {
 
 func testAccCheckDatadogDowntimeScheduleOneTimeUpdate(uniq string) string {
 	return fmt.Sprintf(`
-resource "datadog_downtime_schedule" "t1" {
+resource "datadog_downtime_schedule" "t" {
     scope = "env:(changed OR %v)"
     monitor_identifier {
       monitor_tags = ["vat:mat"]
@@ -218,6 +272,53 @@ resource "datadog_downtime_schedule" "t1" {
 	notify_end_states = ["alert"]
     notify_end_types = ["canceled"]
 	mute_first_recovery_notification = true
+}`, uniq)
+}
+
+func testAccCheckDatadogDowntimeScheduleChangeCreate(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_downtime_schedule" "t" {
+    scope = "env:%v"
+    monitor_identifier {
+      monitor_tags = ["cat:hat"]
+    }
+    one_time_schedule {
+    	start = "2050-01-02T03:04:05Z"
+    }
+	display_timezone = "UTC"
+}`, uniq)
+}
+
+func testAccCheckDatadogDowntimeScheduleChangeUpdate1(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_downtime_schedule" "t" {
+    scope = "env:%v"
+    monitor_identifier {
+      monitor_tags = ["cat:hat"]
+    }
+    recurring_schedule {
+      recurrence {
+        duration = "1d"
+        rrule    = "FREQ=DAILY;INTERVAL=11"
+       }
+      timezone = "UTC"
+    }
+	display_timezone = "UTC"
+}`, uniq)
+}
+
+func testAccCheckDatadogDowntimeScheduleChangeUpdate2(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_downtime_schedule" "t" {
+    scope = "env:%v"
+    monitor_identifier {
+      monitor_tags = ["cat:hat"]
+    }
+    one_time_schedule {
+    	start = null
+        end = "3000-01-02T03:04:05Z"
+      }
+     display_timezone = "UTC"
 }`, uniq)
 }
 
