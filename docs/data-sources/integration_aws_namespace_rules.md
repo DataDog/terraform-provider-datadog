@@ -23,5 +23,3 @@ data "datadog_integration_aws_namespace_rules" "rules" {}
 
 - `id` (String) The ID of this resource.
 - `namespace_rules` (List of String) The list of available namespace rules for a Datadog-AWS integration.
-
-

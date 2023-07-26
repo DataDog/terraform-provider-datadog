@@ -26,5 +26,3 @@ Use this data source to retrieve a Datadog RUM Application.
 - `client_token` (String) The client token
 - `name` (String) The name of the RUM application
 - `type` (String) The RUM application type. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`
-
-

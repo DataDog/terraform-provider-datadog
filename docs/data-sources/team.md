@@ -35,5 +35,3 @@ data "datadog_team" "foo" {
 - `name` (String) The name of the team.
 - `summary` (String) A brief summary of the team, derived from the `description`.
 - `user_count` (Number) The number of users belonging to the team.
-
-

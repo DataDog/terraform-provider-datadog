@@ -30,5 +30,3 @@ data "datadog_dashboard" "test" {
 - `id` (String) The ID of this resource.
 - `title` (String) The name of the dashboard.
 - `url` (String) The URL to a specific dashboard.
-
-

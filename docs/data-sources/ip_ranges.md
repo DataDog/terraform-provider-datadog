@@ -40,5 +40,3 @@ data "datadog_ip_ranges" "test" {}
 - `synthetics_ipv6_by_location` (Map of String) A map of IPv6 prefixes (string of concatenated IPs, delimited by ',') by location.
 - `webhooks_ipv4` (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the Webhooks endpoint.
 - `webhooks_ipv6` (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the Webhooks endpoint.
-
-

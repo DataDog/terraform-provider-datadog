@@ -37,5 +37,3 @@ Required:
 Optional:
 
 - `note` (String) Note accompanying IP address.
-
-
