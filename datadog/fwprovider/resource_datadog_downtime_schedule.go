@@ -4,6 +4,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
@@ -145,7 +149,8 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 						Validators:  []validator.String{validators.TimeFormatValidator("2006-01-02T15:04:05Z")},
 					},
 				},
-				Validators: []validator.Object{objectvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("recurring_schedule"))},
+				Validators:    []validator.Object{objectvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("recurring_schedule"))},
+				PlanModifiers: []planmodifier.Object{planmodifiers.RemoveBlockModifier()},
 			},
 			"recurring_schedule": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
@@ -176,7 +181,8 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 						},
 					},
 				},
-				Validators: []validator.Object{objectvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("one_time_schedule"))},
+				Validators:    []validator.Object{objectvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("one_time_schedule"))},
+				PlanModifiers: []planmodifier.Object{planmodifiers.RemoveBlockModifier()},
 			},
 		},
 	}
