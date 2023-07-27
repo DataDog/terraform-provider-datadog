@@ -30,5 +30,3 @@ data "datadog_role" "test" {
 - `id` (String) The ID of this resource.
 - `name` (String) Name of the role.
 - `user_count` (Number) Number of users assigned to this role.
-
-

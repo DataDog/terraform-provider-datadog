@@ -50,5 +50,3 @@ Read-Only:
 
 - `denominator` (String)
 - `numerator` (String)
-
-

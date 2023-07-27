@@ -34,5 +34,3 @@ Read-Only:
 - `id` (Number)
 - `name` (String)
 - `type` (String)
-
-

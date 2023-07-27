@@ -34,5 +34,3 @@ data "datadog_user" "test" {
 - `email` (String) Email of the user.
 - `id` (String) The ID of this resource.
 - `name` (String) Name of the user.
-
-

@@ -80,5 +80,3 @@ Read-Only:
 - `cpu` (Number)
 - `iowait` (Number)
 - `load` (Number)
-
-

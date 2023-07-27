@@ -42,5 +42,3 @@ Read-Only:
 - `tag_key` (String)
 - `tag_key_required` (Boolean)
 - `valid_tag_values` (List of String)
-
-

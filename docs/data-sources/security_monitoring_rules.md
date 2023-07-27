@@ -141,5 +141,3 @@ Read-Only:
 - `default_rule_id` (String)
 - `name` (String)
 - `rule_id` (String)
-
-
