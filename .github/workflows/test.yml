@@ -31,17 +31,8 @@ jobs:
       - name: Run pre-commit
         run: pre-commit run --all-files --show-diff-on-failure --color=always
 
-  test:
-    strategy:
-      matrix:
-        terraform_version:
-          - "0.13.7"
-          - "0.15.5"
-          - "1.1.2"
-          - "1.5.3"
-        platform: [ubuntu-latest]
-
-    runs-on: ${{ matrix.platform }}
+  linter-checks:
+    runs-on: ubuntu-latest
     steps:
       # if we don't do this, `gofmt` will want to rewrite all Go files due to bad line endings,
       # because Git will convert all line endings to CRLF when cloning on windows
@@ -62,19 +53,37 @@ jobs:
         run: make vet
       - name: License Check
         run: make license-check
+      - name: Check Docs Are Up To Date
+        run: make check-docs
+
+  test:
+    strategy:
+      matrix:
+        terraform_version:
+          - "0.13.7"
+          - "0.15.5"
+          - "1.1.2"
+          - "1.5.3"
+        platform: [ubuntu-latest]
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.20"
+          cache: true
       - name: Setup terraform CLI
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: ${{ matrix.terraform_version }}
           terraform_wrapper: false
-      - name: Set TF_ACC_TERRAFORM_PATH env var on non-windows platform
-        if: ${{ matrix.platform != 'windows-latest' }}
+      - name: Set TF_ACC_TERRAFORM_PATH env var
         run: echo "TF_ACC_TERRAFORM_PATH=$(which terraform)" >> $GITHUB_ENV
-      # - name: Set TF_ACC_TERRAFORM_PATH env var on windows platform
-      #   if: ${{ matrix.platform == 'windows-latest' }}
-      #   run: echo ("TF_ACC_TERRAFORM_PATH=" + (Get-Command terraform).Path) >> $env:GITHUB_ENV
-      - name: Check Docs Are Up To Date
-        run: make check-docs
       - name: Set regex for tests to run
         shell: bash
         run: |
