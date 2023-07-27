@@ -39,14 +39,7 @@ jobs:
           - "0.15.5"
           - "1.1.2"
           - "1.5.3"
-        # platform: [ubuntu-latest, macos-latest, windows-latest]
         platform: [ubuntu-latest]
-        # # test old terraform versions only on ubuntu-latest
-        # include:
-        #   - terraform_version: "0.15.5"
-        #     platform: ubuntu-latest
-        #   - terraform_version: "0.13.7"
-        #     platform: ubuntu-latest
 
     runs-on: ${{ matrix.platform }}
     steps:
