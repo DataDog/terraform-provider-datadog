@@ -63,7 +63,7 @@ jobs:
       - name: License Check
         run: make license-check
       - name: Setup terraform CLI
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ matrix.terraform_version }}
           terraform_wrapper: false
