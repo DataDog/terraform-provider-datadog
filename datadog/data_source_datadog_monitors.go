@@ -15,50 +15,53 @@ func dataSourceDatadogMonitors() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to list several existing monitors for use in other resources.",
 		ReadContext: dataSourceDatadogMonitorsRead,
-		Schema: map[string]*schema.Schema{
-			"name_filter": {
-				Description: "A monitor name to limit the search.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"tags_filter": {
-				Description: "A list of tags to limit the search. This filters on the monitor scope.",
-				Type:        schema.TypeList,
-				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
-			"monitor_tags_filter": {
-				Description: "A list of monitor tags to limit the search. This filters on the tags set on the monitor itself.",
-				Type:        schema.TypeList,
-				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
 
-			// Computed values
-			"monitors": {
-				Description: "List of monitors",
-				Type:        schema.TypeList,
-				Computed:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Description: "ID of the monitor",
-							Type:        schema.TypeInt,
-							Computed:    true,
-						},
-						"name": {
-							Description: "Name of the monitor",
-							Type:        schema.TypeString,
-							Computed:    true,
-						},
-						"type": {
-							Description: "Type of the monitor.",
-							Type:        schema.TypeString,
-							Computed:    true,
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name_filter": {
+					Description: "A monitor name to limit the search.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"tags_filter": {
+					Description: "A list of tags to limit the search. This filters on the monitor scope.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"monitor_tags_filter": {
+					Description: "A list of monitor tags to limit the search. This filters on the tags set on the monitor itself.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+
+				// Computed values
+				"monitors": {
+					Description: "List of monitors",
+					Type:        schema.TypeList,
+					Computed:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"id": {
+								Description: "ID of the monitor",
+								Type:        schema.TypeInt,
+								Computed:    true,
+							},
+							"name": {
+								Description: "Name of the monitor",
+								Type:        schema.TypeString,
+								Computed:    true,
+							},
+							"type": {
+								Description: "Type of the monitor.",
+								Type:        schema.TypeString,
+								Computed:    true,
+							},
 						},
 					},
 				},
-			},
+			}
 		},
 	}
 }
