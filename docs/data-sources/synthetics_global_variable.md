@@ -23,5 +23,3 @@ Use this data source to retrieve a Datadog Synthetics global variable (to be use
 
 - `id` (String) The ID of this resource.
 - `tags` (List of String) A list of tags assigned to the Synthetics global variable.
-
-

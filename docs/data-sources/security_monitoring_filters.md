@@ -45,5 +45,3 @@ Read-Only:
 
 - `name` (String)
 - `query` (String)
-
-

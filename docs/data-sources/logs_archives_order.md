@@ -19,5 +19,3 @@ Get the current order of your logs archives.
 
 - `archive_ids` (List of String) The archive IDs list. The order of archive IDs in this attribute defines the overall archive order for logs.
 - `id` (String) The ID of this resource.
-
-

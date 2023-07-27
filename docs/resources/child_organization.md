@@ -113,5 +113,3 @@ Read-Only:
 - `access_role` (String)
 - `email` (String)
 - `name` (String)
-
-

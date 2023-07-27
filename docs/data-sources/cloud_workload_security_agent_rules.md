@@ -35,5 +35,3 @@ Read-Only:
 - `expression` (String)
 - `id` (String)
 - `name` (String)
-
-
