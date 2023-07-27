@@ -56,7 +56,7 @@ func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaR
 		Attributes: map[string]schema.Attribute{
 			"resource_id": schema.StringAttribute{
 				Required:    true,
-				Description: "Identifier for the resource, formatted as resource_type:resource_id.\n\nNote: Dashboards support is in private beta and requires upgrading to version 3.27.0. Reach out to your Datadog contact or support to enable this",
+				Description: "Identifier for the resource, formatted as resource_type:resource_id.\n\nNote: Dashboards support is in private beta. Reach out to your Datadog contact or support to enable this.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},

@@ -36,7 +36,7 @@ resource "datadog_restriction_policy" "foo" {
 
 - `resource_id` (String) Identifier for the resource, formatted as resource_type:resource_id.
 
-Note: Dashboards support is in private beta and requires upgrading to version 3.27.0. Reach out to your Datadog contact or support to enable this
+Note: Dashboards support is in private beta. Reach out to your Datadog contact or support to enable this.
 
 ### Optional
 
