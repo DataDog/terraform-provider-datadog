@@ -25,34 +25,36 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"tenant_name": {
-				Description: "Your Azure Active Directory ID.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"client_id": {
-				Description: "Your Azure web application ID.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"client_secret": {
-				Description: "(Required for Initial Creation) Your Azure web application secret key.",
-				Type:        schema.TypeString,
-				Required:    true,
-				Sensitive:   true,
-			},
-			"host_filters": {
-				Description: "String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. e.x. `env:production,deploymentgroup:red`",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"automute": {
-				Description: "Silence monitors for expected Azure VM shutdowns.",
-				Type:        schema.TypeBool,
-				Default:     false,
-				Optional:    true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"tenant_name": {
+					Description: "Your Azure Active Directory ID.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"client_id": {
+					Description: "Your Azure web application ID.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"client_secret": {
+					Description: "(Required for Initial Creation) Your Azure web application secret key.",
+					Type:        schema.TypeString,
+					Required:    true,
+					Sensitive:   true,
+				},
+				"host_filters": {
+					Description: "String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. e.x. `env:production,deploymentgroup:red`",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"automute": {
+					Description: "Silence monitors for expected Azure VM shutdowns.",
+					Type:        schema.TypeBool,
+					Default:     false,
+					Optional:    true,
+				},
+			}
 		},
 	}
 }

@@ -22,42 +22,44 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"metric": {
-				Description: "The name of the metric.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"type": {
-				Description: "Metric type such as `gauge` or `rate`.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"description": {
-				Description: "A description of the metric.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"short_name": {
-				Description: "A short name of the metric.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"unit": {
-				Description: "Primary unit of the metric such as `byte` or `operation`.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"per_unit": {
-				Description: "Per unit of the metric such as `second` in `bytes per second`.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"statsd_interval": {
-				Description: "If applicable, statsd flush interval in seconds for the metric.",
-				Type:        schema.TypeInt,
-				Optional:    true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"metric": {
+					Description: "The name of the metric.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"type": {
+					Description: "Metric type such as `gauge` or `rate`.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"description": {
+					Description: "A description of the metric.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"short_name": {
+					Description: "A short name of the metric.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"unit": {
+					Description: "Primary unit of the metric such as `byte` or `operation`.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"per_unit": {
+					Description: "Per unit of the metric such as `second` in `bytes per second`.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"statsd_interval": {
+					Description: "If applicable, statsd flush interval in seconds for the metric.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+			}
 		},
 	}
 }

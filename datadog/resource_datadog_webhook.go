@@ -25,35 +25,37 @@ func resourceDatadogWebhook() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Description: "The name of the webhook. It corresponds with `<WEBHOOK_NAME>`.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"url": {
-				Description: "The URL of the webhook.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"payload": {
-				Description: "The payload of the webhook.",
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-			},
-			"custom_headers": {
-				Description: "The headers attached to the webhook.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"encode_as": {
-				Description:      "Encoding type.",
-				Type:             schema.TypeString,
-				Optional:         true,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWebhooksIntegrationEncodingFromValue),
-				Computed:         true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name": {
+					Description: "The name of the webhook. It corresponds with `<WEBHOOK_NAME>`.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"url": {
+					Description: "The URL of the webhook.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"payload": {
+					Description: "The payload of the webhook.",
+					Type:        schema.TypeString,
+					Optional:    true,
+					Computed:    true,
+				},
+				"custom_headers": {
+					Description: "The headers attached to the webhook.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"encode_as": {
+					Description:      "Encoding type.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWebhooksIntegrationEncodingFromValue),
+					Computed:         true,
+				},
+			}
 		},
 	}
 }

@@ -25,19 +25,21 @@ func resourceDatadogIPAllowlist() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"enabled": {
-				Type:        schema.TypeBool,
-				Required:    true,
-				Description: "Whether the IP Allowlist is enabled.",
-			},
-			"entry": {
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Description: "Set of objects containing an IP address or range of IP addresses in the allowlist and an accompanying note.",
-				Elem:        GetIPAllowlistEntrySchema(),
-				Set:         hashCIDR,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"enabled": {
+					Type:        schema.TypeBool,
+					Required:    true,
+					Description: "Whether the IP Allowlist is enabled.",
+				},
+				"entry": {
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Description: "Set of objects containing an IP address or range of IP addresses in the allowlist and an accompanying note.",
+					Elem:        GetIPAllowlistEntrySchema(),
+					Set:         hashCIDR,
+				},
+			}
 		},
 	}
 }

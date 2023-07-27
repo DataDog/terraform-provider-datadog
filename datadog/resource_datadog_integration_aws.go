@@ -30,82 +30,84 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 			StateContext: resourceDatadogIntegrationAwsImport,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"account_id": {
-				Description:   "Your AWS Account ID without dashes.",
-				Type:          schema.TypeString,
-				Optional:      true,
-				ConflictsWith: []string{"access_key_id", "secret_access_key"},
-			},
-			"role_name": {
-				Description:   "Your Datadog role delegation name.",
-				Type:          schema.TypeString,
-				Optional:      true,
-				ConflictsWith: []string{"access_key_id", "secret_access_key"},
-			},
-			"filter_tags": {
-				Description: "Array of EC2 tags (in the form `key:value`) defines a filter that Datadog uses when collecting metrics from EC2. Wildcards, such as `?` (for single characters) and `*` (for multiple characters) can also be used. Only hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. Host matching a given tag can also be excluded by adding `!` before the tag. e.x. `env:production,instance-type:c1.*,!region:us-east-1`.",
-				Type:        schema.TypeList,
-				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
-			"host_tags": {
-				Description: "Array of tags (in the form `key:value`) to add to all hosts and metrics reporting through this integration.",
-				Type:        schema.TypeList,
-				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
-			"account_specific_namespace_rules": {
-				Description: "Enables or disables metric collection for specific AWS namespaces for this AWS account only. A list of namespaces can be found at the [available namespace rules API endpoint](https://docs.datadoghq.com/api/v1/aws-integration/#list-namespace-rules).",
-				Type:        schema.TypeMap,
-				Optional:    true,
-				Elem:        schema.TypeBool,
-			},
-			"excluded_regions": {
-				Description: "An array of AWS regions to exclude from metrics collection.",
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
-			"external_id": {
-				Description: "AWS External ID. **NOTE** This provider will not be able to detect changes made to the `external_id` field from outside Terraform.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
-			"access_key_id": {
-				Description:   "Your AWS access key ID. Only required if your AWS account is a GovCloud or China account.",
-				Type:          schema.TypeString,
-				ConflictsWith: []string{"account_id", "role_name"},
-				Optional:      true,
-			},
-			"secret_access_key": {
-				Description:   "Your AWS secret access key. Only required if your AWS account is a GovCloud or China account.",
-				Type:          schema.TypeString,
-				Sensitive:     true,
-				ConflictsWith: []string{"account_id", "role_name"},
-				Optional:      true,
-			},
-			"metrics_collection_enabled": {
-				Description:  "Whether Datadog collects metrics for this AWS account.",
-				Type:         schema.TypeString,
-				Computed:     true,
-				Optional:     true,
-				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
-			},
-			"resource_collection_enabled": {
-				Type:         schema.TypeString,
-				Description:  "Whether Datadog collects a standard set of resources from your AWS account.",
-				Computed:     true,
-				Optional:     true,
-				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
-			},
-			"cspm_resource_collection_enabled": {
-				Type:         schema.TypeString,
-				Description:  "Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource_collection.",
-				Computed:     true,
-				Optional:     true,
-				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"account_id": {
+					Description:   "Your AWS Account ID without dashes.",
+					Type:          schema.TypeString,
+					Optional:      true,
+					ConflictsWith: []string{"access_key_id", "secret_access_key"},
+				},
+				"role_name": {
+					Description:   "Your Datadog role delegation name.",
+					Type:          schema.TypeString,
+					Optional:      true,
+					ConflictsWith: []string{"access_key_id", "secret_access_key"},
+				},
+				"filter_tags": {
+					Description: "Array of EC2 tags (in the form `key:value`) defines a filter that Datadog uses when collecting metrics from EC2. Wildcards, such as `?` (for single characters) and `*` (for multiple characters) can also be used. Only hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. Host matching a given tag can also be excluded by adding `!` before the tag. e.x. `env:production,instance-type:c1.*,!region:us-east-1`.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"host_tags": {
+					Description: "Array of tags (in the form `key:value`) to add to all hosts and metrics reporting through this integration.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"account_specific_namespace_rules": {
+					Description: "Enables or disables metric collection for specific AWS namespaces for this AWS account only. A list of namespaces can be found at the [available namespace rules API endpoint](https://docs.datadoghq.com/api/v1/aws-integration/#list-namespace-rules).",
+					Type:        schema.TypeMap,
+					Optional:    true,
+					Elem:        schema.TypeBool,
+				},
+				"excluded_regions": {
+					Description: "An array of AWS regions to exclude from metrics collection.",
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"external_id": {
+					Description: "AWS External ID. **NOTE** This provider will not be able to detect changes made to the `external_id` field from outside Terraform.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"access_key_id": {
+					Description:   "Your AWS access key ID. Only required if your AWS account is a GovCloud or China account.",
+					Type:          schema.TypeString,
+					ConflictsWith: []string{"account_id", "role_name"},
+					Optional:      true,
+				},
+				"secret_access_key": {
+					Description:   "Your AWS secret access key. Only required if your AWS account is a GovCloud or China account.",
+					Type:          schema.TypeString,
+					Sensitive:     true,
+					ConflictsWith: []string{"account_id", "role_name"},
+					Optional:      true,
+				},
+				"metrics_collection_enabled": {
+					Description:  "Whether Datadog collects metrics for this AWS account.",
+					Type:         schema.TypeString,
+					Computed:     true,
+					Optional:     true,
+					ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
+				},
+				"resource_collection_enabled": {
+					Type:         schema.TypeString,
+					Description:  "Whether Datadog collects a standard set of resources from your AWS account.",
+					Computed:     true,
+					Optional:     true,
+					ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
+				},
+				"cspm_resource_collection_enabled": {
+					Type:         schema.TypeString,
+					Description:  "Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource_collection.",
+					Computed:     true,
+					Optional:     true,
+					ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
+				},
+			}
 		},
 	}
 }

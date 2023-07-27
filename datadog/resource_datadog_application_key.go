@@ -21,18 +21,20 @@ func resourceDatadogApplicationKey() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Description: "Name for Application Key.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"key": {
-				Description: "The value of the Application Key.",
-				Type:        schema.TypeString,
-				Computed:    true,
-				Sensitive:   true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name": {
+					Description: "Name for Application Key.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"key": {
+					Description: "The value of the Application Key.",
+					Type:        schema.TypeString,
+					Computed:    true,
+					Sensitive:   true,
+				},
+			}
 		},
 	}
 }

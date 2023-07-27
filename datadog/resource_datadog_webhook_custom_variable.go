@@ -22,23 +22,25 @@ func resourceDatadogWebhookCustomVariable() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Description: "The name of the variable. It corresponds with `<CUSTOM_VARIABLE_NAME>`.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"value": {
-				Description: "The value of the custom variable.",
-				Type:        schema.TypeString,
-				Required:    true,
-				Sensitive:   true,
-			},
-			"is_secret": {
-				Description: "Whether the custom variable is secret or not.",
-				Type:        schema.TypeBool,
-				Required:    true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name": {
+					Description: "The name of the variable. It corresponds with `<CUSTOM_VARIABLE_NAME>`.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"value": {
+					Description: "The value of the custom variable.",
+					Type:        schema.TypeString,
+					Required:    true,
+					Sensitive:   true,
+				},
+				"is_secret": {
+					Description: "Whether the custom variable is secret or not.",
+					Type:        schema.TypeBool,
+					Required:    true,
+				},
+			}
 		},
 	}
 }

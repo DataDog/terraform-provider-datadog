@@ -26,125 +26,127 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Description:  "Synthetics global variable name.",
-				Type:         schema.TypeString,
-				Required:     true,
-				ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
-			},
-			"description": {
-				Description: "Description of the global variable.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"tags": {
-				Description: "A list of tags to associate with your synthetics global variable.",
-				Type:        schema.TypeList,
-				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
-			"value": {
-				Description: "The value of the global variable.",
-				Type:        schema.TypeString,
-				Required:    true,
-				Sensitive:   true,
-			},
-			"secure": {
-				Description: "If set to true, the value of the global variable is hidden. Defaults to `false`.",
-				Default:     false,
-				Type:        schema.TypeBool,
-				Optional:    true,
-			},
-			"parse_test_id": {
-				Description: "Id of the Synthetics test to use for a variable from test.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"parse_test_options": {
-				Description: "ID of the Synthetics test to use a source of the global variable value.",
-				Type:        schema.TypeList,
-				Optional:    true,
-				MaxItems:    1,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"field": {
-							Description: "Required when type = `http_header`. Defines the header to use to extract the value",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
-						"type": {
-							Description:      "Defines the source to use to extract the value.",
-							Type:             schema.TypeString,
-							Required:         true,
-							ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
-						},
-						"parser": {
-							Type:     schema.TypeList,
-							Optional: true,
-							MaxItems: 1,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"type": {
-										Description:      "Type of parser to extract the value.",
-										Type:             schema.TypeString,
-										Required:         true,
-										ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue),
-									},
-									"value": {
-										Description: "Value for the parser to use, required for type `json_path` or `regex`.",
-										Type:        schema.TypeString,
-										Optional:    true,
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name": {
+					Description:  "Synthetics global variable name.",
+					Type:         schema.TypeString,
+					Required:     true,
+					ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
+				},
+				"description": {
+					Description: "Description of the global variable.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"tags": {
+					Description: "A list of tags to associate with your synthetics global variable.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"value": {
+					Description: "The value of the global variable.",
+					Type:        schema.TypeString,
+					Required:    true,
+					Sensitive:   true,
+				},
+				"secure": {
+					Description: "If set to true, the value of the global variable is hidden. Defaults to `false`.",
+					Default:     false,
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"parse_test_id": {
+					Description: "Id of the Synthetics test to use for a variable from test.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"parse_test_options": {
+					Description: "ID of the Synthetics test to use a source of the global variable value.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"field": {
+								Description: "Required when type = `http_header`. Defines the header to use to extract the value",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+							"type": {
+								Description:      "Defines the source to use to extract the value.",
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
+							},
+							"parser": {
+								Type:     schema.TypeList,
+								Optional: true,
+								MaxItems: 1,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"type": {
+											Description:      "Type of parser to extract the value.",
+											Type:             schema.TypeString,
+											Required:         true,
+											ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue),
+										},
+										"value": {
+											Description: "Value for the parser to use, required for type `json_path` or `regex`.",
+											Type:        schema.TypeString,
+											Optional:    true,
+										},
 									},
 								},
 							},
-						},
-						"local_variable_name": {
-							Type:        schema.TypeString,
-							Description: "When type is `local_variable`, name of the local variable to use to extract the value.",
-							Optional:    true,
-						},
-					},
-				},
-			},
-			"options": {
-				Description: "Additional options for the variable, such as a MFA token.",
-				Type:        schema.TypeList,
-				Optional:    true,
-				MaxItems:    1,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"totp_parameters": {
-							Description: "Parameters needed for MFA/TOTP.",
-							Type:        schema.TypeList,
-							Optional:    true,
-							MaxItems:    1,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"digits": {
-										Description:  "Number of digits for the OTP.",
-										Type:         schema.TypeInt,
-										Required:     true,
-										ValidateFunc: validation.IntBetween(4, 10),
-									},
-									"refresh_interval": {
-										Description:  "Interval for which to refresh the token (in seconds).",
-										Type:         schema.TypeInt,
-										Required:     true,
-										ValidateFunc: validation.IntBetween(0, 999),
-									},
-								},
+							"local_variable_name": {
+								Type:        schema.TypeString,
+								Description: "When type is `local_variable`, name of the local variable to use to extract the value.",
+								Optional:    true,
 							},
 						},
 					},
 				},
-			},
-			"restricted_roles": {
-				Description: "A list of role identifiers to associate with the Synthetics global variable.",
-				Type:        schema.TypeSet,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-				Optional:    true,
-			},
+				"options": {
+					Description: "Additional options for the variable, such as a MFA token.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"totp_parameters": {
+								Description: "Parameters needed for MFA/TOTP.",
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"digits": {
+											Description:  "Number of digits for the OTP.",
+											Type:         schema.TypeInt,
+											Required:     true,
+											ValidateFunc: validation.IntBetween(4, 10),
+										},
+										"refresh_interval": {
+											Description:  "Interval for which to refresh the token (in seconds).",
+											Type:         schema.TypeInt,
+											Required:     true,
+											ValidateFunc: validation.IntBetween(0, 999),
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+				"restricted_roles": {
+					Description: "A list of role identifiers to associate with the Synthetics global variable.",
+					Type:        schema.TypeSet,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+					Optional:    true,
+				},
+			}
 		},
 	}
 }

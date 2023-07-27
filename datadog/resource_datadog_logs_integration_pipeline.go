@@ -20,12 +20,14 @@ func resourceDatadogLogsIntegrationPipeline() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"is_enabled": {
-				Description: "Boolean value to enable your pipeline.",
-				Type:        schema.TypeBool,
-				Optional:    true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"is_enabled": {
+					Description: "Boolean value to enable your pipeline.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+			}
 		},
 	}
 }

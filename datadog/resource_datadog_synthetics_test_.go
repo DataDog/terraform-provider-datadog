@@ -32,94 +32,96 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"type": {
-				Description:      "Synthetics test type.",
-				Type:             schema.TypeString,
-				Required:         true,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
-			},
-			"subtype": {
-				Description: "The subtype of the Synthetic API test. Defaults to `http`.",
-				Type:        schema.TypeString,
-				Optional:    true,
-				DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
-					if d.Get("type") == "api" && old == "http" && new == "" {
-						// defaults to http if type is api for retro-compatibility
-						return true
-					}
-					return old == new
-				},
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsSubTypeFromValue),
-			},
-			"request_definition": {
-				Description: "Required if `type = \"api\"`. The synthetics test request.",
-				Type:        schema.TypeList,
-				MaxItems:    1,
-				Optional:    true,
-				Elem:        syntheticsTestRequest(),
-			},
-			"request_headers":            syntheticsTestRequestHeaders(),
-			"request_query":              syntheticsTestRequestQuery(),
-			"request_basicauth":          syntheticsTestRequestBasicAuth(),
-			"request_proxy":              syntheticsTestRequestProxy(),
-			"request_client_certificate": syntheticsTestRequestClientCertificate(),
-			"assertion":                  syntheticsAPIAssertion(),
-			"browser_variable":           syntheticsBrowserVariable(),
-			"config_variable":            syntheticsConfigVariable(),
-			"device_ids": {
-				Description: "Required if `type = \"browser\"`. Array with the different device IDs used to run the test.",
-				Type:        schema.TypeList,
-				Optional:    true,
-				Elem: &schema.Schema{
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"type": {
+					Description:      "Synthetics test type.",
 					Type:             schema.TypeString,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsDeviceIDFromValue),
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
 				},
-			},
-			"locations": {
-				Description: "Array of locations used to run the test. Refer to [the Datadog Synthetics location data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/synthetics_locations) to retrieve the list of locations.",
-				Type:        schema.TypeSet,
-				Required:    true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+				"subtype": {
+					Description: "The subtype of the Synthetic API test. Defaults to `http`.",
+					Type:        schema.TypeString,
+					Optional:    true,
+					DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+						if d.Get("type") == "api" && old == "http" && new == "" {
+							// defaults to http if type is api for retro-compatibility
+							return true
+						}
+						return old == new
+					},
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsSubTypeFromValue),
 				},
-			},
-			"options_list": syntheticsTestOptionsList(),
-			"name": {
-				Description: "Name of Datadog synthetics test.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"message": {
-				Description: "A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.",
-				Type:        schema.TypeString,
-				Optional:    true,
-				Default:     "",
-			},
-			"tags": {
-				Description: "A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).",
-				Type:        schema.TypeList,
-				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
-			"status": {
-				Description:      "Define whether you want to start (`live`) or pause (`paused`) a Synthetic test.",
-				Type:             schema.TypeString,
-				Required:         true,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestPauseStatusFromValue),
-			},
-			"monitor_id": {
-				Description: "ID of the monitor associated with the Datadog synthetics test.",
-				Type:        schema.TypeInt,
-				Computed:    true,
-			},
-			"browser_step": syntheticsTestBrowserStep(),
-			"api_step":     syntheticsTestAPIStep(),
-			"set_cookie": {
-				Description: "Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
+				"request_definition": {
+					Description: "Required if `type = \"api\"`. The synthetics test request.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem:        syntheticsTestRequest(),
+				},
+				"request_headers":            syntheticsTestRequestHeaders(),
+				"request_query":              syntheticsTestRequestQuery(),
+				"request_basicauth":          syntheticsTestRequestBasicAuth(),
+				"request_proxy":              syntheticsTestRequestProxy(),
+				"request_client_certificate": syntheticsTestRequestClientCertificate(),
+				"assertion":                  syntheticsAPIAssertion(),
+				"browser_variable":           syntheticsBrowserVariable(),
+				"config_variable":            syntheticsConfigVariable(),
+				"device_ids": {
+					Description: "Required if `type = \"browser\"`. Array with the different device IDs used to run the test.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem: &schema.Schema{
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsDeviceIDFromValue),
+					},
+				},
+				"locations": {
+					Description: "Array of locations used to run the test. Refer to [the Datadog Synthetics location data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/synthetics_locations) to retrieve the list of locations.",
+					Type:        schema.TypeSet,
+					Required:    true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"options_list": syntheticsTestOptionsList(),
+				"name": {
+					Description: "Name of Datadog synthetics test.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"message": {
+					Description: "A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.",
+					Type:        schema.TypeString,
+					Optional:    true,
+					Default:     "",
+				},
+				"tags": {
+					Description: "A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"status": {
+					Description:      "Define whether you want to start (`live`) or pause (`paused`) a Synthetic test.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestPauseStatusFromValue),
+				},
+				"monitor_id": {
+					Description: "ID of the monitor associated with the Datadog synthetics test.",
+					Type:        schema.TypeInt,
+					Computed:    true,
+				},
+				"browser_step": syntheticsTestBrowserStep(),
+				"api_step":     syntheticsTestAPIStep(),
+				"set_cookie": {
+					Description: "Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+			}
 		},
 	}
 }

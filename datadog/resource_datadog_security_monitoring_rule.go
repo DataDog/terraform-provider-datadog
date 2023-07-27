@@ -24,7 +24,9 @@ func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: datadogSecurityMonitoringRuleSchema(),
+		SchemaFunc: func() map[string]*schema.Schema {
+			return datadogSecurityMonitoringRuleSchema()
+		},
 	}
 }
 

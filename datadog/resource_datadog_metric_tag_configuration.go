@@ -67,57 +67,59 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"metric_name": {
-				Description:  "The metric name for this resource.",
-				Type:         schema.TypeString,
-				ForceNew:     true,
-				Required:     true,
-				ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\.\_]*$`), "metric name must be valid"), validation.StringLenBetween(1, 200)),
-			},
-			"metric_type": {
-				Description:      "The metric's type. This field can't be updated after creation.",
-				Type:             schema.TypeString,
-				ForceNew:         true,
-				Required:         true,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricTagConfigurationMetricTypesFromValue),
-			},
-			"tags": {
-				Description: "A list of tag keys that will be queryable for your metric.",
-				Type:        schema.TypeSet,
-				Elem: &schema.Schema{
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"metric_name": {
+					Description:  "The metric name for this resource.",
 					Type:         schema.TypeString,
-					ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\.\-\_:\/]*$`), "tags must be valid"), validation.StringLenBetween(1, 200)),
+					ForceNew:     true,
+					Required:     true,
+					ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\.\_]*$`), "metric name must be valid"), validation.StringLenBetween(1, 200)),
 				},
-				Required: true,
-			},
-			"include_percentiles": {
-				Description: "Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a `metric_type` of distribution.",
-				Type:        schema.TypeBool,
-				Optional:    true,
-			},
-			"aggregations": {
-				Description: "A list of queryable aggregation combinations for a count, rate, or gauge metric. By default, count and rate metrics require the (time: sum, space: sum) aggregation and gauge metrics require the (time: avg, space: avg) aggregation. Can only be applied to metrics that have a `metric_type` of count, rate, or gauge.",
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Computed:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"time": {
-							Description:      "A time aggregation for use in query.",
-							Type:             schema.TypeString,
-							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricCustomTimeAggregationFromValue),
-							Required:         true,
-						},
-						"space": {
-							Description:      "A space aggregation for use in query.",
-							Type:             schema.TypeString,
-							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricCustomSpaceAggregationFromValue),
-							Required:         true,
+				"metric_type": {
+					Description:      "The metric's type. This field can't be updated after creation.",
+					Type:             schema.TypeString,
+					ForceNew:         true,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricTagConfigurationMetricTypesFromValue),
+				},
+				"tags": {
+					Description: "A list of tag keys that will be queryable for your metric.",
+					Type:        schema.TypeSet,
+					Elem: &schema.Schema{
+						Type:         schema.TypeString,
+						ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile(`^[A-Za-z][A-Za-z0-9\.\-\_:\/]*$`), "tags must be valid"), validation.StringLenBetween(1, 200)),
+					},
+					Required: true,
+				},
+				"include_percentiles": {
+					Description: "Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have a `metric_type` of distribution.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"aggregations": {
+					Description: "A list of queryable aggregation combinations for a count, rate, or gauge metric. By default, count and rate metrics require the (time: sum, space: sum) aggregation and gauge metrics require the (time: avg, space: avg) aggregation. Can only be applied to metrics that have a `metric_type` of count, rate, or gauge.",
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Computed:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"time": {
+								Description:      "A time aggregation for use in query.",
+								Type:             schema.TypeString,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricCustomTimeAggregationFromValue),
+								Required:         true,
+							},
+							"space": {
+								Description:      "A space aggregation for use in query.",
+								Type:             schema.TypeString,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricCustomSpaceAggregationFromValue),
+								Required:         true,
+							},
 						},
 					},
 				},
-			},
+			}
 		},
 	}
 }

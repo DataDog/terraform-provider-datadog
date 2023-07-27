@@ -26,55 +26,57 @@ func resourceDatadogIntegrationGcp() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"project_id": {
-				Description: "Your Google Cloud project ID found in your JSON service account key.",
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-			},
-			"private_key_id": {
-				Description: "Your private key ID found in your JSON service account key.",
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-			},
-			"private_key": {
-				Description: "Your private key name found in your JSON service account key.",
-				Type:        schema.TypeString,
-				Required:    true,
-				Sensitive:   true,
-				ForceNew:    true,
-			},
-			"client_email": {
-				Description: "Your email found in your JSON service account key.",
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-			},
-			"client_id": {
-				Description: "Your ID found in your JSON service account key.",
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-			},
-			"host_filters": {
-				Description: "Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"automute": {
-				Description: "Silence monitors for expected GCE instance shutdowns.",
-				Type:        schema.TypeBool,
-				Default:     false,
-				Optional:    true,
-			},
-			"cspm_resource_collection_enabled": {
-				Description: "Whether Datadog collects cloud security posture management resources from your GCP project.",
-				Type:        schema.TypeBool,
-				Default:     false,
-				Optional:    true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"project_id": {
+					Description: "Your Google Cloud project ID found in your JSON service account key.",
+					Type:        schema.TypeString,
+					Required:    true,
+					ForceNew:    true,
+				},
+				"private_key_id": {
+					Description: "Your private key ID found in your JSON service account key.",
+					Type:        schema.TypeString,
+					Required:    true,
+					ForceNew:    true,
+				},
+				"private_key": {
+					Description: "Your private key name found in your JSON service account key.",
+					Type:        schema.TypeString,
+					Required:    true,
+					Sensitive:   true,
+					ForceNew:    true,
+				},
+				"client_email": {
+					Description: "Your email found in your JSON service account key.",
+					Type:        schema.TypeString,
+					Required:    true,
+					ForceNew:    true,
+				},
+				"client_id": {
+					Description: "Your ID found in your JSON service account key.",
+					Type:        schema.TypeString,
+					Required:    true,
+					ForceNew:    true,
+				},
+				"host_filters": {
+					Description: "Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"automute": {
+					Description: "Silence monitors for expected GCE instance shutdowns.",
+					Type:        schema.TypeBool,
+					Default:     false,
+					Optional:    true,
+				},
+				"cspm_resource_collection_enabled": {
+					Description: "Whether Datadog collects cloud security posture management resources from your GCP project.",
+					Type:        schema.TypeBool,
+					Default:     false,
+					Optional:    true,
+				},
+			}
 		},
 	}
 }

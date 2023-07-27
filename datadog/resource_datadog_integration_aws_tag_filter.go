@@ -23,24 +23,26 @@ func resourceDatadogIntegrationAwsTagFilter() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"account_id": {
-				Description: "Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"namespace": {
-				Description:      "The namespace associated with the tag filter entry.",
-				Type:             schema.TypeString,
-				Required:         true,
-				ForceNew:         true,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewAWSNamespaceFromValue),
-			},
-			"tag_filter_str": {
-				Description: "The tag filter string.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"account_id": {
+					Description: "Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"namespace": {
+					Description:      "The namespace associated with the tag filter entry.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ForceNew:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewAWSNamespaceFromValue),
+				},
+				"tag_filter_str": {
+					Description: "The tag filter string.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+			}
 		},
 	}
 }
