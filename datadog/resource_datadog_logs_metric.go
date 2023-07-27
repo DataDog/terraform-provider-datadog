@@ -22,86 +22,87 @@ func resourceDatadogLogsMetric() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"compute": {
+					Type:        schema.TypeList,
+					Required:    true,
+					ForceNew:    true,
+					Description: "The compute rule to compute the log-based metric. This field can't be updated after creation.",
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
 
-			"compute": {
-				Type:        schema.TypeList,
-				Required:    true,
-				ForceNew:    true,
-				Description: "The compute rule to compute the log-based metric. This field can't be updated after creation.",
-				MaxItems:    1,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
+							"aggregation_type": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ForceNew:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewLogsMetricComputeAggregationTypeFromValue),
+								Description:      "The type of aggregation to use. This field can't be updated after creation.",
+							},
 
-						"aggregation_type": {
-							Type:             schema.TypeString,
-							Required:         true,
-							ForceNew:         true,
-							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewLogsMetricComputeAggregationTypeFromValue),
-							Description:      "The type of aggregation to use. This field can't be updated after creation.",
-						},
+							"path": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								ForceNew:    true,
+								Description: "The path to the value the log-based metric will aggregate on (only used if the aggregation type is a \"distribution\"). This field can't be updated after creation.",
+							},
 
-						"path": {
-							Type:        schema.TypeString,
-							Optional:    true,
-							ForceNew:    true,
-							Description: "The path to the value the log-based metric will aggregate on (only used if the aggregation type is a \"distribution\"). This field can't be updated after creation.",
-						},
-
-						"include_percentiles": {
-							Description: "Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have an `aggregation_type` of distribution.",
-							Type:        schema.TypeBool,
-							Optional:    true,
-						},
-					},
-				},
-			},
-
-			"filter": {
-				Type:        schema.TypeList,
-				Required:    true,
-				Description: "The log-based metric filter. Logs matching this filter will be aggregated in this metric.",
-				MaxItems:    1,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-
-						"query": {
-							Type:        schema.TypeString,
-							Required:    true,
-							Description: "The search query - following the log search syntax.",
+							"include_percentiles": {
+								Description: "Toggle to include/exclude percentiles for a distribution metric. Defaults to false. Can only be applied to metrics that have an `aggregation_type` of distribution.",
+								Type:        schema.TypeBool,
+								Optional:    true,
+							},
 						},
 					},
 				},
-			},
 
-			"group_by": {
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Description: "The rules for the group by.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
+				"filter": {
+					Type:        schema.TypeList,
+					Required:    true,
+					Description: "The log-based metric filter. Logs matching this filter will be aggregated in this metric.",
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
 
-						"path": {
-							Type:        schema.TypeString,
-							Required:    true,
-							Description: "The path to the value the log-based metric will be aggregated over.",
-						},
-
-						"tag_name": {
-							Type:        schema.TypeString,
-							Required:    true,
-							Description: "Name of the tag that gets created.",
+							"query": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The search query - following the log search syntax.",
+							},
 						},
 					},
 				},
-			},
 
-			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "The name of the log-based metric. This field can't be updated after creation.",
-			},
+				"group_by": {
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Description: "The rules for the group by.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+
+							"path": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The path to the value the log-based metric will be aggregated over.",
+							},
+
+							"tag_name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "Name of the tag that gets created.",
+							},
+						},
+					},
+				},
+
+				"name": {
+					Type:        schema.TypeString,
+					Required:    true,
+					ForceNew:    true,
+					Description: "The name of the log-based metric. This field can't be updated after creation.",
+				},
+			}
 		},
 	}
 }

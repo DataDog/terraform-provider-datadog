@@ -22,29 +22,31 @@ func resourceDatadogServiceAccount() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"disabled": {
-				Description: "Whether the service account is disabled.",
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     false,
-			},
-			"email": {
-				Description: "Email of the associated user.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"name": {
-				Description: "Name for the service account.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"roles": {
-				Description: "A list a role IDs to assign to the service account.",
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"disabled": {
+					Description: "Whether the service account is disabled.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     false,
+				},
+				"email": {
+					Description: "Email of the associated user.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"name": {
+					Description: "Name for the service account.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"roles": {
+					Description: "A list a role IDs to assign to the service account.",
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+			}
 		},
 	}
 }

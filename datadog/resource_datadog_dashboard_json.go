@@ -46,37 +46,40 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"dashboard": {
-				Type:         schema.TypeString,
-				Required:     true,
-				ValidateFunc: validation.StringIsJSON,
-				StateFunc: func(v interface{}) string {
-					attrMap, _ := structure.ExpandJsonFromString(v.(string))
-					prepResource(attrMap)
-					res, _ := structure.FlattenJsonToString(attrMap)
-					return res
+
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"dashboard": {
+					Type:         schema.TypeString,
+					Required:     true,
+					ValidateFunc: validation.StringIsJSON,
+					StateFunc: func(v interface{}) string {
+						attrMap, _ := structure.ExpandJsonFromString(v.(string))
+						prepResource(attrMap)
+						res, _ := structure.FlattenJsonToString(attrMap)
+						return res
+					},
+					Description: "The JSON formatted definition of the Dashboard.",
 				},
-				Description: "The JSON formatted definition of the Dashboard.",
-			},
-			"url": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-				Description: "The URL of the dashboard.",
-			},
-			"dashboard_lists": {
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Description: "A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.",
-				Elem:        &schema.Schema{Type: schema.TypeInt},
-			},
-			"dashboard_lists_removed": {
-				Type:        schema.TypeSet,
-				Computed:    true,
-				Description: "The list of dashboard lists this dashboard should be removed from. Internal only.",
-				Elem:        &schema.Schema{Type: schema.TypeInt},
-			},
+				"url": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Computed:    true,
+					Description: "The URL of the dashboard.",
+				},
+				"dashboard_lists": {
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Description: "A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.",
+					Elem:        &schema.Schema{Type: schema.TypeInt},
+				},
+				"dashboard_lists_removed": {
+					Type:        schema.TypeSet,
+					Computed:    true,
+					Description: "The list of dashboard lists this dashboard should be removed from. Internal only.",
+					Elem:        &schema.Schema{Type: schema.TypeInt},
+				},
+			}
 		},
 	}
 }

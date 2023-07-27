@@ -18,199 +18,201 @@ func resourceDatadogChildOrganization() *schema.Resource {
 		ReadContext:   resourceDatadogChildOrganizationRead,
 		DeleteContext: resourceDatadogChildOrganizationDelete,
 
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Description:  "Name for Child Organization after creation.",
-				Type:         schema.TypeString,
-				Required:     true,
-				ForceNew:     true,
-				ValidateFunc: validation.StringLenBetween(1, 32),
-			},
-			"public_id": {
-				Description: "The `public_id` of the organization you are operating within.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
-			"description": {
-				Description: "Description of the organization.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
-			"settings": {
-				Description: "Organization settings",
-				Type:        schema.TypeList,
-				Computed:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"private_widget_share": {
-							Type:        schema.TypeBool,
-							Computed:    true,
-							Description: "Whether or not the organization users can share widgets outside of Datadog.",
-						},
-						"saml": {
-							Type:        schema.TypeList,
-							Computed:    true,
-							Description: "SAML properties",
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"enabled": {
-										Type:        schema.TypeBool,
-										Computed:    true,
-										Description: "Whether or not SAML is enabled for this organization.",
-									},
-								},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name": {
+					Description:  "Name for Child Organization after creation.",
+					Type:         schema.TypeString,
+					Required:     true,
+					ForceNew:     true,
+					ValidateFunc: validation.StringLenBetween(1, 32),
+				},
+				"public_id": {
+					Description: "The `public_id` of the organization you are operating within.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"description": {
+					Description: "Description of the organization.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"settings": {
+					Description: "Organization settings",
+					Type:        schema.TypeList,
+					Computed:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"private_widget_share": {
+								Type:        schema.TypeBool,
+								Computed:    true,
+								Description: "Whether or not the organization users can share widgets outside of Datadog.",
 							},
-						},
-						"saml_autocreate_access_role": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The access role of the user. Options are `st` (standard user), `adm` (admin user), or `ro` (read-only user). Allowed enum values: `st`, `adm` , `ro`, `ERROR`",
-						},
-						"saml_autocreate_users_domains": {
-							Type:        schema.TypeList,
-							Computed:    true,
-							Description: "List of domains where the SAML automated user creation is enabled.",
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"domains": {
-										Type:        schema.TypeList,
-										Computed:    true,
-										Description: "List of domains where the SAML automated user creation is enabled.",
-										Elem: &schema.Schema{
-											Type: schema.TypeString,
+							"saml": {
+								Type:        schema.TypeList,
+								Computed:    true,
+								Description: "SAML properties",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"enabled": {
+											Type:        schema.TypeBool,
+											Computed:    true,
+											Description: "Whether or not SAML is enabled for this organization.",
 										},
 									},
-									"enabled": {
-										Type:        schema.TypeBool,
-										Computed:    true,
-										Description: "Whether or not the automated user creation based on SAML domain is enabled.",
+								},
+							},
+							"saml_autocreate_access_role": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The access role of the user. Options are `st` (standard user), `adm` (admin user), or `ro` (read-only user). Allowed enum values: `st`, `adm` , `ro`, `ERROR`",
+							},
+							"saml_autocreate_users_domains": {
+								Type:        schema.TypeList,
+								Computed:    true,
+								Description: "List of domains where the SAML automated user creation is enabled.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"domains": {
+											Type:        schema.TypeList,
+											Computed:    true,
+											Description: "List of domains where the SAML automated user creation is enabled.",
+											Elem: &schema.Schema{
+												Type: schema.TypeString,
+											},
+										},
+										"enabled": {
+											Type:        schema.TypeBool,
+											Computed:    true,
+											Description: "Whether or not the automated user creation based on SAML domain is enabled.",
+										},
+									},
+								},
+							},
+							"saml_can_be_enabled": {
+								Type:        schema.TypeBool,
+								Computed:    true,
+								Description: "Whether or not SAML can be enabled for this organization.",
+							},
+							"saml_idp_endpoint": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "Identity provider endpoint for SAML authentication.",
+							},
+							"saml_idp_initiated_login": {
+								Type:        schema.TypeList,
+								Computed:    true,
+								Description: "Whether or not a SAML identity provider metadata file was provided to the Datadog organization.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"enabled": {
+											Type:        schema.TypeBool,
+											Computed:    true,
+											Description: "Whether or not a SAML identity provider metadata file was provided to the Datadog organization.",
+										},
+									},
+								},
+							},
+							"saml_idp_metadata_uploaded": {
+								Type:        schema.TypeBool,
+								Computed:    true,
+								Description: "Whether or not a SAML identity provider metadata file was provided to the Datadog organization.",
+							},
+							"saml_login_url": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "URL for SAML logging.",
+							},
+							"saml_strict_mode": {
+								Type:        schema.TypeList,
+								Computed:    true,
+								Description: "Whether or not the SAML strict mode is enabled. If true, all users must log in with SAML.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"enabled": {
+											Type:        schema.TypeBool,
+											Computed:    true,
+											Description: "Whether or not the SAML strict mode is enabled. If true, all users must log in with SAML.",
+										},
 									},
 								},
 							},
 						},
-						"saml_can_be_enabled": {
-							Type:        schema.TypeBool,
-							Computed:    true,
-							Description: "Whether or not SAML can be enabled for this organization.",
-						},
-						"saml_idp_endpoint": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "Identity provider endpoint for SAML authentication.",
-						},
-						"saml_idp_initiated_login": {
-							Type:        schema.TypeList,
-							Computed:    true,
-							Description: "Whether or not a SAML identity provider metadata file was provided to the Datadog organization.",
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"enabled": {
-										Type:        schema.TypeBool,
-										Computed:    true,
-										Description: "Whether or not a SAML identity provider metadata file was provided to the Datadog organization.",
-									},
-								},
+					},
+				},
+
+				"api_key": {
+					Type:        schema.TypeList,
+					Computed:    true,
+					Description: "Datadog API key.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"key": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Sensitive:   true,
+								Description: "API key.",
 							},
-						},
-						"saml_idp_metadata_uploaded": {
-							Type:        schema.TypeBool,
-							Computed:    true,
-							Description: "Whether or not a SAML identity provider metadata file was provided to the Datadog organization.",
-						},
-						"saml_login_url": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "URL for SAML logging.",
-						},
-						"saml_strict_mode": {
-							Type:        schema.TypeList,
-							Computed:    true,
-							Description: "Whether or not the SAML strict mode is enabled. If true, all users must log in with SAML.",
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"enabled": {
-										Type:        schema.TypeBool,
-										Computed:    true,
-										Description: "Whether or not the SAML strict mode is enabled. If true, all users must log in with SAML.",
-									},
-								},
+							"name": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "Name of your API key.",
 							},
 						},
 					},
 				},
-			},
 
-			"api_key": {
-				Type:        schema.TypeList,
-				Computed:    true,
-				Description: "Datadog API key.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"key": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Sensitive:   true,
-							Description: "API key.",
-						},
-						"name": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "Name of your API key.",
+				"application_key": {
+					Type:        schema.TypeList,
+					Computed:    true,
+					Description: "An application key with its associated metadata.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"hash": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Sensitive:   true,
+								Description: "Hash of an application key.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "Name of an application key.",
+							},
+							"owner": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "Owner of an application key.",
+							},
 						},
 					},
 				},
-			},
 
-			"application_key": {
-				Type:        schema.TypeList,
-				Computed:    true,
-				Description: "An application key with its associated metadata.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"hash": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Sensitive:   true,
-							Description: "Hash of an application key.",
-						},
-						"name": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "Name of an application key.",
-						},
-						"owner": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "Owner of an application key.",
+				"user": {
+					Type:        schema.TypeList,
+					Computed:    true,
+					Description: "Information about a user",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"email": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The new email of the user.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The name of the user.",
+							},
+							"access_role": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The access role of the user. Options are `st` (standard user), `adm` (admin user), or `ro` (read-only user). Allowed enum values: `st`, `adm`, `ro`, `ERROR`",
+							},
 						},
 					},
 				},
-			},
-
-			"user": {
-				Type:        schema.TypeList,
-				Computed:    true,
-				Description: "Information about a user",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"email": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The new email of the user.",
-						},
-						"name": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The name of the user.",
-						},
-						"access_role": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The access role of the user. Options are `st` (standard user), `adm` (admin user), or `ro` (read-only user). Allowed enum values: `st`, `adm`, `ro`, `ERROR`",
-						},
-					},
-				},
-			},
+			}
 		},
 	}
 }

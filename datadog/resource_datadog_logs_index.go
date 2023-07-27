@@ -112,7 +112,10 @@ func resourceDatadogLogsIndex() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: indexSchema,
+
+		SchemaFunc: func() map[string]*schema.Schema {
+			return indexSchema
+		},
 	}
 }
 

@@ -28,24 +28,26 @@ func resourceDatadogIntegrationPagerduty() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"subdomain": {
-				Description: "Your PagerDuty account’s personalized subdomain name.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"schedules": {
-				Description: "Array of your schedule URLs.",
-				Type:        schema.TypeList,
-				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
-			"api_token": {
-				Description: "Your PagerDuty API token.",
-				Type:        schema.TypeString,
-				Optional:    true,
-				Sensitive:   true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"subdomain": {
+					Description: "Your PagerDuty account’s personalized subdomain name.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"schedules": {
+					Description: "Array of your schedule URLs.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"api_token": {
+					Description: "Your PagerDuty API token.",
+					Type:        schema.TypeString,
+					Optional:    true,
+					Sensitive:   true,
+				},
+			}
 		},
 	}
 }

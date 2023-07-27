@@ -23,52 +23,54 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Description: "Name of the Datadog scanning group.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"description": {
-				Description: "Description of the Datadog scanning group.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"product_list": {
-				Description: "List of products the scanning group applies.",
-				Type:        schema.TypeSet,
-				Required:    true,
-				MaxItems:    4,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name": {
+					Description: "Name of the Datadog scanning group.",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
-			},
-			"is_enabled": {
-				Description: "Whether or not the scanning group is enabled. If the group doesn't contain any rule or if all the rules in it are disabled, the group is force-disabled by our backend",
-				Type:        schema.TypeBool,
-				Required:    true,
-			},
-			"filter": {
-				Description: "Filter object the scanning group applies.",
-				Type:        schema.TypeList,
-				MaxItems:    1,
-				Required:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"query": {
-							Description: "Query to filter the events.",
-							Type:        schema.TypeString,
-							Required:    true,
-							DiffSuppressFunc: func(_, oldVal, newVal string, d *schema.ResourceData) bool {
-								if (oldVal == "" && newVal == "*") || (oldVal == "*" && newVal == "") {
-									return true
-								}
-								return false
+				"description": {
+					Description: "Description of the Datadog scanning group.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"product_list": {
+					Description: "List of products the scanning group applies.",
+					Type:        schema.TypeSet,
+					Required:    true,
+					MaxItems:    4,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+				"is_enabled": {
+					Description: "Whether or not the scanning group is enabled. If the group doesn't contain any rule or if all the rules in it are disabled, the group is force-disabled by our backend",
+					Type:        schema.TypeBool,
+					Required:    true,
+				},
+				"filter": {
+					Description: "Filter object the scanning group applies.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Required:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"query": {
+								Description: "Query to filter the events.",
+								Type:        schema.TypeString,
+								Required:    true,
+								DiffSuppressFunc: func(_, oldVal, newVal string, d *schema.ResourceData) bool {
+									if (oldVal == "" && newVal == "*") || (oldVal == "*" && newVal == "") {
+										return true
+									}
+									return false
+								},
 							},
 						},
 					},
 				},
-			},
+			}
 		},
 	}
 }

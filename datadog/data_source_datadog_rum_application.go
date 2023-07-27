@@ -13,39 +13,41 @@ func dataSourceDatadogRUMApplication() *schema.Resource {
 		Description: "Use this data source to retrieve a Datadog RUM Application.",
 		ReadContext: dataSourceDatadogRUMApplicationRead,
 
-		Schema: map[string]*schema.Schema{
-			"name_filter": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "The name used to search for a RUM application",
-			},
-			"type_filter": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "The type used to search for a RUM application",
-			},
-			"id": {
-				Type:          schema.TypeString,
-				Optional:      true,
-				Computed:      true,
-				ConflictsWith: []string{"name_filter", "type_filter"},
-				Description:   "ID of the RUM application. Cannot be used with name and type filters.",
-			},
-			"name": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "The name of the RUM application",
-			},
-			"type": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "The RUM application type. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`",
-			},
-			"client_token": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "The client token",
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name_filter": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "The name used to search for a RUM application",
+				},
+				"type_filter": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "The type used to search for a RUM application",
+				},
+				"id": {
+					Type:          schema.TypeString,
+					Optional:      true,
+					Computed:      true,
+					ConflictsWith: []string{"name_filter", "type_filter"},
+					Description:   "ID of the RUM application. Cannot be used with name and type filters.",
+				},
+				"name": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The name of the RUM application",
+				},
+				"type": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The RUM application type. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`",
+				},
+				"client_token": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The client token",
+				},
+			}
 		},
 	}
 }

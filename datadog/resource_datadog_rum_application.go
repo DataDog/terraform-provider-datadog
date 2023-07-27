@@ -21,23 +21,25 @@ func resourceDatadogRUMApplication() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The name of the RUM application",
-			},
-			"type": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Default:     "browser",
-				Description: "The RUM application type. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`",
-			},
-			"client_token": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "The client token",
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "The name of the RUM application",
+				},
+				"type": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Default:     "browser",
+					Description: "The RUM application type. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`",
+				},
+				"client_token": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The client token",
+				},
+			}
 		},
 	}
 }

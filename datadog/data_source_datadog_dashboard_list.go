@@ -17,13 +17,15 @@ func dataSourceDatadogDashboardList() *schema.Resource {
 		Description: "Use this data source to retrieve information about an existing dashboard list, for use in other resources. In particular, it can be used in a dashboard to register it in the list.",
 		ReadContext: dataSourceDatadogDashboardListRead,
 
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Description:  "A dashboard list name to limit the search.",
-				Type:         schema.TypeString,
-				Required:     true,
-				ValidateFunc: validation.StringIsNotEmpty,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name": {
+					Description:  "A dashboard list name to limit the search.",
+					Type:         schema.TypeString,
+					Required:     true,
+					ValidateFunc: validation.StringIsNotEmpty,
+				},
+			}
 		},
 	}
 }

@@ -37,7 +37,9 @@ func resourceDatadogCloudConfigurationRule() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: cloudConfigurationRuleSchema(),
+		SchemaFunc: func() map[string]*schema.Schema {
+			return cloudConfigurationRuleSchema()
+		},
 	}
 }
 

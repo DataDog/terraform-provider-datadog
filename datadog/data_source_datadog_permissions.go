@@ -14,22 +14,24 @@ func dataSourceDatadogPermissions() *schema.Resource {
 		Description: "Use this data source to retrieve the list of Datadog permissions by name and their corresponding ID, for use in the role resource.",
 		ReadContext: dataSourceDatadogPermissionsRead,
 
-		Schema: map[string]*schema.Schema{
-			"include_restricted": {
-				Description: "Whether to include restricted permissions. Restricted permissions are granted by default to all users of a Datadog org, and cannot be manually granted or revoked.",
-				Type:        schema.TypeBool,
-				Default:     false,
-				Optional:    true,
-			},
-			// Computed values
-			"permissions": {
-				Description: "Map of permissions names to their corresponding ID.",
-				Type:        schema.TypeMap,
-				Computed:    true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"include_restricted": {
+					Description: "Whether to include restricted permissions. Restricted permissions are granted by default to all users of a Datadog org, and cannot be manually granted or revoked.",
+					Type:        schema.TypeBool,
+					Default:     false,
+					Optional:    true,
 				},
-			},
+				// Computed values
+				"permissions": {
+					Description: "Map of permissions names to their corresponding ID.",
+					Type:        schema.TypeMap,
+					Computed:    true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+			}
 		},
 	}
 }

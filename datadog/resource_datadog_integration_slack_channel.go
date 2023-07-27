@@ -26,52 +26,54 @@ func resourceDatadogIntegrationSlackChannel() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"channel_name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Slack channel name.",
-			},
-			"account_name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "Slack account name.",
-			},
-			"display": {
-				Type:        schema.TypeList,
-				Required:    true,
-				Description: "Configuration options for what is shown in an alert event message.",
-				MaxItems:    1,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"message": {
-							Type:        schema.TypeBool,
-							Optional:    true,
-							Description: "Show the main body of the alert event.",
-							Default:     true,
-						},
-						"notified": {
-							Type:        schema.TypeBool,
-							Optional:    true,
-							Description: "Show the list of @-handles in the alert event.",
-							Default:     true,
-						},
-						"snapshot": {
-							Type:        schema.TypeBool,
-							Optional:    true,
-							Description: "Show the alert event's snapshot image.",
-							Default:     true,
-						},
-						"tags": {
-							Type:        schema.TypeBool,
-							Optional:    true,
-							Description: "Show the scopes on which the monitor alerted.",
-							Default:     true,
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"channel_name": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "Slack channel name.",
+				},
+				"account_name": {
+					Type:        schema.TypeString,
+					Required:    true,
+					ForceNew:    true,
+					Description: "Slack account name.",
+				},
+				"display": {
+					Type:        schema.TypeList,
+					Required:    true,
+					Description: "Configuration options for what is shown in an alert event message.",
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"message": {
+								Type:        schema.TypeBool,
+								Optional:    true,
+								Description: "Show the main body of the alert event.",
+								Default:     true,
+							},
+							"notified": {
+								Type:        schema.TypeBool,
+								Optional:    true,
+								Description: "Show the list of @-handles in the alert event.",
+								Default:     true,
+							},
+							"snapshot": {
+								Type:        schema.TypeBool,
+								Optional:    true,
+								Description: "Show the alert event's snapshot image.",
+								Default:     true,
+							},
+							"tags": {
+								Type:        schema.TypeBool,
+								Optional:    true,
+								Description: "Show the scopes on which the monitor alerted.",
+								Default:     true,
+							},
 						},
 					},
 				},
-			},
+			}
 		},
 	}
 }

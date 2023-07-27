@@ -29,32 +29,34 @@ func resourceDatadogRole() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 		CustomizeDiff: resourceDatadogRoleCustomizeDiff,
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Name of the role.",
-			},
-			"permission": {
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Description: "Set of objects containing the permission ID and the name of the permissions granted to this role.",
-				Elem:        GetRolePermissionSchema(),
-			},
-			"user_count": {
-				Type:        schema.TypeInt,
-				Computed:    true,
-				Description: "Number of users that have this role.",
-			},
-			"validate": {
-				Description: "If set to `false`, skip the validation call done during plan.",
-				Type:        schema.TypeBool,
-				Optional:    true,
-				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
-					// This is never sent to the backend, so it should never generate a diff
-					return true
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "Name of the role.",
 				},
-			},
+				"permission": {
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Description: "Set of objects containing the permission ID and the name of the permissions granted to this role.",
+					Elem:        GetRolePermissionSchema(),
+				},
+				"user_count": {
+					Type:        schema.TypeInt,
+					Computed:    true,
+					Description: "Number of users that have this role.",
+				},
+				"validate": {
+					Description: "If set to `false`, skip the validation call done during plan.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						// This is never sent to the backend, so it should never generate a diff
+						return true
+					},
+				},
+			}
 		},
 	}
 }

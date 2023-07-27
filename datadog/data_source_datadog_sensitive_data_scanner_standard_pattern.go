@@ -15,29 +15,32 @@ func dataSourceDatadogSensitiveDataScannerStandardPattern() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about an existing sensitive data scanner standard pattern.",
 		ReadContext: dataSourceDatadogSensitiveDataScannerStandardPatternRead,
-		Schema: map[string]*schema.Schema{
-			"filter": {
-				Description: "Filter all the Datadog standard patterns by name.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			// Computed
-			"name": {
-				Description: "Name of the standard pattern.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
-			"pattern": {
-				Description: "Regex that the standard pattern applies.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
-			"tags": {
-				Description: "List of tags.",
-				Type:        schema.TypeList,
-				Computed:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
+
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"filter": {
+					Description: "Filter all the Datadog standard patterns by name.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				// Computed
+				"name": {
+					Description: "Name of the standard pattern.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"pattern": {
+					Description: "Regex that the standard pattern applies.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"tags": {
+					Description: "List of tags.",
+					Type:        schema.TypeList,
+					Computed:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+			}
 		},
 	}
 }

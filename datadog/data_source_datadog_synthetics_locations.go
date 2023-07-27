@@ -14,13 +14,15 @@ func dataSourceDatadogSyntheticsLocations() *schema.Resource {
 		Description: "Use this data source to retrieve Datadog's Synthetics Locations (to be used in Synthetics tests).",
 		ReadContext: dataSourceDatadogSyntheticsLocationsRead,
 
-		// Locations are a map of IDs to names
-		Schema: map[string]*schema.Schema{
-			"locations": {
-				Description: "A map of available Synthetics location IDs to names for Synthetics tests.",
-				Type:        schema.TypeMap,
-				Computed:    true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			// Locations are a map of IDs to names
+			return map[string]*schema.Schema{
+				"locations": {
+					Description: "A map of available Synthetics location IDs to names for Synthetics tests.",
+					Type:        schema.TypeMap,
+					Computed:    true,
+				},
+			}
 		},
 	}
 }

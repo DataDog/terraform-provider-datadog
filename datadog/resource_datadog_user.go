@@ -22,49 +22,51 @@ func resourceDatadogUser() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"disabled": {
-				Description: "Whether the user is disabled.",
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     false,
-			},
-			"email": {
-				Description: "Email address for user.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"name": {
-				Description: "Name for user.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"roles": {
-				Description: "A list a role IDs to assign to the user.",
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
-			"send_user_invitation": {
-				Description: "Whether an invitation email should be sent when the user is created.",
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     true,
-				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
-					// This is only used on create, so don't generate diff when the resource already exists
-					return d.Id() != ""
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"disabled": {
+					Description: "Whether the user is disabled.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     false,
 				},
-			},
-			"verified": {
-				Description: "Returns `true` if the user is verified.",
-				Type:        schema.TypeBool,
-				Computed:    true,
-			},
-			"user_invitation_id": {
-				Description: "The ID of the user invitation that was sent when creating the user.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
+				"email": {
+					Description: "Email address for user.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"name": {
+					Description: "Name for user.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"roles": {
+					Description: "A list a role IDs to assign to the user.",
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"send_user_invitation": {
+					Description: "Whether an invitation email should be sent when the user is created.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     true,
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						// This is only used on create, so don't generate diff when the resource already exists
+						return d.Id() != ""
+					},
+				},
+				"verified": {
+					Description: "Returns `true` if the user is verified.",
+					Type:        schema.TypeBool,
+					Computed:    true,
+				},
+				"user_invitation_id": {
+					Description: "The ID of the user invitation that was sent when creating the user.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+			}
 		},
 	}
 }

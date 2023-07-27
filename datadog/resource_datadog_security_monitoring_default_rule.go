@@ -25,80 +25,82 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"case": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Description: "Cases of the rule, this is used to update notifications.",
-				MaxItems:    10,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"status": {
-							Type:             schema.TypeString,
-							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
-							Required:         true,
-							Description:      "Status of the rule case to match.",
-						},
-						"notifications": {
-							Type:        schema.TypeList,
-							Required:    true,
-							Description: "Notification targets for each rule case.",
-							Elem:        &schema.Schema{Type: schema.TypeString},
-						},
-					},
-				},
-			},
-
-			"enabled": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     true,
-				Description: "Enable the rule.",
-			},
-
-			"filter": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Description: "Additional queries to filter matched events before they are processed.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"action": {
-							Type:             schema.TypeString,
-							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringFilterActionFromValue),
-							Required:         true,
-							Description:      "The type of filtering action. Allowed enum values: require, suppress",
-						},
-						"query": {
-							Type:        schema.TypeString,
-							Required:    true,
-							Description: "Query for selecting logs to apply the filtering action.",
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"case": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "Cases of the rule, this is used to update notifications.",
+					MaxItems:    10,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"status": {
+								Type:             schema.TypeString,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
+								Required:         true,
+								Description:      "Status of the rule case to match.",
+							},
+							"notifications": {
+								Type:        schema.TypeList,
+								Required:    true,
+								Description: "Notification targets for each rule case.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
 						},
 					},
 				},
-			},
 
-			"options": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				MaxItems:    1,
-				Description: "Options on default rules. Note that only a subset of fields can be updated on default rule options.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"decrease_criticality_based_on_env": {
-							Type:        schema.TypeBool,
-							Optional:    true,
-							Default:     false,
-							Description: "If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`.",
+				"enabled": {
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     true,
+					Description: "Enable the rule.",
+				},
+
+				"filter": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "Additional queries to filter matched events before they are processed.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"action": {
+								Type:             schema.TypeString,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringFilterActionFromValue),
+								Required:         true,
+								Description:      "The type of filtering action. Allowed enum values: require, suppress",
+							},
+							"query": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "Query for selecting logs to apply the filtering action.",
+							},
 						},
 					},
 				},
-			},
 
-			"type": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "The rule type.",
-			},
+				"options": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "Options on default rules. Note that only a subset of fields can be updated on default rule options.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"decrease_criticality_based_on_env": {
+								Type:        schema.TypeBool,
+								Optional:    true,
+								Default:     false,
+								Description: "If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`.",
+							},
+						},
+					},
+				},
+
+				"type": {
+					Type:        schema.TypeString,
+					Computed:    true,
+					Description: "The rule type.",
+				},
+			}
 		},
 	}
 }

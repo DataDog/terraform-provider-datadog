@@ -21,7 +21,9 @@ func resourceDatadogCloudWorkloadSecurityAgentRule() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: cloudWorkloadSecurityAgentRuleSchema(),
+		SchemaFunc: func() map[string]*schema.Schema {
+			return cloudWorkloadSecurityAgentRuleSchema()
+		},
 	}
 }
 

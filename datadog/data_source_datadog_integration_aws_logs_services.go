@@ -14,27 +14,29 @@ func dataSourceDatadogIntegrationAWSLogsServices() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve all AWS log ready services.",
 		ReadContext: dataSourceDatadogIntegrationAWSLogsServicesRead,
-		Schema: map[string]*schema.Schema{
-			// Computed
-			"aws_logs_services": {
-				Description: "List of AWS log ready services.",
-				Type:        schema.TypeList,
-				Computed:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The id of the AWS log service.",
-						},
-						"label": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The name of the AWS log service.",
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				// Computed
+				"aws_logs_services": {
+					Description: "List of AWS log ready services.",
+					Type:        schema.TypeList,
+					Computed:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"id": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The id of the AWS log service.",
+							},
+							"label": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The name of the AWS log service.",
+							},
 						},
 					},
 				},
-			},
+			}
 		},
 	}
 }

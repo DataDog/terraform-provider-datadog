@@ -24,22 +24,24 @@ func resourceDatadogAuthnMapping() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"key": {
-				Description: "Identity provider key.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"value": {
-				Description: "Identity provider value.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"role": {
-				Description: "The ID of a role to attach to all users with the corresponding key and value.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"key": {
+					Description: "Identity provider key.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"value": {
+					Description: "Identity provider value.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"role": {
+					Description: "The ID of a role to attach to all users with the corresponding key and value.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+			}
 		},
 	}
 }
