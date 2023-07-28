@@ -45,5 +45,3 @@ resource "datadog_dashboard" "time" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

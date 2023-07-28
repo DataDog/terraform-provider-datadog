@@ -29,19 +29,21 @@ func resourceDatadogIntegrationAwsLambdaArn() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			"account_id": {
-				Description: "Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.",
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true, // waits for update API call support
-			},
-			"lambda_arn": {
-				Description: "The ARN of the Datadog forwarder Lambda.",
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true, // waits for update API call support
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"account_id": {
+					Description: "Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.",
+					Type:        schema.TypeString,
+					Required:    true,
+					ForceNew:    true, // waits for update API call support
+				},
+				"lambda_arn": {
+					Description: "The ARN of the Datadog forwarder Lambda.",
+					Type:        schema.TypeString,
+					Required:    true,
+					ForceNew:    true, // waits for update API call support
+				},
+			}
 		},
 	}
 }

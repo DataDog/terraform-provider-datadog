@@ -116,164 +116,166 @@ func resourceDatadogDowntime() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"active": {
-				Type:        schema.TypeBool,
-				Computed:    true,
-				Description: "When true indicates this downtime is being actively applied",
-			},
-			"disabled": {
-				Type:        schema.TypeBool,
-				Computed:    true,
-				Description: "When true indicates this downtime is not being applied",
-			},
-			"start": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-					_, startDatePresent := d.GetOk("start_date")
-					now := time.Now().Unix()
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"active": {
+					Type:        schema.TypeBool,
+					Computed:    true,
+					Description: "When true indicates this downtime is being actively applied",
+				},
+				"disabled": {
+					Type:        schema.TypeBool,
+					Computed:    true,
+					Description: "When true indicates this downtime is not being applied",
+				},
+				"start": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+						_, startDatePresent := d.GetOk("start_date")
+						now := time.Now().Unix()
 
-					// If "start_date" is set, ignore diff for "start". If "start" isn't set, ignore diff if start is now or in the past
-					return startDatePresent || (newVal == "0" && oldVal != "0" && int64(d.Get("start").(int)) <= now)
+						// If "start_date" is set, ignore diff for "start". If "start" isn't set, ignore diff if start is now or in the past
+						return startDatePresent || (newVal == "0" && oldVal != "0" && int64(d.Get("start").(int)) <= now)
+					},
+					Description: "Specify when this downtime should start. Accepts a Unix timestamp in UTC.",
 				},
-				Description: "Specify when this downtime should start. Accepts a Unix timestamp in UTC.",
-			},
-			"start_date": {
-				Type:          schema.TypeString,
-				ValidateFunc:  validation.IsRFC3339Time,
-				ConflictsWith: []string{"start"},
-				Optional:      true,
-				Description:   "String representing date and time to start the downtime in RFC3339 format.",
-				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-					oldDate, _ := time.Parse(time.RFC3339, oldVal)
-					newDate, _ := time.Parse(time.RFC3339, newVal)
-					return oldDate.Equal(newDate)
+				"start_date": {
+					Type:          schema.TypeString,
+					ValidateFunc:  validation.IsRFC3339Time,
+					ConflictsWith: []string{"start"},
+					Optional:      true,
+					Description:   "String representing date and time to start the downtime in RFC3339 format.",
+					DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+						oldDate, _ := time.Parse(time.RFC3339, oldVal)
+						newDate, _ := time.Parse(time.RFC3339, newVal)
+						return oldDate.Equal(newDate)
+					},
 				},
-			},
-			"end": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-					_, endDatePresent := d.GetOk("end_date")
-					return endDatePresent
+				"end": {
+					Type:     schema.TypeInt,
+					Optional: true,
+					DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+						_, endDatePresent := d.GetOk("end_date")
+						return endDatePresent
+					},
+					Description: "Optionally specify an end date when this downtime should expire. Accepts a Unix timestamp in UTC.",
 				},
-				Description: "Optionally specify an end date when this downtime should expire. Accepts a Unix timestamp in UTC.",
-			},
-			"end_date": {
-				Type:          schema.TypeString,
-				ValidateFunc:  validation.IsRFC3339Time,
-				ConflictsWith: []string{"end"},
-				Optional:      true,
-				Description:   "String representing date and time to end the downtime in RFC3339 format.",
-				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-					oldDate, _ := time.Parse(time.RFC3339, oldVal)
-					newDate, _ := time.Parse(time.RFC3339, newVal)
-					return oldDate.Equal(newDate)
+				"end_date": {
+					Type:          schema.TypeString,
+					ValidateFunc:  validation.IsRFC3339Time,
+					ConflictsWith: []string{"end"},
+					Optional:      true,
+					Description:   "String representing date and time to end the downtime in RFC3339 format.",
+					DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+						oldDate, _ := time.Parse(time.RFC3339, oldVal)
+						newDate, _ := time.Parse(time.RFC3339, newVal)
+						return oldDate.Equal(newDate)
+					},
 				},
-			},
-			"timezone": {
-				Type:         schema.TypeString,
-				Default:      "UTC",
-				Optional:     true,
-				Description:  "The timezone for the downtime, default UTC. Follows IANA timezone database identifiers.",
-				ValidateFunc: validators.ValidateDatadogDowntimeTimezone,
-			},
-			"message": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "An optional message to provide when creating the downtime, can include notification handles",
-				StateFunc: func(val interface{}) string {
-					return strings.TrimSpace(val.(string))
+				"timezone": {
+					Type:         schema.TypeString,
+					Default:      "UTC",
+					Optional:     true,
+					Description:  "The timezone for the downtime, default UTC. Follows IANA timezone database identifiers.",
+					ValidateFunc: validators.ValidateDatadogDowntimeTimezone,
 				},
-			},
-			"recurrence": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				MaxItems:    1,
-				Description: "Optional recurring schedule for this downtime",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"period": {
-							Type:        schema.TypeInt,
-							Optional:    true,
-							Description: "How often to repeat as an integer. For example to repeat every 3 days, select a `type` of `days` and a `period` of `3`.",
-						},
-						"type": {
-							Type:         schema.TypeString,
-							Required:     true,
-							ValidateFunc: validators.ValidateDatadogDowntimeRecurrenceType,
-							Description:  "One of `days`, `weeks`, `months`, `years`, or `rrule`.",
-						},
-						"until_date": {
-							Type:          schema.TypeInt,
-							Optional:      true,
-							ConflictsWith: []string{"recurrence.until_occurrences"},
-							Description:   "The date at which the recurrence should end as a POSIX timestamp. `until_occurrences` and `until_date` are mutually exclusive.",
-						},
-						"until_occurrences": {
-							Type:          schema.TypeInt,
-							Optional:      true,
-							ConflictsWith: []string{"recurrence.until_date"},
-							Description:   "How many times the downtime will be rescheduled. `until_occurrences` and `until_date` are mutually exclusive.",
-						},
-						"week_days": {
-							Type:        schema.TypeList,
-							Optional:    true,
-							Description: "A list of week days to repeat on. Choose from: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat` or `Sun`. Only applicable when `type` is `weeks`. First letter must be capitalized.",
-							Elem: &schema.Schema{
-								Type:         schema.TypeString,
-								ValidateFunc: validators.ValidateDatadogDowntimeRecurrenceWeekDays,
+				"message": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "An optional message to provide when creating the downtime, can include notification handles",
+					StateFunc: func(val interface{}) string {
+						return strings.TrimSpace(val.(string))
+					},
+				},
+				"recurrence": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "Optional recurring schedule for this downtime",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"period": {
+								Type:        schema.TypeInt,
+								Optional:    true,
+								Description: "How often to repeat as an integer. For example to repeat every 3 days, select a `type` of `days` and a `period` of `3`.",
 							},
-						},
-						"rrule": {
-							Description:   "The RRULE standard for defining recurring events. For example, to have a recurring event on the first day of each month, use `FREQ=MONTHLY;INTERVAL=1`. Most common rrule options from the iCalendar Spec are supported. Attributes specifying the duration in RRULE are not supported (for example, `DTSTART`, `DTEND`, `DURATION`). Only applicable when `type` is `rrule`.",
-							Type:          schema.TypeString,
-							Optional:      true,
-							ConflictsWith: []string{"recurrence.period", "recurrence.until_date", "recurrence.until_occurrences", "recurrence.week_days"},
+							"type": {
+								Type:         schema.TypeString,
+								Required:     true,
+								ValidateFunc: validators.ValidateDatadogDowntimeRecurrenceType,
+								Description:  "One of `days`, `weeks`, `months`, `years`, or `rrule`.",
+							},
+							"until_date": {
+								Type:          schema.TypeInt,
+								Optional:      true,
+								ConflictsWith: []string{"recurrence.until_occurrences"},
+								Description:   "The date at which the recurrence should end as a POSIX timestamp. `until_occurrences` and `until_date` are mutually exclusive.",
+							},
+							"until_occurrences": {
+								Type:          schema.TypeInt,
+								Optional:      true,
+								ConflictsWith: []string{"recurrence.until_date"},
+								Description:   "How many times the downtime will be rescheduled. `until_occurrences` and `until_date` are mutually exclusive.",
+							},
+							"week_days": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Description: "A list of week days to repeat on. Choose from: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat` or `Sun`. Only applicable when `type` is `weeks`. First letter must be capitalized.",
+								Elem: &schema.Schema{
+									Type:         schema.TypeString,
+									ValidateFunc: validators.ValidateDatadogDowntimeRecurrenceWeekDays,
+								},
+							},
+							"rrule": {
+								Description:   "The RRULE standard for defining recurring events. For example, to have a recurring event on the first day of each month, use `FREQ=MONTHLY;INTERVAL=1`. Most common rrule options from the iCalendar Spec are supported. Attributes specifying the duration in RRULE are not supported (for example, `DTSTART`, `DTEND`, `DURATION`). Only applicable when `type` is `rrule`.",
+								Type:          schema.TypeString,
+								Optional:      true,
+								ConflictsWith: []string{"recurrence.period", "recurrence.until_date", "recurrence.until_occurrences", "recurrence.week_days"},
+							},
 						},
 					},
 				},
-			},
-			"scope": {
-				Type:        schema.TypeList,
-				Required:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-				Description: "specify the group scope to which this downtime applies. For everything use '*'",
-			},
-			"monitor_id": {
-				Type:          schema.TypeInt,
-				Optional:      true,
-				ConflictsWith: []string{"monitor_tags"},
-				Description:   "When specified, this downtime will only apply to this monitor",
-			},
-			"monitor_tags": {
-				// TypeSet makes Terraform ignore differences in order when creating a plan
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Description: "A list of monitor tags (up to 32) to base the scheduled downtime on. Only monitors that have all selected tags are silenced",
-				// MonitorTags conflicts with MonitorId and it also has a default of `["*"]`, which brings some problems:
-				// * We can't use DefaultFunc to default to ["*"], since that's incompatible with
-				//   ConflictsWith
-				// * Since this is a TypeSet, DiffSuppressFunc can't really be written well for it
-				//   (it is called and expected to give result for each element, not for the whole
-				//    list, so there's no way to tell in each iteration whether the new config value
-				//    is an empty list).
-				// Therefore we handle the "default" manually in resourceDatadogDowntimeRead function
-				ConflictsWith: []string{"monitor_id"},
-				Elem:          &schema.Schema{Type: schema.TypeString},
-			},
-			"active_child_id": {
-				Type:        schema.TypeInt,
-				Computed:    true,
-				Description: "The id corresponding to the downtime object definition of the active child for the original parent recurring downtime. This field will only exist on recurring downtimes.",
-			},
-			"mute_first_recovery_notification": {
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Description: "When true the first recovery notification during the downtime will be muted",
-				Default:     false,
-			},
+				"scope": {
+					Type:        schema.TypeList,
+					Required:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+					Description: "specify the group scope to which this downtime applies. For everything use '*'",
+				},
+				"monitor_id": {
+					Type:          schema.TypeInt,
+					Optional:      true,
+					ConflictsWith: []string{"monitor_tags"},
+					Description:   "When specified, this downtime will only apply to this monitor",
+				},
+				"monitor_tags": {
+					// TypeSet makes Terraform ignore differences in order when creating a plan
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Description: "A list of monitor tags (up to 32) to base the scheduled downtime on. Only monitors that have all selected tags are silenced",
+					// MonitorTags conflicts with MonitorId and it also has a default of `["*"]`, which brings some problems:
+					// * We can't use DefaultFunc to default to ["*"], since that's incompatible with
+					//   ConflictsWith
+					// * Since this is a TypeSet, DiffSuppressFunc can't really be written well for it
+					//   (it is called and expected to give result for each element, not for the whole
+					//    list, so there's no way to tell in each iteration whether the new config value
+					//    is an empty list).
+					// Therefore we handle the "default" manually in resourceDatadogDowntimeRead function
+					ConflictsWith: []string{"monitor_id"},
+					Elem:          &schema.Schema{Type: schema.TypeString},
+				},
+				"active_child_id": {
+					Type:        schema.TypeInt,
+					Computed:    true,
+					Description: "The id corresponding to the downtime object definition of the active child for the original parent recurring downtime. This field will only exist on recurring downtimes.",
+				},
+				"mute_first_recovery_notification": {
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Description: "When true the first recovery notification during the downtime will be muted",
+					Default:     false,
+				},
+			}
 		},
 	}
 }

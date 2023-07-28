@@ -80,19 +80,21 @@ func resourceDatadogServiceDefinitionYAML() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"service_definition": {
-				Type:         schema.TypeString,
-				Required:     true,
-				ValidateFunc: isValidServiceDefinition,
-				StateFunc: func(v interface{}) string {
-					attrMap, _ := expandYAMLFromString(v.(string))
-					prepServiceDefinitionResource(attrMap)
-					res, _ := flattenYAMLToString(attrMap)
-					return res
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"service_definition": {
+					Type:         schema.TypeString,
+					Required:     true,
+					ValidateFunc: isValidServiceDefinition,
+					StateFunc: func(v interface{}) string {
+						attrMap, _ := expandYAMLFromString(v.(string))
+						prepServiceDefinitionResource(attrMap)
+						res, _ := flattenYAMLToString(attrMap)
+						return res
+					},
+					Description: "The YAML/JSON formatted definition of the service",
 				},
-				Description: "The YAML/JSON formatted definition of the service",
-			},
+			}
 		},
 	}
 }

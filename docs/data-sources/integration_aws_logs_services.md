@@ -27,5 +27,3 @@ Read-Only:
 
 - `id` (String)
 - `label` (String)
-
-

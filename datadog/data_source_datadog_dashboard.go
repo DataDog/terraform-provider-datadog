@@ -18,24 +18,26 @@ func dataSourceDatadogDashboard() *schema.Resource {
 		Description: "Use this data source to retrieve information about an existing dashboard, for use in other resources. In particular, it can be used in a monitor message to link to a specific dashboard.",
 		ReadContext: dataSourceDatadogDashboardRead,
 
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Description:  "The dashboard name to search for. Must only match one dashboard.",
-				Type:         schema.TypeString,
-				Required:     true,
-				ValidateFunc: validation.StringIsNotEmpty,
-			},
-			// Computed values
-			"title": {
-				Description: "The name of the dashboard.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
-			"url": {
-				Description: "The URL to a specific dashboard.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name": {
+					Description:  "The dashboard name to search for. Must only match one dashboard.",
+					Type:         schema.TypeString,
+					Required:     true,
+					ValidateFunc: validation.StringIsNotEmpty,
+				},
+				// Computed values
+				"title": {
+					Description: "The name of the dashboard.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"url": {
+					Description: "The URL to a specific dashboard.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+			}
 		},
 	}
 }

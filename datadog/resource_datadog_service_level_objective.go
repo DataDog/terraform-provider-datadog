@@ -28,157 +28,159 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
-		Schema: map[string]*schema.Schema{
-			// Common
-			"name": {
-				Description: "Name of Datadog service level objective",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"description": {
-				Description:      "A description of this service level objective.",
-				Type:             schema.TypeString,
-				Optional:         true,
-				StateFunc:        trimStateValue,
-				DiffSuppressFunc: diffTrimmedValues,
-			},
-			"tags": {
-				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
-				// we order them explicitly in the read/create/update methods of this resource and using
-				// TypeSet makes Terraform ignore differences in order when creating a plan
-				Type:        schema.TypeSet,
-				Description: "A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API",
-				Optional:    true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-					StateFunc: func(val any) string {
-						return utils.NormalizeTag(val.(string))
-					},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				// Common
+				"name": {
+					Description: "Name of Datadog service level objective",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
-			},
-			"thresholds": {
-				Description: "A list of thresholds and targets that define the service level objectives from the provided SLIs.",
-				Type:        schema.TypeList,
-				Required:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"timeframe": {
-							Description:      "The time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page.",
-							Type:             schema.TypeString,
-							Required:         true,
-							ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTimeframeFromValue),
-						},
-						"target": {
-							Description:      "The objective's target in `(0,100)`.",
-							Type:             schema.TypeFloat,
-							Required:         true,
-							DiffSuppressFunc: suppressDataDogFloatIntDiff,
-						},
-						"target_display": {
-							Description: "A string representation of the target that indicates its precision. It uses trailing zeros to show significant decimal places (e.g. `98.00`).",
-							Type:        schema.TypeString,
-							Computed:    true,
-						},
-						"warning": {
-							Description:      "The objective's warning value in `(0,100)`. This must be greater than the target value.",
-							Type:             schema.TypeFloat,
-							Optional:         true,
-							DiffSuppressFunc: suppressDataDogFloatIntDiff,
-						},
-						"warning_display": {
-							Description: "A string representation of the warning target (see the description of the target_display field for details).",
-							Type:        schema.TypeString,
-							Computed:    true,
+				"description": {
+					Description:      "A description of this service level objective.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					StateFunc:        trimStateValue,
+					DiffSuppressFunc: diffTrimmedValues,
+				},
+				"tags": {
+					// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
+					// we order them explicitly in the read/create/update methods of this resource and using
+					// TypeSet makes Terraform ignore differences in order when creating a plan
+					Type:        schema.TypeSet,
+					Description: "A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API",
+					Optional:    true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+						StateFunc: func(val any) string {
+							return utils.NormalizeTag(val.(string))
 						},
 					},
 				},
-			},
-			"target_threshold": {
-				Description:      "The objective's target in `(0,100)`. This must match the corresponding thresholds of the primary time frame.",
-				Type:             schema.TypeFloat,
-				Optional:         true,
-				Computed:         true,
-				DiffSuppressFunc: suppressDataDogFloatIntDiff,
-			},
-			"warning_threshold": {
-				Description:      "The objective's warning value in `(0,100)`. This must be greater than the target value and match the corresponding thresholds of the primary time frame.",
-				Type:             schema.TypeFloat,
-				Optional:         true,
-				Computed:         true,
-				DiffSuppressFunc: suppressDataDogFloatIntDiff,
-			},
-			"timeframe": {
-				Description:      "The primary time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page.",
-				Type:             schema.TypeString,
-				Optional:         true,
-				Computed:         true,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTimeframeFromValue),
-			},
-			"type": {
-				Description:      "The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object).",
-				Type:             schema.TypeString,
-				Required:         true,
-				ForceNew:         true,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTypeFromValue),
-			},
-			"force_delete": {
-				Description: "A boolean indicating whether this monitor can be deleted even if it's referenced by other resources (for example, dashboards).",
-				Type:        schema.TypeBool,
-				Optional:    true,
-			},
+				"thresholds": {
+					Description: "A list of thresholds and targets that define the service level objectives from the provided SLIs.",
+					Type:        schema.TypeList,
+					Required:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"timeframe": {
+								Description:      "The time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page.",
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTimeframeFromValue),
+							},
+							"target": {
+								Description:      "The objective's target in `(0,100)`.",
+								Type:             schema.TypeFloat,
+								Required:         true,
+								DiffSuppressFunc: suppressDataDogFloatIntDiff,
+							},
+							"target_display": {
+								Description: "A string representation of the target that indicates its precision. It uses trailing zeros to show significant decimal places (e.g. `98.00`).",
+								Type:        schema.TypeString,
+								Computed:    true,
+							},
+							"warning": {
+								Description:      "The objective's warning value in `(0,100)`. This must be greater than the target value.",
+								Type:             schema.TypeFloat,
+								Optional:         true,
+								DiffSuppressFunc: suppressDataDogFloatIntDiff,
+							},
+							"warning_display": {
+								Description: "A string representation of the warning target (see the description of the target_display field for details).",
+								Type:        schema.TypeString,
+								Computed:    true,
+							},
+						},
+					},
+				},
+				"target_threshold": {
+					Description:      "The objective's target in `(0,100)`. This must match the corresponding thresholds of the primary time frame.",
+					Type:             schema.TypeFloat,
+					Optional:         true,
+					Computed:         true,
+					DiffSuppressFunc: suppressDataDogFloatIntDiff,
+				},
+				"warning_threshold": {
+					Description:      "The objective's warning value in `(0,100)`. This must be greater than the target value and match the corresponding thresholds of the primary time frame.",
+					Type:             schema.TypeFloat,
+					Optional:         true,
+					Computed:         true,
+					DiffSuppressFunc: suppressDataDogFloatIntDiff,
+				},
+				"timeframe": {
+					Description:      "The primary time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					Computed:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTimeframeFromValue),
+				},
+				"type": {
+					Description:      "The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object).",
+					Type:             schema.TypeString,
+					Required:         true,
+					ForceNew:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTypeFromValue),
+				},
+				"force_delete": {
+					Description: "A boolean indicating whether this monitor can be deleted even if it's referenced by other resources (for example, dashboards).",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 
-			// Metric-Based SLO
-			"query": {
-				// we use TypeList here because of https://github.com/hashicorp/terraform/issues/6215/
-				Type:          schema.TypeList,
-				MaxItems:      1,
-				Optional:      true,
-				ConflictsWith: []string{"monitor_ids", "groups"},
-				Description:   "The metric query of good / total events",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"numerator": {
-							Description:      "The sum of all the `good` events.",
-							Type:             schema.TypeString,
-							Required:         true,
-							StateFunc:        trimStateValue,
-							DiffSuppressFunc: diffTrimmedValues,
-						},
-						"denominator": {
-							Description:      "The sum of the `total` events.",
-							Type:             schema.TypeString,
-							Required:         true,
-							StateFunc:        trimStateValue,
-							DiffSuppressFunc: diffTrimmedValues,
+				// Metric-Based SLO
+				"query": {
+					// we use TypeList here because of https://github.com/hashicorp/terraform/issues/6215/
+					Type:          schema.TypeList,
+					MaxItems:      1,
+					Optional:      true,
+					ConflictsWith: []string{"monitor_ids", "groups"},
+					Description:   "The metric query of good / total events",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"numerator": {
+								Description:      "The sum of all the `good` events.",
+								Type:             schema.TypeString,
+								Required:         true,
+								StateFunc:        trimStateValue,
+								DiffSuppressFunc: diffTrimmedValues,
+							},
+							"denominator": {
+								Description:      "The sum of the `total` events.",
+								Type:             schema.TypeString,
+								Required:         true,
+								StateFunc:        trimStateValue,
+								DiffSuppressFunc: diffTrimmedValues,
+							},
 						},
 					},
 				},
-			},
 
-			// Monitor-Based SLO
-			"monitor_ids": {
-				Type:          schema.TypeSet,
-				Optional:      true,
-				ConflictsWith: []string{"query"},
-				Description:   "A static set of monitor IDs to use as part of the SLO",
-				Elem:          &schema.Schema{Type: schema.TypeInt, MinItems: 1},
-			},
-			"groups": {
-				Type:          schema.TypeSet,
-				Optional:      true,
-				Description:   "A static set of groups to filter monitor-based SLOs",
-				ConflictsWith: []string{"query"},
-				Elem:          &schema.Schema{Type: schema.TypeString, MinItems: 1},
-			},
-			"validate": {
-				Description: "Whether or not to validate the SLO.",
-				Type:        schema.TypeBool,
-				Optional:    true,
-				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
-					// This is never sent to the backend, so it should never generate a diff
-					return true
+				// Monitor-Based SLO
+				"monitor_ids": {
+					Type:          schema.TypeSet,
+					Optional:      true,
+					ConflictsWith: []string{"query"},
+					Description:   "A static set of monitor IDs to use as part of the SLO",
+					Elem:          &schema.Schema{Type: schema.TypeInt, MinItems: 1},
 				},
-			},
+				"groups": {
+					Type:          schema.TypeSet,
+					Optional:      true,
+					Description:   "A static set of groups to filter monitor-based SLOs",
+					ConflictsWith: []string{"query"},
+					Elem:          &schema.Schema{Type: schema.TypeString, MinItems: 1},
+				},
+				"validate": {
+					Description: "Whether or not to validate the SLO.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						// This is never sent to the backend, so it should never generate a diff
+						return true
+					},
+				},
+			}
 		},
 	}
 }

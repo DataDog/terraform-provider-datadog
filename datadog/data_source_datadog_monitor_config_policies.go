@@ -13,54 +13,57 @@ func dataSourceDatadogMonitorConfigPolicies() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to list existing monitor config policies for use in other resources.",
 		ReadContext: dataSourceDatadogMonitorConfigPoliciesRead,
-		Schema: map[string]*schema.Schema{
-			// Computed values
-			"monitor_config_policies": {
-				Description: "List of monitor config policies",
-				Type:        schema.TypeList,
-				Computed:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Description: "ID of the monitor config policy",
-							Type:        schema.TypeString,
-							Computed:    true,
-						},
-						"policy_type": {
-							Description: "The monitor config policy type",
-							Type:        schema.TypeString,
-							Computed:    true,
-						},
-						"tag_policy": {
-							Description: "Config for a tag policy. Only set if `policy_type` is `tag`.",
-							Type:        schema.TypeList,
-							Computed:    true,
-							Optional:    true,
-							MaxItems:    1,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"tag_key": {
-										Type:        schema.TypeString,
-										Description: "The key of the tag",
-										Computed:    true,
-									},
-									"tag_key_required": {
-										Type:        schema.TypeBool,
-										Description: "If a tag key is required for monitor creation",
-										Computed:    true,
-									},
-									"valid_tag_values": {
-										Type:        schema.TypeList,
-										Description: "Valid values for the tag",
-										Computed:    true,
-										Elem:        &schema.Schema{Type: schema.TypeString},
+
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				// Computed values
+				"monitor_config_policies": {
+					Description: "List of monitor config policies",
+					Type:        schema.TypeList,
+					Computed:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"id": {
+								Description: "ID of the monitor config policy",
+								Type:        schema.TypeString,
+								Computed:    true,
+							},
+							"policy_type": {
+								Description: "The monitor config policy type",
+								Type:        schema.TypeString,
+								Computed:    true,
+							},
+							"tag_policy": {
+								Description: "Config for a tag policy. Only set if `policy_type` is `tag`.",
+								Type:        schema.TypeList,
+								Computed:    true,
+								Optional:    true,
+								MaxItems:    1,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"tag_key": {
+											Type:        schema.TypeString,
+											Description: "The key of the tag",
+											Computed:    true,
+										},
+										"tag_key_required": {
+											Type:        schema.TypeBool,
+											Description: "If a tag key is required for monitor creation",
+											Computed:    true,
+										},
+										"valid_tag_values": {
+											Type:        schema.TypeList,
+											Description: "Valid values for the tag",
+											Computed:    true,
+											Elem:        &schema.Schema{Type: schema.TypeString},
+										},
 									},
 								},
 							},
 						},
 					},
 				},
-			},
+			}
 		},
 	}
 }

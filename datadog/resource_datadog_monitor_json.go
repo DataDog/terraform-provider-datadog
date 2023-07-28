@@ -63,45 +63,47 @@ func resourceDatadogMonitorJSON() *schema.Resource {
 
 			return oldType != newType
 		}),
-		Schema: map[string]*schema.Schema{
-			"monitor": {
-				Type:         schema.TypeString,
-				Required:     true,
-				ValidateFunc: validation.StringIsJSON,
-				StateFunc: func(v interface{}) string {
-					// Remove computed fields when comparing diffs
-					attrMap, _ := structure.ExpandJsonFromString(v.(string))
-					for _, f := range monitorComputedFields {
-						utils.DeleteKeyInMap(attrMap, strings.Split(f, "."))
-					}
-					if name, ok := attrMap["name"]; ok {
-						if name, ok := name.(string); ok {
-							attrMap["name"] = strings.TrimSpace(name)
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"monitor": {
+					Type:         schema.TypeString,
+					Required:     true,
+					ValidateFunc: validation.StringIsJSON,
+					StateFunc: func(v interface{}) string {
+						// Remove computed fields when comparing diffs
+						attrMap, _ := structure.ExpandJsonFromString(v.(string))
+						for _, f := range monitorComputedFields {
+							utils.DeleteKeyInMap(attrMap, strings.Split(f, "."))
 						}
-					}
-					if msg, ok := attrMap["message"]; ok {
-						if msg, ok := msg.(string); ok {
-							attrMap["message"] = strings.TrimSpace(msg)
+						if name, ok := attrMap["name"]; ok {
+							if name, ok := name.(string); ok {
+								attrMap["name"] = strings.TrimSpace(name)
+							}
 						}
-					}
+						if msg, ok := attrMap["message"]; ok {
+							if msg, ok := msg.(string); ok {
+								attrMap["message"] = strings.TrimSpace(msg)
+							}
+						}
 
-					// restricted_roles is a special case and exporting the field from UI does not include this field. But the api
-					// returns a `null` value on creation. If null we remove the field from state to avoid unnecessary diffs.
-					if val := reflect.ValueOf(attrMap["restricted_roles"]); !val.IsValid() {
-						utils.DeleteKeyInMap(attrMap, []string{"restricted_roles"})
-					}
+						// restricted_roles is a special case and exporting the field from UI does not include this field. But the api
+						// returns a `null` value on creation. If null we remove the field from state to avoid unnecessary diffs.
+						if val := reflect.ValueOf(attrMap["restricted_roles"]); !val.IsValid() {
+							utils.DeleteKeyInMap(attrMap, []string{"restricted_roles"})
+						}
 
-					res, _ := structure.FlattenJsonToString(attrMap)
-					return res
+						res, _ := structure.FlattenJsonToString(attrMap)
+						return res
+					},
+					Description: "The JSON formatted definition of the monitor.",
 				},
-				Description: "The JSON formatted definition of the monitor.",
-			},
-			"url": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-				Description: "The URL of the monitor.",
-			},
+				"url": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Computed:    true,
+					Description: "The URL of the monitor.",
+				},
+			}
 		},
 	}
 }

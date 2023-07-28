@@ -14,42 +14,44 @@ func dataSourceDatadogCloudWorkloadSecurityAgentRules() *schema.Resource {
 		Description: "Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources.",
 		ReadContext: dataSourceDatadogCloudWorkloadSecurityAgentRulesRead,
 
-		Schema: map[string]*schema.Schema{
-			// Computed
-			"agent_rules": {
-				Description: "List of Agent rules.",
-				Type:        schema.TypeList,
-				Computed:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The id of the Agent rule.",
-						},
-						"description": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The description of the Agent rule.",
-						},
-						"enabled": {
-							Type:        schema.TypeBool,
-							Computed:    true,
-							Description: "Whether the Agent rule is enabled.",
-						},
-						"expression": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The SECL expression of the Agent rule.",
-						},
-						"name": {
-							Type:        schema.TypeString,
-							Computed:    true,
-							Description: "The name of the Agent rule.",
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				// Computed
+				"agent_rules": {
+					Description: "List of Agent rules.",
+					Type:        schema.TypeList,
+					Computed:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"id": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The id of the Agent rule.",
+							},
+							"description": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The description of the Agent rule.",
+							},
+							"enabled": {
+								Type:        schema.TypeBool,
+								Computed:    true,
+								Description: "Whether the Agent rule is enabled.",
+							},
+							"expression": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The SECL expression of the Agent rule.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The name of the Agent rule.",
+							},
 						},
 					},
 				},
-			},
+			}
 		},
 	}
 }

@@ -14,78 +14,81 @@ func dataSourceDatadogServiceLevelObjective() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about an existing SLO for use in other resources.",
 		ReadContext: dataSourceDatadogServiceLevelObjectiveRead,
-		Schema: map[string]*schema.Schema{
-			"id": {
-				Description: "A SLO ID to limit the search.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"name_query": {
-				Description: "Filter results based on SLO names.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"tags_query": {
-				Description: "Filter results based on a single SLO tag.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"metrics_query": {
-				Description: "Filter results based on SLO numerator and denominator.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
 
-			// Computed values
-			"name": {
-				Description: "Name of the Datadog service level objective",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
-			"type": {
-				Description: "The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object). Available values are: `metric` and `monitor`.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
-			"description": {
-				Description: "The description of the service level objective.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
-			"target_threshold": {
-				Description: "The primary target threshold of the service level objective.",
-				Type:        schema.TypeFloat,
-				Computed:    true,
-			},
-			"warning_threshold": {
-				Description: "The primary warning threshold of the service level objective.",
-				Type:        schema.TypeFloat,
-				Computed:    true,
-			},
-			"timeframe": {
-				Description: "The primary timeframe of the service level objective.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
-			"query": {
-				Type:        schema.TypeList,
-				Computed:    true,
-				Description: "The metric query of good / total events",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"numerator": {
-							Description: "The sum of all the `good` events.",
-							Type:        schema.TypeString,
-							Computed:    true,
-						},
-						"denominator": {
-							Description: "The sum of the `total` events.",
-							Type:        schema.TypeString,
-							Computed:    true,
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"id": {
+					Description: "A SLO ID to limit the search.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"name_query": {
+					Description: "Filter results based on SLO names.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"tags_query": {
+					Description: "Filter results based on a single SLO tag.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"metrics_query": {
+					Description: "Filter results based on SLO numerator and denominator.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+
+				// Computed values
+				"name": {
+					Description: "Name of the Datadog service level objective",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"type": {
+					Description: "The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object). Available values are: `metric` and `monitor`.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"description": {
+					Description: "The description of the service level objective.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"target_threshold": {
+					Description: "The primary target threshold of the service level objective.",
+					Type:        schema.TypeFloat,
+					Computed:    true,
+				},
+				"warning_threshold": {
+					Description: "The primary warning threshold of the service level objective.",
+					Type:        schema.TypeFloat,
+					Computed:    true,
+				},
+				"timeframe": {
+					Description: "The primary timeframe of the service level objective.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"query": {
+					Type:        schema.TypeList,
+					Computed:    true,
+					Description: "The metric query of good / total events",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"numerator": {
+								Description: "The sum of all the `good` events.",
+								Type:        schema.TypeString,
+								Computed:    true,
+							},
+							"denominator": {
+								Description: "The sum of the `total` events.",
+								Type:        schema.TypeString,
+								Computed:    true,
+							},
 						},
 					},
 				},
-			},
+			}
 		},
 	}
 }
