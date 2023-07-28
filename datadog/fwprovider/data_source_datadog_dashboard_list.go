@@ -57,35 +57,35 @@ func (d *datadogDashboardListDatasource) Schema(ctx context.Context, req datasou
 }
 
 func (d *datadogDashboardListDatasource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var state datadogDashboardListDatasourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var state datadogDashboardListDatasourceModel
 
 	listResponse, httpresp, err := d.Api.ListDashboardLists(d.Auth)
-
 	if err != nil {
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpresp, ""), "error querying dashboard lists"))
 		return
 	}
-
 	if err := utils.CheckForUnparsed(listResponse); err != nil {
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, ""))
 	}
 
-	searchedName := state.Name
+	searchedName := state.Name.ValueString()
 	var foundList *datadogV1.DashboardList
 
 	for _, dashList := range listResponse.GetDashboardLists() {
-		if dashList.GetName() == searchedName.ValueString() {
+		if dashList.GetName() == searchedName {
 			foundList = &dashList
 			break
 		}
 	}
 
 	if foundList == nil {
-		errString := "Couldn't find a dashboard list named" + searchedName.ValueString()
+		errString := "Couldn't find a dashboard list named" + searchedName
 		resp.Diagnostics.AddError(errString, "")
+		return
 	}
 
 	id := foundList.GetId()

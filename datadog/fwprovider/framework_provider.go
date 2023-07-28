@@ -33,6 +33,7 @@ var (
 
 var Resources = []func() resource.Resource{
 	NewAPIKeyResource,
+	//Add New list Dashbaord resource
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
@@ -51,6 +52,7 @@ var Resources = []func() resource.Resource{
 
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
+	NewDatadogDashboardListDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
 	NewDatadogServiceAccountDatasource,
 	NewDatadogTeamDataSource,
