@@ -52,6 +52,7 @@ func (d *datadogDashboardListDatasource) Schema(ctx context.Context, req datasou
 					stringvalidator.LengthAtLeast(1),
 				},
 			},
+			"id": utils.ResourceIDAttribute(),
 		},
 	}
 }
