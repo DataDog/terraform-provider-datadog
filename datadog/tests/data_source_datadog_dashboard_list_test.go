@@ -17,7 +17,7 @@ func TestAccDatadogDashboardListDatasource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogDashListDestroy(accProvider),
+		CheckDestroy:             testAccCheckDatadogDashListDestroyWithFw(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceDashboardListNameFilterConfig(uniq),
