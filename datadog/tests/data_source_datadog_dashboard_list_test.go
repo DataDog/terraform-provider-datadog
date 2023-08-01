@@ -12,12 +12,11 @@ func TestAccDatadogDashboardListDatasource(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
-	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogDashListDestroyWithFw(accProvider),
+		CheckDestroy:             testAccCheckDatadogDashListDestroyWithFw(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceDashboardListNameFilterConfig(uniq),

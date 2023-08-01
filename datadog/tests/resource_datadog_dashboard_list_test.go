@@ -126,15 +126,13 @@ func TestDatadogDashListImport(t *testing.T) {
 	resourceName := "datadog_dashboard_list.new_list"
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniqueName := uniqueEntityName(ctx, t)
-	accProvider := providers.frameworkProvider
 
 	// Getting the hash for a TypeSet element that has dynamic elements isn't possible
 	// So instead we use an import test to make sure the resource can be imported properly.
-
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogDashListDestroyWithFw(accProvider),
+		CheckDestroy:             testAccCheckDatadogDashListDestroyWithFw(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDashListConfig(uniqueName),
@@ -152,12 +150,10 @@ func TestDatadogDashListInDashboard(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniqueName := uniqueEntityName(ctx, t)
-	accProvider := providers.frameworkProvider
-
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogDashListDestroyWithFw(accProvider),
+		CheckDestroy:             testAccCheckDatadogDashListDestroyWithFw(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogDashListConfigInDashboard(uniqueName),
@@ -200,7 +196,6 @@ func testAccCheckDatadogDashListDestroyWithFw(accProvider *fwprovider.FrameworkP
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
-
 		return datadogDashListDestroyHelper(auth, s, apiInstances)
 	}
 }
@@ -218,8 +213,7 @@ func datadogDashListDestroyHelper(ctx context.Context, s *terraform.State, apiIn
 			}
 			return fmt.Errorf("received an error retrieving Dash List %s", errList)
 		}
-
-		return fmt.Errorf("dashoard List still exists")
+		return fmt.Errorf("dashoard list still exists")
 	}
 	return nil
 }
