@@ -302,11 +302,11 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 
 	state.Scope = types.StringValue(attributes.GetScope())
 
-	if notifyEndStates, ok := attributes.GetNotifyEndStatesOk(); ok && len(*notifyEndStates) > 0 {
+	if notifyEndStates, ok := attributes.GetNotifyEndStatesOk(); ok && notifyEndStates != nil {
 		state.NotifyEndStates, _ = types.SetValueFrom(ctx, types.StringType, *notifyEndStates)
 	}
 
-	if notifyEndTypes, ok := attributes.GetNotifyEndTypesOk(); ok && len(*notifyEndTypes) > 0 {
+	if notifyEndTypes, ok := attributes.GetNotifyEndTypesOk(); ok && notifyEndTypes != nil {
 		state.NotifyEndTypes, _ = types.SetValueFrom(ctx, types.StringType, *notifyEndTypes)
 	}
 
