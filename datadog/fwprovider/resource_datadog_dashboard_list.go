@@ -239,6 +239,8 @@ func (r *dashboardListResource) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 	r.updateStateFromDashItem(ctx, &state, completeItemListV2.GetDashboards())
+	// Save data into Terraform state
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *dashboardListResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
