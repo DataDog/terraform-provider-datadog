@@ -239,7 +239,6 @@ func (r *dashboardListResource) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 	r.updateStateFromDashItem(ctx, &state, completeItemListV2.GetDashboards())
-	resp.Diagnostics.AddError("", err.Error())
 }
 
 func (r *dashboardListResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
