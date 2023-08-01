@@ -4,26 +4,21 @@ import (
 	"context"
 	"time"
 
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"
-
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/path"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var (
@@ -125,14 +120,16 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 					"monitor_id": schema.Int64Attribute{
 						Optional:    true,
 						Description: "ID of the monitor to prevent notifications.",
-						Validators:  []validator.Int64{int64validator.ConflictsWith(path.MatchRelative().AtParent().AtName("monitor_tags"))},
+						Validators:  []validator.Int64{int64validator.ExactlyOneOf(path.MatchRelative().AtParent().AtName("monitor_tags"))},
 					},
 					"monitor_tags": schema.SetAttribute{
 						Optional:    true,
 						Description: "A list of monitor tags. For example, tags that are applied directly to monitors, not tags that are used in monitor queries (which are filtered by the scope parameter), to which the downtime applies. The resulting downtime applies to monitors that match **all** provided monitor tags. Setting `monitor_tags` to `[*]` configures the downtime to mute all monitors for the given scope.",
 						ElementType: types.StringType,
-						Validators:  []validator.Set{setvalidator.ConflictsWith(path.MatchRelative().AtParent().AtName("monitor_id"))},
 					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					planmodifiers.ObjectRequired(),
 				},
 			},
 			"one_time_schedule": schema.SingleNestedBlock{
@@ -313,6 +310,7 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 		state.NotifyEndTypes, _ = types.SetValueFrom(ctx, types.StringType, *notifyEndTypes)
 	}
 
+	state.MonitorIdentifier = &MonitorIdentifierModel{}
 	if attributes.MonitorIdentifier.DowntimeMonitorIdentifierId != nil {
 		state.MonitorIdentifier.DowntimeMonitorIdentifierId = types.Int64Value(attributes.MonitorIdentifier.DowntimeMonitorIdentifierId.MonitorId)
 	}

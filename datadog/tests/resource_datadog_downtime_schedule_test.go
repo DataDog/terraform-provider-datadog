@@ -14,6 +14,27 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
+func TestAccDowntimeScheduleBasicRecurring_Import(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogDowntimeScheduleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDowntimeScheduleRecurring(uniq),
+			},
+			{
+				ResourceName:      "datadog_downtime_schedule.t",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func TestAccDowntimeScheduleBasicRecurring(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -329,14 +350,14 @@ func testAccCheckDatadogDowntimeScheduleDestroy(accProvider *fwprovider.Framewor
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
 
-		if err := DowntimeScheduleDestroyHelper(auth, s, apiInstances); err != nil {
+		if err := downtimeScheduleDestroyHelper(auth, s, apiInstances); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func DowntimeScheduleDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+func downtimeScheduleDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "resource_datadog_downtime_schedule" {
