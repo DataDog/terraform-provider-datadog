@@ -115,6 +115,7 @@ func (r *dashboardListResource) Create(ctx context.Context, req resource.CreateR
 	id := dashboardList.GetId()
 	state.ID = types.StringValue(strconv.Itoa(int(id)))
 
+	// Add all the dash list items into the List
 	if len(state.DashItem) > 0 {
 		dashboardListV2Items, err := buildDatadogDashboardListUpdateItemsV2(&state)
 		if err != nil {
@@ -126,23 +127,133 @@ func (r *dashboardListResource) Create(ctx context.Context, req resource.CreateR
 			resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpresp, ""), "error updating dashboard list item"))
 			return
 		}
-		r.updateState(ctx, &state, &dashboardListUpdateItemsResponse)
-		// Save data into Terraform state
-		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+		dashboards := dashboardListUpdateItemsResponse.GetDashboards()
+		r.updateStateFromResponse(ctx, &state, dashboards)
 	}
-	return
-}
 
-func (r *dashboardListResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	/* ... */
+	// Save data into Terraform state
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *dashboardListResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	/* ... */
+	var state dashboardListResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	id, err := strconv.ParseInt(state.ID.ValueString(), 10, 64)
+	if err != nil {
+		resp.Diagnostics.AddError("failed to parse resource id: ", err.Error())
+		return
+	}
+
+	// Make any necessary updates to the Overall Dashboard List Object
+	dashList, err := buildDatadogDashboardList(&state)
+	if err != nil {
+		resp.Diagnostics.AddError("failed to parse resource configuration: ", err.Error())
+		return
+	}
+
+	dashList.SetName(state.Name.ValueString())
+
+	_, httpresp, err := r.ApiV1.UpdateDashboardList(r.Auth, id, *dashList)
+	if err != nil {
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpresp, ""), "error updating dashboard list"))
+		return
+	}
+
+	// Delete all elements from the dash list and add back only the ones in the config
+	completeDashListV2, httpresp, err := r.ApiV2.GetDashboardListItems(r.Auth, id)
+	if err != nil {
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpresp, ""), "error getting dashboard list item"))
+		return
+	}
+	if err := utils.CheckForUnparsed(completeDashListV2); err != nil {
+		resp.Diagnostics.AddError("", err.Error())
+		return
+	}
+
+	completeDashListDeleteV2, err := buildDatadogDashboardListDeleteItemsV2(&completeDashListV2)
+	if err != nil {
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpresp, ""), "error creating dashboard list delete item"))
+		return
+	}
+	_, httpresp, err = r.ApiV2.DeleteDashboardListItems(r.Auth, id, *completeDashListDeleteV2)
+	if err != nil {
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpresp, ""), "error deleting dashboard list item"))
+		return
+	}
+
+	if len(state.DashItem) > 0 {
+		dashboardListV2Items, err := buildDatadogDashboardListUpdateItemsV2(&state)
+		if err != nil {
+			resp.Diagnostics.AddError("failed to parse resource configuration: ", err.Error())
+			return
+		}
+		dashboardListUpdateItemsResponse, httpresp, err := r.ApiV2.UpdateDashboardListItems(r.Auth, id, *dashboardListV2Items)
+		if err != nil {
+			resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpresp, ""), "error updating dashboard list item"))
+			return
+		}
+		r.updateStateFromResponse(ctx, &state, dashboardListUpdateItemsResponse.GetDashboards())
+	}
+	// Save data into Terraform state
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+}
+
+func (r *dashboardListResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state dashboardListResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	id, err := strconv.ParseInt(state.ID.ValueString(), 10, 64)
+	if err != nil {
+		resp.Diagnostics.AddError("failed to parse resource id: ", err.Error())
+		return
+	}
+
+	//Read the overall Dashboard List object
+	dashList, httpresp, err := r.ApiV1.GetDashboardList(r.Auth, id)
+	if err != nil {
+		if httpresp != nil && httpresp.StatusCode == 404 {
+			state.ID = types.StringNull()
+			return
+		}
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpresp, ""), "error getting dashboard list"))
+		return
+	}
+	state.Name = types.StringValue(dashList.GetName())
+
+	// Read and set all the dashboard list elements
+	completeItemListV2, _, err := r.ApiV2.GetDashboardListItems(r.Auth, id)
+	if err != nil {
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpresp, ""), "error getting dashboard list item"))
+		return
+	}
+	if err := utils.CheckForUnparsed(completeItemListV2); err != nil {
+		resp.Diagnostics.AddError("", err.Error())
+		return
+	}
+	r.updateStateFromDashItem(ctx, &state, completeItemListV2.GetDashboards())
+	resp.Diagnostics.AddError("", err.Error())
 }
 
 func (r *dashboardListResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	/* ... */
+	var state dashboardListResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	id, _ := strconv.ParseInt(state.ID.ValueString(), 10, 64)
+	_, httpresp, err := r.ApiV1.DeleteDashboardList(r.Auth, id)
+	if err != nil {
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpresp, ""), "error deleting dashboard list"))
+		return
+	}
 }
 
 func buildDatadogDashboardList(state *dashboardListResourceModel) (*datadogV1.DashboardList, error) {
@@ -163,15 +274,35 @@ func buildDatadogDashboardListUpdateItemsV2(state *dashboardListResourceModel) (
 	return dashboardListV2Items, nil
 }
 
-func (r *dashboardListResource) updateState(ctx context.Context, state *dashboardListResourceModel, resp *datadogV2.DashboardListUpdateItemsResponse) {
+func buildDatadogDashboardListDeleteItemsV2(dashboardListItems *datadogV2.DashboardListItems) (*datadogV2.DashboardListDeleteItemsRequest, error) {
+	dashboardListV2ItemsArr := make([]datadogV2.DashboardListItemRequest, 0)
+	for _, dashItem := range dashboardListItems.GetDashboards() {
+		dashType := dashItem.GetType()
+		dashID := dashItem.GetId()
+		dashItem := datadogV2.NewDashboardListItemRequest(dashID, dashType)
+		dashboardListV2ItemsArr = append(dashboardListV2ItemsArr, *dashItem)
+	}
+	dashboardListV2Items := datadogV2.NewDashboardListDeleteItemsRequest()
+	dashboardListV2Items.SetDashboards(dashboardListV2ItemsArr)
+	return dashboardListV2Items, nil
+}
 
-	dashboards := resp.GetDashboards()
+func (r *dashboardListResource) updateStateFromResponse(ctx context.Context, state *dashboardListResourceModel, dashboards []datadogV2.DashboardListItemResponse) {
 	state.DashItem = []*DashItemModel{}
-
 	for _, dashboard := range dashboards {
 		dashboardItem := DashItemModel{}
-		dashboardItem.Dash_id = types.StringValue(dashboard.Id)
-		dashboardItem.Type = types.StringValue(string(dashboard.Type))
+		dashboardItem.Dash_id = types.StringValue(dashboard.GetId())
+		dashboardItem.Type = types.StringValue(string(dashboard.GetType()))
+		state.DashItem = append(state.DashItem, &dashboardItem)
+	}
+}
+
+func (r *dashboardListResource) updateStateFromDashItem(ctx context.Context, state *dashboardListResourceModel, dashboards []datadogV2.DashboardListItem) {
+	state.DashItem = []*DashItemModel{}
+	for _, dashboard := range dashboards {
+		dashboardItem := DashItemModel{}
+		dashboardItem.Dash_id = types.StringValue(dashboard.GetId())
+		dashboardItem.Type = types.StringValue(string(dashboard.GetType()))
 		state.DashItem = append(state.DashItem, &dashboardItem)
 	}
 }
