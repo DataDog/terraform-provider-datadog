@@ -1,7 +1,7 @@
 {%- import "utils/state_helper.j2" as stateMacros %}
 
 func (r *{{ name|camel_case }}Resource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-    var state {{ name|camel_case }}Model
+    var state {{ name|camel_case|untitle_case }}Model
     response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
     if response.Diagnostics.HasError() {
         return

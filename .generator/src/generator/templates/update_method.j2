@@ -2,7 +2,7 @@
 {%- set useCreateBodyRequest = get_type_for_parameter(createOperationParams["body"]) == get_type_for_parameter(updateOperationParams["body"]) %}
 
 func (r *{{ name|camel_case }}Resource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-    var state {{ name|camel_case }}Model
+    var state {{ name|camel_case|untitle_case }}Model
     response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
     if response.Diagnostics.HasError() {
         return

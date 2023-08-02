@@ -5,7 +5,7 @@
 
 {%- macro nonPrimitiveTypeProperty(name, array=False) %}
 {%- set varName = name|camel_case %}
-{{ varName }} {% if array %}[]{% endif %}*{{ varName }}Model `tfsdk:"{{ name }}"`
+{{ varName }} {% if array %}[]{% endif %}*{{ varName|untitle_case }}Model `tfsdk:"{{ name }}"`
 {%- endmacro %}
 
 {%- macro basePropertyTypeBuilder(name, schema) %}
@@ -19,7 +19,7 @@
 {%- macro basePropertyTypeBuilderHelper(name, schema) %}
 {%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = schema|tf_sort_properties_by_type %}
 {%- set varName = name|camel_case %}
-type {{ name|camel_case }}Model struct {
+type {{ name|camel_case|untitle_case }}Model struct {
     {%- for name, schema in primitiveAttr.items() %}
     {{- primitiveTypeProperty(name, get_terraform_schema_type(schema)) }}
     {%- endfor %}

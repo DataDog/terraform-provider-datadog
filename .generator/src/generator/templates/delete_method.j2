@@ -1,7 +1,7 @@
 {%- set responseHasThreeValues = "204" not in operations[DELETE_OPERATION]["schema"]["responses"].keys() %}
 
 func (r *{{ name|camel_case }}Resource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-    var state {{ name|camel_case }}Model
+    var state {{ name|camel_case|untitle_case }}Model
     response.Diagnostics.Append(request.State.Get(ctx, &state)...)
     if response.Diagnostics.HasError() {
         return

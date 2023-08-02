@@ -7,7 +7,7 @@ type {{ name|camel_case }}Resource struct {
 	Auth context.Context
 }
 
-type {{ name|camel_case }}Model struct {
+type {{ name|camel_case|untitle_case }}Model struct {
 	ID   types.String `tfsdk:"id"`
 
     {%- for name, schema in primitiveAttr.items() %}

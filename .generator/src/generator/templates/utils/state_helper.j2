@@ -47,14 +47,14 @@
     if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok {
     {%- endif %}
 
-    {{ name|variable_name }}Tf := {{ name|camel_case }}Model{}
+    {{ name|variable_name }}Tf := {{ name|camel_case|untitle_case }}Model{}
 
     {%- if "oneOf" in schema %}
     {%- for oneOf in schema.get("oneOf") %}
         {%- set oneOfName = get_name(oneOf) %}
         {%- set oneOfAccessor = baseAccessor~"."~name|camel_case if required else name|variable_name %}
         if {{ oneOfAccessor }}.{{ oneOfName }} != nil {
-        {{ oneOfName|variable_name }}Tf := {{ oneOfName|camel_case }}Model{}
+        {{ oneOfName|variable_name }}Tf := {{ oneOfName|camel_case|untitle_case }}Model{}
         {%- for oneOfAttr, oneOfAttrSchema in oneOf.properties.items() %}
             {{- baseStateSetter(oneOfAttr, oneOfAttrSchema, oneOfName|variable_name~"Tf", oneOfAccessor~"."~oneOfName) }}
         {%- endfor %}
@@ -94,9 +94,9 @@
     {%- if not required %}
     if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok && len(*{{ name|variable_name }})  > 0 {
     {%- endif %}
-    {{ baseSetter }}.{{ name|camel_case }} = []*{{ name|camel_case }}Model{}
+    {{ baseSetter }}.{{ name|camel_case }} = []*{{ name|camel_case|untitle_case }}Model{}
     for _, {{ name|variable_name }}Dd := range {% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}*{{ name|variable_name }}{% endif %} {
-        {{ name|variable_name }}TfItem := {{ name|camel_case }}Model{}
+        {{ name|variable_name }}TfItem := {{ name|camel_case|untitle_case }}Model{}
 
         {%- for attr, attrSchema in itemSchema.properties.items() %}
             {{- baseStateSetter(attr, attrSchema, name|variable_name~"TfItem", name|variable_name ~ "Dd") }}
@@ -112,7 +112,7 @@
 {%- endmacro %}
 
 {%- macro getStateFromRequest(name) %}
-    var state {{ name|camel_case }}Model
+    var state {{ name|camel_case|untitle_case }}Model
     response.Diagnostics.Append(request.State.Get(ctx, &state)...)
     if response.Diagnostics.HasError() {
         return
