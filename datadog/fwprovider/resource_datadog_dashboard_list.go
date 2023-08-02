@@ -33,12 +33,12 @@ type dashboardListResource struct {
 type dashboardListResourceModel struct {
 	ID       types.String     `tfsdk:"id"`
 	Name     types.String     `tfsdk:"name"`
-	DashItem []*DashItemModel `tfsdk:"dash_item"`
+	DashItem []*dashItemModel `tfsdk:"dash_item"`
 }
 
-type DashItemModel struct {
-	Type    types.String `tfsdk:"type"`
-	Dash_id types.String `tfsdk:"dash_id"`
+type dashItemModel struct {
+	Type   types.String `tfsdk:"type"`
+	DashId types.String `tfsdk:"dash_id"`
 }
 
 func (r *dashboardListResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -268,7 +268,7 @@ func buildDatadogDashboardListUpdateItemsV2(state *dashboardListResourceModel) (
 	dashboardListV2ItemsArr := make([]datadogV2.DashboardListItemRequest, 0)
 	for _, dashItem := range state.DashItem {
 		dashType := datadogV2.DashboardType(dashItem.Type.ValueString())
-		dashItem := datadogV2.NewDashboardListItemRequest(dashItem.Dash_id.ValueString(), dashType)
+		dashItem := datadogV2.NewDashboardListItemRequest(dashItem.DashId.ValueString(), dashType)
 		dashboardListV2ItemsArr = append(dashboardListV2ItemsArr, *dashItem)
 	}
 	dashboardListV2Items := datadogV2.NewDashboardListUpdateItemsRequest()
@@ -290,21 +290,41 @@ func buildDatadogDashboardListDeleteItemsV2(dashboardListItems *datadogV2.Dashbo
 }
 
 func (r *dashboardListResource) updateStateFromResponse(ctx context.Context, state *dashboardListResourceModel, dashboards []datadogV2.DashboardListItemResponse) {
-	state.DashItem = []*DashItemModel{}
+	dashItemList := []*dashItemModel{}
 	for _, dashboard := range dashboards {
-		dashboardItem := DashItemModel{}
-		dashboardItem.Dash_id = types.StringValue(dashboard.GetId())
-		dashboardItem.Type = types.StringValue(string(dashboard.GetType()))
-		state.DashItem = append(state.DashItem, &dashboardItem)
+		dashboardItem := dashItemModel{}
+		dashboardItem.DashId = types.StringValue(dashboard.GetId())
+		found := false
+		for _, dashItem := range state.DashItem {
+			if dashItem.DashId.ValueString() == dashboard.GetId() {
+				found = true
+				dashboardItem.Type = dashItem.Type
+			}
+		}
+		if !found {
+			dashboardItem.Type = types.StringValue(string(dashboard.GetType()))
+		}
+		dashItemList = append(dashItemList, &dashboardItem)
 	}
+	state.DashItem = dashItemList
 }
 
 func (r *dashboardListResource) updateStateFromDashItem(ctx context.Context, state *dashboardListResourceModel, dashboards []datadogV2.DashboardListItem) {
-	state.DashItem = []*DashItemModel{}
+	dashItemList := []*dashItemModel{}
 	for _, dashboard := range dashboards {
-		dashboardItem := DashItemModel{}
-		dashboardItem.Dash_id = types.StringValue(dashboard.GetId())
-		dashboardItem.Type = types.StringValue(string(dashboard.GetType()))
-		state.DashItem = append(state.DashItem, &dashboardItem)
+		dashboardItem := dashItemModel{}
+		dashboardItem.DashId = types.StringValue(dashboard.GetId())
+		found := false
+		for _, dashItem := range state.DashItem {
+			if dashItem.DashId.ValueString() == dashboard.GetId() {
+				found = true
+				dashboardItem.Type = dashItem.Type
+			}
+		}
+		if !found {
+			dashboardItem.Type = types.StringValue(string(dashboard.GetType()))
+		}
+		dashItemList = append(dashItemList, &dashboardItem)
 	}
+	state.DashItem = dashItemList
 }
