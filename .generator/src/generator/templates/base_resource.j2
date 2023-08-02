@@ -25,29 +25,29 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &{{ name|camel_case }}Resource{}
-	_ resource.ResourceWithImportState = &{{ name|camel_case }}Resource{}
+	_ resource.ResourceWithConfigure   = &{{ name|camel_case|untitle_case }}Resource{}
+	_ resource.ResourceWithImportState = &{{ name|camel_case|untitle_case }}Resource{}
 )
 
 {% include "types.j2" %}
 
 func New{{ name|camel_case }}Resource() resource.Resource {
-	return &{{ name|camel_case }}Resource{}
+	return &{{ name|camel_case|untitle_case }}Resource{}
 }
 
-func (r *{{ name|camel_case }}Resource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *{{ name|camel_case|untitle_case }}Resource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.Get{{ apiName }}{{ version }}()
 	r.Auth = providerData.Auth
 }
 
-func (r *{{ name|camel_case }}Resource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+func (r *{{ name|camel_case|untitle_case }}Resource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "{{ name|snake_case }}"
 }
 
 {% include "schema.j2" %}
 
-func (r *{{ name|camel_case }}Resource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *{{ name|camel_case|untitle_case }}Resource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 

@@ -2,7 +2,7 @@
 
 {%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = createOperationParams|tf_sort_params_by_type %}
 
-func (r *{{ name|camel_case }}Resource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *{{ name|camel_case|untitle_case }}Resource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog {{ name|camel_case }} resource. This can be used to create and manage Datadog {{ name }}.",
 		Attributes: map[string]schema.Attribute{

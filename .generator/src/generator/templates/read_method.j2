@@ -1,4 +1,4 @@
-func (r *{{ name|camel_case }}Resource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+func (r *{{ name|camel_case|untitle_case }}Resource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
     var state {{ name|camel_case|untitle_case }}Model
     response.Diagnostics.Append(request.State.Get(ctx, &state)...)
     if response.Diagnostics.HasError() {

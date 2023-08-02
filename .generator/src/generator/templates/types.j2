@@ -2,7 +2,7 @@
 
 {%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = createOperationParams|tf_sort_params_by_type %}
 
-type {{ name|camel_case }}Resource struct {
+type {{ name|camel_case|untitle_case }}Resource struct {
 	Api  *datadog{{ version }}.{{ apiName }}
 	Auth context.Context
 }
